@@ -509,8 +509,8 @@ canvas.lec-canvas {
   }
   .lec-stage {
     aspect-ratio: 1.12;
-    max-height: 50vh;
-    max-height: 50dvh;
+    max-height: 46vh;
+    max-height: 46dvh;
   }
   .lec-cap {
     font-size: 16px;
