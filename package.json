@@ -1,0 +1,25 @@
+{
+  "name": "cs231n-course",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5340",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5341",
+    "shot": "node tools/shot.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/source-serif-4": "^5.3.1",
+    "@phosphor-icons/core": "^2.1.1",
+    "katex": "^0.16.47"
+  },
+  "devDependencies": {
+    "@types/katex": "^0.16.8",
+    "playwright": "^1.64.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.4"
+  }
+}
