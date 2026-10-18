@@ -161,13 +161,14 @@ export function stepper(opts: { steps: number; onStep: (i: number) => void; inte
   };
 }
 
-const ICON_SVGS = import.meta.glob('../../node_modules/@phosphor-icons/core/assets/light/{play,pause,skip-forward,skip-back,arrow-counter-clockwise,shuffle,list,x,sun,moon,arrow-right,arrow-left,check,lightbulb,warning,function,book-open,clipboard-text,eye,math-operations,graduation-cap,code,brain,image,info}-light.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const ICON_SVGS = import.meta.glob('../../node_modules/@phosphor-icons/core/assets/light/{play,pause,skip-forward,skip-back,arrow-counter-clockwise,shuffle,list,x,sun,moon,arrow-right,arrow-left,check,lightbulb,warning,function,book-open,clipboard-text,eye,math-operations,graduation-cap,code,brain,image,info,closed-captioning,corners-out,corners-in,rewind}-light.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const FILL_SVGS = import.meta.glob('../../node_modules/@phosphor-icons/core/assets/fill/{play,pause}-fill.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 
-const ALIAS: Record<string, string> = { next: 'skip-forward', prev: 'skip-back', reset: 'arrow-counter-clockwise', menu: 'list', close: 'x', arrowRight: 'arrow-right', arrowLeft: 'arrow-left', book: 'book-open', clipboard: 'clipboard-text', math: 'math-operations' };
+const ALIAS: Record<string, string> = { next: 'skip-forward', prev: 'skip-back', reset: 'arrow-counter-clockwise', menu: 'list', close: 'x', arrowRight: 'arrow-right', arrowLeft: 'arrow-left', book: 'book-open', clipboard: 'clipboard-text', math: 'math-operations', playFill: 'play-fill', pauseFill: 'pause-fill' };
 
 /** Inline Phosphor Light glyph by name (or alias), sized by CSS `.ico`. */
 export function icon(name: string): string {
   const file = ALIAS[name] ?? name;
-  const svg = Object.entries(ICON_SVGS).find(([k]) => k.endsWith(`/${file}-light.svg`))?.[1];
+  const svg = Object.entries(ICON_SVGS).find(([k]) => k.endsWith(`/${file}-light.svg`))?.[1] ?? Object.entries(FILL_SVGS).find(([k]) => k.endsWith(`/${file}.svg`))?.[1];
   return svg ? svg.replace('<svg ', '<svg class="ico" aria-hidden="true" ') : '';
 }

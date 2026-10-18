@@ -2,6 +2,7 @@ import type { ChapterDef } from './index';
 import { fmt } from '../core/code';
 import { color, rgbOf, withAlpha } from '../core/plot';
 import { Rng } from '../core/rand';
+import { MATH_KIT_SYMBOLS } from '../lib/math-kit-symbols';
 import { cellBox, clamp, dragNearest, gear, haloText, ital, mono, plotLabel, pxArrow, pyf, pyList, snap, ui } from '../lib/math-kit-draw';
 
 const deg = (r: number) => (r * 180) / Math.PI;
@@ -14,16 +15,7 @@ const rows = (src: string) =>
     .map((l) => l.split(' | ').map((c) => c.trim()));
 
 const chapter: ChapterDef = {
-  symbols: {
-    x: { color: 'orange', name: 'x: an input (one number, or a vector of numbers)' },
-    w: { color: 'blue', name: 'w: a vector of weights (the blue arrow)' },
-    W: { color: 'blue', name: 'W: a matrix, a grid of numbers (in the course: the weights)' },
-    f: { color: 'purple', name: 'f: a function, the machine that turns inputs into an output' },
-    h: { color: 'slate', name: 'h: a tiny step, used to measure a slope numerically' },
-    grad: { color: 'teal', name: '∇f: the gradient, the vector of all partial derivatives', tex: '\\nabla f', code: ['grad'] },
-    mu: { color: 'gold', name: 'μ: the mean (the average)', tex: '\\mu', code: ['mu'] },
-    sigma: { color: 'green', name: 'σ: the standard deviation (the typical spread)', tex: '\\sigma', code: ['sigma'] },
-  },
+  symbols: MATH_KIT_SYMBOLS,
 
   render(p) {
     p.prose(`

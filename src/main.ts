@@ -12,6 +12,7 @@ import { icon } from './core/controls';
 import { disposeAll, h } from './core/dom';
 import { Page } from './core/page';
 import { renderHome } from './home';
+import { hasLecture, loadLecture } from './lectures/index';
 
 const store = {
   get(k: string): string | null {
@@ -116,6 +117,31 @@ function chapterHeader(meta: ChapterMeta): HTMLElement {
     metaRow);
 }
 
+/** The chapter's three layers: watch the lecture, explore the interactive chapter, practice. */
+function layers(meta: ChapterMeta, body: HTMLElement): HTMLElement {
+  const watchK = h('div', { class: 'layer-k' }, 'Watch');
+  const explore = h('button', { class: 'layer', type: 'button' },
+    h('span', { class: 'layer-n' }, '2'),
+    h('span', { class: 'layer-body' }, h('div', { class: 'layer-k' }, 'Explore'), h('div', { class: 'layer-t' }, 'The interactive chapter below: figures you can drag, with their code beside them.')));
+  explore.addEventListener('click', () => body.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  const pr = meta.practice;
+  const practiceBody = h('span', { class: 'layer-body' }, h('div', { class: 'layer-k' }, 'Practice'), h('div', { class: 'layer-t' }, pr?.text ?? 'Coming soon.'));
+  const practice = pr?.id
+    ? h('a', { class: 'layer', href: `#/${pr.id}` }, h('span', { class: 'layer-n' }, '3'), practiceBody)
+    : h('div', { class: 'layer layer-muted' }, h('span', { class: 'layer-n' }, '3'), practiceBody);
+  const el = h('div', { class: 'layers' },
+    h('a', { class: 'layer layer-watch', href: `#/watch/${meta.id}` },
+      h('span', { class: 'layer-n', html: icon('playFill') }),
+      h('span', { class: 'layer-body' }, watchK, h('div', { class: 'layer-t' }, 'Start here: the whole chapter as a narrated lecture you can just watch.')),
+      h('span', { class: 'layer-go', html: icon('arrowRight') })),
+    explore,
+    practice);
+  void loadLecture(meta.id)?.then((d) => {
+    if (d.timing) watchK.textContent = `Watch · ${Math.round(d.timing.duration / 60)} min`;
+  });
+  return el;
+}
+
 function chapterFooter(meta: ChapterMeta): HTMLElement {
   const i = CHAPTERS.indexOf(meta);
   const prev = CHAPTERS[i - 1];
@@ -134,14 +160,19 @@ let renderToken = 0;
 
 async function route(): Promise<void> {
   const [, id = '', section = ''] = location.hash.replace(/^#\/?/, '#').split(/[#/]/);
-  if (id === currentId && currentId) {
-    if (section) document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const key = id === 'watch' ? `watch/${section}` : id;
+  if (key === currentId && currentId) {
+    if (section && id !== 'watch') document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
   }
   const token = ++renderToken;
   disposeAll();
-  currentId = id;
+  currentId = key;
   main.innerHTML = '';
+  if (id === 'watch') {
+    await renderWatch(section, token);
+    return;
+  }
   buildNav(id);
   const meta = CHAPTERS.find((c) => c.id === id);
   if (!meta) {
@@ -167,6 +198,7 @@ async function route(): Promise<void> {
     const def = await pending;
     if (token !== renderToken) return;
     body.innerHTML = '';
+    if (hasLecture(meta.id)) article.insertBefore(layers(meta, body), body);
     const page = new Page(body, meta.id, meta.num, def.symbols);
     const keys = Object.keys(def.symbols);
     if (keys.length) {
@@ -194,6 +226,27 @@ async function route(): Promise<void> {
   markVisited(meta.id);
   if (section) requestAnimationFrame(() => document.getElementById(section)?.scrollIntoView({ block: 'start' }));
   else window.scrollTo(0, 0);
+}
+
+async function renderWatch(id: string, token: number): Promise<void> {
+  const meta = CHAPTERS.find((c) => c.id === id);
+  const pending = meta ? loadLecture(meta.id) : null;
+  if (!meta || !pending) {
+    location.replace(meta ? `#/${meta.id}` : '#/');
+    return;
+  }
+  document.title = `Lecture: ${meta.title} · cs231n interactive`;
+  main.append(h('div', { class: 'loading' }, 'Loading the lecture…'));
+  try {
+    const [def, { mountLecture }] = await Promise.all([pending, import('./lecture/player')]);
+    if (token !== renderToken) return;
+    main.innerHTML = '';
+    mountLecture(main, def, meta);
+  } catch (e) {
+    console.error(e);
+    main.innerHTML = '';
+    main.append(h('div', { class: 'fig-error' }, `The lecture failed to load: ${(e as Error).message}`));
+  }
 }
 
 window.addEventListener('hashchange', () => void route());

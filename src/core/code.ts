@@ -171,12 +171,13 @@ export class CodePanel {
     }
   }
 
-  /** Rewrite the text of a `{{name}}` slot. Flashes when the text changes. */
-  set(name: string, value: string | number): void {
+  /** Rewrite the text of a `{{name}}` slot. Flashes when the text changes, unless `flash` is false. */
+  set(name: string, value: string | number, flash = true): void {
     const text = typeof value === 'number' ? fmt(value) : value;
     for (const e of this.liveEls.get(name) ?? []) {
       if (e.textContent === text) continue;
       e.textContent = text;
+      if (!flash) continue;
       e.classList.remove('flash');
       void e.offsetWidth;
       e.classList.add('flash');

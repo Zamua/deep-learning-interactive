@@ -1,0 +1,564 @@
+/* ---------- lecture player: a full-viewport theater ---------- */
+
+body.lec-on {
+  overflow: hidden;
+}
+
+.lec {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lec-top {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: calc(6px + env(safe-area-inset-top)) 14px 6px 8px;
+  min-height: 52px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.lec-back {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  color: var(--ink-2);
+  flex: none;
+}
+.lec-back:hover {
+  background: var(--paper-2);
+}
+.lec-back .ico {
+  width: 22px;
+  height: 22px;
+}
+
+.lec-titles {
+  min-width: 0;
+  flex: 1;
+}
+.lec-kicker {
+  font: 600 10.5px/1.2 var(--font-ui);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.lec-scene-title {
+  font: 560 17px/1.25 var(--font-display);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lec-count {
+  flex: none;
+  font: 500 12px var(--font-mono);
+  color: var(--ink-3);
+}
+
+.lec-main {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas: 'stage code' 'cap code';
+  gap: 8px 16px;
+  padding: 12px 16px 4px;
+  max-width: 1500px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.lec-stage {
+  grid-area: stage;
+  position: relative;
+  min-height: 0;
+  border-radius: 14px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  overflow: hidden;
+  cursor: pointer;
+  --u: 1px;
+}
+
+canvas.lec-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto !important;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.lec-marks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.lec-mark {
+  position: absolute;
+  white-space: nowrap;
+  color: var(--ink);
+  visibility: hidden;
+  transform: translate(-50%, -50%);
+}
+.lec-mark-left {
+  transform: translate(0, -50%);
+}
+.lec-mark-right {
+  transform: translate(-100%, -50%);
+}
+.lec-mark .katex {
+  font-size: 1em;
+}
+
+.lec-chip {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  border: 1px solid var(--rule);
+  font: 600 12.5px var(--font-ui);
+  color: var(--ink-2);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.5s, transform 0.5s;
+  pointer-events: none;
+}
+.lec-chip span {
+  display: grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font: 700 11.5px var(--font-mono);
+}
+.lec.started .lec-chip.fresh {
+  opacity: 1;
+  transform: none;
+}
+
+.lec-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 76px;
+  height: 76px;
+  margin: -38px 0 0 -38px;
+  border-radius: 999px;
+  border: 0;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--ink) 62%, transparent);
+  color: var(--paper);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+  cursor: pointer;
+}
+.lec-center .ico {
+  width: 34px;
+  height: 34px;
+}
+.lec.paused:not(.ended) .lec-center {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lec-spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 42px;
+  height: 42px;
+  margin: -21px 0 0 -21px;
+  border-radius: 999px;
+  border: 3px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  border-top-color: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+.lec.waiting .lec-spinner {
+  opacity: 1;
+  animation: lec-spin 0.9s linear infinite;
+}
+@keyframes lec-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.lec-poster,
+.lec-end {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6% 7%;
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  cursor: default;
+}
+.lec.started .lec-poster {
+  display: none;
+}
+.lec-end {
+  display: none;
+}
+.lec.ended .lec-end {
+  display: flex;
+}
+.lec-poster-kicker {
+  font: 600 11px/1.3 var(--font-ui);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.lec-poster-title,
+.lec-end-title {
+  margin: 0;
+  font: 600 clamp(26px, 5.2vw, 46px) / 1.05 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.lec-poster-lede {
+  margin: 0;
+  max-width: 34em;
+  font: 400 clamp(14.5px, 1.6vw, 17px) / 1.45 var(--font-body);
+  color: var(--ink-2);
+}
+.lec-poster-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+.lec-poster-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px 12px 16px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--accent);
+  color: #fff;
+  font: 650 15.5px var(--font-ui);
+  cursor: pointer;
+}
+.lec-poster-play .ico {
+  width: 20px;
+  height: 20px;
+}
+.lec-resume ~ .lec-poster-play {
+  background: transparent;
+  color: var(--ink-2);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.lec-cap {
+  grid-area: cap;
+  min-height: calc(2 * 1.42em + 8px);
+  padding: 4px 4px 2px;
+  font: 450 17.5px/1.42 var(--font-body);
+  color: var(--ink);
+  text-wrap: balance;
+}
+.lec.no-cc .lec-cap {
+  visibility: hidden;
+}
+
+.lec-code {
+  grid-area: code;
+  min-height: 0;
+  display: flex;
+  border-radius: 12px;
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+.lec-code .code {
+  flex: 1;
+  font-size: 13.5px;
+}
+
+.lec-bar {
+  flex: none;
+  padding: 2px 14px calc(6px + env(safe-area-inset-bottom));
+  max-width: 1500px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.lec-scrub {
+  position: relative;
+  height: 26px;
+  cursor: pointer;
+  touch-action: none;
+  outline: none;
+}
+.lec-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 11px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--paper-3);
+  overflow: hidden;
+}
+.lec-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+.lec-ticks {
+  position: absolute;
+  inset: 0;
+}
+.lec-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--paper);
+}
+.lec-thumb {
+  position: absolute;
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  pointer-events: none;
+}
+.lec-scrub:focus-visible .lec-thumb {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.lec-tip {
+  position: absolute;
+  bottom: 26px;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  font: 500 12px var(--font-ui);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+@media (hover: hover) {
+  .lec-scrub:hover .lec-tip {
+    opacity: 1;
+  }
+}
+.lec.scrubbing .lec-tip {
+  opacity: 1;
+}
+
+.lec-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.lec-spacer {
+  flex: 1;
+}
+.lec-btn {
+  display: grid;
+  place-items: center;
+  min-width: 42px;
+  height: 42px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.lec-btn:hover {
+  background: var(--paper-2);
+}
+.lec-btn .ico {
+  width: 23px;
+  height: 23px;
+}
+.lec-btn[aria-pressed='false'] {
+  color: var(--ink-3);
+  opacity: 0.6;
+}
+.lec-play {
+  color: var(--ink);
+}
+.lec-speed {
+  font: 600 13.5px var(--font-mono);
+  min-width: 52px;
+}
+.lec-time {
+  margin-left: 6px;
+  font: 500 13px var(--font-mono);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.lec-list {
+  position: absolute;
+  right: 12px;
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  width: min(380px, calc(100% - 24px));
+  max-height: min(70vh, 560px);
+  overflow: auto;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  box-shadow: var(--shadow);
+  display: none;
+  z-index: 2;
+}
+.lec.list-open .lec-list {
+  display: block;
+}
+.lec-li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  font: 500 15px var(--font-ui);
+  cursor: pointer;
+}
+.lec-li:hover {
+  background: var(--paper-2);
+}
+.lec-li.on {
+  background: var(--accent-soft);
+}
+.lec-li-n {
+  width: 22px;
+  color: var(--ink-3);
+  font: 600 12px var(--font-mono);
+  text-align: right;
+}
+.lec-li-t {
+  flex: 1;
+}
+.lec-li-time {
+  color: var(--ink-3);
+  font: 500 12px var(--font-mono);
+}
+
+.lec-notice {
+  position: absolute;
+  left: 50%;
+  top: calc(58px + env(safe-area-inset-top));
+  transform: translateX(-50%);
+  max-width: calc(100% - 24px);
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--c-gold) 16%, var(--card));
+  border: 1px solid color-mix(in srgb, var(--c-gold) 40%, var(--rule));
+  font: 500 12.5px/1.35 var(--font-ui);
+  z-index: 3;
+}
+.lec-notice:empty {
+  display: none;
+}
+
+/* Upright screens: picture, captions, then code, stacked. */
+@media (max-aspect-ratio: 6/5) {
+  .lec-main {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas: 'stage' 'cap' 'code';
+    gap: 4px;
+    padding: 8px 10px 2px;
+  }
+  .lec-stage {
+    aspect-ratio: 1.12;
+    max-height: 50vh;
+    max-height: 50dvh;
+  }
+  .lec-cap {
+    font-size: 16px;
+    min-height: calc(2 * 1.38em + 6px);
+    line-height: 1.38;
+    padding: 2px 4px;
+  }
+  .lec-code .code {
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  .lec-code .code-tab {
+    padding: 4px 12px;
+  }
+  .lec-code .code-body {
+    padding: 6px 0 8px;
+  }
+}
+
+@media (max-width: 420px) {
+  .lec-top {
+    padding-right: 10px;
+  }
+  .lec-time {
+    font-size: 12px;
+    margin-left: 2px;
+  }
+  .lec-btn {
+    min-width: 40px;
+    padding: 0 6px;
+  }
+  .lec-speed {
+    min-width: 46px;
+  }
+}
+
+/* Short landscape phones: no room for a caption strip under the picture. */
+@media (max-height: 480px) and (min-aspect-ratio: 6/5) {
+  .lec-top {
+    min-height: 44px;
+    padding-top: calc(2px + env(safe-area-inset-top));
+    padding-bottom: 2px;
+  }
+  .lec-main {
+    padding-top: 6px;
+    grid-template-columns: minmax(0, 1.3fr) minmax(240px, 1fr);
+  }
+  .lec-cap {
+    font-size: 14.5px;
+  }
+}

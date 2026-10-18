@@ -4,6 +4,7 @@ import { icon } from './core/controls';
 import { CIFAR_CLASSES, cifarImage, loadCifar } from './core/data';
 import { h } from './core/dom';
 import { Page } from './core/page';
+import { hasLecture } from './lectures/index';
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V'];
 
@@ -119,6 +120,7 @@ export function renderHome(main: HTMLElement, seen: Set<string>): void {
     const grid = h('div', { class: 'cards' });
     for (const c of CHAPTERS.filter((x) => x.part === part)) {
       const top = h('div', { class: 'card-top' }, h('span', { class: 'card-num' }, c.num.startsWith('A') ? c.num : `Chapter ${c.num}`), h('span', {}, c.lectures ?? ''));
+      if (hasLecture(c.id)) top.append(h('span', { class: 'card-lec', html: `${icon('playFill')} lecture` }));
       if (seen.has(c.id)) top.append(h('span', { class: 'card-seen', html: `${icon('check')} read` }));
       grid.append(h('a', { class: `card${hasChapter(c.id) ? '' : ' soon'}`, href: `#/${c.id}` }, top,
         h('div', { class: 'card-title' }, c.title.replace(/^Assignment \d: /, '')),

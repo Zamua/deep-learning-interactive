@@ -17,6 +17,8 @@ export interface ChapterMeta {
   lectures?: string;
   /** The original course notes this chapter follows. */
   notes?: { title: string; url: string }[];
+  /** The third layer after the lecture and the chapter: an assignment to link (`id`) or a note. */
+  practice?: { id?: string; text: string };
 }
 
 export const PARTS = ['Start here', 'Neural networks', 'Convolutional networks', 'Beyond still images', 'Assignments'] as const;
@@ -25,7 +27,7 @@ const N = 'https://cs231n.github.io';
 
 export const CHAPTERS: ChapterMeta[] = [
   { id: 'welcome', num: '0', part: 'Start here', title: 'How this course works', blurb: 'What CS231n is, how the figures and color-coded symbols work, and a map of everything ahead.' },
-  { id: 'math-kit', num: '1', part: 'Start here', title: 'Math survival kit', blurb: 'Vectors, matrices, sums, slopes, gradients and the chain rule, rebuilt from scratch with code next to every idea.' },
+  { id: 'math-kit', num: '1', part: 'Start here', title: 'Math survival kit', blurb: 'Vectors, matrices, sums, slopes, gradients and the chain rule, rebuilt from scratch with code next to every idea.', practice: { text: 'No assignment for this one: these are the tools every assignment uses.' } },
   { id: 'numpy', num: '2', part: 'Start here', title: 'Python and NumPy', blurb: 'Arrays, shapes, indexing, broadcasting and vectorization: the language every assignment is written in.', notes: [{ title: 'Python / NumPy tutorial', url: `${N}/python-numpy-tutorial/` }] },
 
   { id: 'image-classification', num: '3', part: 'Neural networks', title: 'Image classification and nearest neighbors', blurb: 'Images as grids of numbers, the data-driven approach, kNN, distances, and honest evaluation with validation sets.', lectures: 'Lecture 2', notes: [{ title: 'Image classification', url: `${N}/classification/` }] },

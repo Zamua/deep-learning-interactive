@@ -10,6 +10,8 @@ the API reference; read it before touching a chapter.
     npm run build                        tsc --noEmit && vite build -> dist/
     node tools/shot.mjs <route> <name> [w h mobile full]   Playwright + system Chrome screenshot
                                          (prints page errors; env SCROLL='.fig:2', THEME=dark)
+    node tools/lecture/build.mjs <id> [--check]   synthesize a lecture's narration (Kokoro TTS)
+    node tools/lecture/shots.mjs <id> <dir> [w h mobile] [scene/beat ...]   screenshot every beat
 
 ## Layout
 
@@ -22,6 +24,9 @@ the API reference; read it before touching a chapter.
   `import.meta.glob`, so a missing file shows as "still being written".
 - `src/chapters/<id>.ts`: one chapter each; `src/lib/<id>-*.ts` chapter helpers.
 - `public/data/`, `public/img/`: chapter assets.
+- `src/lecture/`: the lecture player (`player.ts`: theater, audio clock, controls; `scene.ts`:
+  beat-anchored easing and a drawing kit in stage units; `types.ts`: script and timing types).
+  `src/lectures/<id>/`: one lecture per chapter. `docs/LECTURES.md` is the authoring guide.
 
 ## Invariants
 
@@ -35,3 +40,6 @@ the API reference; read it before touching a chapter.
   mode; palette tokens must stay 6-digit hex for `withAlpha`/`rgbOf`.
 - Animation loops go through `f.loop` / `visibleLoop`, which pause off screen; the router
   disposes everything registered with `onDispose` on navigation.
+- A lecture scene's `draw(s)` is a pure function of time; the narration track is the clock.
+  `timing.json` and `narration.m4a` are generated together from `script.ts` and must be
+  rebuilt (and committed) whenever the narration text changes.
