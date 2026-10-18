@@ -168,6 +168,15 @@ async function route(): Promise<void> {
     if (token !== renderToken) return;
     body.innerHTML = '';
     const page = new Page(body, meta.id, meta.num, def.symbols);
+    const keys = Object.keys(def.symbols);
+    if (keys.length) {
+      const legend = h('div', { class: 'ch-legend' }, h('span', { class: 'ch-legend-head' }, 'Symbols'));
+      for (const k of keys) {
+        const name = def.symbols[k]!.name.replace(/^[^:]{1,12}:\s*/, '');
+        legend.append(h('span', { class: 'ch-legend-item', html: `${page.tex(`\\sym${k}`)}<span>${name}</span>` }));
+      }
+      body.append(legend);
+    }
     def.render(page);
     if (page.toc.length > 2) {
       const toc = h('nav', { class: 'ch-toc', 'aria-label': 'On this page' }, h('div', { class: 'ch-toc-head' }, 'On this page'));
