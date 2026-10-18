@@ -173,7 +173,7 @@ async function route(): Promise<void> {
       const legend = h('div', { class: 'ch-legend' }, h('span', { class: 'ch-legend-head' }, 'Symbols'));
       for (const k of keys) {
         const name = def.symbols[k]!.name.replace(/^[^:]{1,12}:\s*/, '');
-        legend.append(h('span', { class: 'ch-legend-item', html: `${page.tex(`\\sym${k}`)}<span>${name}</span>` }));
+        legend.append(h('span', { class: 'ch-legend-item', html: `${page.tex(`\\sym{${k}}{${def.symbols[k]!.tex ?? k}}`)}<span>${name}</span>` }));
       }
       body.append(legend);
     }

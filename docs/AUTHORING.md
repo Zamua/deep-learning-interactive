@@ -83,8 +83,10 @@ export default chapter;
   identifier in every listing on the page gets colored, so do not map generic names (`i`,
   `n`, `out`) or names you also use for something else.
 
-In TeX: `\symW` (shorthand, renders the symbol's `tex`) or `\sym{W}{W_{ij}}` (explicit
-content, e.g. with subscripts). Shorthands are greedy macro names, so write `\symW x` or
+In TeX: `\symW` (shorthand, renders the symbol's `tex`; only for keys made of letters,
+since a TeX command name cannot contain digits) or `\sym{W}{W_{ij}}` (explicit content,
+e.g. with subscripts). For an indicator function write `\mathbf{1}` (KaTeX has no
+blackboard-bold 1). Shorthands are greedy macro names, so write `\symW x` or
 `\symW{}x`, never `\symWx`. Remember `String.raw` for TeX in TS strings, or double the
 backslashes inside normal template strings (prose uses normal strings, so `$\\symW$`).
 
