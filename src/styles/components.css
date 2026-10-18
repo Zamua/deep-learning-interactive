@@ -1064,3 +1064,17 @@ input[type='range']::-moz-range-thumb {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Phones wrap long code lines instead of scrolling sideways; continuations hang-indent. */
+@media (max-width: 640px) {
+  .ln {
+    white-space: pre-wrap;
+    min-width: 0;
+  }
+  .ln-src {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    padding-left: 2ch;
+    text-indent: -2ch;
+  }
+}
