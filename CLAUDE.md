@@ -10,7 +10,7 @@ the API reference; read it before touching a chapter.
     npm run build                        tsc --noEmit && vite build -> dist/
     node tools/shot.mjs <route> <name> [w h mobile full]   Playwright + system Chrome screenshot
                                          (prints page errors; env SCROLL='.fig:2', THEME=dark)
-    node tools/lecture/build.mjs <id> [--check]   synthesize a lecture's narration (Kokoro TTS)
+    node tools/lecture/build.mjs <id> [--check]   synthesize a lecture's narration (ElevenLabs via OpenRouter, or Kokoro)
     node tools/lecture/shots.mjs <id> <dir> [w h mobile] [scene/beat ...]   screenshot every beat
 
 ## Layout

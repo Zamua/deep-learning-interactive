@@ -24,6 +24,6 @@ CIFAR-10 (Krizhevsky, 2009) in CIFAR's binary record format, built by
 
 ## Lectures
 
-Narration is synthesized offline with [Kokoro](https://github.com/thewh1teagle/kokoro-onnx)
-by `tools/lecture/build.mjs` and committed as `src/lectures/<id>/narration.m4a` plus its
+Narration is synthesized offline by `tools/lecture/build.mjs`, with an ElevenLabs voice through
+OpenRouter's speech API or locally with [Kokoro](https://github.com/thewh1teagle/kokoro-onnx), and committed as `src/lectures/<id>/narration.m4a` plus its
 `timing.json`. See `docs/LECTURES.md`.

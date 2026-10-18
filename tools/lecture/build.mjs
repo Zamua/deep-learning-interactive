@@ -2,7 +2,7 @@
 // Synthesizes a lecture's narration and timing:
 //   node tools/lecture/build.mjs <lecture-id> [--check]
 // --check transcribes every beat back with whisper-cli and lists the ones that drift from the script.
-// Env: TTS_PY (python with kokoro-onnx), KOKORO_DIR, TTS_CACHE, WHISPER_MODEL.
+// Env: TTS_PY (python with kokoro-onnx), KOKORO_DIR, OPENROUTER_KEY_FILE, TTS_CACHE, WHISPER_MODEL.
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
@@ -19,6 +19,7 @@ const { script } = await import(pathToFileURL(join(root, `src/lectures/${id}/scr
 const { GAP, spokenText } = await import(pathToFileURL(join(root, 'src/lecture/types.ts')).href);
 
 const job = {
+  model: script.model,
   voice: script.voice,
   speed: script.speed,
   gap: GAP,

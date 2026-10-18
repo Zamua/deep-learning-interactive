@@ -3,8 +3,9 @@ import type { LectureScript } from '../../lecture/types';
 export const script: LectureScript = {
   id: 'math-kit',
   title: 'Math survival kit',
-  voice: 'af_heart',
-  speed: 0.94,
+  model: 'elevenlabs/eleven-v4',
+  voice: 'george',
+  speed: 1,
   scenes: [
     {
       id: 'intro',
@@ -152,7 +153,7 @@ export const script: LectureScript = {
         { id: 'code', say: 'In code, that is a loop over the rows. Or just W dot x, which runs the whole loop for you, very fast.', code: 'dot' },
         { id: 'habit', say: 'Here is the habit that will save you the most debugging time: write the shape next to every array.' },
         { id: 'rule', say: 'Shapes follow a tiny rule. An m by n matrix, times an n by p matrix, gives m by p. The inner sizes must match, and they cancel out.', code: 'shape' },
-        { id: 'course', say: 'In the course, W has ten rows, one per class, and {3,072|three thousand and seventy two} columns, one per pixel value. Multiply it by an image, and out come ten scores.', code: 'shape' },
+        { id: 'course', say: 'In the course, W has ten rows, one per class, and {3,072|three thousand and seventy two} columns, one per pixel value. Multiply it by an image, and you get ten scores.', code: 'shape' },
         { id: 'T', say: 'One last trick: the transpose. {W.T|W dot T} flips a matrix over its diagonal, so rows become columns. It is the usual way to make shapes line up.', code: 'T' },
       ],
     },

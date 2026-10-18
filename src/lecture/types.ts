@@ -26,8 +26,11 @@ export interface LectureScript {
   /** The chapter this lecture precedes. */
   id: string;
   title: string;
-  /** Kokoro voice id and speaking rate. */
+  /** Speech model: `kokoro` (local) or an OpenRouter speech model such as `elevenlabs/eleven-v4`. */
+  model: string;
+  /** A voice of that model, e.g. `af_heart` (Kokoro) or `george` (ElevenLabs). */
   voice: string;
+  /** Speaking rate; Kokoro only. */
   speed: number;
   scenes: SceneScript[];
 }
