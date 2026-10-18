@@ -161,7 +161,7 @@ export class Plot {
     c.stroke();
     if (opts.labels) {
       c.fillStyle = color('--ink-3');
-      c.font = '11px var(--font-mono), ui-monospace, monospace';
+      c.font = "11px 'JetBrains Mono Variable', ui-monospace, monospace";
       c.textAlign = 'center';
       c.textBaseline = 'top';
       for (let x = Math.ceil(x0 / g) * g; x <= x1; x += g) {
