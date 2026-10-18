@@ -499,7 +499,12 @@ button {
     columns: 1;
   }
   .ch-head {
-    padding-top: 40px;
+    padding-top: 32px;
+  }
+  .ch-num {
+    position: static;
+    font-size: 4.6rem;
+    margin: 4px 0 -6px;
   }
 }
 
@@ -559,7 +564,7 @@ button {
   border-radius: 5px;
   background: var(--paper-2);
   border: 1px solid var(--rule);
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .prose strong {
