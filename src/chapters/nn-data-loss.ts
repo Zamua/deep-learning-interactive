@@ -6,6 +6,7 @@ import { CIFAR_CLASSES, loadCifar } from '../core/data';
 import { color, withAlpha, type Plot } from '../core/plot';
 import { Rng } from '../core/rand';
 import { eig2, eigSym, solve, stats2 } from '../lib/nn-data-loss-linalg';
+import { NN_DATA_LOSS_SYMBOLS } from '../lib/nn-data-loss-symbols';
 
 /** Animates a flat array of coordinates from its current value to a target. */
 class Tween {
@@ -113,16 +114,7 @@ function minmax(v: ArrayLike<number>): [number, number] {
 }
 
 const chapter: ChapterDef = {
-  symbols: {
-    x: { color: 'orange', name: 'x: the data, or the activations coming into a layer', code: ['x', 'X'] },
-    W: { color: 'blue', name: 'W: the weights', code: ['W', 'w', 'W1', 'W2', 'W3'] },
-    mu: { color: 'teal', name: 'μ: a mean (average), per feature', tex: '\\mu', code: ['mu'] },
-    gamma: { color: 'purple', name: 'γ: batch norm scale, learned', tex: '\\gamma', code: ['gamma'] },
-    beta: { color: 'green', name: 'β: batch norm shift, learned', tex: '\\beta', code: ['beta'] },
-    p: { color: 'gold', name: 'p: dropout keep probability', code: ['p'] },
-    lam: { color: 'slate', name: 'λ: regularization strength', tex: '\\lambda', code: ['reg'] },
-    L: { color: 'red', name: 'L: the loss', code: ['loss', 'data_loss'] },
-  },
+  symbols: NN_DATA_LOSS_SYMBOLS,
 
   render(p) {
     p.prose(`
