@@ -6,6 +6,7 @@ import { color, withAlpha } from '../core/plot';
 import { Rng } from '../core/rand';
 import { cellBox, haloText, ital, mono, pxArrow, ui } from '../lib/math-kit-draw';
 import { evalIndex, shapeStr } from '../lib/numpy-index';
+import { NUMPY_SYMBOLS } from '../lib/numpy-symbols';
 
 /** Splits "a | b | c" rows (written with String.raw) into table cells. */
 const rows = (src: string) =>
@@ -64,15 +65,7 @@ const textInput = (value: string, label: string): { el: HTMLElement; input: HTML
 };
 
 const chapter: ChapterDef = {
-  symbols: {
-    X: { color: 'orange', name: 'X: a batch of inputs, one example (image) per row', code: ['X', 'X_train', 'Xtr'] },
-    W: { color: 'blue', name: 'W: the weights' },
-    b: { color: 'green', name: 'b: the biases, one per class' },
-    scores: { color: 'purple', name: 'scores: one row of class scores per example', tex: 's', code: ['scores'] },
-    y: { color: 'gold', name: 'y: the correct class index of each example', code: ['y', 'y_train'] },
-    dists: { color: 'teal', name: 'dists: the distance from every test image to every training image', tex: 'd', code: ['dists'] },
-    mask: { color: 'red', name: 'mask: a boolean array, True where a condition holds', code: ['mask'] },
-  },
+  symbols: NUMPY_SYMBOLS,
 
   render(p) {
     p.prose(`
