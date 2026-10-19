@@ -5,6 +5,7 @@ import { color, rgbOf, withAlpha } from '../core/plot';
 import { Rng } from '../core/rand';
 import { TinyNet } from '../lib/unsupervised-net';
 import { type Box, CLASS_COLOR, OBJECTS, SCENE_CLASSES, SCENE_H, SCENE_W, drawScene, iou, sceneMasks } from '../lib/detection-scene';
+import { DETECTION_SYMBOLS } from '../lib/detection-symbols';
 
 type Ctx = CanvasRenderingContext2D;
 
@@ -165,16 +166,7 @@ const CANDIDATES: [number, number, Box][] = [
 ];
 
 const chapter: ChapterDef = {
-  symbols: {
-    x: { color: 'orange', name: 'x: the input image', code: ['img'] },
-    bp: { color: 'purple', name: 'b̂: a box the network predicts', tex: '\\hat{b}', code: ['box', 'boxes', 'pred'] },
-    bg: { color: 'gold', name: 'b*: the true (ground-truth) box', tex: 'b^{*}', code: ['gt'] },
-    P: { color: 'green', name: 'P: a region proposal or anchor box', code: ['P', 'proposals', 'anchors'] },
-    t: { color: 'teal', name: 't: box offsets, how to nudge a proposal onto the object', code: ['t', 'deltas'] },
-    s: { color: 'blue', name: 's: class scores or confidences', code: ['scores'] },
-    L: { color: 'red', name: 'L: the loss', code: ['loss'] },
-    tau: { color: 'slate', name: 'τ: an IoU threshold', tex: '\\tau', code: ['thresh'] },
-  },
+  symbols: DETECTION_SYMBOLS,
 
   render(p) {
     p.prose(`

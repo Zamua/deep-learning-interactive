@@ -2,6 +2,7 @@ import type { ChapterDef } from './index';
 import { CHAPTERS, COURSES } from './index';
 import { fmt } from '../core/code';
 import { color, withAlpha } from '../core/plot';
+import { WELCOME_SYMBOLS } from '../lib/welcome-symbols';
 
 const MONO = "'JetBrains Mono Variable', ui-monospace, monospace";
 const UI = 'system-ui, sans-serif';
@@ -39,13 +40,7 @@ const PART_INTRO: Record<string, string> = {
 };
 
 const chapter: ChapterDef = {
-  symbols: {
-    x: { color: 'orange', name: 'x: an input image (img in code), here a grid of pixel values', code: ['img'] },
-    gain: { color: 'slate', name: 'gain: a knob you set by hand (a hyperparameter)', tex: '\\text{gain}', code: ['gain'] },
-    s: { color: 'purple', name: 's: the class scores a model gives one image', code: ['scores'] },
-    y: { color: 'gold', name: 'y: the correct label', code: ['y'] },
-    err: { color: 'red', name: 'err: top-5 error, the fraction of images whose label is not among the five best guesses', tex: '\\mathrm{err}', code: ['err', 'errors'] },
-  },
+  symbols: WELCOME_SYMBOLS,
 
   render(p) {
     p.prose(`
