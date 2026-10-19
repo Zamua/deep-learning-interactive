@@ -141,7 +141,7 @@ export const script: LectureScript = {
         { id: 'snap2', say: 'After a hundred steps, a rough outline.' },
         { id: 'snap3', say: 'After three hundred, the moons appear, and by three thousand they are crisp.' },
         { id: 'flat', say: 'Quality kept improving long after the loss looked flat. Most of the remaining loss is unavoidable: at high noise, nobody could tell which noise was added.' },
-        { id: 'browser', say: 'In the interactive chapter, you can run this exact training yourself, in your browser, in well under a minute.' },
+        { id: 'browser', say: 'And the whole run is tiny: ten thousand weights and three thousand steps, done in well under a minute on a laptop.' },
       ],
     },
     {
@@ -325,7 +325,7 @@ export const script: LectureScript = {
         { id: 'cfg', say: 'Guidance steers with a label, trading diversity for faithfulness.', code: 'cfg' },
         { id: 'latent', say: 'Latents and transformers make it affordable at the scale of real images and video.', code: 'latent' },
         { id: 'flow', say: 'And flow matching straightens the paths, so that a few steps go a long way.', code: 'flow' },
-        { id: 'next', say: 'In the interactive chapter, you can train this model yourself, scrub through the noise, drag a probe through the vector field, and turn the guidance dial. See you there.' },
+        { id: 'next', say: 'Next, post-training begins: how a model that only predicts text becomes an assistant, with fine-tuning on conversations and low-rank adapters.', pause: 0.6 },
       ],
     },
   ],

@@ -1,7 +1,7 @@
 import { type CifarSet, cifarImage, loadCifar } from '../../core/data';
 import type { Plot } from '../../core/plot';
 import type { Color } from '../../core/symbols';
-import { type Scene, type TextOpts, clamp01 } from '../../lecture/scene';
+import { type Scene, type TextOpts } from '../../lecture/scene';
 
 export type K = Color | `--${string}`;
 
@@ -56,18 +56,6 @@ export function photo(s: Scene, i: number, x: number, y: number, size: number, f
 
 // ---------------------------------------------------------------- text
 
-/** A run of differently colored pieces on one baseline; returns its width. */
-export function spans(s: Scene, parts: [string, K?, number?][], x: number, y: number, o: TextOpts & { align?: 'left' | 'center' | 'right' } = {}): number {
-  const widths = parts.map(([t, , wt]) => s.measure(t, { ...o, weight: wt ?? o.weight }));
-  const total = widths.reduce((a, b) => a + b, 0);
-  let cx = o.align === 'center' ? x - total / 2 : o.align === 'right' ? x - total : x;
-  parts.forEach(([t, k, wt], i) => {
-    s.text(t, cx, y, { ...o, align: 'left', weight: wt ?? o.weight, color: k ? s.c(k) : (o.color ?? s.c('--ink')) });
-    cx += widths[i]!;
-  });
-  return total;
-}
-
 /** A rounded tag of text; returns its width. */
 export function pill(s: Scene, text: string, x: number, y: number, k: K, o: { size?: number; align?: 'left' | 'center' | 'right'; fill?: number; font?: TextOpts['font']; opaque?: boolean } = {}): number {
   const size = o.size ?? 3.4;
@@ -90,23 +78,6 @@ export function check(s: Scene, cx: number, cy: number, r: number): void {
   const k = r / (1.9 * s.u);
   s.line(cx - s.u * 0.9 * k, cy, cx - s.u * 0.2 * k, cy + s.u * 0.7 * k, '#fff', 0.45 * k);
   s.line(cx - s.u * 0.2 * k, cy + s.u * 0.7 * k, cx + s.u * 1 * k, cy - s.u * 0.7 * k, '#fff', 0.45 * k);
-}
-
-/** A mouse pointer with its tip at (x, y), `size` in stage units. */
-export function pointer(s: Scene, x: number, y: number, size = 6, press = 0): void {
-  const c = s.ctx;
-  const k = (size * s.u) / 10;
-  if (press > 0) s.circle(x, y, s.u * (1.5 + 3.5 * press), { stroke: s.tint('--ink', 0.5 * (1 - press)), lw: 0.4 });
-  c.beginPath();
-  const pts: [number, number][] = [[0, 0], [0, 10], [2.6, 7.6], [4.5, 11.6], [6.1, 10.8], [4.3, 7], [7.6, 7]];
-  pts.forEach(([px, py], i) => (i ? c.lineTo(x + px * k, y + py * k) : c.moveTo(x + px * k, y + py * k)));
-  c.closePath();
-  c.fillStyle = s.c('--ink');
-  c.fill();
-  c.strokeStyle = s.c('--card');
-  c.lineWidth = Math.max(1, k * 0.7);
-  c.lineJoin = 'round';
-  c.stroke();
 }
 
 /** An eye, `r` px wide from center to corner, with the iris looking along `look` (-1..1). */
@@ -167,24 +138,4 @@ export function features(s: Scene, x: number, y: number, size: number, k: K, t: 
       const l = cs * (0.25 + 0.15 * Math.abs(Math.cos(i * 3.1 + j)));
       s.line(cx - Math.cos(a) * l, cy - Math.sin(a) * l, cx + Math.cos(a) * l, cy + Math.sin(a) * l, s.c(k), 0.4);
     }
-}
-
-/** A play button in a disc. */
-export function playIcon(s: Scene, cx: number, cy: number, r: number, k: K): void {
-  s.circle(cx, cy, r, { fill: s.tint(k, 0.14), stroke: s.c(k), lw: 0.45 });
-  const c = s.ctx;
-  c.beginPath();
-  c.moveTo(cx - r * 0.3, cy - r * 0.42);
-  c.lineTo(cx + r * 0.46, cy);
-  c.lineTo(cx - r * 0.3, cy + r * 0.42);
-  c.closePath();
-  c.fillStyle = s.c(k);
-  c.fill();
-}
-
-/** A slider track with its knob at `v` (0..1). */
-export function sliderIcon(s: Scene, x: number, y: number, w: number, v: number, k: K): void {
-  s.line(x, y, x + w, y, s.tint('--ink', 0.2), 0.8);
-  s.line(x, y, x + w * clamp01(v), y, s.c(k), 0.8);
-  s.circle(x + w * clamp01(v), y, s.u * 1.7, { fill: s.c('--card'), stroke: s.c(k), lw: 0.5 });
 }

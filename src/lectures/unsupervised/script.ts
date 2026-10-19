@@ -412,7 +412,7 @@ export const script: LectureScript = {
         { id: 'ae', say: 'Autoencoders learn without labels, by compressing and rebuilding.', code: 'ae' },
         { id: 'vae', say: '{VAEs|V A Es} sample their code with the reparameterization trick, and a {KL|K L} penalty lets random codes decode to new data.', code: 'vae' },
         { id: 'gan', say: 'GANs pit a generator against a critic: sharp samples, unstable training.', code: 'gan' },
-        { id: 'next', say: 'All three learn from the data itself, with no labels at all. That is where much of the field went next.' },
+        { id: 'next', say: 'The three models all learn from the data itself, with no labels at all. That is where much of the field went next.' },
         { id: 'dl26', say: 'The {DL26|D L twenty six} course carries the story on from here, with contrastive learning and diffusion models.', pause: 0.6 },
       ],
     },

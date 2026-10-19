@@ -1,5 +1,5 @@
 {
- "duration": 896.724,
+ "duration": 897.468,
  "scenes": {
   "intro": [0.0, 47.838],
   "gradcheck": [47.838, 127.313],
@@ -13,7 +13,7 @@
   "newton": [669.976, 731.472],
   "search": [731.472, 810.21],
   "ensembles": [810.21, 857.174],
-  "closing": [857.174, 896.724]
+  "closing": [857.174, 897.468]
  },
  "beats": {
   "intro/hello": [0.7, 5.617, "Welcome to training, the part of deep learning that takes most of the actual time.", [[1.85, 2.29]]],
@@ -129,7 +129,7 @@
   "closing/c3": [869.435, 873.582, "Watch the loss curve, and the gap between training and validation.", [[870.715, 871.015]]],
   "closing/c4": [873.962, 877.989, "Update with Adam or Nesterov momentum, and decay the rate.", [[876.402, 876.632]]],
   "closing/c6": [878.369, 884.433, "Search at random, on log scales, coarse to fine. And ensemble at the end.", [[879.529, 879.889], [880.889, 881.159], [882.139, 882.649], [883.669, 883.819]]],
-  "closing/next": [884.813, 893.723, "Now open the interactive chapter, where every picture here is yours to drive: race the update rules, and break a gradient check on purpose.", [[886.883, 887.193], [889.693, 890.123], [891.323, 891.503]]],
-  "closing/bye": [894.103, 895.024, "Happy training.", []]
+  "closing/next": [884.813, 894.467, "Next, we put every piece together: a classifier, then a small network, trained from scratch on a spiral of points, one line at a time.", [[885.333, 885.503], [887.033, 887.543], [888.373, 888.683], [890.063, 890.373], [892.803, 893.103]]],
+  "closing/bye": [894.847, 895.768, "Happy training.", []]
  }
 }

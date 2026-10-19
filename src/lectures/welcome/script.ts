@@ -34,7 +34,7 @@ export const script: LectureScript = {
         { id: 'task', say: 'The course is about one problem above all: image classification. Look at a photo, and say what is in it.', code: 'task' },
         { id: 'guess', say: 'A model turns the photo into ten scores, one per class, and guesses the class that scores highest.', code: ['task', 'guess'] },
         { id: 'scratch', say: 'You build all of it from scratch, in plain {NumPy|num pie}, before moving on to finding objects and captioning photos.', code: 'numpy' },
-        { id: 'site', say: 'This unofficial companion follows the same ideas in the same order, but every picture is one you can poke.' },
+        { id: 'site', say: 'This unofficial companion follows the same ideas in the same order, and builds each one up from first principles.' },
       ],
     },
     {
@@ -104,72 +104,6 @@ export const script: LectureScript = {
       ],
     },
     {
-      id: 'layers',
-      title: 'Watch, explore, practice',
-      codeTitle: 'chapter.py',
-      code: `
-        for chapter in course:                 #@loop
-            # 1. sit back: voice, pictures, code   #@watch
-            watch(chapter.lecture)             #@watch
-            # 2. drag, step and poke every figure  #@explore
-            explore(chapter.page)              #@explore
-            # 3. write the code yourself       #@practice
-            practice(chapter.assignment)       #@practice
-      `,
-      beats: [
-        { id: 'three', say: 'Every chapter comes in three layers, and you can use as many as you like.', code: 'loop' },
-        { id: 'watch', say: 'The first is a narrated lecture like this one: the voice carries the ideas, and the pictures and code move with it.', code: 'watch' },
-        { id: 'lunch', say: 'It is made to be watched hands-off. Tap the picture to pause, and hold it for double speed.', code: 'watch' },
-        { id: 'explore', say: 'The second is the chapter itself, where every figure is live: drag it or step it, and the code follows along.', code: 'explore' },
-        { id: 'practice', say: 'The third is practice: the {2016|twenty sixteen} assignment that goes with the chapter, where you write the code yourself.', code: 'practice' },
-        { id: 'teach', say: 'Watching builds the intuition, exploring makes it solid, and writing the code is what really teaches.', code: 'loop' },
-      ],
-    },
-    {
-      id: 'figures',
-      title: 'Code beside every figure',
-      codeTitle: 'brighten.py',
-      code: `
-        img = np.array(smiley, dtype=float)  #@load
-        gain = {{gain:1.5}}   # the slider            #@gain
-        img = img * gain            # brighten  #@scale
-        img = np.clip(img, 0, 255)  # cap it    #@clip
-        mean = img.mean()           # {{mean:130.8}}  #@mean
-      `,
-      beats: [
-        { id: 'promise', say: 'Now, how to read the site. The promise: no picture ever appears without the code that computes it.' },
-        { id: 'beside', say: 'On a wide screen the code sits beside the figure; on a phone, right underneath, like here.' },
-        { id: 'real', say: 'It is real code, in the style of the assignments: {NumPy|num pie} arrays, short lines, names that match the math.', code: 'load' },
-        { id: 'pixels', say: 'Take a tiny example: brightening an eight by eight picture. Each number is a pixel, from zero, black, to {255|two fifty five}, white.', code: 'load' },
-        { id: 'lit', say: 'When a figure steps through an algorithm, the running line lights up. This one multiplies every pixel by the gain.', code: 'scale' },
-        { id: 'live', say: 'Drag a slider, and its number in the code moves too. Push the gain past two, and some pixels overflow.', code: 'gain' },
-        { id: 'clip', say: 'The next line lights up and cuts them back to {255|two fifty five}.', code: 'clip' },
-        { id: 'mean', say: 'Even the comment on the last line keeps up. The picture and the code always describe the same computation.', code: 'mean' },
-      ],
-    },
-    {
-      id: 'colors',
-      title: 'Colors link math and code',
-      codeTitle: 'top5_error.py',
-      code: `
-        # scores: (N, 1000) class scores        #@shapes
-        # y: (N,) the correct labels            #@shapes
-        top5 = np.argsort(-scores, axis=1)[:, :5]  #@top5
-        hit = (top5 == y[:, None]).any(axis=1)  #@hit
-        err = 1.0 - hit.mean()   # missed       #@err
-      `,
-      beats: [
-        { id: 'color', say: 'The quantities that matter each get a color, and that color means the same thing everywhere.' },
-        { id: 'eq', say: 'Here is the top-5 error as an equation: the scores in purple, the correct label in gold, the error in red.', code: 'shapes' },
-        { id: 'code', say: 'The code wears the same colors: scores, y and err, line by line.', code: ['top5', 'hit', 'err'] },
-        { id: 'tap', say: 'In a chapter, hover or tap a colored symbol, and every appearance of it lights up.', code: 'err' },
-        { id: 'habit', say: 'The colors follow one habit across the course: weights are blue, inputs orange, biases green, and scores purple.' },
-        { id: 'habit2', say: 'Losses are red, gradients teal, labels gold, and hand-set knobs, like that gain, are slate.' },
-        { id: 'cards', say: 'Display equations come in a card: the equation, piece by piece, the same thing in code, and plain words.' },
-        { id: 'skip', say: 'If your eyes glaze over, skip straight to the plain words, then come back.' },
-      ],
-    },
-    {
       id: 'map',
       title: 'The map',
       codeTitle: 'map.py',
@@ -186,14 +120,13 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'five', say: 'Last, the map. The course has five parts.' },
-        { id: 'start', say: 'Start here is this page plus two toolkits, the math survival kit and Python with {NumPy|num pie}, to come back to whenever you need.', code: 'start' },
+        { id: 'start', say: 'Start here is this overview plus two toolkits, the math survival kit and Python with {NumPy|num pie}, to come back to whenever you need.', code: 'start' },
         { id: 'nn', say: 'Neural networks is the core, best read in order: from the simplest classifier to backpropagation.', code: 'nn' },
         { id: 'conv', say: 'Convolutional networks covers networks built for images: how they work, what they learn, and how they find objects.', code: 'conv' },
         { id: 'beyond', say: 'Beyond still images adds sequences, attention, video, and learning without labels.', code: 'beyond' },
-        { id: 'asg', say: 'And the assignment pages describe each {2016|twenty sixteen} assignment, linked to the chapters that teach it.', code: 'asg' },
-        { id: 'recap', say: 'That is the course: one problem, from first principles, with code beside every picture.' },
-        { id: 'next', say: 'Next, open the interactive chapter and poke the ImageNet chart and the brightening demo yourself. Then try the math survival kit.', code: 'here' },
-        { id: 'bye', say: 'See you there.', pause: 0.6 },
+        { id: 'asg', say: 'And the three {2016|twenty sixteen} assignments tie it all together, each one drawing on the chapters that teach it.', code: 'asg' },
+        { id: 'recap', say: 'That is the course: one problem, built from first principles, from a nearest neighbor to networks that caption photos.' },
+        { id: 'next', say: 'Next, the math survival kit: the handful of ideas from calculus and linear algebra that everything else is built on.', code: 'here', pause: 0.6 },
       ],
     },
   ],

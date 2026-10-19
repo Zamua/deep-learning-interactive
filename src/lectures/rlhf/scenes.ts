@@ -1423,10 +1423,6 @@ const outro: SceneDef = {
       pill(s, 'DPO: no reward model, no sampling', w / 2, y, 'gold', { size: 3.6, font: 'ui' });
       pill(s, 'GRPO: no value head', w / 2, y + u * 10, 'teal', { size: 3.6, font: 'ui' });
     });
-    s.alpha(s.ease('explore', 0.6), () => {
-      s.text('now explore the interactive chapter', w / 2, h * 0.7, { size: 4.6, font: 'display', weight: 600 });
-      s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.8, { size: 3.8, font: 'display', italic: true, color: s.c('--accent') }));
-    });
   },
 };
 

@@ -1,5 +1,5 @@
 {
- "duration": 932.912,
+ "duration": 930.729,
  "scenes": {
   "intro": [0.0, 56.153],
   "shapes": [56.153, 120.611],
@@ -13,7 +13,7 @@
   "captioning": [623.569, 705.751],
   "vanishing": [705.751, 782.643],
   "lstm": [782.643, 883.352],
-  "outro": [883.352, 932.912]
+  "outro": [883.352, 930.729]
  },
  "beats": {
   "intro/hello": [0.7, 3.605, "Every network so far has had a fixed shape.", []],
@@ -131,6 +131,6 @@
   "outro/bptt": [896.914, 902.024, "It trains with backprop through time, in chunks, with the memory carried forward.", [[899.014, 899.314], [900.044, 900.384]]],
   "outro/forget": [902.404, 913.882, "Multiplying by W h h at every step makes plain R N Ns explode or forget: clipping fixes the first, the L S T M's additive cell the second.", [[905.454, 905.674], [908.794, 909.334], [910.764, 911.114]]],
   "outro/cap": [914.262, 919.821, "And a conv net feeding an R N N writes captions, which you will build in Assignment 3.", [[917.552, 917.752]]],
-  "outro/next": [920.201, 931.212, "Now open the interactive chapter: train min char R N N in your browser, turn the temperature dial, and watch an L S T M hold a value. See you there.", [[922.261, 922.651], [923.721, 923.881], [925.851, 926.361], [927.501, 927.771], [930.051, 930.531]]]
+  "outro/next": [920.201, 929.029, "Next, attention. Instead of one glance at the image, the network chooses where to look, and looks again for every word it writes.", [[920.721, 921.051], [921.691, 922.301], [924.111, 924.411], [926.301, 926.581]]]
  }
 }

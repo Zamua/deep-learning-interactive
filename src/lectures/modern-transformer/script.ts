@@ -346,7 +346,7 @@ export const script: LectureScript = {
         { id: 'r5', say: '{QK-norm|Q K norm} bounds the scores, and the biases are gone.', code: 'qk' },
         { id: 'r6', say: 'FlashAttention computes exact attention in tiles, so the score matrix never touches slow memory.', code: 'flash' },
         { id: 'r7', say: 'And rescaling {RoPE|rope}\'s speeds stretches a model past the context it trained on.', code: 'rope' },
-        { id: 'next', say: 'In the chapter you can drag every one of these pictures yourself, then build them in the exercises. Next: the optimizers that train these blocks at scale.', pause: 0.6 },
+        { id: 'next', say: 'Each change keeps the same block, only cheaper, steadier, or longer reaching. Next: the optimizers that train these blocks at scale.', pause: 0.6 },
       ],
     },
   ],

@@ -1,5 +1,5 @@
 {
- "duration": 920.055,
+ "duration": 921.337,
  "scenes": {
   "intro": [0.0, 51.102],
   "bottleneck": [51.102, 112.738],
@@ -13,7 +13,7 @@
   "stn": [612.893, 699.635],
   "bilinear": [699.635, 766.945],
   "learned": [766.945, 827.457],
-  "outro": [827.457, 920.055]
+  "outro": [827.457, 921.337]
  },
  "beats": {
   "intro/hello": [0.7, 3.676, "Welcome to attention and spatial transformers.", []],
@@ -144,7 +144,7 @@
   "outro/recap1": [879.984, 890.656, "To recap: one summary vector is a bottleneck. Soft attention keeps a set of vectors, and at every step scores, soft maxes and averages them.", [[880.674, 881.294], [883.364, 883.934], [886.234, 886.534], [887.704, 887.954], [888.524, 888.724]]],
   "outro/recap2": [891.036, 896.368, "Hard attention samples one location instead, and trains with reinforcement learning.", [[893.886, 894.246]]],
   "outro/recap3": [896.748, 905.574, "Spatial transformers predict a warp, turn it into a sampling grid, and read it bilinearly, smooth in both pixels and positions.", [[898.988, 899.398], [900.858, 901.158], [902.558, 902.928]]],
-  "outro/next": [905.954, 912.518, "Next, open the interactive chapter: pick the word, tap the image, and drag the grids yourself.", [[906.464, 906.734], [908.344, 908.774], [909.494, 909.834], [910.664, 910.904]]],
-  "outro/dl26": [912.898, 918.355, "And when you are ready, the D L twenty six course picks up from here, with transformers.", [[913.908, 914.218], [916.798, 917.148]]]
+  "outro/next": [905.954, 913.801, "Next, video, and learning without labels: autoencoders, and networks that learn to make new images.", [[906.464, 906.864], [907.434, 907.914], [909.584, 910.054], [911.014, 911.194]]],
+  "outro/dl26": [914.181, 919.637, "And when you are ready, the D L twenty six course picks up from here, with transformers.", [[915.191, 915.501], [918.081, 918.431]]]
  }
 }

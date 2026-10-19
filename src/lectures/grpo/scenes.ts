@@ -1220,9 +1220,8 @@ const outro: SceneDef = {
       });
     });
     s.alpha(out, () => {
-      fitText(s, 'next: the interactive chapter', w / 2, 40 * u, w - 10 * u, { size: 6.4, font: 'display', weight: 600 });
-      fitText(s, 'train the toy, break a verifier, drag the clip', w / 2, 52 * u, w - 10 * u, { size: 3.8, italic: true, color: s.c('--ink-2') });
-      s.alpha(s.ease('next', 0.6, 4.5), () => s.text('see you there', w / 2, 66 * u, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
+      fitText(s, 'next: reasoning at test time', w / 2, 40 * u, w - 10 * u, { size: 6.4, font: 'display', weight: 600 });
+      fitText(s, 'think longer, sample more, verify', w / 2, 52 * u, w - 10 * u, { size: 3.8, italic: true, color: s.c('--ink-2') });
     });
   },
 };

@@ -2072,9 +2072,8 @@ const outro: SceneDef = {
       });
       const nA = s.ease('next', 0.7, 0.4);
       s.alpha(nA, () => {
-        s.text('next: the interactive chapter', w / 2, h * 0.42, { size: 6.4, font: 'display', weight: 600 });
-        s.text('every idea, as a figure you can poke, with its code beside it', w / 2, h * 0.54, { size: 3.6, italic: true, color: s.c('--ink-2') });
-        s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.68, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
+        s.text('next: image classification', w / 2, h * 0.42, { size: 6.4, font: 'display', weight: 600 });
+        s.text('photos as arrays, compared all at once', w / 2, h * 0.54, { size: 3.6, italic: true, color: s.c('--ink-2') });
       });
     }
   },

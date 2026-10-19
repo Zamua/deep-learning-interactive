@@ -1,5 +1,5 @@
 {
- "duration": 927.553,
+ "duration": 925.822,
  "scenes": {
   "intro": [0.0, 55.849],
   "score": [55.849, 145.013],
@@ -13,7 +13,7 @@
   "softmax": [664.525, 741.673],
   "cross-entropy": [741.673, 818.383],
   "compare": [818.383, 875.189],
-  "recipe": [875.189, 927.553]
+  "recipe": [875.189, 925.822]
  },
  "beats": {
   "intro/hello": [0.7, 7.866, "Welcome to linear classifiers. This is the chapter where our classifiers stop memorizing, and start to learn.", [[2.63, 3.1], [6.37, 6.65]]],
@@ -134,7 +134,6 @@
   "recipe/two": [890.421, 898.458, "Two: a loss function that grades the scores. The SVM or the softmax, plus regularization.", [[890.811, 891.321], [893.581, 894.221], [895.271, 895.451], [896.581, 896.901]]],
   "recipe/three": [898.838, 906.304, "Three: an optimization procedure, which adjusts the parameters to lower the loss. That is the next chapter.", [[899.308, 899.738], [901.368, 901.698], [904.318, 904.818]]],
   "recipe/recap": [906.684, 914.513, "And remember the two readings of W. Each row is a flat wall between classes, and a template picture of its class.", [[908.884, 909.464], [912.194, 912.494]]],
-  "recipe/next": [914.893, 924.677, "Next, open the interactive chapter. Drag the score bars, aim the arrows, and watch ten templates learn from real images, right in your browser.", [[915.403, 915.633], [917.273, 917.803], [919.013, 919.253], [920.073, 920.313], [923.243, 923.493]]],
-  "recipe/bye": [925.057, 925.853, "See you there.", []]
+  "recipe/next": [914.893, 924.122, "Next comes optimization: how to find the W that makes the loss small, by walking downhill on it, one small step at a time.", [[916.683, 917.183], [920.063, 920.513], [921.983, 922.333]]]
  }
 }

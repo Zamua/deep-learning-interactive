@@ -1741,7 +1741,7 @@ const summary: SceneDef = {
       });
     }
     // Takeaways.
-    const rA = s.win('recap', 'next');
+    const rA = s.ease('recap', 0.6);
     if (rA > 0) {
       const lines: [string, Color | '--ink'][] = [
         ['training is optimization', '--ink'],
@@ -1754,15 +1754,6 @@ const summary: SceneDef = {
           s.alpha(s.ease('recap', 0.5, i * 1.6), () => s.text(t, w / 2, h * (0.26 + i * 0.15), { size: fit(s, t, w * 0.9, 5, 'display', 600), font: 'display', weight: 600, color: s.c(k) })),
         ),
       );
-    }
-    const nA = s.ease('next', 0.7);
-    if (nA > 0) {
-      s.alpha(nA, () => {
-        s.text('next: the interactive chapter', w / 2, h * 0.4, { size: fit(s, 'next: the interactive chapter', w * 0.9, 6.4, 'display', 600), font: 'display', weight: 600 });
-        const t = 'slice the landscape, race the searches, push the step size';
-        s.text(t, w / 2, h * 0.53, { size: fit(s, t, w * 0.9, 3.8, 'serif', 450), italic: true, color: s.c('--ink-2') });
-        s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.68, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
-      });
     }
   },
 };

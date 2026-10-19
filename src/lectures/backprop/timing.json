@@ -1,5 +1,5 @@
 {
- "duration": 1002.014,
+ "duration": 1000.932,
  "scenes": {
   "intro": [0.0, 69.736],
   "problem": [69.736, 113.928],
@@ -12,7 +12,7 @@
   "staged": [635.177, 720.317],
   "patterns": [720.317, 826.364],
   "matrices": [826.364, 945.502],
-  "recap": [945.502, 1002.014]
+  "recap": [945.502, 1000.932]
  },
  "beats": {
   "intro/hello": [0.7, 5.802, "Welcome to backpropagation: the algorithm that makes neural networks trainable.", [[2.49, 2.93]]],
@@ -145,7 +145,6 @@
   "recap/pers": [975.048, 979.888, "Add distributes. Max routes. Multiply swaps.", [[976.418, 976.798], [977.828, 978.288]]],
   "recap/sig": [980.268, 984.512, "A sigmoid multiplies by one minus f, times f.", [[983.368, 983.618]]],
   "recap/mat": [984.892, 990.537, "And a matrix gradient always has the shape of its variable, which pins down the transposes.", [[988.312, 988.612]]],
-  "recap/next": [990.917, 999.138, "Next, open the interactive chapter. Every circuit you just saw is there, to step through, change, and check for yourself.", [[991.427, 991.687], [993.307, 993.817], [995.977, 996.257], [997.077, 997.277]]],
-  "recap/bye": [999.518, 1000.314, "See you there.", []]
+  "recap/next": [990.917, 999.232, "Next come neural networks: layers of these same simple gates, stacked deep, and trained by exactly this backward walk.", [[992.767, 993.277], [995.397, 995.607], [996.477, 996.717]]]
  }
 }

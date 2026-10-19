@@ -209,7 +209,7 @@ export const script: LectureScript = {
         # accuracy {{acc:…}}, length {{len:…}}
       `,
       beats: [
-        { id: 'world', say: 'Let us watch {GRPO|G R P O} work on a toy you can train in the chapter. The prompt is an addition problem of one to four digits.' },
+        { id: 'world', say: 'Let us watch {GRPO|G R P O} work on a toy, small enough to see every step. The prompt is an addition problem of one to four digits.' },
         { id: 'vocab', say: 'It has three tokens: work out the next column, check the work so far, or write the answer.' },
         { id: 'slips', say: 'A column slips fifteen percent of the time, a check fixes a slip seventy percent of the time, and unworked columns are guessed.' },
         { id: 'base', say: 'The base model answers too early and rarely checks. It is right about thirty percent of the time.' },
@@ -351,7 +351,7 @@ export const script: LectureScript = {
         { id: 'mem', say: 'Dropping the critic halves the memory, and samples you were going to draw anyway do the critic\'s job.', code: 'mem' },
         { id: 'r1', say: '{R1-Zero|R one Zero} showed this alone grows long reasoning and self-checking. {R1|R one} made it readable; distillation handed it down.', code: 'r1' },
         { id: 'fail', say: 'And the sharp edges have names: no-signal groups, length and difficulty bias, entropy collapse. {Dr. GRPO|Doctor G R P O} and {DAPO|D A P O} fix them.', code: 'fail' },
-        { id: 'next', say: 'Next, open the interactive chapter: train the toy yourself, break a verifier, and drag the clip. See you there.', pause: 0.6 },
+        { id: 'next', say: 'Next, reasoning at test time: longer chains of thought, many samples and a vote, and verifiers that trade compute for accuracy.', pause: 0.6 },
       ],
     },
   ],

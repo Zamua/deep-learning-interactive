@@ -364,7 +364,7 @@ export const script: LectureScript = {
         { id: 'recap1', say: 'To recap: one summary vector is a bottleneck. Soft attention keeps a set of vectors, and at every step scores, {softmaxes|soft maxes} and averages them.' },
         { id: 'recap2', say: 'Hard attention samples one location instead, and trains with reinforcement learning.' },
         { id: 'recap3', say: 'Spatial transformers predict a warp, turn it into a sampling grid, and read it bilinearly, smooth in both pixels and positions.' },
-        { id: 'next', say: 'Next, open the interactive chapter: pick the word, tap the image, and drag the grids yourself.' },
+        { id: 'next', say: 'Next, video, and learning without labels: autoencoders, and networks that learn to make new images.' },
         { id: 'dl26', say: 'And when you are ready, the {DL26|D L twenty six} course picks up from here, with transformers.', pause: 0.6 },
       ],
     },

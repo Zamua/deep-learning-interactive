@@ -623,7 +623,7 @@ const closing: SceneDef = {
       const y = rect[1] + rect[3] + u * 9;
       const cw = Math.min(w * 0.8, u * 80);
       s.rrect(w / 2 - cw / 2, y - u * 6, cw, u * 12, 2, { fill: s.tint('--accent', 0.1), stroke: s.c('--accent'), lw: 0.4 });
-      s.text('next: the interactive chapter →', w / 2, y + u * 0.3, { size: 4.2, font: 'display', weight: 600, color: s.c('--accent') });
+      s.text('next: the spiral, from scratch', w / 2, y + u * 0.3, { size: 4.2, font: 'display', weight: 600, color: s.c('--accent') });
       s.alpha(s.ease('bye', 0.6), () => s.text('Happy training.', w / 2, y + u * 14, { size: 4.6, italic: true, color: s.c('--ink-2') }));
     });
   },

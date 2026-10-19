@@ -724,9 +724,8 @@ const outro: SceneDef = {
       }),
     );
     s.alpha(nA, () => {
-      fit(s, 'next: the interactive chapter', w / 2, h * 0.42, w * 0.9, { size: 6.2, font: 'display', weight: 600 });
-      fit(s, 'train the networks, try each activation, grow a hidden layer', w / 2, h * 0.55, w * 0.9, { size: 3.8, italic: true, color: s.c('--ink-2') });
-      s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.7, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
+      fit(s, 'next: making them train well', w / 2, h * 0.42, w * 0.9, { size: 6.2, font: 'display', weight: 600 });
+      fit(s, 'the data, the starting weights, and regularization', w / 2, h * 0.55, w * 0.9, { size: 3.8, italic: true, color: s.c('--ink-2') });
     });
   },
 };

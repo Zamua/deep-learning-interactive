@@ -1,5 +1,5 @@
 {
- "duration": 918.974,
+ "duration": 918.508,
  "scenes": {
   "intro": [0.0, 54.206],
   "volumes": [54.206, 109.145],
@@ -13,7 +13,7 @@
   "arch": [662.697, 739.001],
   "cases": [739.001, 812.704],
   "memory": [812.704, 872.146],
-  "outro": [872.146, 918.974]
+  "outro": [872.146, 918.508]
  },
  "beats": {
   "intro/hello": [0.7, 5.953, "Welcome to convolutional networks, the architecture that taught computers to see.", [[2.83, 3.25]]],
@@ -143,7 +143,6 @@
   "outro/pool": [891.477, 894.969, "Pooling shrinks, and routes gradients through its switches.", [[892.567, 892.757]]],
   "outro/fc": [895.349, 899.878, "Fully connected layers are convolutions with filters as big as their input.", []],
   "outro/arch": [900.258, 907.28, "Good networks stack small filters, with their memory in early activations and their parameters in late layers.", [[902.648, 902.968], [905.118, 905.288]]],
-  "outro/next": [907.66, 916.698, "Next, the interactive chapter: slide filters over real images, step through a convolution, and break the size formula yourself.", [[908.16, 908.35], [909.63, 910.08], [912.2, 912.57], [913.98, 914.27]]],
-  "outro/bye": [917.078, 917.874, "See you there.", []]
+  "outro/next": [907.66, 916.808, "Next, we look inside a trained conv net: what its filters respond to, which pixels its answer rests on, and how easily it is fooled.", [[908.18, 908.35], [910.39, 910.87], [912.4, 912.78], [914.77, 915.11]]]
  }
 }

@@ -1,5 +1,5 @@
 {
- "duration": 896.879,
+ "duration": 897.112,
  "scenes": {
   "intro": [0.0, 59.721],
   "adamw": [59.721, 146.928],
@@ -12,7 +12,7 @@
   "steepest": [630.161, 705.329],
   "race": [705.329, 767.138],
   "record": [767.138, 844.34],
-  "outro": [844.34, 896.879]
+  "outro": [844.34, 897.112]
  },
  "beats": {
   "intro/hello": [0.7, 7.148, "This lecture is about how big models are actually trained: the optimizer, and everything around it.", [[4.15, 4.67], [5.56, 5.82]]],
@@ -123,7 +123,6 @@
   "outro/clip": [865.024, 869.978, "Global norm clipping caps the rare, huge gradient, without turning it.", [[868.634, 868.914]]],
   "outro/bf16": [870.358, 876.729, "B F sixteen computes fast, while F P thirty-two master weights keep the small updates.", [[872.528, 872.878]]],
   "outro/muon": [877.109, 886.688, "And Muon treats each hidden matrix as a map: orthogonalized momentum, computed in five Newton-Schulz steps, for under one percent extra compute.", [[879.909, 880.419], [881.809, 882.119], [884.309, 884.559]]],
-  "outro/next": [887.068, 894.603, "The interactive chapter has each of these as a figure you can play with, including a live Newton-Schulz and the matrix race.", [[890.858, 891.208], [893.048, 893.208]]],
-  "outro/bye": [894.983, 895.779, "See you there.", []]
+  "outro/next": [887.068, 895.412, "Next, a model too big for one G P U: where all that memory goes, and how the work is split across thousands of them.", [[887.578, 887.888], [890.238, 890.818], [892.458, 892.738]]]
  }
 }

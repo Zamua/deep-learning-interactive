@@ -1,5 +1,5 @@
 {
- "duration": 958.766,
+ "duration": 957.157,
  "scenes": {
   "intro": [0.0, 56.388],
   "two-layer": [56.388, 121.288],
@@ -13,7 +13,7 @@
   "power": [677.983, 763.694],
   "capacity": [763.694, 828.828],
   "big-nets": [828.828, 905.555],
-  "outro": [905.555, 958.766]
+  "outro": [905.555, 957.157]
  },
  "beats": {
   "intro/hello": [0.7, 5.411, "Welcome to neural networks. In this chapter, we finally build one.", [[2.51, 2.97], [3.81, 4.02]]],
@@ -134,7 +134,6 @@
   "outro/relu": [923.67, 929.441, "ReLU is the default activation. Sigmoids saturate, and are not centered on zero.", [[925.78, 926.27], [927.58, 927.78]]],
   "outro/count": [929.821, 937.136, "We never count the input layer, the output layer has no activation, and parameters are weights plus biases.", [[931.601, 932.041], [934.101, 934.471]]],
   "outro/power": [937.516, 946.107, "One hidden layer can approximate anything, but depth helps. And prefer big networks, kept honest by regularization.", [[939.986, 940.456], [941.676, 942.196], [943.806, 944.106]]],
-  "outro/next": [946.487, 955.89, "Next, open the interactive chapter: train these networks yourself, try each activation, and grow a hidden layer one neuron at a time.", [[946.997, 947.267], [948.817, 949.257], [950.917, 951.357], [952.687, 952.877]]],
-  "outro/bye": [956.27, 957.066, "See you there.", []]
+  "outro/next": [946.487, 955.457, "Next, how to make these networks train well: how to prepare the data, where to start the weights, and how to keep a big one honest.", [[947.007, 947.337], [949.407, 949.977], [951.297, 951.747], [952.967, 953.307]]]
  }
 }

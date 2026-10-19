@@ -510,7 +510,7 @@ const training: SceneDef = {
           s.slot('step', st);
           s.slot('loss', fmt(L[Math.min(n - 1, Math.round(st / TRAIN_LOSS.every))]!, 3));
         }
-        s.alpha(s.ease('browser', 0.6), () => pill(s, 'the chapter trains this live', x + w / 2, Y(0.55), 'purple', 3.4, 0.15));
+        s.alpha(s.ease('browser', 0.6), () => pill(s, 'the whole run: under a minute', x + w / 2, Y(0.55), 'purple', 3.4, 0.15));
       });
     }
     if (sampA > 0) {
@@ -1083,8 +1083,8 @@ const outro: SceneDef = {
       });
     }
     s.alpha(s.ease('next', 0.8, 0.4), () => {
-      s.text('Now train it yourself', w / 2, r[1] + u * 7, { size: 6, font: 'display', weight: 600, halo: true });
-      fit(s, 'the interactive chapter is next', w / 2, r[1] + u * 14, r[2], { size: 3.8, font: 'ui', color: s.c('--ink-2'), halo: true });
+      s.text('next: fine-tuning', w / 2, r[1] + u * 7, { size: 6, font: 'display', weight: 600, halo: true });
+      fit(s, 'from a text predictor to an assistant', w / 2, r[1] + u * 14, r[2], { size: 3.8, font: 'ui', color: s.c('--ink-2'), halo: true });
     });
   },
 };

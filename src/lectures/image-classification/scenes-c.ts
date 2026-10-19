@@ -587,7 +587,7 @@ const closing: SceneDef = {
       );
     }
     // Next: one template per class, one multiply.
-    const nA = s.win('next', 'explore');
+    const nA = s.ease('next', 0.6);
     if (nA > 0) {
       s.alpha(nA, () => {
         s.text('next: a linear classifier', w / 2, h * 0.2, { size: tall ? 4.6 : 5.4, font: 'display', weight: 600 });
@@ -609,12 +609,6 @@ const closing: SceneDef = {
         s.alpha(late(s, 'next', 0.75), () => s.text('scores = W.dot(x): one multiply', w / 2, by + u * 8, { size: tall ? 3.8 : 4.4, font: 'mono', weight: 600 }));
       });
     }
-    const eA = s.ease('explore', 0.7, 0.3);
-    s.alpha(eA, () => {
-      s.text('next: the interactive chapter', w / 2, h * 0.42, { size: tall ? 5.4 : 6.4, font: 'display', weight: 600 });
-      s.text('every idea, on real images, with its code beside it', w / 2, h * 0.53, { size: tall ? 3.4 : 3.8, italic: true, color: s.c('--ink-2') });
-      s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.68, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
-    });
   },
 };
 

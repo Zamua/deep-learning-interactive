@@ -649,10 +649,9 @@ const closing: SceneDef = {
       s.text(t, w / 2, h * 0.5, { size: fs, font: 'display', weight: 600, color: s.c('--accent') });
     });
     s.alpha(nA, () => {
-      s.text('next: the interactive chapter', w / 2, h * 0.42, { size: fit(s, 'next: the interactive chapter', w * 0.86, 6.4, 'display', 600), font: 'display', weight: 600 });
-      const t = 'every figure runs this network live, beside its code';
+      s.text('next: ConvNets in practice', w / 2, h * 0.42, { size: fit(s, 'next: ConvNets in practice', w * 0.86, 6.4, 'display', 600), font: 'display', weight: 600 });
+      const t = 'little data, a real problem, a real budget';
       s.text(t, w / 2, h * 0.54, { size: fit(s, t, w * 0.86, 3.8, 'serif'), italic: true, color: s.c('--ink-2') });
-      s.alpha(s.ease('next', 0.6, 0.75 * (s.end('next') - s.at('next'))), () => s.text('see you there', w / 2, h * 0.68, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
     });
   },
 };

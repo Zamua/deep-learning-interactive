@@ -1,5 +1,5 @@
 {
- "duration": 928.714,
+ "duration": 924.845,
  "scenes": {
   "intro": [0.0, 67.991],
   "why": [67.991, 139.598],
@@ -13,7 +13,7 @@
   "block": [656.316, 746.111],
   "families": [746.111, 802.965],
   "params": [802.965, 876.832],
-  "recap": [876.832, 928.714]
+  "recap": [876.832, 924.845]
  },
  "beats": {
   "intro/hello": [0.7, 3.574, "This is chapter two: the Transformer.", [[2.1, 2.58]]],
@@ -131,7 +131,7 @@
   "recap/scale": [892.477, 897.9, "Scores are divided by the square root of d k, so the softmax stays soft.", [[895.377, 895.777]]],
   "recap/mlp": [898.28, 904.782, "An MLP works on each token, and residual adds and layer norms keep a deep stack trainable.", [[900.6, 900.81], [902.89, 903.04]]],
   "recap/out": [905.162, 909.463, "At the end comes one score per vocabulary word, for the next token.", [[908.162, 908.432]]],
-  "recap/next": [909.843, 921.29, "The interactive chapter has all of this as figures you can play with: the attention matrices step by step, the four heads, the shuffle test, and a block lit up by its code.", [[913.533, 913.993], [916.303, 916.743], [917.593, 917.913], [918.803, 919.113]]],
-  "recap/bye": [921.67, 927.014, "Next, in chapter three: where the token vectors come from. See you there.", [[922.19, 922.43], [923.43, 923.95], [925.82, 926.32]]]
+  "recap/next": [909.843, 918.552, "That one block, stacked a few dozen times, is the whole model. Nearly every large language model since twenty eighteen is built from it.", [[910.873, 911.103], [912.743, 912.923], [913.913, 914.503]]],
+  "recap/bye": [918.932, 923.145, "Next, in chapter three: where the token vectors come from.", [[919.442, 919.692], [920.672, 921.232]]]
  }
 }

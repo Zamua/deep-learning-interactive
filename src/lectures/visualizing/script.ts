@@ -37,7 +37,7 @@ export const script: LectureScript = {
     },
     {
       id: 'network',
-      title: 'The network on this page',
+      title: 'One small network',
       codeTitle: 'convnet.py',
       code: `
         def forward(x):              # (3, 32, 32)   #@def
@@ -55,7 +55,7 @@ export const script: LectureScript = {
         # dx: (3, 32, 32), one slope per input       #@bwd
       `,
       beats: [
-        { id: 'one', say: 'Every picture here comes from one small network, trained on {CIFAR-10|see-far ten}, and running live in your browser.' },
+        { id: 'one', say: 'Every picture in this lecture comes from one small network, trained on {CIFAR-10|see-far ten}, the same one from start to finish.' },
         { id: 'input', say: 'Its input is a {32 × 32|thirty two by thirty two} color image, minus the average color.', code: 'def' },
         { id: 'blocks', say: 'Then come three blocks of the same three steps. First, a convolution with a bank of filters: sixteen, then thirty two, then sixty four.', code: ['loop', 'conv'] },
         { id: 'relu', say: 'Then a {ReLU|ray-loo}, which zeroes every negative number. And max pooling, which halves the height and the width.', code: ['relu', 'pool'] },
@@ -413,7 +413,7 @@ export const script: LectureScript = {
         { id: 'draw', say: 'Gradient steps on the pixels: class pictures, inversion, {DeepDream|deep dream} and style.', code: 'draw' },
         { id: 'fool', say: 'And the same gradient, turned against the network, finds adversarial examples.', code: 'adv' },
         { id: 'clue', say: 'Each picture is a clue, not an explanation.' },
-        { id: 'next', say: 'Next, open the interactive chapter, where every figure runs this network live. See you there.', pause: 0.6 },
+        { id: 'next', say: 'Next, {ConvNets|conv nets} in practice: how to make one work on a real problem, with little data and a real budget.', pause: 0.6 },
       ],
     },
   ],

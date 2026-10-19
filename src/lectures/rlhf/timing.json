@@ -1,5 +1,5 @@
 {
- "duration": 910.383,
+ "duration": 902.506,
  "scenes": {
   "intro": [0.0, 61.449],
   "recap": [61.449, 113.364],
@@ -12,7 +12,7 @@
   "kl": [620.312, 681.226],
   "models": [681.226, 755.951],
   "hacking": [755.951, 846.499],
-  "outro": [846.499, 910.383]
+  "outro": [846.499, 902.506]
  },
  "beats": {
   "intro/hello": [0.7, 9.834, "This lecture is about reinforcement learning from human feedback, R L H F, and the algorithm that made it work: P P O.", [[4.38, 4.77], [6.14, 6.57], [8.39, 8.89]]],
@@ -125,8 +125,6 @@
   "outro/recap3": [867.811, 876.281, "A value head and G A E turn one score per answer into an advantage per token, with lambda trading bias for variance.", [[869.951, 870.161], [873.591, 873.921]]],
   "outro/recap4": [876.661, 884.251, "The K L penalty, paid token by token, keeps the policy near the reference, where the reward model can be trusted.", [[878.011, 878.371], [879.781, 880.131], [882.061, 882.311]]],
   "outro/recap5": [884.631, 890.446, "And the learned reward is only a proxy. Optimize it too hard, and quality falls.", [[887.151, 887.661], [888.931, 889.141]]],
-  "outro/next": [890.826, 900.806, "Next come two simplifications: D P O, which skips the reward model and the sampling, and G R P O, which drops the value head.", [[892.876, 893.376], [894.396, 894.736], [897.166, 897.556], [899.086, 899.376]]],
-  "outro/explore": [901.186, 907.507, "But first, open the interactive chapter, where every figure runs live, with its code beside it.", [[901.896, 902.196], [903.876, 904.156], [905.926, 906.126]]],
-  "outro/bye": [907.887, 908.683, "See you there.", []]
+  "outro/next": [890.826, 900.806, "Next come two simplifications: D P O, which skips the reward model and the sampling, and G R P O, which drops the value head.", [[892.876, 893.376], [894.396, 894.736], [897.166, 897.556], [899.086, 899.376]]]
  }
 }

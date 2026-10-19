@@ -1,5 +1,5 @@
 {
- "duration": 922.851,
+ "duration": 924.275,
  "scenes": {
   "intro": [0.0, 60.508],
   "next": [60.508, 116.073],
@@ -13,7 +13,7 @@
   "bert": [620.343, 702.166],
   "compress": [702.166, 776.557],
   "icl": [776.557, 855.652],
-  "outro": [855.652, 922.851]
+  "outro": [855.652, 924.275]
  },
  "beats": {
   "intro/hello": [0.7, 3.326, "Welcome to language models and pretraining.", []],
@@ -130,7 +130,6 @@
   "outro/r4": [881.26, 893.315, "To generate, pick one token at a time: greedy repeats itself, plain sampling falls into the tail, and temperature and top p trade diversity for quality.", [[882.02, 882.33], [884.0, 884.63], [886.13, 886.74], [888.9, 889.4], [889.69, 889.87], [891.3, 891.46]]],
   "outro/r5": [893.695, 902.73, "G P T's next-word objective beat BERT's masked words in the long run: every token teaches, and a generator can do any text task.", [[895.925, 896.075], [898.035, 898.655], [900.015, 900.325]]],
   "outro/r6": [903.11, 911.861, "And since good prediction is good compression of a huge corpus, the model absorbs facts and skills, and can infer a task from its prompt.", [[906.82, 907.19], [909.43, 909.67]]],
-  "outro/next": [912.241, 920.575, "Next, the interactive chapter, where every idea is a figure you can play with, including a small language model you train in your browser.", [[912.751, 912.951], [914.271, 914.581], [917.121, 917.431]]],
-  "outro/bye": [920.955, 921.751, "See you there.", []]
+  "outro/next": [912.241, 922.575, "Next, scale: how that loss falls, smoothly and predictably, as the model, the data and the compute grow, and how to spend a budget.", [[912.761, 913.071], [913.641, 914.171], [915.521, 915.861], [917.371, 917.651], [918.311, 918.541], [920.491, 920.971]]]
  }
 }

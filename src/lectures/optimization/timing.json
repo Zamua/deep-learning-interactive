@@ -1,5 +1,5 @@
 {
- "duration": 935.009,
+ "duration": 924.549,
  "scenes": {
   "intro": [0.0, 72.695],
   "landscape": [72.695, 121.047],
@@ -12,7 +12,7 @@
   "check": [604.759, 668.567],
   "descent": [668.567, 754.94],
   "minibatch": [754.94, 862.118],
-  "summary": [862.118, 935.009]
+  "summary": [862.118, 924.549]
  },
  "beats": {
   "intro/hello": [0.7, 5.798, "Welcome to optimization: the chapter where a classifier finally learns.", [[2.45, 2.88]]],
@@ -131,8 +131,6 @@
   "summary/rest": [886.91, 894.664, "The rest of the course plugs into this loop. Neural networks swap in a richer score function, and the loop stays the same.", [[889.15, 889.75], [892.78, 893.11]]],
   "summary/hard": [895.044, 902.731, "What changes is the gradient. Deriving it by hand, as we did for the SVM, would be hopeless for a deep network.", [[896.894, 897.474], [898.774, 898.934], [900.454, 900.794]]],
   "summary/backprop": [903.111, 912.194, "The next chapter introduces backpropagation: the chain rule, applied piece by piece, to get the gradient of anything built from simple parts.", [[905.811, 906.281], [907.061, 907.321], [908.711, 908.971]]],
-  "summary/recap": [912.574, 922.849, "So: training is optimization. The loss is a landscape, the gradient points uphill, and we step against it, one mini-batch at a time.", [[912.994, 913.484], [915.214, 915.834], [917.284, 917.704], [919.274, 919.614], [920.904, 921.244]]],
-  "summary/next": [923.229, 932.133, "Next, open the interactive chapter: slice the landscape, race the three strategies, and push the step size until it zig-zags.", [[923.729, 924.009], [925.649, 926.099], [927.279, 927.749], [929.249, 929.499]]],
-  "summary/bye": [932.513, 933.309, "See you there.", []]
+  "summary/recap": [912.574, 922.849, "So: training is optimization. The loss is a landscape, the gradient points uphill, and we step against it, one mini-batch at a time.", [[912.994, 913.484], [915.214, 915.834], [917.284, 917.704], [919.274, 919.614], [920.904, 921.244]]]
  }
 }

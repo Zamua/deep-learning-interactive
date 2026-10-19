@@ -1417,11 +1417,10 @@ const outro: SceneDef = {
     );
     const nA = s.ease('next', 0.7, 0.3);
     s.alpha(nA, () => {
-      const t = 'next: the interactive chapter';
+      const t = 'next: the Transformer';
       s.text(t, w / 2, h * 0.42, { size: fit(s, t, w * 0.9, 6.4, 'display', 600), font: 'display', weight: 600 });
-      const sub = 'four live translators, an alignment matrix, a query to drag';
+      const sub = 'no recurrence: every word attends to every other, at once';
       s.text(sub, w / 2, h * 0.55, { size: fit(s, sub, w * 0.9, 3.8, 'serif'), italic: true, color: s.c('--ink-2') });
-      s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.7, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
     });
   },
 };

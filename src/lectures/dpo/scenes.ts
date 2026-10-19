@@ -1182,10 +1182,9 @@ const outro: SceneDef = {
       s.alpha(s.ease('grad', 0.6), () => pill(s, 'gradient weight σ(−m): how wrong, how hard', w / 2, ay + ah * 0.93, 'teal', { size: fit(s, 'gradient weight σ(−m): how wrong, how hard', aw * 0.85, 3.6, { font: 'ui' }), font: 'ui' }));
     });
     s.alpha(s.ease('next', 0.7, 0.3), () => {
-      s.text('next: the interactive chapter', w / 2, h * 0.42, { size: fit(s, 'next: the interactive chapter', w * 0.9, 6.2, { font: 'display', weight: 600 }), font: 'display', weight: 600 });
-      const t = 'drag the policy, try to beat π*, train the toy';
+      s.text('next: verifiable rewards', w / 2, h * 0.42, { size: fit(s, 'next: verifiable rewards', w * 0.9, 6.2, { font: 'display', weight: 600 }), font: 'display', weight: 600 });
+      const t = 'a program grades the answer, and GRPO learns';
       s.text(t, w / 2, h * 0.55, { size: fit(s, t, w * 0.9, 3.9, { italic: true }), italic: true, color: s.c('--ink-2') });
-      s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.7, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
     });
   },
 };

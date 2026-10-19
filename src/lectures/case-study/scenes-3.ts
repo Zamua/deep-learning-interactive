@@ -360,7 +360,7 @@ const outro: SceneDef = {
         header(s, p2, '+ one hidden layer', '99%', 'green');
         s.alpha(s.ease('next', 0.6), () => {
           const y = Math.min(h - margin(s) - u * 2, p1.y + p1.size + u * 7);
-          pill(s, 'next: explore the chapter', w / 2, y, '--accent', { size: 3.4 });
+          pill(s, 'next: convolutional networks', w / 2, y, '--accent', { size: 3.4 });
         });
       });
   },

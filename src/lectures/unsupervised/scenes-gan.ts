@@ -545,7 +545,7 @@ const outro: SceneDef = {
     const nA = s.ease('next', 0.7, 0.4);
     s.alpha(nA, () => {
       fit(s, 'no labels needed', w / 2, h * 0.4, w * 0.9, { size: 6, font: 'display', weight: 600 });
-      fit(s, 'all three learn the shape of the data itself', w / 2, h * 0.5, w * 0.9, { size: 3.8, italic: true, color: s.c('--ink-2') });
+      fit(s, 'all three models learn the shape of the data itself', w / 2, h * 0.5, w * 0.9, { size: 3.8, italic: true, color: s.c('--ink-2') });
       s.alpha(s.ease('dl26', 0.6), () => {
         fit(s, 'then DL26: contrastive learning, diffusion', w / 2, h * 0.64, w * 0.9, { size: 4.4, font: 'display', color: s.c('--accent') });
       });

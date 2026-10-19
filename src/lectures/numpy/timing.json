@@ -1,5 +1,5 @@
 {
- "duration": 985.254,
+ "duration": 985.416,
  "scenes": {
   "intro": [0.0, 42.716],
   "python": [42.716, 114.316],
@@ -13,7 +13,7 @@
   "reshape": [683.82, 772.14],
   "vectorize": [772.14, 851.464],
   "pitfalls": [851.464, 920.18],
-  "outro": [920.18, 985.254]
+  "outro": [920.18, 985.416]
  },
  "beats": {
   "intro/hello": [0.7, 5.632, "Welcome to Python and NumPy, the language of every assignment in this course.", [[2.65, 3.1]]],
@@ -142,7 +142,6 @@
   "outro/recap1": [950.837, 960.763, "That is the toolkit. Every array has a shape: predict it. Integers drop their axis, slices keep it, and slices are views.", [[952.077, 952.607], [954.037, 954.497], [955.087, 955.667], [957.327, 957.687], [958.787, 959.167]]],
   "outro/recap2": [961.143, 969.896, "Star is elementwise, at is the matrix product, the axis you name disappears, and broadcasting stretches the ones.", [[962.873, 963.353], [964.933, 965.373], [967.243, 967.583]]],
   "outro/recap3": [970.276, 974.947, "And Python loops are slow: vectorize, then check against the loop.", [[971.986, 972.506], [973.276, 973.526]]],
-  "outro/next": [975.327, 982.378, "Next, open the interactive chapter, where every idea is a figure you can poke, with its code running beside it.", [[975.837, 976.097], [977.727, 977.977], [980.417, 980.677]]],
-  "outro/bye": [982.758, 983.554, "See you there.", []]
+  "outro/next": [975.327, 983.716, "Next comes image classification, where these arrays become real photos, and one vectorized line compares them all at once.", [[977.387, 977.747], [980.027, 980.407]]]
  }
 }

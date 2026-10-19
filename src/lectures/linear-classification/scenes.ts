@@ -1600,9 +1600,9 @@ const recipe: SceneDef = {
     }
     const nA = s.ease('next', 0.7, 0.3);
     s.alpha(nA, () => {
-      fitText(s, 'next: the interactive chapter', w / 2, h * 0.4, w - 10 * u, { size: 6.4, font: 'display', weight: 600 });
-      fitText(s, 'drag the bars, aim the arrows, train ten templates', w / 2, h * 0.53, w - 10 * u, { size: 3.8, italic: true, color: s.c('--ink-2') });
-      s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.68, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
+      fitText(s, 'next: optimization', w / 2, h * 0.4, w - 10 * u, { size: 6.4, font: 'display', weight: 600 });
+      fitText(s, 'find the W that makes the loss small', w / 2, h * 0.53, w - 10 * u, { size: 3.8, italic: true, color: s.c('--ink-2') });
+      s.alpha(s.ease('next', 0.6, 2.5), () => fitText(s, 'W -= learning_rate * dW', w / 2, h * 0.68, w - 10 * u, { size: 4.4, font: 'mono', weight: 600, color: s.c('teal') }));
     });
   },
 };

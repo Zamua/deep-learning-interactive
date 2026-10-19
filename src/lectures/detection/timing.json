@@ -1,5 +1,5 @@
 {
- "duration": 964.489,
+ "duration": 962.379,
  "scenes": {
   "intro": [0.0, 60.791],
   "localize": [60.791, 151.374],
@@ -13,7 +13,7 @@
   "map": [669.959, 740.609],
   "segment": [740.609, 808.824],
   "upsample": [808.824, 896.926],
-  "outro": [896.926, 964.489]
+  "outro": [896.926, 962.379]
  },
  "beats": {
   "intro/hello": [0.7, 4.397, "Welcome to localization, detection and segmentation.", [[2.34, 2.5]]],
@@ -150,7 +150,6 @@
   "outro/grade": [927.242, 934.55, "eye oh you grades a box, suppression removes duplicates, and em ay pee grades a detector.", [[929.292, 929.732], [931.632, 932.042], [933.232, 933.412]]],
   "outro/det": [934.93, 944.635, "Detection got practical with proposals, fast with shared convolutions, and faster with anchors. yo-low and S S D do it in one look.", [[937.23, 937.63], [939.42, 939.66], [941.23, 941.76]]],
   "outro/seg": [945.015, 951.718, "And segmentation is classification at every pixel: down, then up, with skips for detail.", [[948.415, 948.885], [949.335, 949.495], [950.055, 950.375]]],
-  "outro/next": [952.098, 961.613, "Next, open the interactive chapter: drag boxes, step through suppression, and train a tiny detector, with the code beside every figure.", [[952.608, 952.908], [954.518, 955.078], [955.918, 956.128], [957.398, 957.648], [959.388, 959.708]]],
-  "outro/bye": [961.993, 962.789, "See you there.", []]
+  "outro/next": [952.098, 960.679, "Next, networks with memory: recurrent networks, which read and write sequences, and can describe a whole image in a sentence.", [[952.608, 952.958], [954.238, 954.698], [955.848, 956.088], [957.808, 958.078]]]
  }
 }

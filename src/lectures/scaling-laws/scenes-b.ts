@@ -533,11 +533,10 @@ const outro: SceneDef = {
       }),
     );
     s.alpha(s.ease('next', 0.7, 0.3), () => {
-      const t = 'next: the interactive chapter';
+      const t = 'next: the modern block';
       s.text(t, w / 2, h * 0.45, { size: fitSize(s, t, 6.4, w * 0.9, 'display', 600), font: 'display', weight: 600 });
-      const sub = 'fit the lines, slide a budget, size a model';
+      const sub = 'new norms, rotary positions, faster attention';
       s.text(sub, w / 2, h * 0.57, { size: fitSize(s, sub, 3.9, w * 0.9), italic: true, color: s.c('--ink-2') });
-      s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.7, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
     });
   },
 };

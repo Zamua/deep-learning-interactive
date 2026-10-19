@@ -1,5 +1,5 @@
 {
- "duration": 946.685,
+ "duration": 945.508,
  "scenes": {
   "intro": [0.0, 50.757],
   "functions": [50.757, 144.205],
@@ -12,7 +12,7 @@
   "gradient": [649.926, 724.221],
   "chain": [724.221, 795.936],
   "probability": [795.936, 877.225],
-  "argmax": [877.225, 946.685]
+  "argmax": [877.225, 945.508]
  },
  "beats": {
   "intro/hello": [0.7, 2.768, "Welcome to the math survival kit.", []],
@@ -144,8 +144,7 @@
   "argmax/musig": [907.272, 910.251, "Mu and sigma are the center and the spread.", []],
   "argmax/wx": [910.631, 914.933, "And a matrix next to a vector means one dot product per row.", [[912.601, 912.791]]],
   "argmax/kit": [915.313, 927.356, "That is the whole kit. Functions, vectors, dot products, matrices, sums, exp and log, derivatives, gradients, the chain rule, probability, and argmax.", [[916.683, 917.163], [917.803, 917.973], [918.603, 918.773], [919.593, 919.753], [921.173, 921.483], [922.363, 922.713], [923.423, 923.573], [924.243, 924.453], [925.203, 925.453], [926.193, 926.403]]],
-  "argmax/back": [927.736, 933.976, "You do not need to have memorized any of it. Every chapter links back here whenever an idea comes up.", [[930.116, 930.606]]],
-  "argmax/next": [934.356, 943.809, "Next, open the interactive chapter. Every idea you just saw is there as a figure you can drag and poke, with the code running right beside it.", [[934.856, 935.066], [936.716, 937.326], [941.626, 941.956]]],
-  "argmax/bye": [944.189, 944.985, "See you there.", []]
+  "argmax/back": [927.736, 935.418, "You do not need to have memorized any of it. Each tool comes back, again and again, right when a later idea needs it.", [[930.066, 930.506], [931.776, 931.996], [933.096, 933.416]]],
+  "argmax/next": [935.798, 943.808, "Next comes Python and NumPy, the language of the course, where every idea you just saw becomes one short line of array code.", [[937.878, 938.148], [939.358, 939.618]]]
  }
 }

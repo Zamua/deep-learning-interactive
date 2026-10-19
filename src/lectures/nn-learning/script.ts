@@ -402,7 +402,7 @@ export const script: LectureScript = {
         { id: 'c3', say: 'Watch the loss curve, and the gap between training and validation.', code: 'c3' },
         { id: 'c4', say: 'Update with Adam or Nesterov momentum, and decay the rate.', code: ['c4', 'c5'] },
         { id: 'c6', say: 'Search at random, on log scales, coarse to fine. And ensemble at the end.', code: ['c6', 'c7'] },
-        { id: 'next', say: 'Now open the interactive chapter, where every picture here is yours to drive: race the update rules, and break a gradient check on purpose.' },
+        { id: 'next', say: 'Next, we put every piece together: a classifier, then a small network, trained from scratch on a spiral of points, one line at a time.' },
         { id: 'bye', say: 'Happy training.', pause: 0.6 },
       ],
     },

@@ -1,5 +1,5 @@
 import { type Scene, type SceneDef, clamp01, lerp, smooth } from '../../lecture/scene';
-import { CLASSES, type K, PICK, cell, check, eye, features, photo, pill, pointer } from './kit';
+import { CLASSES, type K, PICK, cell, check, eye, features, photo, pill } from './kit';
 
 /** Seconds into the scene at which a fraction `f` of beat `id` has been spoken. */
 const at = (s: Scene, id: string, f = 0): number => lerp(s.at(id), s.end(id), f);
@@ -90,31 +90,20 @@ export const intro: SceneDef = {
       const rh = u * 6;
       const grow = s.since('guess') >= 0 ? smooth((s.t - at(s, 'guess', 0.15)) / 1.4) : 0;
       const win = s.since('guess') >= 0 ? smooth((s.t - at(s, 'guess', 0.7)) / 0.5) : 0;
-      // Poking a bar: the pointer taps "dog".
-      const poke = s.since('site') >= 0 ? clamp01((s.t - at(s, 'site', 0.45)) / 0.4) : 0;
       s.alpha(gA, () => {
         s.text('scores', (x0 + x1) / 2, top - u * 4.6, { size: 3.4, font: 'mono', weight: 600, color: s.c('purple') });
         SCORES.forEach((v, i) => {
           const y = top + i * rh;
           const best = i === 3;
-          const poked = i === 5 && poke > 0.5;
           s.text(CLASSES[i]!, lx, y + rh / 2, { size: 3, font: 'ui', align: 'right', weight: best && win > 0.5 ? 650 : 450, color: s.c(best && win > 0.5 ? 'purple' : '--ink-2') });
           const bl = (x1 - x0) * (v / 3.4) * grow;
-          s.rrect(x0, y + rh * 0.18, Math.max(1, bl), rh * 0.64, 0.6, { fill: s.tint('purple', best ? 0.35 + 0.5 * win : poked ? 0.55 : 0.28) });
-          if (poked) s.text(v.toFixed(1), x0 + bl + u * 1.2, y + rh / 2, { size: 2.9, font: 'mono', align: 'left', color: s.c('purple') });
+          s.rrect(x0, y + rh * 0.18, Math.max(1, bl), rh * 0.64, 0.6, { fill: s.tint('purple', best ? 0.35 + 0.5 * win : 0.28) });
         });
       });
       s.alpha(win, () => {
         const gy = top + 10 * rh + u * 5;
         pill(s, 'guess: cat', (x0 + x1) / 2, gy, 'purple', { size: 3.2 });
       });
-      // A pointer comes in and pokes a bar.
-      const pin = s.since('site') >= 0 ? smooth((s.t - at(s, 'site', 0.1)) / 1.2) : 0;
-      if (pin > 0) {
-        const tx = x0 + (x1 - x0) * (2.2 / 3.4) * 0.6;
-        const ty = top + 5.5 * rh;
-        s.alpha(pin, () => pointer(s, lerp(w - u * 2, tx, pin), lerp(u * 96, ty, pin), 6, poke > 0 && poke < 1 ? poke : 0));
-      }
       s.alpha(s.ease('site', 0.6, 0.3), () => pill(s, 'an unofficial companion', w / 2, u * 9, 'slate', { size: 3, font: 'ui' }));
     });
   },

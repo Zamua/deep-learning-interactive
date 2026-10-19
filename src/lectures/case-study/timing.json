@@ -1,5 +1,5 @@
 {
- "duration": 921.527,
+ "duration": 920.436,
  "scenes": {
   "intro": [0.0, 64.424],
   "data": [64.424, 152.625],
@@ -12,7 +12,7 @@
   "backprop-net": [663.923, 738.837],
   "train-net": [738.837, 804.877],
   "compare": [804.877, 875.355],
-  "outro": [875.355, 921.527]
+  "outro": [875.355, 920.436]
  },
  "beats": {
   "intro/hello": [0.7, 5.504, "Welcome to the case study, where everything from the last few chapters comes together.", [[2.18, 2.49]]],
@@ -129,7 +129,6 @@
   "outro/s3": [888.27, 896.863, "Backpropagate: the probabilities, minus one at the correct class, and from there the matrix multiply and ray-loo rules.", [[889.23, 889.86], [890.83, 891.24], [893.12, 893.46], [894.26, 894.41]]],
   "outro/s4": [897.243, 900.39, "Then step the parameters downhill, and repeat.", [[899.403, 899.713]]],
   "outro/layer": [900.77, 908.664, "One hidden layer, one line forward and a few lines backward, took training accuracy from forty nine percent to ninety nine.", [[901.85, 902.18], [904.55, 904.82], [907.44, 907.61]]],
-  "outro/next": [909.044, 918.651, "Next, open the interactive chapter: step through one iteration line by line with the real arrays, and train both models live in your browser.", [[909.564, 909.844], [911.414, 911.974], [915.794, 916.134]]],
-  "outro/bye": [919.031, 919.827, "See you there.", []]
+  "outro/next": [909.044, 918.736, "Next come convolutional networks: the same loop and the same rules, with layers built for images, small filters that slide across the pixels.", [[911.314, 911.794], [912.514, 912.664], [913.664, 914.014], [915.584, 915.924], [918.534, 918.714]]]
  }
 }

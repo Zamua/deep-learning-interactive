@@ -748,8 +748,8 @@ const outro: SceneDef = {
     // Phase 4: what next.
     const nA = s.ease('next', 0.7);
     s.alpha(nA, () => {
-      fit(s, 'next: the interactive chapter', w / 2, h * 0.36, w - 12 * u, { size: 6, font: 'display', weight: 600 });
-      fit(s, 'pick the word, tap the image, drag the grids', w / 2, h * 0.48, w - 14 * u, { size: 3.8, italic: true, color: s.c('--ink-2') });
+      fit(s, 'next: learning without labels', w / 2, h * 0.36, w - 12 * u, { size: 6, font: 'display', weight: 600 });
+      fit(s, 'video, autoencoders, VAEs and GANs', w / 2, h * 0.48, w - 14 * u, { size: 3.8, italic: true, color: s.c('--ink-2') });
       s.alpha(s.ease('dl26', 0.6), () => {
         fit(s, 'then DL26: transformers', w / 2, h * 0.66, w - 12 * u, { size: 5, font: 'display', italic: true, color: s.c('--accent') });
       });

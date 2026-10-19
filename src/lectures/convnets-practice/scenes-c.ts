@@ -782,10 +782,8 @@ const outro: SceneDef = {
       });
     });
     s.alpha(nA, () => {
-      s.text('next: the interactive chapter', cx, h * 0.4, { size: fit(s, 'next: the interactive chapter', w - u * 10, 6.4, { font: 'display', weight: 600 }), font: 'display', weight: 600 });
-      s.text('real CIFAR-10 augmentations, a transfer-strategy map,', cx, h * 0.53, { size: fit(s, 'real CIFAR-10 augmentations, a transfer-strategy map,', w - u * 10, 3.8), italic: true, color: s.c('--ink-2') });
-      s.text('im2col step by step, and the rounding race', cx, h * 0.53 + u * 6, { size: fit(s, 'real CIFAR-10 augmentations, a transfer-strategy map,', w - u * 10, 3.8), italic: true, color: s.c('--ink-2') });
-      s.alpha(s.ease('bye', 0.6), () => s.text('see you there', cx, h * 0.74, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
+      s.text('next: boxes and masks', cx, h * 0.4, { size: fit(s, 'next: boxes and masks', w - u * 10, 6.4, { font: 'display', weight: 600 }), font: 'display', weight: 600 });
+      s.text('where each object is, and which pixels are its own', cx, h * 0.53, { size: fit(s, 'where each object is, and which pixels are its own', w - u * 10, 3.8), italic: true, color: s.c('--ink-2') });
     });
   },
 };

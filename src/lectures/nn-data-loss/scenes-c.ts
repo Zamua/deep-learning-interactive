@@ -636,9 +636,8 @@ const outro: SceneDef = {
           s.alpha(s.ease('theme', 0.5, 1.6), () => pill(s, 'do not let the network memorize', w / 2, h * 0.58, 'gold', { size: 4.4 }));
         });
         s.alpha(nA, () => {
-          s.text('next: the interactive chapter', w / 2, h * 0.42, { size: 6, font: 'display', weight: 600 });
-          s.text('every figure, yours to drag, with its code beside it', w / 2, h * 0.55, { size: 3.8, italic: true, color: s.c('--ink-2') });
-          s.alpha(s.ease('next', 0.6, 3), () => s.text('then chapter 9: the training run itself', w / 2, h * 0.7, { size: 3.8, font: 'display', italic: true, color: s.c('--accent') }));
+          s.text('next: the training run itself', w / 2, h * 0.42, { size: 6, font: 'display', weight: 600 });
+          s.text('update rules, learning rates, loss curves', w / 2, h * 0.55, { size: 3.8, italic: true, color: s.c('--ink-2') });
         });
       });
     }

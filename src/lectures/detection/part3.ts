@@ -656,9 +656,8 @@ const outro: SceneDef = {
         });
       });
       s.alpha(endA, () => {
-        s.text('next: the interactive chapter', w / 2, h * 0.42, { size: 6, font: 'display', weight: 600 });
-        s.text('drag boxes, step through NMS, train a detector', w / 2, h * 0.54, { size: 3.6, italic: true, color: s.c('--ink-2') });
-        s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.68, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
+        s.text('next: networks with memory', w / 2, h * 0.42, { size: 6, font: 'display', weight: 600 });
+        s.text('read a sequence, write a caption', w / 2, h * 0.54, { size: 3.6, italic: true, color: s.c('--ink-2') });
       });
     }
   },

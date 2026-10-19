@@ -1221,7 +1221,7 @@ const record: SceneDef = {
 const outro: SceneDef = {
   draw(s) {
     const { w, h } = s;
-    const cur = current(s, ['recap', 'adamw', 'sched', 'clip', 'bf16', 'muon', 'next', 'bye']);
+    const cur = current(s, ['recap', 'adamw', 'sched', 'clip', 'bf16', 'muon', 'next']);
     const lA = 1 - s.ease('next', 0.6);
     if (lA > 0)
       s.alpha(lA, () =>
@@ -1234,11 +1234,10 @@ const outro: SceneDef = {
       );
     const nA = s.ease('next', 0.7, 0.4);
     s.alpha(nA, () => {
-      const t = 'next: the interactive chapter';
+      const t = 'next: training across many GPUs';
       s.text(t, w / 2, h * 0.42, { size: fit(s, t, w * 0.9, 6.4, { font: 'display', weight: 600 }), font: 'display', weight: 600 });
-      const t2 = 'seven figures, a live Newton-Schulz, the matrix race';
+      const t2 = 'where the memory goes, and how to split the work';
       s.text(t2, w / 2, h * 0.54, { size: fit(s, t2, w * 0.9, 3.8, { italic: true }), italic: true, color: s.c('--ink-2') });
-      s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.68, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
     });
   },
 };

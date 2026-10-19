@@ -1,5 +1,5 @@
 {
- "duration": 956.747,
+ "duration": 956.56,
  "scenes": {
   "intro": [0.0, 38.284],
   "preprocess": [38.284, 111.524],
@@ -13,7 +13,7 @@
   "dropout": [684.155, 778.822],
   "losses": [778.822, 849.636],
   "regression": [849.636, 914.566],
-  "outro": [914.566, 956.747]
+  "outro": [914.566, 956.56]
  },
  "beats": {
   "intro/hello": [0.7, 8.699, "Welcome to chapter eight. Chapter seven built the network itself: neurons, activation functions, layers.", [[2.11, 2.8], [5.15, 5.66], [6.3, 6.55], [7.82, 8.11]]],
@@ -146,6 +146,6 @@
   "outro/reg": [933.958, 939.279, "One L2 penalty tuned on validation data, plus inverted dropout.", [[934.968, 935.208], [937.378, 937.598]]],
   "outro/loss": [939.659, 941.766, "And a loss that matches the question.", []],
   "outro/theme": [942.146, 946.686, "Keep signals at a healthy scale, and do not let the network memorize.", [[944.146, 944.426]]],
-  "outro/next": [947.066, 955.047, "Next, open the interactive chapter: every figure here is there to drag and poke, with its code running beside it.", [[947.576, 947.846], [949.466, 950.116], [952.966, 953.306]]]
+  "outro/next": [947.066, 954.86, "Next, the training run itself: choosing the update rule and the learning rate, and reading the loss curves as it learns.", [[947.576, 947.826], [949.136, 949.686], [952.006, 952.336]]]
  }
 }

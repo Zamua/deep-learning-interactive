@@ -568,10 +568,9 @@ const outro: SceneDef = {
     });
     const nA = s.ease('next', 0.7, 0.4);
     s.alpha(nA, () => {
-      s.text('next: the interactive chapter', w / 2, 40 * u, { size: 6.2, font: 'display', weight: 600 });
-      s.text('slide filters over real images, step through a convolution,', w / 2, 52 * u, { size: 3.6, italic: true, color: s.c('--ink-2') });
-      s.text('and try to break the size formula', w / 2, 58 * u, { size: 3.6, italic: true, color: s.c('--ink-2') });
-      s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, 72 * u, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
+      s.text('next: inside a trained ConvNet', w / 2, 40 * u, { size: 6.2, font: 'display', weight: 600 });
+      s.text('what its filters see, which pixels matter,', w / 2, 52 * u, { size: 3.6, italic: true, color: s.c('--ink-2') });
+      s.text('and how easily it is fooled', w / 2, 58 * u, { size: 3.6, italic: true, color: s.c('--ink-2') });
     });
   },
 };

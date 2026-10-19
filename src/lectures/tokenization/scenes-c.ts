@@ -446,10 +446,9 @@ const outro: SceneDef = {
     s.alpha(s.ease('next', 0.6), () => {
       s.rrect(w * 0.08, h * 0.3, w * 0.84, h * 0.4, 3, { fill: s.c('--card'), stroke: s.c('--rule'), lw: 0.3 });
       s.text('next: training on next tokens', w / 2, h * 0.42, { size: s.tall ? 4.4 : 5, font: 'display', weight: 600 });
-      s.alpha(s.ease('chapter', 0.6), () => {
-        s.text('now open the chapter:', w / 2, h * 0.5, { size: 3.8, italic: true, color: s.c('--ink-2') });
-        s.text('train BPE, encode anything,', w / 2, h * 0.57, { size: 3.8, font: 'ui', color: s.c('purple') });
-        s.text('watch an embedding space form', w / 2, h * 0.63, { size: 3.8, font: 'ui', color: s.c('purple') });
+      s.alpha(s.ease('next', 0.6, 1.6), () => {
+        s.text('predict each next token,', w / 2, h * 0.53, { size: 3.8, font: 'ui', color: s.c('purple') });
+        s.text('then sample from the model', w / 2, h * 0.6, { size: 3.8, font: 'ui', color: s.c('purple') });
       });
     });
   },

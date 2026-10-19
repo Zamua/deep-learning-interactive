@@ -664,7 +664,7 @@ const RECAP: [string, string, Color, string][] = [
   ['backprop through time', 'chunks, h carried', 'teal', 'bptt'],
   ['clip, and the LSTM', 'explode / forget', 'gold', 'forget'],
   ['ConvNet + RNN', 'captions', 'orange', 'cap'],
-  ['the chapter, live', 'train it yourself', 'blue', 'next'],
+  ['next: attention', 'a fresh look per word', 'blue', 'next'],
 ];
 
 const outro: SceneDef = {

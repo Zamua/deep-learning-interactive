@@ -381,7 +381,7 @@ export const script: LectureScript = {
         { id: 'reg', say: 'One L2 penalty tuned on validation data, plus inverted dropout.', code: 'reg' },
         { id: 'loss', say: 'And a loss that matches the question.', code: 'loss' },
         { id: 'theme', say: 'Keep signals at a healthy scale, and do not let the network memorize.' },
-        { id: 'next', say: 'Next, open the interactive chapter: every figure here is there to drag and poke, with its code running beside it.', pause: 0.6 },
+        { id: 'next', say: 'Next, the training run itself: choosing the update rule and the learning rate, and reading the loss curves as it learns.', pause: 0.6 },
       ],
     },
   ],

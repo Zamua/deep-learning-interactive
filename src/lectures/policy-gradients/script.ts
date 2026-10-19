@@ -330,7 +330,7 @@ export const script: LectureScript = {
         { id: 'rlhf', say: 'The next chapters swap in better parts. {RLHF|R L H F} learns the reward from human preferences, and {PPO|P P O} adds a critic and clipped steps that reuse samples.' },
         { id: 'dpo', say: '{DPO|D P O} skips the sampling loop entirely, using the closed form of the leash.' },
         { id: 'grpo', say: 'And {GRPO|G R P O} grades with a program, and uses a group of answers to the same prompt as its baseline.' },
-        { id: 'explore', say: 'Now open the interactive chapter, and run {REINFORCE|reinforce} yourself. Shift the rewards, switch on the baseline, and pull the leash.' },
+        { id: 'explore', say: 'All three keep this same core: sample, grade, and raise the log probability of whatever beat the baseline. First up, {RLHF|R L H F}.', pause: 0.6 },
       ],
     },
   ],

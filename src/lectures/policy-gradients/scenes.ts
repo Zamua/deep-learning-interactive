@@ -1124,8 +1124,11 @@ const outro: SceneDef = {
       });
       s.alpha(s.ease('explore', 0.6), () => {
         const y = stacked(s) ? h * 0.86 : h * 0.8;
-        check(s, w / 2 - u * 34, y, u * 2.2);
-        fitText(s, 'now: the interactive chapter', w / 2 + u * 2, y, w - u * 30, { size: 4.4, font: 'display', weight: 600, color: s.c('teal') });
+        const t = 'same core: sample, grade, push up';
+        const o: TextOpts = { font: 'display', weight: 600, color: s.c('teal') };
+        const tw = Math.min(s.measure(t, { ...o, size: 4.4 }), w - u * 20);
+        check(s, w / 2 - tw / 2 - u * 1.5, y, u * 2.2);
+        fitText(s, t, w / 2 + u * 2.5, y, tw, { ...o, size: 4.4 });
       });
     });
   },

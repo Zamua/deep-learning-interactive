@@ -1,5 +1,5 @@
 {
- "duration": 951.275,
+ "duration": 942.602,
  "scenes": {
   "intro": [0.0, 66.347],
   "units": [66.347, 155.048],
@@ -11,7 +11,7 @@
   "embed": [623.164, 723.259],
   "unembed": [723.259, 795.285],
   "tying": [795.285, 892.609],
-  "outro": [892.609, 951.275]
+  "outro": [892.609, 942.602]
  },
  "beats": {
   "intro/hello": [0.7, 7.384, "This lecture is about the two ends of a language model: where text goes in, and where text comes out.", [[3.73, 4.26], [5.55, 5.88]]],
@@ -129,7 +129,6 @@
   "outro/quirks": [910.348, 919.07, "Its choices explain a lot: spaces glued to words, odd numbers, trouble with spelling, and higher costs for some languages.", [[912.058, 912.548], [914.168, 914.458], [915.248, 915.548], [916.528, 916.818]]],
   "outro/emb": [919.45, 923.515, "The embedding table turns each id into a learned vector.", []],
   "outro/unemb": [923.895, 933.91, "The unembedding turns the final vector back into a score per token, a softmax classifier over the vocabulary. Tying makes the two one matrix.", [[928.065, 928.425], [931.025, 931.595]]],
-  "outro/next": [934.29, 940.902, "Next comes training: how a model learns to predict those next tokens, and how we sample from it.", [[935.61, 936.13], [939.07, 939.3]]],
-  "outro/chapter": [941.282, 950.175, "In the interactive chapter, you can train B P E with a slider, encode any text, and watch an embedding space form. See you there.", [[942.722, 942.972], [945.152, 945.502], [946.712, 946.982], [949.042, 949.482]]]
+  "outro/next": [934.29, 940.902, "Next comes training: how a model learns to predict those next tokens, and how we sample from it.", [[935.61, 936.13], [939.07, 939.3]]]
  }
 }

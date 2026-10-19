@@ -390,7 +390,7 @@ export const script: LectureScript = {
         { id: 'bptt', say: 'It trains with backprop through time, in chunks, with the memory carried forward.', code: 'loop' },
         { id: 'forget', say: "Multiplying by {Whh|W h h} at every step makes plain {RNNs|R N Ns} explode or forget: clipping fixes the first, the {LSTM|L S T M}'s additive cell the second.", code: ['clip', 'lstm'] },
         { id: 'cap', say: 'And a {ConvNet|conv net} feeding an {RNN|R N N} writes captions, which you will build in Assignment 3.', code: 'cap' },
-        { id: 'next', say: 'Now open the interactive chapter: train {min-char-rnn|min char R N N} in your browser, turn the temperature dial, and watch an {LSTM|L S T M} hold a value. See you there.', pause: 0.6 },
+        { id: 'next', say: 'Next, attention. Instead of one glance at the image, the network chooses where to look, and looks again for every word it writes.', pause: 0.6 },
       ],
     },
   ],

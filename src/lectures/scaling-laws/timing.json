@@ -1,5 +1,5 @@
 {
- "duration": 935.285,
+ "duration": 937.105,
  "scenes": {
   "intro": [0.0, 66.557],
   "power": [66.557, 142.767],
@@ -12,7 +12,7 @@
   "twenty": [641.708, 740.087],
   "beyond": [740.087, 818.566],
   "limits": [818.566, 889.619],
-  "outro": [889.619, 935.285]
+  "outro": [889.619, 937.105]
  },
  "beats": {
   "intro/hello": [0.7, 5.674, "This lecture is about scale, and about one surprisingly simple pattern.", [[2.53, 2.82]]],
@@ -131,7 +131,6 @@
   "outro/six": [907.537, 913.569, "Training costs about six N D FLOPs. Running the model costs about two N per token.", [[910.157, 910.697]]],
   "outro/twenty": [913.949, 920.189, "For a fixed budget, grow the model and the data together: about twenty tokens per parameter.", [[915.099, 915.449], [917.599, 918.009]]],
   "outro/longer": [920.569, 925.517, "And if the model will be used a lot, make it smaller, and train it much longer.", [[922.399, 922.779], [923.709, 923.969]]],
-  "outro/next": [925.897, 933.009, "In the interactive chapter you can fit these lines yourself, slide a compute budget, and size a model for its users.", [[929.237, 929.617], [930.887, 931.137]]],
-  "outro/bye": [933.389, 934.185, "See you there.", []]
+  "outro/next": [925.897, 935.405, "Next, what changed inside the block itself as models grew this large: new norms, rotary positions, and attention built for the hardware.", [[926.407, 926.647], [930.627, 931.137], [931.917, 932.167], [933.207, 933.457]]]
  }
 }

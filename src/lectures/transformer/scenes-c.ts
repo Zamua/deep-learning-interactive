@@ -361,9 +361,9 @@ const recap: SceneDef = {
       const bx = w / 2 - bw / 2;
       const by = h / 2 - bh / 2;
       s.rrect(bx, by, bw, bh, 2.5, { fill: s.tint('--card', 0.96), stroke: s.tint('orange', 0.7), lw: 0.4 });
-      s.text('Open the interactive chapter', w / 2, by + u * 8, { font: 'display', size: 5.4, weight: 600 });
-      s.text('step through attention, switch heads,', w / 2, by + u * 16, { font: 'ui', size: 3.4, color: s.c('--ink-2') });
-      s.text('shuffle a sentence, light up a block', w / 2, by + u * 21.5, { font: 'ui', size: 3.4, color: s.c('--ink-2') });
+      s.text('one block, stacked', w / 2, by + u * 8, { font: 'display', size: 5.4, weight: 600 });
+      s.text('attend, then think, token by token,', w / 2, by + u * 16, { font: 'ui', size: 3.4, color: s.c('--ink-2') });
+      s.text('block after block: that is the model', w / 2, by + u * 21.5, { font: 'ui', size: 3.4, color: s.c('--ink-2') });
     });
     s.alpha(s.ease('bye', 0.6), () => s.text('next: tokens and embeddings', w / 2, h - u * 6, { font: 'serif', size: 4.2, italic: true, color: s.c('--ink-2') }));
   },

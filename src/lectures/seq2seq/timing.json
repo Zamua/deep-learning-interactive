@@ -1,5 +1,5 @@
 {
- "duration": 900.799,
+ "duration": 897.925,
  "scenes": {
   "intro": [0.0, 76.76],
   "encdec": [76.76, 153.099],
@@ -12,7 +12,7 @@
   "soft": [600.413, 682.143],
   "scores": [682.143, 773.185],
   "costs": [773.185, 833.919],
-  "outro": [833.919, 900.799]
+  "outro": [833.919, 897.925]
  },
  "beats": {
   "intro/hello": [0.7, 8.752, "Welcome to the first chapter of the new course. It is about the one idea that everything after it is built on: attention.", [[3.32, 3.87], [7.43, 8.05]]],
@@ -121,7 +121,6 @@
   "outro/r4": [862.013, 870.518, "Stripped down, that is a soft dictionary lookup. A query is scored against keys, and the answer is a blend of values.", [[863.003, 863.363], [865.363, 865.953], [868.073, 868.343]]],
   "outro/r5": [870.898, 875.989, "Blending, instead of picking the best match, is what makes it learnable with backprop.", [[871.578, 871.798], [873.518, 873.838]]],
   "outro/r6": [876.369, 886.948, "And with dot product scores, all of it is three matrix operations: soft max of Q K transpose, times V. That is where the Transformer begins.", [[877.969, 878.329], [880.619, 881.099], [883.309, 883.509], [884.219, 884.789]]],
-  "outro/next": [887.328, 897.923, "Next, open the interactive chapter. The four translators run live in your browser: step through them, break them with long sentences, and drag a query around.", [[887.838, 888.108], [889.708, 890.278], [892.888, 893.368], [894.208, 894.548], [896.148, 896.448]]],
-  "outro/bye": [898.303, 899.099, "See you there.", []]
+  "outro/next": [887.328, 896.225, "Next, the Transformer: drop the recurrence, let every word attend to every other word at once, and stack the result into blocks.", [[887.838, 888.098], [888.988, 889.548], [890.638, 890.978], [894.008, 894.268]]]
  }
 }

@@ -1456,9 +1456,9 @@ const argmax: SceneDef = {
       s.alpha(kA * (1 - s.ease('next', 0.6, 0.4) * 0.94), () => tiles(s, area(s, 0.12, 0.05), () => 1, () => 0.4, 0, s.prog('kit') * 1.05));
       const nA = s.ease('next', 0.7, 0.4);
       s.alpha(nA, () => {
-        s.text('next: the interactive chapter', w / 2, h * 0.42, { size: 6.4, font: 'display', weight: 600 });
-        s.text('every idea, as a figure you can drag, with its code beside it', w / 2, h * 0.55, { size: 3.8, italic: true, color: s.c('--ink-2') });
-        s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.7, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
+        s.text('next: Python and NumPy', w / 2, h * 0.42, { size: 6.4, font: 'display', weight: 600 });
+        s.text('each tool, as one short line of array code', w / 2, h * 0.55, { size: 3.8, italic: true, color: s.c('--ink-2') });
+        s.alpha(s.ease('next', 0.6, 2.5), () => s.text('np.sum   W.dot(x)   np.argmax', w / 2, h * 0.7, { size: 4, font: 'mono', weight: 600, color: s.c('--accent') }));
       });
     }
   },

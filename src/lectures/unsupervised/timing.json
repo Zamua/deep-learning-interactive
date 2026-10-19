@@ -1,5 +1,5 @@
 {
- "duration": 970.139,
+ "duration": 970.799,
  "scenes": {
   "intro": [0.0, 49.036],
   "fusion": [49.036, 138.573],
@@ -13,7 +13,7 @@
   "gan": [690.405, 784.121],
   "gan-live": [784.121, 859.137],
   "dcgan": [859.137, 924.955],
-  "outro": [924.955, 970.139]
+  "outro": [924.955, 970.799]
  },
  "beats": {
   "intro/hello": [0.7, 6.761, "Welcome to the last lecture of the 2016 course. It points in two directions at once.", [[3.88, 4.42]]],
@@ -142,7 +142,7 @@
   "outro/ae": [935.391, 939.874, "Autoencoders learn without labels, by compressing and rebuilding.", [[937.701, 938.051]]],
   "outro/vae": [940.254, 948.781, "V A Es sample their code with the reparameterization trick, and a K L penalty lets random codes decode to new data.", [[944.204, 944.584]]],
   "outro/gan": [949.161, 954.582, "GANs pit a generator against a critic: sharp samples, unstable training.", [[951.531, 952.061], [953.051, 953.371]]],
-  "outro/next": [954.962, 960.469, "Next, open the interactive chapter, where all three models train live for you to poke.", [[955.472, 955.742], [957.362, 957.632]]],
-  "outro/dl26": [960.849, 968.439, "Later, the D L twenty six course carries the story on, with contrastive learning and diffusion models. See you there.", [[961.349, 961.619], [964.539, 964.829], [967.309, 967.739]]]
+  "outro/next": [954.962, 962.214, "The three models all learn from the data itself, with no labels at all. That is where much of the field went next.", [[957.762, 957.962], [959.312, 959.932]]],
+  "outro/dl26": [962.594, 969.099, "The D L twenty six course carries the story on from here, with contrastive learning and diffusion models.", [[966.114, 966.494]]]
  }
 }

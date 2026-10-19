@@ -1,5 +1,5 @@
 {
- "duration": 931.479,
+ "duration": 929.781,
  "scenes": {
   "intro": [0.0, 38.396],
   "augment": [38.396, 115.643],
@@ -13,7 +13,7 @@
   "hardware": [660.359, 741.327],
   "precision": [741.327, 802.133],
   "software": [802.133, 885.32],
-  "outro": [885.32, 931.479]
+  "outro": [885.32, 929.781]
  },
  "beats": {
   "intro/hello": [0.7, 2.944, "Welcome to ConvNets in practice.", []],
@@ -140,7 +140,6 @@
   "outro/r3": [899.714, 906.206, "Stack small filters and bottlenecks: fewer parameters, less compute, more nonlinearity.", [[902.004, 902.484], [903.474, 903.684], [904.484, 904.824]]],
   "outro/r4": [906.586, 916.359, "Underneath, convolutions become matrix multiplies, F F Ts or Win-oh-grad tricks, on G P Us, in fewer and fewer bits.", [[907.236, 907.566], [909.996, 910.306], [912.946, 913.266], [914.316, 914.616]]],
   "outro/r5": [916.739, 919.276, "And let a framework derive the gradients.", []],
-  "outro/next": [919.656, 928.604, "Next, open the interactive chapter. Augment real see-far ten images, pick a transfer strategy, and try im to coal yourself.", [[920.176, 920.426], [922.006, 922.556], [924.866, 925.256], [926.656, 926.936]]],
-  "outro/bye": [928.984, 929.779, "See you there.", []]
+  "outro/next": [919.656, 928.081, "Next, we ask a picture for more than one label: where each object is, with a box around it, and which pixels belong to it.", [[920.166, 920.336], [922.476, 923.046], [924.546, 924.756], [925.786, 926.146]]]
  }
 }

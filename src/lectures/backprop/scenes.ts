@@ -1322,9 +1322,8 @@ const recap: SceneDef = {
     }
     const nA = s.ease('next', 0.7, 0.3);
     s.alpha(nA, () => {
-      s.text('next: the interactive chapter', w / 2, h * 0.42, { size: 6.2, font: 'display', weight: 600 });
-      s.text('step through every circuit, change its inputs, check the gradients', w / 2, h * 0.55, { size: 3.5, italic: true, color: s.c('--ink-2') });
-      s.alpha(s.ease('bye', 0.6), () => s.text('see you there', w / 2, h * 0.7, { size: 4.6, font: 'display', italic: true, color: s.c('--accent') }));
+      s.text('next: neural networks', w / 2, h * 0.42, { size: 6.2, font: 'display', weight: 600 });
+      s.text('layers of simple gates, trained by this backward walk', w / 2, h * 0.55, { size: 3.5, italic: true, color: s.c('--ink-2') });
     });
   },
 };
