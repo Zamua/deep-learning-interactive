@@ -4,6 +4,7 @@ import { CIFAR_CLASSES, type CifarSet, drawCifar, loadCifar } from '../core/data
 import { CLASS_COLORS, color, rgbOf, withAlpha } from '../core/plot';
 import { Rng } from '../core/rand';
 import { type Metric, crossValidateFold, distanceMatrix, distancesTo, l2, nearest, vote } from '../lib/image-classification-knn';
+import { IMAGE_CLASSIFICATION_SYMBOLS } from '../lib/image-classification-symbols';
 
 const I1 = String.raw`\sym{Ia}{I_1}`;
 const I2 = String.raw`\sym{Ib}{I_2}`;
@@ -59,14 +60,7 @@ function firstOfClass(set: CifarSet): number[] {
 }
 
 const chapter: ChapterDef = {
-  symbols: {
-    Ia: { color: 'orange', name: 'I₁: the image we want to label (a test image)', tex: 'I_1', code: ['I1'] },
-    Ib: { color: 'blue', name: 'I₂: a training image we compare it against', tex: 'I_2', code: ['I2'] },
-    X: { color: 'teal', name: 'X: a stack of examples, one per row (an image flattened to 3,072 numbers, or a 2-D point)', code: ['X', 'Xtr', 'X_train', 'X_test', 'Xval', 'X_folds', 'X_tr', 'X_val'] },
-    y: { color: 'gold', name: 'y: labels, a class index from 0 to 9 for each example', code: ['y', 'ytr', 'y_train', 'y_test', 'yval', 'y_pred', 'y_hat', 'y_folds', 'y_tr', 'y_val'] },
-    d: { color: 'red', name: 'd: a distance between two examples; 0 means identical', code: ['d', 'd1', 'd2', 'dists'] },
-    k: { color: 'slate', name: 'k: how many neighbors get a vote (a hyperparameter)', code: ['k', 'best_k'] },
-  },
+  symbols: IMAGE_CLASSIFICATION_SYMBOLS,
 
   render(p) {
     p.prose(`

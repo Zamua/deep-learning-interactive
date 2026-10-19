@@ -4,13 +4,7 @@ import { fmt } from '../core/code';
 import { Plot, color, withAlpha } from '../core/plot';
 import { Rng } from '../core/rand';
 import { type CircuitSpec, describe, drawCircuit, evaluate, f2, reveal, revealAll, sigmoid, stepCount } from '../lib/backprop-circuit';
-
-/** Every gradient variable used in this chapter's listings; they all render teal. */
-const GRADS = [
-  'df', 'dq', 'dx', 'dy', 'dz', 'dw', 'dW', 'dX', 'dD', 'dout', 'da', 'db', 'ddot', 'dnum', 'dden', 'dinvden',
-  'dsigx', 'dsigy', 'dxpy', 'dxpysqr', 'dw0', 'dw1', 'dw2', 'dx0', 'dx1', 'dp0', 'dp1', 'ds', 'dneg', 'dex',
-  'dfdx', 'dfdy', 'dfdz', 'dfdq', 'dm', 'dn', 'num_dW',
-];
+import { BACKPROP_SYMBOLS } from '../lib/backprop-symbols';
 
 /** Gradient (teal) and local-gradient (gold) fractions for TeX. */
 const G = (num: string, den: string) => String.raw`\sym{g}{\frac{\partial ${num}}{\partial ${den}}}`;
@@ -76,14 +70,7 @@ function circuitWalk(
 }
 
 const chapter: ChapterDef = {
-  symbols: {
-    f: { color: 'purple', name: 'f: the output of the whole circuit (in a network, the loss)', code: ['f'] },
-    x: { color: 'orange', name: 'x, y, z: inputs to the circuit (in a network: data and weights)', code: ['x', 'y', 'z', 'w', 'X', 'x0', 'x1'] },
-    W: { color: 'blue', name: 'W: weights, the inputs we will actually update', code: ['W', 'w0', 'w1', 'w2'] },
-    g: { color: 'teal', tex: '\\nabla f', name: 'gradient: how much f moves per unit nudge of a value. In code, dx means ∂f/∂x', code: GRADS },
-    loc: { color: 'gold', tex: '\\partial', name: 'local gradient: how one gate’s output moves with one of its own inputs', code: ['local'] },
-    h: { color: 'slate', name: 'h: a small nudge to one input', code: ['h'] },
-  },
+  symbols: BACKPROP_SYMBOLS,
 
   render(p) {
     p.prose(`

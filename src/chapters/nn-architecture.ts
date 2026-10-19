@@ -5,6 +5,7 @@ import { type Dataset2D, blobs, circles, spiral, xor } from '../core/data';
 import { type Activation, MLP, act, dact } from '../core/nn';
 import { CLASS_COLORS, type Plot, color, rgbOf, withAlpha } from '../core/plot';
 import { Rng } from '../core/rand';
+import { NN_ARCHITECTURE_SYMBOLS } from '../lib/nn-architecture-symbols';
 
 const sig = (z: number) => 1 / (1 + Math.exp(-z));
 
@@ -172,16 +173,7 @@ function drawNet(
 }
 
 const chapter: ChapterDef = {
-  symbols: {
-    W: { color: 'blue', name: 'W: the weights of a layer (W1, W2, ... for each layer)', code: ['W', 'W1', 'W2', 'W3', 'w'] },
-    x: { color: 'orange', name: 'x: the input to the network', code: ['x', 'X', 'inputs'] },
-    b: { color: 'green', name: 'b: the biases of a layer', code: ['b', 'b1', 'b2', 'b3', 'bias'] },
-    s: { color: 'purple', name: 's: the output scores (no activation on the last layer)', code: ['scores'] },
-    h: { color: 'gold', name: 'h: hidden-layer activations, features the network computes for itself', code: ['h', 'h1', 'h2', 'hidden'] },
-    f: { color: 'red', name: 'f: the activation function (the nonlinearity)', code: ['f'] },
-    g: { color: 'teal', tex: '\\nabla', name: 'gradient: how the loss changes with a value', code: ['dz', 'dw', 'db', 'dout', 'dscore'] },
-    lam: { color: 'slate', name: 'λ: regularization strength', tex: '\\lambda', code: ['reg'] },
-  },
+  symbols: NN_ARCHITECTURE_SYMBOLS,
 
   render(p) {
     p.prose(`
@@ -857,10 +849,12 @@ A network with a fixed architecture is a whole *family* of functions, one for ea
         n, k = {{n:6}}, {{k:60}}       # bumps, steepness
         edges = np.linspace(0, 1, n + 1)
         heights = target((edges[:-1] + edges[1:]) / 2)
+        steps = edges.copy()
+        steps[0], steps[-1] = -0.15, 1.15  # end steps sit outside [0, 1]
 
         def g(x):                     # one hidden layer of 2n sigmoids
-            up = sig(k * (x - edges[:-1]))     # steps up at each left edge
-            down = sig(k * (x - edges[1:]))    # steps down at each right edge
+            up = sig(k * (x - steps[:-1]))     # steps up at each left edge
+            down = sig(k * (x - steps[1:]))    # steps down at each right edge
             return heights.dot(up - down)      # output: weighted sum
         # hidden units: {{units}}   worst error: {{err}}
       `,
@@ -870,10 +864,13 @@ A network with a fixed architecture is a whole *family* of functions, one for ea
         let k = 60;
         let show = true;
         const edges = () => Array.from({ length: n + 1 }, (_, i) => i / n);
+        // A sigmoid is only half-way up at its own step, so the outermost steps sit past the ends.
+        const steps = () => edges().map((v, i) => (i === 0 ? -0.15 : i === n ? 1.15 : v));
         const g = (x: number) => {
           const e = edges();
+          const st = steps();
           let s = 0;
-          for (let i = 0; i < n; i++) s += target((e[i]! + e[i + 1]!) / 2) * (sig(k * (x - e[i]!)) - sig(k * (x - e[i + 1]!)));
+          for (let i = 0; i < n; i++) s += target((e[i]! + e[i + 1]!) / 2) * (sig(k * (x - st[i]!)) - sig(k * (x - st[i + 1]!)));
           return s;
         };
         const pl = f.plot({
@@ -883,10 +880,11 @@ A network with a fixed architecture is a whole *family* of functions, one for ea
           draw: (pp) => {
             pp.axes({ grid: 0.25 });
             const e = edges();
+            const st = steps();
             if (show && n <= 40) {
               for (let i = 0; i < n; i++) {
                 const hgt = target((e[i]! + e[i + 1]!) / 2);
-                pp.fn((x) => hgt * (sig(k * (x - e[i]!)) - sig(k * (x - e[i + 1]!))), withAlpha(color(CLASS_COLORS[i % 6]!), 0.55), 1.2);
+                pp.fn((x) => hgt * (sig(k * (x - st[i]!)) - sig(k * (x - st[i + 1]!))), withAlpha(color(CLASS_COLORS[i % 6]!), 0.55), 1.2);
               }
             }
             pp.fn(target, color('--ink'), 2, [6, 4]);
