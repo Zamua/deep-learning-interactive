@@ -294,6 +294,11 @@ code.sym,
   font-size: 0.9em;
 }
 
+/* KaTeX boxes overhang their line and would swallow taps meant for the controls above. */
+.fig-status .katex {
+  pointer-events: none;
+}
+
 .fig-cap {
   padding: 12px 18px 14px;
   border-top: 1px solid var(--rule);
