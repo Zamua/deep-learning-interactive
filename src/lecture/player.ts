@@ -24,6 +24,8 @@ interface TBeat {
   end: number;
   code?: Beat['code'];
   caps: { at: number; text: string }[];
+  /** Silences inside the line, [from, to]: where its phrases break. */
+  pauses: [number, number][];
 }
 
 interface TScene {
@@ -75,7 +77,8 @@ function layout(script: LectureScript, timing: Timing | null): { scenes: TScene[
         acc += text.length + 1;
         return { at, text };
       });
-      return { id: b.id, start: bs, end: be, code: b.code, caps };
+      const pauses = exact ? (timing!.beats[`${s.id}/${b.id}`]![3] ?? []) : [];
+      return { id: b.id, start: bs, end: be, code: b.code, caps, pauses };
     });
     const end = exact ? timing!.scenes[s.id]![1] : t;
     t = end;
@@ -176,6 +179,9 @@ const LOCK_PX = 56;
 const SKIP_S = 10;
 const DOUBLE_MS = 300;
 const RUN_MS = 700;
+/** Resuming backs up to where the interrupted phrase began, RESUME_LEAD s early, at most RESUME_MAX s. */
+const RESUME_LEAD = 0.1;
+const RESUME_MAX = 6;
 
 const mmss = (t: number): string => {
   const s = Math.max(0, Math.floor(t));
@@ -448,6 +454,26 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     if ('mediaSession' in navigator) navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
   }
 
+  /** Where playback stopped by a pause, until a seek moves it; play resumes from just before it. */
+  let pausedAt: number | null = null;
+
+  /**
+   * Where play picks up after a pause at `t`: the start of the phrase it interrupted, so a word cut
+   * in half is heard whole. A pause in a silence resumes in place.
+   */
+  function resumePoint(t: number): number {
+    let b: TBeat | null = null;
+    for (const x of scenes[sceneIndexAt(t)]!.beats) if (t >= x.start) b = x;
+    if (!b || t >= b.end) return t;
+    let from = b.start;
+    for (const [a, z] of b.pauses) {
+      if (t < a) break;
+      if (t < z) return t;
+      from = z;
+    }
+    return Math.max(from - RESUME_LEAD, t - RESUME_MAX);
+  }
+
   async function play(): Promise<void> {
     started = true;
     root.classList.add('started');
@@ -456,10 +482,16 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
       root.classList.remove('ended');
       clock.seek(0);
     }
+    if (pausedAt !== null) {
+      const p = resumePoint(pausedAt);
+      if (p < clock.time() - 0.01) clock.seek(p);
+    }
+    pausedAt = null;
     try {
       await clock.play();
     } catch (e) {
-      if ((e as DOMException).name === 'NotAllowedError') return;
+      // AbortError: a pause landed before playback began.
+      if (['NotAllowedError', 'AbortError'].includes((e as DOMException).name)) return;
       clock.goSilent();
       notice.textContent = 'The narration could not play here, so the lecture is running with captions only.';
       await clock.play();
@@ -480,6 +512,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   }
 
   function onPaused(): void {
+    pausedAt = clock.time();
     setPlayingUi(false);
     void wake(false);
     savePos();
@@ -487,6 +520,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   }
 
   function onEnded(): void {
+    pausedAt = null;
     setBoost('off');
     ended = true;
     root.classList.add('ended');
@@ -502,6 +536,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   }
 
   function seek(t: number): void {
+    pausedAt = null;
     if (ended) {
       ended = false;
       root.classList.remove('ended');
@@ -517,7 +552,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
 
   function savePos(): void {
     const t = clock.time();
-    store.set(posKey, String(t > 8 && t < duration - 8 ? Math.round(t) : 0));
+    store.set(posKey, String(t > 8 && t < duration - 8 ? Math.round(t * 10) / 10 : 0));
   }
 
   if (audio) {
@@ -853,6 +888,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     resume.addEventListener('click', (e) => {
       e.stopPropagation();
       clock.seek(saved);
+      pausedAt = saved;
       void play();
     });
     poster.querySelector('.lec-poster-actions')!.prepend(resume);
@@ -886,6 +922,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     play,
     pause,
     duration,
+    time: () => clock.time(),
     rate: () => clock.rate,
     boost: () => boost,
     scenes: scenes.map((s) => ({ id: s.id, start: s.start, end: s.end, beats: s.beats.map((b) => ({ id: b.id, start: b.start, end: b.end })) })),

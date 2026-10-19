@@ -30,5 +30,6 @@ OpenRouter's speech API or locally with [Kokoro](https://github.com/thewh1teagle
 
 The player: tap the picture to pause, double tap its left or right side to skip 10 s back or
 ahead (keep tapping to skip further), hold it to play at 2×, and slide down while holding to
-lock 2× until the next hold (or a tap on the 2× pill). Keys: space or `k` play, `j`/`l` ±10 s,
+lock 2× until the next hold (or a tap on the 2× pill). Resuming after a pause backs up to the
+start of the interrupted phrase. Keys: space or `k` play, `j`/`l` ±10 s,
 arrows ±5 s, `[`/`]` previous/next section, `<`/`>` speed, `c` captions, `f` full screen.

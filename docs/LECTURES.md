@@ -11,7 +11,8 @@ stays sharp, small, and in the chapter's colors. Route: `#/watch/<chapter-id>`.
                                    except `import type`: the narration builder loads it in Node)
     src/lectures/<id>/scenes.ts    one SceneDef per scene: draw(s) and optional KaTeX marks
     src/lectures/<id>/index.ts     wires script, timing, scenes, symbols and the audio URL
-    src/lectures/<id>/timing.json  generated: when every beat starts and ends
+    src/lectures/<id>/timing.json  generated: when every beat starts and ends, and where its phrases
+                                   break (resuming after a pause backs up to the phrase start)
     src/lectures/<id>/narration.m4a generated: the voice track (hashed into dist/assets)
 
 A chapter with a lecture gets the Watch / Explore / Practice card automatically

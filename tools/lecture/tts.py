@@ -29,6 +29,21 @@ def trim(a, sr, thresh=0.01, keep=0.04):
     return a[max(0, loud[0] - k): loud[-1] + k]
 
 
+def pauses(a, sr, thresh=0.02, min_len=0.15):
+    """Silences of at least `min_len` s inside a clip, as (from, to) seconds: where its phrases break."""
+    hop = int(0.01 * sr)
+    quiet = np.abs(a[: len(a) // hop * hop]).reshape(-1, hop).max(axis=1) < thresh
+    out, i = [], 0
+    while i < len(quiet):
+        j = i
+        while j < len(quiet) and quiet[j] == quiet[i]:
+            j += 1
+        if quiet[i] and i > 0 and j < len(quiet) and (j - i) * hop >= min_len * sr:
+            out.append((i * hop / sr, j * hop / sr))
+        i = j
+    return out
+
+
 def words(s):
     return re.sub(r"[^a-z0-9' ]", ' ', s.lower()).split()
 
@@ -121,7 +136,9 @@ def main():
         for i, b in enumerate(s['beats']):
             path = path_of(b['text'])
             a = sf.read(path, dtype='float32')[0]
-            beats[f"{s['id']}/{b['id']}"] = [round(n / sr, 3), round((n + len(a)) / sr, 3), b['text']]
+            t0 = n / sr
+            beats[f"{s['id']}/{b['id']}"] = [round(t0, 3), round((n + len(a)) / sr, 3), b['text'],
+                                             [[round(t0 + f, 3), round(t0 + z, 3)] for f, z in pauses(a, sr)]]
             clips.append((f"{s['id']}/{b['id']}", b['text'], path))
             parts.append(a)
             n += len(a)
@@ -137,8 +154,9 @@ def main():
                         '-ar', str(sr), '-ac', '1', '-c:a', 'aac', '-b:a', '64k' if sr > 24000 else '48k',
                         '-movflags', '+faststart', job['audio']], check=True)
     with open(job['timing'], 'w') as f:
-        json.dump({'duration': round(n / sr, 3), 'scenes': scenes, 'beats': beats}, f, indent=1)
-        f.write('\n')
+        # One beat per line keeps the file diffable.
+        rows = lambda d: ',\n'.join(f'  {json.dumps(k)}: {json.dumps(v)}' for k, v in d.items())
+        f.write(f'{{\n "duration": {round(n / sr, 3)},\n "scenes": {{\n{rows(scenes)}\n }},\n "beats": {{\n{rows(beats)}\n }}\n}}\n')
     print(f"{round(n / sr / 60, 1)} min, {os.path.getsize(job['audio']) / 2**20:.1f} MiB -> {job['audio']}")
 
     if job['check']:

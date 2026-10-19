@@ -1,715 +1,151 @@
 {
  "duration": 946.685,
  "scenes": {
-  "intro": [
-   0.0,
-   50.757
-  ],
-  "functions": [
-   50.757,
-   144.205
-  ],
-  "vectors": [
-   144.205,
-   233.185
-  ],
-  "dot": [
-   233.185,
-   308.565
-  ],
-  "matrices": [
-   308.565,
-   408.62
-  ],
-  "sums": [
-   408.62,
-   469.089
-  ],
-  "exp-log": [
-   469.089,
-   548.63
-  ],
-  "derivatives": [
-   548.63,
-   649.926
-  ],
-  "gradient": [
-   649.926,
-   724.221
-  ],
-  "chain": [
-   724.221,
-   795.936
-  ],
-  "probability": [
-   795.936,
-   877.225
-  ],
-  "argmax": [
-   877.225,
-   946.685
-  ]
+  "intro": [0.0, 50.757],
+  "functions": [50.757, 144.205],
+  "vectors": [144.205, 233.185],
+  "dot": [233.185, 308.565],
+  "matrices": [308.565, 408.62],
+  "sums": [408.62, 469.089],
+  "exp-log": [469.089, 548.63],
+  "derivatives": [548.63, 649.926],
+  "gradient": [649.926, 724.221],
+  "chain": [724.221, 795.936],
+  "probability": [795.936, 877.225],
+  "argmax": [877.225, 946.685]
  },
  "beats": {
-  "intro/hello": [
-   0.7,
-   2.768,
-   "Welcome to the math survival kit."
-  ],
-  "intro/wall": [
-   3.148,
-   7.17,
-   "Open a deep learning paper, and it can look like a wall of symbols."
-  ],
-  "intro/wall2": [
-   7.55,
-   13.525,
-   "Greek letters, big sums, little triangles, things stacked on top of other things."
-  ],
-  "intro/good": [
-   13.905,
-   19.448,
-   "Here is the good news. Almost everything in this course is built from about a dozen ideas."
-  ],
-  "intro/names": [
-   19.828,
-   25.296,
-   "And as a programmer, you already use most of them. You just know them by other names."
-  ],
-  "intro/loop": [
-   25.676,
-   32.465,
-   "A sum is a for loop. A vector is a list. A function is, well, a function."
-  ],
-  "intro/plan": [
-   32.845,
-   38.372,
-   "So we will walk through the ideas in order, and pin every one of them to a few lines of code."
-  ],
-  "intro/relax": [
-   38.752,
-   46.322,
-   "You do not need to memorize anything. The goal is simple: by the end, no symbol in this course should scare you."
-  ],
-  "intro/go": [
-   46.702,
-   49.657,
-   "Let us start with the most basic idea of all."
-  ],
-  "functions/var": [
-   51.457,
-   57.252,
-   "In math, a variable is just a name for a number, exactly like a variable in your code."
-  ],
-  "functions/machine": [
-   57.632,
-   62.798,
-   "And a function is a machine. Feed it an input, and it hands back an output."
-  ],
-  "functions/def": [
-   63.178,
-   72.835,
-   "A mathematician writes f of x equals two x plus one. You would write a Python function that returns two times x, plus one. Same thing."
-  ],
-  "functions/three": [
-   73.215,
-   75.725,
-   "Put in three, and out comes seven."
-  ],
-  "functions/more": [
-   76.105,
-   81.858,
-   "Put in zero, out comes one. Put in minus two, out comes minus three."
-  ],
-  "functions/same": [
-   82.238,
-   87.486,
-   "The same input always gives the same output. That is the whole contract."
-  ],
-  "functions/graph": [
-   87.866,
-   91.852,
-   "The graph of a function is a picture of every answer at once."
-  ],
-  "functions/dots": [
-   92.232,
-   97.347,
-   "For each input along the horizontal axis, put a dot at the height of its output."
-  ],
-  "functions/join": [
-   97.727,
-   105.591,
-   "NumPy does exactly this. Evaluate the function on a whole array of inputs in one go, then join the dots."
-  ],
-  "functions/curve": [
-   105.971,
-   113.905,
-   "Not every function is a straight line. x squared bends into a U shape, and that shape will matter a lot later."
-  ],
-  "functions/big": [
-   114.285,
-   118.107,
-   "The two most important functions in this course are enormous."
-  ],
-  "functions/net": [
-   118.487,
-   125.88,
-   "The network takes an image, three thousand and seventy two numbers, and returns ten scores, one per class."
-  ],
-  "functions/loss": [
-   126.26,
-   132.763,
-   "The loss takes every weight in the network and returns one single number: how badly it is doing."
-  ],
-  "functions/learn": [
-   133.143,
-   142.805,
-   "Learning just means tweaking the inputs of the loss until its output is small. Keep that sentence in mind. The rest of this lecture is about how to do it."
-  ],
-  "vectors/list": [
-   144.905,
-   151.198,
-   "A vector is a list of numbers. That is it. In NumPy, it is a one dimensional array."
-  ],
-  "vectors/arrow": [
-   151.578,
-   159.131,
-   "With two numbers, we can draw it. Three steps to the right, one step up, and an arrow from the origin to that point."
-  ],
-  "vectors/both": [
-   159.511,
-   164.916,
-   "So a vector is both a list and an arrow, and it helps to think of it both ways."
-  ],
-  "vectors/w": [
-   165.296,
-   169.859,
-   "Here is a second vector, w, the list one, two."
-  ],
-  "vectors/add": [
-   170.239,
-   177.603,
-   "Adding vectors works entry by entry. Three plus one, and one plus two, gives four and three."
-  ],
-  "vectors/tip": [
-   177.983,
-   185.462,
-   "As arrows, that is tip to tail. Walk along x, then walk along w, and you land on the sum."
-  ],
-  "vectors/scale": [
-   185.842,
-   195.282,
-   "Multiplying by a number scales every entry. Two times x is the same arrow, twice as long. Minus one flips it around."
-  ],
-  "vectors/norm": [
-   195.662,
-   207.108,
-   "The length of a vector comes from Pythagoras. Square the entries, add them up, and take the square root. For x, that is the square root of ten, about three point one six."
-  ],
-  "vectors/leap": [
-   207.488,
-   211.679,
-   "Now the important leap. An image is also a vector."
-  ],
-  "vectors/pixels": [
-   212.059,
-   222.656,
-   "A small color image has thirty two by thirty two pixels, with three color values each. Line them all up, and you get a list of three thousand and seventy two numbers."
-  ],
-  "vectors/dims": [
-   223.036,
-   232.085,
-   "We cannot draw an arrow in three thousand dimensions, but the code does not care. Adding, scaling and length work exactly the same way."
-  ],
-  "dot/most": [
-   233.885,
-   238.266,
-   "The dot product is the single most used operation in this whole course."
-  ],
-  "dot/what": [
-   238.646,
-   242.565,
-   "It takes two vectors of the same length and returns one number."
-  ],
-  "dot/how": [
-   242.945,
-   246.551,
-   "Multiply the matching entries, then add up the results."
-  ],
-  "dot/nums": [
-   246.931,
-   254.761,
-   "One times three is three. A half times one is a half. And three plus a half is three and a half."
-  ],
-  "dot/np": [
-   255.141,
-   261.312,
-   "In NumPy, that is the sum of w times x, or simply, w dot x."
-  ],
-  "dot/mean": [
-   261.692,
-   264.994,
-   "But what does that number mean? Think of the arrows."
-  ],
-  "dot/same": [
-   265.374,
-   270.267,
-   "When the two arrows point the same way, the dot product is large and positive."
-  ],
-  "dot/right": [
-   270.647,
-   273.425,
-   "At a right angle, it is exactly zero."
-  ],
-  "dot/opp": [
-   273.805,
-   278.022,
-   "And when they point in opposite directions, it is large and negative."
-  ],
-  "dot/agree": [
-   278.402,
-   282.153,
-   "So the dot product measures how much two arrows agree."
-  ],
-  "dot/plane": [
-   282.533,
-   293.292,
-   "Now color every point in the plane by the sign of its dot product with w. One side is positive, the other is negative, and the border between them is a straight line."
-  ],
-  "dot/clf": [
-   293.672,
-   307.465,
-   "That is a linear classifier in miniature. Let w be the weights for one class, and x an image. Then w dot x is the score for that class: high when the image agrees with the weights."
-  ],
-  "matrices/grid": [
-   309.265,
-   312.252,
-   "A matrix is a rectangular grid of numbers."
-  ],
-  "matrices/shape": [
-   312.632,
-   321.968,
-   "Its shape is rows, then columns, always in that order. This one has two rows and three columns, so its shape is two by three."
-  ],
-  "matrices/rows": [
-   322.348,
-   326.281,
-   "The best way to see a matrix is as a stack of row vectors."
-  ],
-  "matrices/mv": [
-   326.661,
-   333.329,
-   "And multiplying a matrix by a vector is not a new operation at all. It is one dot product per row."
-  ],
-  "matrices/r0": [
-   333.709,
-   342.707,
-   "Row zero, dotted with x. Two times one, plus zero times two, plus one times three. That is five."
-  ],
-  "matrices/r1": [
-   343.087,
-   350.405,
-   "Row one, dotted with x. Minus one, plus six, plus six. That is eleven."
-  ],
-  "matrices/stack": [
-   350.785,
-   356.942,
-   "Stack the answers, and you get a new vector: five and eleven. One number per row."
-  ],
-  "matrices/code": [
-   357.322,
-   365.359,
-   "In code, that is a loop over the rows. Or just W dot x, which runs the whole loop for you, very fast."
-  ],
-  "matrices/habit": [
-   365.739,
-   371.735,
-   "Here is the habit that will save you the most debugging time: write the shape next to every array."
-  ],
-  "matrices/rule": [
-   372.115,
-   383.481,
-   "Shapes follow a tiny rule. An m by n matrix, times an n by p matrix, gives m by p. The inner sizes must match, and they cancel out."
-  ],
-  "matrices/course": [
-   383.861,
-   395.787,
-   "In the course, W has ten rows, one per class, and three thousand and seventy two columns, one per pixel value. Multiply it by an image, and you get ten scores."
-  ],
-  "matrices/T": [
-   396.167,
-   407.52,
-   "One last trick: the transpose. W dot T flips a matrix over its diagonal, so rows become columns. It is the usual way to make shapes line up."
-  ],
-  "sums/sigma": [
-   409.32,
-   417.283,
-   "Next, the big Greek letter that looks like a sideways M. It is a capital sigma. Think S, for sum."
-  ],
-  "sums/loop": [
-   417.663,
-   420.367,
-   "And it is nothing but a for loop that adds."
-  ],
-  "sums/parts": [
-   420.747,
-   430.835,
-   "The bit underneath says where the loop variable starts. The number on top says where it stops. And whatever sits to the right is what gets added on each pass."
-  ],
-  "sums/read": [
-   431.215,
-   436.602,
-   "So this reads: for i from one to n, add up x sub i."
-  ],
-  "sums/run": [
-   436.982,
-   445.537,
-   "Watch the loop run. Four. Plus one is five. Plus three is eight. Plus two is ten."
-  ],
-  "sums/index": [
-   445.917,
-   452.644,
-   "Math usually counts from one, while Python counts from zero. Same loop, different starting label."
-  ],
-  "sums/np": [
-   453.024,
-   456.691,
-   "In NumPy, the whole loop is a single call to sum."
-  ],
-  "sums/pi": [
-   457.071,
-   462.508,
-   "Its cousin, a capital pi, is the same loop, but multiplying instead of adding."
-  ],
-  "sums/remember": [
-   462.888,
-   467.989,
-   "Whenever you see a sigma in this course, just read it as: loop, and add."
-  ],
-  "exp-log/e": [
-   469.789,
-   477.102,
-   "Now meet e, a number about two point seven one eight. It is to growth what pi is to circles."
-  ],
-  "exp-log/exp": [
-   477.482,
-   484.046,
-   "The exponential function raises e to the power x. In NumPy, it is called exp."
-  ],
-  "exp-log/zero": [
-   484.426,
-   492.42,
-   "At zero, it gives exactly one. And every step of one to the right multiplies the output by about two point seven."
-  ],
-  "exp-log/boom": [
-   492.8,
-   499.978,
-   "So it explodes. e to the three is about twenty, and e to the ten is over twenty thousand."
-  ],
-  "exp-log/left": [
-   500.358,
-   506.849,
-   "Going left, it shrinks toward zero. But it never reaches zero, and it is never negative."
-  ],
-  "exp-log/why": [
-   507.229,
-   515.223,
-   "That one fact is why the course uses it: exp turns any score, even a negative one, into a positive number."
-  ],
-  "exp-log/log": [
-   515.603,
-   522.711,
-   "The logarithm undoes the exponential. It answers the question: what power of e gives me this number?"
-  ],
-  "exp-log/mirror": [
-   523.091,
-   526.903,
-   "Its graph is the exp curve, mirrored across the diagonal."
-  ],
-  "exp-log/vals": [
-   527.283,
-   537.183,
-   "The log of one is zero. And the log of a tiny number, like zero point zero zero one, is a big negative number, about minus seven."
-  ],
-  "exp-log/softmax": [
-   537.563,
-   543.71,
-   "You will see these two together in the softmax. Exponentiate the scores so they are all positive."
-  ],
-  "exp-log/divide": [
-   544.09,
-   547.53,
-   "Then divide by their total, so they add up to one."
-  ],
-  "derivatives/calc": [
-   549.33,
-   553.697,
-   "Now for calculus. And I promise, this is the friendly kind."
-  ],
-  "derivatives/line": [
-   554.077,
-   563.625,
-   "The slope of a straight line is rise over run. This line climbs two for every one step to the right, so its slope is two, everywhere."
-  ],
-  "derivatives/curve": [
-   564.005,
-   570.507,
-   "A curve is steeper in some places than others. The derivative is its slope at one particular point."
-  ],
-  "derivatives/nudge": [
-   570.887,
-   579.3,
-   "Here is the question it answers. If I nudge the input by a tiny amount, how much does the output move, compared to my nudge?"
-  ],
-  "derivatives/measure": [
-   579.68,
-   588.028,
-   "You can measure it with nothing but the function itself. Pick a point, step a distance h to the right, and compute rise over run."
-  ],
-  "derivatives/secant": [
-   588.408,
-   595.498,
-   "With h equal to one, the line through the two points has a slope of four. That line is called a secant."
-  ],
-  "derivatives/shrink": [
-   595.878,
-   604.455,
-   "Now shrink h. Point one. Point zero one. The secant swings around, and its slope settles on three."
-  ],
-  "derivatives/tangent": [
-   604.835,
-   614.183,
-   "That final line just grazes the curve. It is the tangent, and its slope, three, is the derivative of x squared at one and a half."
-  ],
-  "derivatives/rule": [
-   614.563,
-   623.516,
-   "There is a shortcut rule for this one. The derivative of x squared is two x. Two times one and a half is three. It matches."
-  ],
-  "derivatives/rules": [
-   623.896,
-   632.607,
-   "A handful of rules like that covers nearly everything. e to the x is its own derivative, and log of x becomes one over x."
-  ],
-  "derivatives/sign": [
-   632.987,
-   642.272,
-   "Read the sign like a road. Positive means uphill. Negative means downhill. And zero means flat, like the bottom of a valley."
-  ],
-  "derivatives/key": [
-   642.652,
-   648.826,
-   "And that is the key to learning. If we know which way is downhill, we know which way to move."
-  ],
-  "gradient/many": [
-   650.626,
-   656.268,
-   "The loss in this course does not have one input. It has thousands, even millions."
-  ],
-  "gradient/two": [
-   656.648,
-   668.09,
-   "Here is one with just two inputs, x and y, so we can draw it. Its height is x squared plus three y squared: a bowl, seen from above as a contour map."
-  ],
-  "gradient/partial": [
-   668.47,
-   676.337,
-   "To get the slope in one direction, nudge just that input, and freeze the other one. That is called a partial derivative."
-  ],
-  "gradient/px": [
-   676.717,
-   685.276,
-   "Freeze y, and the slope in the x direction is two x. Freeze x, and the slope in the y direction is six y."
-  ],
-  "gradient/grad": [
-   685.656,
-   689.211,
-   "Put those slopes together in a vector, and you have the gradient."
-  ],
-  "gradient/uphill": [
-   689.591,
-   698.148,
-   "Draw the gradient as an arrow, and something lovely happens. It points straight uphill: the steepest way up from wherever you stand."
-  ],
-  "gradient/down": [
-   698.528,
-   701.898,
-   "So, to go downhill, step the opposite way."
-  ],
-  "gradient/steps": [
-   702.278,
-   706.971,
-   "Take a small step against the gradient. Recompute it. Step again."
-  ],
-  "gradient/slide": [
-   707.351,
-   712.26,
-   "Each step lowers the height, and the point slides down into the bottom of the bowl."
-  ],
-  "gradient/gd": [
-   712.64,
-   722.821,
-   "That loop is gradient descent, and it is how every network in this course learns. The only difference is that the bowl has millions of directions instead of two."
-  ],
-  "chain/pipe": [
-   724.921,
-   731.469,
-   "Neural networks are pipelines. The output of one function feeds the next one, many times over."
-  ],
-  "chain/rule": [
-   731.849,
-   741.401,
-   "The chain rule tells us how a change at the very start ripples through to the very end. And the answer is pleasingly simple: the rates multiply."
-  ],
-  "chain/g1": [
-   741.781,
-   747.852,
-   "Picture a train of gears. Gear u turns three times for every turn of gear x."
-  ],
-  "chain/g2": [
-   748.232,
-   751.911,
-   "And gear v turns four times for every turn of u."
-  ],
-  "chain/g3": [
-   752.291,
-   758.982,
-   "So for every turn of x, how many turns does v make? Three times four. Twelve."
-  ],
-  "chain/local": [
-   759.362,
-   765.508,
-   "Notice that each gear only needs to know its ratio to its neighbor. Nobody needs the big picture."
-  ],
-  "chain/curvy": [
-   765.888,
-   771.36,
-   "The same works for curvier functions. Take two x plus one, and then square it."
-  ],
-  "chain/rates": [
-   771.74,
-   778.099,
-   "The inner step has a rate of two. The outer step, squaring u, has a rate of two u."
-  ],
-  "chain/mult": [
-   778.479,
-   782.178,
-   "Multiply them, and you have the derivative of the whole pipeline."
-  ],
-  "chain/backprop": [
-   782.558,
-   794.536,
-   "This is the beating heart of backpropagation. A network computes forward, layer by layer. Then it passes rates backward, each layer multiplying in its own small piece."
-  ],
-  "probability/two": [
-   796.636,
-   800.982,
-   "Two more ideas, and you are through. First, probability."
-  ],
-  "probability/p": [
-   801.362,
-   808.354,
-   "A probability is a number between zero and one. Zero means never, and one means certainly."
-  ],
-  "probability/dist": [
-   808.734,
-   818.236,
-   "A probability distribution gives each possible outcome one of those numbers. And they always add up to exactly one, because something has to happen."
-  ],
-  "probability/softmax": [
-   818.616,
-   827.411,
-   "That is exactly what a softmax classifier outputs. Cat, seventy percent. Dog, twenty. Ship, ten."
-  ],
-  "probability/mean": [
-   827.791,
-   834.629,
-   "For a pile of numbers, two summaries matter most. The mean, mu, says where they are centered."
-  ],
-  "probability/std": [
-   835.009,
-   841.372,
-   "The standard deviation, sigma, says how spread out they are: a typical distance from the mean."
-  ],
-  "probability/bell": [
-   841.752,
-   850.09,
-   "Draw lots of random samples, and many quantities pile up in a bell shape. That is the Gaussian, or normal, distribution."
-  ],
-  "probability/rule": [
-   850.47,
-   857.192,
-   "About two thirds of the samples land within one sigma of the middle, and about ninety five percent within two."
-  ],
-  "probability/randn": [
-   857.572,
-   868.075,
-   "NumPy's randn draws from the standard bell: centered at zero, with a spread of one. Multiply by sigma to stretch it. Add mu to shift it."
-  ],
-  "probability/init": [
-   868.455,
-   876.125,
-   "The course uses this constantly. For example, to fill a weight matrix with small random numbers before training begins."
-  ],
-  "argmax/max": [
-   877.925,
-   882.383,
-   "The last one is quick. Max gives you the largest value in a list."
-  ],
-  "argmax/argmax": [
-   882.763,
-   885.804,
-   "Argmax gives you the position of the largest value."
-  ],
-  "argmax/pred": [
-   886.184,
-   895.816,
-   "When a classifier makes a prediction, it takes the argmax of its scores. We do not want the winning score itself. We want to know which class won."
-  ],
-  "argmax/decode": [
-   896.196,
-   899.226,
-   "Here are the symbols you will meet most, decoded."
-  ],
-  "argmax/sigma": [
-   899.606,
-   902.048,
-   "Sigma means loop and add."
-  ],
-  "argmax/nabla": [
-   902.428,
-   906.892,
-   "The upside down triangle, called nabla, means the gradient."
-  ],
-  "argmax/musig": [
-   907.272,
-   910.251,
-   "Mu and sigma are the center and the spread."
-  ],
-  "argmax/wx": [
-   910.631,
-   914.933,
-   "And a matrix next to a vector means one dot product per row."
-  ],
-  "argmax/kit": [
-   915.313,
-   927.356,
-   "That is the whole kit. Functions, vectors, dot products, matrices, sums, exp and log, derivatives, gradients, the chain rule, probability, and argmax."
-  ],
-  "argmax/back": [
-   927.736,
-   933.976,
-   "You do not need to have memorized any of it. Every chapter links back here whenever an idea comes up."
-  ],
-  "argmax/next": [
-   934.356,
-   943.809,
-   "Next, open the interactive chapter. Every idea you just saw is there as a figure you can drag and poke, with the code running right beside it."
-  ],
-  "argmax/bye": [
-   944.189,
-   944.985,
-   "See you there."
-  ]
+  "intro/hello": [0.7, 2.768, "Welcome to the math survival kit.", []],
+  "intro/wall": [3.148, 7.17, "Open a deep learning paper, and it can look like a wall of symbols.", []],
+  "intro/wall2": [7.55, 13.525, "Greek letters, big sums, little triangles, things stacked on top of other things.", [[8.46, 8.78], [9.69, 9.91], [10.96, 11.36]]],
+  "intro/good": [13.905, 19.448, "Here is the good news. Almost everything in this course is built from about a dozen ideas.", [[15.195, 15.575]]],
+  "intro/names": [19.828, 25.296, "And as a programmer, you already use most of them. You just know them by other names.", [[21.098, 21.318], [22.988, 23.488]]],
+  "intro/loop": [25.676, 32.465, "A sum is a for loop. A vector is a list. A function is, well, a function.", [[27.256, 27.826], [29.256, 29.826], [30.956, 31.256], [31.566, 31.836]]],
+  "intro/plan": [32.845, 38.372, "So we will walk through the ideas in order, and pin every one of them to a few lines of code.", [[35.275, 35.535]]],
+  "intro/relax": [38.752, 46.322, "You do not need to memorize anything. The goal is simple: by the end, no symbol in this course should scare you.", [[40.912, 41.402], [42.532, 43.082], [43.672, 43.982]]],
+  "intro/go": [46.702, 49.657, "Let us start with the most basic idea of all.", []],
+  "functions/var": [51.457, 57.252, "In math, a variable is just a name for a number, exactly like a variable in your code.", [[52.087, 52.347], [54.637, 55.067]]],
+  "functions/machine": [57.632, 62.798, "And a function is a machine. Feed it an input, and it hands back an output.", [[59.342, 59.912], [60.882, 61.172]]],
+  "functions/def": [63.178, 72.835, "A mathematician writes f of x equals two x plus one. You would write a Python function that returns two times x, plus one. Same thing.", [[64.518, 64.678], [67.138, 67.708], [71.748, 72.208]]],
+  "functions/three": [73.215, 75.725, "Put in three, and out comes seven.", [[74.145, 74.315]]],
+  "functions/more": [76.105, 81.858, "Put in zero, out comes one. Put in minus two, out comes minus three.", [[77.075, 77.345], [78.265, 78.775], [80.015, 80.345]]],
+  "functions/same": [82.238, 87.486, "The same input always gives the same output. That is the whole contract.", [[85.238, 85.738]]],
+  "functions/graph": [87.866, 91.852, "The graph of a function is a picture of every answer at once.", [[90.116, 90.266]]],
+  "functions/dots": [92.232, 97.347, "For each input along the horizontal axis, put a dot at the height of its output.", [[94.832, 95.172]]],
+  "functions/join": [97.727, 105.591, "NumPy does exactly this. Evaluate the function on a whole array of inputs in one go, then join the dots.", [[99.717, 100.217], [103.817, 104.227], [104.567, 104.727]]],
+  "functions/curve": [105.971, 113.905, "Not every function is a straight line. x squared bends into a U shape, and that shape will matter a lot later.", [[108.281, 108.851], [111.121, 111.481]]],
+  "functions/big": [114.285, 118.107, "The two most important functions in this course are enormous.", []],
+  "functions/net": [118.487, 125.88, "The network takes an image, three thousand and seventy two numbers, and returns ten scores, one per class.", [[120.017, 120.337], [122.547, 122.847], [124.447, 124.787]]],
+  "functions/loss": [126.26, 132.763, "The loss takes every weight in the network and returns one single number: how badly it is doing.", [[128.6, 128.79], [130.69, 131.23]]],
+  "functions/learn": [133.143, 142.805, "Learning just means tweaking the inputs of the loss until its output is small. Keep that sentence in mind. The rest of this lecture is about how to do it.", [[137.823, 138.493], [139.883, 140.403]]],
+  "vectors/list": [144.905, 151.198, "A vector is a list of numbers. That is it. In NumPy, it is a one dimensional array.", [[146.815, 147.145], [147.825, 148.325], [149.095, 149.325]]],
+  "vectors/arrow": [151.578, 159.131, "With two numbers, we can draw it. Three steps to the right, one step up, and an arrow from the origin to that point.", [[153.448, 153.958], [155.188, 155.548], [156.408, 156.758]]],
+  "vectors/both": [159.511, 164.916, "So a vector is both a list and an arrow, and it helps to think of it both ways.", [[161.451, 161.631], [162.551, 163.001]]],
+  "vectors/w": [165.296, 169.859, "Here is a second vector, w, the list one, two.", [[166.776, 167.166], [167.676, 168.086], [168.516, 168.676], [169.046, 169.276], [169.616, 169.836]]],
+  "vectors/add": [170.239, 177.603, "Adding vectors works entry by entry. Three plus one, and one plus two, gives four and three.", [[172.809, 173.379], [174.459, 174.719], [175.989, 176.239]]],
+  "vectors/tip": [177.983, 185.462, "As arrows, that is tip to tail. Walk along x, then walk along w, and you land on the sum.", [[178.873, 179.203], [179.673, 179.863], [180.713, 181.253], [182.353, 182.543], [183.863, 184.183]]],
+  "vectors/scale": [185.842, 195.282, "Multiplying by a number scales every entry. Two times x is the same arrow, twice as long. Minus one flips it around.", [[188.912, 189.502], [191.702, 191.882], [192.722, 193.332]]],
+  "vectors/norm": [195.662, 207.108, "The length of a vector comes from Pythagoras. Square the entries, add them up, and take the square root. For x, that is the square root of ten, about three point one six.", [[198.222, 198.752], [199.792, 200.032], [200.572, 200.832], [202.002, 202.552], [203.212, 203.482], [205.052, 205.382]]],
+  "vectors/leap": [207.488, 211.679, "Now the important leap. An image is also a vector.", [[209.018, 209.598]]],
+  "vectors/pixels": [212.059, 222.656, "A small color image has thirty two by thirty two pixels, with three color values each. Line them all up, and you get a list of three thousand and seventy two numbers.", [[215.649, 215.939], [217.629, 218.179], [219.009, 219.269]]],
+  "vectors/dims": [223.036, 232.085, "We cannot draw an arrow in three thousand dimensions, but the code does not care. Adding, scaling and length work exactly the same way.", [[226.226, 226.616], [228.006, 228.556], [230.306, 230.486]]],
+  "dot/most": [233.885, 238.266, "The dot product is the single most used operation in this whole course.", []],
+  "dot/what": [238.646, 242.565, "It takes two vectors of the same length and returns one number.", [[240.906, 241.126]]],
+  "dot/how": [242.945, 246.551, "Multiply the matching entries, then add up the results.", [[244.735, 244.985]]],
+  "dot/nums": [246.931, 254.761, "One times three is three. A half times one is a half. And three plus a half is three and a half.", [[248.831, 249.421], [251.521, 252.061]]],
+  "dot/np": [255.141, 261.312, "In NumPy, that is the sum of w times x, or simply, w dot x.", [[255.981, 256.231], [258.761, 259.061], [259.661, 260.001]]],
+  "dot/mean": [261.692, 264.994, "But what does that number mean? Think of the arrows.", [[263.352, 263.842]]],
+  "dot/same": [265.374, 270.267, "When the two arrows point the same way, the dot product is large and positive.", [[267.494, 267.854]]],
+  "dot/right": [270.647, 273.425, "At a right angle, it is exactly zero.", [[271.647, 271.877]]],
+  "dot/opp": [273.805, 278.022, "And when they point in opposite directions, it is large and negative.", [[276.025, 276.275]]],
+  "dot/agree": [278.402, 282.153, "So the dot product measures how much two arrows agree.", []],
+  "dot/plane": [282.533, 293.292, "Now color every point in the plane by the sign of its dot product with w. One side is positive, the other is negative, and the border between them is a straight line.", [[287.093, 287.713], [289.003, 289.333], [290.553, 290.923]]],
+  "dot/clf": [293.672, 307.465, "That is a linear classifier in miniature. Let w be the weights for one class, and x an image. Then w dot x is the score for that class: high when the image agrees with the weights.", [[296.212, 296.882], [299.342, 299.592], [300.902, 301.412], [301.752, 301.912], [304.752, 305.122]]],
+  "matrices/grid": [309.265, 312.252, "A matrix is a rectangular grid of numbers.", []],
+  "matrices/shape": [312.632, 321.968, "Its shape is rows, then columns, always in that order. This one has two rows and three columns, so its shape is two by three.", [[314.072, 314.262], [315.102, 315.382], [316.542, 317.162], [319.622, 319.962]]],
+  "matrices/rows": [322.348, 326.281, "The best way to see a matrix is as a stack of row vectors.", []],
+  "matrices/mv": [326.661, 333.329, "And multiplying a matrix by a vector is not a new operation at all. It is one dot product per row.", [[330.781, 331.301]]],
+  "matrices/r0": [333.709, 342.707, "Row zero, dotted with x. Two times one, plus zero times two, plus one times three. That is five.", [[334.609, 334.959], [336.099, 336.659], [337.669, 337.989], [339.539, 339.869], [341.199, 341.749]]],
+  "matrices/r1": [343.087, 350.405, "Row one, dotted with x. Minus one, plus six, plus six. That is eleven.", [[343.837, 344.197], [345.237, 345.767], [346.577, 346.917], [347.697, 347.937], [348.737, 349.227]]],
+  "matrices/stack": [350.785, 356.942, "Stack the answers, and you get a new vector: five and eleven. One number per row.", [[353.305, 353.765], [354.995, 355.535]]],
+  "matrices/code": [357.322, 365.359, "In code, that is a loop over the rows. Or just W dot x, which runs the whole loop for you, very fast.", [[358.002, 358.222], [359.992, 360.442], [362.322, 362.572], [364.202, 364.392]]],
+  "matrices/habit": [365.739, 371.735, "Here is the habit that will save you the most debugging time: write the shape next to every array.", [[368.919, 369.459]]],
+  "matrices/rule": [372.115, 383.481, "Shapes follow a tiny rule. An m by n matrix, times an n by p matrix, gives m by p. The inner sizes must match, and they cancel out.", [[374.035, 374.645], [376.315, 376.485], [378.325, 378.575], [379.835, 380.445], [382.205, 382.415]]],
+  "matrices/course": [383.861, 395.787, "In the course, W has ten rows, one per class, and three thousand and seventy two columns, one per pixel value. Multiply it by an image, and you get ten scores.", [[384.641, 384.921], [386.461, 386.781], [387.731, 388.061], [390.481, 390.841], [392.171, 392.701], [394.131, 394.331]]],
+  "matrices/T": [396.167, 407.52, "One last trick: the transpose. W dot T flips a matrix over its diagonal, so rows become columns. It is the usual way to make shapes line up.", [[397.137, 397.607], [398.597, 399.097], [402.527, 402.857], [404.497, 405.037]]],
+  "sums/sigma": [409.32, 417.283, "Next, the big Greek letter that looks like a sideways M. It is a capital sigma. Think S, for sum.", [[409.85, 410.1], [413.02, 413.55], [414.98, 415.45], [415.75, 415.92], [416.34, 416.6]]],
+  "sums/loop": [417.663, 420.367, "And it is nothing but a for loop that adds.", []],
+  "sums/parts": [420.747, 430.835, "The bit underneath says where the loop variable starts. The number on top says where it stops. And whatever sits to the right is what gets added on each pass.", [[423.937, 424.457], [426.637, 427.067], [428.567, 428.757]]],
+  "sums/read": [431.215, 436.602, "So this reads: for i from one to n, add up x sub i.", [[432.275, 432.755], [434.605, 434.985], [435.405, 435.585]]],
+  "sums/run": [436.982, 445.537, "Watch the loop run. Four. Plus one is five. Plus three is eight. Plus two is ten.", [[438.202, 439.022], [439.462, 440.032], [441.542, 442.062], [443.492, 444.022]]],
+  "sums/index": [445.917, 452.644, "Math usually counts from one, while Python counts from zero. Same loop, different starting label.", [[447.787, 448.177], [449.907, 450.447], [451.067, 451.427]]],
+  "sums/np": [453.024, 456.691, "In NumPy, the whole loop is a single call to sum.", [[453.864, 454.134]]],
+  "sums/pi": [457.071, 462.508, "Its cousin, a capital pi, is the same loop, but multiplying instead of adding.", [[457.841, 458.021], [458.941, 459.241], [460.151, 460.401]]],
+  "sums/remember": [462.888, 467.989, "Whenever you see a sigma in this course, just read it as: loop, and add.", [[464.998, 465.288], [466.268, 466.568], [466.948, 467.308]]],
+  "exp-log/e": [469.789, 477.102, "Now meet e, a number about two point seven one eight. It is to growth what pi is to circles.", [[470.839, 471.299], [473.569, 474.089], [475.029, 475.269]]],
+  "exp-log/exp": [477.482, 484.046, "The exponential function raises e to the power x. In NumPy, it is called exp.", [[481.002, 481.562], [482.332, 482.542], [483.132, 483.282]]],
+  "exp-log/zero": [484.426, 492.42, "At zero, it gives exactly one. And every step of one to the right multiplies the output by about two point seven.", [[485.196, 485.356], [486.866, 487.386], [489.366, 489.546]]],
+  "exp-log/boom": [492.8, 499.978, "So it explodes. e to the three is about twenty, and e to the ten is over twenty thousand.", [[494.28, 494.81], [496.74, 497.13]]],
+  "exp-log/left": [500.358, 506.849, "Going left, it shrinks toward zero. But it never reaches zero, and it is never negative.", [[501.208, 501.398], [502.898, 503.498], [505.058, 505.408]]],
+  "exp-log/why": [507.229, 515.223, "That one fact is why the course uses it: exp turns any score, even a negative one, into a positive number.", [[509.849, 510.469], [512.169, 512.439], [513.579, 513.839]]],
+  "exp-log/log": [515.603, 522.711, "The logarithm undoes the exponential. It answers the question: what power of e gives me this number?", [[518.003, 518.493], [519.713, 520.103]]],
+  "exp-log/mirror": [523.091, 526.903, "Its graph is the exp curve, mirrored across the diagonal.", [[524.991, 525.331]]],
+  "exp-log/vals": [527.283, 537.183, "The log of one is zero. And the log of a tiny number, like zero point zero zero one, is a big negative number, about minus seven.", [[529.113, 529.653], [531.223, 531.393], [533.693, 534.063], [535.563, 535.883]]],
+  "exp-log/softmax": [537.563, 543.71, "You will see these two together in the softmax. Exponentiate the scores so they are all positive.", [[540.133, 540.673]]],
+  "exp-log/divide": [544.09, 547.53, "Then divide by their total, so they add up to one.", [[545.94, 546.2]]],
+  "derivatives/calc": [549.33, 553.697, "Now for calculus. And I promise, this is the friendly kind.", [[550.71, 551.04], [551.91, 552.11]]],
+  "derivatives/line": [554.077, 563.625, "The slope of a straight line is rise over run. This line climbs two for every one step to the right, so its slope is two, everywhere.", [[557.097, 557.687], [560.907, 561.237], [562.627, 563.007]]],
+  "derivatives/curve": [564.005, 570.507, "A curve is steeper in some places than others. The derivative is its slope at one particular point.", [[566.835, 567.345]]],
+  "derivatives/nudge": [570.887, 579.3, "Here is the question it answers. If I nudge the input by a tiny amount, how much does the output move, compared to my nudge?", [[572.617, 573.277], [575.817, 576.217], [577.937, 578.137]]],
+  "derivatives/measure": [579.68, 588.028, "You can measure it with nothing but the function itself. Pick a point, step a distance h to the right, and compute rise over run.", [[582.48, 583.02], [583.66, 584.02], [585.85, 586.14]]],
+  "derivatives/secant": [588.408, 595.498, "With h equal to one, the line through the two points has a slope of four. That line is called a secant.", [[589.898, 590.288], [592.988, 593.628]]],
+  "derivatives/shrink": [595.878, 604.455, "Now shrink h. Point one. Point zero one. The secant swings around, and its slope settles on three.", [[597.158, 597.808], [598.518, 599.078], [600.248, 600.858], [602.358, 602.568]]],
+  "derivatives/tangent": [604.835, 614.183, "That final line just grazes the curve. It is the tangent, and its slope, three, is the derivative of x squared at one and a half.", [[607.645, 608.135], [609.175, 609.545], [610.295, 610.515], [610.965, 611.195]]],
+  "derivatives/rule": [614.563, 623.516, "There is a shortcut rule for this one. The derivative of x squared is two x. Two times one and a half is three. It matches.", [[616.463, 616.993], [619.683, 620.143], [622.303, 622.743]]],
+  "derivatives/rules": [623.896, 632.607, "A handful of rules like that covers nearly everything. e to the x is its own derivative, and log of x becomes one over x.", [[626.756, 627.336], [629.556, 629.936]]],
+  "derivatives/sign": [632.987, 642.272, "Read the sign like a road. Positive means uphill. Negative means downhill. And zero means flat, like the bottom of a valley.", [[634.587, 635.147], [636.587, 637.127], [638.667, 639.147], [640.677, 640.987]]],
+  "derivatives/key": [642.652, 648.826, "And that is the key to learning. If we know which way is downhill, we know which way to move.", [[644.572, 645.122], [647.022, 647.382]]],
+  "gradient/many": [650.626, 656.268, "The loss in this course does not have one input. It has thousands, even millions.", [[653.416, 653.836], [654.936, 655.206]]],
+  "gradient/two": [656.648, 668.09, "Here is one with just two inputs, x and y, so we can draw it. Its height is x squared plus three y squared: a bowl, seen from above as a contour map.", [[658.638, 658.928], [659.888, 660.238], [661.138, 661.708], [664.728, 665.258], [665.808, 666.088]]],
+  "gradient/partial": [668.47, 676.337, "To get the slope in one direction, nudge just that input, and freeze the other one. That is called a partial derivative.", [[670.28, 670.59], [672.11, 672.33], [673.53, 674.1]]],
+  "gradient/px": [676.717, 685.276, "Freeze y, and the slope in the x direction is two x. Freeze x, and the slope in the y direction is six y.", [[677.657, 678.097], [680.817, 681.397], [682.327, 682.587]]],
+  "gradient/grad": [685.656, 689.211, "Put those slopes together in a vector, and you have the gradient.", [[687.686, 687.946]]],
+  "gradient/uphill": [689.591, 698.148, "Draw the gradient as an arrow, and something lovely happens. It points straight uphill: the steepest way up from wherever you stand.", [[691.361, 691.651], [693.221, 693.681], [695.191, 695.641]]],
+  "gradient/down": [698.528, 701.898, "So, to go downhill, step the opposite way.", [[698.988, 699.238], [700.248, 700.558]]],
+  "gradient/steps": [702.278, 706.971, "Take a small step against the gradient. Recompute it. Step again.", [[704.458, 704.968], [705.758, 706.198]]],
+  "gradient/slide": [707.351, 712.26, "Each step lowers the height, and the point slides down into the bottom of the bowl.", [[709.091, 709.421]]],
+  "gradient/gd": [712.64, 722.821, "That loop is gradient descent, and it is how every network in this course learns. The only difference is that the bowl has millions of directions instead of two.", [[714.58, 714.98], [717.76, 718.32], [719.24, 719.41]]],
+  "chain/pipe": [724.921, 731.469, "Neural networks are pipelines. The output of one function feeds the next one, many times over.", [[726.891, 727.351], [729.971, 730.301]]],
+  "chain/rule": [731.849, 741.401, "The chain rule tells us how a change at the very start ripples through to the very end. And the answer is pleasingly simple: the rates multiply.", [[734.959, 735.139], [737.049, 737.529], [739.499, 739.979]]],
+  "chain/g1": [741.781, 747.852, "Picture a train of gears. Gear u turns three times for every turn of gear x.", [[743.481, 743.991]]],
+  "chain/g2": [748.232, 751.911, "And gear v turns four times for every turn of u.", []],
+  "chain/g3": [752.291, 758.982, "So for every turn of x, how many turns does v make? Three times four. Twelve.", [[754.191, 754.481], [756.141, 756.731], [757.911, 758.441]]],
+  "chain/local": [759.362, 765.508, "Notice that each gear only needs to know its ratio to its neighbor. Nobody needs the big picture.", [[763.312, 763.802]]],
+  "chain/curvy": [765.888, 771.36, "The same works for curvier functions. Take two x plus one, and then square it.", [[767.948, 768.518], [770.098, 770.318]]],
+  "chain/rates": [771.74, 778.099, "The inner step has a rate of two. The outer step, squaring u, has a rate of two u.", [[773.77, 774.36], [775.22, 775.48], [776.34, 776.67]]],
+  "chain/mult": [778.479, 782.178, "Multiply them, and you have the derivative of the whole pipeline.", [[779.359, 779.569]]],
+  "chain/backprop": [782.558, 794.536, "This is the beating heart of backpropagation. A network computes forward, layer by layer. Then it passes rates backward, each layer multiplying in its own small piece.", [[785.308, 785.858], [787.448, 787.708], [788.768, 789.258], [791.128, 791.548]]],
+  "probability/two": [796.636, 800.982, "Two more ideas, and you are through. First, probability.", [[798.776, 799.296], [799.766, 800.176]]],
+  "probability/p": [801.362, 808.354, "A probability is a number between zero and one. Zero means never, and one means certainly.", [[804.522, 805.092], [806.372, 806.732]]],
+  "probability/dist": [808.734, 818.236, "A probability distribution gives each possible outcome one of those numbers. And they always add up to exactly one, because something has to happen.", [[813.284, 813.804], [816.234, 816.564]]],
+  "probability/softmax": [818.616, 827.411, "That is exactly what a softmax classifier outputs. Cat, seventy percent. Dog, twenty. Ship, ten.", [[821.916, 822.446], [822.796, 823.116], [824.046, 824.566], [824.926, 825.306], [825.786, 826.276], [826.636, 826.966]]],
+  "probability/mean": [827.791, 834.629, "For a pile of numbers, two summaries matter most. The mean, mu, says where they are centered.", [[829.101, 829.381], [830.951, 831.481], [832.081, 832.371], [832.811, 833.171]]],
+  "probability/std": [835.009, 841.372, "The standard deviation, sigma, says how spread out they are: a typical distance from the mean.", [[836.469, 836.669], [837.209, 837.469], [839.059, 839.519]]],
+  "probability/bell": [841.752, 850.09, "Draw lots of random samples, and many quantities pile up in a bell shape. That is the Gaussian, or normal, distribution.", [[843.702, 843.972], [846.392, 846.902], [848.182, 848.342]]],
+  "probability/rule": [850.47, 857.192, "About two thirds of the samples land within one sigma of the middle, and about ninety five percent within two.", [[854.35, 854.74]]],
+  "probability/randn": [857.572, 868.075, "NumPy's randn draws from the standard bell: centered at zero, with a spread of one. Multiply by sigma to stretch it. Add mu to shift it.", [[860.632, 861.092], [862.162, 862.322], [863.382, 863.962], [866.012, 866.522]]],
+  "probability/init": [868.455, 876.125, "The course uses this constantly. For example, to fill a weight matrix with small random numbers before training begins.", [[870.455, 870.925], [871.575, 871.875]]],
+  "argmax/max": [877.925, 882.383, "The last one is quick. Max gives you the largest value in a list.", [[879.245, 879.865]]],
+  "argmax/argmax": [882.763, 885.804, "Argmax gives you the position of the largest value.", []],
+  "argmax/pred": [886.184, 895.816, "When a classifier makes a prediction, it takes the argmax of its scores. We do not want the winning score itself. We want to know which class won.", [[888.094, 888.404], [890.524, 891.094], [893.314, 893.814]]],
+  "argmax/decode": [896.196, 899.226, "Here are the symbols you will meet most, decoded.", [[898.236, 898.566]]],
+  "argmax/sigma": [899.606, 902.048, "Sigma means loop and add.", [[901.206, 901.356]]],
+  "argmax/nabla": [902.428, 906.892, "The upside down triangle, called nabla, means the gradient.", [[904.078, 904.288], [905.248, 905.588]]],
+  "argmax/musig": [907.272, 910.251, "Mu and sigma are the center and the spread.", []],
+  "argmax/wx": [910.631, 914.933, "And a matrix next to a vector means one dot product per row.", [[912.601, 912.791]]],
+  "argmax/kit": [915.313, 927.356, "That is the whole kit. Functions, vectors, dot products, matrices, sums, exp and log, derivatives, gradients, the chain rule, probability, and argmax.", [[916.683, 917.163], [917.803, 917.973], [918.603, 918.773], [919.593, 919.753], [921.173, 921.483], [922.363, 922.713], [923.423, 923.573], [924.243, 924.453], [925.203, 925.453], [926.193, 926.403]]],
+  "argmax/back": [927.736, 933.976, "You do not need to have memorized any of it. Every chapter links back here whenever an idea comes up.", [[930.116, 930.606]]],
+  "argmax/next": [934.356, 943.809, "Next, open the interactive chapter. Every idea you just saw is there as a figure you can drag and poke, with the code running right beside it.", [[934.856, 935.066], [936.716, 937.326], [941.626, 941.956]]],
+  "argmax/bye": [944.189, 944.985, "See you there.", []]
  }
 }

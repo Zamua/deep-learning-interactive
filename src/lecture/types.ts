@@ -39,8 +39,11 @@ export interface LectureScript {
 export interface Timing {
   duration: number;
   scenes: Record<string, [number, number]>;
-  /** `scene/beat` -> [start, end, spoken text]; the text detects a script edited after synthesis. */
-  beats: Record<string, [number, number, string]>;
+  /**
+   * `scene/beat` -> [start, end, spoken text, pauses]. The text detects a script edited after
+   * synthesis; pauses are the [from, to] silences inside the line, where its phrases break.
+   */
+  beats: Record<string, [number, number, string, [number, number][]?]>;
 }
 
 /** Gaps the narration track leaves, shared by the builder and the player's estimate. */
