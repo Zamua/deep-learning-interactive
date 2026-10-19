@@ -63,7 +63,9 @@ export function md(src: string, symIdx: Map<string, string> = new Map()): string
     }
     if (/^\d+\. /.test(lines[0]!)) {
       const items = t.split(/\n(?=\d+\. )/).map((l) => `<li>${inline(l.replace(/^\d+\. /, ''))}</li>`);
-      return `<ol>${items.join('')}</ol>`;
+      // A list split by blank lines arrives as several blocks; each keeps its own first number.
+      const start = Number(lines[0]!.match(/^\d+/)![0]);
+      return `<ol${start === 1 ? '' : ` start="${start}"`}>${items.join('')}</ol>`;
     }
     return `<p>${inline(t.replace(/\n/g, ' '))}</p>`;
   });
