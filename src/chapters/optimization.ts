@@ -4,6 +4,7 @@ import { blobs } from '../core/data';
 import { CLASS_COLORS, type Plot, color, rgbOf, withAlpha } from '../core/plot';
 import { Rng } from '../core/rand';
 import { K, Slice, Surface, lineChart, svm, toyProblem } from '../lib/optimization-svm';
+import { OPTIMIZATION_SYMBOLS } from '../lib/optimization-symbols';
 
 const MONO = "'JetBrains Mono Variable', ui-monospace, monospace";
 
@@ -52,16 +53,7 @@ function trail(pl: Plot, pts: number[], col: string, width = 2, dots = true): vo
 const START: [number, number] = [-3.2, 2.8];
 
 const chapter: ChapterDef = {
-  symbols: {
-    W: { color: 'blue', name: 'W: the weights, the numbers we are searching for', code: ['W', 'W0', 'W_try', 'best_W'] },
-    x: { color: 'orange', name: 'x: an input example (X: all of them, one per row)', code: ['x', 'X', 'X_train', 'X_batch'] },
-    y: { color: 'gold', name: 'y: the correct class of an example', code: ['y', 'Y', 'y_train', 'y_batch'] },
-    L: { color: 'red', name: 'L: the loss, the single number we want to make small', code: ['L', 'loss', 'best_loss'] },
-    dW: { color: 'teal', name: '∇L: the gradient, which way (and how steeply) the loss goes up', tex: '\\nabla_{W} L', code: ['dW', 'grad', 'grad_L'] },
-    eta: { color: 'slate', name: 'η: the step size, also called the learning rate', tex: '\\eta', code: ['step_size'] },
-    h: { color: 'purple', name: 'h: the small nudge used to measure a slope numerically', code: ['h'] },
-    B: { color: 'green', name: 'B: the mini-batch size, how many examples each step looks at', code: ['B', 'batch_size'] },
-  },
+  symbols: OPTIMIZATION_SYMBOLS,
 
   render(p) {
     p.prose(`
