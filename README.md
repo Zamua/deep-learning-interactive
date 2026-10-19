@@ -27,3 +27,7 @@ CIFAR-10 (Krizhevsky, 2009) in CIFAR's binary record format, built by
 Narration is synthesized offline by `tools/lecture/build.mjs`, with an ElevenLabs voice through
 OpenRouter's speech API or locally with [Kokoro](https://github.com/thewh1teagle/kokoro-onnx), and committed as `src/lectures/<id>/narration.m4a` plus its
 `timing.json`. See `docs/LECTURES.md`.
+
+The player: tap the picture to pause, hold it to play at 2×, and slide down while holding to
+lock 2× until the next hold (or a tap on the 2× pill). Keys: space or `k` play, `j`/`l` ±10 s,
+arrows ±5 s, `[`/`]` previous/next section, `<`/`>` speed, `c` captions, `f` full screen.

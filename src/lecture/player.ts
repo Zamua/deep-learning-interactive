@@ -168,6 +168,10 @@ class Clock {
 }
 
 const SPEEDS = [0.75, 1, 1.25, 1.5, 1.75, 2];
+/** Holding the picture plays at BOOST×; sliding LOCK_PX down while holding keeps it there. */
+const BOOST = 2;
+const HOLD_MS = 350;
+const LOCK_PX = 56;
 
 const mmss = (t: number): string => {
   const s = Math.max(0, Math.floor(t));
@@ -228,6 +232,19 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   const chip = h('div', { class: 'lec-chip', 'aria-hidden': 'true' });
   const centerBtn = h('button', { class: 'lec-center', type: 'button', 'aria-label': 'Play', html: icon('playFill') });
   const spinner = h('div', { class: 'lec-spinner', 'aria-hidden': 'true' });
+  const boostPill = h('div', { class: 'lec-boost-pill' },
+    h('span', { class: 'lec-boost-ff', html: icon('ffFill') }),
+    h('span', { class: 'lec-boost-lk', html: icon('lockFill') }),
+    h('span', { class: 'lec-boost-ul', html: icon('unlockFill') }),
+    h('b', { class: 'lec-boost-rate' }, `${BOOST}×`),
+    h('span', { class: 'lec-boost-off' }, 'Release to unlock'));
+  const boostEl = h('div', { class: 'lec-boost', 'aria-hidden': 'true' }, boostPill,
+    h('div', { class: 'lec-boost-slide' },
+      h('div', { class: 'lec-boost-rail' }),
+      h('div', { class: 'lec-boost-goal', html: icon('lockFill') }),
+      h('div', { class: 'lec-boost-knob', html: icon('downFill') + icon('lockFill') }),
+      h('div', { class: 'lec-boost-hint' }, h('span', {}, 'Slide down to lock'), h('span', {}, 'Release to lock'))));
+  boostEl.style.setProperty('--travel', `${LOCK_PX}px`);
   const cap = h('div', { class: 'lec-cap', 'aria-live': 'off' });
   const codeBox = h('div', { class: 'lec-code' });
   const main = h('div', { class: 'lec-main' }, stage, cap, codeBox);
@@ -261,7 +278,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
 
   const notice = h('div', { class: 'lec-notice' });
   root.append(top, main, bar, list, notice);
-  stage.append(marksEl, chip, spinner, centerBtn);
+  stage.append(marksEl, chip, spinner, centerBtn, boostEl);
 
   for (const s of scenes) {
     const t = h('div', { class: 'lec-tick' });
@@ -460,6 +477,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   }
 
   function onEnded(): void {
+    setBoost('off');
     ended = true;
     root.classList.add('ended');
     setPlayingUi(false);
@@ -531,19 +549,95 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     toggle();
   });
   stage.addEventListener('click', () => {
-    if (started && !ended) toggle();
+    if (swallowClick) swallowClick = false;
+    else if (started && !ended) toggle();
   });
   playBtn.addEventListener('click', toggle);
   back10.addEventListener('click', () => seek(clock.time() - 10));
 
+  // Hold for 2x. `hold` lasts while the finger is down; `locked` outlives it until the next hold.
+  let baseRate = 1;
+  let boost: 'off' | 'hold' | 'locked' = 'off';
+  let press: { id: number; x: number; y: number; timer: number; active: boolean; armed: boolean } | null = null;
+  // A hold's release still fires a click on most engines; it must not also toggle playback.
+  let swallowClick = false;
+
+  function setBoost(b: typeof boost): void {
+    boost = b;
+    clock.setRate(b === 'off' ? baseRate : BOOST);
+    root.classList.toggle('boost', b !== 'off');
+    root.classList.toggle('boost-locked', b === 'locked');
+  }
+
+  function endPress(): void {
+    if (!press) return;
+    window.clearTimeout(press.timer);
+    press = null;
+    boostEl.style.setProperty('--k', '0');
+    root.classList.remove('boost-armed', 'boost-unlock');
+  }
+
+  stage.addEventListener('pointerdown', (e) => {
+    swallowClick = false;
+    if (!e.isPrimary || e.button !== 0 || !started || ended || clock.paused || press) return;
+    if (boost === 'locked' && boostPill.contains(e.target as Node)) return;
+    const id = e.pointerId;
+    press = { id, x: e.clientX, y: e.clientY, active: false, armed: false, timer: 0 };
+    press.timer = window.setTimeout(() => {
+      if (!press || clock.paused) return;
+      press.active = true;
+      swallowClick = true;
+      try {
+        stage.setPointerCapture(id);
+      } catch {
+        /* pointer already gone */
+      }
+      if (boost === 'locked') root.classList.add('boost-unlock');
+      else setBoost('hold');
+    }, HOLD_MS);
+  });
+  stage.addEventListener('pointermove', (e) => {
+    if (!press || e.pointerId !== press.id) return;
+    const dy = e.clientY - press.y;
+    if (!press.active) {
+      if (Math.hypot(e.clientX - press.x, dy) > 12) endPress();
+      return;
+    }
+    if (boost !== 'hold') return;
+    const k = clamp01(dy / LOCK_PX);
+    boostEl.style.setProperty('--k', k.toFixed(3));
+    if ((k >= 1) !== press.armed) {
+      press.armed = k >= 1;
+      root.classList.toggle('boost-armed', press.armed);
+      if (press.armed) navigator.vibrate?.(12);
+    }
+  });
+  const release = (e: PointerEvent) => {
+    if (!press || e.pointerId !== press.id) return;
+    const { active, armed } = press;
+    endPress();
+    if (!active) return;
+    setBoost(boost === 'hold' && armed && e.type === 'pointerup' ? 'locked' : 'off');
+  };
+  stage.addEventListener('pointerup', release);
+  stage.addEventListener('pointercancel', release);
+  stage.addEventListener('contextmenu', (e) => press && e.preventDefault());
+  boostPill.addEventListener('click', (e) => {
+    if (boost !== 'locked' || press) return;
+    e.stopPropagation();
+    setBoost('off');
+  });
+  onDispose(endPress);
+
   const setRate = (r: number) => {
-    clock.setRate(r);
+    baseRate = r;
+    setBoost('off');
     speedBtn.textContent = `${r}×`;
     prefs.rate = r;
     store.set(prefKey, JSON.stringify(prefs));
   };
   setRate(SPEEDS.includes(prefs.rate ?? 1) ? (prefs.rate ?? 1) : 1);
-  speedBtn.addEventListener('click', () => setRate(SPEEDS[(SPEEDS.indexOf(clock.rate) + 1) % SPEEDS.length]!));
+  speedBtn.addEventListener('click', () => setRate(SPEEDS[(SPEEDS.indexOf(baseRate) + 1) % SPEEDS.length]!));
 
   const setCc = (on: boolean) => {
     ccOn = on;
@@ -626,8 +720,8 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     else if (k === ']' || k === 'n') jumpScene(1);
     else if (k === '[' || k === 'p') jumpScene(-1);
     else if (k === 'c') setCc(!ccOn);
-    else if (k === '>' || k === '.') setRate(SPEEDS[Math.min(SPEEDS.length - 1, SPEEDS.indexOf(clock.rate) + 1)]!);
-    else if (k === '<' || k === ',') setRate(SPEEDS[Math.max(0, SPEEDS.indexOf(clock.rate) - 1)]!);
+    else if (k === '>' || k === '.') setRate(SPEEDS[Math.min(SPEEDS.length - 1, SPEEDS.indexOf(baseRate) + 1)]!);
+    else if (k === '<' || k === ',') setRate(SPEEDS[Math.max(0, SPEEDS.indexOf(baseRate) - 1)]!);
     else if (k === 'f' && document.fullscreenEnabled) fsBtn.click();
     else if (k === 'Escape') toggleList(false);
     else return;
@@ -728,6 +822,8 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     play,
     pause,
     duration,
+    rate: () => clock.rate,
+    boost: () => boost,
     scenes: scenes.map((s) => ({ id: s.id, start: s.start, end: s.end, beats: s.beats.map((b) => ({ id: b.id, start: b.start, end: b.end })) })),
   };
 }

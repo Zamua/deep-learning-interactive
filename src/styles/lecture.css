@@ -89,6 +89,11 @@ body.lec-on {
   border: 1px solid var(--rule);
   overflow: hidden;
   cursor: pointer;
+  /* The picture owns its gestures (hold for 2x, slide to lock): no pan, zoom, selection or callout. */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
   --u: 1px;
 }
 
@@ -496,6 +501,154 @@ canvas.lec-canvas {
 }
 .lec-notice:empty {
   display: none;
+}
+
+/* Hold for 2x: a pill while held, and a lock that follows the finger down. */
+.lec-boost {
+  --k: 0;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+.lec.boost .lec-boost {
+  opacity: 1;
+}
+.lec.boost .lec-chip {
+  opacity: 0;
+}
+.lec-boost-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 13px 0 11px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 76%, transparent);
+  color: var(--paper);
+  font: 650 14px var(--font-ui);
+  white-space: nowrap;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.16);
+}
+.lec-boost-pill .ico {
+  display: block;
+  width: 15px;
+  height: 15px;
+}
+.lec-boost-lk,
+.lec-boost-ul,
+.lec-boost-off {
+  display: none;
+}
+.lec.boost-locked .lec-boost-ff {
+  display: none;
+}
+.lec.boost-locked .lec-boost-lk {
+  display: block;
+  color: var(--accent);
+}
+.lec.boost-locked .lec-boost-pill {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.lec.boost-unlock .lec-boost-lk,
+.lec.boost-unlock .lec-boost-rate {
+  display: none;
+}
+.lec.boost-unlock .lec-boost-ul,
+.lec.boost-unlock .lec-boost-off {
+  display: block;
+}
+
+.lec-boost-slide {
+  position: relative;
+  width: 150px;
+  height: calc(30px + var(--travel) + 24px);
+  margin-top: 8px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.lec.boost:not(.boost-locked) .lec-boost-slide {
+  opacity: 1;
+}
+.lec-boost-rail {
+  position: absolute;
+  left: 50%;
+  top: 15px;
+  height: var(--travel);
+  margin-left: -1px;
+  border-left: 2px dotted color-mix(in srgb, var(--ink) 38%, transparent);
+}
+.lec-boost-goal,
+.lec-boost-knob {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+}
+.lec-boost-goal .ico,
+.lec-boost-knob .ico {
+  width: 15px;
+  height: 15px;
+}
+.lec-boost-goal {
+  top: var(--travel);
+  border: 2px dashed color-mix(in srgb, var(--ink) 40%, transparent);
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+  color: color-mix(in srgb, var(--ink) 45%, transparent);
+}
+.lec-boost-knob {
+  background: color-mix(in srgb, var(--ink) 76%, transparent);
+  color: var(--paper);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.18);
+  transform: translateY(calc(var(--k) * var(--travel)));
+  transition: background-color 0.15s, scale 0.15s;
+}
+.lec-boost-knob .ico:last-child,
+.lec.boost-armed .lec-boost-knob .ico:first-child {
+  display: none;
+}
+.lec.boost-armed .lec-boost-knob .ico:last-child {
+  display: block;
+}
+.lec.boost-armed .lec-boost-knob {
+  background: var(--accent);
+  color: #fff;
+  scale: 1.15;
+}
+.lec.boost-armed .lec-boost-goal {
+  border-color: var(--accent);
+}
+.lec-boost-hint {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--travel) + 38px);
+  transform: translateX(-50%);
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 90%, transparent);
+  font: 650 12px var(--font-ui);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.lec-boost-hint span:last-child,
+.lec.boost-armed .lec-boost-hint span:first-child {
+  display: none;
+}
+.lec.boost-armed .lec-boost-hint span:last-child {
+  display: inline;
+  color: var(--accent-ink);
 }
 
 /* Upright screens: picture, captions, then code, stacked. */
