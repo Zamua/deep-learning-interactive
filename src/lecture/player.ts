@@ -172,6 +172,10 @@ const SPEEDS = [0.75, 1, 1.25, 1.5, 1.75, 2];
 const BOOST = 2;
 const HOLD_MS = 350;
 const LOCK_PX = 56;
+/** Double tapping the left or right side skips SKIP_S; taps within RUN_MS of a skip keep skipping. */
+const SKIP_S = 10;
+const DOUBLE_MS = 300;
+const RUN_MS = 700;
 
 const mmss = (t: number): string => {
   const s = Math.max(0, Math.floor(t));
@@ -245,6 +249,12 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
       h('div', { class: 'lec-boost-knob', html: icon('downFill') + icon('lockFill') }),
       h('div', { class: 'lec-boost-hint' }, h('span', {}, 'Slide down to lock'), h('span', {}, 'Release to lock'))));
   boostEl.style.setProperty('--travel', `${LOCK_PX}px`);
+  const skipEls = [-1, 1].map((side) => {
+    const label = h('span', {});
+    const el = h('div', { class: `lec-skip lec-skip-${side < 0 ? 'back' : 'fwd'}`, 'aria-hidden': 'true' },
+      h('div', { class: 'lec-skip-in' }, h('span', { class: 'lec-skip-ico', html: icon(side < 0 ? 'rewindFill' : 'ffFill') }), label));
+    return { el, label };
+  });
   const cap = h('div', { class: 'lec-cap', 'aria-live': 'off' });
   const codeBox = h('div', { class: 'lec-code' });
   const main = h('div', { class: 'lec-main' }, stage, cap, codeBox);
@@ -278,7 +288,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
 
   const notice = h('div', { class: 'lec-notice' });
   root.append(top, main, bar, list, notice);
-  stage.append(marksEl, chip, spinner, centerBtn, boostEl);
+  stage.append(marksEl, chip, spinner, centerBtn, boostEl, ...skipEls.map((k) => k.el));
 
   for (const s of scenes) {
     const t = h('div', { class: 'lec-tick' });
@@ -548,9 +558,63 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     e.stopPropagation();
     toggle();
   });
-  stage.addEventListener('click', () => {
-    if (swallowClick) swallowClick = false;
-    else if (started && !ended) toggle();
+  // A tap on either side waits DOUBLE_MS for a second tap before it pauses.
+  let pendingTap: { side: number; timer: number } | null = null;
+  let run: { side: number; n: number; timer: number } | null = null;
+
+  function skip(side: number): void {
+    if (run?.side !== side) {
+      if (run) {
+        window.clearTimeout(run.timer);
+        skipEls[run.side < 0 ? 0 : 1]!.el.classList.remove('on');
+      }
+      run = { side, n: 0, timer: 0 };
+    }
+    const r = run;
+    r.n++;
+    seek(clock.time() + side * SKIP_S);
+    const k = skipEls[side < 0 ? 0 : 1]!;
+    k.label.textContent = `${r.n * SKIP_S} seconds`;
+    k.el.classList.remove('pulse');
+    void k.el.offsetWidth;
+    k.el.classList.add('on', 'pulse');
+    window.clearTimeout(r.timer);
+    r.timer = window.setTimeout(() => {
+      k.el.classList.remove('on');
+      run = null;
+    }, RUN_MS);
+  }
+
+  stage.addEventListener('click', (e) => {
+    if (swallowClick) {
+      swallowClick = false;
+      return;
+    }
+    if (!started || ended) return;
+    const r = stage.getBoundingClientRect();
+    const fx = (e.clientX - r.left) / r.width;
+    const side = fx < 0.35 ? -1 : fx > 0.65 ? 1 : 0;
+    if (side && run) return skip(side);
+    if (pendingTap) {
+      window.clearTimeout(pendingTap.timer);
+      const same = pendingTap.side === side;
+      pendingTap = null;
+      if (same) return skip(side);
+      toggle();
+    }
+    if (!side) return toggle();
+    pendingTap = {
+      side,
+      timer: window.setTimeout(() => {
+        pendingTap = null;
+        // A tap followed by a hold is a hold, not a pause.
+        if (!press) toggle();
+      }, DOUBLE_MS),
+    };
+  });
+  onDispose(() => {
+    if (pendingTap) window.clearTimeout(pendingTap.timer);
+    if (run) window.clearTimeout(run.timer);
   });
   playBtn.addEventListener('click', toggle);
   back10.addEventListener('click', () => seek(clock.time() - 10));

@@ -651,6 +651,54 @@ canvas.lec-canvas {
   color: var(--accent-ink);
 }
 
+/* Double tap a side to skip: a shaded half-moon on that side counts the seconds. */
+.lec-skip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 36%;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--ink) 11%, transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.lec-skip-back {
+  left: 0;
+  border-radius: 0 50% 50% 0 / 0 50% 50% 0;
+}
+.lec-skip-fwd {
+  right: 0;
+  border-radius: 50% 0 0 50% / 50% 0 0 50%;
+}
+.lec-skip.on {
+  opacity: 1;
+  transition-duration: 0.08s;
+}
+.lec-skip-in {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font: 650 13px var(--font-ui);
+  color: var(--ink);
+}
+.lec-skip-ico .ico {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+.lec-skip.pulse .lec-skip-ico {
+  animation: lec-skip-pulse 0.35s ease-out;
+}
+@keyframes lec-skip-pulse {
+  from {
+    transform: scale(0.75);
+    opacity: 0.4;
+  }
+}
+
 /* Upright screens: picture, captions, then code, stacked. */
 @media (max-aspect-ratio: 6/5) {
   .lec-main {
