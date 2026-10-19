@@ -75,12 +75,13 @@ the ideas, pictures that make each one obvious, and a listing that shows the sam
 
 The script's `model` and `voice` pick the speech engine: `elevenlabs/eleven-v4` with a preset
 voice such as `george` goes through OpenRouter's `/api/v1/audio/speech` (key in
-`OPENROUTER_KEY_FILE`, default `~/keys/openrouter`; about $40 per million characters, so a
-15-minute lecture is about $0.50), and `kokoro` runs Kokoro locally for free. Each clip is
+`OPENROUTER_API_KEY`, or in the file `OPENROUTER_KEY_FILE` names; about $40 per million
+characters, so a 15-minute lecture is about $0.50), and `kokoro` runs Kokoro locally for free. Each clip is
 cached by model, voice and text, so a rebuild only pays for the beats that changed. `--check` lists beats whose transcript drifts from the script; most
 hits are just digits written as numerals, but read them for real mispronunciations. Defaults:
-`TTS_PY=~/ml/envs/tts/bin/python` (numpy, soundfile; kokoro-onnx for Kokoro), `KOKORO_DIR=~/ml/models/kokoro`,
-`TTS_CACHE=~/ml/caches/cs231n-tts`, `WHISPER_MODEL=~/ml/models/whisper/ggml-large-v3-turbo-q5_0.bin`.
+`TTS_PY=python3` (numpy, soundfile; kokoro-onnx for Kokoro), `KOKORO_DIR=~/.cache/kokoro`,
+`TTS_CACHE=~/.cache/lecture-tts`, `WHISPER_MODEL=~/.cache/whisper/ggml-large-v3-turbo-q5_0.bin`.
+`tools/lecture/local.env` (untracked; see `local.env.example`) sets any of them per machine.
 
 Edit the script and the player notices that the timing no longer matches: in dev it shows a
 notice and plays silently on estimated timing, so visuals can be worked on before rebuilding.

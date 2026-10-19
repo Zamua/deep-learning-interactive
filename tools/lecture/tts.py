@@ -70,7 +70,7 @@ class Kokoro:
     def synth(self, text):
         if self.k is None:
             from kokoro_onnx import Kokoro as K
-            d = env_path('KOKORO_DIR', '~/ml/models/kokoro')
+            d = env_path('KOKORO_DIR', '~/.cache/kokoro')
             self.k = K(os.path.join(d, 'kokoro-v1.0.onnx'), os.path.join(d, 'voices-v1.0.bin'))
         samples, sr = self.k.create(text, voice=self.voice, speed=self.speed, lang='en-us')
         assert sr == self.sr, sr
@@ -83,8 +83,12 @@ class OpenRouter:
 
     def __init__(self, model, voice):
         self.model, self.voice = model, voice
-        with open(env_path('OPENROUTER_KEY_FILE', '~/keys/openrouter')) as f:
-            self.token = f.read().strip()
+        self.token = os.environ.get('OPENROUTER_API_KEY', '').strip()
+        if not self.token:
+            if 'OPENROUTER_KEY_FILE' not in os.environ:
+                sys.exit('set OPENROUTER_API_KEY or OPENROUTER_KEY_FILE')
+            with open(env_path('OPENROUTER_KEY_FILE', '')) as f:
+                self.token = f.read().strip()
 
     def key(self, text):
         return f'{self.model}|{self.voice}|{text}'
@@ -109,7 +113,7 @@ class OpenRouter:
 
 def main():
     job = json.load(open(sys.argv[1]))
-    cache = env_path('TTS_CACHE', '~/ml/caches/cs231n-tts')
+    cache = env_path('TTS_CACHE', '~/.cache/lecture-tts')
     os.makedirs(cache, exist_ok=True)
     tts = Kokoro(job['voice'], job['speed']) if job['model'] == 'kokoro' else OpenRouter(job['model'], job['voice'])
     sr = tts.sr
@@ -160,7 +164,7 @@ def main():
     print(f"{round(n / sr / 60, 1)} min, {os.path.getsize(job['audio']) / 2**20:.1f} MiB -> {job['audio']}")
 
     if job['check']:
-        model = env_path('WHISPER_MODEL', '~/ml/models/whisper/ggml-large-v3-turbo-q5_0.bin')
+        model = env_path('WHISPER_MODEL', '~/.cache/whisper/ggml-large-v3-turbo-q5_0.bin')
         for key, text, path in clips:
             out = subprocess.run(['whisper-cli', '-m', model, '-f', path, '-nt', '-np'],
                                  capture_output=True, text=True).stdout
