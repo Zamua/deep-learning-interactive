@@ -31,3 +31,7 @@ Narration is synthesized offline by `tools/lecture/build.mjs`, with an ElevenLab
 OpenRouter's speech API or locally with [Kokoro](https://github.com/thewh1teagle/kokoro-onnx),
 and committed as `src/lectures/<id>/narration.m4a` plus its `timing.json`. See
 `docs/LECTURES.md`.
+
+## License
+
+MIT, see [LICENSE](LICENSE). The CIFAR-10 sample in `public/data/` remains under its own terms.
