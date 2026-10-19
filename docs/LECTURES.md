@@ -42,6 +42,30 @@ Size everything in stage units: `s.u` is 1% of the stage's shorter side, and tex
 desktop, so lay out for both. The code panel always shows the scene's listing: a visual is
 never without its code.
 
+## Craft checklist
+
+What a lecture is for: a comprehensive, intuitive, hands-off explainer of its chapter, for
+someone who took calculus long ago. It should be watchable while eating: a voice that carries
+the ideas, pictures that make each one obvious, and a listing that shows the same idea as code.
+
+- Shape: an intro scene (what the chapter is about, why it matters), then one scene per idea,
+  then a short closing scene that recaps and points to the interactive chapter. About 9 to 13
+  scenes and 100 to 140 beats, 10 to 16 minutes (a short chapter may be shorter).
+- Every scene has a listing (`code`, `codeTitle`) and every beat lights the lines it talks
+  about, so the picture, the voice and the code always say the same thing. Use the chapter's
+  own variable names and symbol colors.
+- Something must be on screen from a scene's first beat: a title, the previous result, or the
+  object about to be discussed. An empty stage while the voice talks reads as broken.
+- Lay out for both stages: `s.tall` is true on an upright phone. Prefer stacking over
+  squeezing; prefer a small legend box over labels that crowd a plot.
+- Keep text inside the stage with margin (at least 4u from every edge), and check the longest
+  label at its final size. Put `halo: true` on text that sits over lines or fills.
+- Labels must not collide with each other, with marks, or with the scene's moving parts at any
+  beat, including mid-animation. Fade out what a beat no longer needs (`s.win`).
+- Do heavy work once at module scope (seeded with `src/core/rand.ts`), never per frame.
+- Numbers and symbols in `say` are written the way they are spoken; check anything a voice
+  could read two ways (decimals, exponents, shapes like 32x32x3, `W.T`, Greek letters).
+
 ## Narration
 
     node tools/lecture/build.mjs <id>          # synthesize changed beats, write audio + timing
@@ -66,3 +90,20 @@ notice and plays silently on estimated timing, so visuals can be worked on befor
 
 Tile the PNGs (`ffmpeg -pattern_type glob -i '*.png' -vf tile=4x2 sheet%02d.png`) and look at
 all of them: clipped labels, overlaps, and empty stages are the usual defects.
+
+## index.ts
+
+    import type { LectureDef } from '../../lecture/player';
+    import type { Timing } from '../../lecture/types';
+    import { <ID>_SYMBOLS } from '../../lib/<id>-symbols';
+    import { scenes } from './scenes';
+    import { script } from './script';
+
+    const audio = Object.values(import.meta.glob<string>('./narration.m4a', { query: '?url', import: 'default', eager: true }))[0] ?? '';
+    const timing = (Object.values(import.meta.glob('./timing.json', { import: 'default', eager: true }))[0] ?? null) as Timing | null;
+
+    const lecture: LectureDef = { script, timing, scenes, symbols: <ID>_SYMBOLS, audio };
+    export default lecture;
+
+The narration files are optional, so a lecture runs (silently, on estimated timing) before its
+first build. Symbols shared with the chapter live in `src/lib/<id>-symbols.ts`.

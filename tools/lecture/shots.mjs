@@ -26,8 +26,8 @@ await page.goto(`${base}#/watch/${id}`);
 await page.waitForFunction(() => window.__lec, null, { timeout: 30000 });
 await page.waitForTimeout(800);
 await page.screenshot({ path: `${out}/000-poster.png` });
-// The paused-state play button would cover every frame.
-await page.addStyleTag({ content: '.lec-center { display: none !important }' });
+// The paused-state play button (and the dev "out of date" notice) would cover every frame.
+await page.addStyleTag({ content: '.lec-center, .lec-notice { display: none !important }' });
 const scenes = await page.evaluate(() => window.__lec.scenes);
 let n = 1;
 for (const s of scenes) {
