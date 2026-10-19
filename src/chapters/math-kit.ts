@@ -22,16 +22,6 @@ const chapter: ChapterDef = {
 Deep learning papers look like a wall of symbols, but almost everything in this course is built from about a dozen ideas, and as a programmer you already use most of them under other names. This chapter rebuilds those ideas from scratch, in the order the course needs them, and pins every one of them to a few lines of NumPy. If you can read a for loop, you can read every equation in CS231n.
 
 Nobody expects you to read this in one sitting. Skim it now, then come back whenever a later chapter links here. Each section stands on its own.`);
-    p.callout('aside', `Every equation in this course comes as a card: the math on one side, the same computation in Python on the other, a piece-by-piece reading, and a plain-words version. Colored symbols are linked: hover or tap $\\symx$ in an equation and every \`x\` in the code lights up too. Figures always show the code they run, and the numbers in that code change as you play.`, 'How to read this chapter');
-
-    // ------------------------------------------------------------------ functions
-    p.h2('Variables, functions and graphs', 'functions');
-    p.prose(`
-A **variable** is a name that stands for a number, exactly like a variable in code. A **function** is a machine: feed it an input, and it hands back an output, always the same output for the same input. A mathematician writes $\\symf(\\symx) = 2\\symx + 1$; you would write \`def f(x): return 2 * x + 1\`. Same thing.
-
-Functions can take several inputs, as in $\\symf(\\symx, y) = \\symx^2 + 3y^2$, or a whole list of numbers at once. The two most important functions in this course are enormous. The **network** takes an image (3072 numbers) and returns ten class scores. The **loss** takes every weight of the network and returns one number that says how badly it is doing. Learning means adjusting the loss's inputs until its output is small.
-
-The **graph** of a function is a picture of every answer at once: for each input $\\symx$ along the horizontal axis, put a dot at height $\\symf(\\symx)$. NumPy draws graphs the same way: evaluate the function on a few hundred inputs in one go, then join the dots.`);
 
     p.figure({
       title: 'A function is a machine; its graph is every answer at once',

@@ -147,7 +147,7 @@ function layers(meta: ChapterMeta, body: HTMLElement): HTMLElement {
   const watchK = h('div', { class: 'layer-k' }, 'Watch');
   const explore = h('button', { class: 'layer', type: 'button' },
     h('span', { class: 'layer-n' }, '2'),
-    h('span', { class: 'layer-body' }, h('div', { class: 'layer-k' }, 'Explore'), h('div', { class: 'layer-t' }, 'The interactive chapter below: figures you can drag, with their code beside them.')));
+    h('span', { class: 'layer-body' }, h('div', { class: 'layer-k' }, 'Explore')));
   explore.addEventListener('click', () => body.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   const pr = meta.practice;
   const practiceBody = h('span', { class: 'layer-body' }, h('div', { class: 'layer-k' }, 'Practice'), h('div', { class: 'layer-t' }, pr?.text ?? 'Coming soon.'));
@@ -157,7 +157,7 @@ function layers(meta: ChapterMeta, body: HTMLElement): HTMLElement {
   const el = h('div', { class: 'layers' },
     h('a', { class: 'layer layer-watch', href: `#/watch/${meta.id}` },
       h('span', { class: 'layer-n', html: icon('playFill') }),
-      h('span', { class: 'layer-body' }, watchK, h('div', { class: 'layer-t' }, 'Start here: the whole chapter as a narrated lecture you can just watch.')),
+      h('span', { class: 'layer-body' }, watchK),
       h('span', { class: 'layer-go', html: icon('arrowRight') })),
     explore,
     practice);

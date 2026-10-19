@@ -876,7 +876,6 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   const poster = h('div', { class: 'lec-poster' },
     h('div', { class: 'lec-poster-kicker' }, `Chapter ${meta.num} · Lecture · ${Math.round(duration / 60)} min`),
     h('h1', { class: 'lec-poster-title' }, def.script.title),
-    h('p', { class: 'lec-poster-lede' }, 'Sit back: this is the chapter as a narrated lecture. The pictures and the code move together, so you can just watch. The interactive version comes after.'),
     h('div', { class: 'lec-poster-actions' }, posterPlay));
   posterPlay.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -901,7 +900,6 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   const endcard = h('div', { class: 'lec-end' },
     h('div', { class: 'lec-poster-kicker' }, 'That was the lecture'),
     h('h2', { class: 'lec-end-title' }, 'Now explore it yourself'),
-    h('p', { class: 'lec-poster-lede' }, 'Every idea you just watched is in the chapter as a figure you can drag, with its code running beside it.'),
     h('div', { class: 'lec-poster-actions' },
       h('a', { class: 'btn btn-primary', href: `#/${meta.id}`, html: `Open the chapter ${icon('arrowRight')}` }),
       replay));

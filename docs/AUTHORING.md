@@ -200,6 +200,8 @@ theme, so call them inside draw functions (the page has a dark mode). `withAlpha
 ## Writing style
 
 - Warm, direct, concrete. Short paragraphs. Second person is fine.
+- Show, don't tell: no prose about the site itself or its features (how figures work, that code
+  sits beside them, how to read the site). A caption may say what to try with its own figure.
 - Lead each idea with intuition, then the equation (with code), then a figure to play with.
 - Captions say what the figure shows, then give one or two concrete things to try.
 - Tie back to the assignments where relevant ("Assignment 1 asks you to vectorize this").

@@ -1,6 +1,5 @@
 import type { ChapterDef } from './index';
 import { CHAPTERS, COURSES } from './index';
-import { fmt } from '../core/code';
 import { color, withAlpha } from '../core/plot';
 import { WELCOME_SYMBOLS } from '../lib/welcome-symbols';
 
@@ -19,18 +18,6 @@ const ILSVRC = [
 ];
 const HUMAN = 5.1;
 
-/** An 8 x 8 smiley, values 0..255, for the "how figures work" demo. */
-const SMILEY = [
-  [20, 20, 60, 90, 90, 60, 20, 20],
-  [20, 80, 140, 140, 140, 140, 80, 20],
-  [60, 140, 30, 140, 140, 30, 140, 60],
-  [90, 140, 140, 140, 140, 140, 140, 90],
-  [90, 140, 30, 140, 140, 30, 140, 90],
-  [60, 140, 140, 30, 30, 140, 140, 60],
-  [20, 80, 140, 140, 140, 140, 80, 20],
-  [20, 20, 60, 90, 90, 60, 20, 20],
-];
-
 const PART_INTRO: Record<string, string> = {
   'Start here': 'Orientation and the toolkit. Chapters 1 and 2 are references as much as chapters: skim them now, and come back whenever a later page leans on a sum, a slope or a NumPy trick.',
   'Neural networks': 'The core of the course (Lectures 2 to 6), best read in order, because each chapter builds on the last. It goes from the simplest possible classifier to a neural network trained with backpropagation, and ends with a complete worked example. Assignment 1 and the first half of Assignment 2 live here.',
@@ -44,9 +31,7 @@ const chapter: ChapterDef = {
 
   render(p) {
     p.prose(`
-Welcome. This site is a companion to one of the most influential courses in modern machine learning: Stanford's **CS231n**, as it was taught in the winter of 2016. It walks through the same ideas in the same order, but every picture is something you can poke, and every equation comes with the few lines of Python that compute it.
-
-This first page does three things. It says what the course is, it retells the short history of computer vision that the course opens with, and it shows you how to read the rest of the site.`);
+Stanford's **CS231n**, as it was taught in the winter of 2016, is one of the most influential courses in modern machine learning. This page says what the course is, retells the short history of computer vision that it opens with, and maps what follows.`);
 
     p.h2('What CS231n is', 'cs231n');
     p.prose(`
@@ -312,140 +297,9 @@ What changed was the fuel.`);
 Three things came together. **Data**: ImageNet supplied over a million labeled photos, enough to train tens of millions of parameters without simply memorizing. **Compute**: graphics cards, built to do enormous numbers of multiplications in parallel for video games, turned out to be perfect for the matrix multiplies inside a network. And a handful of **practical tricks** (ReLU units, dropout, careful initialization and data augmentation) made big networks train reliably. You will meet every one of them: ReLU in [chapter 7](#/nn-architecture), dropout and initialization in [chapter 8](#/nn-data-loss), augmentation and GPUs in [chapter 13](#/convnets-practice).`);
     p.callout('history', 'Lecture 1 ends by pointing past classification. Detection, captioning and full scene understanding all build on it. In one experiment by Fei-Fei Li and colleagues, people shown a photo for only half a second could write a rich description of it: who was doing what, and where. Matching that is still a long way off, which is part of what makes the field fun.', 'Beyond one label per image');
 
-    p.h2('How to read this site', 'how-to-read');
-    p.prose(`
-Every page uses the same few conventions. They are worth two minutes now.
-
-### Every picture comes with its code
-
-No figure on this site appears without the Python that computes it, side by side on a wide screen and stacked on a phone. The code is written in the style of the CS231n assignments: NumPy arrays, short lines, names that match the math. It is real code, not decoration: it describes exactly what the figure is doing.
-
-### Live values and lit lines
-
-When you move a slider, the matching number in the code changes, with a brief flash. These **live values** let you see what the code would be computing with your settings. When a figure steps through an algorithm, the line that is running **lights up**, and a second, teal highlight sometimes marks a related line. The small figure below teaches these conventions on a deliberately trivial example: brightening an 8 × 8 picture.`);
-
-    p.figure({
-      title: 'How a figure works: brightening a tiny image',
-      codeTitle: 'brighten.py',
-      code: `
-        img = np.array(smiley, dtype=float)  #@load
-        gain = {{gain:1.5}}                  # the slider  #@gain
-        img = img * gain            # brighten  #@scale
-        img = np.clip(img, 0, 255)  # cap at 255  #@clip
-        mean = img.mean()           # {{mean}}  #@mean
-      `,
-      setup(f) {
-        let gain = 1.5;
-        let step = 0;
-        let xLit = false;
-        const LABELS = ['load', 'scale', 'clip', 'mean'];
-        const LINES = ['load', 'scale', 'clip', 'mean'];
-        const values = () => SMILEY.map((row) => row.map((v) => (step === 0 ? v : step === 1 ? v * gain : Math.min(255, v * gain))));
-        const finalMean = () => SMILEY.flat().reduce((a, v) => a + Math.min(255, v * gain), 0) / 64;
-        const over = () => SMILEY.flat().filter((v) => v * gain > 255).length;
-        const grid = f.canvas(560, 400, (ctx, w, h) => {
-          const size = Math.min(w - 8, h - 8);
-          const cell = size / 8;
-          const x0 = (w - size) / 2;
-          const y0 = (h - size) / 2;
-          const vals = values();
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          for (let r = 0; r < 8; r++) {
-            for (let c = 0; c < 8; c++) {
-              const v = vals[r]![c]!;
-              const g = Math.round(Math.max(0, Math.min(255, v)));
-              ctx.fillStyle = `rgb(${g},${g},${g})`;
-              ctx.fillRect(x0 + c * cell, y0 + r * cell, cell + 0.5, cell + 0.5);
-              const bad = v > 255;
-              if (bad) {
-                ctx.strokeStyle = color('red');
-                ctx.lineWidth = 2;
-                ctx.strokeRect(x0 + c * cell + 2, y0 + r * cell + 2, cell - 4, cell - 4);
-              }
-              ctx.fillStyle = bad ? color('red') : g > 120 ? '#1a1a1a' : '#f2f2f2';
-              ctx.font = `${bad ? '700' : '500'} ${Math.max(11, Math.min(14, cell * 0.3))}px ${MONO}`;
-              ctx.fillText(String(Math.round(v)), x0 + c * cell + cell / 2, y0 + r * cell + cell / 2 + 0.5);
-            }
-          }
-          ctx.strokeStyle = xLit ? color('orange') : color('--rule');
-          ctx.lineWidth = xLit ? 3 : 1;
-          ctx.strokeRect(x0, y0, size, size);
-        });
-        grid.canvas.classList.add('scroll-ok');
-        const meanRo = f.readout('mean');
-        const overRo = f.readout('pixels over 255');
-        const describe = () => {
-          const n = over();
-          if (step === 0) return 'Line 1: the raw image. Each square is one pixel; its number is its brightness, from 0 (black) to 255 (white).';
-          if (step === 1) return `Line 3: every pixel times **gain** = ${fmt(gain, 2)}. ${n ? `${n} pixel${n > 1 ? 's' : ''} went above 255 (red): not a valid brightness yet.` : 'Nothing went above 255. Drag **gain** past 2 to see what overflow looks like.'}`;
-          if (step === 2) return `Line 4: anything above 255 is cut back to 255. ${n ? `${n} pixel${n > 1 ? 's were' : ' was'} clipped.` : 'With this gain nothing needed clipping.'}`;
-          return `Line 5: the average brightness is ${fmt(finalMean(), 4)}, also shown in the code as the comment on that line.`;
-        };
-        const sync = () => {
-          f.code.set('mean', fmt(finalMean(), 4));
-          meanRo.set(fmt(finalMean(), 4));
-          overRo.set(over());
-          f.status(describe());
-          grid.redraw();
-        };
-        f.stepper({
-          steps: 4,
-          interval: 1300,
-          label: (k) => `step ${k + 1} / 4: ${LABELS[k]}`,
-          onStep: (k) => {
-            step = k;
-            f.code.highlight(LINES[k]!);
-            f.code.highlight(k === 1 ? 'gain' : null, 'alt');
-            sync();
-          },
-        });
-        f.slider({
-          label: 'gain',
-          sym: 'gain',
-          min: 0.2,
-          max: 3,
-          step: 0.1,
-          value: 1.5,
-          slot: 'gain',
-          format: (v) => fmt(v, 2),
-          onInput: (v) => {
-            gain = v;
-            sync();
-          },
-        });
-        f.onSym((k) => {
-          xLit = k === 'x';
-          grid.redraw();
-        });
-        sync();
-      },
-      caption: `**Step** through the four stages with the arrows (or press play): the line that produced the current picture lights up, and at the scaling step a second, teal highlight marks the line it depends on. Then **drag gain**: the number after \`gain =\` in the code follows the slider, and so does the mean in the last line. Push gain above 2 and step to line 3 to see pixels overflow, then to line 4 to see them clipped. Finally, hover or tap \`img\` in the code: the picture it names gets an orange outline.`,
-    });
-
-    p.prose(`
-### Colors connect math, code and words
-
-The quantities that matter on a page get a color, and the color means the same thing in the equations, in the code and in the text. Hover over a colored symbol (or tap it on a phone) and every appearance of it on the page lights up, with a short reminder of what it is. Try it on this page: $\\syms$, the scores, is purple; $\\symy$, the correct label, is gold; $\\symerr$, the error, is red. On a phone, tap again or tap anywhere else to let go. The colors follow a habit across the course: weights blue, inputs orange, biases green, scores purple, losses red, gradients teal, labels gold, and hand-set knobs (hyperparameters, like \`gain\` above) slate.
-
-### Equation cards
-
-Display equations always come in a card, like the top-5 error card above. The card has four parts. The equation itself is on top. **Piece by piece** walks through it from left to right and says what each fragment means. **Same thing in code** is the equation as NumPy. **In plain words** is the idea with the notation stripped away. If an equation makes your eyes glaze over, skip straight to the plain words, then come back.
-
-### When the math gets thick
-
-This course assumes very little: if you can program and you once met slopes in a calculus class, you can follow it. Whenever a page uses a sum, a matrix product, a logarithm or a gradient, it says what that is in a sentence, and the [math survival kit](#/math-kit) has the long versions with figures. The [Python and NumPy chapter](#/numpy) does the same for arrays, shapes and broadcasting, which every assignment depends on.
-
-### Small comforts
-
-- The **moon or sun button** at the top right switches between light and dark mode; figures redraw in the new colors. By default the site follows your system setting, and it remembers your choice.
-- The chapter list is on the left on a wide screen and behind the **menu button** at the top left on a phone. A check mark means you have opened that chapter before.
-- Longer chapters start with an **On this page** list. Each section heading has a § link you can copy to share that exact spot.
-- **Previous** and **Next** links at the bottom of every chapter follow the recommended order, and the thin bar under the top bar shows how far down the page you are.`);
-
     p.h2('The map', 'map');
     p.prose(`
-The site has five parts. Read the first part as needed, then the chapters roughly in order; the assignment pages are best read once you have covered the chapters each one draws on (the next section says which).`);
+The course has five parts. Read the first part as needed, then the chapters roughly in order; the assignment pages are best read once you have covered the chapters each one draws on (the next section says which).`);
     for (const part of COURSES.find((k) => k.id === 'cs231n')!.parts) {
       const items = CHAPTERS.filter((c) => c.course === 'cs231n' && c.part === part);
       const list = items.map((c) => `- [**${c.num}.** ${c.title}](#/${c.id})${c.lectures ? ` (${c.lectures})` : ''}: ${c.blurb}${c.id === 'welcome' ? ' *You are here.*' : ''}`).join('\n');
@@ -465,7 +319,6 @@ They build on each other. In Assignment 1 you write a two-layer network as one b
         ['[A3](#/a3), due February 24, 2016', 'image captioning with RNNs and LSTMs on Microsoft COCO; saliency maps, fooling images, class visualization, feature inversion and DeepDream on TinyImageNet', 'chapters [15](#/rnn) and [12](#/visualizing)'],
       ],
     );
-    p.callout('aside', 'The assignment pages on this site describe each 2016 assignment: its goals, its setup, every question, the files and functions involved, and the results you should expect. They deliberately contain no solutions and no graders. The figures in the chapters show the ideas working; writing the code yourself, in the real starter notebooks, is the part that teaches.', 'About the assignment pages');
 
     p.callout('idea', `CS231n teaches image classification with convolutional networks, from first principles, in NumPy. The ideas behind ConvNets are decades old (Hubel and Wiesel, the Neocognitron, LeNet); what made them win in 2012 was data (ImageNet), compute (GPUs) and a few training tricks, and the ImageNet error then fell from about 26% to under 4% in four years. On this site every figure has its code beside it, live values and lit lines tie the two together, colored symbols link math to code, and every equation card ends in plain words.`, 'Takeaways');
   },

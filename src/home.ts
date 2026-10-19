@@ -153,17 +153,6 @@ function attentionArt(page: Page): HTMLElement {
   return wrap;
 }
 
-function howto(page: Page): HTMLElement {
-  const sec = h('section', { class: 'howto' });
-  const card = (ic: string, title: string, body: string) => h('div', { class: 'howto-card' }, h('h3', { html: `${icon(ic)}${title}` }), h('div', { class: 'prose', html: page.md(body) }));
-  sec.append(
-    card('play', 'Watch, explore, practice', 'Every chapter opens with a narrated lecture you can simply watch. Then the interactive chapter: figures to drag, with their code beside them. Then something to build.'),
-    card('code', 'Every picture has its code', 'Figures sit next to the Python they illustrate. Drag a slider and the numbers in the code change with it; step through an algorithm and the line that is running lights up.'),
-    card('eye', 'Colors are names', 'Every symbol has a color that follows it from equation to code to prose. Hover or tap a colored symbol anywhere and every other place it appears lights up.'),
-  );
-  return sec;
-}
-
 function partsGrid(root: HTMLElement, course: CourseMeta, seen: Set<string>): void {
   course.parts.forEach((part, pi) => {
     const sec = h('section', { class: 'part' },
@@ -195,15 +184,14 @@ function cs231nIntro(root: HTMLElement): Page {
       h('div', {},
         h('div', { class: 'hero-kicker' }, 'CS231n · Stanford · Winter 2016'),
         h('h1', { class: 'hero-title', html: 'Teaching machines <em>to see</em>, one line of code at a time.' }),
-        h('p', { class: 'hero-lede' }, 'An interactive companion to Convolutional Neural Networks for Visual Recognition, the course Andrej Karpathy, Justin Johnson and Fei-Fei Li taught at Stanford. Every idea comes with a picture you can poke, and every picture comes with the code that drew it.'),
+        h('p', { class: 'hero-lede' }, 'Convolutional Neural Networks for Visual Recognition, the course Andrej Karpathy, Justin Johnson and Fei-Fei Li taught at Stanford: images as numbers, linear classifiers, backpropagation, neural networks and ConvNets, built from scratch in NumPy.'),
         h('div', { class: 'hero-actions' },
           h('a', { class: 'btn btn-primary', href: '#/welcome', html: `Start the course ${icon('arrowRight')}` }),
           h('a', { class: 'btn', href: '#/math-kit', html: `${icon('math')} Math survival kit` }),
           h('a', { class: 'btn', href: `#/${first.id}`, html: `${icon('image')} Jump to images` }))),
       heroArt(page)),
   );
-  root.append(howto(page));
-  page.prose('Here is the idea in miniature. This is the first real equation of the course: how a linear classifier scores an image. Try hovering $\\symW$, $\\symx$ or $\\symb$.');
+  page.prose('The first real equation of the course: how a linear classifier scores an image. Try hovering $\\symW$, $\\symx$ or $\\symb$.');
   page.math({
     label: 'Scoring an image',
     tex: String.raw`\syms = \symW \symx + \symb`,
@@ -237,14 +225,13 @@ function dl26Intro(root: HTMLElement): Page {
       h('div', {},
         h('div', { class: 'hero-kicker' }, 'DL26 · The continuation · 2017 to 2026'),
         h('h1', { class: 'hero-title', html: 'A decade later: <em>attention</em>, scale and feedback.' }),
-        h('p', { class: 'hero-lede' }, 'CS231n ended in 2016, just before deep learning changed shape. This course picks up there: transformers, tokens and pretraining, scaling laws, modern optimizers like Muon, diffusion, and the post-training methods (RLHF, PPO, DPO, RLVR, GRPO) that turn a text predictor into a reasoning model. Same format: every idea is a picture you can poke, beside the code that computes it.'),
+        h('p', { class: 'hero-lede' }, 'CS231n ended in 2016, just before deep learning changed shape. This course picks up there: transformers, tokens and pretraining, scaling laws, modern optimizers like Muon, diffusion, and the post-training methods (RLHF, PPO, DPO, RLVR, GRPO) that turn a text predictor into a reasoning model.'),
         h('div', { class: 'hero-actions' },
           h('a', { class: 'btn btn-primary', href: '#/decade', html: `Start the course ${icon('arrowRight')}` }),
           h('a', { class: 'btn', href: '#/transformer', html: `${icon('brain')} The Transformer` }),
           h('a', { class: 'btn', href: '#/cs231n', html: `${icon('book')} Need the basics? CS231n` }))),
       attentionArt(page)),
   );
-  root.append(howto(page));
   page.prose('The whole decade turns on one equation. Every word of a sentence asks a question ($\\symQ$), every word advertises what it is about ($\\symK$), and every word gets back a blend of the others ($\\symV$), weighted by how well question and advertisement match ($\\symA$).');
   page.math({
     label: 'Attention',
@@ -289,7 +276,7 @@ export function renderIndex(main: HTMLElement): void {
     h('div', {},
       h('div', { class: 'hero-kicker' }, 'Interactive courses'),
       h('h1', { class: 'hero-title', html: 'Deep learning, <em>one line of code</em> at a time.' }),
-      h('p', { class: 'hero-lede' }, 'Two courses, ten years apart. The first is Stanford\'s CS231n as taught in 2016: how machines learned to see. The second picks up where it ends: transformers, scale, and models trained by feedback. Each chapter is a narrated lecture, an interactive explainer, and something to build.'))));
+      h('p', { class: 'hero-lede' }, 'Two courses, ten years apart. The first is Stanford\'s CS231n as taught in 2016: how machines learned to see. The second picks up where it ends: transformers, scale, and models trained by feedback.'))));
   const grid = h('div', { class: 'courses' });
   for (const k of COURSES) {
     const chapters = CHAPTERS.filter((c) => c.course === k.id && !c.num.startsWith('A'));
@@ -301,6 +288,6 @@ export function renderIndex(main: HTMLElement): void {
       h('div', { class: 'course-blurb' }, k.blurb),
       h('div', { class: 'course-foot' }, h('span', {}, stats), h('span', { class: 'course-go', html: `Open ${icon('arrowRight')}` }))));
   }
-  root.append(grid, howto(page));
+  root.append(grid);
   root.append(h('footer', { class: 'home-foot', html: page.md('An independent study companion. CS231n was created at Stanford by Fei-Fei Li, Andrej Karpathy and Justin Johnson; DL26 is this site\'s own continuation.') }));
 }

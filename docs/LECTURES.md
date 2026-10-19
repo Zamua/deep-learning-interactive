@@ -63,6 +63,8 @@ the ideas, pictures that make each one obvious, and a listing that shows the sam
 - Labels must not collide with each other, with marks, or with the scene's moving parts at any
   beat, including mid-animation. Fade out what a beat no longer needs (`s.win`).
 - Do heavy work once at module scope (seeded with `src/core/rand.ts`), never per frame.
+- Show, don't tell: never describe the site or its features ("open the interactive chapter",
+  "every figure has its code beside it", "try it in your browser"). End on the subject itself.
 - Numbers and symbols in `say` are written the way they are spoken; check anything a voice
   could read two ways (decimals, exponents, shapes like 32x32x3, `W.T`, Greek letters).
 
