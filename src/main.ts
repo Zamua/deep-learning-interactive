@@ -7,11 +7,11 @@ import 'katex/dist/katex.min.css';
 import './styles/base.css';
 import './styles/components.css';
 
-import { CHAPTERS, PARTS, type ChapterMeta, hasChapter, loadChapter } from './chapters/index';
+import { CHAPTERS, COURSES, type ChapterMeta, type CourseMeta, hasChapter, loadChapter } from './chapters/index';
 import { icon } from './core/controls';
 import { disposeAll, h } from './core/dom';
 import { Page } from './core/page';
-import { renderHome } from './home';
+import { renderCourse, renderIndex } from './home';
 import { hasLecture, loadLecture } from './lectures/index';
 
 const store = {
@@ -76,20 +76,45 @@ const setNav = (open: boolean) => document.body.classList.toggle('nav-open', ope
 menuBtn.addEventListener('click', () => setNav(!document.body.classList.contains('nav-open')));
 scrim.addEventListener('click', () => setNav(false));
 
+const brandName = h('span', { class: 'brand-name' });
+const brand = h('a', { class: 'brand' }, h('span', { class: 'brand-mark', 'aria-hidden': 'true' }), brandName, h('span', { class: 'brand-sub' }, 'interactive'));
+/** The top bar names the course being read, and leads back to its contents; outside a course, the index. */
+function setBrand(course: CourseMeta | null): void {
+  brandName.textContent = course ? course.code.toLowerCase() : 'deep learning';
+  brand.setAttribute('href', course ? `#/${course.id}` : '#/');
+  document.body.classList.toggle('in-course', !!course);
+}
+
 const top = h('header', { class: 'topbar' },
   menuBtn,
-  h('a', { class: 'brand', href: '#/' }, h('span', { class: 'brand-mark', 'aria-hidden': 'true' }), h('span', { class: 'brand-name' }, 'cs231n'), h('span', { class: 'brand-sub' }, 'interactive')),
+  brand,
   h('div', { class: 'topbar-spacer' }),
   themeBtn,
   progress);
 
 app.append(top, nav, scrim, main);
 
-function buildNav(active: string): void {
+const courseOf = (c: ChapterMeta): CourseMeta => COURSES.find((k) => k.id === c.course)!;
+
+function buildNav(course: CourseMeta | null, active: string): void {
   nav.innerHTML = '';
   const seen = visited();
-  for (const part of PARTS) {
-    const items = CHAPTERS.filter((c) => c.part === part);
+  if (!course) {
+    nav.append(h('div', { class: 'side-part' }, 'Courses'));
+    const ul = h('ul', { class: 'side-list' });
+    for (const k of COURSES) {
+      const a = h('a', { href: `#/${k.id}`, class: 'side-link' }, h('span', { class: 'side-num' }, k.code), h('span', { class: 'side-title' }, k.title));
+      a.addEventListener('click', () => setNav(false));
+      ul.append(h('li', {}, a));
+    }
+    nav.append(ul);
+    return;
+  }
+  const all = h('a', { class: 'side-all', href: '#/', html: `${icon('arrowLeft')} All courses` });
+  all.addEventListener('click', () => setNav(false));
+  nav.append(all, h('a', { class: 'side-course', href: `#/${course.id}` }, h('span', { class: 'side-course-code' }, course.code), h('span', { class: 'side-course-title' }, course.title)));
+  for (const part of course.parts) {
+    const items = CHAPTERS.filter((c) => c.course === course.id && c.part === part);
     nav.append(h('div', { class: 'side-part' }, part));
     const ul = h('ul', { class: 'side-list' });
     for (const c of items) {
@@ -102,7 +127,7 @@ function buildNav(active: string): void {
     }
     nav.append(ul);
   }
-  nav.append(h('div', { class: 'side-foot', html: 'An unofficial companion to Stanford CS231n (Winter 2016).' }));
+  nav.append(h('div', { class: 'side-foot' }, course.id === 'cs231n' ? 'An unofficial companion to Stanford CS231n (Winter 2016).' : `${course.code}: ${course.era}.`));
 }
 
 function chapterHeader(meta: ChapterMeta): HTMLElement {
@@ -110,7 +135,7 @@ function chapterHeader(meta: ChapterMeta): HTMLElement {
   if (meta.lectures) metaRow.append(h('span', { class: 'tag' }, meta.lectures));
   for (const n of meta.notes ?? []) metaRow.append(h('a', { class: 'tag tag-link', href: n.url, target: '_blank', rel: 'noopener', html: `${icon('book')}${n.title}` }));
   return h('header', { class: 'ch-head' },
-    h('div', { class: 'ch-part' }, meta.part),
+    h('div', { class: 'ch-part' }, `${courseOf(meta).code} · ${meta.part}`),
     h('div', { class: 'ch-num', 'aria-hidden': 'true' }, meta.num),
     h('h1', { class: 'ch-title' }, meta.title),
     h('p', { class: 'ch-blurb' }, meta.blurb),
@@ -143,9 +168,10 @@ function layers(meta: ChapterMeta, body: HTMLElement): HTMLElement {
 }
 
 function chapterFooter(meta: ChapterMeta): HTMLElement {
-  const i = CHAPTERS.indexOf(meta);
-  const prev = CHAPTERS[i - 1];
-  const next = CHAPTERS[i + 1];
+  const list = CHAPTERS.filter((c) => c.course === meta.course);
+  const i = list.indexOf(meta);
+  const prev = list[i - 1];
+  const next = list[i + 1];
   const link = (c: ChapterMeta | undefined, dir: 'prev' | 'next') =>
     c
       ? h('a', { class: `pn pn-${dir}`, href: `#/${c.id}` },
@@ -173,15 +199,22 @@ async function route(): Promise<void> {
     await renderWatch(section, token);
     return;
   }
-  buildNav(id);
   const meta = CHAPTERS.find((c) => c.id === id);
+  const course = meta ? courseOf(meta) : (COURSES.find((k) => k.id === id) ?? null);
+  setBrand(course);
+  buildNav(course, id);
   if (!meta) {
-    document.title = 'cs231n, interactive';
-    renderHome(main, visited());
+    if (course) {
+      document.title = `${course.code}: ${course.title} · interactive`;
+      renderCourse(main, course, visited());
+    } else {
+      document.title = 'Deep learning, interactive';
+      renderIndex(main);
+    }
     window.scrollTo(0, 0);
     return;
   }
-  document.title = `${meta.num}. ${meta.title} · cs231n interactive`;
+  document.title = `${meta.num}. ${meta.title} · ${courseOf(meta).code.toLowerCase()} interactive`;
   const article = h('article', { class: 'chapter', 'data-page': meta.id });
   article.append(chapterHeader(meta));
   const body = h('div', { class: 'ch-body', 'data-page': meta.id });
@@ -235,7 +268,7 @@ async function renderWatch(id: string, token: number): Promise<void> {
     location.replace(meta ? `#/${meta.id}` : '#/');
     return;
   }
-  document.title = `Lecture: ${meta.title} · cs231n interactive`;
+  document.title = `Lecture: ${meta.title} · ${courseOf(meta).code.toLowerCase()} interactive`;
   main.append(h('div', { class: 'loading' }, 'Loading the lecture…'));
   try {
     const [def, { mountLecture }] = await Promise.all([pending, import('./lecture/player')]);

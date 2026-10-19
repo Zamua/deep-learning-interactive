@@ -1,7 +1,9 @@
-# cs231n, interactive
+# Deep learning, interactive
 
-An interactive companion to Stanford's CS231n (Convolutional Neural Networks for Visual
-Recognition) as taught in Winter 2016. Every figure sits beside the Python it illustrates
+Two interactive courses. **CS231n** is a companion to Stanford's CS231n (Convolutional Neural
+Networks for Visual Recognition) as taught in Winter 2016. **DL26** continues it: attention
+and transformers, scale, modern optimizers, ViT, CLIP and diffusion, and post-training with
+RLHF, PPO, DPO, RLVR and GRPO (syllabus in `docs/DL26.md`). In both, every figure sits beside the Python it illustrates
 and drives it live; every equation is read out piece by piece next to its NumPy twin; colored
 symbols link math, code and prose. Chapters can open with a narrated lecture (`#/watch/<id>`):
 the same ideas as a hands-off watch, drawn live in the browser in sync with a voice track.

@@ -1,5 +1,5 @@
 import type { ChapterDef } from './index';
-import { CHAPTERS, PARTS } from './index';
+import { CHAPTERS, COURSES } from './index';
 import { fmt } from '../core/code';
 import { color, withAlpha } from '../core/plot';
 
@@ -451,8 +451,8 @@ This course assumes very little: if you can program and you once met slopes in a
     p.h2('The map', 'map');
     p.prose(`
 The site has five parts. Read the first part as needed, then the chapters roughly in order; the assignment pages are best read once you have covered the chapters each one draws on (the next section says which).`);
-    for (const part of PARTS) {
-      const items = CHAPTERS.filter((c) => c.part === part);
+    for (const part of COURSES.find((k) => k.id === 'cs231n')!.parts) {
+      const items = CHAPTERS.filter((c) => c.course === 'cs231n' && c.part === part);
       const list = items.map((c) => `- [**${c.num}.** ${c.title}](#/${c.id})${c.lectures ? ` (${c.lectures})` : ''}: ${c.blurb}${c.id === 'welcome' ? ' *You are here.*' : ''}`).join('\n');
       p.prose(`### ${part}\n\n${PART_INTRO[part] ?? ''}\n\n${list}`);
     }

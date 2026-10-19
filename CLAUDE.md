@@ -1,8 +1,12 @@
 # cs231n-course: notes for a coding agent
 
-A Vite + TypeScript static site (no framework): an interactive CS231n course. Hash routes
-`#/<chapter-id>[/<section-id>]`. `docs/AUTHORING.md` is the chapter-writing contract and
-the API reference; read it before touching a chapter.
+A Vite + TypeScript static site (no framework) hosting interactive courses: CS231n (Winter
+2016) and DL26, its continuation (transformers, scale, post-training). Hash routes: `#/` the
+course index, `#/<course-id>` a course's front page, `#/<chapter-id>[/<section-id>]` a
+chapter, `#/watch/<chapter-id>` its lecture. Chapter ids are unique across courses.
+`docs/AUTHORING.md` is the chapter-writing contract and the API reference; read it before
+touching a chapter. `docs/DL26.md` is DL26's syllabus and replaces AUTHORING's course section
+for DL26 chapters.
 
 ## Commands
 
@@ -20,7 +24,8 @@ the API reference; read it before touching a chapter.
   (KaTeX + the small markdown dialect), `symbols.ts` (color-linked symbols and hover linking),
   `plot.ts` (HiDPI canvas with data coordinates), `controls.ts`, `data.ts` (2-D toy sets,
   CIFAR loader), `nn.ts` (small trainable MLP), `rand.ts`.
-- `src/chapters/index.ts`: chapter metadata and order; chapter modules are found by
+- `src/chapters/index.ts`: `COURSES` (code, title, parts) and chapter metadata and order,
+  each chapter tagged with its `course`; chapter modules are found by
   `import.meta.glob`, so a missing file shows as "still being written".
 - `src/chapters/<id>.ts`: one chapter each; `src/lib/<id>-*.ts` chapter helpers.
 - `public/data/`, `public/img/`: chapter assets.
