@@ -162,11 +162,11 @@ button {
   align-self: center;
   width: 20px;
   height: 20px;
-  border-radius: 4px;
-  background:
-    conic-gradient(from 90deg at 50% 50%, var(--c-blue) 0 25%, var(--c-orange) 0 50%, var(--c-green) 0 75%, var(--c-purple) 0);
-  background-size: 10px 10px;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 12%, transparent);
+}
+.brand-mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .brand-name {

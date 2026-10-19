@@ -77,7 +77,17 @@ menuBtn.addEventListener('click', () => setNav(!document.body.classList.contains
 scrim.addEventListener('click', () => setNav(false));
 
 const brandName = h('span', { class: 'brand-name' });
-const brand = h('a', { class: 'brand' }, h('span', { class: 'brand-mark', 'aria-hidden': 'true' }), brandName, h('span', { class: 'brand-sub' }, 'interactive'));
+/** The site icon's mark: a causal attention pattern in the symbol colors, drawn with theme variables. */
+const BRAND_MARK = (() => {
+  const w = [[1, 0, 0], [0.4, 0.6, 0], [0.2, 0.3, 0.5]];
+  const col = ['--c-blue', '--c-orange', '--c-green'];
+  let cells = '';
+  for (let i = 0; i < 3; i++)
+    for (let j = 0; j < 3; j++)
+      cells += `<rect x="${j * 7}" y="${i * 7}" width="6" height="6" rx="1.6" style="fill:var(${j > i ? '--rule' : col[j]});fill-opacity:${j > i ? 1 : (0.3 + 0.7 * w[i]![j]!).toFixed(2)}"/>`;
+  return `<svg viewBox="0 0 20 20" aria-hidden="true">${cells}</svg>`;
+})();
+const brand = h('a', { class: 'brand' }, h('span', { class: 'brand-mark', html: BRAND_MARK }), brandName, h('span', { class: 'brand-sub' }, 'interactive'));
 /** The top bar names the course being read, and leads back to its contents; outside a course, the index. */
 function setBrand(course: CourseMeta | null): void {
   brandName.textContent = course ? course.code.toLowerCase() : 'deep learning';
