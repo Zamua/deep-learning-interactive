@@ -5,6 +5,7 @@ import { MLP } from '../core/nn';
 import { CLASS_COLORS, color, rgbOf, withAlpha, type Plot } from '../core/plot';
 import { Rng } from '../core/rand';
 import { OPT_COLOR, OPT_LABEL, OPT_NAMES, SURFACES, Walker, type OptName } from '../lib/nn-learning-optim';
+import { NN_LEARNING_SYMBOLS } from '../lib/nn-learning-symbols';
 
 const mono = (sz: number, wt = 500) => `${wt} ${sz}px 'JetBrains Mono Variable', ui-monospace, monospace`;
 
@@ -54,15 +55,7 @@ function regions(pl: Plot, net: MLP, alpha = 46, cell = 6): void {
 }
 
 const chapter: ChapterDef = {
-  symbols: {
-    w: { color: 'blue', name: 'w: the parameters (weights) being trained', code: ['w', 'W', 'W1'] },
-    dw: { color: 'teal', name: '∇L: the gradient of the loss with respect to w', tex: '\\nabla L', code: ['dw', 'dW'] },
-    lr: { color: 'slate', name: 'η: the learning rate (step size)', tex: '\\eta', code: ['learning_rate', 'lr', 'lr0'] },
-    mu: { color: 'gold', name: 'μ: the momentum coefficient, often 0.9', tex: '\\mu', code: ['mu'] },
-    L: { color: 'red', name: 'L: the loss', code: ['loss'] },
-    lam: { color: 'purple', name: 'λ: regularization strength', tex: '\\lambda', code: ['reg'] },
-    h: { color: 'orange', name: 'h: the small step used for a numerical gradient', code: ['h'] },
-  },
+  symbols: NN_LEARNING_SYMBOLS,
 
   render(p) {
     p.prose(`
