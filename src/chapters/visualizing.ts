@@ -6,6 +6,7 @@ import { color, withAlpha } from '../core/plot';
 import { Rng } from '../core/rand';
 import { type ConvNet, type ReluRule, type Stage, addTvGrad, argmax, blur3, clampImage, gram, loadNet, roll, softmax } from '../lib/visualizing-net';
 import { blit, cifarImg, imagePicker, inferno, inputImage, label, mapImage, probBars, stretchedImage, viridis } from '../lib/visualizing-ui';
+import { VISUALIZING_SYMBOLS } from '../lib/visualizing-symbols';
 
 /** Ten distinguishable colors for the ten CIFAR classes (the course palette has eight). */
 const TAB10 = ['#4e79a7', '#f28e2b', '#59a14f', '#e15759', '#b07aa1', '#9c755f', '#76b7b2', '#edc948', '#2f6fd6', '#ff9da7'];
@@ -1509,16 +1510,7 @@ function foolFig(f: Fig): void {
 /* ---------------------------------------------------------------- chapter */
 
 const chapter: ChapterDef = {
-  symbols: {
-    x: { color: 'orange', name: 'x: the input image, 3 × 32 × 32 numbers (pixel values minus the mean color)' },
-    W: { color: 'blue', name: 'W: weights: the filters of a conv layer, or a linear classifier\'s weights' },
-    S: { color: 'purple', name: 'S: the class scores, one per class (S with subscript c is the score of class c)', code: ['scores'] },
-    dx: { color: 'teal', name: 'the gradient: how fast a class score changes as each input number changes', tex: '\\nabla_{\\!x} S_c', code: ['dx'] },
-    F: { color: 'green', name: 'F: the feature maps (activations) of one layer', code: ['F', 'F0'] },
-    G: { color: 'gold', name: 'G: a Gram matrix: how strongly each pair of feature maps fires together', code: ['G', 'G_src'] },
-    lam: { color: 'slate', name: 'λ: regularization strength', tex: '\\lambda', code: ['reg'] },
-    eps: { color: 'red', name: 'ε: the largest change allowed to any single input number', tex: '\\epsilon', code: ['eps'] },
-  },
+  symbols: VISUALIZING_SYMBOLS,
 
   render(p) {
     p.prose(`
