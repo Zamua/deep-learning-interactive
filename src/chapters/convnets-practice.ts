@@ -6,6 +6,7 @@ import { color, withAlpha } from '../core/plot';
 import { Rng } from '../core/rand';
 import { blit, cell, count, frame, mono, txt } from '../lib/convnets-draw';
 import { eig3, round16, roundStoch16 } from '../lib/convnets-practice-math';
+import { CONVNETS_PRACTICE_SYMBOLS } from '../lib/convnets-practice-symbols';
 
 function local(e: PointerEvent, c: HTMLCanvasElement): [number, number] {
   const r = c.getBoundingClientRect();
@@ -817,15 +818,7 @@ function figRounding(f: Fig): void {
 // ---------------------------------------------------------------------------------------
 
 const chapter: ChapterDef = {
-  symbols: {
-    X: { color: 'orange', name: 'X: an input image (or the inputs, rearranged)', code: ['X', 'img', 'X_col'] },
-    W: { color: 'blue', name: 'W: weights (filters)', code: ['W', 'W_row'] },
-    A: { color: 'purple', name: 'A: features a layer computes (activations, CNN codes)', code: ['A', 'codes'] },
-    p: { color: 'teal', name: 'p: predicted class probabilities', code: ['probs'] },
-    L: { color: 'red', name: 'L: the loss', code: ['loss'] },
-    lr: { color: 'slate', name: 'η: the learning rate', tex: '\\eta', code: ['lr', 'base_lr'] },
-    C: { color: 'slate', name: 'C: the number of channels (depth) of a volume', code: ['C'] },
-  },
+  symbols: CONVNETS_PRACTICE_SYMBOLS,
 
   render(p) {
     p.prose(`
