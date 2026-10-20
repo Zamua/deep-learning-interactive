@@ -262,6 +262,7 @@ async function route(): Promise<void> {
     }
   } catch (e) {
     console.error(e);
+    if (await reloadIfStale()) return;
     body.innerHTML = '';
     body.append(h('div', { class: 'fig-error' }, `This chapter failed to load: ${(e as Error).message}`));
   }
@@ -269,6 +270,30 @@ async function route(): Promise<void> {
   markVisited(meta.id);
   if (section) requestAnimationFrame(() => document.getElementById(section)?.scrollIntoView({ block: 'start' }));
   else window.scrollTo(0, 0);
+}
+
+/**
+ * A tab opened before a redeploy runs the old build, whose lazy chunks no longer exist. When the
+ * served page names a different entry script, reloads into it (once per build) and returns true.
+ */
+async function reloadIfStale(): Promise<boolean> {
+  const entry = new URL(import.meta.url).pathname.split('/').pop();
+  let served: string | undefined;
+  try {
+    const res = await fetch(location.pathname, { cache: 'no-store' });
+    if (res.ok) served = (await res.text()).match(/index-[\w-]+\.js/)?.[0];
+  } catch {
+    return false;
+  }
+  if (!served || served === entry) return false;
+  try {
+    if (sessionStorage.getItem('cs231n.reloadedFor') === served) return false;
+    sessionStorage.setItem('cs231n.reloadedFor', served);
+  } catch {
+    return false;
+  }
+  location.reload();
+  return true;
 }
 
 async function renderWatch(id: string, token: number): Promise<void> {
@@ -287,6 +312,7 @@ async function renderWatch(id: string, token: number): Promise<void> {
     mountLecture(main, def, meta);
   } catch (e) {
     console.error(e);
+    if (await reloadIfStale()) return;
     main.innerHTML = '';
     main.append(h('div', { class: 'fig-error' }, `The lecture failed to load: ${(e as Error).message}`));
   }
