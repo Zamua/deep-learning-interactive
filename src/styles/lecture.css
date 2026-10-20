@@ -427,6 +427,15 @@ canvas.lec-canvas {
   font: 600 13.5px var(--font-mono);
   min-width: 52px;
 }
+.lec.boost-locked .lec-speed {
+  display: flex;
+  gap: 3px;
+  color: var(--accent-ink);
+}
+.lec.boost-locked .lec-speed .ico {
+  width: 15px;
+  height: 15px;
+}
 .lec-time {
   margin-left: 6px;
   font: 500 13px var(--font-mono);
@@ -503,7 +512,8 @@ canvas.lec-canvas {
   display: none;
 }
 
-/* Hold for 2x: a pill while held, and a lock that follows the finger down. */
+/* Hold for 2x: a pill while held, and a lock that follows the finger down. Once locked, the
+   speed button carries it and the picture stays clear. */
 .lec-boost {
   --k: 0;
   position: absolute;
@@ -517,10 +527,12 @@ canvas.lec-canvas {
   opacity: 0;
   transition: opacity 0.18s;
 }
-.lec.boost .lec-boost {
+.lec.boost:not(.boost-locked) .lec-boost,
+.lec.boost-unlock .lec-boost {
   opacity: 1;
 }
-.lec.boost .lec-chip {
+.lec.boost:not(.boost-locked) .lec-chip,
+.lec.boost-unlock .lec-chip {
   opacity: 0;
 }
 .lec-boost-pill {
@@ -541,7 +553,6 @@ canvas.lec-canvas {
   width: 15px;
   height: 15px;
 }
-.lec-boost-lk,
 .lec-boost-ul,
 .lec-boost-off {
   display: none;
@@ -549,15 +560,6 @@ canvas.lec-canvas {
 .lec.boost-locked .lec-boost-ff {
   display: none;
 }
-.lec.boost-locked .lec-boost-lk {
-  display: block;
-  color: var(--accent);
-}
-.lec.boost-locked .lec-boost-pill {
-  pointer-events: auto;
-  cursor: pointer;
-}
-.lec.boost-unlock .lec-boost-lk,
 .lec.boost-unlock .lec-boost-rate {
   display: none;
 }

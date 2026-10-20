@@ -244,7 +244,6 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   const spinner = h('div', { class: 'lec-spinner', 'aria-hidden': 'true' });
   const boostPill = h('div', { class: 'lec-boost-pill' },
     h('span', { class: 'lec-boost-ff', html: icon('ffFill') }),
-    h('span', { class: 'lec-boost-lk', html: icon('lockFill') }),
     h('span', { class: 'lec-boost-ul', html: icon('unlockFill') }),
     h('b', { class: 'lec-boost-rate' }, `${BOOST}×`),
     h('span', { class: 'lec-boost-off' }, 'Release to unlock'));
@@ -661,11 +660,14 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   // A hold's release still fires a click on most engines; it must not also toggle playback.
   let swallowClick = false;
 
+  // A locked boost shows in the speed button, not over the picture; tapping the button unlocks.
   function setBoost(b: typeof boost): void {
     boost = b;
     clock.setRate(b === 'off' ? baseRate : BOOST);
     root.classList.toggle('boost', b !== 'off');
     root.classList.toggle('boost-locked', b === 'locked');
+    speedBtn.innerHTML = b === 'locked' ? `${icon('lockFill')}<span>${BOOST}×</span>` : `${baseRate}×`;
+    speedBtn.setAttribute('aria-label', b === 'locked' ? `Locked at ${BOOST}×, tap to unlock` : 'Playback speed');
   }
 
   function endPress(): void {
@@ -679,7 +681,6 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   stage.addEventListener('pointerdown', (e) => {
     swallowClick = false;
     if (!e.isPrimary || e.button !== 0 || !started || ended || clock.paused || press) return;
-    if (boost === 'locked' && boostPill.contains(e.target as Node)) return;
     const id = e.pointerId;
     press = { id, x: e.clientX, y: e.clientY, active: false, armed: false, timer: 0 };
     press.timer = window.setTimeout(() => {
@@ -721,22 +722,19 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   stage.addEventListener('pointerup', release);
   stage.addEventListener('pointercancel', release);
   stage.addEventListener('contextmenu', (e) => press && e.preventDefault());
-  boostPill.addEventListener('click', (e) => {
-    if (boost !== 'locked' || press) return;
-    e.stopPropagation();
-    setBoost('off');
-  });
   onDispose(endPress);
 
   const setRate = (r: number) => {
     baseRate = r;
     setBoost('off');
-    speedBtn.textContent = `${r}×`;
     prefs.rate = r;
     store.set(prefKey, JSON.stringify(prefs));
   };
   setRate(SPEEDS.includes(prefs.rate ?? 1) ? (prefs.rate ?? 1) : 1);
-  speedBtn.addEventListener('click', () => setRate(SPEEDS[(SPEEDS.indexOf(baseRate) + 1) % SPEEDS.length]!));
+  speedBtn.addEventListener('click', () => {
+    if (boost === 'locked') setBoost('off');
+    else setRate(SPEEDS[(SPEEDS.indexOf(baseRate) + 1) % SPEEDS.length]!);
+  });
 
   const setCc = (on: boolean) => {
     ccOn = on;
