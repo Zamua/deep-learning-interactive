@@ -170,8 +170,8 @@ export function mountLookup(host: LookupHost): { showScene(): void; tick(t: numb
     const syms = rows('sym');
     const fns = rows('fn');
     const content: HTMLElement[] = [h('div', { class: 'lk-head' }, h('span', { class: 'lk-title' }, 'In this scene'), h('span', { class: 'lk-tag' }, host.scenes[i]!.title), closeBtn())];
-    if (syms.length) content.push(h('div', { class: 'lk-sec' }, 'Symbols'), ...syms);
-    if (fns.length) content.push(h('div', { class: 'lk-sec' }, 'Functions'), ...fns);
+    if (syms.length) content.push(h('div', { class: 'lk-sec' }, 'Symbols'), h('div', { class: 'lk-list' }, ...syms));
+    if (fns.length) content.push(h('div', { class: 'lk-sec' }, 'Functions'), h('div', { class: 'lk-list' }, ...fns));
     if (!syms.length && !fns.length) content.push(h('p', { class: 'lk-lead' }, 'Nothing to look up in this scene.'));
     show(content, `In this scene: ${host.scenes[i]!.title}`);
   }
