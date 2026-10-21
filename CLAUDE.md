@@ -16,6 +16,7 @@ for DL26 chapters.
                                          (prints page errors; env SCROLL='.fig:2', THEME=dark)
     node tools/lecture/build.mjs <id> [--check]   synthesize a lecture's narration (ElevenLabs via OpenRouter, or Kokoro)
     node tools/lecture/shots.mjs <id> <dir> [w h mobile] [scene/beat ...]   screenshot every beat
+    node tools/lecture/lookup.mjs [<id> ...]   lookup terms still missing a note
 
 ## Layout
 
@@ -30,7 +31,8 @@ for DL26 chapters.
 - `src/chapters/<id>.ts`: one chapter each; `src/lib/<id>-*.ts` chapter helpers.
 - `public/data/`, `public/img/`: chapter assets.
 - `src/lecture/`: the lecture player (`player.ts`: theater, audio clock, controls; `scene.ts`:
-  beat-anchored easing and a drawing kit in stage units; `types.ts`: script and timing types).
+  beat-anchored easing and a drawing kit in stage units; `types.ts`: script and timing types;
+  `lookup.ts`: the cards for symbols and calls; `glossary.ts`: note types and `callKey`).
   `src/lectures/<id>/`: one lecture per chapter. `docs/LECTURES.md` is the authoring guide.
 
 ## Invariants

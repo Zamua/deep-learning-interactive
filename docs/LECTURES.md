@@ -14,6 +14,7 @@ stays sharp, small, and in the chapter's colors. Route: `#/watch/<chapter-id>`.
     src/lectures/<id>/timing.json  generated: when every beat starts and ends, and where its phrases
                                    break (resuming after a pause backs up to the phrase start)
     src/lectures/<id>/narration.m4a generated: the voice track (hashed into dist/assets)
+    src/lectures/<id>/glossary.ts  notes on the calls in the lecture's code (pure data)
 
 A chapter with a lecture gets the Watch / Explore / Practice card automatically
 (`hasLecture`). `ChapterMeta.practice` fills the third row.
@@ -85,6 +86,21 @@ hits are just digits written as numerals, but read them for real mispronunciatio
 
 Edit the script and the player notices that the timing no longer matches: in dev it shows a
 notice and plays silently on estimated timing, so visuals can be worked on before rebuilding.
+
+## Lookup notes
+
+Tapping a symbol or a call in the code panel opens a card, and the book button lists every one
+in the scene. Every term the code shows needs a note:
+
+- a symbol needs `about` in its symbols file: a sentence or two beyond `name`, such as its role,
+  its shape here, or where the name comes from;
+- a call needs a `GlossEntry` (`src/lecture/glossary.ts`): `is`, a short lower-case phrase shown
+  in the list, plus optional `more` and `eg`. Keys follow `callKey`: `np.random.randn` for a
+  module function, `.reshape` for a method, `softmax` for a bare name. Library calls shared by
+  every lecture live in `src/lectures/glossary.ts`; the lecture's `glossary.ts` holds the rest
+  and overrides a library entry whose meaning differs here.
+
+    node tools/lecture/lookup.mjs [<id> ...]    # terms still without a note (dev server running)
 
 ## Review
 

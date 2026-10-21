@@ -17,7 +17,6 @@ export type Glossary = Record<string, GlossEntry>;
 export const MODULES: Record<string, string> = {
   np: 'NumPy',
   torch: 'PyTorch',
-  F: 'PyTorch',
   nn: 'PyTorch',
   optim: 'PyTorch',
   plt: 'Matplotlib',
