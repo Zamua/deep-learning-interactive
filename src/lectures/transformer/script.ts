@@ -74,6 +74,7 @@ export const script: LectureScript = {
         { id: 'query', say: 'A query: what am I looking for?', code: 'q' },
         { id: 'key', say: 'A key: what do I contain, for others to find?', code: 'k' },
         { id: 'value', say: 'And a value: what do I hand over, if someone attends to me?', code: 'v' },
+        { id: 'qkvname', say: 'The names come from databases: a query is matched against every key, and the matching entries hand back their values. Here the match is soft.', code: 'v' },
         { id: 'matrices', say: 'Each role comes from its own learned matrix. Multiply X by {Wq|W Q}, and every row becomes that token\'s query.', code: 'q' },
         { id: 'same', say: '{Wk|W K} makes the keys, and {Wv|W V} makes the values. Three matrix multiplies, and every token has all three.', code: ['k', 'v'] },
         { id: 'why3', say: 'Why three different matrices? Because what a word looks for is not what it offers. A verb might look for its subject, while what it offers is: I am an action, in the past tense.' },

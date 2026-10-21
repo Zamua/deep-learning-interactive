@@ -197,6 +197,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'relu', say: 'Now the modern default: the rectified linear unit, ReLU. Zero for negative inputs, the input itself for positive ones.', code: 'relu' },
+        { id: 'rect', say: 'Rectified is an electronics word: a rectifier lets current through one way only. {ReLU|ray-loo} passes positive inputs and blocks negative ones.', code: 'relu' },
         { id: 'fast', say: 'It makes gradient descent converge much faster: about six times, in Krizhevsky\'s {2012|twenty twelve} network.' },
         { id: 'why', say: 'Its right half never saturates, and it is cheap: a comparison, not an exponential.', code: 'drelu' },
         { id: 'die', say: 'The catch: ReLU units can die. Each dot is this unit\'s input on one example. Dots right of zero pass gradient back. Dots left pass nothing.', code: 'drelu' },

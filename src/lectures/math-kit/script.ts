@@ -269,6 +269,7 @@ export const script: LectureScript = {
         { id: 'partial', say: 'To get the slope in one direction, nudge just that input, and freeze the other one. That is called a partial derivative.' },
         { id: 'px', say: 'Freeze y, and the slope in the x direction is two x. Freeze x, and the slope in the y direction is six y.', code: 'g' },
         { id: 'grad', say: 'Put those slopes together in a vector, and you have the gradient.', code: 'g' },
+        { id: 'gradname', say: 'The word means slope, like the gradient of a road.', code: 'g' },
         { id: 'uphill', say: 'Draw the gradient as an arrow, and something lovely happens. It points straight uphill: the steepest way up from wherever you stand.', code: ['p', 'g'] },
         { id: 'down', say: 'So, to go downhill, step the opposite way.', code: 'step' },
         { id: 'steps', say: 'Take a small step against the gradient. Recompute it. Step again.', code: ['loop', 'step'] },

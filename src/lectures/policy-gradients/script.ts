@@ -49,6 +49,7 @@ export const script: LectureScript = {
         { id: 'words', say: 'Reinforcement learning has its own vocabulary, but each word has a plain meaning for a language model.' },
         { id: 'state', say: 'The state is the prompt, plus every token written so far. Our prompt asks: is {91|ninety one} prime?', code: 'state' },
         { id: 'policy', say: 'The policy is the model itself. Given the state, its softmax gives a probability to every possible next token.', code: 'probs' },
+        { id: 'policyname', say: 'Policy is the reinforcement learning word for a rule that picks actions: here, the next token.', code: 'probs' },
         { id: 'action', say: 'And an action is the token it picks.', code: 'act' },
         { id: 'tree', say: 'Picture every possible answer as a tree. Each branch is one choice, labeled with the policy\'s probability.' },
         { id: 'walk', say: 'Sampling walks down the tree: No, with probability one half, then seven times thirteen, with probability {0.4|zero point four}.', code: ['probs', 'act', 'next'] },

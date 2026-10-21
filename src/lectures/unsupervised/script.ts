@@ -188,6 +188,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'idea', say: 'An autoencoder is a network trained to reproduce its own input, through a bottleneck.' },
         { id: 'enc', say: 'An encoder squeezes the input x into a small code z.', code: 'enc' },
+        { id: 'latent', say: 'That code is often called the latent, meaning hidden: z is never observed, only inferred from x.', code: 'enc' },
         { id: 'dec', say: 'A decoder expands z back into a reconstruction, x hat. The code is too small to copy x, so it must capture what matters most.', code: 'dec' },
         { id: 'loss', say: 'The loss is the squared difference between input and output. No labels needed: the input is its own target.', code: 'loss' },
         { id: 'toy', say: 'Here is the smallest version: points on an arc, each squeezed through a single number.', code: ['X', 'z'] },

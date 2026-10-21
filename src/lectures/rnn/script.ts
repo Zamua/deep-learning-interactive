@@ -25,6 +25,7 @@ export const script: LectureScript = {
         { id: 'world', say: 'But much of the world arrives as a sequence: the words of a sentence, the frames of a video, the characters of a program.' },
         { id: 'length', say: 'A sentence can be four words long, or forty. To read one, a network needs memory.', code: 'mem' },
         { id: 'trick', say: 'A recurrent network reads one element at a time, and folds each into a running summary: its hidden state.', code: ['loop', 'step'] },
+        { id: 'hidden', say: 'Hidden, because nothing outside sees or supervises it directly: the network learns what to keep there.', code: ['loop', 'step'] },
         { id: 'same', say: 'The same weights do the folding at every step, so it can read a sequence of any length, and we read answers off the memory.', code: ['step', 'out'] },
         { id: 'karpathy', say: "This chapter follows Andrej Karpathy's 2016 lecture, and the tiny script that made these models famous." },
         { id: 'plan', say: 'We will teach a model to write fake Shakespeare, see why it forgets, meet the {LSTM|L S T M} that fixes it, and have a network describe photos in words.' },

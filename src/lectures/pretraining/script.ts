@@ -49,6 +49,7 @@ export const script: LectureScript = {
         { id: 'model', say: 'A language model reads the text so far, here, the cat, and returns one probability for every word in the vocabulary.', code: 'ctx' },
         { id: 'logits', say: 'Inside, it is the softmax classifier from linear classification: one score per word, called a logit,', code: 'logits' },
         { id: 'softmax', say: 'and a softmax that turns the scores into probabilities that add up to one.', code: 'probs' },
+        { id: 'logit', say: 'Logit is a statistics word: the log of the odds, a score before it is squashed into a probability.', code: 'probs' },
         { id: 'read', say: 'After the cat, this model expects a verb. Sleeps is the favorite, then sees, runs and chases.', code: 'probs' },
         { id: 'big', say: 'Real models do this with about fifty thousand tokens, so every prediction is a fifty thousand way classification.' },
       ],

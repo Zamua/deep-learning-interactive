@@ -271,6 +271,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'hyper', say: '{k|K} is a hyperparameter: a setting of the learning algorithm itself, as opposed to something learned from the data.' },
+        { id: 'hypername', say: 'Hyper, as in above: it sits one level above the parameters. You choose it; training chooses the parameters.' },
         { id: 'more', say: 'The distance is another. You rarely know good values in advance, so you try several, and keep what works best.', code: 'loop' },
         { id: 'onwhat', say: 'But best on what? The tempting answer is the test set, and it is a serious mistake.' },
         { id: 'tuned', say: 'Keep whichever k scores best on the test set, and you have quietly tuned to those test images. The number you report is now too optimistic.' },

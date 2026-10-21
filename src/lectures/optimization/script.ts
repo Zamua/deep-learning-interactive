@@ -361,6 +361,7 @@ export const script: LectureScript = {
         { id: 'copies', say: 'Then the gradient from those thousand would equal the full one exactly. Real data is not that redundant, but redundant enough.' },
         { id: 'pow', say: 'Batch sizes are usually powers of two, like {32|thirty two} or {256|two hundred and fifty six}, mostly set by what fits in memory.', code: 'pow' },
         { id: 'sgd', say: 'With a batch of one, it is called stochastic gradient descent, or SGD. In practice, people say SGD for mini-batches too.', code: 'sgd' },
+        { id: 'stoch', say: 'Stochastic is a formal word for random: each step\'s gradient comes from randomly chosen examples.', code: 'sgd' },
       ],
     },
     {

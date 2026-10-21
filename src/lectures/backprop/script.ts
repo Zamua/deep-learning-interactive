@@ -35,6 +35,7 @@ export const script: LectureScript = {
         { id: 'slow', say: 'Simple, but slow: one extra pass per weight, and networks have millions. And only approximate, since the nudge is never truly tiny.', code: 'num' },
         { id: 'ana', say: 'The other way is analytic: a formula from calculus. Exact and fast, but deriving it by hand for a whole network is hopeless.', code: 'ana' },
         { id: 'bp', say: 'Backpropagation is the way out. It computes exact gradients for any function, however complicated, completely mechanically.', code: 'bp' },
+        { id: 'bpname', say: 'The name says it: the error signal propagates backward, from the loss to every weight. Rumelhart, Hinton and Williams made it famous in 1986.', code: 'bp' },
         { id: 'how', say: 'The trick: break the function into tiny pieces with trivial derivatives, and chain them with one rule from calculus.', code: 'bp' },
         { id: 'plan', say: 'Every deep learning library does exactly this. We will build it up from circuits with just three numbers in them.' },
       ],

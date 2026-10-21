@@ -1,5 +1,5 @@
 {
- "duration": 924.549,
+ "duration": 931.521,
  "scenes": {
   "intro": [0.0, 72.695],
   "landscape": [72.695, 121.047],
@@ -11,8 +11,8 @@
   "analytic": [491.81, 604.759],
   "check": [604.759, 668.567],
   "descent": [668.567, 754.94],
-  "minibatch": [754.94, 862.118],
-  "summary": [862.118, 924.549]
+  "minibatch": [754.94, 869.09],
+  "summary": [869.09, 931.521]
  },
  "beats": {
   "intro/hello": [0.7, 5.798, "Welcome to optimization: the chapter where a classifier finally learns.", [[2.45, 2.88]]],
@@ -123,14 +123,15 @@
   "minibatch/copies": [834.205, 842.665, "Then the gradient from those thousand would equal the full one exactly. Real data is not that redundant, but redundant enough.", [[838.255, 838.815], [840.895, 841.255]]],
   "minibatch/pow": [843.045, 851.079, "Batch sizes are usually powers of two, like thirty two or two hundred and fifty six, mostly set by what fits in memory.", [[845.515, 845.755], [848.545, 848.995]]],
   "minibatch/sgd": [851.459, 861.018, "With a batch of one, it is called stochastic gradient descent, or SGD. In practice, people say SGD for mini-batches too.", [[852.569, 852.789], [855.159, 855.429], [856.689, 857.329], [858.029, 858.219]]],
-  "summary/four": [862.818, 867.234, "Putting it all together: four pieces make the whole training loop.", [[864.068, 864.738]]],
-  "summary/score": [867.614, 870.877, "A score function maps an input to class scores.", []],
-  "summary/loss": [871.257, 874.429, "A loss function grades those scores with one number.", []],
-  "summary/grad": [874.809, 881.212, "The gradient says which way is uphill for every weight: analytic for speed, numerical to check.", [[877.959, 878.409], [879.559, 879.929]]],
-  "summary/update": [881.592, 886.53, "And the update steps the weights downhill, usually one mini-batch at a time.", [[883.982, 884.402]]],
-  "summary/rest": [886.91, 894.664, "The rest of the course plugs into this loop. Neural networks swap in a richer score function, and the loop stays the same.", [[889.15, 889.75], [892.78, 893.11]]],
-  "summary/hard": [895.044, 902.731, "What changes is the gradient. Deriving it by hand, as we did for the SVM, would be hopeless for a deep network.", [[896.894, 897.474], [898.774, 898.934], [900.454, 900.794]]],
-  "summary/backprop": [903.111, 912.194, "The next chapter introduces backpropagation: the chain rule, applied piece by piece, to get the gradient of anything built from simple parts.", [[905.811, 906.281], [907.061, 907.321], [908.711, 908.971]]],
-  "summary/recap": [912.574, 922.849, "So: training is optimization. The loss is a landscape, the gradient points uphill, and we step against it, one mini-batch at a time.", [[912.994, 913.484], [915.214, 915.834], [917.284, 917.704], [919.274, 919.614], [920.904, 921.244]]]
+  "minibatch/stoch": [861.398, 867.99, "Stochastic is a formal word for random: each step's gradient comes from randomly chosen examples.", [[863.928, 864.418]]],
+  "summary/four": [869.79, 874.207, "Putting it all together: four pieces make the whole training loop.", [[871.04, 871.71]]],
+  "summary/score": [874.587, 877.85, "A score function maps an input to class scores.", []],
+  "summary/loss": [878.23, 881.402, "A loss function grades those scores with one number.", []],
+  "summary/grad": [881.782, 888.185, "The gradient says which way is uphill for every weight: analytic for speed, numerical to check.", [[884.932, 885.382], [886.532, 886.902]]],
+  "summary/update": [888.565, 893.503, "And the update steps the weights downhill, usually one mini-batch at a time.", [[890.955, 891.375]]],
+  "summary/rest": [893.883, 901.637, "The rest of the course plugs into this loop. Neural networks swap in a richer score function, and the loop stays the same.", [[896.123, 896.723], [899.753, 900.083]]],
+  "summary/hard": [902.017, 909.704, "What changes is the gradient. Deriving it by hand, as we did for the SVM, would be hopeless for a deep network.", [[903.867, 904.447], [905.747, 905.907], [907.427, 907.767]]],
+  "summary/backprop": [910.084, 919.167, "The next chapter introduces backpropagation: the chain rule, applied piece by piece, to get the gradient of anything built from simple parts.", [[912.784, 913.254], [914.034, 914.294], [915.684, 915.944]]],
+  "summary/recap": [919.547, 929.821, "So: training is optimization. The loss is a landscape, the gradient points uphill, and we step against it, one mini-batch at a time.", [[919.967, 920.457], [922.187, 922.807], [924.257, 924.677], [926.247, 926.587], [927.877, 928.217]]]
  }
 }

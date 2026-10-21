@@ -59,6 +59,7 @@ export const script: LectureScript = {
         { id: 'shape', say: 'The shape comes straight from the recurrent network chapter: read a whole sequence, then write another one.' },
         { id: 'enc', say: 'The encoder is an RNN that reads the English sentence, one word at a time.', code: 'enc' },
         { id: 'emb', say: 'Each word comes in as its embedding, a learned list of numbers, and the encoder folds it into its hidden state, h.', code: 'enc' },
+        { id: 'embname', say: 'Embedding, because each word is placed, embedded, as a point in a space of numbers, where similar words land close together.', code: 'enc' },
         { id: 'grids', say: 'Each little grid is one state: {32|thirty two} numbers, after one more word.', code: 'enc' },
         { id: 'last', say: 'Nothing leaves the encoder until the very end. Its last state becomes the context vector, c.', code: 'c' },
         { id: 'only', say: 'From this moment on, the English sentence is gone. Those {32|thirty two} numbers are all the decoder will ever know about it.', code: 'c' },
