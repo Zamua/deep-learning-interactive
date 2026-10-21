@@ -150,7 +150,13 @@ export class CodePanel {
     });
   }
 
-  private resolve(sel: string | number | (string | number)[] | null): number[] {
+  /** The rendered source of each line, in order. */
+  get lines(): HTMLElement[] {
+    return this.rows.map((r) => r.querySelector<HTMLElement>('.ln-src')!);
+  }
+
+  /** 1-based line numbers for labels or numbers. */
+  resolve(sel: string | number | (string | number)[] | null): number[] {
     if (sel === null) return [];
     const arr = Array.isArray(sel) ? sel : [sel];
     return arr.flatMap((s) => (typeof s === 'number' ? [s] : (this.labels.get(s) ?? [])));

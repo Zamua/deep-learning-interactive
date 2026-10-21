@@ -7,6 +7,8 @@ export interface SymbolDef {
   color: Color;
   /** Plain-English name shown when the symbol is hovered or tapped, e.g. "weights". */
   name: string;
+  /** A sentence or two more, for the lecture's lookup card. */
+  about?: string;
   /** TeX used by the `\sym<key>` shorthand. Defaults to the key. */
   tex?: string;
   /** Code identifiers that are this symbol. Defaults to [key]. */

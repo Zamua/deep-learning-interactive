@@ -309,6 +309,7 @@ canvas.lec-canvas {
 }
 
 .lec-bar {
+  position: relative;
   flex: none;
   padding: 2px 14px calc(6px + env(safe-area-inset-bottom));
   max-width: 1500px;
@@ -764,4 +765,202 @@ canvas.lec-canvas {
   .lec-cap {
     font-size: 14.5px;
   }
+}
+
+/* Lookup: tap a symbol or call in the code for its card; the book button lists the scene's. */
+.lec-code .sym,
+.lec-code .tk-fn {
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .lec-code .tk-fn:hover {
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+  }
+}
+.lk-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: rgb(0 0 0 / 0.42);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+.lk-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 21;
+  max-width: 560px;
+  max-height: 78%;
+  margin: 0 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 18px calc(18px + env(safe-area-inset-bottom));
+  border: 1px solid var(--rule);
+  border-bottom: 0;
+  border-radius: 18px 18px 0 0;
+  background: var(--card);
+  box-shadow: 0 -8px 30px rgb(0 0 0 / 0.3);
+  font: 400 15px/1.5 var(--font-ui);
+  transform: translateY(100%);
+  visibility: hidden;
+  transition: transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.24s;
+}
+.lec.lk-open .lk-scrim {
+  opacity: 1;
+  visibility: visible;
+}
+.lec.lk-open .lk-sheet {
+  transform: none;
+  visibility: visible;
+}
+.lk-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+}
+.lk-x,
+.lk-back {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  margin: -4px -8px -4px auto;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+  flex: none;
+}
+.lk-back {
+  margin: -4px 0 -4px -10px;
+}
+.lk-x .ico,
+.lk-back .ico {
+  width: 20px;
+  height: 20px;
+}
+.lk-tok {
+  font: 600 21px var(--font-mono);
+  overflow-wrap: anywhere;
+}
+.lk-tok .katex {
+  font-size: 1.25em;
+}
+.lk-title {
+  font: 650 17px var(--font-ui);
+}
+.lk-tag {
+  padding: 2px 7px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  font: 600 11px var(--font-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.lk-sheet p {
+  margin: 10px 0 0;
+}
+.lk-sheet .lk-lead {
+  font-weight: 550;
+}
+.lk-sheet .code {
+  margin-top: 12px;
+  border-radius: 10px;
+  padding: 6px 0;
+}
+.lk-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.lk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font: 600 14.5px var(--font-ui);
+  cursor: pointer;
+}
+.lk-btn .ico {
+  width: 18px;
+  height: 18px;
+}
+.lk-btn small {
+  font: 500 13px var(--font-mono);
+  opacity: 0.85;
+}
+.lk-sec {
+  margin: 16px 0 2px;
+  font: 650 11.5px var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.lk-row {
+  display: grid;
+  grid-template-columns: minmax(64px, max-content) 1fr;
+  align-items: baseline;
+  gap: 14px;
+  width: 100%;
+  padding: 9px 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.lk-sec + .lk-row {
+  border-top: 0;
+}
+.lk-row .lk-tok {
+  font-size: 15px;
+}
+.lk-row .lk-tok .katex {
+  font-size: 1.15em;
+}
+.lk-what {
+  color: var(--ink-2);
+  font-size: 14.5px;
+}
+.lec-return {
+  position: absolute;
+  right: 14px;
+  bottom: calc(100% + 8px);
+  z-index: 5;
+  display: none;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font: 600 13.5px var(--font-ui);
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.25);
+  cursor: pointer;
+}
+.lec.lk-return .lec-return {
+  display: inline-flex;
+}
+.lec-return .ico {
+  width: 16px;
+  height: 16px;
 }

@@ -6,6 +6,8 @@ import { h, onDispose } from '../core/dom';
 import { setMacros, tex } from '../core/math';
 import { Plot } from '../core/plot';
 import { codeIndex, linkSymbols, symbolMacros, type SymbolMap } from '../core/symbols';
+import type { Glossary } from './glossary';
+import { mountLookup } from './lookup';
 import { Scene, type SceneDef, clamp01 } from './scene';
 import { type Beat, GAP, type LectureScript, type Timing, shownText, spokenText } from './types';
 
@@ -16,6 +18,8 @@ export interface LectureDef {
   symbols: SymbolMap;
   /** URL of the narration track. */
   audio: string;
+  /** Notes on the calls in this lecture's code, beyond the shared library ones. */
+  glossary?: Glossary;
 }
 
 interface TBeat {
@@ -274,11 +278,12 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   const timeEl = h('div', { class: 'lec-time' });
   const speedBtn = h('button', { class: 'lec-btn lec-speed', type: 'button', 'aria-label': 'Playback speed' });
   const ccBtn = h('button', { class: 'lec-btn', type: 'button', 'aria-label': 'Captions', 'aria-pressed': 'true', html: icon('closed-captioning') });
+  const lookupBtn = h('button', { class: 'lec-btn', type: 'button', 'aria-label': 'Look up symbols and functions', html: icon('book') });
   const listBtn = h('button', { class: 'lec-btn', type: 'button', 'aria-label': 'Sections', html: icon('list') });
   const fsBtn = h('button', { class: 'lec-btn lec-fs', type: 'button', 'aria-label': 'Full screen', html: icon('corners-out') });
   const back10 = h('button', { class: 'lec-btn', type: 'button', 'aria-label': 'Back 10 seconds', html: icon('rewind') });
   const bar = h('div', { class: 'lec-bar' }, scrub,
-    h('div', { class: 'lec-row' }, playBtn, back10, timeEl, h('div', { class: 'lec-spacer' }), speedBtn, ccBtn, listBtn, document.fullscreenEnabled ? fsBtn : ''));
+    h('div', { class: 'lec-row' }, playBtn, back10, timeEl, h('div', { class: 'lec-spacer' }), speedBtn, ccBtn, lookupBtn, listBtn, document.fullscreenEnabled ? fsBtn : ''));
 
   const list = h('div', { class: 'lec-list', role: 'dialog', 'aria-label': 'Sections' });
   const listItems = scenes.map((s, i) => {
@@ -341,6 +346,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   let ended = false;
   let raf = 0;
   let ccOn = prefs.cc ?? true;
+  let lookup: ReturnType<typeof mountLookup> | null = null;
 
   function sceneIndexAt(t: number): number {
     let i = 0;
@@ -419,6 +425,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     thumb.style.left = `${f * 100}%`;
     timeEl.textContent = `${mmss(T)} / ${mmss(duration)}`;
     scrub.setAttribute('aria-valuenow', String(Math.round(T)));
+    lookup?.tick(T);
   }
 
   function loop(): void {
@@ -746,6 +753,24 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   setCc(ccOn);
   ccBtn.addEventListener('click', () => setCc(!ccOn));
 
+  lookup = mountLookup({
+    root,
+    codeBox,
+    bar,
+    panels,
+    marks: markEls.map((m) => [...m.values()]),
+    scenes,
+    symbols: def.symbols,
+    glossary: def.glossary ?? {},
+    scene: () => Math.max(0, cur),
+    time: () => clock.time(),
+    playing: () => !clock.paused,
+    play: () => void play(),
+    pause,
+    seek,
+  });
+  lookupBtn.addEventListener('click', () => lookup!.showScene());
+
   const toggleList = (on?: boolean) => root.classList.toggle('list-open', on);
   listBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -921,6 +946,10 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     time: () => clock.time(),
     rate: () => clock.rate,
     boost: () => boost,
+    lookup: () => scenes.map((s, i) => ({
+      scene: s.id,
+      terms: lookup!.terms(i, true).map((t) => ({ ...t, note: t.kind === 'sym' ? !!def.symbols[t.key]?.about : !!lookup!.entry(t) })),
+    })),
     scenes: scenes.map((s) => ({ id: s.id, start: s.start, end: s.end, beats: s.beats.map((b) => ({ id: b.id, start: b.start, end: b.end })) })),
   };
 }
