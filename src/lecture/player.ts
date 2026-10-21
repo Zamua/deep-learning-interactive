@@ -3,6 +3,7 @@ import type { ChapterMeta } from '../chapters/index';
 import { CodePanel } from '../core/code';
 import { icon } from '../core/controls';
 import { h, onDispose } from '../core/dom';
+import { DONE, LectureLog } from '../core/progress';
 import { setMacros, tex } from '../core/math';
 import { Plot } from '../core/plot';
 import { codeIndex, linkSymbols, symbolMacros, type SymbolMap } from '../core/symbols';
@@ -212,7 +213,7 @@ const store = {
 /** Builds the full-screen lecture player for `def` into `host`. */
 export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMeta): void {
   const { scenes, duration, exact } = layout(def.script, def.timing);
-  const posKey = `cs231n.lec.${def.script.id}`;
+  const log = new LectureLog(def.script.id, duration);
   const prefKey = 'cs231n.lec.prefs';
   const prefs = (() => {
     try {
@@ -285,7 +286,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
 
   const list = h('div', { class: 'lec-list', role: 'dialog', 'aria-label': 'Sections' });
   const listItems = scenes.map((s, i) => {
-    const b = h('button', { type: 'button', class: 'lec-li' }, h('span', { class: 'lec-li-n' }, String(i + 1)), h('span', { class: 'lec-li-t' }, s.title), h('span', { class: 'lec-li-time' }, mmss(s.start)));
+    const b = h('button', { type: 'button', class: 'lec-li' }, h('span', { class: 'lec-li-n' }, String(i + 1)), h('span', { class: 'lec-li-t' }, s.title), h('span', { class: 'lec-li-done', 'aria-label': 'heard', html: icon('check') }), h('span', { class: 'lec-li-time' }, mmss(s.start)));
     b.addEventListener('click', () => {
       seek(s.start + 0.01);
       toggleList(false);
@@ -424,6 +425,16 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     timeEl.textContent = `${mmss(T)} / ${mmss(duration)}`;
     scrub.setAttribute('aria-valuenow', String(Math.round(T)));
     lookup?.tick(T);
+    hearTo(T);
+  }
+
+  // Heard time: only playback that ran on from the previous tick counts, never a seek's jump.
+  let heardFrom: number | null = null;
+  let savedAt = 0;
+  function hearTo(T: number): void {
+    if (heardFrom !== null && T >= heardFrom && T - heardFrom < 4) log.hear(heardFrom, T);
+    heardFrom = clock.paused ? null : T;
+    if (!clock.paused && performance.now() - savedAt > 3000) savePos();
   }
 
   function loop(): void {
@@ -530,7 +541,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     root.classList.add('ended');
     setPlayingUi(false);
     void wake(false);
-    store.set(posKey, '0');
+    log.save(duration);
     sync();
   }
 
@@ -541,6 +552,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
 
   function seek(t: number): void {
     pausedAt = null;
+    heardFrom = null;
     if (ended) {
       ended = false;
       root.classList.remove('ended');
@@ -555,8 +567,10 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   }
 
   function savePos(): void {
-    const t = clock.time();
-    store.set(posKey, String(t > 8 && t < duration - 8 ? Math.round(t * 10) / 10 : 0));
+    // Before the first play the clock sits at 0 behind the poster; saving it would erase the resume point.
+    if (!started) return;
+    savedAt = performance.now();
+    log.save(clock.time());
   }
 
   if (audio) {
@@ -581,6 +595,8 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
       }
     });
     audio.addEventListener('seeked', () => sync());
+    // Keeps heard time and the saved place current while the screen is off and frames stop.
+    audio.addEventListener('timeupdate', () => hearTo(clock.time()));
   } else {
     // A silent clock has no 'ended' event.
     const check = window.setInterval(() => {
@@ -780,7 +796,9 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   });
   lookupBtn.addEventListener('click', () => lookup!.showScene());
 
-  const toggleList = (on?: boolean) => root.classList.toggle('list-open', on);
+  const toggleList = (on?: boolean) => {
+    if (root.classList.toggle('list-open', on)) listItems.forEach((b, i) => b.classList.toggle('done', log.heardIn(scenes[i]!.start, scenes[i]!.end) >= DONE));
+  };
   listBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     toggleList();
@@ -888,8 +906,11 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   };
   document.addEventListener('visibilitychange', onVis);
   const saver = window.setInterval(() => !clock.paused && savePos(), 5000);
+  const onHide = () => savePos();
+  window.addEventListener('pagehide', onHide);
   onDispose(() => {
     document.removeEventListener('visibilitychange', onVis);
+    window.removeEventListener('pagehide', onHide);
     window.clearInterval(saver);
     cancelAnimationFrame(raf);
     if (!clock.paused) savePos();
@@ -903,10 +924,11 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   });
 
   // ---- poster and end card
-  const saved = Number(store.get(posKey) ?? 0);
+  const saved = log.pos;
+  const heard = log.heardIn();
   const posterPlay = h('button', { class: 'lec-poster-play', type: 'button', html: `${icon('playFill')}<span>${saved ? 'Start over' : 'Play the lecture'}</span>` });
   const poster = h('div', { class: 'lec-poster' },
-    h('div', { class: 'lec-poster-kicker' }, `Chapter ${meta.num} · Lecture · ${Math.round(duration / 60)} min`),
+    h('div', { class: 'lec-poster-kicker' }, [`Chapter ${meta.num}`, 'Lecture', `${Math.round(duration / 60)} min`, heard >= 0.02 ? `${Math.round(heard * 100)}% heard` : ''].filter(Boolean).join(' · ')),
     h('h1', { class: 'lec-poster-title' }, def.script.title),
     h('div', { class: 'lec-poster-actions' }, posterPlay));
   posterPlay.addEventListener('click', (e) => {

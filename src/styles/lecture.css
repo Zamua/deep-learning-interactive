@@ -491,6 +491,17 @@ canvas.lec-canvas {
 .lec-li-t {
   flex: 1;
 }
+.lec-li-done {
+  display: none;
+  color: var(--c-green);
+}
+.lec-li.done .lec-li-done {
+  display: grid;
+}
+.lec-li-done .ico {
+  width: 15px;
+  height: 15px;
+}
 .lec-li-time {
   color: var(--ink-3);
   font: 500 12px var(--font-mono);

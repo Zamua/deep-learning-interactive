@@ -1,13 +1,67 @@
-import { CHAPTERS, COURSES, type CourseMeta, hasChapter } from './chapters/index';
+import { CHAPTERS, COURSES, type ChapterMeta, type CourseMeta, hasChapter } from './chapters/index';
 import { CodePanel } from './core/code';
 import { icon } from './core/controls';
 import { CIFAR_CLASSES, cifarImage, loadCifar } from './core/data';
 import { h, onDispose } from './core/dom';
 import { Page } from './core/page';
 import { color, withAlpha } from './core/plot';
+import { DONE, last, lectureState, readState } from './core/progress';
 import { hasLecture } from './lectures/index';
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+
+const pct = (f: number) => `${Math.round(f * 100)}%`;
+const mmss = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+
+/** Reading below this share is just the first screen of a chapter, not progress. */
+const STARTED = 0.1;
+
+/** How far a chapter has got on this device: share read, share of its lecture heard, and overall. */
+export function chapterProgress(c: ChapterMeta): { read: number; heard: number | null; frac: number; done: boolean } {
+  const read = readState(c.id).max;
+  const heard = hasLecture(c.id) ? (lectureState(c.id)?.heard ?? 0) : null;
+  const parts = heard === null ? [read] : [read, heard];
+  const frac = parts.reduce((a, p) => a + Math.min(1, p / DONE), 0) / parts.length;
+  return { read, heard, frac, done: parts.every((p) => p >= DONE) };
+}
+
+/** A check for a finished chapter, a ring filled to its share for a started one, else nothing. */
+export function progressMark(c: ChapterMeta, cls: string): HTMLElement | '' {
+  const p = chapterProgress(c);
+  if (p.done) return h('span', { class: `${cls} done`, title: 'Done', html: icon('check') });
+  if (p.read < STARTED && !p.heard) return '';
+  const r = 5;
+  const len = 2 * Math.PI * r;
+  return h('span', {
+    class: cls,
+    title: `${pct(p.frac)} done`,
+    html: `<svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="${r}"/><circle class="arc" cx="7" cy="7" r="${r}" stroke-dasharray="${(p.frac * len).toFixed(2)} ${len.toFixed(2)}"/></svg>`,
+  });
+}
+
+/** Where the viewer left off, or what comes next once that is finished. */
+function continueCard(course: CourseMeta | null): HTMLElement | null {
+  const l = last();
+  const c = l && CHAPTERS.find((x) => x.id === l.id);
+  if (!l || !c || (course && c.course !== course.id)) return null;
+  const card = (href: string, kicker: string, m: ChapterMeta, sub: string) =>
+    h('a', { class: 'continue', href },
+      h('span', { class: 'continue-body' },
+        h('span', { class: 'continue-k' }, kicker),
+        h('span', { class: 'continue-t' }, `${m.num}. ${m.title}`),
+        h('span', { class: 'continue-s' }, sub)),
+      h('span', { class: 'continue-go', html: icon(kicker.includes('lecture') ? 'playFill' : 'arrowRight') }));
+  const lec = lectureState(c.id);
+  if (l.kind === 'lecture' && lec && lec.pos > 0) return card(`#/watch/${c.id}`, 'Continue the lecture', c, `Resume at ${mmss(lec.pos)} · ${pct(lec.heard)} heard`);
+  const read = readState(c.id);
+  if (read.max < DONE && (l.kind === 'chapter' || hasChapter(c.id))) {
+    return card(`#/${c.id}${read.at ? `/${read.at}` : ''}`, 'Continue reading', c, read.max >= STARTED ? `${pct(read.max)} read` : 'Explore the chapter');
+  }
+  const list = CHAPTERS.filter((x) => x.course === c.course && hasChapter(x.id));
+  const next = list[list.indexOf(c) + 1];
+  if (!next) return null;
+  return hasLecture(next.id) ? card(`#/watch/${next.id}`, 'Up next: the lecture', next, next.blurb) : card(`#/${next.id}`, 'Up next', next, next.blurb);
+}
 
 /** The hero: one real CIFAR-10 image as a pixel grid, with the code that reads the pixel under the pointer. */
 function heroArt(page: Page): HTMLElement {
@@ -153,15 +207,20 @@ function attentionArt(page: Page): HTMLElement {
   return wrap;
 }
 
-function partsGrid(root: HTMLElement, course: CourseMeta, seen: Set<string>): void {
+function partsGrid(root: HTMLElement, course: CourseMeta): void {
   course.parts.forEach((part, pi) => {
     const sec = h('section', { class: 'part' },
       h('div', { class: 'part-head' }, h('span', { class: 'part-num' }, ROMAN[pi]!), h('h2', { class: 'part-title' }, part)));
     const grid = h('div', { class: 'cards' });
     for (const c of CHAPTERS.filter((x) => x.course === course.id && x.part === part)) {
       const top = h('div', { class: 'card-top' }, h('span', { class: 'card-num' }, c.num.startsWith('A') ? c.num : `Chapter ${c.num}`), h('span', {}, c.lectures ?? ''));
-      if (hasLecture(c.id)) top.append(h('span', { class: 'card-lec', html: `${icon('playFill')} lecture` }));
-      if (seen.has(c.id)) top.append(h('span', { class: 'card-seen', html: `${icon('check')} read` }));
+      const p = chapterProgress(c);
+      if (p.heard !== null) {
+        const html = p.heard >= DONE ? `${icon('check')} watched` : p.heard >= 0.02 ? `${icon('playFill')} ${pct(p.heard)}` : `${icon('playFill')} lecture`;
+        top.append(h('span', { class: `card-lec${p.heard >= DONE ? ' done' : ''}`, html }));
+      }
+      if (p.read >= DONE) top.append(h('span', { class: 'card-seen', html: `${icon('check')} read` }));
+      else if (p.read >= STARTED) top.append(h('span', { class: 'card-seen card-part' }, `read ${pct(p.read)}`));
       grid.append(h('a', { class: `card${hasChapter(c.id) ? '' : ' soon'}`, href: `#/${c.id}` }, top,
         h('div', { class: 'card-title' }, c.title.replace(/^Assignment \d: /, '')),
         h('div', { class: 'card-blurb' }, c.blurb)));
@@ -259,11 +318,13 @@ const FOOT: Record<string, string> = {
 };
 
 /** A course's front page: its introduction, then every chapter grouped by part. */
-export function renderCourse(main: HTMLElement, course: CourseMeta, seen: Set<string>): void {
+export function renderCourse(main: HTMLElement, course: CourseMeta): void {
   const root = h('div', { class: 'home', 'data-page': `course-${course.id}` });
   main.append(root);
   const page = course.id === 'cs231n' ? cs231nIntro(root) : dl26Intro(root);
-  partsGrid(root, course, seen);
+  const cont = continueCard(course);
+  if (cont) root.prepend(cont);
+  partsGrid(root, course);
   root.append(h('footer', { class: 'home-foot', html: page.md(FOOT[course.id] ?? '') }));
 }
 
@@ -277,11 +338,14 @@ export function renderIndex(main: HTMLElement): void {
       h('div', { class: 'hero-kicker' }, 'Interactive courses'),
       h('h1', { class: 'hero-title', html: 'Deep learning, <em>one line of code</em> at a time.' }),
       h('p', { class: 'hero-lede' }, 'Two courses, ten years apart. The first is Stanford\'s CS231n as taught in 2016: how machines learned to see. The second picks up where it ends: transformers, scale, and models trained by feedback.'))));
+  const cont = continueCard(null);
+  if (cont) root.prepend(cont);
   const grid = h('div', { class: 'courses' });
   for (const k of COURSES) {
     const chapters = CHAPTERS.filter((c) => c.course === k.id && !c.num.startsWith('A'));
     const lectures = chapters.filter((c) => hasLecture(c.id)).length;
-    const stats = [`${chapters.length} chapters`, lectures ? `${lectures} lectures` : ''].filter(Boolean).join(' · ');
+    const done = chapters.filter((c) => chapterProgress(c).done).length;
+    const stats = [`${chapters.length} chapters`, lectures ? `${lectures} lectures` : '', done ? `${done} done` : ''].filter(Boolean).join(' · ');
     grid.append(h('a', { class: 'course-card', href: `#/${k.id}` },
       h('div', { class: 'course-top' }, h('span', { class: 'course-code' }, k.code), h('span', { class: 'course-era' }, k.era)),
       h('div', { class: 'course-title' }, k.title),

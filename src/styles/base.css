@@ -305,8 +305,33 @@ button {
   flex: 1;
 }
 
-.side-seen {
+.side-mark {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.side-mark.done {
   color: var(--c-green);
+}
+.side-mark .ico {
+  width: 15px;
+  height: 15px;
+}
+.side-mark svg {
+  width: 13px;
+  height: 13px;
+  transform: rotate(-90deg);
+}
+.side-mark circle {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 2.4;
+}
+.side-mark circle.arc {
+  stroke: var(--accent);
+  stroke-linecap: round;
 }
 
 .side-all {

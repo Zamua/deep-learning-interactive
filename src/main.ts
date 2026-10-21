@@ -9,9 +9,10 @@ import './styles/components.css';
 
 import { CHAPTERS, COURSES, type ChapterMeta, type CourseMeta, hasChapter, loadChapter } from './chapters/index';
 import { icon } from './core/controls';
-import { disposeAll, h } from './core/dom';
+import { disposeAll, h, onDispose } from './core/dom';
 import { Page } from './core/page';
-import { renderCourse, renderIndex } from './home';
+import { DONE, lectureState, readState, saveRead } from './core/progress';
+import { progressMark, renderCourse, renderIndex } from './home';
 import { hasLecture, loadLecture } from './lectures/index';
 
 const store = {
@@ -31,15 +32,7 @@ const store = {
   },
 };
 
-export function visited(): Set<string> {
-  return new Set((store.get('cs231n.visited') ?? '').split(',').filter(Boolean));
-}
-
-function markVisited(id: string): void {
-  const v = visited();
-  v.add(id);
-  store.set('cs231n.visited', [...v].join(','));
-}
+const mmss = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
 
 function applyTheme(t: string | null): void {
   if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
@@ -108,7 +101,6 @@ const courseOf = (c: ChapterMeta): CourseMeta => COURSES.find((k) => k.id === c.
 
 function buildNav(course: CourseMeta | null, active: string): void {
   nav.innerHTML = '';
-  const seen = visited();
   if (!course) {
     nav.append(h('div', { class: 'side-part' }, 'Courses'));
     const ul = h('ul', { class: 'side-list' });
@@ -131,7 +123,7 @@ function buildNav(course: CourseMeta | null, active: string): void {
       const a = h('a', { href: `#/${c.id}`, class: `side-link${c.id === active ? ' on' : ''}${hasChapter(c.id) ? '' : ' soon'}` },
         h('span', { class: 'side-num' }, c.num),
         h('span', { class: 'side-title' }, c.title.replace(/^Assignment \d: /, '')),
-        seen.has(c.id) ? h('span', { class: 'side-seen', html: icon('check') }) : '');
+        progressMark(c, 'side-mark'));
       a.addEventListener('click', () => setNav(false));
       ul.append(h('li', {}, a));
     }
@@ -155,6 +147,9 @@ function chapterHeader(meta: ChapterMeta): HTMLElement {
 /** The chapter's three layers: watch the lecture, explore the interactive chapter, practice. */
 function layers(meta: ChapterMeta, body: HTMLElement): HTMLElement {
   const watchK = h('div', { class: 'layer-k' }, 'Watch');
+  const ls = lectureState(meta.id);
+  const heard = ls ? `${Math.round(ls.heard * 100)}% heard` : '';
+  const status = !ls ? '' : ls.pos > 0 ? `Resume at ${mmss(ls.pos)} · ${heard}` : ls.heard >= DONE ? 'Watched' : ls.heard >= 0.02 ? heard : '';
   const explore = h('button', { class: 'layer', type: 'button' },
     h('span', { class: 'layer-n' }, '2'),
     h('span', { class: 'layer-body' }, h('div', { class: 'layer-k' }, 'Explore')));
@@ -167,7 +162,7 @@ function layers(meta: ChapterMeta, body: HTMLElement): HTMLElement {
   const el = h('div', { class: 'layers' },
     h('a', { class: 'layer layer-watch', href: `#/watch/${meta.id}` },
       h('span', { class: 'layer-n', html: icon('playFill') }),
-      h('span', { class: 'layer-body' }, watchK),
+      h('span', { class: 'layer-body' }, watchK, status ? h('div', { class: 'layer-s' }, status) : ''),
       h('span', { class: 'layer-go', html: icon('arrowRight') })),
     explore,
     practice);
@@ -216,7 +211,7 @@ async function route(): Promise<void> {
   if (!meta) {
     if (course) {
       document.title = `${course.code}: ${course.title} · interactive`;
-      renderCourse(main, course, visited());
+      renderCourse(main, course);
     } else {
       document.title = 'Deep learning, interactive';
       renderIndex(main);
@@ -237,6 +232,7 @@ async function route(): Promise<void> {
     return;
   }
   body.append(h('div', { class: 'loading' }, 'Loading…'));
+  let toc: { id: string; title: string }[] = [];
   try {
     const def = await pending;
     if (token !== renderToken) return;
@@ -253,6 +249,7 @@ async function route(): Promise<void> {
       body.append(legend);
     }
     def.render(page);
+    toc = page.toc;
     if (page.toc.length > 2) {
       const toc = h('nav', { class: 'ch-toc', 'aria-label': 'On this page' }, h('div', { class: 'ch-toc-head' }, 'On this page'));
       const ol = h('ol', {});
@@ -267,9 +264,57 @@ async function route(): Promise<void> {
     body.append(h('div', { class: 'fig-error' }, `This chapter failed to load: ${(e as Error).message}`));
   }
   article.append(chapterFooter(meta));
-  markVisited(meta.id);
   if (section) requestAnimationFrame(() => document.getElementById(section)?.scrollIntoView({ block: 'start' }));
   else window.scrollTo(0, 0);
+  trackReading(meta, article, toc, !section);
+}
+
+/**
+ * Records how far down the chapter the viewer has read and the section they are in, and offers to
+ * jump back to where they left off. Only the viewer's own scrolling counts, not the jump to the top.
+ */
+function trackReading(meta: ChapterMeta, article: HTMLElement, toc: { id: string; title: string }[], offer: boolean): void {
+  const prev = readState(meta.id);
+  const resumeAt = offer && toc.find((t) => t.id === prev.at && t !== toc[0]);
+  const chip = resumeAt
+    ? h('button', { class: 'resume-chip', type: 'button', html: `${icon('arrowRight')}<span>Continue at <b></b></span>` })
+    : null;
+  if (chip && resumeAt) {
+    chip.querySelector('b')!.textContent = resumeAt.title;
+    chip.addEventListener('click', () => {
+      chip.remove();
+      document.getElementById(resumeAt.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    document.body.append(chip);
+  }
+  const save = () => {
+    const r = article.getBoundingClientRect();
+    let at = '';
+    for (const t of toc) if ((document.getElementById(t.id)?.getBoundingClientRect().top ?? Infinity) < 120) at = t.id;
+    saveRead(meta.id, Math.min(1, Math.max(0, (innerHeight - r.top) / r.height)), at);
+  };
+  let due = 0;
+  let armed = false;
+  let moved = false;
+  const arm = window.setTimeout(() => (armed = true), 600);
+  const onScroll = () => {
+    if (!armed) return;
+    moved = true;
+    if (chip && scrollY > 600) chip.remove();
+    window.clearTimeout(due);
+    due = window.setTimeout(save, 300);
+  };
+  const onHide = () => moved && save();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('pagehide', onHide);
+  onDispose(() => {
+    onHide();
+    window.clearTimeout(arm);
+    window.clearTimeout(due);
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('pagehide', onHide);
+    chip?.remove();
+  });
 }
 
 /**

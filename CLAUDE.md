@@ -24,7 +24,8 @@ for DL26 chapters.
   `code.ts` (Python highlighter + CodePanel with `{{slots}}` and `#@labels`), `math.ts`
   (KaTeX + the small markdown dialect), `symbols.ts` (color-linked symbols and hover linking),
   `plot.ts` (HiDPI canvas with data coordinates), `controls.ts`, `data.ts` (2-D toy sets,
-  CIFAR loader), `nn.ts` (small trainable MLP), `rand.ts`.
+  CIFAR loader), `nn.ts` (small trainable MLP), `rand.ts`, `progress.ts` (per-device progress in
+  localStorage: each lecture's resume point and heard time, each chapter's reading depth).
 - `src/chapters/index.ts`: `COURSES` (code, title, parts) and chapter metadata and order,
   each chapter tagged with its `course`; chapter modules are found by
   `import.meta.glob`, so a missing file shows as "still being written".
