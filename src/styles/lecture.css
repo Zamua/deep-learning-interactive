@@ -513,17 +513,13 @@ canvas.lec-canvas {
   display: none;
 }
 
-/* Hold for 2x: a pill while held, and a lock that follows the finger down. Once locked, the
-   speed button carries it and the picture stays clear. */
+/* Hold for 2x: one pill in the corner while held, where the scene chip sits. Sliding down fills
+   its bar and arms the lock; once locked, the speed button carries it and the picture stays clear. */
 .lec-boost {
   --k: 0;
   position: absolute;
   top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  left: 10px;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.18s;
@@ -537,121 +533,69 @@ canvas.lec-canvas {
   opacity: 0;
 }
 .lec-boost-pill {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 6px;
-  height: 32px;
-  padding: 0 13px 0 11px;
+  height: 30px;
+  padding: 0 12px 0 10px;
+  overflow: hidden;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--ink) 76%, transparent);
+  background: color-mix(in srgb, var(--ink) 90%, transparent);
   color: var(--paper);
-  font: 650 14px var(--font-ui);
+  font: 650 13.5px var(--font-ui);
   white-space: nowrap;
-  box-shadow: 0 2px 12px rgb(0 0 0 / 0.16);
+  transition: background-color 0.15s;
 }
 .lec-boost-pill .ico {
   display: block;
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
 }
+.lec-boost-hint {
+  font-weight: 500;
+  opacity: 0.75;
+}
+.lec-boost-hint::before {
+  content: '·';
+  margin-right: 6px;
+}
+.lec-boost-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(var(--k));
+  transform-origin: left;
+}
+.lec-boost-lk,
 .lec-boost-ul,
-.lec-boost-off {
+.lec-boost-go,
+.lec-boost-off,
+.lec.boost-known .lec-boost-hint {
   display: none;
 }
-.lec.boost-locked .lec-boost-ff {
+.lec.boost-armed .lec-boost-pill {
+  background: var(--accent);
+  color: #fff;
+}
+.lec.boost-armed .lec-boost-ff,
+.lec.boost-armed .lec-boost-rate,
+.lec.boost-armed .lec-boost-hint,
+.lec.boost-armed .lec-boost-bar,
+.lec.boost-unlock .lec-boost-ff,
+.lec.boost-unlock .lec-boost-rate,
+.lec.boost-unlock .lec-boost-hint,
+.lec.boost-unlock .lec-boost-bar {
   display: none;
 }
-.lec.boost-unlock .lec-boost-rate {
-  display: none;
-}
+.lec.boost-armed .lec-boost-lk,
+.lec.boost-armed .lec-boost-go,
 .lec.boost-unlock .lec-boost-ul,
 .lec.boost-unlock .lec-boost-off {
   display: block;
-}
-
-.lec-boost-slide {
-  position: relative;
-  width: 150px;
-  height: calc(30px + var(--travel) + 24px);
-  margin-top: 8px;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.lec.boost:not(.boost-locked) .lec-boost-slide {
-  opacity: 1;
-}
-.lec-boost-rail {
-  position: absolute;
-  left: 50%;
-  top: 15px;
-  height: var(--travel);
-  margin-left: -1px;
-  border-left: 2px dotted color-mix(in srgb, var(--ink) 38%, transparent);
-}
-.lec-boost-goal,
-.lec-boost-knob {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: 30px;
-  height: 30px;
-  margin-left: -15px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-}
-.lec-boost-goal .ico,
-.lec-boost-knob .ico {
-  width: 15px;
-  height: 15px;
-}
-.lec-boost-goal {
-  top: var(--travel);
-  border: 2px dashed color-mix(in srgb, var(--ink) 40%, transparent);
-  background: color-mix(in srgb, var(--card) 80%, transparent);
-  color: color-mix(in srgb, var(--ink) 45%, transparent);
-}
-.lec-boost-knob {
-  background: color-mix(in srgb, var(--ink) 76%, transparent);
-  color: var(--paper);
-  box-shadow: 0 2px 10px rgb(0 0 0 / 0.18);
-  transform: translateY(calc(var(--k) * var(--travel)));
-  transition: background-color 0.15s, scale 0.15s;
-}
-.lec-boost-knob .ico:last-child,
-.lec.boost-armed .lec-boost-knob .ico:first-child {
-  display: none;
-}
-.lec.boost-armed .lec-boost-knob .ico:last-child {
-  display: block;
-}
-.lec.boost-armed .lec-boost-knob {
-  background: var(--accent);
-  color: #fff;
-  scale: 1.15;
-}
-.lec.boost-armed .lec-boost-goal {
-  border-color: var(--accent);
-}
-.lec-boost-hint {
-  position: absolute;
-  left: 50%;
-  top: calc(var(--travel) + 38px);
-  transform: translateX(-50%);
-  padding: 3px 9px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--card) 90%, transparent);
-  font: 650 12px var(--font-ui);
-  color: var(--ink-2);
-  white-space: nowrap;
-}
-.lec-boost-hint span:last-child,
-.lec.boost-armed .lec-boost-hint span:first-child {
-  display: none;
-}
-.lec.boost-armed .lec-boost-hint span:last-child {
-  display: inline;
-  color: var(--accent-ink);
 }
 
 /* Double tap a side to skip: a shaded half-moon on that side counts the seconds. */

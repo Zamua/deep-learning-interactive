@@ -216,7 +216,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   const prefKey = 'cs231n.lec.prefs';
   const prefs = (() => {
     try {
-      return JSON.parse(store.get(prefKey) ?? '{}') as { rate?: number; cc?: boolean };
+      return JSON.parse(store.get(prefKey) ?? '{}') as { rate?: number; cc?: boolean; locked?: boolean; holds?: number };
     } catch {
       return {};
     }
@@ -246,18 +246,16 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   const chip = h('div', { class: 'lec-chip', 'aria-hidden': 'true' });
   const centerBtn = h('button', { class: 'lec-center', type: 'button', 'aria-label': 'Play', html: icon('playFill') });
   const spinner = h('div', { class: 'lec-spinner', 'aria-hidden': 'true' });
-  const boostPill = h('div', { class: 'lec-boost-pill' },
-    h('span', { class: 'lec-boost-ff', html: icon('ffFill') }),
-    h('span', { class: 'lec-boost-ul', html: icon('unlockFill') }),
-    h('b', { class: 'lec-boost-rate' }, `${BOOST}×`),
-    h('span', { class: 'lec-boost-off' }, 'Release to unlock'));
-  const boostEl = h('div', { class: 'lec-boost', 'aria-hidden': 'true' }, boostPill,
-    h('div', { class: 'lec-boost-slide' },
-      h('div', { class: 'lec-boost-rail' }),
-      h('div', { class: 'lec-boost-goal', html: icon('lockFill') }),
-      h('div', { class: 'lec-boost-knob', html: icon('downFill') + icon('lockFill') }),
-      h('div', { class: 'lec-boost-hint' }, h('span', {}, 'Slide down to lock'), h('span', {}, 'Release to lock'))));
-  boostEl.style.setProperty('--travel', `${LOCK_PX}px`);
+  const boostEl = h('div', { class: 'lec-boost', 'aria-hidden': 'true' },
+    h('div', { class: 'lec-boost-pill' },
+      h('span', { class: 'lec-boost-ff', html: icon('ffFill') }),
+      h('span', { class: 'lec-boost-lk', html: icon('lockFill') }),
+      h('span', { class: 'lec-boost-ul', html: icon('unlockFill') }),
+      h('b', { class: 'lec-boost-rate' }, `${BOOST}×`),
+      h('span', { class: 'lec-boost-hint' }, 'Slide down to lock'),
+      h('span', { class: 'lec-boost-go' }, 'Release to lock'),
+      h('span', { class: 'lec-boost-off' }, 'Release to unlock'),
+      h('div', { class: 'lec-boost-bar' })));
   const skipEls = [-1, 1].map((side) => {
     const label = h('span', {});
     const el = h('div', { class: `lec-skip lec-skip-${side < 0 ? 'back' : 'fwd'}`, 'aria-hidden': 'true' },
@@ -663,6 +661,9 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   // Hold for 2x. `hold` lasts while the finger is down; `locked` outlives it until the next hold.
   let baseRate = 1;
   let boost: 'off' | 'hold' | 'locked' = 'off';
+  // The slide-to-lock hint shows for the first few holds, and never again once the viewer has locked.
+  const hintDone = () => !!prefs.locked || (prefs.holds ?? 0) >= 3;
+  root.classList.toggle('boost-known', hintDone());
   let press: { id: number; x: number; y: number; timer: number; active: boolean; armed: boolean } | null = null;
   // A hold's release still fires a click on most engines; it must not also toggle playback.
   let swallowClick = false;
@@ -724,7 +725,15 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     const { active, armed } = press;
     endPress();
     if (!active) return;
-    setBoost(boost === 'hold' && armed && e.type === 'pointerup' ? 'locked' : 'off');
+    const held = boost === 'hold';
+    const lock = held && armed && e.type === 'pointerup';
+    setBoost(lock ? 'locked' : 'off');
+    if (held && !hintDone()) {
+      if (lock) prefs.locked = true;
+      else prefs.holds = (prefs.holds ?? 0) + 1;
+      store.set(prefKey, JSON.stringify(prefs));
+      root.classList.toggle('boost-known', hintDone());
+    }
   };
   stage.addEventListener('pointerup', release);
   stage.addEventListener('pointercancel', release);
