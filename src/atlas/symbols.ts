@@ -484,6 +484,7 @@ export const SCOPED: Record<string, SymbolMap> = {
     mu: { color: 'orange', name: 'μ: the momentum coefficient', tex: '\\mu', about: 'The share of the velocity that survives each step, often 0.9: one minus friction.' },
   },
 
+  'matmul-grad': { g: { ...grad, name: 'g: a gradient of f', about: 'One partial derivative of f per entry, laid out in the shape of what it is the gradient of.' } },
   'power-laws': { Cflops: { ...ATLAS_SYMBOLS.Cflops!, about: 'The total arithmetic a training run does, counted in floating point operations, or FLOPs.' } },
   neuron: { b: { color: 'green', name: 'b: the bias', about: 'One number added to the weighted sum. It shifts where the neuron switches on.' } },
   residual: { g: { ...grad, name: 'g: the gradient arriving at y', about: 'How much the final output moves per nudge of the block\'s output y.' } },
