@@ -1,0 +1,19 @@
+{
+ "duration": 93.234,
+ "scenes": {
+  "undo": [0.0, 40.287],
+  "count": [40.287, 93.234]
+ },
+ "beats": {
+  "undo/probs": [0.7, 11.699, "A language model reads four tokens of text. At each step, it gave the right next token a probability of one half, then one quarter, one half, and one eighth.", [[3.42, 3.91], [4.68, 4.88], [8.2, 8.55], [9.7, 10.01], [10.61, 10.88]]],
+  "undo/losses": [12.079, 22.29, "Each step's loss is minus the log of that probability: zero point six nine, one point three nine, zero point six nine and two point zero eight.", [[15.419, 15.979], [17.339, 17.689], [18.849, 19.149], [20.429, 20.709]]],
+  "undo/mean": [22.67, 30.317, "Averaged over the four tokens, the loss is about one point two one per token. True, but hard to picture.", [[24.49, 24.74], [27.63, 28.19], [28.68, 28.98]]],
+  "undo/exp": [30.697, 39.187, "Perplexity undoes the log: it is e to the average loss. e to the one point two one is about three point three six.", [[32.607, 33.117], [34.997, 35.497]]],
+  "count/uniform": [40.987, 50.806, "Why that is a count: picture a model that spreads its probability evenly over four tokens. It gives the right one a quarter, every time.", [[42.477, 43.147], [47.347, 47.937], [49.637, 50.017]]],
+  "count/k": [51.186, 59.565, "Its loss is the log of four on every token, and e to the log of four is four. Its perplexity is exactly four.", [[54.116, 54.466], [56.706, 57.196]]],
+  "count/means": [59.945, 68.986, "So a perplexity of three point three six means the model is, on average, as unsure as a fair pick among about three point four tokens.", [[62.605, 62.805], [64.755, 65.025]]],
+  "count/bounds": [69.366, 79.907, "A model that is always sure and always right scores one, the best possible. One that spreads evenly over a vocabulary of V tokens scores V.", [[73.156, 73.576], [74.596, 75.236], [78.846, 79.046]]],
+  "count/compare": [80.287, 91.014, "Since e to the loss rises with the loss, lower perplexity means lower loss. On the same text and vocabulary, a model at twelve beats a model at thirty.", [[82.987, 83.367], [85.687, 86.307], [88.157, 88.457], [89.517, 89.687]]],
+  "count/turn": [91.394, 92.134, "Your turn.", []]
+ }
+}

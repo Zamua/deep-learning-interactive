@@ -1,0 +1,19 @@
+{
+ "duration": 90.723,
+ "scenes": {
+  "again": [0.0, 44.975],
+  "cache": [44.975, 90.723]
+ },
+ "beats": {
+  "again/loop": [0.7, 9.86, "A language model writes text one token at a time: run the model on the sequence so far, pick the next token, append it, and run again.", [[3.83, 4.4], [6.45, 6.9], [7.9, 8.21], [8.78, 9.05]]],
+  "again/redo": [10.24, 20.004, "Done plainly, every step runs the whole sequence, so every block computes every token's key and value again, though only one token is new.", [[11.2, 11.52], [13.71, 14.05], [17.85, 18.23]]],
+  "again/same": [20.384, 30.797, "And the old ones come out the same every time. With the causal mask, an earlier token never attends to a later one, so adding a token changes nothing before it.", [[23.034, 23.614], [24.754, 24.994], [27.724, 28.134]]],
+  "again/count": [31.177, 43.875, "Step one computes one key, step two computes two, up to T at step T. That adds up to T times T plus one, over two: for ten steps, fifty-five.", [[32.997, 33.467], [35.107, 35.487], [37.187, 37.717], [40.387, 40.707], [41.287, 41.837], [42.697, 43.037]]],
+  "cache/keep": [45.675, 52.791, "So keep them. The KV cache stores the keys and values of every token so far, in every block.", [[46.585, 47.145], [51.505, 51.735]]],
+  "cache/step": [53.171, 62.972, "Each step now computes a query, key and value for the newest token only, adds its key and value to the cache, and attends over everything stored.", [[55.301, 55.561], [58.231, 58.661], [60.651, 60.931]]],
+  "cache/work": [63.352, 71.2, "Ten steps compute ten keys instead of fifty-five. For a thousand tokens, a thousand instead of half a million.", [[66.712, 67.272], [68.612, 68.892], [69.622, 69.832]]],
+  "cache/shape": [71.58, 80.842, "In one block, after T tokens, the cached keys form a T by d array, and the values another, each growing by one row per step.", [[72.41, 72.66], [73.85, 74.14], [76.77, 77.03], [78.26, 78.66]]],
+  "cache/memory": [81.222, 88.503, "The price is memory: two times the blocks, times T, times d numbers, for every sequence being written.", [[82.642, 83.122], [84.242, 84.452], [85.222, 85.502], [86.582, 86.752]]],
+  "cache/turn": [88.883, 89.623, "Your turn.", []]
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "duration": 112.628,
+ "scenes": {
+  "score": [0.0, 62.605],
+  "tie": [62.605, 112.628]
+ },
+ "beats": {
+  "score/vector": [0.7, 12.674, "An embedding table turns each token into a vector. At the other end of a model, after all its work, there is a vector again: h, with d numbers. Here d is two.", [[3.88, 4.43], [5.77, 5.95], [7.06, 7.42], [8.53, 8.98], [9.38, 9.72], [10.7, 11.12], [11.46, 11.65]]],
+  "score/need": [13.054, 22.831, "To turn it back into a token, the model needs a score for every token in the vocabulary. Four tokens here: cat, dog, sat and mat.", [[14.704, 15.004], [18.254, 18.814], [19.824, 20.274], [20.624, 20.954], [21.264, 21.584], [22.014, 22.214]]],
+  "score/matrix": [23.211, 37.253, "That is a linear layer, just like class scores, with one class per token. Its matrix, W U, has one row per token and one column per number in h: V by d, four by two.", [[24.671, 24.941], [26.191, 26.471], [28.001, 28.551], [29.381, 29.581], [30.351, 30.621], [32.061, 32.301], [34.371, 34.961], [35.921, 36.291]]],
+  "score/row": [37.633, 47.184, "Each token scores h with its own row. Dog's row is three, one: three times two, plus one times one, makes seven.", [[40.403, 40.973], [42.353, 42.773], [43.173, 43.673], [44.693, 44.903], [46.203, 46.423]]],
+  "score/all": [47.564, 61.505, "All four at once: s equals W U times h, one score per token. Two, seven, zero and minus three. These scores are often called logits, and dog scores highest.", [[48.874, 49.424], [51.904, 52.234], [53.584, 54.124], [54.504, 54.714], [55.174, 55.354], [55.924, 56.084], [57.034, 57.594], [59.714, 60.004]]],
+  "tie/compare": [63.305, 74.184, "Now put W U next to the embedding table, E. E also has one row per token, with d numbers in each: the same shape, V by d.", [[66.325, 66.575], [66.895, 67.555], [69.845, 70.075], [71.495, 71.915], [72.695, 73.085]]],
+  "tie/tie": [74.564, 84.093, "So many models use one matrix for both jobs. W U is E, and a token's score is h dotted with that token's own embedding.", [[77.644, 78.134], [79.604, 79.994]]],
+  "tie/point": [84.473, 99.469, "With d at two, every row is an arrow. A token scores high when its embedding points the way h does: dog, at seven. Sat is at right angles, zero, and mat points away, minus three.", [[85.813, 86.203], [87.633, 88.223], [91.863, 92.363], [92.693, 93.083], [93.653, 94.253], [95.793, 96.063], [96.503, 96.933], [98.363, 98.663]]],
+  "tie/save": [99.849, 110.408, "Tying saves a whole V by d matrix. With fifty thousand tokens and d of seven hundred sixty-eight, that is thirty-eight point four million parameters.", [[102.739, 103.219], [106.999, 107.319]]],
+  "tie/turn": [110.788, 111.528, "Your turn.", []]
+ }
+}

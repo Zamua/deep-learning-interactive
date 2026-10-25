@@ -1,0 +1,17 @@
+{
+ "duration": 81.066,
+ "scenes": {
+  "hide": [0.0, 47.082],
+  "jobs": [47.082, 81.066]
+ },
+ "beats": {
+  "hide/causal": [0.7, 10.56, "A causal model like GPT predicts each token from the ones before it. To predict sat, it may use the and cat, and nothing after.", [[2.72, 2.93], [5.32, 5.87], [6.86, 7.14], [8.19, 8.37], [8.99, 9.3]]],
+  "hide/mask": [10.94, 22.008, "A masked language model, like BERT, is trained differently. Pick about fifteen percent of the tokens, hide each behind a mask token, and train the model to recover them.", [[12.47, 12.62], [13.31, 13.55], [14.71, 15.36], [17.65, 17.99], [19.91, 20.25]]],
+  "hide/both": [22.388, 35.021, "It has no causal mask: every position attends to every other. So to recover sat, it reads the and cat on the left, and on, a, mat on the right.", [[24.148, 24.668], [26.848, 27.468], [28.948, 29.248], [31.658, 32.018], [32.328, 32.518], [32.898, 33.218], [33.518, 33.828], [34.238, 34.388]]],
+  "hide/count": [35.401, 45.982, "Only the hidden tokens are scored. In a sequence of two hundred tokens, fifteen percent is thirty: thirty losses, where a causal model gets two hundred.", [[37.331, 37.951], [39.981, 40.331], [42.011, 42.491], [43.461, 43.851]]],
+  "jobs/attend": [47.782, 60.512, "In attention terms: in a sequence of six, position two of a causal model attends to three positions, itself and the two before it. In a masked model, it attends to all six.", [[49.042, 49.662], [50.932, 51.302], [54.842, 55.242], [55.852, 56.042], [57.072, 57.662], [58.652, 58.882]]],
+  "jobs/generate": [60.892, 72.486, "Generating text means writing one token at a time, with nothing yet on the right. That is exactly the causal model's training task, so causal models are the ones that write.", [[64.392, 64.632], [66.192, 66.832], [69.652, 70.062]]],
+  "jobs/fill": [72.866, 78.846, "Filling in a blank in the middle of a sentence, with words on both sides, is the masked model's task.", [[75.116, 75.316], [76.826, 77.096]]],
+  "jobs/turn": [79.226, 79.966, "Your turn.", []]
+ }
+}
