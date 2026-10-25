@@ -13,6 +13,7 @@ import type { Answer, Concept, Generator, Problem } from '../domain/types';
 import type { Learner } from '../learner';
 import { atlasRoot, dots, plural, render } from './common';
 import { explainerId } from './concept';
+import { wireLookup } from './lookup';
 import { makePad } from './pads';
 import { syncReminders } from '../push';
 
@@ -23,17 +24,20 @@ export const SESSION_LENGTH = 20;
 export function runFrame(main: HTMLElement, cls: string): { root: HTMLElement; body: HTMLElement; dock: HTMLElement; setProgress(done: number, total: number, label: string): void } {
   document.body.classList.add('at-on');
   onDispose(() => document.body.classList.remove('at-on'));
-  const root = atlasRoot(`at-run ${cls}`);
+  const root = atlasRoot(`at-run ${cls}`, 'atlas', false);
   const fill = h('i', {});
   const label = h('span', { class: 'at-run-n' });
+  const lookup = h('button', { type: 'button', class: 'at-run-lk', 'aria-label': 'Symbols in this problem', 'aria-expanded': 'false', html: icon('book') });
   root.append(h('header', { class: 'at-run-top' },
     h('a', { class: 'at-run-x', href: '#/atlas', 'aria-label': 'End the session', html: icon('close') }),
     h('div', { class: 'at-run-bar' }, fill),
-    label));
+    label,
+    lookup));
   const body = h('div', { class: 'at-run-body' });
   const dock = h('div', { class: 'at-run-dock' });
   root.append(body, dock);
   main.append(root);
+  wireLookup(root, body, lookup);
   return {
     root,
     body,

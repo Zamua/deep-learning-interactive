@@ -11,12 +11,12 @@ const scopedCss = Object.entries(SCOPED)
   .flatMap(([id, syms]) => Object.entries(syms).map(([k, d]) => `[data-concept="${id}"] .sym.sym-${k}{--sym:var(--c-${d.color});color:var(--sym)}`))
   .join('\n');
 
-/** A page root with the course's symbols wired up: colors, `\sym` macros and tap-to-name. */
-export function atlasRoot(cls: string, page = 'atlas'): HTMLElement {
+/** A page root with the course's symbols wired up: colors, `\sym` macros and, unless `link` is off, tap-to-name. */
+export function atlasRoot(cls: string, page = 'atlas', link = true): HTMLElement {
   setMacros(symbolMacros(ALL_SYMBOLS));
   const root = h('div', { class: `atlas ${cls}`, 'data-page': page }, h('style', {}, scopedCss));
   // linkSymbols needs the root in the page for its tip; the caller appends it right away.
-  queueMicrotask(() =>
+  if (link) queueMicrotask(() =>
     linkSymbols(root, ALL_SYMBOLS, (k, el) => SCOPED[(el.closest('[data-concept]') as HTMLElement | null)?.dataset.concept ?? '']?.[k]));
   return root;
 }
