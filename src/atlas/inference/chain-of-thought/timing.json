@@ -1,0 +1,20 @@
+{
+ "duration": 103.271,
+ "scenes": {
+  "depth": [0.0, 57.238],
+  "cost": [57.238, 103.271]
+ },
+ "beats": {
+  "depth/pass": [0.7, 12.22, "A language model writes one token per pass, and every pass runs through the same fixed stack of layers. So one pass can take only so many steps, one after another.", [[3.55, 3.87], [7.37, 7.9], [10.73, 10.97]]],
+  "depth/direct": [12.6, 24.415, "Ask for seventeen times twenty four and make it answer at once. The whole calculation has to fit in that one pass, and here it does not: four hundred and eighteen, wrong.", [[14.84, 15.04], [16.56, 17.04], [20.1, 20.42], [21.73, 22.23], [23.49, 23.92]]],
+  "depth/step1": [24.795, 33.799, "Now let it write its steps first. The first pass only has one small step to do: seventeen times twenty is three hundred and forty.", [[26.925, 27.505], [30.335, 30.835]]],
+  "depth/feed": [34.179, 45.292, "That token goes back in as input. The next pass reads three hundred and forty instead of working it out again, and takes the next step: seventeen times four is sixty eight.", [[36.419, 36.969], [39.249, 39.419], [40.929, 41.189], [42.289, 42.859]]],
+  "depth/answer": [45.672, 56.138, "The third pass adds them: four hundred and eight, right. No pass had to do more than one small step, because each started from the steps written before it.", [[47.212, 47.742], [48.762, 49.122], [49.532, 50.272], [52.962, 53.312], [55.962, 56.112]]],
+  "cost/tokens": [57.938, 66.992, "The price is tokens. Answering at once took two. With its steps, the model wrote thirty more before the same two-token answer.", [[59.478, 59.958], [61.698, 62.278], [63.108, 63.338]]],
+  "cost/time": [67.372, 77.402, "Every token is one more pass. At twenty milliseconds a token, that is forty milliseconds against six hundred and forty: sixteen times as long.", [[69.462, 69.912], [71.742, 72.092], [75.162, 75.562]]],
+  "cost/long": [77.782, 83.42, "A long chain of two thousand tokens takes forty seconds before the answer even begins.", []],
+  "cost/helps": [83.8, 92.664, "So the steps pay off when the answer is built from steps: arithmetic, a word problem, anything where each step needs the one before.", [[87.28, 87.81], [88.52, 88.77], [89.66, 90.0]]],
+  "cost/recall": [93.044, 101.051, "Ask for the capital of France, and there is nothing to build on. The model knows it or it does not, and the steps only cost time.", [[94.794, 95.044], [96.474, 96.974], [98.834, 99.184]]],
+  "cost/turn": [101.431, 102.171, "Your turn.", []]
+ }
+}

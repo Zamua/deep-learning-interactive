@@ -1,0 +1,18 @@
+{
+ "duration": 71.316,
+ "scenes": {
+  "token": [0.0, 33.032],
+  "grow": [33.032, 71.316]
+ },
+ "beats": {
+  "token/grid": [0.7, 6.981, "The KV cache keeps, for every token seen so far, a key and a value at every layer.", [[2.23, 2.43], [4.36, 4.66]]],
+  "token/vec": [7.361, 16.634, "Each key and each value is a vector of d numbers, as wide as the model. Here d is four thousand, and there are thirty two layers.", [[10.901, 11.111], [12.281, 12.851], [14.741, 15.041]]],
+  "token/per": [17.014, 31.932, "So one token costs two vectors, times thirty two layers, times four thousand numbers. At sixteen bits, two bytes each, that is five hundred and twelve thousand bytes: half a megabyte, for a single token.", [[19.634, 19.864], [21.194, 21.434], [23.234, 23.784], [24.974, 25.224], [26.094, 26.414], [29.104, 29.474], [30.454, 30.744]]],
+  "grow/ctx": [33.732, 41.418, "Now multiply by the tokens. A context of four thousand tokens needs about two gigabytes, for one sequence.", [[35.742, 36.272], [38.382, 38.572], [40.122, 40.332]]],
+  "grow/formula": [41.798, 48.911, "All together: two, times the layers, times the tokens, times d, times the bytes per number.", [[42.508, 43.088], [43.478, 43.828], [44.788, 45.018], [46.038, 46.288], [47.058, 47.398]]],
+  "grow/double": [49.291, 53.763, "It grows in a straight line. Twice the context, twice the cache.", [[50.941, 51.451], [52.511, 52.771]]],
+  "grow/batch": [54.143, 61.197, "And every sequence being served keeps a cache of its own. Sixteen at once need about thirty three gigabytes.", [[57.423, 57.963]]],
+  "grow/weights": [61.577, 69.096, "That is more than the model's own weights: about seven billion parameters, fourteen gigabytes at two bytes each.", [[63.827, 64.207], [66.197, 66.577]]],
+  "grow/turn": [69.476, 70.216, "Your turn.", []]
+ }
+}

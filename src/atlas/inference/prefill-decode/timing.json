@@ -1,0 +1,23 @@
+{
+ "duration": 133.861,
+ "scenes": {
+  "prefill": [0.0, 32.633],
+  "decode": [32.633, 75.045],
+  "memory": [75.045, 133.861]
+ },
+ "beats": {
+  "prefill/prompt": [0.7, 8.79, "Text is written in two phases. First, the prompt: here five tokens, all known before the model starts.", [[2.81, 3.31], [3.8, 4.03], [4.59, 5.08], [6.46, 6.74]]],
+  "prefill/prefill": [9.17, 21.198, "So the model runs all five in a single pass. The causal mask lets every position be computed side by side, and the pass stores each token's keys and values in the cache.", [[12.29, 12.96], [16.86, 17.24]]],
+  "prefill/first": [21.578, 31.533, "The same pass gives the probabilities at the last position. Sample from them, and out comes the first new token: mat. This phase is the prefill.", [[24.788, 25.348], [26.208, 26.458], [28.308, 28.828], [29.238, 29.878]]],
+  "decode/one": [33.333, 43.711, "After that, each new token depends on the one just before it, so each needs a pass of its own. Feed in mat, and one pass gives one token: and.", [[34.013, 34.273], [37.133, 37.473], [39.353, 39.953], [40.743, 40.983], [42.783, 43.253]]],
+  "decode/cache": [44.091, 53.842, "A decode pass holds one token. It reads the earlier keys and values from the cache, adds its own, and writes the next: it, then slept.", [[46.271, 46.781], [49.631, 49.941], [50.711, 50.961], [51.961, 52.511], [52.771, 53.101]]],
+  "decode/count": [54.222, 66.091, "Four new tokens took four passes: the prefill, which wrote the first, then three decode passes. A hundred new tokens take one prefill and ninety nine decode passes.", [[56.532, 57.022], [57.702, 57.882], [58.842, 59.132], [60.942, 61.472], [63.792, 63.972]]],
+  "decode/wait": [66.471, 73.945, "The prefill sets how long you wait for the first token. The decode passes set how fast the rest stream in.", [[69.721, 70.311]]],
+  "memory/bytes": [75.745, 86.665, "How long does a decode pass take? A model of eight billion parameters at two bytes each holds sixteen gigabytes of weights, and every pass must read all of them.", [[77.855, 78.375], [81.695, 81.915], [84.015, 84.355]]],
+  "memory/bw": [87.045, 98.612, "A GPU reads its memory at about three thousand two hundred gigabytes per second. Sixteen gigabytes take five milliseconds, so two hundred tokens per second at best.", [[92.225, 92.755], [95.395, 95.705]]],
+  "memory/math": [98.992, 112.216, "The arithmetic is tiny by comparison: one multiply and one add per weight, sixteen billion operations, at a thousand trillion per second. Zero point zero one six milliseconds.", [[101.442, 101.962], [104.382, 104.752], [106.722, 107.032], [109.002, 109.482]]],
+  "memory/bound": [112.596, 122.286, "So decoding spends its time waiting on memory: tokens per second is the memory speed over the model's bytes. Faster arithmetic would barely help.", [[115.606, 116.096], [119.636, 120.086]]],
+  "memory/pre": [122.666, 131.641, "Prefill is different. Each weight it reads is used for every prompt token at once, so five hundred tokens share one read of the weights.", [[123.956, 124.476], [127.976, 128.356]]],
+  "memory/turn": [132.021, 132.761, "Your turn.", []]
+ }
+}

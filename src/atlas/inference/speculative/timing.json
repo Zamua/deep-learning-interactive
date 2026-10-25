@@ -1,0 +1,20 @@
+{
+ "duration": 111.123,
+ "scenes": {
+  "check": [0.0, 56.064],
+  "count": [56.064, 111.123]
+ },
+ "beats": {
+  "check/slow": [0.7, 7.459, "Decoding writes one token per pass of the large model, and each of those passes mostly waits on memory.", [[4.17, 4.57]]],
+  "check/draft": [7.839, 18.913, "Speculative decoding adds a small, fast draft model. It guesses the next four tokens, one at a time, cheaply: on, the, red, mat.", [[11.599, 12.099], [14.049, 14.269], [15.089, 15.309], [15.789, 16.339], [16.679, 16.999], [17.339, 17.709], [18.079, 18.479]]],
+  "check/check": [19.293, 29.965, "Then the large model runs once on all four guesses together, like a prefill. That one pass gives its own pick at every position, plus one more after the last.", [[23.013, 23.223], [24.083, 24.683], [27.753, 28.043]]],
+  "check/compare": [30.345, 41.247, "Compare them in order. On: the large model agrees. The: agrees. Red: it wanted soft, so red is rejected.", [[31.625, 32.345], [32.725, 33.365], [34.855, 35.435], [35.795, 36.285], [36.915, 37.595], [37.985, 38.565], [39.585, 39.805]]],
+  "check/keep": [41.627, 54.964, "Keep the agreeing prefix, on the, and add the large model's own pick, soft. Mat is thrown away, since it was guessed after red. Three tokens, from one pass of the large model.", [[43.297, 43.607], [44.127, 44.557], [46.667, 47.007], [47.557, 48.177], [49.467, 49.707], [51.417, 52.007], [52.897, 53.167]]],
+  "count/rule": [56.764, 68.595, "So every pass yields its accepted prefix, plus one token of the large model's own. Even when the first guess is wrong, the pass still writes one token, as plain decoding would.", [[59.874, 60.164], [62.524, 63.174], [64.954, 65.224], [67.074, 67.274]]],
+  "count/all": [68.975, 76.547, "When all four guesses are accepted, the extra pick after the last one comes free: five tokens from a single pass.", [[70.935, 71.245], [73.895, 74.345]]],
+  "count/speed": [76.927, 87.165, "Say four passes yield three, five, one and three tokens. Twelve tokens took four large passes instead of twelve: three times fewer.", [[78.997, 79.197], [79.727, 79.927], [81.547, 82.127], [85.597, 86.017]]],
+  "count/same": [87.545, 95.517, "And the text is still the large model's own. With greedy decoding, every kept token is exactly the one it would have picked.", [[90.165, 90.735], [92.065, 92.355]]],
+  "count/sample": [95.897, 108.903, "With sampling, it keeps each guess with a chance set by how much it agrees, and after a rejection draws from what is left. Every token then comes out with exactly the large model's probabilities.", [[96.717, 97.007], [100.677, 101.027], [101.367, 101.527], [102.597, 102.817], [104.147, 104.777]]],
+  "count/turn": [109.283, 110.023, "Your turn.", []]
+ }
+}
