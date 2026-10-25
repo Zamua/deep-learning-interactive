@@ -1,0 +1,22 @@
+{
+ "duration": 113.237,
+ "scenes": {
+  "two": [0.0, 29.019],
+  "push": [29.019, 82.037],
+  "scale": [82.037, 113.237]
+ },
+ "beats": {
+  "two/prompt": [0.7, 10.853, "A denoiser can take a text prompt as an extra input, such as a red bicycle, and guess the noise with it in mind. Call that guess epsilon c.", [[3.98, 4.26], [4.81, 5.08], [6.05, 6.4], [8.31, 8.85], [9.67, 9.82]]],
+  "two/drop": [11.233, 20.154, "Train it with the prompt replaced by an empty one part of the time. Then the same network can also guess without the prompt: epsilon u.", [[14.833, 15.373], [18.593, 19.163]]],
+  "two/diff": [20.534, 27.919, "The difference, epsilon c minus epsilon u, is what the prompt changes: the direction the prompt points.", [[21.294, 21.624], [23.924, 24.184], [25.694, 26.124]]],
+  "push/rule": [29.719, 38.458, "Guidance mixes the two. epsilon hat is epsilon u, plus w times the difference, where w is the guidance scale.", [[31.319, 31.899], [33.979, 34.239], [36.159, 36.519]]],
+  "push/ends": [38.838, 48.972, "At w equal to zero, that is just epsilon u: the prompt is ignored. At w equal to one, it is exactly epsilon c.", [[40.628, 40.928], [42.598, 43.088], [44.338, 44.988], [46.558, 46.828]]],
+  "push/three": [49.352, 66.617, "Above one, it steps past epsilon c, further the way the prompt points. At w equal to three: zero point two plus three times zero point three is one point one, and minus zero point four plus zero point nine is zero point five.", [[50.092, 50.262], [52.152, 52.592], [54.312, 55.052], [56.712, 57.262], [60.402, 60.592], [61.662, 62.092], [65.102, 65.332]]],
+  "push/use": [66.997, 80.937, "An image is made by taking the guessed noise away a little at a time, over many steps. Guidance swaps in this guess at every step, so each step runs the network twice: once with the prompt, once without.", [[71.267, 71.497], [72.647, 73.257], [75.757, 76.117], [78.407, 78.837], [79.797, 80.177]]],
+  "scale/sweep": [82.737, 88.943, "So what does a larger w buy? Every step leans harder toward what the prompt asks for.", [[84.927, 85.487]]],
+  "scale/low": [89.323, 94.842, "At w of one, the pictures vary a lot, and some follow the prompt only loosely.", [[90.563, 90.803], [92.233, 92.473]]],
+  "scale/mid": [95.222, 100.605, "Around seven, they follow it closely. Values like this are a common default.", [[96.212, 96.502], [97.692, 98.252]]],
+  "scale/big": [100.985, 111.017, "Push w much higher, and the pictures look more and more alike, with colors and contrast overdone. Guidance trades variety for faithfulness to the prompt.", [[102.335, 102.585], [104.685, 105.005], [107.125, 107.715]]],
+  "scale/turn": [111.397, 112.137, "Your turn.", []]
+ }
+}

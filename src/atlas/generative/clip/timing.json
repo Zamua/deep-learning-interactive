@@ -1,0 +1,21 @@
+{
+ "duration": 112.66,
+ "scenes": {
+  "space": [0.0, 37.426],
+  "diagonal": [37.426, 76.399],
+  "zeroshot": [76.399, 112.66]
+ },
+ "beats": {
+  "space/pairs": [0.7, 8.493, "The web is full of images with text written beside them. CLIP trains on such pairs: a photo, and its caption.", [[3.93, 4.51], [6.21, 6.69], [7.35, 7.6]]],
+  "space/encoders": [8.873, 24.712, "It has two encoders. An image encoder turns each photo into a vector. A text encoder, starting from the embeddings of the caption's tokens, turns each caption into a vector of the same width, d. Both are scaled to length one.", [[10.373, 10.933], [14.073, 14.583], [15.673, 15.873], [18.513, 18.843], [21.763, 22.043], [22.343, 22.903]]],
+  "space/sim": [25.092, 36.326, "Stack a batch of N images, and their N captions. One matrix product gives every image's dot product with every caption: an N by N grid of similarities.", [[28.572, 29.142], [33.392, 33.782]]],
+  "diagonal/diag": [38.126, 44.281, "Pair i is image i with the caption written for it, so the right pairs sit on the diagonal.", [[41.606, 42.066]]],
+  "diagonal/rows": [44.661, 58.547, "Each row is a contrastive problem: a softmax over the captions, and a cross-entropy that wants image i to pick caption i. The other N minus one captions in the row are its negatives: here, two.", [[46.731, 47.181], [48.941, 49.211], [52.931, 53.541], [57.111, 57.531], [57.901, 58.151]]],
+  "diagonal/cols": [58.927, 66.241, "The columns get the same treatment: each caption should pick its own image. The loss averages the two directions.", [[60.767, 61.217], [63.297, 63.867]]],
+  "diagonal/count": [66.621, 75.299, "With three pairs, the grid holds nine similarities. Training pushes the three on the diagonal up, and the six negatives down.", [[67.621, 67.841], [69.951, 70.581], [73.221, 73.551]]],
+  "zeroshot/names": [77.099, 88.676, "After training, CLIP can sort images into classes it was never trained on. Write one caption per class: a photo of a tree, a photo of a boat, a photo of a sunset.", [[77.999, 78.309], [81.769, 82.429], [84.309, 84.759], [85.839, 86.109], [87.119, 87.419]]],
+  "zeroshot/embed": [89.056, 93.724, "Embed the captions with the text encoder, and the image with the image encoder.", [[91.356, 91.676]]],
+  "zeroshot/pick": [94.104, 110.44, "Score the image against each caption by the dot product: zero point three one, zero point one two, and zero point zero five. The highest wins: tree. No labeled tree images were needed. The classifier was written in words.", [[97.324, 97.844], [99.134, 99.544], [100.854, 101.174], [102.894, 103.484], [104.584, 105.004], [105.404, 105.984], [107.954, 108.354]]],
+  "zeroshot/turn": [110.82, 111.56, "Your turn.", []]
+ }
+}

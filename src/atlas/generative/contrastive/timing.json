@@ -1,0 +1,23 @@
+{
+ "duration": 137.89,
+ "scenes": {
+  "pairs": [0.0, 41.519],
+  "loss": [41.519, 89.533],
+  "temperature": [89.533, 137.89]
+ },
+ "beats": {
+  "pairs/views": [0.7, 9.698, "Here is a way to learn from images with no labels at all. Take an image and cut two random crops from it: two views of the same thing.", [[4.0, 4.64], [5.8, 5.96], [7.53, 8.0]]],
+  "pairs/embed": [10.078, 18.293, "An encoder turns each view into a vector, and each vector is scaled to length one, so only its direction counts.", [[12.838, 13.228], [15.688, 16.038], [18.098, 18.268]]],
+  "pairs/sim": [18.673, 26.814, "The similarity of two views is the dot product of their vectors: one when they point the same way, lower as they turn apart.", [[22.503, 23.063], [24.773, 25.173]]],
+  "pairs/batch": [27.194, 40.419, "In a batch, view one of each image has one positive, the other view of the same image. The views of every other image are its negatives. In the grid of similarities, the positives sit on the diagonal.", [[27.904, 28.254], [30.754, 31.104], [32.844, 33.354], [36.074, 36.644], [38.184, 38.434]]],
+  "loss/row": [42.219, 53.584, "Take row zero: view one of image zero, against the second view of every image. The row is a classification problem: which of these candidates is my partner?", [[43.359, 43.979], [45.719, 46.009], [48.249, 48.849], [50.939, 51.459]]],
+  "loss/soft": [53.964, 70.295, "So run a softmax over the row, and take the cross-entropy with the positive as the right answer. With scores two, zero and one, the exponentials are seven point three nine, one, and two point seven two: a total of eleven point one one.", [[56.164, 56.374], [59.734, 60.404], [61.434, 61.604], [62.744, 63.044], [65.374, 65.714], [66.114, 66.344], [67.744, 68.214]]],
+  "loss/loss": [70.675, 79.518, "The loss is the log of the total, minus the positive's score: two point four one minus two, which is zero point four one.", [[72.705, 72.915], [74.445, 75.045], [77.125, 77.515], [77.955, 78.185]]],
+  "loss/push": [79.898, 88.433, "Lowering it pulls the positive pair together and pushes the negatives away. Every row takes its turn, and their losses are averaged.", [[82.518, 82.668], [84.378, 84.998], [86.588, 86.828]]],
+  "temperature/range": [90.233, 97.811, "Similarities of unit vectors stay between minus one and one: too narrow a range for a softmax to be confident.", [[94.223, 94.853]]],
+  "temperature/divide": [98.191, 108.832, "So the scores are similarities divided by a temperature, tau, a small number such as zero point one. Dividing by it stretches the gaps between them.", [[99.461, 99.651], [102.081, 102.301], [102.721, 103.121], [105.631, 106.101]]],
+  "temperature/sharp": [109.212, 125.965, "Here the similarities are zero point nine, zero point one and zero point five. Divided by one, the softmax stays soft: zero point four seven for the top. Divided by zero point one, the top takes zero point nine eight.", [[112.062, 112.372], [113.392, 113.652], [114.972, 115.562], [116.602, 116.902], [118.652, 119.122], [121.102, 121.712], [123.362, 123.672]]],
+  "temperature/hard": [126.345, 135.67, "A small temperature also aims the push. The negatives most similar to the anchor hold most of the probability, so they are pushed away hardest.", [[128.875, 129.485], [133.375, 133.685]]],
+  "temperature/turn": [136.05, 136.79, "Your turn.", []]
+ }
+}
