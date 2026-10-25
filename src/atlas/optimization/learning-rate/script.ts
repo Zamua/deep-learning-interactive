@@ -56,23 +56,7 @@ export const script: LectureScript = {
         { id: 'half', say: 'At {η|eta} equals one over two a, it is zero: a single step lands right on the minimum.', code: 'half' },
         { id: 'edge', say: 'At one over a, it reaches minus one, and x bounces between two points forever. Any larger, and it blows up.', code: 'edge' },
         { id: 'steep', say: 'A steeper bowl, a bigger a, makes the line fall faster. The largest learning rate that does not diverge is one over a.', code: 'steep' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        a, x, lr = 2.0, 3.0, 0.1     #@given
-        g = 2 * a * x     # 12.0     #@g
-        x = x - lr * g    # 1.8      #@step
-        # factor 1 - 2*a*lr = 0.6    #@check
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. The loss is two x squared, x is three, and {η|eta} is {0.1|zero point one}. Where is x after one step?', code: 'given' },
-        { id: 'grad', say: 'The gradient is two a x: two times two times three, twelve.', code: 'g' },
-        { id: 'step', say: 'The step is {0.1|zero point one} times twelve, {1.2|one point two}. So x goes to three minus {1.2|one point two}: {1.8|one point eight}.', code: 'step' },
-        { id: 'check', say: 'Check with the factor: one minus two times two times {0.1|zero point one} is {0.6|zero point six}, and {0.6|zero point six} times three is {1.8|one point eight}.', code: 'check' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

@@ -113,16 +113,4 @@ const scores: SceneDef = {
   },
 };
 
-const PE = [0.1, 0.6, 0.3];
-
-const example: SceneDef = {
-  draw(s) {
-    const pick = s.ease('pick', 0.6);
-    probBars(s, PE, 2, { hi: [0, 0, pick], base: s.h * 0.56 });
-    s.text(neg('ln 0.3 ≈ -1.20'), s.w / 2, s.h * 0.76, { size: 3.6, font: 'mono', color: s.c('--ink-2') });
-    s.alpha(pick * (1 - s.ease('L', 0.5)), () => s.text('only p[2] = 0.3 counts', s.w / 2, s.h * 0.88, { size: 3.8, font: 'mono', color: s.c('teal') }));
-    s.alpha(s.ease('L', 0.6, 0.6), () => s.text(neg('L = -(-1.20) = 1.20'), s.w / 2, s.h * 0.88, { size: 4.6, font: 'mono', weight: 650, color: s.c('red') }));
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { loss, curve, scores, example };
+export const scenes: Record<string, SceneDef> = { loss, curve, scores };

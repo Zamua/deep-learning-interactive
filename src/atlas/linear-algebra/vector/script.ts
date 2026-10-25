@@ -60,21 +60,7 @@ export const script: LectureScript = {
         { id: 'add', say: 'Two vectors of the same length add entry by entry: first plus first, second plus second, third plus third.', code: ['u', 'add'] },
         { id: 'scale', say: 'Multiplying by a number scales every entry. Two times u doubles each one.', code: 'scale' },
         { id: 'same', say: 'The lengths have to match. Give v a fourth entry, and u has nothing to add to it.', code: 'bad' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        u = np.array([2, 0, 3])
-        v = np.array([1, 4, 2])
-        u + v      # [3, 4, 5]   #@sum
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. u is two, zero, three, and v is one, four, two. What is u plus v?' },
-        { id: 'pairs', say: 'Pair up matching entries: two plus one, zero plus four, three plus two.', code: 'sum' },
-        { id: 'sum', say: 'So u plus v is three, four, five. Still three entries long.', code: 'sum' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

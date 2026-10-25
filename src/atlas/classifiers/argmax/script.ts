@@ -41,20 +41,7 @@ export const script: LectureScript = {
         { id: 'pred', say: 'The argmax of each row is the prediction: one, zero, two and zero.', code: 'pred' },
         { id: 'compare', say: 'Check them against the labels. Three match. The second image was class two, not zero.', code: 'pred' },
         { id: 'acc', say: 'The share that match is the accuracy: three out of four, {0.75|zero point seven five}.', code: 'acc' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        s = np.array([4, -1, 6, 3])   #@s
-        s.argmax()    # 2             #@arg
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. The scores are four, minus one, six and three. What is the argmax?', code: 's' },
-        { id: 'max', say: 'The largest score is six.' },
-        { id: 'arg', say: 'Count from zero: four is at zero, minus one at one, and six at two. The argmax is two.', code: 'arg' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

@@ -1,10 +1,9 @@
 {
- "duration": 107.683,
+ "duration": 81.352,
  "scenes": {
   "margin": [0.0, 37.796],
   "sum": [37.796, 63.24],
-  "zero": [63.24, 80.232],
-  "example": [80.232, 107.683]
+  "zero": [63.24, 81.352]
  },
  "beats": {
   "margin/s": [0.7, 9.779, "Scores again: cat three, dog five, ship minus one. The image is a cat, so y is zero.", [[1.74, 2.32], [3.06, 3.5], [4.39, 4.86], [5.2, 5.39], [6.13, 6.75], [7.97, 8.23]]],
@@ -16,9 +15,6 @@
   "sum/sum": [56.201, 62.14, "Here that is three for dog, plus zero for ship. The loss is three.", [[56.631, 56.851], [58.591, 58.881], [60.361, 60.901]]],
   "zero/raise": [63.94, 69.611, "Raise cat's score to seven. The line rises to six, above every other class.", [[65.73, 66.25], [67.81, 68.06]]],
   "zero/zero": [69.991, 79.132, "Every term is zero, so the loss is zero. That takes beating every other class by at least one. Just winning is not enough.", [[71.451, 71.791], [73.171, 73.691], [76.821, 77.311]]],
-  "example/ask": [80.932, 88.771, "Your turn. The scores are four, one and three, and the right class is two. What is the hinge loss?", [[81.552, 82.142], [83.542, 83.782], [84.872, 85.242], [86.862, 87.402]]],
-  "example/t0": [89.151, 94.176, "Class zero: four, minus three, plus one, is two.", [[90.101, 90.671], [91.161, 91.451], [92.331, 92.571], [93.301, 93.551]]],
-  "example/t1": [94.556, 102.077, "Class one: one, minus three, plus one, is minus one, and the hinge makes it zero.", [[95.326, 95.976], [96.396, 96.916], [97.796, 98.026], [98.686, 98.926], [99.876, 100.276]]],
-  "example/L": [102.457, 106.583, "Skip class two itself, and add them: the loss is two.", [[104.937, 105.427]]]
+  "zero/turn": [79.512, 80.252, "Your turn.", []]
  }
 }

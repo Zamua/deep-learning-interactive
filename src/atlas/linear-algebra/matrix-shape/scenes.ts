@@ -81,23 +81,4 @@ const transpose: SceneDef = {
   },
 };
 
-const E = [[3, 0], [1, 5], [2, 4]];
-
-const example: SceneDef = {
-  draw(s) {
-    const g = grid(s, s.w / 2, s.h * 0.34, 3, 2, 17, 11);
-    rowLabel(s, 'W', g.l - 5 * s.u, (g.t + g.b) / 2, 'blue', 4.6);
-    const rp = s.prog('rows');
-    const cp = s.prog('cols');
-    const rowsOn = s.since('rows') >= 0;
-    const colsOn = s.since('cols') >= 0;
-    [0, 1, 2].forEach((i) => band(s, g, 'row', i, ROW, rowsOn && !colsOn ? smooth(clamp01((rp - i * 0.25) * 4)) : 0));
-    [0, 1].forEach((j) => band(s, g, 'col', j, COL, colsOn && s.since('ans') < 0 ? smooth(clamp01((cp - j * 0.3) * 4)) : 0));
-    matrix(s, g, E, 'blue');
-    s.alpha(s.ease('rows', 0.5), () => [0, 1, 2].forEach((i) => s.alpha(smooth(clamp01((rp - i * 0.25) * 4)), () => s.text(String(i + 1), g.r + 4 * s.u, g.y(i), { size: 3.6, font: 'mono', weight: 650, color: s.c(ROW) }))));
-    s.alpha(s.ease('cols', 0.5), () => [0, 1].forEach((j) => s.alpha(smooth(clamp01((cp - j * 0.3) * 4)), () => s.text(String(j + 1), g.x(j), g.t - 4 * s.u, { size: 3.6, font: 'mono', weight: 650, color: s.c(COL) }))));
-    s.alpha(s.ease('ans', 0.6), () => rich(s, [['W.shape = ', '--ink-2'], ...shapeRuns(3, 2)], s.w / 2, s.h * 0.78, { size: 4.8, weight: 650 }));
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { grid: gridScene, index, transpose, example };
+export const scenes: Record<string, SceneDef> = { grid: gridScene, index, transpose };

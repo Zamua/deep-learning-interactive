@@ -54,20 +54,7 @@ export const script: LectureScript = {
         { id: 'epoch', say: 'One pass through all N examples is called an epoch.' },
         { id: 'count', say: 'Each step uses one batch of B, so an epoch takes N over B steps. Twelve hundred examples in batches of a hundred: twelve steps.', code: 'count' },
         { id: 'seen', say: 'And after k steps, the model has seen k times B examples. Five steps of a hundred: five hundred.', code: 'seen' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        N, B = 50_000, 100    #@given
-        N // B    # 500        #@divide
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. A training set has fifty thousand examples, and the batch size is a hundred. How many steps make one epoch?', code: 'given' },
-        { id: 'divide', say: 'Each step uses a hundred examples, so divide: fifty thousand over a hundred.', code: 'divide' },
-        { id: 'answer', say: 'Five hundred steps per epoch.', code: 'divide' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

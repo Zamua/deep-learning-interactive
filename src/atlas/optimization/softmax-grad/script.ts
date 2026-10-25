@@ -60,24 +60,7 @@ export const script: LectureScript = {
         { id: 'sum', say: 'The entries always add up to zero: p adds up to one, and the label takes exactly one away.', code: 'sum' },
         { id: 'step', say: 'A step against the gradient raises the correct score and lowers the others, the most confident wrong class the most.', code: 'step' },
         { id: 'done', say: 'And once the model gives the correct class nearly all the probability, the gradient is nearly zero: there is little left to learn.' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        p = np.array([0.5, 0.2, 0.3])
-        y = 0
-        ds = p - np.eye(3)[y]   # onehot: [1, 0, 0]  #@onehot
-        # [-0.5, 0.2, 0.3]                          #@sub
-        sum(ds)   # 0.0                             #@check
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. Softmax gives {0.5, 0.2 and 0.3|zero point five, zero point two and zero point three}, and the correct class is class zero. What is the gradient?' },
-        { id: 'onehot', say: 'The one-hot label for class zero is one, zero, zero.', code: 'onehot' },
-        { id: 'sub', say: 'Subtract it: minus {0.5|zero point five}, then {0.2|zero point two} and {0.3|zero point three}.', code: 'sub' },
-        { id: 'check', say: 'Check: the entries add up to zero.', code: 'check' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

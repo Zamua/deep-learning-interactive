@@ -63,22 +63,7 @@ export const script: LectureScript = {
         { id: 'nums', say: 'ln two is about {0.69|zero point six nine} and ln three about {1.10|one point one}, so ln six is their sum, {1.79|one point seven nine}.', code: ['a', 'b', 'ab'] },
         { id: 'flip', say: 'One over a number flips the sign of its log: ln of a half is minus ln two, about minus {0.69|zero point six nine}. So minus ln of a half is plus {0.69|zero point six nine}.', code: 'flip' },
         { id: 'small', say: 'The smaller the probability, the bigger minus its log: minus ln of a tenth is about {2.3|two point three}.', code: 'small' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        # ln 2 ≈ 0.69, ln 5 ≈ 1.61    #@ask
-        np.log(10)                    #@ask
-        np.log(2) + np.log(5)         #@split
-        # 0.69 + 1.61 = 2.30          #@sum
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. Use ln two is about {0.69|zero point six nine}, and ln five is about {1.61|one point six one}. What is ln ten?', code: 'ask' },
-        { id: 'split', say: 'Ten is two times five, so ln ten is ln two plus ln five.', code: 'split' },
-        { id: 'sum', say: '{0.69 + 1.61 = 2.30|Zero point six nine plus one point six one is two point three zero}.', code: 'sum' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

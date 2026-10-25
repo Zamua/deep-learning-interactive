@@ -100,36 +100,4 @@ const sign: SceneDef = {
   },
 };
 
-// Worked example: f(x) = x² between x = 3 and x = 3.5; the plot over the working on a phone, beside it on a desktop.
-const ex = (s: Scene) => new Frame(s, s.tall ? inset(s, 0.06, 0.08, 0.42) : [s.w * 0.04, s.h * 0.08, s.w * 0.44, s.h * 0.84], [0.5, 4.2, 0, 17]);
-
-const example: SceneDef = {
-  draw(s) {
-    const F = ex(s);
-    F.axes();
-    F.fn(f, 'purple', 0.8);
-    s.alpha(s.ease('ask', 0.6), () => {
-      F.dot(3, 9, 'purple');
-      F.dot(3.5, 12.25, 'purple');
-      const o = { size: 3.6, font: 'mono', weight: 600, align: 'right', color: s.c('purple'), halo: true } as const;
-      s.text('f(3) = 9', F.X(3) - 3 * s.u, F.Y(9) - 2.5 * s.u, o);
-      s.text('f(3.5) = 12.25', F.X(3.5) - 3 * s.u, F.Y(12.25) - 2.5 * s.u, o);
-    });
-    s.alpha(s.ease('ask', 0.6, 1), () => F.tangent(3, 9, 6.5, 'gold', 2.3, 4.2));
-    s.alpha(s.ease('rise', 0.6), () => {
-      F.seg(3, 9, 3.5, 9, '--ink-3', 0.4, [1.2, 1]);
-      F.seg(3.5, 9, 3.5, 12.25, '--ink-3', 0.4, [1.2, 1]);
-      s.text('3.25', F.X(3.5) + 2 * s.u, F.Y(10.6), { size: 3.4, font: 'mono', align: 'left', color: s.c('--ink-2'), halo: true });
-    });
-    s.alpha(s.ease('run', 0.6), () => s.text('0.5', F.X(3.25), F.Y(9) + 3.4 * s.u, { size: 3.4, font: 'mono', color: s.c('--ink-2'), halo: true }));
-    const [x0, y0, dy] = s.tall ? [s.w / 2 - 30 * s.u, s.h * 0.7, 0.1] : [s.w * 0.52, s.h * 0.38, 0.12];
-    const line = (t: string, row: number, a: number, k: Parameters<Scene['c']>[0] = '--ink-2') =>
-      s.alpha(a, () => s.text(t, x0, y0 + row * dy * s.h, { size: s.tall ? 4.2 : 3.8, font: 'mono', weight: 600, align: 'left', color: s.c(k) }));
-    line('rise  = 12.25 − 9 = 3.25', 0, s.ease('rise', 0.6, 0.4));
-    line('run   = h = 0.5', 1, s.ease('run', 0.6));
-    line('slope = 3.25 / 0.5 = 6.5', 2, s.ease('run', 0.6, 1), 'gold');
-    s.alpha(s.ease('close', 0.6), () => F.tangent(3, 9, 6, 'teal', 2.4, 3.9, 0.5));
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { slope, shrink, sign, example };
+export const scenes: Record<string, SceneDef> = { slope, shrink, sign };

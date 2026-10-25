@@ -100,31 +100,4 @@ const back: SceneDef = {
   },
 };
 
-const example: SceneDef = {
-  marks: {
-    du: { tex: String.raw`\frac{du}{d\symx} = 4`, x: 0.335, y: 0.34, size: 5 },
-    dz: { tex: String.raw`\frac{dz}{du} = 3`, x: 0.665, y: 0.34, size: 5 },
-    q: { tex: String.raw`\frac{dz}{d\symx} = \; ?`, x: 0.5, y: 0.85, size: 5 },
-    ans: { tex: String.raw`\frac{dz}{d\symx} = 3 \times 4 = 12`, x: 0.5, y: 0.85, size: 5 },
-  },
-  draw(s) {
-    const y = s.h * 0.2;
-    chain(s, X3, y, NODES, INKS, [1, 1, 1]);
-    s.show('du', s.ease('ask', 0.6, 0.5));
-    s.show('dz', s.ease('ask', 0.6, 1.5));
-    s.show('q', s.win('ask', 'mult', 0.5) * s.ease('ask', 0.6, 2.5));
-    s.show('ans', s.ease('mult', 0.6, 0.5));
-    const yn = s.h * 0.63;
-    const n = [after(s, 'check', 0.02), after(s, 'check', 0.3), after(s, 'check', 0.6)];
-    ['+0.01', '+0.04', '+0.12'].forEach((t, i) => s.alpha(n[i]!, () => mono(s, t, X3[i]! * s.w, yn, INKS[i]!, 3.8)));
-    [['×4', 1], ['×3', 2]].forEach(([t, i]) => {
-      const j = i as number;
-      s.alpha(n[j]!, () => {
-        s.arrow(X3[j - 1]! * s.w + 9 * s.u, yn, X3[j]! * s.w - 9 * s.u, yn, s.c('gold'), 0.4, 2);
-        mono(s, t as string, between(s, X3, j - 1), yn - 3.6 * s.u, 'gold', 3.4);
-      });
-    });
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { chain: chainScene, local, back, example };
+export const scenes: Record<string, SceneDef> = { chain: chainScene, local, back };

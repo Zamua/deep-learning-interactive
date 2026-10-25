@@ -55,21 +55,7 @@ export const script: LectureScript = {
         { id: 's', say: 'From scores, softmax makes p of y equal to e to the right score, over the total, T.', code: ['s', 'T'] },
         { id: 'rule', say: 'Take minus the log, and the loss is the log of the total, minus the right class\'s score. For scores two, one and minus one, with y equal to zero, that is {2.35|two point three five} minus two: {0.35|zero point three five}.', code: 'L' },
         { id: 'init', say: 'Before training, the scores are about equal, so each of C classes gets one over C, and the loss is log C. With ten classes, {2.30|two point three zero}.', code: 'init' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        p = np.array([0.1, 0.6, 0.3])   #@p
-        y = 2                           #@p
-        -np.log(p[y])    # 1.20         #@L
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. The probabilities are {0.1|zero point one}, {0.6|zero point six} and {0.3|zero point three}, and the right class is two. The log of {0.3|zero point three} is about minus {1.20|one point two zero}.', code: 'p' },
-        { id: 'pick', say: 'The loss looks only at class two, with {0.3|zero point three}. Not {0.6|zero point six}, even though that is the largest.' },
-        { id: 'L', say: 'Minus its log, minus minus {1.20|one point two zero}, gives a loss of {1.20|one point two zero}.', code: 'L' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

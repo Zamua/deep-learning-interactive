@@ -138,10 +138,4 @@ const sign: SceneDef = {
   },
 };
 
-const example: SceneDef = {
-  draw(s) {
-    rows(s, [2, 3, 1], [4, 1, 2], { mult: 'mult', add: 'add' });
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { multiply, sign, example };
+export const scenes: Record<string, SceneDef> = { multiply, sign };

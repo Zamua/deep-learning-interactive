@@ -61,24 +61,7 @@ export const script: LectureScript = {
         { id: 'ex', say: 'e to the x is special: it is its own derivative. At every point, its slope equals its height.', code: 'ex' },
         { id: 'eax', say: 'With a number multiplying x in the power, that number comes out in front: {e³ˣ|e to the three x} has derivative {3e³ˣ|three e to the three x}.', code: 'eax' },
         { id: 'ln', say: 'And ln x has derivative one over x: steep near zero, flatter as x grows. At x equals two, its slope is a half.', code: 'ln' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        f  = lambda x: 4*x**3 - 3*x**2 + 5   #@ask
-        # 4x³   ->  12x²                     #@t1
-        # -3x²  ->  -6x                      #@t2
-        # 5     ->  0                        #@t3
-        df = lambda x: 12*x**2 - 6*x         #@ans
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. What is the derivative of {4x³ − 3x² + 5|four x cubed minus three x squared plus five}?', code: 'ask' },
-        { id: 't1', say: 'Term by term. In four x cubed, the three comes down: four times three is twelve, so {12x²|twelve x squared}.', code: 't1' },
-        { id: 't2', say: 'Minus three x squared becomes minus six x.', code: 't2' },
-        { id: 't3', say: 'The five is a constant, so it drops out. The derivative is {12x² − 6x|twelve x squared minus six x}.', code: ['t3', 'ans'] },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

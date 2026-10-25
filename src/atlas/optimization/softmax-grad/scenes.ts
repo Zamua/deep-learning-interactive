@@ -111,35 +111,4 @@ const bars: SceneDef = {
   },
 };
 
-const EP = [0.5, 0.2, 0.3];
-const EG = [-0.5, 0.2, 0.3];
-
-const example: SceneDef = {
-  draw(s) {
-    const { xs, lx } = grid(s);
-    const y1 = s.h * 0.16;
-    const y2 = s.h * 0.4;
-    const y3 = s.h * 0.66;
-    rowLabel(s, 'p', lx, y1, 'teal');
-    cells(s, xs, y1, EP.map(f1), 'teal');
-    s.text('y = 0', s.w / 2, s.h * 0.29, { size: 3.6, font: 'mono', weight: 600, color: s.c('gold') });
-    s.alpha(s.ease('onehot', 0.6), () => {
-      rowLabel(s, 'y', lx, y2, 'gold');
-      cells(s, xs, y2, ['1', '0', '0'], 'gold', { on: [1, 0, 0] });
-    });
-    const sub = s.ease('sub', 0.6);
-    s.alpha(sub, () => {
-      downArrows(s, xs, y2 + 6 * s.u, y3 - 6 * s.u);
-      s.text('p − onehot', xs[2]! + 9 * s.u, (y2 + y3) / 2, { size: 3, font: 'mono', align: 'left', color: s.c('--ink-3') });
-    });
-    s.alpha(s.ease('ask', 0.6, 1), () => {
-      rowLabel(s, 'ds', lx, y3, 'red');
-      cells(s, xs, y3, sub > 0.5 ? EG.map(f1) : ['?', '?', '?'], 'red', { on: [sub, 0, 0] });
-    });
-    s.alpha(s.ease('check', 0.6), () => {
-      s.text('−0.5 + 0.2 + 0.3 = 0', s.w / 2, s.h * 0.86, { size: 4.2, font: 'mono', weight: 600, color: s.c('--ink-2') });
-    });
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { setup, derive, bars, example };
+export const scenes: Record<string, SceneDef> = { setup, derive, bars };

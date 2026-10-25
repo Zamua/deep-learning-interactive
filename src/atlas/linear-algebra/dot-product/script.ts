@@ -45,22 +45,7 @@ export const script: LectureScript = {
         { id: 'perp', say: 'Turn x to minus one, two, at a right angle to w, and the products cancel: minus two plus two is zero.', code: 'perp' },
         { id: 'opp', say: 'Turn it further, to minus two, minus one, and the dot product goes negative: minus five.', code: 'opp' },
         { id: 'agree', say: 'So the sign says whether two vectors agree: positive when they point the same way, zero at a right angle, negative when they point apart.', code: ['same', 'perp', 'opp'] },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        w = np.array([2, 3, 1])
-        x = np.array([4, 1, 2])
-        w * x     # [8, 3, 2]   #@mul
-        w @ x     # 13          #@dot
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. w is two, three, one, and x is four, one, two. What is {w · x|w dot x}?' },
-        { id: 'mult', say: 'Multiply matching entries: two times four is eight, three times one is three, one times two is two.', code: 'mul' },
-        { id: 'add', say: 'Add the products: eight plus three plus two is thirteen.', code: 'dot' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

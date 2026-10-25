@@ -1,10 +1,9 @@
 {
- "duration": 103.625,
+ "duration": 86.45,
  "scenes": {
   "grid": [0.0, 36.739],
   "index": [36.739, 65.077],
-  "transpose": [65.077, 85.329],
-  "example": [85.329, 103.625]
+  "transpose": [65.077, 86.45]
  },
  "beats": {
   "grid/grid": [0.7, 6.25, "A matrix is a grid of numbers: rows that run across, and columns that run down.", [[2.69, 3.16], [4.47, 4.65]]],
@@ -19,9 +18,6 @@
   "index/out": [56.892, 63.977, "And W of two, zero does not exist. With two rows, the rows are zero and one.", [[57.732, 57.952], [59.242, 59.392], [60.412, 60.962], [61.882, 62.132]]],
   "transpose/flip": [65.777, 72.649, "Transposing a matrix turns its rows into columns. W transpose has shape three by two.", [[69.147, 69.717]]],
   "transpose/ij": [73.029, 84.229, "Entry i, j of the transpose is entry j, i of the original: the five at W of one, two lands at W transpose of two, one.", [[73.929, 74.369], [77.039, 77.199], [78.349, 78.949], [80.709, 81.089]]],
-  "example/ask": [86.029, 89.234, "Your turn. What is the shape of this matrix?", [[86.649, 87.229]]],
-  "example/rows": [89.614, 94.106, "Count the rows, top to bottom: one, two, three.", [[90.604, 90.894], [91.714, 92.234], [92.574, 92.954], [93.354, 93.644]]],
-  "example/cols": [94.486, 98.571, "Count the columns, left to right: one, two.", [[95.496, 95.796], [96.766, 97.326], [97.696, 98.156]]],
-  "example/ans": [98.951, 102.525, "Rows first: the shape is three by two.", [[100.001, 100.611]]]
+  "transpose/turn": [84.609, 85.35, "Your turn.", []]
  }
 }

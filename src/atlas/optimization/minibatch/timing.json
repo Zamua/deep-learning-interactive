@@ -1,10 +1,9 @@
 {
- "duration": 100.008,
+ "duration": 81.691,
  "scenes": {
   "full": [0.0, 25.92],
   "average": [25.92, 56.816],
-  "epoch": [56.816, 80.571],
-  "example": [80.571, 100.008]
+  "epoch": [56.816, 81.691]
  },
  "beats": {
   "full/full": [0.7, 8.411, "The training loss is an average over all N examples, so its gradient is the average of N per-example gradients.", [[4.19, 4.63]]],
@@ -17,8 +16,6 @@
   "epoch/epoch": [57.516, 61.206, "One pass through all N examples is called an epoch.", []],
   "epoch/count": [61.586, 71.402, "Each step uses one batch of B, so an epoch takes N over B steps. Twelve hundred examples in batches of a hundred: twelve steps.", [[63.766, 64.186], [67.136, 67.666], [70.116, 70.536]]],
   "epoch/seen": [71.782, 79.471, "And after k steps, the model has seen k times B examples. Five steps of a hundred: five hundred.", [[73.192, 73.452], [76.282, 76.912], [78.292, 78.702]]],
-  "example/ask": [81.271, 89.915, "Your turn. A training set has fifty thousand examples, and the batch size is a hundred. How many steps make one epoch?", [[81.901, 82.571], [85.341, 85.641], [87.311, 87.851]]],
-  "example/divide": [90.295, 96.464, "Each step uses a hundred examples, so divide: fifty thousand over a hundred.", [[92.595, 92.915], [93.845, 94.385], [95.365, 95.535]]],
-  "example/answer": [96.844, 98.908, "Five hundred steps per epoch.", []]
+  "epoch/turn": [79.851, 80.591, "Your turn.", []]
  }
 }

@@ -119,42 +119,4 @@ const drop: SceneDef = {
   },
 };
 
-const example: SceneDef = {
-  draw(s) {
-    const xs = columns(s, 3, s.tall ? 26 : 22);
-    const y = s.h * 0.18;
-    const given: [string, string, 'blue' | 'red' | 'slate'][] = [
-      ['w', '2', 'blue'],
-      ['g', '3', 'red'],
-      ['η', '0.1', 'slate'],
-    ];
-    given.forEach(([name, v, k], i) => {
-      s.text(name, xs[i]!, y - 9 * s.u, { size: 3.8, font: 'mono', weight: 650, color: s.c(k) });
-      cells(s, [xs[i]!], y, [v], k, { on: [i === 0 ? s.ease('sub', 0.6) : i > 0 ? s.win('step', 'sub') : 0] });
-    });
-    s.alpha(s.ease('step', 0.6), () => {
-      s.text('ηg = 0.1 × 3 = 0.3', s.w / 2, s.h * 0.44, { size: 4.2, font: 'mono', color: s.c('--ink-2') });
-    });
-    s.alpha(s.win('ask', 'sub', 0.3), () => {
-      s.text('w − ηg = ?', s.w / 2, s.h * 0.6, { size: 4.6, font: 'mono', weight: 650, color: s.c('--ink-3') });
-    });
-    s.alpha(s.ease('sub', 0.6), () => {
-      s.text('w − ηg = 2 − 0.3 = 1.7', s.w / 2, s.h * 0.6, { size: 4.6, font: 'mono', weight: 650, color: s.c('blue') });
-    });
-    s.alpha(s.ease('result', 0.6), () => {
-      const F = frame(s.w * 0.2, s.h * 0.7, s.w * 0.8, s.h * 0.86, [1, 2.4], [0, 1]);
-      s.line(F.l, F.b, F.r, F.b, s.c('--axis'), 0.35);
-      const at = (v: number) => {
-        s.line(F.X(v), F.b - 1.2 * s.u, F.X(v), F.b + 1.2 * s.u, s.c('--axis'), 0.35);
-        s.text(f1(v), F.X(v), F.b + 4 * s.u, { size: 3.2, font: 'mono', color: s.c('--ink-3') });
-      };
-      at(2);
-      at(1.7);
-      const w = 2 - 0.3 * s.ease('result', 0.9, 0.4);
-      s.arrow(F.X(2), F.b - 4 * s.u, F.X(w), F.b - 4 * s.u, s.c('slate'), 0.5, 2);
-      ball(s, F.X(w), F.b, 'blue', 1.6);
-    });
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { uphill, rule, drop, example };
+export const scenes: Record<string, SceneDef> = { uphill, rule, drop };

@@ -107,14 +107,4 @@ const order: SceneDef = {
   },
 };
 
-const example: SceneDef = {
-  draw(s) {
-    const inner = s.ease('inner', 0.6) * (1 - 0.6 * s.ease('outer', 0.6));
-    const outer = s.ease('outer', 0.6);
-    classic(s, 4, 2, 5, { p: 6.5, top: s.h * 0.1, inner, outer });
-    rich(s, shapes(4, 2, 2, 5, inner > 0.01 ? INNER : '--ink-2', outer > 0.5 ? '(4, 5)' : '?'), s.w / 2, s.h * 0.74, { size: 4.2, weight: 600 });
-    s.alpha(s.ease('inner', 0.6), () => s.text('inner: 2 and 2 match ✓', s.w / 2, s.h * 0.85, { size: 3.6, font: 'mono', color: s.c(INNER) }));
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { columns, order, example };
+export const scenes: Record<string, SceneDef> = { columns, order };

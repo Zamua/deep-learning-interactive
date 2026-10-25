@@ -57,23 +57,7 @@ export const script: LectureScript = {
         { id: 'loss', say: 'In training, the function is the loss, L, and its inputs are the weights. A weight matrix W with three rows and four columns is twelve inputs.', code: ['W', 'L'] },
         { id: 'g', say: 'So the gradient g has twelve partials, one per weight, laid out exactly like W: three by four.', code: 'g' },
         { id: 'entry', say: 'Each entry says how the loss moves when that one weight is nudged: g at row one, column two belongs to W at row one, column two.', code: 'entry' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        def f(u, v): return u**2 + 2*u*v + 3*v  #@ask
-        df_du = 2*1 + 2*2   # 2u + 2v = 6       #@du
-        df_dv = 2*1 + 3     # 2u + 3 = 5        #@dv
-        np.array([df_du, df_dv])   # [6, 5]     #@grad
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. {f(u, v) = u² + 2uv + 3v|f of u and v is u squared plus two u v plus three v}. What is the gradient at u equals one, v equals two?', code: 'ask' },
-        { id: 'du', say: 'In u, hold v fixed. The partial is {2u + 2v|two u plus two v}, which is two plus four: six.', code: 'du' },
-        { id: 'dv', say: 'In v, hold u fixed: {2u + 3|two u plus three}, which is five.', code: 'dv' },
-        { id: 'grad', say: 'So the gradient is six, five.', code: 'grad' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

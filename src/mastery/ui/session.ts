@@ -253,8 +253,9 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       if (!pick) return caughtUp();
       const c = learner.graph.get(pick.concept)!;
       // A watched explainer is the introduction; otherwise offer it first.
+      // The intro is skipped for a watched explainer, and when the session opened on this concept from its page or its explainer.
       const fresh = pick.reason === 'new' && !introduced.has(c.id);
-      if (fresh && (lectureState(explainerId(c.id))?.heard ?? 0) < 0.5) {
+      if (fresh && c.id !== focus && (lectureState(explainerId(c.id))?.heard ?? 0) < 0.5) {
         introduced.add(c.id);
         await intro(c, pick);
       }

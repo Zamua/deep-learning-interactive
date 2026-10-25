@@ -1,10 +1,9 @@
 {
- "duration": 161.399,
+ "duration": 114.375,
  "scenes": {
   "loop": [0.0, 46.502],
   "outer": [46.502, 77.792],
-  "toward": [77.792, 113.255],
-  "example": [113.255, 161.399]
+  "toward": [77.792, 114.375]
  },
  "beats": {
   "loop/x": [0.7, 12.228, "Here is one full training step for a tiny linear classifier, with two features and two classes. The input x is two, one, and the correct class is class zero.", [[4.52, 4.78], [6.79, 7.39], [9.1, 9.29], [9.69, 10.03]]],
@@ -18,9 +17,6 @@
   "toward/step": [78.492, 92.32, "Now step, here with eta one half. Row zero belongs to the correct class, and its ds is minus zero point seven, so it gains zero point three five times x: it moves toward x.", [[79.162, 79.512], [81.152, 81.652], [84.062, 84.332], [86.892, 87.262], [90.282, 90.722]]],
   "toward/away": [92.7, 102.116, "Row one, the wrong class, has ds plus zero point seven. It loses zero point three five times x, and moves away.", [[93.43, 93.89], [94.93, 95.25], [97.51, 98.04], [100.96, 101.19]]],
   "toward/scores": [102.496, 112.155, "Measured along x, the correct row climbs from one to two point seven five, and the wrong one falls from one point eight five to zero point one.", [[103.826, 104.126], [107.636, 108.036], [110.666, 110.886]]],
-  "example/ask": [113.955, 132.907, "Your turn. The weight in row one, column zero is one. The input is three, minus one; the correct class is class one; softmax gives zero point four and zero point six; and eta is zero point one. What is that weight after one step?", [[114.615, 115.265], [117.655, 117.815], [118.365, 119.015], [120.315, 120.495], [121.225, 121.835], [123.815, 124.415], [127.835, 128.365], [130.215, 130.865]]],
-  "example/ds": [133.287, 141.611, "The score gradient, p minus one-hot, is zero point four, and zero point six minus one: minus zero point four.", [[134.347, 134.617], [135.837, 136.047], [137.297, 137.697], [139.657, 140.077]]],
-  "example/dW": [141.991, 149.709, "The weight's gradient is ds one times x zero: minus zero point four times three, minus one point two.", [[145.471, 146.011], [148.311, 148.471]]],
-  "example/step": [150.089, 160.299, "Step against it: one, minus zero point one times minus one point two, is one point one two. The correct class's weight grew.", [[151.079, 151.709], [152.059, 152.619], [155.969, 156.269], [157.699, 158.299]]]
+  "toward/turn": [112.535, 113.275, "Your turn.", []]
  }
 }

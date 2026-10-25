@@ -52,10 +52,11 @@ export interface ConceptMeta {
 ## Explainers
 
 The explainer is a lecture in miniature, using the same player, scene kit, symbols, code
-panel and lookup notes: 2 to 4 scenes, 8 to 25 beats, 1 to 3 minutes. It explains the one idea
-and ends on a worked example of exactly the kind of problem the practice will ask, so the
-first problem never comes as a surprise. `docs/LECTURES.md` applies, except the shape: no
-intro or recap scenes, one idea, straight to it. Narration and review use the lecture tools
+panel and lookup notes: 2 to 3 scenes, 8 to 20 beats, 1 to 3 minutes. It explains the one idea,
+working examples of the kind the practice will ask inside its scenes, so the first problem
+never comes as a surprise. Its last beat is `{ id: 'turn', say: 'Your turn.' }`, and the player
+then goes straight into practice: no worked example at the end, no recap. `docs/LECTURES.md`
+applies, except the shape: no intro or recap scenes, one idea, straight to it. Narration and review use the lecture tools
 with the id `atlas-<concept>`:
 
     node tools/lecture/build.mjs atlas-<concept> --check
@@ -144,7 +145,7 @@ review mode. After every answer the scheduler picks the next problem:
    New concepts enter by depth in the graph, then by how many concepts they unlock.
 4. The same concept never twice in a row, unless it is the only candidate.
 
-A concept's first problem comes after its explainer (skippable) and its worked example.
+A concept's first problem comes after its explainer, which the learner may skip.
 
 ## Placement
 

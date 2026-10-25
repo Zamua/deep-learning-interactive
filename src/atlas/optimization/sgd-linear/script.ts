@@ -59,24 +59,7 @@ export const script: LectureScript = {
         { id: 'step', say: 'Now step, here with {η|eta} one half. Row zero belongs to the correct class, and its ds is minus {0.7|zero point seven}, so it gains {0.35|zero point three five} times x: it moves toward x.', code: 'toward' },
         { id: 'away', say: 'Row one, the wrong class, has ds plus {0.7|zero point seven}. It loses {0.35|zero point three five} times x, and moves away.', code: 'away' },
         { id: 'scores', say: 'Measured along x, the correct row climbs from one to {2.75|two point seven five}, and the wrong one falls from {1.85|one point eight five} to {0.1|zero point one}.', code: 'scores' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        x, y, lr = np.array([3, -1]), 1, 0.1      #@given
-        p = np.array([0.4, 0.6])                  #@given
-        ds = p - np.eye(2)[y]     # [0.4, -0.4]   #@ds
-        dW10 = ds[1] * x[0]       # -1.2          #@dW
-        W[1, 0] -= lr * dW10      # 1 -> 1.12     #@step
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. The weight in row one, column zero is one. The input is three, minus one; the correct class is class one; softmax gives {0.4|zero point four} and {0.6|zero point six}; and {η|eta} is {0.1|zero point one}. What is that weight after one step?', code: 'given' },
-        { id: 'ds', say: 'The score gradient, p minus one-hot, is {0.4|zero point four}, and {0.6|zero point six} minus one: minus {0.4|zero point four}.', code: 'ds' },
-        { id: 'dW', say: 'The weight\'s gradient is ds one times x zero: minus {0.4|zero point four} times three, minus {1.2|one point two}.', code: 'dW' },
-        { id: 'step', say: 'Step against it: one, minus {0.1|zero point one} times minus {1.2|one point two}, is {1.12|one point one two}. The correct class\'s weight grew.', code: 'step' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

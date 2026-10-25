@@ -58,23 +58,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'flip', say: 'Transposing a matrix turns its rows into columns. {W.T|W transpose} has shape three by two.', code: ['W', 'T'] },
         { id: 'ij', say: 'Entry i, j of the transpose is entry j, i of the original: the five at {W[1, 2]|W of one, two} lands at {W.T[2, 1]|W transpose of two, one}.', code: 'ij' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        W = np.array([[3, 0],
-                      [1, 5],
-                      [2, 4]])
-        W.shape   # (3, 2)   #@ans
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. What is the shape of this matrix?' },
-        { id: 'rows', say: 'Count the rows, top to bottom: one, two, three.' },
-        { id: 'cols', say: 'Count the columns, left to right: one, two.' },
-        { id: 'ans', say: 'Rows first: the shape is three by two.', code: 'ans' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

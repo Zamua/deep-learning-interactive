@@ -57,23 +57,7 @@ export const script: LectureScript = {
         { id: 'l1', say: 'The first layer has D times H weights, one per line, plus H biases: twenty plus five, twenty five.', code: 'l1' },
         { id: 'l2', say: 'The second has H times C weights, plus C biases: fifteen plus three, eighteen.', code: 'l2' },
         { id: 'sum', say: 'Add the layers: forty three. Every layer is inputs times outputs, plus one bias per output.', code: 'sum' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        D = 32 * 32 * 3     # 3072     #@D
-        C = 10                         #@D
-        C * D               # 30720    #@W
-        C * D + C           # 30730    #@total
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. A linear classifier for {CIFAR-10|see-far ten} takes {32 × 32|thirty two by thirty two} color images and scores ten classes. How many parameters does it learn?' },
-        { id: 'D', say: 'Each pixel holds three numbers, red, green and blue, so one image flattens to {32 × 32 × 3|thirty two times thirty two times three}: D is {3,072|three thousand and seventy two}.', code: 'D' },
-        { id: 'W', say: 'W has ten rows of {3,072|three thousand and seventy two} weights: {30,720|thirty thousand, seven hundred and twenty}.', code: 'W' },
-        { id: 'total', say: 'Plus ten biases makes {30,730|thirty thousand, seven hundred and thirty} parameters.', code: 'total' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

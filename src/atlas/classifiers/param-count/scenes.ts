@@ -162,44 +162,5 @@ const layers: SceneDef = {
 };
 
 /** A small RGB image: three offset squares. */
-function rgb(s: Scene, x: number, y: number, size: number) {
-  (['red', 'green', 'blue'] as const).forEach((k, i) => {
-    const o = (2 - i) * 1.6 * s.u;
-    s.rrect(x + o - size / 2, y - o - size / 2, size, size, 0.8, { fill: s.tint(k, 0.3), stroke: s.tint(k, 0.9), lw: 0.3 });
-  });
-}
 
-const example: SceneDef = {
-  draw(s) {
-    const cx = s.w / 2;
-    const iy = s.h * 0.14;
-    rgb(s, cx - 27 * s.u, iy, 9 * s.u);
-    const o = { size: 3.8, font: 'mono', align: 'left' } as const;
-    const dA = s.ease('D', 0.6, 2.5);
-    s.alpha(1 - dA, () => s.text('32 × 32 × 3', cx - 15 * s.u, iy, { ...o, color: s.c('--ink-2') }));
-    s.alpha(dA, () => s.text('32 × 32 × 3 = 3,072', cx - 15 * s.u, iy, { ...o, weight: 650, color: s.c('slate') }));
-    s.text('C = 10 classes', cx - 15 * s.u, iy + 7 * s.u, { ...o, size: 3.4, color: s.c('slate') });
-    // W as ten long rows, b as ten cells beside them.
-    const wA = s.ease('W', 0.6);
-    const bA = s.ease('total', 0.6);
-    const top = s.h * 0.34;
-    const rh = 2.4 * s.u;
-    const width = (s.tall ? 66 : 74) * s.u;
-    const x0 = cx - (width + 7 * s.u) / 2;
-    s.alpha(wA, () => {
-      for (let r = 0; r < 10; r++) s.rrect(x0, top + r * rh, width * s.ease('W', 1.2, 0.1 * r), rh - 0.5 * s.u, 0.4, { fill: s.tint('blue', 0.4), stroke: s.tint('blue', 0.8), lw: 0.12 });
-      s.text('3,072 weights per row', x0 + width / 2, top - 3.4 * s.u, { size: 3.2, font: 'mono', color: s.c('blue') });
-      s.text('10', x0 - 2 * s.u, top + 5 * rh, { size: 3.2, font: 'mono', align: 'right', color: s.c('slate') });
-    });
-    s.alpha(bA, () => {
-      for (let r = 0; r < 10; r++) s.rrect(x0 + width + 3 * s.u, top + r * rh, 4 * s.u, rh - 0.5 * s.u, 0.4, { fill: s.tint('green', 0.5), stroke: s.c('green'), lw: 0.12 });
-      s.text('b', x0 + width + 5 * s.u, top - 3.4 * s.u, { size: 3.4, font: 'mono', weight: 650, color: s.c('green') });
-    });
-    const ty = top + 10 * rh;
-    s.alpha(s.ease('W', 0.6, 1.4), () => s.text('10 × 3,072 = 30,720 weights', cx, ty + 8 * s.u, { size: 3.8, font: 'mono', color: s.c('blue') }));
-    s.alpha(s.ease('total', 0.6, 0.6), () => s.text('+ 10 biases', cx, ty + 15 * s.u, { size: 3.8, font: 'mono', color: s.c('green') }));
-    s.alpha(s.ease('total', 0.6, 1.6), () => s.text('= 30,730', cx, ty + 24 * s.u, { size: 5.2, font: 'mono', weight: 650, color: s.c('--ink') }));
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { grid: gridScene, grows, layers, example };
+export const scenes: Record<string, SceneDef> = { grid: gridScene, grows, layers };

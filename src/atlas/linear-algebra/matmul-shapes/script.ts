@@ -42,22 +42,7 @@ export const script: LectureScript = {
         { id: 'batch', say: 'A common case: a batch X of N examples with D numbers each, and weights W with one row of D for each of C classes.', code: 'batch' },
         { id: 'fix', say: 'X times W fails: its inner dimensions are D and C. Transpose W first: N by D, times D by C, gives N by C, a score for every example and class.', code: 'fix' },
         { id: 'flip', say: 'W times X transpose works too, but lays the same scores out the other way: C by N.', code: 'flip' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        A = np.ones((4, 2))
-        B = np.ones((2, 5))
-        # inner: 2 and 2 match         #@inner
-        (A @ B).shape   # (4, 5)       #@outer
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. A is four by two, and B is two by five. What shape is A times B?' },
-        { id: 'inner', say: 'The inner dimensions are two and two. They match, so the product works.', code: 'inner' },
-        { id: 'outer', say: 'The outer ones give the shape: four by five.', code: 'outer' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

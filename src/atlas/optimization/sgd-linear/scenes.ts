@@ -127,29 +127,4 @@ const toward: SceneDef = {
   },
 };
 
-const example: SceneDef = {
-  draw(s) {
-    const gx = [s.w * 0.22, s.w * 0.36];
-    const vx = [s.w * 0.68, s.w * 0.82];
-    const r = [s.h * 0.12, s.h * 0.25];
-    const hi = s.win('ask', 'ds') + s.ease('step', 0.6);
-    s.text('W', gx[0]! - 10 * s.u, (r[0]! + r[1]!) / 2, { size: 4, font: 'mono', weight: 650, color: s.c('blue') });
-    [
-      ['0.5', '-1'],
-      ['1', '2'],
-    ].forEach((row, i) => row.forEach((v, j) => cells(s, [gx[j]!], r[i]!, [v], 'blue', { w: 12, h: 8, size: 3.4, on: [i === 1 && j === 0 ? Math.min(1, hi) : 0] })));
-    rowLabel(s, 'x', vx[0]! - 8 * s.u, r[0]!, 'orange', 3.8);
-    cells(s, vx, r[0]!, ['3', '-1'], 'orange', { w: 12, h: 8, size: 3.4, on: [s.win('dW', 'step'), 0] });
-    rowLabel(s, 'p', vx[0]! - 8 * s.u, r[1]!, 'teal', 3.8);
-    cells(s, vx, r[1]!, ['0.4', '0.6'], 'teal', { w: 12, h: 8, size: 3.4, on: [0, s.win('ds', 'dW')] });
-    s.text('y = 1     η = 0.1', s.w / 2, s.h * 0.37, { size: 3.6, font: 'mono', weight: 600, color: s.c('--ink-2') });
-    const line = (beat: string, text: string, y: number, k: 'red' | 'blue', size = 3.8) =>
-      s.alpha(s.ease(beat, 0.6), () => s.text(text, s.w / 2, s.h * y, { size, font: 'mono', weight: 600, color: s.c(k) }));
-    s.alpha(s.win('ask', 'ds', 0.3), () => s.text('W[1, 0] after one step = ?', s.w / 2, s.h * 0.55, { size: 3.8, font: 'mono', color: s.c('--ink-3') }));
-    line('ds', 'ds = [0.4, 0.6 − 1] = [0.4, −0.4]', 0.52, 'red', 3.4);
-    line('dW', 'dW[1, 0] = ds[1] × x[0] = −1.2', 0.67, 'red', 3.4);
-    line('step', 'W[1, 0] = 1 − 0.1 × (−1.2) = 1.12', 0.84, 'blue', 3.8);
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { loop, outer, toward, example };
+export const scenes: Record<string, SceneDef> = { loop, outer, toward };

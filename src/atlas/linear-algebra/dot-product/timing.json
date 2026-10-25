@@ -1,9 +1,8 @@
 {
- "duration": 112.157,
+ "duration": 88.63,
  "scenes": {
   "multiply": [0.0, 42.558],
-  "sign": [42.558, 87.51],
-  "example": [87.51, 112.157]
+  "sign": [42.558, 88.63]
  },
  "beats": {
   "multiply/pair": [0.7, 7.991, "The dot product takes two vectors of the same length, here w and x, and gives back a single number.", [[3.83, 4.2], [4.55, 4.72], [5.83, 6.21]]],
@@ -16,8 +15,6 @@
   "sign/perp": [60.786, 69.415, "Turn x to minus one, two, at a right angle to w, and the products cancel: minus two plus two is zero.", [[62.516, 62.806], [63.196, 63.456], [64.966, 65.276], [66.506, 67.036], [68.526, 68.716]]],
   "sign/opp": [69.795, 76.611, "Turn it further, to minus two, minus one, and the dot product goes negative: minus five.", [[70.725, 71.065], [71.975, 72.195], [72.945, 73.355], [75.145, 75.615]]],
   "sign/agree": [76.991, 86.41, "So the sign says whether two vectors agree: positive when they point the same way, zero at a right angle, negative when they point apart.", [[79.841, 80.401], [82.231, 82.651], [84.121, 84.611]]],
-  "example/ask": [88.21, 97.369, "Your turn. w is two, three, one, and x is four, one, two. What is w dot x?", [[88.84, 89.56], [90.92, 91.18], [91.64, 91.9], [92.29, 92.73], [95.12, 95.71]]],
-  "example/mult": [97.749, 106.187, "Multiply matching entries: two times four is eight, three times one is three, one times two is two.", [[99.519, 100.069], [101.649, 102.139], [103.869, 104.439]]],
-  "example/add": [106.567, 111.057, "Add the products: eight plus three plus two is thirteen.", [[107.567, 108.097], [109.987, 110.157]]]
+  "sign/turn": [86.79, 87.53, "Your turn.", []]
  }
 }

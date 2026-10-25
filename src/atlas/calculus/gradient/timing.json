@@ -1,10 +1,9 @@
 {
- "duration": 119.944,
+ "duration": 90.981,
  "scenes": {
   "partials": [0.0, 38.772],
   "uphill": [38.772, 58.936],
-  "shape": [58.936, 89.861],
-  "example": [89.861, 119.944]
+  "shape": [58.936, 90.981]
  },
  "beats": {
   "partials/two": [0.7, 12.251, "Many functions take more than one input. Here f of u and v is u squared plus two v squared: a bowl, seen from above as rings of equal height.", [[3.16, 3.71], [4.08, 4.34], [5.76, 5.95], [8.33, 8.89], [9.45, 9.74]]],
@@ -17,9 +16,6 @@
   "shape/loss": [59.636, 70.269, "In training, the function is the loss, L, and its inputs are the weights. A weight matrix W with three rows and four columns is twelve inputs.", [[60.386, 60.586], [62.026, 62.286], [62.616, 63.046], [64.776, 65.316], [68.806, 68.956]]],
   "shape/g": [70.649, 78.459, "So the gradient g has twelve partials, one per weight, laid out exactly like W: three by four.", [[73.499, 73.809], [74.729, 75.139], [76.979, 77.409]]],
   "shape/entry": [78.839, 88.761, "Each entry says how the loss moves when that one weight is nudged: g at row one, column two belongs to W at row one, column two.", [[82.819, 83.409], [85.639, 85.939]]],
-  "example/ask": [90.561, 101.73, "Your turn. f of u and v is u squared plus two u v plus three v. What is the gradient at u equals one, v equals two?", [[91.191, 91.921], [93.251, 93.421], [93.741, 93.901], [94.681, 94.881], [96.061, 96.271], [97.141, 97.781], [100.211, 100.481]]],
-  "example/du": [102.11, 110.299, "In u, hold v fixed. The partial is two u plus two v, which is two plus four: six.", [[102.8, 103.1], [104.36, 104.9], [107.52, 107.84], [109.27, 109.72]]],
-  "example/dv": [110.679, 115.849, "In v, hold u fixed: two u plus three, which is five.", [[111.339, 111.769], [112.739, 113.289], [114.649, 114.999]]],
-  "example/grad": [116.229, 118.844, "So the gradient is six, five.", [[118.089, 118.239]]]
+  "shape/turn": [89.141, 89.881, "Your turn.", []]
  }
 }

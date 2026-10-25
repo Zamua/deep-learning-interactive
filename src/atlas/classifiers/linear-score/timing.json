@@ -1,9 +1,8 @@
 {
- "duration": 125.25,
+ "duration": 85.558,
  "scenes": {
   "rows": [0.0, 50.01],
-  "bias": [50.01, 84.438],
-  "example": [84.438, 125.25]
+  "bias": [50.01, 85.558]
  },
  "beats": {
   "rows/x": [0.7, 6.69, "An input arrives as a vector, x. This one has two features: two and one.", [[3.11, 3.61], [5.18, 5.56], [5.9, 6.09]]],
@@ -15,9 +14,6 @@
   "bias/s": [58.028, 64.877, "The scores come out five, one and three. Cat scores highest, so the classifier says cat.", [[59.008, 59.158], [59.708, 59.928], [61.068, 61.668], [62.858, 63.138]]],
   "bias/forget": [65.257, 72.952, "Leave the bias out, and ship wins instead, with five. The bias is part of the score, not an afterthought.", [[66.547, 66.847], [68.247, 68.517], [69.167, 69.757], [71.517, 71.787]]],
   "bias/zero": [73.332, 83.338, "Set x to all zeros, and W times x vanishes. The scores are exactly b: each class's lean before it sees any evidence.", [[75.182, 75.462], [77.552, 78.082], [79.812, 80.342]]],
-  "example/ask": [85.138, 96.33, "Your turn. W has two rows of three. x is two, one, and minus one, and b is one and minus two. What are the scores?", [[85.788, 86.448], [88.588, 89.198], [90.338, 90.568], [91.968, 92.378], [94.688, 95.288]]],
-  "example/r0": [96.71, 107.534, "Class zero: two times two, plus zero times one, plus one times minus one, is three. Add its bias, one, and it scores four.", [[97.64, 98.21], [99.21, 99.45], [100.89, 101.19], [102.9, 103.15], [103.76, 104.43], [105.38, 105.62], [106.0, 106.35]]],
-  "example/r1": [107.914, 118.493, "Class one: minus two, plus three, plus two times minus one, is minus one. Add its bias, minus two, and it scores minus three.", [[108.664, 109.194], [110.004, 110.254], [110.974, 111.284], [113.024, 113.284], [114.234, 114.774], [115.694, 115.844], [116.574, 116.844]]],
-  "example/s": [118.873, 124.15, "So the scores are four and minus three, one per class, in order.", [[120.053, 120.263], [121.933, 122.333], [123.333, 123.583]]]
+  "bias/turn": [83.718, 84.458, "Your turn.", []]
  }
 }

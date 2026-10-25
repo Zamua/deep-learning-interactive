@@ -77,23 +77,7 @@ export const script: LectureScript = {
         { id: 'shift', say: 'Add five to every score. Every exponential gets multiplied by the same factor, and that factor cancels when we divide. Nothing changes.', code: ['base', 'shift'] },
         { id: 'scale', say: 'Double every score instead, and the gaps between them double. The top class grows to {0.88|zero point eight eight}.', code: ['base', 'scale'] },
         { id: 'soft', say: 'That is the name: a soft maximum. The top score gets most of the probability, but every class keeps a little.', code: 'scale' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        s = np.array([1, 0, 2])
-        e = np.exp(s)    # [2.72, 1.0, 7.39]   #@exp
-        e.sum()          # 11.11              #@sum
-        p = e / e.sum()  # p[2] = 0.67        #@p
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. The scores are one, zero and two. What probability does class two get?' },
-        { id: 'e', say: 'Exponentiate: {2.72|two point seven two}, one, and {7.39|seven point three nine}.', code: 'exp' },
-        { id: 'sum', say: 'Add them: {11.11|eleven point one one}.', code: 'sum' },
-        { id: 'p', say: 'Divide class two\'s by the total: {7.39|seven point three nine} over {11.11|eleven point one one} is about {0.67|zero point six seven}.', code: 'p' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

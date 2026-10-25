@@ -138,24 +138,4 @@ const shape: SceneDef = {
   },
 };
 
-const example: SceneDef = {
-  marks: {
-    f: { tex: String.raw`\symf(u, v) = u^2 + 2uv + 3v \quad \text{at } (1, 2)`, x: 0.5, y: 0.13, size: 4.6 },
-    du: { tex: String.raw`\frac{\partial \symf}{\partial u} = 2u + 2v = 2 + 4 = 6`, x: 0.5, y: 0.36, size: 4.6 },
-    dv: { tex: String.raw`\frac{\partial \symf}{\partial v} = 2u + 3 = 2 + 3 = 5`, x: 0.5, y: 0.56, size: 4.6 },
-  },
-  draw(s) {
-    s.show('f', s.ease('ask', 0.6));
-    s.show('du', s.ease('du', 0.6, 0.3));
-    s.show('dv', s.ease('dv', 0.6, 0.3));
-    const a = s.ease('grad', 0.6);
-    s.alpha(a, () => {
-      const y = s.h * 0.8;
-      s.text('∇f', s.w / 2 - 20 * s.u, y, { size: 4.6, font: 'mono', weight: 650, align: 'right', color: s.c('red') });
-      s.cell(s.w / 2 - 15 * s.u, y - 4.5 * s.u, 14 * s.u, 9 * s.u, '6', 'red', { on: 1 });
-      s.cell(s.w / 2 + 1 * s.u, y - 4.5 * s.u, 14 * s.u, 9 * s.u, '5', 'red', { on: 1 });
-    });
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { partials, uphill, shape, example };
+export const scenes: Record<string, SceneDef> = { partials, uphill, shape };

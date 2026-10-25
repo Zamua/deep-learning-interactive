@@ -93,19 +93,4 @@ const zero: SceneDef = {
   },
 };
 
-const EX = [4, 1, 3];
-const P2: Plot = { top: 0.1, bot: 0.6, lo: -1, hi: 6 };
-
-const example: SceneDef = {
-  draw(s) {
-    const H = hingeBars(s, EX, 2, ['0', '1', '2'], P2, { line: s.ease('t0', 0.6), cost: s.ease('t0', 0.6, 1) });
-    s.alpha(s.ease('t1', 0.6, 1.5), () => s.text('+0', H.xs[1]! + 7.5 * s.u, H.Y(0.5), { size: 3.6, font: 'mono', weight: 700, align: 'left', color: s.c('green'), halo: true }));
-    const o = { size: 3.6, font: 'mono', align: 'left' } as const;
-    const x = s.w / 2 - (s.tall ? 30 : 32) * s.u;
-    s.alpha(s.ease('t0', 0.6, 0.6), () => s.text('class 0: max(0, 4 − 3 + 1) = 2', x, s.h * 0.77, { ...o, color: s.c('red') }));
-    s.alpha(s.ease('t1', 0.6, 0.6), () => s.text('class 1: max(0, 1 − 3 + 1) = 0', x, s.h * 0.85, { ...o, color: s.c('green') }));
-    s.alpha(s.ease('L', 0.6, 0.6), () => s.text('L = 2 + 0 = 2', s.w / 2, s.h * 0.93, { size: 4.4, font: 'mono', weight: 650, color: s.c('red') }));
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { margin, sum, zero, example };
+export const scenes: Record<string, SceneDef> = { margin, sum, zero };

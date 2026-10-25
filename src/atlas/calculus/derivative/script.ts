@@ -57,22 +57,7 @@ export const script: LectureScript = {
         { id: 'neg', say: 'On the left, f falls as x grows, and the slope is negative: minus three, at minus {1.5|one point five}.', code: 'neg' },
         { id: 'zero', say: 'At the bottom the tangent is level, and the slope is zero.', code: 'zero' },
         { id: 'pos', say: 'On the right, f rises, and the slope is positive: three.', code: 'pos' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        f(3), f(3.5)        # 9, 12.25   #@ask
-        rise = 12.25 - 9    # 3.25       #@rise
-        rise / 0.5          # 6.5        #@run
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. f of three is nine, and f of three and a half is {12.25|twelve point two five}. With h equal to a half, what is the slope between them?', code: 'ask' },
-        { id: 'rise', say: 'The rise is {12.25|twelve point two five} minus nine: {3.25|three point two five}.', code: 'rise' },
-        { id: 'run', say: 'Divide by the run, a half: {3.25 / 0.5 = 6.5|three point two five over a half is six point five}.', code: 'run' },
-        { id: 'close', say: 'That is close to the slope right at three, which is six. A smaller step would land closer still.', code: 'run' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

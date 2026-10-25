@@ -144,27 +144,4 @@ const limit: SceneDef = {
   },
 };
 
-const example: SceneDef = {
-  draw(s) {
-    const xs = columns(s, 3, s.tall ? 26 : 22);
-    const y = s.h * 0.18;
-    const given: [string, string, 'purple' | 'orange' | 'slate'][] = [
-      ['a', '2', 'purple'],
-      ['x', '3', 'orange'],
-      ['η', '0.1', 'slate'],
-    ];
-    given.forEach(([name, v, k], i) => {
-      s.text(name, xs[i]!, y - 9 * s.u, { size: 3.8, font: 'mono', weight: 650, color: s.c(k) });
-      cells(s, [xs[i]!], y, [v], k, { on: [s.win('grad', 'step') * (i < 2 ? 1 : 0) + s.win('step', 'check') * (i === 2 ? 1 : 0)] });
-    });
-    const line = (beat: string, text: string, at: number, o: { k?: 'orange' | '--ink-2'; size?: number } = {}) =>
-      s.alpha(s.ease(beat, 0.6), () => s.text(text, s.w / 2, s.h * at, { size: o.size ?? 4, font: 'mono', weight: o.k === 'orange' ? 650 : 500, color: s.c(o.k ?? '--ink-2') }));
-    s.alpha(s.win('ask', 'grad', 0.3), () => s.text('f(x) = 2x²,  x after one step = ?', s.w / 2, s.h * 0.42, { size: 3.8, font: 'mono', color: s.c('--ink-3') }));
-    line('grad', 'g = 2ax = 2 × 2 × 3 = 12', 0.38);
-    line('step', 'x − ηg = 3 − 0.1 × 12 = 1.8', 0.54, { k: 'orange', size: 4.4 });
-    line('check', 'factor 1 − 2aη = 0.6', 0.72);
-    line('check', '0.6 × 3 = 1.8', 0.83);
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { factor, race, limit, example };
+export const scenes: Record<string, SceneDef> = { factor, race, limit };

@@ -53,22 +53,7 @@ export const script: LectureScript = {
         { id: 'longer', say: 'A chain can be as long as you like. Here x feeds u, u feeds v, and v feeds a loss, L. Each link has a local slope.', code: 'fwd' },
         { id: 'back', say: 'Start at the end and walk backwards, multiplying as you go: a half, times minus two is minus one, times three is minus three.', code: ['v', 'u', 'x'] },
         { id: 'backprop', say: 'So a nudge to x moves the loss minus three times as much. This backward walk, multiplying local slopes, is backpropagation: how neural networks learn.', code: 'x' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        du_dx = 4                #@ask
-        dz_du = 3                #@ask
-        dz_dx = dz_du * du_dx    #@mult
-        # 12                     #@mult
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. Along a chain from x to u to z, {du/dx = 4|d u d x is four} and {dz/du = 3|d z d u is three}. What is {dz/dx|d z d x}?', code: 'ask' },
-        { id: 'mult', say: 'Multiply the local slopes: three times four is twelve.', code: 'mult' },
-        { id: 'check', say: 'A nudge of {0.01|zero point zero one} in x moves u by {0.04|zero point zero four}, and z by {0.12|zero point one two}: twelve times as much.', code: 'mult' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

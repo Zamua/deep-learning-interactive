@@ -129,18 +129,4 @@ const epoch: SceneDef = {
   },
 };
 
-const example: SceneDef = {
-  draw(s) {
-    const xs = columns(s, 2, s.tall ? 34 : 30);
-    const y = s.h * 0.2;
-    ([['N', '50,000'], ['B', '100']] as const).forEach(([name, v], i) => {
-      s.text(name, xs[i]!, y - 9 * s.u, { size: 3.8, font: 'mono', weight: 650, color: s.c('slate') });
-      cells(s, [xs[i]!], y, [v], 'slate', { w: 20, on: [s.win('divide', 'answer')] });
-    });
-    s.alpha(s.win('ask', 'divide', 0.3), () => s.text('steps per epoch = ?', s.w / 2, s.h * 0.5, { size: 4, font: 'mono', color: s.c('--ink-3') }));
-    s.alpha(s.ease('divide', 0.6), () => s.text('N / B = 50,000 / 100', s.w / 2, s.h * 0.48, { size: 4.2, font: 'mono', color: s.c('--ink-2') }));
-    s.alpha(s.ease('answer', 0.6), () => s.text('= 500 steps', s.w / 2, s.h * 0.66, { size: 5, font: 'mono', weight: 650, color: s.c('orange') }));
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { full, average, epoch, example };
+export const scenes: Record<string, SceneDef> = { full, average, epoch };

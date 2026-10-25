@@ -50,24 +50,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'raise', say: 'Raise cat\'s score to seven. The line rises to six, above every other class.', code: 's' },
         { id: 'zero', say: 'Every term is zero, so the loss is zero. That takes beating every other class by at least one. Just winning is not enough.', code: ['m', 'zero'] },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        s = np.array([4, 1, 3])   #@s
-        y = 2                     #@s
-        max(0, 4 - 3 + 1)   # 2   #@t0
-        max(0, 1 - 3 + 1)   # 0   #@t1
-        # L = 2 + 0 = 2           #@L
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. The scores are four, one and three, and the right class is two. What is the hinge loss?', code: 's' },
-        { id: 't0', say: 'Class zero: four, minus three, plus one, is two.', code: 't0' },
-        { id: 't1', say: 'Class one: one, minus three, plus one, is minus one, and the hinge makes it zero.', code: 't1' },
-        { id: 'L', say: 'Skip class two itself, and add them: the loss is two.', code: 'L' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

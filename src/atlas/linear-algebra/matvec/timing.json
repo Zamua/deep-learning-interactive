@@ -1,9 +1,8 @@
 {
- "duration": 98.925,
+ "duration": 73.68,
  "scenes": {
   "rows": [0.0, 34.536],
-  "shapes": [34.536, 72.559],
-  "example": [72.559, 98.925]
+  "shapes": [34.536, 73.68]
  },
  "beats": {
   "rows/setup": [0.7, 10.022, "Multiplying a matrix by a vector is a stack of dot products. Here W has two rows of three, and x has three entries.", [[2.89, 3.05], [4.65, 5.27], [5.64, 5.91], [7.88, 8.23]]],
@@ -14,9 +13,6 @@
   "shapes/out": [45.149, 54.771, "And there is one dot product per row, so the result has one entry per row of W. A two by three matrix turns three numbers into two.", [[47.319, 47.679], [50.629, 51.279], [52.739, 52.899]]],
   "shapes/big": [55.151, 64.39, "The sizes can be anything. A ten by three thousand and seventy two W turns an image of three thousand and seventy two numbers into ten.", [[56.731, 57.251], [60.161, 60.411]]],
   "shapes/fail": [64.77, 71.459, "Give it a vector of the wrong length, and a column of W has no partner: the product is not defined.", [[66.59, 66.89], [69.15, 69.69]]],
-  "example/ask": [73.259, 82.38, "Your turn. W has rows two, one and zero, three, and x is one, two. What is W x?", [[73.909, 74.649], [76.379, 76.589], [77.729, 77.979], [78.409, 78.699], [80.399, 80.899]]],
-  "example/r0": [82.76, 88.673, "Row zero dotted with x: two times one, plus one times two, is four.", [[84.72, 85.21], [86.19, 86.41], [87.8, 88.01]]],
-  "example/r1": [89.053, 94.421, "Row one: zero times one, plus three times two, is six.", [[89.783, 90.403], [91.623, 91.933], [93.413, 93.673]]],
-  "example/ans": [94.801, 97.825, "So W x is four, six.", [[97.011, 97.211]]]
+  "shapes/turn": [71.839, 72.58, "Your turn.", []]
  }
 }

@@ -31,12 +31,18 @@ export async function renderAtlas(main: HTMLElement, parts: string[], current: (
   const [def, { mountLecture }] = await Promise.all([pending, import('../../lecture/player')]);
   if (!current()) return;
   main.innerHTML = '';
+  const locked = learner.status(a) === 'locked';
+  const missing = c.prereqs.filter((p) => !learner.record(p).mastered).map((p) => GRAPH.get(p)!.title).join(' and ');
   mountLecture(main, def, {
     back: `#/atlas/${a}`,
     kicker: `${domainOf(c).title} · Explainer`,
     poster: [domainOf(c).title, 'Explainer'],
     artist: `Atlas: ${c.title}`,
     noun: 'explainer',
-    end: { kicker: 'That was the explainer', title: 'Now try it yourself', action: `Practice ${c.title.toLowerCase()}`, href: `#/atlas/learn/${a}` },
+    // A locked concept cannot be practiced yet, so its explainer ends on what to master first.
+    end: locked
+      ? { kicker: 'Not yet', title: `Master ${missing} first`, action: 'See the map', href: '#/atlas' }
+      : { kicker: 'Your turn', title: 'Now try it yourself', action: `Practice ${c.title.toLowerCase()}`, href: `#/atlas/learn/${a}` },
+    autoAdvance: !locked,
   });
 }

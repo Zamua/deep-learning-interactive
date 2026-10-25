@@ -42,25 +42,7 @@ export const script: LectureScript = {
         { id: 'out', say: 'And there is one dot product per row, so the result has one entry per row of W. A two by three matrix turns three numbers into two.', code: 'out' },
         { id: 'big', say: 'The sizes can be anything. A ten by {3,072|three thousand and seventy two} W turns an image of {3,072|three thousand and seventy two} numbers into ten.', code: 'big' },
         { id: 'fail', say: 'Give it a vector of the wrong length, and a column of W has no partner: the product is not defined.', code: 'fail' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        W = np.array([[2, 1],
-                      [0, 3]])
-        x = np.array([1, 2])
-        W[0] @ x   # 2*1 + 1*2 = 4   #@r0
-        W[1] @ x   # 0*1 + 3*2 = 6   #@r1
-        W @ x      # [4, 6]          #@ans
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. W has rows two, one and zero, three, and x is one, two. What is W x?' },
-        { id: 'r0', say: 'Row zero dotted with x: two times one, plus one times two, is four.', code: 'r0' },
-        { id: 'r1', say: 'Row one: zero times one, plus three times two, is six.', code: 'r1' },
-        { id: 'ans', say: 'So W x is four, six.', code: 'ans' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

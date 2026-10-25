@@ -57,22 +57,7 @@ export const script: LectureScript = {
         { id: 'tangent', say: 'How much does one step lower the loss? Close up, the curve is almost its tangent line, so the loss changes by about the slope times the move.', code: 'move' },
         { id: 'formula', say: 'The move is minus {η|eta} g. Times the slope g, that is minus {η|eta} g squared. Here, minus {0.4|zero point four}, and the true change is minus {0.38|zero point three eight}.', code: ['dL', 'sq'] },
         { id: 'always', say: 'g squared is never negative, so a small enough step never makes the loss worse. With many weights, each one adds its own minus {η|eta} g squared.', code: 'sq' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        w, g, lr = 2.0, 3.0, 0.1   #@given
-        step = lr * g    # 0.3     #@step
-        w = w - step     # 1.7     #@sub
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. A weight sits at two, its gradient is three, and the learning rate is {0.1|zero point one}. Where does one step take it?', code: 'given' },
-        { id: 'step', say: 'The step is {η|eta} times g: {0.1|zero point one} times three is {0.3|zero point three}.', code: 'step' },
-        { id: 'sub', say: 'Subtract it from w: two minus {0.3|zero point three} is {1.7|one point seven}.', code: 'sub' },
-        { id: 'result', say: 'The gradient was positive, so the weight went down.', code: 'sub' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

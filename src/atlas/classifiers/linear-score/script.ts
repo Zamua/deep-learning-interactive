@@ -43,26 +43,7 @@ export const script: LectureScript = {
         { id: 's', say: 'The scores come out five, one and three. Cat scores highest, so the classifier says cat.', code: ['s', 'pred'] },
         { id: 'forget', say: 'Leave the bias out, and ship wins instead, with five. The bias is part of the score, not an afterthought.', code: 'nob' },
         { id: 'zero', say: 'Set x to all zeros, and W times x vanishes. The scores are exactly b: each class\'s lean before it sees any evidence.', code: 'zero' },
-      ],
-    },
-    {
-      id: 'example',
-      title: 'Worked example',
-      codeTitle: 'example.py',
-      code: `
-        W = np.array([[ 2, 0, 1],
-                      [-1, 3, 2]])
-        x = np.array([2, 1, -1])
-        b = np.array([1, -2])
-        W[0] @ x + b[0]   # 3 + 1 = 4      #@r0
-        W[1] @ x + b[1]   # -1 - 2 = -3    #@r1
-        W @ x + b         # [4, -3]        #@s
-      `,
-      beats: [
-        { id: 'ask', think: true, say: 'Your turn. W has two rows of three. x is two, one, and minus one, and b is one and minus two. What are the scores?' },
-        { id: 'r0', say: 'Class zero: two times two, plus zero times one, plus one times minus one, is three. Add its bias, one, and it scores four.', code: 'r0' },
-        { id: 'r1', say: 'Class one: minus two, plus three, plus two times minus one, is minus one. Add its bias, minus two, and it scores minus three.', code: 'r1' },
-        { id: 's', say: 'So the scores are four and minus three, one per class, in order.', code: 's' },
+        { id: 'turn', say: 'Your turn.' },
       ],
     },
   ],

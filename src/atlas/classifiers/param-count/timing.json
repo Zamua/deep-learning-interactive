@@ -1,10 +1,9 @@
 {
- "duration": 135.274,
+ "duration": 99.169,
  "scenes": {
   "grid": [0.0, 39.423],
   "grows": [39.423, 63.646],
-  "layers": [63.646, 98.049],
-  "example": [98.049, 135.274]
+  "layers": [63.646, 99.169]
  },
  "beats": {
   "grid/dims": [0.7, 11.888, "How many numbers does a linear classifier learn? Say each input has four features, so D is four, and there are three classes, so C is three.", [[3.5, 4.19], [6.41, 6.74], [8.19, 8.6], [10.09, 10.41]]],
@@ -19,9 +18,6 @@
   "layers/l1": [73.421, 81.913, "The first layer has D times H weights, one per line, plus H biases: twenty plus five, twenty five.", [[76.141, 76.431], [77.341, 77.671], [79.161, 79.601], [80.791, 81.131]]],
   "layers/l2": [82.293, 89.116, "The second has H times C weights, plus C biases: fifteen plus three, eighteen.", [[84.803, 84.963], [86.443, 86.903], [88.183, 88.533]]],
   "layers/sum": [89.496, 96.949, "Add the layers: forty three. Every layer is inputs times outputs, plus one bias per output.", [[90.466, 90.936], [91.706, 92.226], [94.826, 95.066]]],
-  "example/ask": [98.749, 109.674, "Your turn. A linear classifier for see-far ten takes thirty two by thirty two color images and scores ten classes. How many parameters does it learn?", [[99.399, 100.049], [102.539, 102.759], [105.469, 105.669], [107.259, 107.829]]],
-  "example/D": [110.054, 121.591, "Each pixel holds three numbers, red, green and blue, so one image flattens to thirty two times thirty two times three: D is three thousand and seventy two.", [[112.064, 112.414], [112.754, 113.044], [114.014, 114.494], [118.584, 119.134]]],
-  "example/W": [121.971, 128.782, "W has ten rows of three thousand and seventy two weights: thirty thousand, seven hundred and twenty.", [[125.941, 126.401], [127.291, 127.451]]],
-  "example/total": [129.162, 134.174, "Plus ten biases makes thirty thousand, seven hundred and thirty parameters.", [[134.002, 134.162]]]
+  "layers/turn": [97.329, 98.069, "Your turn.", []]
  }
 }

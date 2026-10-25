@@ -1,9 +1,8 @@
 {
- "duration": 103.997,
+ "duration": 86.778,
  "scenes": {
   "columns": [0.0, 41.763],
-  "order": [41.763, 85.658],
-  "example": [85.658, 103.997]
+  "order": [41.763, 86.778]
  },
  "beats": {
   "columns/many": [0.7, 10.81, "Multiplying two matrices is many matrix-vector products at once. A multiplies each column of B, and each answer becomes a column of the result.", [[5.05, 5.65], [7.84, 8.18]]],
@@ -14,8 +13,6 @@
   "order/batch": [53.127, 62.818, "A common case: a batch X of N examples with D numbers each, and weights W with one row of D for each of C classes.", [[54.117, 54.717], [58.267, 58.587], [59.637, 59.827]]],
   "order/fix": [63.198, 77.358, "X times W fails: its inner dimensions are D and C. Transpose W first: N by D, times D by C, gives N by C, a score for every example and class.", [[65.028, 65.508], [67.958, 68.608], [70.228, 70.728], [71.608, 71.828], [73.128, 73.378], [74.558, 74.948]]],
   "order/flip": [77.738, 84.558, "W times X transpose works too, but lays the same scores out the other way: C by N.", [[80.448, 80.748], [82.948, 83.368]]],
-  "example/ask": [86.358, 93.884, "Your turn. A is four by two, and B is two by five. What shape is A times B?", [[87.008, 87.658], [89.278, 89.558], [91.428, 91.928]]],
-  "example/inner": [94.264, 99.356, "The inner dimensions are two and two. They match, so the product works.", [[96.634, 97.124], [97.714, 97.964]]],
-  "example/outer": [99.736, 102.897, "The outer ones give the shape: four by five.", [[101.346, 101.836]]]
+  "order/turn": [84.938, 85.678, "Your turn.", []]
  }
 }

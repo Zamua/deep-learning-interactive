@@ -114,27 +114,4 @@ const ops: SceneDef = {
   },
 };
 
-const EU = [2, 0, 3];
-const EV = [1, 4, 2];
-
-const example: SceneDef = {
-  draw(s) {
-    const xs = columns(s, 3, 18);
-    const lx = xs[0]! - 11 * s.u;
-    const [yu, yv, yp, ys] = [0.14, 0.3, 0.52, 0.66].map((f) => s.h * f);
-    const p = s.ease('pairs', 0.6);
-    rowLabel(s, 'u', lx, yu, '--ink-2');
-    cells(s, xs, yu, EU.map(String), '--ink-2', { on: xs.map(() => s.win('pairs', 'sum')) });
-    rowLabel(s, 'v', lx, yv, '--ink-2');
-    cells(s, xs, yv, EV.map(String), '--ink-2', { on: xs.map(() => s.win('pairs', 'sum')) });
-    s.line(xs[0]! - 9 * s.u, s.h * 0.41, xs[2]! + 9 * s.u, s.h * 0.41, s.c('--ink-3'), 0.3);
-    s.alpha(p, () => xs.forEach((x, i) => s.text(`${EU[i]} + ${EV[i]}`, x, yp, { size: 3.6, font: 'mono', color: s.c('--ink-3') })));
-    s.alpha(s.ease('sum', 0.6), () => {
-      rowLabel(s, 'u + v', lx, ys, 'gold');
-      cells(s, xs, ys, EU.map((x, i) => String(x + EV[i]!)), 'gold', { on: [1, 1, 1] });
-      s.text('u + v = [3, 4, 5]', s.w / 2, s.h * 0.85, { size: 4.2, font: 'mono', weight: 650, color: s.c('gold') });
-    });
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { list, image, ops, example };
+export const scenes: Record<string, SceneDef> = { list, image, ops };

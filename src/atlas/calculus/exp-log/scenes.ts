@@ -6,7 +6,6 @@ const XS = [-1, 0, 1, 2, 3];
 const EX = XS.map(Math.exp);
 const f2 = (v: number) => v.toFixed(2);
 
-
 /** The x row over the eˣ row, five columns. */
 function grid(s: Scene) {
   const xs = columns(s, 5, s.tall ? 18 : 19);
@@ -134,21 +133,4 @@ const rules: SceneDef = {
   },
 };
 
-const example: SceneDef = {
-  draw(s) {
-    s.alpha(s.ease('ask', 0.6), () => {
-      s.text('ln 2 ≈ 0.69    ln 5 ≈ 1.61', s.w / 2, s.h * 0.11, { size: 3.9, font: 'mono', color: s.c('--ink-2') });
-    });
-    const q = s.ease('ask', 0.6, 0.6);
-    const sp = s.ease('split', 0.6);
-    const sm = s.ease('sum', 0.6);
-    const yT = s.h * 0.33;
-    const yB = s.h * 0.62;
-    pairRows(s, ['2', '5', '10'], ['0.69', '1.61', sm > 0.5 ? '2.30' : '?'], yT, yB, { topA: [sp, sp, q], botA: [sp, sp, q], arrows: [sp, sp, q], hi: Math.max(1 - sp, sm) });
-    s.alpha(s.ease('sum', 0.6, 0.8), () => {
-      s.text('ln 10 ≈ 2.30', s.w / 2, s.h * 0.85, { size: 5, font: 'mono', weight: 650, color: s.c('teal') });
-    });
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { exp, log, rules, example };
+export const scenes: Record<string, SceneDef> = { exp, log, rules };

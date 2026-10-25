@@ -1,10 +1,9 @@
 {
- "duration": 112.015,
+ "duration": 88.975,
  "scenes": {
   "list": [0.0, 34.563],
   "image": [34.563, 64.827],
-  "ops": [64.827, 87.855],
-  "example": [87.855, 112.015]
+  "ops": [64.827, 88.975]
  },
  "beats": {
   "list/list": [0.7, 9.928, "A vector is a list of numbers, kept in order. This one, x, holds four: three, minus one, four, and two.", [[2.68, 2.85], [3.62, 4.24], [4.77, 4.97], [5.4, 5.61], [6.35, 6.88], [7.33, 7.64], [8.36, 8.64], [9.11, 9.31]]],
@@ -18,8 +17,6 @@
   "ops/add": [65.527, 74.085, "Two vectors of the same length add entry by entry: first plus first, second plus second, third plus third.", [[68.827, 69.357], [70.627, 71.057], [72.327, 72.817], [73.197, 73.347]]],
   "ops/scale": [74.465, 80.515, "Multiplying by a number scales every entry. Two times u doubles each one.", [[77.585, 78.145], [79.165, 79.325]]],
   "ops/same": [80.895, 86.755, "The lengths have to match. Give v a fourth entry, and u has nothing to add to it.", [[82.425, 82.945], [84.655, 84.895]]],
-  "example/ask": [88.555, 97.581, "Your turn. u is two, zero, three, and v is one, four, two. What is u plus v?", [[89.205, 89.835], [91.075, 91.235], [92.375, 92.875], [93.525, 93.675], [94.835, 95.005], [95.395, 95.965]]],
-  "example/pairs": [97.961, 104.697, "Pair up matching entries: two plus one, zero plus four, three plus two.", [[99.631, 100.181], [101.211, 101.791], [103.001, 103.531]]],
-  "example/sum": [105.077, 110.915, "So u plus v is three, four, five. Still three entries long.", [[107.637, 107.817], [108.947, 109.437]]]
+  "ops/turn": [87.135, 87.875, "Your turn.", []]
  }
 }

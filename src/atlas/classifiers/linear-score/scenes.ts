@@ -13,11 +13,7 @@ const dot = (a: number[], b: number[]) => a.reduce((t, v, i) => t + v * b[i]!, 0
 const A: Spec = { x: [2, 1], W: [[1, 2], [-1, 3], [2, 1]], b: [1, 0, -2], names: ['cat', 'dog', 'ship'] };
 const AWX = A.W.map((r) => dot(r, A.x));
 const AS = AWX.map((v, k) => v + A.b[k]!);
-const B: Spec = { x: [2, 1, -1], W: [[2, 0, 1], [-1, 3, 2]], b: [1, -2], names: ['class 0', 'class 1'] };
-const BWX = B.W.map((r) => dot(r, B.x));
-const BS = BWX.map((v, k) => v + B.b[k]!);
 const str = (v: number) => String(v);
-const neg = (t: string) => t.replace(/-/g, '−');
 
 const CW = 11;
 const CH = 8.5;
@@ -140,31 +136,4 @@ const bias: SceneDef = {
   },
 };
 
-const example: SceneDef = {
-  draw(s) {
-    const L = layout(s, B, 13);
-    const r0 = s.ease('r0', 0.6);
-    const r1 = s.ease('r1', 0.6);
-    const done = s.ease('s', 0.6);
-    xRow(s, L, B.x.map(str), s.win('r0', 's'));
-    wRows(s, L, B, { band: [s.win('r0', 'r1'), s.win('r1', 's')], nameSize: 3.2 });
-    column(s, L, L.wx, 'Wx', '--ink-2', BWX.map(str), { a: [s.ease('r0', 0.6, 2.5), s.ease('r1', 0.6, 2.5)], op: '→', opX: arrowX(L) });
-    column(s, L, L.b, 'b', 'green', B.b.map(str), { op: '+', opX: mid(L.wx, L.b), on: [s.win('r0', 'r1', 0.6) * s.ease('r0', 0.6, 4), s.win('r1', 's') * s.ease('r1', 0.6, 4)] });
-    const q = [1 - s.ease('r0', 0.5, 4.5), 1 - s.ease('r1', 0.5, 4.5)];
-    column(s, L, L.s, 's', 'purple', ['?', '?'], { a: q, op: '=', opX: mid(L.b, L.s) });
-    column(s, L, L.s, 's', 'purple', BS.map(str), { a: [s.ease('r0', 0.5, 4.5), s.ease('r1', 0.5, 4.5)], op: '=', opX: mid(L.b, L.s), on: [done, done] });
-    const y1 = s.h * 0.8;
-    const y2 = s.h * 0.89;
-    s.alpha(r0 * (1 - r1), () => {
-      caption(s, neg('2·2 + 0·1 + 1·(-1) = 3'), y1, 'blue', 3.6);
-      s.alpha(s.ease('r0', 0.6, 3.5), () => caption(s, neg('3 + 1 = 4'), y2, 'purple', 3.6));
-    });
-    s.alpha(r1 * (1 - done), () => {
-      caption(s, neg('-1·2 + 3·1 + 2·(-1) = -1'), y1, 'blue', 3.6);
-      s.alpha(s.ease('r1', 0.6, 3.5), () => caption(s, neg('-1 + (-2) = -3'), y2, 'purple', 3.6));
-    });
-    s.alpha(done, () => caption(s, neg('s = [4, -3]'), (y1 + y2) / 2, 'purple', 4.6));
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { rows, bias, example };
+export const scenes: Record<string, SceneDef> = { rows, bias };

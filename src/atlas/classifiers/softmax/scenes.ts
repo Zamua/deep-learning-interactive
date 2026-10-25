@@ -112,26 +112,4 @@ const gaps: SceneDef = {
   },
 };
 
-const ES = [1, 0, 2].map(Math.exp);
-const ET = ES.reduce((a, b) => a + b, 0);
-
-const example: SceneDef = {
-  draw(s) {
-    const L = layout(s);
-    rowLabel(s, 's', L.lx, L.ys, 'purple');
-    cells(s, L.xs, L.ys, ['1', '0', '2'], 'purple', { on: [0, 0, 1 - s.ease('e', 0.6)] });
-    s.alpha(s.ease('e', 0.6), () => {
-      downArrows(s, L.xs, L.ys + 6 * s.u, L.ye - 6 * s.u);
-      rowLabel(s, 'e', L.lx, L.ye, 'gold');
-      cells(s, L.xs, L.ye, ES.map((v) => (v === 1 ? '1.00' : f2(v))), 'gold', { on: [0, 0, s.ease('p', 0.6)] });
-    });
-    s.alpha(s.ease('sum', 0.6), () => {
-      s.text(`2.72 + 1.00 + 7.39 = ${f2(ET)}`, s.w / 2, L.ye + 11 * s.u, { size: 3.8, font: 'mono', color: s.c('--ink-2') });
-    });
-    s.alpha(s.ease('p', 0.6), () => {
-      s.text(`p[2] = 7.39 / ${f2(ET)} ≈ ${f2(ES[2]! / ET)}`, s.w / 2, L.ye + 24 * s.u, { size: 4.6, font: 'mono', weight: 650, color: s.c('teal') });
-    });
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { scores, exp, divide, gaps, example };
+export const scenes: Record<string, SceneDef> = { scores, exp, divide, gaps };

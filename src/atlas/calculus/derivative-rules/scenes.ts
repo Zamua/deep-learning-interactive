@@ -143,15 +143,4 @@ const explog: SceneDef = {
   },
 };
 
-const example = termsScene({
-  terms: [String.raw`4\symx^{3}`, String.raw`3\symx^{2}`, '5'],
-  ops: ['−', '+'],
-  derivs: [String.raw`12\symx^{2}`, String.raw`6\symx`, '0'],
-  dOps: ['−', '+'],
-  notes: ['4 · 3x²', '−3 · 2x', 'flat'],
-  whole: String.raw`\symf'(\symx) = 12\symx^{2} - 6\symx`,
-  beats: ['t1', 't2', 't3', 't3'],
-  first: 'ask',
-});
-
-export const scenes: Record<string, SceneDef> = { power, sums, explog, example };
+export const scenes: Record<string, SceneDef> = { power, sums, explog };

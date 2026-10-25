@@ -69,19 +69,4 @@ const shapes: SceneDef = {
   },
 };
 
-const EW = [[2, 1], [0, 3]];
-const EX = [1, 2];
-
-const example: SceneDef = {
-  draw(s) {
-    const beats = ['r0', 'r1'];
-    const on = (i: number) => s.win(beats[i]!, beats[i + 1] ?? 'ans');
-    stack(s, EW, EX, { rowOn: on, res: (i) => s.ease(beats[i]!, 0.6, 1.2), resOn: s.ease('ans', 0.6) });
-    EW.forEach((r, i) => s.alpha(s.ease(beats[i]!, 0.6, 0.3), () => {
-      rich(s, [[`${terms(r, EX)} = `, '--ink-2'], [fmt(dot(r, EX)), 'gold']], s.w / 2, s.h * (0.64 + i * 0.1), { size: 3.8 });
-    }));
-    s.alpha(s.ease('ans', 0.6), () => rich(s, [['W', 'blue'], ['x', 'orange'], [' = [4, 6]', 'gold']], s.w / 2, s.h * 0.87, { size: 4.8, weight: 650 }));
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { rows, shapes, example };
+export const scenes: Record<string, SceneDef> = { rows, shapes };

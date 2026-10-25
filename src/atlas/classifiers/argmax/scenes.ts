@@ -71,28 +71,4 @@ const accuracy: SceneDef = {
   },
 };
 
-const E = [4, -1, 6, 3];
-
-const example: SceneDef = {
-  draw(s) {
-    const xs = columns(s, 4, s.tall ? 22 : 24);
-    const y = s.h * 0.34;
-    const hi = s.ease('max', 0.6);
-    rowLabel(s, 's', xs[0]! - 13 * s.u, y, 'purple');
-    cells(s, xs, y, E.map(String), 'purple', { w: 12, on: [0, 0, hi, 0] });
-    const ny = y + 12 * s.u;
-    xs.forEach((x, i) => {
-      const a = s.ease('arg', 0.4, 0.9 * Math.min(i, 2) + 0.6);
-      const k = i === 2 ? s.ease('arg', 0.6, 2.4) : 0;
-      s.alpha(Math.max(0.35, a), () => s.text(String(i), x, ny, { size: 4, font: 'mono', weight: 500 + 200 * k, color: k > 0.5 ? s.c('gold') : s.c('--ink-3') }));
-      if (k > 0.01) s.circle(x, ny, 4 * s.u, { stroke: s.tint('gold', k), lw: 0.45 });
-    });
-    s.alpha(hi * (1 - s.ease('arg', 0.5, 2.4)), () => s.text('largest: 6', s.w / 2, s.h * 0.72, { size: 4, font: 'mono', color: s.c('purple') }));
-    s.alpha(s.ease('arg', 0.6, 2.6), () => {
-      const w = s.measure('argmax = 2', { size: 4.6 }) + 6.4 * s.u;
-      verdict(s, true, 'argmax = 2', s.w / 2 - w / 2, s.h * 0.72, 4.6);
-    });
-  },
-};
-
-export const scenes: Record<string, SceneDef> = { position, accuracy, example };
+export const scenes: Record<string, SceneDef> = { position, accuracy };

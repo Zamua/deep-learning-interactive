@@ -1,10 +1,9 @@
 {
- "duration": 123.888,
+ "duration": 95.511,
  "scenes": {
   "loss": [0.0, 34.562],
   "curve": [34.562, 59.058],
-  "scores": [59.058, 94.391],
-  "example": [94.391, 123.888]
+  "scores": [59.058, 95.511]
  },
  "beats": {
   "loss/p": [0.7, 7.362, "Softmax hands back probabilities: zero point seven, zero point two and zero point one.", [[2.87, 3.43], [4.46, 4.76], [5.81, 6.01]]],
@@ -17,8 +16,6 @@
   "scores/s": [59.758, 66.508, "From scores, softmax makes p of y equal to e to the right score, over the total, T.", [[60.678, 60.948], [64.698, 65.038], [65.908, 66.138]]],
   "scores/rule": [66.888, 81.99, "Take minus the log, and the loss is the log of the total, minus the right class's score. For scores two, one and minus one, with y equal to zero, that is two point three five minus two: zero point three five.", [[68.258, 68.548], [70.538, 70.718], [72.478, 73.078], [75.608, 75.828], [77.298, 77.668], [78.098, 78.248], [80.228, 80.628]]],
   "scores/init": [82.37, 93.291, "Before training, the scores are about equal, so each of C classes gets one over C, and the loss is log C. With ten classes, two point three zero.", [[83.32, 83.5], [85.04, 85.35], [88.14, 88.44], [90.07, 90.62], [91.61, 91.94]]],
-  "example/ask": [95.091, 108.395, "Your turn. The probabilities are zero point one, zero point six and zero point three, and the right class is two. The log of zero point three is about minus one point two zero.", [[95.731, 96.391], [98.651, 98.921], [100.001, 100.211], [101.511, 101.931], [103.481, 104.101], [105.761, 105.931]]],
-  "example/pick": [108.775, 116.198, "The loss looks only at class two, with zero point three. Not zero point six, even though that is the largest.", [[110.905, 111.125], [112.395, 112.945], [114.315, 114.525]]],
-  "example/L": [116.578, 122.788, "Minus its log, minus minus one point two zero, gives a loss of one point two zero.", [[117.628, 118.058], [120.218, 120.568]]]
+  "scores/turn": [93.671, 94.411, "Your turn.", []]
  }
 }
