@@ -5,6 +5,6 @@ export const meta: ConceptMeta = {
   title: 'Argmax',
   blurb: 'The position of the largest entry: how scores become a prediction.',
   prereqs: ['vector'],
-  mastery: { streak: 4, seconds: 12 },
+  mastery: { streak: 4, seconds: 18 },
   deeper: [{ chapter: 'math-kit', section: 'notation' }],
 };
