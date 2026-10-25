@@ -148,15 +148,15 @@ export const generators: Generator[] = [
     id: 'limits',
     make(rng) {
       const V = pick(rng, [100, 1000, 32000, 50000, 50257]);
-      const cases: { what: string; greedy: boolean; why: string }[] = [
+      const cases: { what: string; greedy: boolean; why: string; given?: string }[] = [
         { what: 'top-k sampling with $k = 1$', greedy: true, why: 'It keeps only the single most likely token.' },
         { what: `top-k sampling with $k = ${big(V)}$`, greedy: false, why: `It keeps the ${commas(V)} most likely tokens: all of them.` },
         { what: 'top-p sampling with $p = 1$', greedy: false, why: 'Only the whole vocabulary is sure to add up to 1, so it keeps every token.' },
-        { what: 'top-p sampling with $p = 0.01$', greedy: true, why: 'The most likely token alone already reaches 0.01, so it is the only one kept.' },
+        { what: 'top-p sampling with $p = 0.01$', greedy: true, why: 'The most likely token alone already reaches 0.01, so it is the only one kept.', given: ', and its most likely next token always has probability above $0.01$' },
       ];
       const c = pick(rng, cases);
       return {
-        prompt: `A model has a vocabulary of $V = ${big(V)}$ tokens, and its most likely next token always has probability above $0.01$. What is ${c.what} the same as?`,
+        prompt: `A model has a vocabulary of $V = ${big(V)}$ tokens${c.given ?? ''}. What is ${c.what} the same as?`,
         answer: {
           kind: 'choice',
           options: ['Greedy decoding: always the most likely token', 'Plain sampling from the whole distribution', 'Uniform sampling: every token equally likely'],

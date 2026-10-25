@@ -38,8 +38,8 @@ export const generators: Generator[] = [
           ];
       return {
         prompt: causal
-          ? `A causal model like GPT reads ${lits(w)}. Which tokens can it use to predict ${lit(w[i]!)}, at position ${i} counting from 0?`
-          : `A masked model like BERT gets ${lits(w)} with only ${lit(w[i]!)}, at position ${i} counting from 0, hidden. Which tokens can it use to predict ${lit(w[i]!)}?`,
+          ? `A causal model like GPT reads ${lits(w)}. Which tokens can it use to predict ${lit(w[i]!)}?`
+          : `A masked model like BERT gets ${lits(w)} with only ${lit(w[i]!)} hidden. Which tokens can it use to predict it?`,
         answer: { kind: 'choice', options, correct, why },
         solution: causal
           ? [`A causal model predicts each token from the tokens before it: the causal mask hides everything later.`, `So ${lit(w[i]!)} is predicted from ${lits(left)}.`]
@@ -55,7 +55,7 @@ export const generators: Generator[] = [
       const hid = Math.round(0.15 * n);
       if (kind === 0) {
         return {
-          prompt: `A masked language model hides 15% of the tokens of each sequence and is trained to recover them. A sequence has ${commas(n)} tokens. How many does it hide?`,
+          prompt: `A masked language model hides 15% of the tokens of each sequence. A sequence has ${commas(n)} tokens. How many does it hide?`,
           answer: { kind: 'number', value: hid },
           traps: traps(hid, [
             { value: 15, why: 'That is the percentage, not the count. Take 15% of the sequence.' },
@@ -98,7 +98,7 @@ export const generators: Generator[] = [
       const v = causal ? i + 1 : n;
       const kind = causal ? 'a causal model like GPT' : 'a masked model like BERT';
       return {
-        prompt: `In ${kind}, a sequence has ${commas(n)} tokens at positions 0 to ${commas(n - 1)}. How many positions can position ${i} attend to, counting itself?`,
+        prompt: `In ${kind}, a sequence has ${commas(n)} tokens at positions 0 to ${commas(n - 1)}. How many positions can position ${i} attend to?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: causal ? i : n - 1, why: 'That leaves out the position itself. Every token attends to itself too.' },
@@ -119,14 +119,16 @@ export const generators: Generator[] = [
         ['finish the rest of an email from its first line', 0],
         ['continue a poem from its first verse', 0],
         ['answer a question by writing out a reply', 0],
-        ['fill in a word missing from the middle of a sentence, using the words on both sides', 1],
+        ['fill in a word missing from the middle of a sentence', 1],
         ['guess a blanked-out word in a form, given the text before and after it', 1],
         ['recover a hidden word in the middle of a line of text', 1],
+        ['suggest the next word as someone types a message', 0],
+        ['restore a word smudged out of the middle of an old letter', 1],
+        ['autocomplete a line of code from what is typed so far', 0],
       ];
       const [task, correct] = pick(rng, tasks);
-      const n = pick(rng, [128, 256, 512, 1024]);
       return {
-        prompt: `Two models were pretrained on the same text in sequences of ${n} tokens: a causal one, like GPT, and a masked one, like BERT. Which suits a task that needs to ${task}?`,
+        prompt: `Two models were pretrained on the same text: a causal one, like GPT, and a masked one, like BERT. Which suits a task that needs to ${task}?`,
         answer: {
           kind: 'choice',
           options: ['The causal model: it predicts each token from the ones before it', 'The masked model: it predicts hidden tokens from both sides', 'Either one: they learned the same thing from the same text'],

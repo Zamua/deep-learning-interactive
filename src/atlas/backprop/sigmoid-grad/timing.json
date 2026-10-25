@@ -1,22 +1,22 @@
 {
- "duration": 99.694,
+ "duration": 104.403,
  "scenes": {
-  "curve": [0.0, 35.509],
-  "slope": [35.509, 70.394],
-  "flat": [70.394, 99.694]
+  "curve": [0.0, 38.28],
+  "slope": [38.28, 75.104],
+  "flat": [75.104, 104.403]
  },
  "beats": {
-  "curve/def": [0.7, 9.336, "The sigmoid squashes any number into the range zero to one. Sigma of x is one over one plus e to the minus x.", [[4.61, 5.16]]],
-  "curve/zero": [9.716, 15.665, "At zero, e to the zero is one, so sigma is one over two: a half.", [[10.516, 10.886], [12.376, 12.796], [14.596, 15.026]]],
-  "curve/two": [16.045, 24.924, "At two, e to the minus two is about zero point one four. One over one point one four is about zero point eight eight.", [[16.705, 17.145], [20.345, 20.905], [22.815, 22.985]]],
-  "curve/tails": [25.304, 34.409, "Far to the right it creeps up toward one, and far to the left down toward zero. At minus two, it is zero point one two.", [[27.934, 28.324], [30.804, 31.354], [32.424, 32.644]]],
-  "slope/rule": [36.209, 44.263, "Its slope has a neat form: sigma times one minus sigma. Backprop can build it from the output it already has.", [[37.939, 38.419], [40.609, 41.189]]],
-  "slope/two": [44.643, 52.983, "At x equals two, that is zero point eight eight times zero point one two: about zero point one zero five.", [[46.153, 46.433], [50.083, 50.583]]],
-  "slope/peak": [53.363, 60.103, "The slope is steepest at zero: a half times a half, a quarter. It is never more than that.", [[55.393, 55.843], [57.223, 57.543], [58.143, 58.643]]],
-  "slope/chain": [60.483, 69.294, "In a graph, the sigmoid node multiplies the gradient from above by this local slope, so it shrinks the gradient at least four times.", [[61.243, 61.533], [65.973, 66.433]]],
-  "flat/six": [71.094, 78.249, "Far from zero the curve goes flat. At six, sigma is zero point nine nine seven five.", [[72.244, 72.444], [73.714, 74.254], [74.914, 75.204]]],
-  "flat/tiny": [78.629, 88.097, "So its slope is zero point nine nine seven five times zero point zero zero two five: about zero point zero zero two five.", [[82.059, 82.269], [84.909, 85.399]]],
-  "flat/dead": [88.477, 97.473, "Almost no gradient gets through. A saturated sigmoid, stuck near zero or one, passes almost nothing back to the nodes before it.", [[90.517, 91.017], [92.417, 92.617], [94.277, 94.567]]],
-  "flat/turn": [97.853, 98.594, "Your turn.", []]
+  "curve/def": [0.7, 12.108, "The sigmoid squashes any number into the range zero to one. Written sigma of x, with the Greek letter sigma, it is one over one plus e to the minus x.", [[4.63, 5.25], [6.88, 7.13], [8.47, 8.84]]],
+  "curve/zero": [12.488, 18.436, "At zero, e to the zero is one, so sigma is one over two: a half.", [[13.288, 13.658], [15.148, 15.568], [17.368, 17.798]]],
+  "curve/two": [18.816, 27.695, "At two, e to the minus two is about zero point one four. One over one point one four is about zero point eight eight.", [[19.476, 19.916], [23.116, 23.676], [25.586, 25.756]]],
+  "curve/tails": [28.075, 37.18, "Far to the right it creeps up toward one, and far to the left down toward zero. At minus two, it is zero point one two.", [[30.705, 31.095], [33.575, 34.125], [35.195, 35.415]]],
+  "slope/rule": [38.98, 48.973, "Its slope, d sigma, d x, has a neat form: sigma times one minus sigma. Backprop can build it from the output it already has.", [[39.69, 39.98], [41.47, 41.71], [42.72, 43.2], [45.34, 45.92]]],
+  "slope/two": [49.353, 57.692, "At x equals two, that is zero point eight eight times zero point one two: about zero point one zero five.", [[50.863, 51.143], [54.793, 55.293]]],
+  "slope/peak": [58.072, 64.813, "The slope is steepest at zero: a half times a half, a quarter. It is never more than that.", [[60.102, 60.552], [61.932, 62.252], [62.852, 63.352]]],
+  "slope/chain": [65.193, 74.004, "In a graph, the sigmoid node multiplies the gradient from above by this local slope, so it shrinks the gradient at least four times.", [[65.953, 66.243], [70.683, 71.143]]],
+  "flat/six": [75.804, 82.959, "Far from zero the curve goes flat. At six, sigma is zero point nine nine seven five.", [[76.954, 77.154], [78.424, 78.964], [79.624, 79.914]]],
+  "flat/tiny": [83.339, 92.806, "So its slope is zero point nine nine seven five times zero point zero zero two five: about zero point zero zero two five.", [[86.769, 86.979], [89.619, 90.109]]],
+  "flat/dead": [93.186, 102.183, "Almost no gradient gets through. A saturated sigmoid, stuck near zero or one, passes almost nothing back to the nodes before it.", [[95.226, 95.726], [97.126, 97.326], [98.986, 99.276]]],
+  "flat/turn": [102.563, 103.303, "Your turn.", []]
  }
 }

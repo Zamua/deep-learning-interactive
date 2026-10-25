@@ -23,7 +23,7 @@ export const generators: Generator[] = [
       const per = N / B;
       const v = e * per;
       return {
-        prompt: `A dataset has $\\symN = ${big(N)}$ examples and the batch size is $\\symB = ${big(B)}$. How many gradient steps make ${e === 1 ? 'one epoch' : `${e} epochs`}?`,
+        prompt: `With $\\symN = ${big(N)}$ examples and $\\symB = ${big(B)}$, how many gradient steps make ${e === 1 ? 'one epoch' : `${e} epochs`}?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: N * e, why: 'That is one step per example. Each step uses a whole batch of $\\symB$ examples.' },
@@ -47,7 +47,7 @@ export const generators: Generator[] = [
       const sum = clean(gs.reduce((a, b) => a + b, 0));
       const v = clean(sum / B);
       return {
-        prompt: `A minibatch of $\\symB = ${B}$ examples, drawn from $\\symN = ${big(N)}$, gives these gradients for one entry of $\\symw$, one per example: $${gs.map((g) => num(g)).join(',\\ ')}$. What is the minibatch gradient for that entry?`,
+        prompt: `A minibatch of $\\symB = ${B}$ examples, drawn from $\\symN = ${big(N)}$, gives per-example gradients $${gs.map((g) => num(g)).join(',\\ ')}$ for one entry of $\\symw$. What is the minibatch gradient for that entry?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: sum, why: 'That is the sum. The minibatch gradient is the average: divide by $\\symB$.' },
@@ -77,7 +77,7 @@ export const generators: Generator[] = [
       const noiseWrong = (i: number) => (i === 0 || i === 1) !== up;
       const why = [0, 1, 2, 3].map((i) => (i === correct ? null : [costWrong(i) ? cost : '', noiseWrong(i) ? noise : ''].filter(Boolean).join(' ')));
       return {
-        prompt: `Taking gradient steps on a dataset of $\\symN = ${big(N)}$ examples, you change the batch size from $\\symB = ${from}$ to $\\symB = ${to}$. What happens to each step?`,
+        prompt: `On $\\symN = ${big(N)}$ examples, the batch size goes from $\\symB = ${from}$ to $\\symB = ${to}$. What happens to each gradient step?`,
         answer: {
           kind: 'choice',
           options: ['It costs more, and its gradient is less noisy', 'It costs less, and its gradient is less noisy', 'It costs more, and its gradient is noisier', 'It costs less, and its gradient is noisier'],
@@ -100,7 +100,7 @@ export const generators: Generator[] = [
         const k = pick(rng, [10, 20, 50, 100, 200, 500, 1000]);
         const v = k * B;
         return {
-          prompt: `A run takes $${big(k)}$ gradient steps with batch size $\\symB = ${B}$. How many examples do those steps process?`,
+          prompt: `A run takes $${big(k)}$ gradient steps with $\\symB = ${B}$. How many examples do they process?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: k, why: 'That counts one example per step. Each step processes a whole batch of $\\symB$.' },
@@ -119,12 +119,12 @@ export const generators: Generator[] = [
       }
       const v = e;
       return {
-        prompt: `A dataset has $\\symN = ${big(N)}$ examples. After $${big(k)}$ steps with batch size $\\symB = ${B}$, how many epochs have gone by?`,
+        prompt: `A dataset has $\\symN = ${big(N)}$ examples. After $${big(k)}$ gradient steps with $\\symB = ${B}$, how many epochs have gone by?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: k * B, why: 'That counts examples, not epochs. Divide by $\\symN$, the examples in one epoch.' },
           { value: k / B, why: 'That divides the steps by the batch size. Each step processes $\\symB$ examples: multiply, then divide by $\\symN$.' },
-          { value: clean((k * N) / B), why: 'That multiplies by $\\symN$ and divides by $\\symB$, the wrong way round: epochs are $k\\symB / \\symN$.' },
+          { value: clean((k * N) / B), why: 'That multiplies by $\\symN$ and divides by $\\symB$, the wrong way round: epochs are the steps times $\\symB$, over $\\symN$.' },
         ]),
         solution: [
           `Examples processed: $${big(k)} \\times ${B} = ${big(k * B)}$.`,

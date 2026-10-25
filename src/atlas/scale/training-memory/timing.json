@@ -1,8 +1,8 @@
 {
- "duration": 92.871,
+ "duration": 97.178,
  "scenes": {
-  "bytes": [0.0, 46.723],
-  "model": [46.723, 92.871]
+  "bytes": [0.0, 47.642],
+  "model": [47.642, 97.178]
  },
  "beats": {
   "bytes/byte": [0.7, 9.458, "Memory is counted in bytes, eight bits each. A 32-bit number takes four bytes, and a 16-bit number takes two.", [[2.53, 2.93], [3.95, 4.53], [6.98, 7.32]]],
@@ -10,12 +10,12 @@
   "bytes/g": [19.027, 23.863, "Then one gradient per weight, also in 16 bits: two more.", [[20.997, 21.347], [22.797, 23.267]]],
   "bytes/master": [24.243, 32.702, "Small updates would get lost in 16 bits, so each step updates a 32-bit master copy of the weights: four bytes.", [[27.103, 27.513], [31.443, 31.873]]],
   "bytes/mv": [33.082, 39.413, "And Adam's two running averages, m and v, kept in 32 bits: four bytes each.", [[34.982, 35.172], [36.132, 36.382], [37.862, 38.202]]],
-  "bytes/total": [39.793, 45.623, "That is sixteen bytes per parameter. Only two of them are the weights the model computes with.", [[42.263, 42.783]]],
-  "model/n": [47.423, 54.959, "Now multiply by the parameter count. A 7 billion parameter model needs sixteen times 7 billion bytes.", [[49.733, 50.243], [52.043, 52.213]]],
-  "model/gb": [55.339, 63.949, "That is 112 billion bytes: 112 gigabytes, or GB, where a gigabyte is a billion bytes.", [[58.089, 58.569], [61.369, 61.739]]],
-  "model/gpu": [64.329, 71.557, "A large GPU holds 80 gigabytes. This training state alone fills one and spills into a second.", [[67.209, 67.699]]],
-  "model/big": [71.937, 82.649, "Ten times the parameters is ten times the memory: a 70 billion parameter model needs 1,120 gigabytes, fourteen such GPUs.", [[74.917, 75.497], [77.437, 77.627], [80.397, 80.747]]],
-  "model/batch": [83.029, 90.651, "The batch never enters this count. It is sixteen bytes per parameter, whether a step sees one example or a thousand.", [[85.039, 85.539], [87.569, 87.899]]],
-  "model/turn": [91.031, 91.771, "Your turn.", []]
+  "bytes/total": [39.793, 46.542, "That is sixteen bytes of training state per parameter. Only two of them are the weights the model computes with.", [[43.093, 43.653]]],
+  "model/n": [48.342, 59.266, "Now multiply by the number of parameters, N: the training state takes sixteen N bytes. A 7 billion parameter model needs sixteen times 7 billion.", [[50.832, 51.042], [51.372, 51.942], [54.592, 55.112], [56.952, 57.122]]],
+  "model/gb": [59.646, 68.256, "That is 112 billion bytes: 112 gigabytes, or GB, where a gigabyte is a billion bytes.", [[62.396, 62.876], [65.676, 66.046]]],
+  "model/gpu": [68.636, 75.863, "A large GPU holds 80 gigabytes. This training state alone fills one and spills into a second.", [[71.516, 72.006]]],
+  "model/big": [76.243, 86.955, "Ten times the parameters is ten times the memory: a 70 billion parameter model needs 1,120 gigabytes, fourteen such GPUs.", [[79.223, 79.803], [81.743, 81.933], [84.703, 85.053]]],
+  "model/batch": [87.335, 94.958, "The batch never enters this count. It is sixteen bytes per parameter, whether a step sees one example or a thousand.", [[89.345, 89.845], [91.875, 92.205]]],
+  "model/turn": [95.338, 96.078, "Your turn.", []]
  }
 }

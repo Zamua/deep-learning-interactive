@@ -1,9 +1,9 @@
 {
- "duration": 104.752,
+ "duration": 107.232,
  "scenes": {
   "graph": [0.0, 39.829],
   "forward": [39.829, 77.593],
-  "more": [77.593, 104.752]
+  "more": [77.593, 107.232]
  },
  "beats": {
   "graph/formula": [0.7, 10.277, "Take a formula: x times z, plus c, all squared. A computational graph breaks it into simple operations, one node each.", [[1.58, 2.0], [3.08, 3.27], [3.94, 4.11], [4.88, 5.49], [8.82, 9.15]]],
@@ -16,9 +16,9 @@
   "forward/add": [57.307, 60.864, "The add gives six plus minus four: two.", [[59.927, 60.457]]],
   "forward/sq": [61.244, 65.837, "And the square gives two squared, four. So f is four.", [[63.144, 63.384], [63.804, 64.244], [64.594, 64.754]]],
   "forward/ready": [66.217, 76.493, "The order is forced. A node can run only once every value it needs has arrived, so the add waits for the multiply, and the square waits for the add.", [[67.647, 68.217], [71.907, 72.347], [74.377, 74.657]]],
-  "more/max": [78.293, 86.893, "The other pieces work the same way. A max node passes on the larger of its inputs: the max of one and minus two is one.", [[80.293, 80.883], [83.713, 84.163], [86.123, 86.283]]],
-  "more/exp": [87.273, 93.335, "An exp node raises e to its input. e to the one is about two point seven two.", [[90.003, 90.553]]],
-  "more/mul": [93.715, 102.532, "And z feeds a second node too: the multiply. Two point seven two times minus two is about minus five point four four.", [[95.845, 96.255], [97.065, 97.675], [99.905, 100.135]]],
-  "more/turn": [102.912, 103.652, "Your turn.", []]
+  "more/max": [78.293, 89.372, "The other pieces work the same way. A max node passes on the larger of its inputs, written max of x and z: the max of one and minus two is one.", [[80.293, 80.873], [83.703, 84.013], [86.013, 86.623], [88.593, 88.753]]],
+  "more/exp": [89.752, 95.814, "An exp node raises e to its input. e to the one is about two point seven two.", [[92.482, 93.032]]],
+  "more/mul": [96.194, 105.011, "And z feeds a second node too: the multiply. Two point seven two times minus two is about minus five point four four.", [[98.324, 98.734], [99.544, 100.154], [102.384, 102.614]]],
+  "more/turn": [105.391, 106.132, "Your turn.", []]
  }
 }

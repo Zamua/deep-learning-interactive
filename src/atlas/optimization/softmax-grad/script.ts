@@ -20,8 +20,8 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'chain', say: 'Scores, s, go through softmax to give probabilities, p. The loss is minus the log of the correct option\'s probability. Here the correct option is option one, so the loss is minus log {0.3|zero point three}, about {1.2|one point two}.', code: ['s', 'p', 'L'] },
-        { id: 'ask', say: 'Now ask how the loss changes as each score moves. One derivative per score, stacked into a vector: the gradient.', code: 'ds' },
-        { id: 'answer', say: 'It comes out remarkably simple: p, minus the one-hot vector for y, a one at the correct option and zeros elsewhere. Here, {0.6|zero point six}, minus {0.7|zero point seven}, and {0.1|zero point one}.', code: 'ds' },
+        { id: 'ask', say: 'Now ask how the loss changes as each score moves. One partial derivative per score, stacked into a vector: the gradient, {∂L/∂s|partial L, partial s}, called ds in code.', code: 'ds' },
+        { id: 'answer', say: 'It comes out remarkably simple: p, minus {onehot(y)|one-hot of y}, the vector with a one at the correct option and zeros elsewhere. Here, {0.6|zero point six}, minus {0.7|zero point seven}, and {0.1|zero point one}.', code: 'ds' },
       ],
     },
     {
@@ -36,10 +36,10 @@ export const script: LectureScript = {
         ds[y] -= 1                           #@together
       `,
       beats: [
-        { id: 'expand', say: 'Write the loss out. Minus the log of a fraction is minus the log of the top, plus the log of the bottom: minus s y, plus the log of the sum.', code: 'expand' },
-        { id: 'log', say: 'Now take the derivative with respect to any one score, s j. By the chain rule, the log of the sum gives one over the sum, times e to the s j. That is exactly p j.', code: 'log' },
-        { id: 'minus', say: 'Minus s y depends only on the correct score: its derivative is minus one when j is y, and zero for every other option.', code: 'minus' },
-        { id: 'together', say: 'Add the two: p j, with one taken away at the correct option.', code: 'together' },
+        { id: 'expand', say: 'Write the loss out. Minus the log of a fraction is minus the log of the top, plus the log of the bottom: minus {s_y|s y}, the correct option\'s score, plus the log of the sum.', code: 'expand' },
+        { id: 'log', say: 'Now take the partial derivative with respect to any one score, {sⱼ|s j}, written {∂/∂sⱼ|partial by partial s j}. By the chain rule, the log of the sum gives one over the sum, times e to the {sⱼ|s j}. That is exactly {pⱼ|p j}.', code: 'log' },
+        { id: 'minus', say: 'Minus {s_y|s y} depends only on the correct score: its derivative is minus one when j is y, and zero when {j ≠ y|j is not y}, the slashed equals sign reading “is not”.', code: 'minus' },
+        { id: 'together', say: 'Add the two: {pⱼ − [j = y]|p j, minus the bracket j equals y}. The bracket is one when j is y and zero otherwise, so it is {pⱼ|p j} with one taken away at the correct option.', code: 'together' },
       ],
     },
     {

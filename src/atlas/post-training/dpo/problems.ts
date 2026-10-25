@@ -27,7 +27,7 @@ export const generators: Generator[] = [
       const [lp, lr] = pair(rng, d, gap);
       const v = clean(beta * gap);
       return {
-        prompt: `An answer $y$ has log-probability $\\ln ${PI}(y) = ${num(lp)}$ under the model being trained and $\\ln ${REF}(y) = ${num(lr)}$ under the frozen reference. With $${BETA} = ${num(beta)}$, what is DPO's implicit reward for it, $${IMP('y')}$?`,
+        prompt: `An answer $y$ has $\\ln ${PI}(y) = ${num(lp)}$ and $\\ln ${REF}(y) = ${num(lr)}$. With $${BETA} = ${num(beta)}$, what is DPO's implicit reward for it?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: gap, why: `That is the log-ratio without $${BETA}$. The implicit reward scales it by $${BETA} = ${num(beta)}$.` },
@@ -35,7 +35,7 @@ export const generators: Generator[] = [
           { value: clean(beta * lp), why: `That uses $\\ln ${PI}(y)$ alone. The reward measures it against the reference: subtract $\\ln ${REF}(y)$.` },
         ]),
         solution: [
-          `The log of the ratio is the difference of the logs: $${minus(lp, lr)} = ${num(gap)}$.`,
+          `The implicit reward is $${IMP('y')}$, and the log of the ratio is the difference of the logs: $${minus(lp, lr)} = ${num(gap)}$.`,
           `Times $${BETA}$: $${num(beta)} \\times ${gap < 0 ? `(${num(gap)})` : num(gap)} = ${num(v)}$.`,
           v > 0 ? 'Positive: the model now likes this answer more than the reference does.' : 'Negative: the model now likes this answer less than the reference does.',
         ],
@@ -56,10 +56,10 @@ export const generators: Generator[] = [
         const [w1, w0] = pair(rng, d, gw);
         const [l1, l0] = pair(rng, d, gl);
         const given = full
-          ? `For the chosen answer, $\\ln ${PI}(${YW}) = ${num(w1)}$ and $\\ln ${REF}(${YW}) = ${num(w0)}$; for the rejected one, $\\ln ${PI}(${YL}) = ${num(l1)}$ and $\\ln ${REF}(${YL}) = ${num(l0)}$.`
-          : `The chosen answer's log-ratio to the reference is $\\ln\\dfrac{${PI}(${YW})}{${REF}(${YW})} = ${num(gw)}$, and the rejected answer's is $\\ln\\dfrac{${PI}(${YL})}{${REF}(${YL})} = ${num(gl)}$.`;
+          ? `A preference pair has $\\ln ${PI}(${YW}) = ${num(w1)}$, $\\ln ${REF}(${YW}) = ${num(w0)}$, $\\ln ${PI}(${YL}) = ${num(l1)}$ and $\\ln ${REF}(${YL}) = ${num(l0)}$.`
+          : `A preference pair has $\\ln\\dfrac{${PI}(${YW})}{${REF}(${YW})} = ${num(gw)}$ and $\\ln\\dfrac{${PI}(${YL})}{${REF}(${YL})} = ${num(gl)}$.`;
         return {
-          prompt: `${given} With $${BETA} = ${num(beta)}$, what is the DPO loss on this pair${full ? '' : `, $-\\ln\\sigma\\big(${BETA}\\,(\\text{chosen} - \\text{rejected})\\big)$`}? Round to two decimals.\n\nUse ${useSig([m, -m])}, ${lnSig([m, -m])}.`,
+          prompt: `${given} With $${BETA} = ${num(beta)}$, what is the DPO loss on this pair? Round to two decimals.\n\nUse ${useSig([m, -m])}, ${lnSig([m, -m])}.`,
           answer: { kind: 'number', value: v, places: 2 },
           traps: traps(
             v,
@@ -71,6 +71,7 @@ export const generators: Generator[] = [
             2,
           ),
           solution: [
+            `The loss is $-\\ln\\sigma\\big(${IMP(YW)} - ${IMP(YL)}\\big)$.`,
             ...(full ? [`The log-ratios: chosen $${minus(w1, w0)} = ${num(gw)}$, rejected $${minus(l1, l0)} = ${num(gl)}$.`] : []),
             `The margin: $${BETA}$ times their difference, $${num(beta)} \\times (${minus(gw, gl)}) = ${num(m)}$.`,
             `$\\sigma(${num(m)}) \\approx ${num(SIG(m), 2)}$, so the loss is $-\\ln ${num(SIG(m), 2)} \\approx ${num(v, 2)}$.${m < 0 ? ' Large: the model still favors the rejected answer, relative to the reference.' : ''}`,

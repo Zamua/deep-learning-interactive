@@ -18,7 +18,7 @@ export const generators: Generator[] = [
       const traps = [{ value: 1 / n, why: `${num(round(1 / n, 2), 2)} is one share in ${n}: what softmax gives only when every score is equal.` }];
       if (sum > 0 && s[k]! >= 0) traps.push({ value: s[k]! / sum, why: `That is $${s[k]} / ${sum}$: the score divided by the sum of the scores. Softmax exponentiates first, which also keeps every share positive.` });
       return {
-        prompt: `The scores are $\\syms = ${vec(s)}$. What probability does softmax give option ${k}, the ${['first', 'second', 'third', 'fourth'][k]} score? Round to two decimals.\n\nUse ${distinct.map((v) => `$e^{${v}} \\approx ${num(E(v), 2)}$`).join(', ')}.`,
+        prompt: `The scores are $\\syms = ${vec(s)}$. What probability does softmax give option ${k}, counting from 0? Round to two decimals.\n\nUse ${distinct.map((v) => `$e^{${v}} \\approx ${num(E(v), 2)}$`).join(', ')}.`,
         answer: { kind: 'number', value: p, places: 2 },
         traps: traps.filter((t) => Math.abs(t.value - p) >= 0.01),
         solution: [
@@ -57,7 +57,7 @@ export const generators: Generator[] = [
       const top = s.indexOf(Math.max(...s));
       const f = int(rng, 2, 3);
       return {
-        prompt: `The scores $\\syms = ${vec(s)}$ go through softmax. If every score is multiplied by $${f}$, giving $${vec(s.map((v) => v * f))}$, what happens to the probability of option ${top}, the top score?`,
+        prompt: `The scores $\\syms = ${vec(s)}$ go through softmax. If every score is multiplied by $${f}$, what happens to the top score's probability?`,
         answer: {
           kind: 'choice',
           options: ['It goes up', 'It stays the same', 'It goes down'],

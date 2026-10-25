@@ -3,8 +3,6 @@ import type { Rng } from '../../../core/rand';
 import { num, vec } from '../../kit';
 import { clean, onehot, probs, traps, vtraps } from '../kit';
 
-const ORD = ['first', 'second', 'third', 'fourth'];
-
 /** Probabilities, the correct option and the score gradient p - onehot(y). */
 function setup(rng: Rng, d: number) {
   const n = d < 0.6 ? 3 : 4;
@@ -23,7 +21,7 @@ export const generators: Generator[] = [
       const { n, p, y, g } = setup(rng, d);
       const top = p.indexOf(Math.max(...p));
       return {
-        prompt: `Softmax gives $\\symp = ${vec(p)}$, and the correct option is $\\symy = ${y}$ (option 0 is the first entry). What is the gradient of the cross-entropy loss with respect to the scores, $${dLds()}$?`,
+        prompt: `Softmax gives $\\symp = ${vec(p)}$, and the correct option is $\\symy = ${y}$, counting from 0. For the cross-entropy loss $\\symL$, what is $${dLds()}$?`,
         answer: { kind: 'vector', value: g },
         traps: vtraps(g, [
           { value: p, why: 'That is $\\symp$ unchanged. Subtract the one-hot vector for $\\symy$: 1 comes off the correct option\'s entry.' },
@@ -47,7 +45,7 @@ export const generators: Generator[] = [
       const v = g[j]!;
       const same = j === y;
       return {
-        prompt: `Softmax gives $\\symp = ${vec(p)}$, and the correct option is $\\symy = ${y}$. What is $${dLds(j)}$, the gradient entry for option ${j} (the ${ORD[j]} score)?`,
+        prompt: `Softmax gives $\\symp = ${vec(p)}$, and the correct option is $\\symy = ${y}$, counting from 0. For the cross-entropy loss $\\symL$, what is $${dLds(j)}$?`,
         answer: { kind: 'number', value: v },
         traps: traps(
           v,
@@ -85,7 +83,7 @@ export const generators: Generator[] = [
       ];
       why[same ? 0 : 1] = null;
       return {
-        prompt: `Softmax gives $\\symp = ${vec(p)}$, and the correct option is $\\symy = ${y}$. What is the sign of $${dLds(j)}$, the cross-entropy gradient entry for option ${j}, and which way should $${sj}$ move to lower the loss?`,
+        prompt: `Softmax gives $\\symp = ${vec(p)}$, and the correct option is $\\symy = ${y}$, counting from 0. For the cross-entropy loss $\\symL$, what is the sign of $${dLds(j)}$, and which way should $${sj}$ move to lower $\\symL$?`,
         answer: {
           kind: 'choice',
           options: [`Negative, so raise $${sj}$ to lower the loss`, `Positive, so lower $${sj}$ to lower the loss`, `Zero, so $${sj}$ does not change the loss`, `Negative, so lower $${sj}$ to lower the loss`, `Positive, so raise $${sj}$ to lower the loss`],
@@ -110,7 +108,7 @@ export const generators: Generator[] = [
       const v = g[k]!;
       const shown = g.map((x, i) => (i === k ? '?' : num(x))).join(',\\ ');
       return {
-        prompt: `The gradient of a cross-entropy loss with respect to the scores is $${dLds()} = [${shown}]$. What is the missing entry?`,
+        prompt: `For a cross-entropy loss $\\symL$, $${dLds()} = [${shown}]$. What is the missing entry?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: others, why: 'That has the wrong sign. The missing entry cancels the others, so it is minus their sum.' },

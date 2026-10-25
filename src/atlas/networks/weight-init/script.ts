@@ -34,8 +34,8 @@ export const script: LectureScript = {
         # std(w) too small: shrinks every layer       #@small
       `,
       beats: [
-        { id: 'sum', say: 'A unit adds up n inputs times weights. When you add independent terms, their variances add: n terms of variance v give a sum of variance n times v.', code: 'sum' },
-        { id: 'big', say: 'With a hundred inputs of variance one, and weights of standard deviation one, the sum has variance a hundred: a standard deviation of ten.', code: 'big' },
+        { id: 'sum', say: 'A unit adds up n inputs times weights. A term\'s variance is its average squared distance from its mean. When you add independent terms, their variances add: n terms of variance v give a sum z of variance n times v, written {Var(z) = n v|var of z equals n v}.', code: 'sum' },
+        { id: 'big', say: 'The standard deviation, {std|S T D} for short, is the square root of the variance. Give a hundred inputs, and their weights, a variance of one each. A weight times an input has the product of their variances, one, so the sum has variance a hundred, and a {std|standard deviation} of {√100|the square root of a hundred}: ten.', code: 'big' },
         { id: 'flat', say: 'Through a tanh, a value like ten sits far out on the flat end. The slope there is nearly zero, and so is the gradient.', code: 'flat' },
         { id: 'small', say: 'Too small is just as bad. Each layer shrinks the signal, and after a few layers almost nothing is left.', code: 'small' },
       ],
@@ -49,8 +49,8 @@ export const script: LectureScript = {
         W = np.random.randn(H, n) * np.sqrt(2 / n)  # He, ReLU      #@he
       `,
       beats: [
-        { id: 'xavier', say: 'The fix: give each weight a variance of one over n, the fan-in, which is the number of inputs a unit adds up. Then the n terms add up to a variance of one. The standard deviation is one over root n: for a hundred inputs, {0.1|zero point one}.', code: 'xavier' },
-        { id: 'he', say: 'A ReLU zeroes about half of its inputs, which halves the variance. So for ReLU, double it: a variance of two over n. For fifty inputs, the standard deviation is the root of two over fifty: {0.2|zero point two}.', code: 'he' },
+        { id: 'xavier', say: 'The fix: give each weight a variance of one over n, the fan-in, which is the number of inputs a unit adds up. Then the n terms add up to a variance of one. The standard deviation is {1/√n|one over root n}: for a hundred inputs, {0.1|zero point one}.', code: 'xavier' },
+        { id: 'he', say: 'A ReLU zeroes about half of its inputs, which halves the variance. So for ReLU, double it: a variance of two over n. For fifty inputs, the standard deviation is {√(2/50)|the root of two over fifty}: {0.2|zero point two}.', code: 'he' },
         { id: 'names', say: 'The first is Xavier initialization, used with tanh. The second is {He|Kaiming He} initialization, used with ReLU.', code: ['xavier', 'he'] },
         { id: 'turn', say: 'Your turn.' },
       ],

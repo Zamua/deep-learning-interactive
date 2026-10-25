@@ -19,9 +19,9 @@ export const script: LectureScript = {
         # 0.8 * 1 + 0.6 * (-0.5) = 0.5    #@pixel
       `,
       beats: [
-        { id: 'img', say: 'Start from a clean image, {x₀|x zero}. Each pixel is one number.', code: 'img' },
-        { id: 'eps', say: 'Draw noise of the same shape from a standard normal: {ε|epsilon}, one random number per pixel.', code: 'eps' },
-        { id: 'mix', say: 'Then blend them. {x_t|x t} is the square root of {ᾱ|alpha bar} times {x₀|x zero}, plus the square root of one minus {ᾱ|alpha bar} times {ε|epsilon}, where {ᾱ|alpha bar} is between zero and one.', code: 'mix' },
+        { id: 'img', say: 'Start from a clean image, written {x₀|x zero}: x with a small zero below, for step zero, before any noise. Each pixel is one number.', code: 'img' },
+        { id: 'eps', say: 'Draw noise of the same shape from a standard normal, with mean zero and variance one. It is written {ε|epsilon}, the Greek letter epsilon: one random number per pixel.', code: 'eps' },
+        { id: 'mix', say: 'Then blend them into the noised image, {x_t|x t}: the square root of {ᾱ|alpha bar} times {x₀|x zero}, plus the square root of one minus {ᾱ|alpha bar} times {ε|epsilon}. {ᾱ|Alpha bar}, the Greek alpha with a bar on top, is a number between zero and one, and the small t is the step: how far the noising has gone.', code: 'mix' },
         { id: 'pixel', say: 'Take a pixel of one, with noise of minus a half, at {ᾱ|alpha bar} of {0.64|zero point six four}. The roots are {0.8|zero point eight} and {0.6|zero point six}: {0.8|zero point eight} minus {0.3|zero point three} is {0.5|zero point five}.', code: 'pixel' },
       ],
     },

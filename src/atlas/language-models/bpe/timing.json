@@ -1,8 +1,8 @@
 {
- "duration": 107.607,
+ "duration": 109.785,
  "scenes": {
   "count": [0.0, 58.761],
-  "repeat": [58.761, 107.607]
+  "repeat": [58.761, 109.785]
  },
  "beats": {
   "count/bytes": [0.7, 16.467, "Computers store text as bytes, and a byte has only two hundred fifty-six possible values. So a vocabulary can start with two hundred fifty-six tokens, ids zero to two hundred fifty-five, and spell any text at all.", [[2.87, 3.25], [6.82, 7.39], [11.19, 11.65], [12.25, 12.44], [14.4, 14.75]]],
@@ -13,9 +13,9 @@
   "count/shorter": [50.162, 57.661, "Each replacement turns two tokens into one. Three replacements save three tokens: ten become seven.", [[53.022, 53.562], [55.882, 56.302]]],
   "repeat/again": [59.461, 66.451, "Then do it again, on the new text. Now h followed by u g is the top pair, twice.", [[60.491, 60.791], [61.681, 62.261], [65.561, 65.911]]],
   "repeat/hug": [66.831, 73.456, "It becomes token two hundred fifty-seven, the whole word hug, and seven tokens become five.", [[69.261, 69.681], [70.971, 71.441]]],
-  "repeat/grow": [73.836, 87.707, "Every merge adds exactly one token to the vocabulary. Merge zero made two hundred fifty-six and merge one made two hundred fifty-seven, so after k merges there are two hundred fifty-six plus k.", [[77.306, 77.846], [80.356, 80.656], [83.066, 83.526], [85.106, 85.366]]],
-  "repeat/real": [88.087, 99.061, "Real tokenizers run tens of thousands of merges. Fifty thousand of them make a vocabulary of fifty thousand two hundred fifty-six, where common words are single tokens.", [[91.407, 91.877], [96.567, 96.877]]],
-  "repeat/rows": [99.441, 105.387, "And every new token gets an id of its own, so a row of its own in the embedding table.", [[102.331, 102.681]]],
-  "repeat/turn": [105.767, 106.507, "Your turn.", []]
+  "repeat/grow": [73.836, 89.884, "Every merge adds exactly one token to the vocabulary. Merge zero made two hundred fifty-six and merge one made two hundred fifty-seven, so after k merges the vocabulary size, V, is two hundred fifty-six plus k.", [[77.406, 78.016], [80.456, 80.756], [83.236, 83.636], [85.266, 85.546], [87.386, 87.606]]],
+  "repeat/real": [90.264, 101.239, "Real tokenizers run tens of thousands of merges. Fifty thousand of them make a vocabulary of fifty thousand two hundred fifty-six, where common words are single tokens.", [[93.584, 94.054], [98.744, 99.054]]],
+  "repeat/rows": [101.619, 107.565, "And every new token gets an id of its own, so a row of its own in the embedding table.", [[104.509, 104.859]]],
+  "repeat/turn": [107.945, 108.685, "Your turn.", []]
  }
 }

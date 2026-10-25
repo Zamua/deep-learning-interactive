@@ -20,7 +20,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'full', say: 'Often the function to minimize is an average over N examples, each adding its own term. Then its gradient is the average of N per-example gradients.', code: 'full' },
         { id: 'cost', say: 'With fifty thousand examples, one exact step means computing fifty thousand gradients first.', code: 'cost' },
-        { id: 'batch', say: 'So draw a small random batch of B examples, and average only theirs. It estimates the same gradient, at a fraction of the cost.', code: 'batch' },
+        { id: 'batch', say: 'So draw a small random batch of B examples, B for the batch size, and average only theirs. It estimates the same gradient, at a fraction of the cost.', code: 'batch' },
       ],
     },
     {
@@ -37,7 +37,7 @@ export const script: LectureScript = {
         { id: 'per', say: 'Say B is four, and for one entry of w the four examples give gradients of two, minus one, three and zero.', code: 'per' },
         { id: 'mean', say: 'The minibatch gradient is their mean: they add up to four, and four over four is one.', code: 'mean' },
         { id: 'noise', say: 'Another batch gives another estimate. Batch after batch, they scatter around the true gradient.', code: 'noise' },
-        { id: 'size', say: 'Bigger batches scatter less, but each step costs more. Small batches buy many cheap, noisy steps.', code: 'size' },
+        { id: 'size', say: 'Bigger batches scatter less: the scatter shrinks like {1/√B|one over the square root of B}, the sign {√|root} meaning square root, so four times the batch halves it. But each step costs more, and small batches buy many cheap, noisy steps.', code: 'size' },
       ],
     },
     {

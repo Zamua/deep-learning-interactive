@@ -271,7 +271,7 @@ export const generators: Generator[] = [
           : `$${num(p)}$ is below 1, and only a negative power of $e$ gives a number below 1, so its log is negative.`;
       };
       return {
-        prompt: `Let $p = ${num(p)}$. Is $${q}$ positive, negative or zero?`,
+        prompt: `Let $p = ${num(p)}$. What is the sign of $${q}$?`,
         answer: { kind: 'choice', options: ['Negative', 'Positive', 'Zero', 'Undefined'], correct, why: [0, 1, 2, 3].map(why) },
         solution: [
           p === 1 ? '$e^{0} = 1$, so $\\ln 1 = 0$.' : `$${num(p)}$ is below 1, and $e$ to a negative power is below 1, so $\\ln ${num(p)} \\approx ${num(round(lnp, 2), 2)}$ is negative.`,

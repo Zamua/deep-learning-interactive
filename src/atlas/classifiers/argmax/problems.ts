@@ -31,8 +31,8 @@ export const generators: Generator[] = [
       const asCode = rng.int(2) === 0;
       return {
         prompt: asCode
-          ? `$\\syms = ${vec(s)}$. What is \`np.argmax(s)\`? Positions count from 0.`
-          : `The scores $\\syms = ${vec(s)}$ belong to ${n} possible answers, one each. Which answer is the top pick? Give its position, counting from 0.`,
+          ? `$\\syms = ${vec(s)}$. What is \`np.argmax(s)\`?`
+          : `Each of ${n} answers has one score in $\\syms = ${vec(s)}$. Which answer is the top pick, counting from 0?`,
         answer: { kind: 'number', value: k },
         traps: traps.filter((t, i) => t.value !== k && traps.findIndex((u) => u.value === t.value) === i),
         solution: [
@@ -64,12 +64,12 @@ export const generators: Generator[] = [
       ];
       const table = `\\begin{array}{ccc|c} \\syms_0 & \\syms_1 & \\syms_2 & \\symy \\\\ \\hline ${rows.map((r) => `${r.s.map((x) => num(x)).join(' & ')} & ${r.y}`).join(' \\\\ ')} \\end{array}`;
       return {
-        prompt: `Each of ${R} questions has 3 possible answers. Each row holds one question's three scores and $\\symy$, its right answer.\n\n$$${table}$$\n\nWhat is the accuracy of picking the top score: the share of questions whose top score is at the right answer? Enter a fraction or a decimal.`,
+        prompt: `Each row holds one question's scores for its 3 answers, and $\\symy$, its right answer.\n\n$$${table}$$\n\nWhat is the accuracy of picking the top score?`,
         answer: { kind: 'number', value: acc, places: 2 },
         traps: traps.filter((t, i) => t.value > 0 && Math.abs(t.value - acc) >= 0.01 && traps.findIndex((u) => u.value === t.value) === i),
         solution: [
           ...rows.map((r, i) => `${CAP[i]} question: the top score $${num(r.s[r.k]!)}$ is answer ${r.k}, the right answer is ${r.y}: ${r.k === r.y ? 'right' : 'wrong'}.`),
-          `${right} of ${R} right: accuracy $= ${right}/${R} = ${num(round(acc, 2))}$.`,
+          `Accuracy is the share of questions whose top score is at the right answer: $${right}/${R} = ${num(round(acc, 2))}$.`,
         ],
       };
     },

@@ -30,7 +30,7 @@ export const generators: Generator[] = [
       const total = e.reduce((a, b) => a + b, 0);
       const v = e[k]! / total;
       return {
-        prompt: `A model's scores for the next token are $\\syms = ${vec(s)}$. Sampling at temperature $\\symT = ${num(T)}$ uses $\\symp = \\mathrm{softmax}(\\syms / \\symT)$. What is the probability of token ${k}, counting from 0? Round to two decimals.\n\nUse ${useExp(z)}.`,
+        prompt: `A model's scores for the next token are $\\syms = ${vec(s)}$. Sampling at temperature $\\symT = ${num(T)}$, what is the probability of token ${k}, counting from 0? Round to two decimals.\n\nUse ${useExp(z)}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(v, [
           { value: softmax(s)[k]!, why: `That is the probability at $\\symT = 1$: softmax of the raw scores. Divide them by $\\symT = ${num(T)}$ first.` },
@@ -38,6 +38,7 @@ export const generators: Generator[] = [
           { value: 1 / n, why: `That is one share in ${n}: what softmax gives only when every score is equal.` },
         ]).filter((t) => Math.abs(t.value - v) >= 0.01),
         solution: [
+          'Temperature divides the scores before the softmax: $\\symp = \\mathrm{softmax}(\\syms / \\symT)$.',
           `Divide by the temperature: $\\syms / ${num(T)} = ${vec(z)}$.`,
           `Exponentiate: ${z.map((x) => `$e^{${x}} \\approx ${num(E2(x), 2)}$`).join(', ')}; they add up to $${num(total, 2)}$.`,
           `Token ${k}: $${num(e[k]!, 2)} / ${num(total, 2)} \\approx ${num(v, 2)}$.`,
@@ -57,7 +58,7 @@ export const generators: Generator[] = [
       const ts = [{ value: k + 1, why: `That counts from 1. Ids count from 0, so the top score, ${lit(vocab[k])}, is id ${k}.` }];
       if (s.filter((x) => x === s[low]).length === 1) ts.push({ value: low, why: `That is the lowest score. Greedy decoding takes the most likely token.` });
       return {
-        prompt: `A model's scores over the vocabulary ${ids(vocab)} are $\\syms = ${vec(s)}$. It divides them by $\\symT = ${num(T)}$, takes softmax, and decodes greedily. Which token id comes out?`,
+        prompt: `A model's scores over the vocabulary ${ids(vocab)} are $\\syms = ${vec(s)}$. At temperature $\\symT = ${num(T)}$, which token id does greedy decoding pick?`,
         answer: { kind: 'number', value: k },
         traps: traps(k, ts),
         solution: [
@@ -75,7 +76,7 @@ export const generators: Generator[] = [
       const T = pick(rng, [0.1, 0.2, 0.3, 0.5, 2, 3, 5, 10]);
       const sharp = T < 1;
       return {
-        prompt: `A model's next-token scores are $\\syms = ${vec(s)}$. Sampling at $\\symT = ${num(T)}$ instead of $\\symT = 1$, what happens to the probabilities $\\mathrm{softmax}(\\syms / \\symT)$?`,
+        prompt: `A model's next-token scores are $\\syms = ${vec(s)}$. Sampling at temperature $\\symT = ${num(T)}$ instead of $\\symT = 1$, what happens to the probabilities?`,
         answer: {
           kind: 'choice',
           options: [
@@ -111,7 +112,7 @@ export const generators: Generator[] = [
       const flat = s.map(() => 1 / n);
       const v = toZero ? hot : flat;
       return {
-        prompt: `A model's next-token scores are $\\syms = ${vec(s)}$. What does $\\mathrm{softmax}(\\syms / \\symT)$ approach as ${toZero ? '$\\symT \\to 0$' : '$\\symT$ grows without bound'}? Give all ${n} probabilities, rounded to two decimals.`,
+        prompt: `A model's next-token scores are $\\syms = ${vec(s)}$. What do its sampling probabilities approach as the temperature ${toZero ? '$\\symT \\to 0$' : '$\\symT$ grows without bound'}? Round to two decimals.`,
         answer: { kind: 'vector', value: v, places: 2 },
         traps: vtraps(v, [
           { value: toZero ? flat : hot, why: toZero ? 'That is the limit as $\\symT$ grows. A small $\\symT$ stretches the gaps, so the top score takes everything.' : 'That is the limit as $\\symT \\to 0$. A large $\\symT$ shrinks every gap toward 0, so the scores look equal.' },

@@ -44,7 +44,7 @@ export const generators: Generator[] = [
       const want = clean((x - mu) / sd);
       const P = placesFor(want);
       return {
-        prompt: `One example has ${xs.length} features, $x = ${vecT(xs)}$. What does layer norm turn feature ${j}, $x_{${j}} = ${num(x)}$, into before its learned scale and shift? Ignore $\\epsilon$${P ? ', and round to two decimals' : ''}.`,
+        prompt: `One example's features are $x = ${vecT(xs)}$. What does layer norm turn $x_{${j}} = ${num(x)}$ into, before the learned scale and shift? Ignore $\\epsilon$${P ? ', and round to two decimals' : ''}.`,
         answer: { kind: 'number', value: want, places: P },
         traps: traps(want, [
           { value: (x - mu) / (sd * sd), why: 'That divides by the variance. Divide by its square root, the standard deviation.' },
@@ -67,7 +67,7 @@ export const generators: Generator[] = [
       const P = placesFor(...y);
       if (d < 0.5) {
         return {
-          prompt: `Layer norm has normalized one example to $${xh} = ${vecT(xhat)}$. Its learned scale and shift, one entry per feature, are $${G} = ${vecT(g)}$ and $${BETA} = ${vecT(b)}$. What is its output, $${G} ${xh} + ${BETA}$, feature by feature?`,
+          prompt: `Layer norm has normalized one example to $${xh} = ${vecT(xhat)}$, and its learned parameters are $${G} = ${vecT(g)}$ and $${BETA} = ${vecT(b)}$. What does it output?`,
           answer: { kind: 'vector', value: y, places: P },
           traps: vtraps(y, [
             { value: xhat.map((v, i) => g[i]! * (v + b[i]!)), why: `That adds $${BETA}$ before scaling. Scale first, then shift.` },
@@ -78,7 +78,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `One example has features $x = ${vecT(xs)}$. Layer norm's learned scale and shift, one entry per feature, are $${G} = ${vecT(g)}$ and $${BETA} = ${vecT(b)}$. What does it output? Ignore $\\epsilon$${P ? ', and round to two decimals' : ''}.`,
+        prompt: `One example's features are $x = ${vecT(xs)}$, and layer norm's learned parameters are $${G} = ${vecT(g)}$ and $${BETA} = ${vecT(b)}$. What does layer norm output? Ignore $\\epsilon$${P ? ', and round to two decimals' : ''}.`,
         answer: { kind: 'vector', value: y, places: P },
         traps: vtraps(y, [
           { value: xhat, why: `That is $${xh}$, before the learned scale and shift.` },
@@ -122,11 +122,11 @@ export const generators: Generator[] = [
       const X = Array.from({ length: B }, () => Array.from({ length: F }, () => int(rng, d < 0.5 ? 0 : -3, 6)));
       const i = rng.int(B);
       const ask = rng.int(2);
-      const lead = `A batch of ${B} examples with ${F} features each, one example per row:\n\n$$${'\\symX'} = ${mat(X)}$$\n\n`;
+      const lead = `A batch of ${B} examples, one per row:\n\n$$${'\\symX'} = ${mat(X)}$$\n\n`;
       if (ask === 0) {
         const rowMean = round(sum(X[i]!) / F, 2);
         return {
-          prompt: `${lead}Layer norm computes a mean and a standard deviation to normalize example ${i}, row ${i}. Which numbers does that mean average?`,
+          prompt: `${lead}Which numbers does layer norm average to get example ${i}'s mean?`,
           answer: {
             kind: 'choice',
             options: [
@@ -148,7 +148,7 @@ export const generators: Generator[] = [
       }
       const j = (i + 1) % B;
       return {
-        prompt: `${lead}Example ${j}, row ${j}, changes and example ${i} stays the same. What happens to layer norm's output for example ${i}?`,
+        prompt: `${lead}Example ${j} changes and example ${i} stays the same. What happens to layer norm's output for example ${i}?`,
         answer: {
           kind: 'choice',
           options: [

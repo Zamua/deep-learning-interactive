@@ -1,21 +1,21 @@
 {
- "duration": 99.078,
+ "duration": 122.655,
  "scenes": {
-  "warmup": [0.0, 40.645],
-  "steps": [40.645, 62.733],
-  "cosine": [62.733, 99.078]
+  "warmup": [0.0, 44.584],
+  "steps": [44.584, 66.672],
+  "cosine": [66.672, 122.655]
  },
  "beats": {
   "warmup/why": [0.7, 9.034, "The learning rate does not have to stay fixed. Big steps make fast progress early on, and small steps settle in at the end.", [[3.23, 3.71], [6.29, 6.61]]],
-  "warmup/ramp": [9.414, 17.007, "Many runs begin with a warmup: the rate climbs in a straight line from zero to its peak over the first k steps.", [[11.254, 11.804], [15.184, 15.334]]],
-  "warmup/ex": [17.387, 26.442, "With a peak of zero point one over a thousand steps, step two hundred and fifty runs at a quarter of the peak: zero point zero two five.", [[20.587, 20.997], [24.077, 24.527]]],
-  "warmup/reason": [26.822, 39.545, "Why bother? At the start, far from any minimum, the gradients are at their largest and least steady. A full-size step on them can overshoot and blow up, so warmup eases in.", [[27.672, 28.282], [29.022, 29.232], [30.642, 30.882], [33.672, 34.292], [37.322, 37.662]]],
-  "steps/rule": [41.345, 49.211, "The classic decay goes in steps: multiply the rate by a factor, often zero point one, every so many steps.", [[43.405, 44.005], [45.875, 46.125], [47.495, 47.815]]],
-  "steps/ex": [49.591, 61.633, "Start at zero point one and drop every ten thousand steps: step fifteen thousand runs at zero point zero one, and step twenty-five thousand at zero point zero zero one.", [[51.361, 51.551], [53.601, 54.121], [57.441, 57.801], [59.401, 59.551]]],
-  "cosine/cos": [63.433, 71.084, "Cosine decay glides down instead, along half a cosine wave, from eta max to eta min over T steps.", [[65.853, 66.173], [67.793, 68.073], [69.783, 69.963]]],
-  "cosine/shape": [71.464, 76.714, "It starts flat, falls fastest in the middle, and flattens out again at the end.", [[72.524, 72.884], [74.464, 74.814]]],
-  "cosine/half": [77.094, 87.256, "Halfway through, the cosine is zero, so the rate sits halfway between. From zero point one down to zero, that is zero point zero five.", [[78.104, 78.334], [79.694, 80.084], [82.014, 82.534], [84.644, 84.994]]],
-  "cosine/third": [87.636, 96.858, "A third of the way in, the cosine of pi over three is a half, so the rate is three quarters of the peak: zero point zero seven five.", [[88.866, 89.126], [91.656, 92.146], [94.316, 94.806]]],
-  "cosine/turn": [97.238, 97.978, "Your turn.", []]
+  "warmup/ramp": [9.414, 20.946, "Many runs begin with a warmup: the rate climbs in a straight line from zero to its peak over the first k steps, so at step t it is the peak times t over k.", [[11.274, 11.744], [16.634, 17.024], [18.354, 18.644], [19.744, 19.914]]],
+  "warmup/ex": [21.326, 30.381, "With a peak of zero point one over a thousand steps, step two hundred and fifty runs at a quarter of the peak: zero point zero two five.", [[24.526, 24.936], [28.016, 28.466]]],
+  "warmup/reason": [30.761, 43.484, "Why bother? At the start, far from any minimum, the gradients are at their largest and least steady. A full-size step on them can overshoot and blow up, so warmup eases in.", [[31.611, 32.221], [32.961, 33.171], [34.581, 34.821], [37.611, 38.231], [41.261, 41.601]]],
+  "steps/rule": [45.284, 53.15, "The classic decay goes in steps: multiply the rate by a factor, often zero point one, every so many steps.", [[47.344, 47.944], [49.814, 50.064], [51.434, 51.754]]],
+  "steps/ex": [53.53, 65.572, "Start at zero point one and drop every ten thousand steps: step fifteen thousand runs at zero point zero one, and step twenty-five thousand at zero point zero zero one.", [[55.3, 55.49], [57.54, 58.06], [61.38, 61.74], [63.34, 63.49]]],
+  "cosine/cos": [67.372, 88.539, "Cosine decay glides down instead, along half a cosine wave, from eta max, the top rate, to eta min, the bottom one, over T steps. At step t, the rate eta t is eta min plus half the gap, times one plus the cosine of pi t over T, with pi about three point one four.", [[69.892, 70.132], [71.752, 72.032], [73.052, 73.222], [73.882, 74.172], [75.002, 75.222], [75.862, 76.122], [77.212, 77.862], [78.842, 79.122], [80.372, 80.572], [82.672, 82.962], [86.162, 86.472]]],
+  "cosine/shape": [88.919, 100.29, "As t runs from zero to T, that cosine falls from one to minus one. So the rate starts flat, falls fastest in the middle, and flattens out again at the end.", [[91.149, 91.499], [94.329, 94.939], [96.399, 96.719], [98.229, 98.539]]],
+  "cosine/half": [100.67, 110.832, "Halfway through, the cosine is zero, so the rate sits halfway between. From zero point one down to zero, that is zero point zero five.", [[101.68, 101.91], [103.27, 103.66], [105.59, 106.11], [108.22, 108.57]]],
+  "cosine/third": [111.212, 120.434, "A third of the way in, the cosine of pi over three is a half, so the rate is three quarters of the peak: zero point zero seven five.", [[112.442, 112.702], [115.232, 115.722], [117.892, 118.382]]],
+  "cosine/turn": [120.814, 121.555, "Your turn.", []]
  }
 }

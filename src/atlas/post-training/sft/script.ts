@@ -37,11 +37,11 @@ export const script: LectureScript = {
         # 1.02 / 3 = 0.34                            #@loss
       `,
       beats: [
-        { id: 'mask', say: 'So give every token a mask: one on the tokens the assistant wrote, and zero on everything else, both markers included.', code: 'mask' },
+        { id: 'mask', say: 'So give every token a mask, m: one on the tokens the assistant wrote, and zero on everything else, both markers included.', code: 'mask' },
         { id: 'end', say: 'The end token gets a one too. It is part of the reply, and predicting it is how the model learns when to stop.', code: 'mask' },
         { id: 'context', say: 'The masked tokens stay in the input. The model still reads the question; it is just not graded on predicting it.', code: 'mask' },
         { id: 'nll', say: 'Each graded token adds minus the log of the probability the model gave it. Lima got {0.5|zero point five}, the full stop {0.8|zero point eight}, and the end token {0.9|zero point nine}: losses of {0.69|zero point six nine}, {0.22|zero point two two} and {0.11|zero point one one}.', code: 'nll' },
-        { id: 'mean', say: 'The loss is their average. Divide by the number of ones in the mask, three, not by all nine tokens: {0.34|zero point three four}.', code: 'loss' },
+        { id: 'mean', say: 'The loss, L, is their average: add up {mₜ|m t} times minus log {pₜ|p t} over every position t, and divide by the number of ones in the mask, three, not by all nine tokens: {0.34|zero point three four}.', code: 'loss' },
         { id: 'lr', say: 'Then train as when fine-tuning any pretrained network, with a small learning rate, so the model keeps what it already knows.' },
         { id: 'turn', say: 'Your turn.' },
       ],

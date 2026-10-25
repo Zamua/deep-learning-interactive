@@ -4,7 +4,6 @@ import { num, pick } from '../../kit';
 import { big, clean, commas, sci, traps, whys, words } from '../kit';
 
 const BYTES: Record<string, number> = { fp32: 4, bf16: 2, fp16: 2, fp8: 1 };
-const GB = 'A GB is $10^9$ bytes.';
 
 const size = (rng: Rng, d: number): number => pick(rng, d < 0.35 ? [1, 2, 3, 5, 10] : d < 0.7 ? [7, 13, 0.5, 1.5, 8] : [70, 175, 34, 405, 2.5]);
 
@@ -17,7 +16,7 @@ export const generators: Generator[] = [
       const b = BYTES[f]!;
       const v = clean(b * n);
       return {
-        prompt: `A model has ${words(n * 1e9)} weights, stored in ${f}. How many GB do they take? ${GB}`,
+        prompt: `A model has ${words(n * 1e9)} weights, stored in ${f}. How many GB do they take?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: 8 * b * n, why: `That counts bits. ${f} is ${8 * b} bits, which is ${b} byte${b > 1 ? 's' : ''}.` },
@@ -36,7 +35,7 @@ export const generators: Generator[] = [
       const b1 = BYTES[to]!;
       const v = clean((b0 - b1) * n);
       return {
-        prompt: `A model's ${words(n * 1e9)} weights are converted from ${from} to ${to}. How many GB does that save? ${GB}`,
+        prompt: `A model's ${words(n * 1e9)} weights are converted from ${from} to ${to}. How many GB does that save?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: b1 * n, why: `That is what the ${to} copy takes. The saving is the old size minus the new one.` },
@@ -64,10 +63,9 @@ export const generators: Generator[] = [
         const [m, e, what] = pick(rng, cases);
         const correct = what === 'fine' ? 2 : 0;
         const value = `$${sci(m, e)}$`;
-        const hint = d < 0.5 ? ' fp16 has 5 exponent bits and bf16 has 8, the same as fp32.' : '';
         const options = ['Only bf16', 'Only fp16', 'Both', 'Neither'];
         return {
-          prompt: `A number is ${value}. Stored in fp16 and in bf16, which keeps it from becoming 0 or infinity?${hint}`,
+          prompt: `A number is ${value}. Stored in fp16 and in bf16, which keeps it from becoming 0 or infinity?`,
           answer: {
             kind: 'choice',
             options,

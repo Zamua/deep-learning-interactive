@@ -39,7 +39,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'ae', say: 'Two networks are trained, one after the other. First the autoencoder, on images alone: encode, decode, and match the input. Then it is frozen.', code: 'ae' },
         { id: 'dn', say: 'Then the denoiser. Each training image is encoded, and its latent, z, takes the place of the clean image.', code: 'dn' },
-        { id: 'loss', say: 'Noise z to a random step, and train the network to find that noise, with the same squared error as before. It never sees a pixel: only {z_t|z t} and t, and its guess has the latent\'s shape.', code: 'loss' },
+        { id: 'loss', say: 'Noise z to a random step t, giving {z_t|z t}, and train the network to find that noise, with the same squared error as before. It never sees a pixel: only {z_t|z t} and t, and its guess has the latent\'s shape.', code: 'loss' },
       ],
     },
     {

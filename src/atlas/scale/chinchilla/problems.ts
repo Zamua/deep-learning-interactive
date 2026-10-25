@@ -25,7 +25,7 @@ export const generators: Generator[] = [
     make(rng, d) {
       const m = pick(rng, sizes(d));
       return {
-        prompt: `A training budget is $${C} = ${sciOf(budget(m))}$ FLOPs. Training compute-optimally, with about $${D} = 20${N}$ tokens, how many billion parameters should the model have?`,
+        prompt: `A training budget is $${C} = ${sciOf(budget(m))}$ FLOPs. How many billion parameters should a compute-optimal model have?`,
         answer: { kind: 'number', value: m },
         traps: traps(m, [{ value: 20 * m, why: `That is $${D}$, the tokens: $20${N}$. The model itself has a twentieth of that.` }]),
         solution: steps(m),
@@ -46,7 +46,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `A training budget is $${C} = ${sciOf(budget(m))}$ FLOPs. Training compute-optimally, how many billion tokens should the model see?`,
+        prompt: `A training budget is $${C} = ${sciOf(budget(m))}$ FLOPs. How many billion tokens should a compute-optimal model see?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [{ value: m, why: `That is $${N}$, the parameters. The tokens are about 20 times as many: $${D} = 20${N}$.` }]),
         solution: [...steps(m), `Then $${D} = 20${N} = 20 \\times ${sci(m, 9)} = ${sciOf(v * 1e9)}$: ${v.toLocaleString('en-US')} billion tokens.`],
@@ -94,7 +94,7 @@ export const generators: Generator[] = [
       const bn = (x: number) => `${big(clean(x / 1e9))}\\text{ billion}`;
       const said = `$${bn(t)} / ${bn(n)} = ${num(ratio)}$ tokens per parameter`;
       return {
-        prompt: `A model with ${words(n)} parameters was trained on ${words(t)} tokens. Next to the compute-optimal rule of about 20 tokens per parameter, how was it trained?`,
+        prompt: `A model with ${words(n)} parameters was trained on ${words(t)} tokens. Next to compute-optimal, how was it trained?`,
         answer: {
           kind: 'choice',
           options,

@@ -31,15 +31,15 @@ export const generators: Generator[] = [
         ...(V === dim ? [{ value: W.map((_, i) => W.reduce((a, r, j) => a + r[i]! * h[j]!, 0)), why: `That dots $\\symh$ with the columns of $${name}$. A token's score uses its row.` }] : []),
       ];
       const setup = tied
-        ? `A model ties its unembedding to its embedding table, $${WU} = E$, where\n\n$$E = ${mat(W)}$$\n\nhas one row per token.`
-        : `A model's unembedding matrix has one row per token:\n\n$$${WU} = ${mat(W)}$$`;
+        ? `A model ties its unembedding to its embedding table\n\n$$E = ${mat(W)}$$`
+        : `A model's unembedding matrix is\n\n$$${WU} = ${mat(W)}$$`;
       return {
-        prompt: `${setup} Its last vector at one position is $\\symh = ${vec(h)}$. What are the scores $\\syms = ${WU}\\,\\symh$, one per token?`,
+        prompt: `${setup}\n\nIts last vector at one position is $\\symh = ${vec(h)}$. What are the scores $\\syms$?`,
         answer: { kind: 'vector', value: v },
         traps: vtraps(v, ts),
         solution: [
           ...(tied ? [`Tied means $${WU}$ is $E$ itself, row for row.`] : []),
-          `Each token's score is its row dotted with $\\symh$: ${W.map((r, i) => `$\\syms_{${i}} = ${prodTex(r, h)} = ${v[i]}$`).join('; ')}.`,
+          `The scores are $\\syms = ${WU}\\,\\symh$: each token's row dotted with $\\symh$. ${W.map((r, i) => `$\\syms_{${i}} = ${prodTex(r, h)} = ${v[i]}$`).join('; ')}.`,
           `So $\\syms = ${vec(v)}$${top >= 0 ? `, and token ${top} scores highest` : ''}.`,
         ],
       };
@@ -54,32 +54,32 @@ export const generators: Generator[] = [
       if (kind === 0) {
         const v = [V, dim];
         return {
-          prompt: `A vocabulary has $V = ${big(V)}$ tokens, and the model's last vector $\\symh$ has $d = ${dim}$ numbers. The unembedding gives one score per token, $\\syms = ${WU}\\,\\symh$. What is the shape of $${WU}$?`,
+          prompt: `A vocabulary has $V = ${big(V)}$ tokens, and the model's last vector $\\symh$ has $d = ${dim}$ numbers. What is the shape of the unembedding $${WU}$?`,
           answer: { kind: 'shape', value: v },
           traps: [
             { value: [dim, V], why: `That is the transpose. $${WU}$ has one row per token, each dotted with $\\symh$, so it is $(V, d)$.` },
             { value: [V], why: 'That is the shape of the scores. The matrix has a whole row of $d$ weights for every token.' },
             { value: [V, V], why: `Each row is dotted with $\\symh$, so a row has $d = ${dim}$ entries, not $V$.` },
           ],
-          solution: [`One score per token means one row per token: $V = ${big(V)}$ rows.`, `Each row is dotted with $\\symh$, so it has $d = ${dim}$ entries: $${WU}$ is $${shapeTex([V, dim])}$, the same shape as the embedding table.`],
+          solution: [`The scores are $\\syms = ${WU}\\,\\symh$, one per token, so $${WU}$ has one row per token: $V = ${big(V)}$ rows.`, `Each row is dotted with $\\symh$, so it has $d = ${dim}$ entries: $${WU}$ is $${shapeTex([V, dim])}$, the same shape as the embedding table.`],
         };
       }
       if (kind === 1) {
         const v = [V];
         return {
-          prompt: `The unembedding $${WU}$ has shape $${shapeTex([V, dim])}$, and $\\symh$ has $${dim}$ numbers. What is the shape of $\\syms = ${WU}\\,\\symh$?`,
+          prompt: `The unembedding $${WU}$ has shape $${shapeTex([V, dim])}$, and the last vector $\\symh$ has $${dim}$ numbers. What is the shape of the scores $\\syms$?`,
           answer: { kind: 'shape', value: v },
           traps: [
             { value: [dim], why: `That is the shape of $\\symh$. The product takes one dot product per row of $${WU}$: one per token.` },
             { value: [V, dim], why: `That is the shape of $${WU}$. Times a vector, it gives one number per row.` },
           ],
-          solution: [`$${WU}\\,\\symh$ dots every row of $${WU}$ with $\\symh$.`, `There are $${big(V)}$ rows, one per token, so $\\syms$ has shape $${shapeTex([V])}$.`],
+          solution: [`$\\syms = ${WU}\\,\\symh$ dots every row of $${WU}$ with $\\symh$.`, `There are $${big(V)}$ rows, one per token, so $\\syms$ has shape $${shapeTex([V])}$.`],
         };
       }
       const n = d < 0.7 ? int(rng, 3, 20) : pick(rng, [128, 256, 1024, 2048]);
       const v = [n, V];
       return {
-        prompt: `A model hands back one vector of $d = ${dim}$ numbers for each of $${n}$ positions, stacked as the rows of an array of shape $${shapeTex([n, dim])}$. The unembedding $${WU}$, of shape $${shapeTex([V, dim])}$, scores each row. What is the shape of the scores?`,
+        prompt: `A model's last vectors for $${n}$ positions form an array of shape $${shapeTex([n, dim])}$, one row per position. The unembedding $${WU}$ has shape $${shapeTex([V, dim])}$. What is the shape of the scores?`,
         answer: { kind: 'shape', value: v },
         traps: [
           { value: [n, dim], why: 'That is the input. Each position gets one score per token, so the last axis becomes $V$.' },
@@ -98,13 +98,13 @@ export const generators: Generator[] = [
       const one = V * dim;
       const kind = rng.int(3);
       const ask = [
-        'How many parameters does tying the unembedding to the embedding table save?',
-        `How many numbers do $E$ and $${WU}$ hold together when they are separate matrices?`,
-        `How many numbers do $E$ and $${WU}$ hold together when they are tied?`,
+        `How many parameters does tying the unembedding $${WU}$ to $E$ save?`,
+        `How many numbers do $E$ and the unembedding $${WU}$ hold together when they are separate matrices?`,
+        `How many numbers do $E$ and the unembedding $${WU}$ hold together when they are tied?`,
       ][kind]!;
       const v = kind === 1 ? 2 * one : one;
       return {
-        prompt: `A vocabulary has $V = ${big(V)}$ tokens, each embedded in $d = ${dim}$ numbers by the table $E$. The unembedding $${WU}$ scores every token from a vector of $d$ numbers. ${ask}`,
+        prompt: `A vocabulary has $V = ${big(V)}$ tokens, each embedded in $d = ${dim}$ numbers by the table $E$. ${ask}`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: V + dim, why: 'That adds $V$ and $d$. A table of $V$ rows of $d$ numbers holds $V \\times d$.' },
@@ -127,7 +127,7 @@ export const generators: Generator[] = [
       const dim = pick(rng, [2, 3, 8, 16, 64]);
       const named = d < 0.5 ? `${lit(words[j]!)}, id ${j}` : `id ${j}`;
       return {
-        prompt: `The embedding table $E$ has shape $${shapeTex([V, dim])}$, and the unembedding is tied to it: $${WU} = E$. The model's last vector is $\\symh$, with ${dim} numbers. What is the score of token ${named}?`,
+        prompt: `The embedding table $E$ has shape $${shapeTex([V, dim])}$, and the unembedding is tied to it. The model's last vector is $\\symh$. What is the score of token ${named}?`,
         answer: {
           kind: 'choice',
           options: [`$\\symh$ dotted with row ${j} of $E$`, `$\\symh$ dotted with column ${j} of $E$`, `Entry ${j} of $\\symh$`, `Row ${j} of $E$`],
@@ -141,7 +141,7 @@ export const generators: Generator[] = [
         },
         solution: [
           `Tied, $${WU}$ is $E$, so token ${j}'s row of weights is row ${j} of $E$: its own embedding.`,
-          `Its score is that row dotted with $\\symh$: $\\syms_{${j}} = E_{${j}} \\cdot \\symh$, large when $\\symh$ points the way token ${j}'s embedding does.`,
+          `Its score is that row dotted with $\\symh$: $\\syms_{${j}} = E_{${j}} \\cdot \\symh$, where $E_{${j}}$ is row ${j} of $E$. It is large when $\\symh$ points the way token ${j}'s embedding does.`,
         ],
       };
     },

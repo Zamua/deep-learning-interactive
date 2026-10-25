@@ -207,6 +207,7 @@ export const ATLAS_SYMBOLS: SymbolMap = {
     color: 'teal',
     name: 'α: the scaling exponent',
     tex: '\\alpha',
+    code: [],
     about: 'How fast the loss falls with compute: L = aC^(−α), a straight line of slope −α on log-log axes.',
   },
   WU: {
@@ -258,8 +259,11 @@ const adamMoments: SymbolMap = {
   m: { color: 'orange', name: 'm: the first moment', about: 'A running average of the gradient, as momentum keeps: it points where the gradients have been pointing lately.' },
   v: { color: 'teal', name: 'v: the second moment', about: 'A running average of the squared gradient: how large this parameter\'s gradients usually are.' },
 };
+/** ε where it only keeps a division away from zero. */
+const tiny: SymbolDef = { color: 'slate', name: 'ε: a tiny constant', tex: '\\epsilon', about: 'Added so nothing is ever divided by zero, around 10⁻⁸. Too small to matter in arithmetic by hand.' };
 const adamAll: SymbolMap = {
   ...adamMoments,
+  epstiny: tiny,
   beta1: { color: 'slate', name: 'β₁: the first moment\'s decay', tex: '\\beta_1', about: 'The share of m kept each step, usually 0.9.' },
   beta2: { color: 'slate', name: 'β₂: the second moment\'s decay', tex: '\\beta_2', about: 'The share of v kept each step, usually 0.999: a longer memory than m\'s.' },
 };
@@ -338,6 +342,12 @@ export const SCOPED: Record<string, SymbolMap> = {
     d: { color: 'slate', name: 'd: the number of features', about: 'How many numbers make up one example; layer norm averages over them.' },
     gamma: { color: 'purple', name: 'γ: the learned scale', tex: '\\gamma', about: 'Layer norm multiplies each normalized feature by its own γ: one entry per feature.' },
     beta: { color: 'green', name: 'β: the learned shift', tex: '\\beta', about: 'Layer norm adds β after scaling: one entry per feature.' },
+    epstiny: tiny,
+  },
+  'batch-norm': {
+    mu: { color: 'orange', name: 'μ: the batch mean', tex: '\\mu', about: 'The average of one feature over the examples in the batch.' },
+    sigma: { color: 'teal', name: 'σ: the standard deviation', tex: '\\sigma', about: 'How spread out one feature is over the batch: the square root of its variance, σ².' },
+    epstiny: tiny,
   },
   'transformer-block': { ...pick(att, 'd T x'), ...mlpW },
   'transformer-params': {
@@ -474,6 +484,15 @@ export const SCOPED: Record<string, SymbolMap> = {
     mu: { color: 'orange', name: 'μ: the momentum coefficient', tex: '\\mu', about: 'The share of the velocity that survives each step, often 0.9: one minus friction.' },
   },
 
+  'power-laws': { Cflops: { ...ATLAS_SYMBOLS.Cflops!, about: 'The total arithmetic a training run does, counted in floating point operations, or FLOPs.' } },
+  neuron: { b: { color: 'green', name: 'b: the bias', about: 'One number added to the weighted sum. It shifts where the neuron switches on.' } },
+  residual: { g: { ...grad, name: 'g: the gradient arriving at y', about: 'How much the final output moves per nudge of the block\'s output y.' } },
+  'conv-output-size': { F: { ...ATLAS_SYMBOLS.F!, about: 'A filter covers F positions along each side of the input. 3 is the usual choice.' } },
+  'rnn-attention': {
+    s: { ...scores, name: 's: the attention scores', about: 'One per encoder state: the decoder\'s state q dotted with that state.' },
+    alpha: { color: 'teal', name: 'α: the attention weights', tex: '\\alpha', code: ['alpha', 'weights'], about: 'The softmax of the scores: positive, adding up to one.' },
+  },
+  sampling: { s: { ...scores, name: 's: the next-token scores', about: 'One number per token in the vocabulary. Softmax turns them into probabilities.' } },
 };
 
 /** Library notes that would name later topics, said only in general terms. */

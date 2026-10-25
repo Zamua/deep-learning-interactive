@@ -1,18 +1,18 @@
 {
- "duration": 82.24,
+ "duration": 97.134,
  "scenes": {
-  "look": [0.0, 51.177],
-  "every": [51.177, 82.24]
+  "look": [0.0, 66.071],
+  "every": [66.071, 97.134]
  },
  "beats": {
-  "look/keep": [0.7, 12.153, "A plain decoder only sees the encoder's final state. Attention keeps all of them: one state per input word, here for je, suis, and \u00e9tudiant.", [[4.21, 4.73], [6.28, 6.82], [8.51, 8.89], [9.5, 9.65], [10.03, 10.37], [10.81, 11.1]]],
-  "look/score": [12.533, 22.778, "At each step, the decoder scores every encoder state against its own state, q. A simple score is the dot product: two, zero, and one.", [[13.403, 13.673], [17.413, 17.573], [17.943, 18.543], [20.553, 20.953], [21.313, 21.513]]],
-  "look/weights": [23.158, 33.435, "Softmax turns the scores into weights that are positive and add up to one: zero point six seven, zero point zero nine, and zero point two four.", [[26.398, 26.568], [27.648, 28.218], [29.538, 29.918], [31.358, 31.638]]],
-  "look/context": [33.815, 43.603, "The context vector is the weighted sum of the states: mostly je, a little of the rest. Here, one point five eight and zero point zero nine.", [[36.875, 37.305], [38.135, 38.465], [39.525, 40.015], [40.335, 40.615], [41.695, 41.905]]],
-  "look/use": [43.983, 50.077, "The decoder reads this context along with its own state to predict the next word: I.", [[47.393, 47.613], [49.023, 49.603]]],
-  "every/again": [51.877, 63.275, "At the next step the decoder's state has moved on, so the scores change, and it looks somewhere else: for am and a, at suis; for student, at \u00e9tudiant.", [[52.777, 52.977], [54.727, 55.097], [56.337, 56.587], [57.827, 58.327], [59.727, 60.007], [60.727, 61.207], [61.897, 62.197]]],
-  "every/grid": [63.655, 70.551, "Stack the weights, one row per output word, and they show which input words each output word drew on.", [[64.715, 65.025], [66.645, 67.045]]],
-  "every/free": [70.931, 80.02, "Nothing has to squeeze through one fixed-size vector any more: every step can read every input state directly. That is attention.", [[74.541, 75.081], [78.141, 78.681], [79.081, 79.231]]],
-  "every/turn": [80.4, 81.14, "Your turn.", []]
+  "look/keep": [0.7, 16.496, "A plain decoder only sees the encoder's final state. Attention keeps all of them: one state per input word, here for je, suis, and \u00e9tudiant. Call them h j, with j counting the input words from zero.", [[4.2, 4.74], [6.32, 6.82], [8.49, 8.86], [9.83, 10.11], [10.56, 10.8], [11.64, 12.2], [13.5, 13.89]]],
+  "look/score": [16.876, 30.077, "At each step, the decoder scores every encoder state against its own state, q. A simple score is the dot product, s j equals q dot h j: two, zero, and one.", [[17.766, 18.046], [21.766, 22.006], [22.386, 22.976], [24.966, 25.306], [27.766, 28.246], [28.606, 28.886]]],
+  "look/weights": [30.457, 44.096, "Softmax turns the scores into the attention weights, written alpha j: positive, and adding up to one. Here they are zero point six seven, zero point zero nine, and zero point two four.", [[33.447, 33.847], [35.097, 35.487], [35.987, 36.387], [37.737, 38.327], [38.987, 39.267], [40.627, 40.917], [42.337, 42.587]]],
+  "look/context": [44.476, 58.498, "The context vector is the weighted sum of the states, the sum over j of alpha j times h j: mostly je, a little of the rest. Here, one point five eight and zero point zero nine.", [[47.516, 47.876], [51.306, 51.846], [52.966, 53.316], [54.316, 54.806], [55.136, 55.436], [56.606, 56.786]]],
+  "look/use": [58.878, 64.971, "The decoder reads this context along with its own state to predict the next word: I.", [[62.288, 62.508], [63.918, 64.498]]],
+  "every/again": [66.771, 78.169, "At the next step the decoder's state has moved on, so the scores change, and it looks somewhere else: for am and a, at suis; for student, at \u00e9tudiant.", [[67.671, 67.871], [69.621, 69.991], [71.231, 71.481], [72.721, 73.221], [74.621, 74.901], [75.621, 76.101], [76.791, 77.091]]],
+  "every/grid": [78.549, 85.445, "Stack the weights, one row per output word, and they show which input words each output word drew on.", [[79.609, 79.919], [81.539, 81.939]]],
+  "every/free": [85.825, 94.914, "Nothing has to squeeze through one fixed-size vector any more: every step can read every input state directly. That is attention.", [[89.435, 89.975], [93.035, 93.575], [93.975, 94.125]]],
+  "every/turn": [95.294, 96.034, "Your turn.", []]
  }
 }

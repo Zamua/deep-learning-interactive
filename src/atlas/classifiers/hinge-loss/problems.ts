@@ -37,7 +37,7 @@ export const generators: Generator[] = [
           { value: sumOf(ps.map((p) => Math.max(0, p.t - 1))), why: 'That leaves out the margin. Each term is $\\syms_j - \\syms_{\\symy} + 1$: a wrong class within 1 of the right one still costs.' },
         ];
         return {
-          prompt: `The scores are $\\syms = ${vec(s)}$ and the right class is $\\symy = ${y}$, counting from 0. What is the multiclass SVM loss, the hinge loss with a margin of 1?`,
+          prompt: `The scores are $\\syms = ${vec(s)}$ and the right class is $\\symy = ${y}$, counting from 0. What is the hinge loss?`,
           answer: { kind: 'number', value: L },
           traps: traps.filter((t, i) => t.value !== L && traps.findIndex((u) => u.value === t.value) === i),
           solution: [skip(s, y), ...ps.map((p) => termStep(s, y, p.j, p.t)), `Add them: $\\symL = ${terms(ps.map((p) => p.h))} = ${num(L)}$.`],
@@ -62,7 +62,7 @@ export const generators: Generator[] = [
           { value: above, why: 'That counts only the classes scoring above the right one. A class within 1 of it, even level or just below, also adds to the loss.' },
         ];
         return {
-          prompt: `The scores are $\\syms = ${vec(s)}$ and the right class is $\\symy = ${y}$, counting from 0. How many classes add a positive amount to the hinge loss, with a margin of 1?`,
+          prompt: `The scores are $\\syms = ${vec(s)}$ and the right class is $\\symy = ${y}$, counting from 0. How many classes add a positive amount to the hinge loss?`,
           answer: { kind: 'number', value: k },
           traps: traps.filter((t) => t.value !== k),
           solution: [
@@ -96,7 +96,7 @@ export const generators: Generator[] = [
             : [`Class ${j} scores above the right class, so its term is positive.`, `The top score is class ${j}'s $${num(s[j]!)}$, not the right class's.`, null, `${own} Here the loss comes from class ${j}.`];
       const L = sumOf(ps.map((p) => p.h));
       return {
-        prompt: `The scores are $\\syms = ${vec(s)}$ and the right class is $\\symy = ${y}$, counting from 0. Is the hinge loss, with a margin of 1, exactly zero?`,
+        prompt: `The scores are $\\syms = ${vec(s)}$ and the right class is $\\symy = ${y}$, counting from 0. Is the hinge loss exactly zero?`,
         answer: {
           kind: 'choice',
           options: [
@@ -123,15 +123,15 @@ export const generators: Generator[] = [
       const v = round(top + 1, 6);
       const shown = [...others.slice(0, y).map((x) => num(x)), '?', ...others.slice(y).map((x) => num(x))];
       return {
-        prompt: `The right class is $\\symy = ${y}$, and the scores are $\\syms = [${shown.join(',\\ ')}]$ with its score still to choose. What is the smallest $\\syms_{${y}}$ that makes the hinge loss, with a margin of 1, exactly zero?`,
+        prompt: `The scores are $\\syms = [${shown.join(',\\ ')}]$, and the right class is $\\symy = ${y}$, counting from 0. What is the smallest $\\syms_{${y}}$ that makes the hinge loss zero?`,
         answer: { kind: 'number', value: v },
         traps: [
           { value: top, why: `That only ties class ${j}: its term would be $\\max(0,\\ 0 + 1) = 1$. The right class must beat it by the margin.` },
           { value: round(top - 1, 6), why: `That is 1 below class ${j}, so its term would be $\\max(0,\\ 1 + 1) = 2$. The right class must be at least 1 above every other.` },
         ],
         solution: [
-          `The loss is zero when every term $\\max(0,\\ \\syms_j - \\syms_{${y}} + 1)$ is 0, that is, $\\syms_{${y}} \\ge \\syms_j + 1$ for every other class $j$.`,
-          `The strictest is the highest other score, class ${j}'s $${num(top)}$: $\\syms_{${y}} \\ge ${par(top)} + 1 = ${num(v)}$.`,
+          `The loss is zero when every term $\\max(0,\\ \\syms_j - \\syms_{${y}} + 1)$ is 0, that is, when $\\syms_{${y}}$ is at least $\\syms_j + 1$ for every other class $j$.`,
+          `The strictest is the highest other score, class ${j}'s $${num(top)}$: $\\syms_{${y}}$ must be at least $${par(top)} + 1 = ${num(v)}$.`,
         ],
       };
     },

@@ -21,8 +21,8 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'list', say: 'A vector is a list of numbers, kept in order. This one, x, holds four: three, minus one, four, and two.', code: 'x' },
-        { id: 'dim', say: 'How many numbers it holds is its length, or its dimension. This x is four-dimensional, written {x ∈ ℝ⁴|x in R four}.', code: 'len' },
-        { id: 'index', say: 'Each entry has an index: its position. Python counts from zero, so {x[0]|x of zero} is the first entry, three.', code: 'x0' },
+        { id: 'dim', say: 'How many numbers it holds is its length, or its dimension. This x is four-dimensional, written {x ∈ ℝ⁴|x in R four}. {ℝ|R} stands for the real numbers, {ℝ⁴|R four} for every list of four of them, and {∈|in} reads “is in”.', code: 'len' },
+        { id: 'index', say: 'Each entry has an index: its position, written in square brackets. Python counts from zero, so {x[0]|x of zero} is the first entry, three.', code: 'x0' },
         { id: 'last', say: 'That makes the last of four entries {x[3]|x of three}. There is no {x[4]|x of four}.', code: ['x3', 'x4'] },
       ],
     },
@@ -58,7 +58,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'add', say: 'Two vectors of the same length add entry by entry: first plus first, second plus second, third plus third.', code: ['u', 'add'] },
-        { id: 'scale', say: 'Multiplying by a number scales every entry. Two times u doubles each one.', code: 'scale' },
+        { id: 'scale', say: 'Multiplying by a number scales every entry. Two times u, written {2u|two u}, doubles each one.', code: 'scale' },
         { id: 'same', say: 'The lengths have to match. Give v a fourth entry, and u has nothing to add to it.', code: 'bad' },
         { id: 'turn', say: 'Your turn.' },
       ],

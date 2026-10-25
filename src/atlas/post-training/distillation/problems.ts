@@ -69,7 +69,7 @@ export const generators: Generator[] = [
       const total = e.reduce((a, b) => a + b, 0);
       const lead = z.filter((x) => x === Math.max(...z)).length === 1 ? top(z) : -1;
       return {
-        prompt: `A teacher network scores an image over the classes ${names(cs)}: $\\syms = ${vec(s)}$. Distillation softens them with the temperature $\\symT = ${T}$: $${Q} = \\mathrm{softmax}(\\syms / \\symT)$. What is $${Q}_{${k}}$, the soft target for ${cs[k]}? Round to two decimals.\n\nUse ${useExp(z)}.`,
+        prompt: `A teacher network scores an image over the classes ${names(cs)}: $\\syms = ${vec(s)}$. At temperature $\\symT = ${T}$, what is the soft target $${Q}_{${k}}$? Round to two decimals.\n\nUse ${useExp(z)}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(v, [
           { value: soft(s)[k]!, why: `That is the teacher at $\\symT = 1$: softmax of the raw scores. Divide them by $\\symT = ${T}$ first.` },
@@ -78,7 +78,7 @@ export const generators: Generator[] = [
           ...(lead >= 0 ? [{ value: k === lead ? 1 : 0, why: `That is the hard label, one-hot on ${cs[lead]}. The soft target comes from the teacher's softened probabilities.` }] : []),
         ], 2),
         solution: [
-          `Divide by the temperature: $\\syms / ${T} = ${vec(z)}$.`,
+          `The soft targets are $${Q} = \\mathrm{softmax}(\\syms / \\symT)$. Divide by the temperature: $\\syms / ${T} = ${vec(z)}$.`,
           `Exponentiate: ${z.map((x) => (x === 0 ? '$e^{0} = 1$' : `$e^{${num(x)}} \\approx ${num(E2(x), 2)}$`)).join(', ')}; they add up to $${num(total, 2)}$.`,
           `${cs[k]![0]!.toUpperCase()}${cs[k]!.slice(1)}: $${Q}_{${k}} = ${num(e[k]!, 2)} / ${num(total, 2)} \\approx ${num(v, 2)}$.`,
         ],
@@ -96,9 +96,8 @@ export const generators: Generator[] = [
       const terms = q.map((x, i) => clean(x * nl[i]!));
       const v = clean(terms.reduce((a, b) => a + b, 0));
       const t = top(q);
-      const formula = d < 0.5 ? `$\\symL = -\\sum_k ${Q}_k \\ln \\symp_k$` : `$\\symL$, the cross-entropy of $\\symp$ against the soft targets $${Q}$`;
       return {
-        prompt: `For one image, the teacher's softened probabilities are $${Q} = ${vec(q)}$, and the student's, at the same temperature, are $\\symp = ${vec(p)}$. What is the distillation loss ${formula}? Round to two decimals.\n\nUse ${useLn(p)}.`,
+        prompt: `For one image, the soft targets are $${Q} = ${vec(q)}$, and the student's probabilities, at the same temperature, are $\\symp = ${vec(p)}$. What is the distillation loss $\\symL$? Round to two decimals.\n\nUse ${useLn(p)}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(v, [
           { value: nl[t]!, why: `That is $-\\ln \\symp_{${t}}$ alone, the loss with a hard label on the teacher's top class. Soft targets weight every class by $${Q}$.` },
@@ -107,7 +106,7 @@ export const generators: Generator[] = [
           { value: p.reduce((a, x, i) => a - x * LN(q[i]!), 0), why: `That swaps the two. The teacher's $${Q}$ are the weights, and the log is of the student's $\\symp$.` },
         ], 2),
         solution: [
-          `Each class adds $${Q}_k \\times (-\\ln \\symp_k)$: ${q.map((x, i) => `$${num(x)} \\times ${num(nl[i]!, 2)} = ${num(terms[i]!)}$`).join(', ')}.`,
+          `The loss is $\\symL = -\\sum_k ${Q}_k \\ln \\symp_k$, so each class adds $${Q}_k \\times (-\\ln \\symp_k)$: ${q.map((x, i) => `$${num(x)} \\times ${num(nl[i]!, 2)} = ${num(terms[i]!)}$`).join(', ')}.`,
           `Add them: $\\symL = ${terms.map((x) => num(x)).join(' + ')} = ${num(v)} \\approx ${num(round(v, 2), 2)}$.`,
           `Every class counts, in proportion to how much probability the teacher gives it.`,
         ],
@@ -123,7 +122,7 @@ export const generators: Generator[] = [
       const raise = rng.int(2) === 0;
       const [from, to] = raise ? [T1, T2] : [T2, T1];
       return {
-        prompt: `A teacher's scores for an image are $\\syms = ${vec(s)}$, and distillation trains the student on the soft targets $${Q} = \\mathrm{softmax}(\\syms / \\symT)$. Changing $\\symT$ from $${from}$ to $${to}$, what happens to $${Q}$?`,
+        prompt: `A teacher's scores for an image are $\\syms = ${vec(s)}$. If distillation's temperature $\\symT$ goes from $${from}$ to $${to}$, what happens to the soft targets $${Q}$?`,
         answer: {
           kind: 'choice',
           options: [
@@ -141,7 +140,7 @@ export const generators: Generator[] = [
           ],
         },
         solution: [
-          `Dividing by $\\symT$ scales every gap between the scores by $1/\\symT$: from $1/${from}$ to $1/${to}$ here.`,
+          `The soft targets are $${Q} = \\mathrm{softmax}(\\syms / \\symT)$, so dividing by $\\symT$ scales every gap between the scores by $1/\\symT$: from $1/${from}$ to $1/${to}$ here.`,
           raise
             ? 'Smaller gaps flatten softmax: the top class keeps the lead but gives up probability to the wrong classes, so how the teacher ranks them weighs more in the loss.'
             : 'Bigger gaps sharpen softmax: the targets move toward the one-hot label, and the hints about the wrong classes fade.',
@@ -170,7 +169,7 @@ export const generators: Generator[] = [
           [tidy(rt.map((x) => x / rt.reduce((a, b) => a + b, 0))), 'That is flatter than the teacher. It pays more on the top class than it saves on the others; the loss is smallest when $\\symp$ equals $' + Q + '$.'],
         ];
         how = `Here the targets are given: $${Q} = ${vec(q)}$.`;
-        prompt = `The teacher's soft targets for an image are $${Q} = ${vec(q)}$. Which student probabilities $\\symp$ make the distillation loss $-\\sum_k ${Q}_k \\ln \\symp_k$ smallest?`;
+        prompt = `The teacher's soft targets for an image are $${Q} = ${vec(q)}$. Which student probabilities $\\symp$ make the distillation loss smallest?`;
       } else {
         const z = ints(rng, 3, 0, 2, true);
         const T = pick(rng, [2, 3]);
@@ -193,7 +192,7 @@ export const generators: Generator[] = [
         prompt,
         answer: { kind: 'choice', options, correct: 0, why },
         solution: [
-          `The loss weights $-\\ln \\symp_k$ by the teacher's $${Q}_k$, so it is smallest when the student's probabilities equal the targets: $\\symp = ${vec(right)}$.`,
+          `The loss $-\\sum_k ${Q}_k \\ln \\symp_k$ weights $-\\ln \\symp_k$ by the teacher's $${Q}_k$, so it is smallest when the student's probabilities equal the targets: $\\symp = ${vec(right)}$.`,
           how,
           'A student sure of the top class would pay $-\\ln 0$, a loss without limit, on every class the teacher gives some probability.',
         ],

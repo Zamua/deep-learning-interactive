@@ -38,10 +38,10 @@ export const script: LectureScript = {
         three + two               # 0.784 #@sum
       `,
       beats: [
-        { id: 'p', say: 'Why does voting help? Say each sample is right with probability {0.7|zero point seven}, independently. Take three, and the vote is right when at least two of them are.', code: 'p' },
+        { id: 'p', say: 'Why does voting help? Say each sample is right with probability p, here {0.7|zero point seven}, independently. Take three, and the vote is right when at least two of them are.', code: 'p' },
         { id: 'three', say: 'All three right: {0.7³|zero point seven cubed}, which is {0.343|zero point three four three}.', code: 'three' },
         { id: 'two', say: 'Exactly two right: the wrong one can be the first, the second or the third sample. Three ways, each {0.7² × 0.3|zero point seven squared times zero point three}, so {0.441|zero point four four one} in all.', code: 'two' },
-        { id: 'sum', say: 'Together, {0.784|zero point seven eight four}: better than one sample\'s {0.7|zero point seven}. When most samples are right, the majority is right even more often.', code: 'sum' },
+        { id: 'sum', say: 'Together, {0.784|zero point seven eight four}, or in symbols {p³ + 3p²(1 − p)|p cubed, plus three p squared times one minus p}: better than one sample\'s {0.7|zero point seven}. When most samples are right, the majority is right even more often.', code: 'sum' },
         { id: 'below', say: 'It cuts both ways. At {0.4|zero point four}, a majority of three is right only {0.352|zero point three five two} of the time.' },
         { id: 'compare', say: 'And the vote needs answers that can be compared: a number, a letter, yes or no. Five stories never match word for word, so there is nothing to count.' },
         { id: 'turn', say: 'Your turn.' },

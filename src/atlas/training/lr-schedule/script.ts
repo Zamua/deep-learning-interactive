@@ -18,7 +18,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'why', say: 'The learning rate does not have to stay fixed. Big steps make fast progress early on, and small steps settle in at the end.' },
-        { id: 'ramp', say: 'Many runs begin with a warmup: the rate climbs in a straight line from zero to its peak over the first k steps.', code: ['peak', 'ramp'] },
+        { id: 'ramp', say: 'Many runs begin with a warmup: the rate climbs in a straight line from zero to its peak over the first k steps, so at step t it is the peak times t over k.', code: ['peak', 'ramp'] },
         { id: 'ex', say: 'With a peak of {0.1|zero point one} over a thousand steps, step two hundred and fifty runs at a quarter of the peak: {0.025|zero point zero two five}.', code: 'ex' },
         { id: 'reason', say: 'Why bother? At the start, far from any minimum, the gradients are at their largest and least steady. A full-size step on them can overshoot and blow up, so warmup eases in.', code: 'ramp' },
       ],
@@ -46,8 +46,8 @@ export const script: LectureScript = {
         # t = T/3:  cos = 0.5,  lr = 0.075                         #@third
       `,
       beats: [
-        { id: 'cos', say: 'Cosine decay glides down instead, along half a cosine wave, from {η|eta} max to {η|eta} min over T steps.', code: 'rule' },
-        { id: 'shape', say: 'It starts flat, falls fastest in the middle, and flattens out again at the end.', code: 'rule' },
+        { id: 'cos', say: 'Cosine decay glides down instead, along half a cosine wave, from {ηₘₐₓ|eta max}, the top rate, to {ηₘᵢₙ|eta min}, the bottom one, over T steps. At step t, the rate {ηₜ|eta t} is {ηₘᵢₙ|eta min} plus half the gap, times one plus {cos(πt/T)|the cosine of pi t over T}, with {π|pi} about {3.14|three point one four}.', code: 'rule' },
+        { id: 'shape', say: 'As t runs from zero to T, that cosine falls from one to minus one. So the rate starts flat, falls fastest in the middle, and flattens out again at the end.', code: 'rule' },
         { id: 'half', say: 'Halfway through, the cosine is zero, so the rate sits halfway between. From {0.1|zero point one} down to zero, that is {0.05|zero point zero five}.', code: 'half' },
         { id: 'third', say: 'A third of the way in, the cosine of {π|pi} over three is a half, so the rate is three quarters of the peak: {0.075|zero point zero seven five}.', code: 'third' },
         { id: 'turn', say: 'Your turn.' },

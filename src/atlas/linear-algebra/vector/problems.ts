@@ -88,7 +88,7 @@ export const generators: Generator[] = [
       const traps = [{ value: x[i - 1]!, why: `That is the ${ORD[i - 1]} entry, entry ${i} counting from 1. Indices start at 0, so $\\symx[${i}]$ is the ${ORD[i]}.` }];
       if (i !== x[i] && i !== x[i - 1]) traps.push({ value: i, why: `That is the index itself. $\\symx[${i}]$ is the entry stored at that position.` });
       return {
-        prompt: `$\\symx = ${vec(x)}$. What is $\\symx[${i}]$? Indices count from 0, as in Python.`,
+        prompt: `$\\symx = ${vec(x)}$. What is $\\symx[${i}]$?`,
         answer: { kind: 'number', value: x[i]! },
         traps,
         solution: [

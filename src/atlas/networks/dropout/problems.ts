@@ -5,6 +5,9 @@ import { clean, placesFor, traps, vtraps } from '../kit';
 
 const P = 2;
 
+/** The rounding instruction, only when two decimals actually round the answer. */
+const round2 = (v: number): string => (placesFor(v) ? ' Round to two decimals.' : '');
+
 /** A 0/1 mask of length n with at least one unit kept and one dropped. */
 function mask(rng: Rng, n: number): number[] {
   for (;;) {
@@ -24,7 +27,7 @@ export const generators: Generator[] = [
       const out = h.map((v, i) => clean((v * m[i]!) / p));
       const exact = out.every((v) => round(v, 2) === v);
       return {
-        prompt: `A hidden layer outputs $\\symh = ${vec(h)}$. Inverted dropout with keep probability $p = ${num(p)}$ draws the mask $m = ${vec(m)}$ (1 keeps a unit, 0 drops it). What does the layer pass on during training?${exact ? '' : ' Round to two decimals.'}`,
+        prompt: `A hidden layer outputs $\\symh = ${vec(h)}$. Inverted dropout with keep probability $p = ${num(p)}$ draws the mask $m = ${vec(m)}$. What does the layer pass on during training?${exact ? '' : ' Round to two decimals.'}`,
         answer: { kind: 'vector', value: out, places: placesFor(...out) },
         traps: vtraps(out, [
           { value: h.map((v, i) => v * m[i]!), why: `That drops the right units but forgets to divide the kept ones by $p = ${num(p)}$.` },
@@ -32,7 +35,7 @@ export const generators: Generator[] = [
           { value: h.map((v) => v / p), why: 'That scales every unit but forgets to drop the masked ones: zero every unit where $m$ is 0.' },
         ], P),
         solution: [
-          `Zero the dropped units: $\\symh \\odot m = ${vec(h.map((v, i) => v * m[i]! + 0))}$.`,
+          `Zero the dropped units, multiplying $\\symh$ by $m$ entry by entry: $${vec(h.map((v, i) => v * m[i]! + 0))}$.`,
           `Divide the kept ones by $p = ${num(p)}$${p === 0.5 ? ', which doubles them' : p === 0.25 ? ', which multiplies them by 4' : ''}: $${vec(out.map((v) => round(v, 2)))}$.`,
           'Averaged over many masks, each unit\'s output then matches its value without dropout.',
         ],
@@ -47,38 +50,38 @@ export const generators: Generator[] = [
       const v = d < 0.5 ? int(rng, 1, 8) : int(rng, 1, 40) / 10;
       if (kind === 0) {
         return {
-          prompt: `A unit's value is $h = ${num(v)}$. During training, inverted dropout keeps it with probability $p = ${num(p)}$ (dividing it by $p$) and otherwise outputs 0. What is the unit's expected output, averaged over many masks? Round to two decimals.`,
+          prompt: `Inverted dropout keeps a unit with probability $p = ${num(p)}$. The unit's value is $h = ${num(v)}$. What is its average output during training?`,
           answer: { kind: 'number', value: v, places: placesFor(v) },
           traps: traps(v, [
             { value: p * v, why: 'That is plain dropout, without the division by $p$. Inverted dropout divides the kept value by $p$, which cancels the $p$.' },
             { value: v / p, why: `That is its output when it is kept. It is kept only a fraction ${num(p)} of the time; the rest of the time it outputs 0.` },
           ], P),
-          solution: [`Kept, with probability ${num(p)}, the unit outputs $h / p = ${num(v)} / ${num(p)}$; dropped, it outputs 0.`, `Expected output: $${num(p)} \\times (${num(v)} / ${num(p)}) + ${num(clean(1 - p))} \\times 0 = ${num(v)}$.`, 'The same as without dropout: that is what the division by $p$ is for.'],
+          solution: [`Kept, with probability ${num(p)}, the unit outputs $h / p = ${num(v)} / ${num(p)}$; dropped, it outputs 0.`, `Average output: $${num(p)} \\times (${num(v)} / ${num(p)}) + ${num(clean(1 - p))} \\times 0 = ${num(v)}$.`, 'The same as without dropout: that is what the division by $p$ is for.'],
         };
       }
       if (kind === 1) {
         const want = clean(p * v);
         return {
-          prompt: `A unit's value is $h = ${num(v)}$. Plain dropout, with no rescaling, keeps it unchanged with probability $p = ${num(p)}$ and otherwise outputs 0. What is its expected output during training? Round to two decimals.`,
+          prompt: `Plain dropout keeps a unit with probability $p = ${num(p)}$. The unit's value is $h = ${num(v)}$. What is its average output during training?${round2(want)}`,
           answer: { kind: 'number', value: want, places: placesFor(want) },
           traps: traps(want, [
             { value: v, why: 'That is what inverted dropout preserves. Without the division by $p$, the unit outputs 0 a fraction of the time, which pulls the average down.' },
             { value: v / p, why: 'Nothing is divided here: the kept unit outputs $h$ unchanged.' },
             { value: (1 - p) * v, why: `That uses $1 - p$, the chance of being dropped. The unit outputs $h$ when it is kept, with probability ${num(p)}.` },
           ], P),
-          solution: [`Kept, with probability ${num(p)}, the unit outputs ${num(v)}; dropped, 0.`, `Expected output: $${num(p)} \\times ${num(v)} = ${num(want)}$.`, 'Smaller than without dropout, which is why this version must rescale at test time.'],
+          solution: [`Kept, with probability ${num(p)}, the unit outputs ${num(v)}; dropped, 0.`, `Average output: $${num(p)} \\times ${num(v)} = ${num(want)}$.`, 'Smaller than without dropout, which is why this version must rescale at test time.'],
         };
       }
       if (kind === 2) {
         const want = clean(1 / p);
         return {
-          prompt: `Dropout keeps each unit with probability $p = ${num(p)}$. By what factor must a kept unit's output be multiplied so its expected value stays what it was without dropout? Round to two decimals.`,
+          prompt: `Dropout keeps each unit with probability $p = ${num(p)}$. By what factor must a kept unit's output be multiplied so its average stays what it was without dropout?${round2(want)}`,
           answer: { kind: 'number', value: want, places: placesFor(want) },
           traps: traps(want, [
             { value: p, why: 'Multiplying by $p$ shrinks the kept units, and the dropped ones already pull the average down. Divide by $p$ instead.' },
             { value: 1 - p, why: 'That is the chance of being dropped. The kept units must make up for the missing fraction: multiply by $1/p$.' },
           ], P),
-          solution: [`Without rescaling, the expected output is $p\\,h = ${num(p)}\\,h$.`, `Multiplying the kept output by $1/p$ makes it $p \\times h / p = h$.`, `So the factor is $1 / ${num(p)} ${round(want, 2) === want ? '=' : '\\approx'} ${num(round(want, 2))}$.`],
+          solution: [`Without rescaling, the average output is $p\\,h = ${num(p)}\\,h$.`, `Multiplying the kept output by $1/p$ makes it $p \\times h / p = h$.`, `So the factor is $1 / ${num(p)} ${round(want, 2) === want ? '=' : '\\approx'} ${num(round(want, 2))}$.`],
         };
       }
       const H = pick(rng, [10, 20, 40, 100, 200, 500]);
@@ -98,8 +101,7 @@ export const generators: Generator[] = [
     id: 'test-time',
     make(rng) {
       const plain = rng.next() < 0.35;
-      const p = pick(rng, [0.5, 0.8, 0.9, 0.75]);
-      const H = pick(rng, [64, 100, 128, 256, 512]);
+      const p = pick(rng, [0.5, 0.6, 0.8, 0.9, 0.75]);
       const options = [
         'Keep every unit, and pass $\\symh$ through unchanged',
         'Keep every unit, and multiply each output by $p$',
@@ -109,8 +111,8 @@ export const generators: Generator[] = [
       const random = 'Then the same input could get a different prediction every time. At test time every unit is kept.';
       return {
         prompt: plain
-          ? `A layer of $\\symH = ${H}$ units was trained with plain dropout: each unit kept with probability $p = ${num(p)}$, the kept ones passed on unchanged. What should the layer do at test time?`
-          : `A layer of $\\symH = ${H}$ units was trained with inverted dropout: each unit kept with probability $p = ${num(p)}$, the kept ones divided by $p$. What should the layer do at test time?`,
+          ? `A layer was trained with plain dropout, keeping each unit with probability $p = ${num(p)}$. What should it do at test time?`
+          : `A layer was trained with inverted dropout, keeping each unit with probability $p = ${num(p)}$. What should it do at test time?`,
         answer: {
           kind: 'choice',
           options,

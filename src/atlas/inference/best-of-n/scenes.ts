@@ -8,7 +8,7 @@ const MISS4 = (1 - P) ** 4;
 
 const draw: SceneDef = {
   marks: {
-    f: { tex: String.raw`P(\text{hit}) = 1 - (1 - p)^n`, x: 0.5, y: 0.88, size: 5 },
+    f: { tex: String.raw`\text{hit} = 1 - (1 - p)^n`, x: 0.5, y: 0.88, size: 5 },
   },
   draw(s) {
     const xs = columns(s, 4, Math.min(26, (s.w / s.u - 28) / 3));

@@ -1,18 +1,18 @@
 {
- "duration": 72.009,
+ "duration": 76.154,
  "scenes": {
-  "sideways": [0.0, 25.679],
-  "one": [25.679, 72.009]
+  "sideways": [0.0, 29.824],
+  "one": [29.824, 76.154]
  },
  "beats": {
-  "sideways/recall": [0.7, 6.366, "Batch norm normalizes each feature over the examples in a batch: down a column.", [[1.51, 1.7], [5.07, 5.5]]],
-  "sideways/rows": [6.746, 14.114, "Layer norm turns that sideways. It normalizes each example over its own features: along a row.", [[8.866, 9.336], [12.626, 13.036], [13.876, 14.096]]],
-  "sideways/alone": [14.494, 24.579, "So an example's output depends on that example alone. The batch size does not matter, and training and test work the same way, with no running averages.", [[18.214, 18.694], [20.344, 20.754], [22.954, 23.194]]],
-  "one/x": [26.379, 32.291, "Take one example with four features: nine, three, seventeen and eleven.", [[28.559, 29.069], [29.559, 29.839], [30.319, 30.609], [31.389, 31.579]]],
-  "one/mean": [32.671, 35.154, "Their mean, mu, is ten.", [[33.431, 33.721], [34.151, 34.461]]],
-  "one/var": [35.534, 44.679, "The squared distances from it, one, forty nine, forty nine and one, average to twenty five, so the standard deviation is five.", [[37.184, 37.554], [37.924, 38.154], [38.914, 39.104], [40.384, 40.674], [42.134, 42.484]]],
-  "one/xhat": [45.059, 57.719, "Subtract the mean and divide by the standard deviation: nine becomes minus zero point two, three becomes minus one point four. Epsilon only guards against dividing by zero.", [[48.259, 48.819], [51.339, 51.859], [54.179, 54.719]]],
-  "one/gamma": [58.099, 69.789, "Then, as in batch norm, a learned scale, gamma, and shift, beta, with one entry of each per feature. With d features, that is two d learned numbers.", [[58.549, 58.759], [59.829, 60.159], [61.139, 61.389], [61.759, 62.059], [62.719, 62.959], [63.379, 63.669], [65.659, 66.229], [67.359, 67.629], [68.019, 68.169]]],
-  "one/turn": [70.169, 70.909, "Your turn.", []]
+  "sideways/recall": [0.7, 10.511, "Stack a batch as a matrix, X, one example per row. Batch norm normalizes each feature over the examples: down a column.", [[2.47, 2.81], [3.25, 3.61], [5.04, 5.62], [9.18, 9.62]]],
+  "sideways/rows": [10.891, 18.259, "Layer norm turns that sideways. It normalizes each example over its own features: along a row.", [[13.011, 13.481], [16.771, 17.181], [18.021, 18.241]]],
+  "sideways/alone": [18.639, 28.724, "So an example's output depends on that example alone. The batch size does not matter, and training and test work the same way, with no running averages.", [[22.359, 22.839], [24.489, 24.899], [27.099, 27.339]]],
+  "one/x": [30.524, 36.436, "Take one example with four features: nine, three, seventeen and eleven.", [[32.704, 33.214], [33.704, 33.984], [34.464, 34.754], [35.534, 35.724]]],
+  "one/mean": [36.816, 39.299, "Their mean, mu, is ten.", [[37.576, 37.866], [38.296, 38.606]]],
+  "one/var": [39.679, 48.824, "The squared distances from it, one, forty nine, forty nine and one, average to twenty five, so the standard deviation is five.", [[41.329, 41.699], [42.069, 42.299], [43.059, 43.249], [44.529, 44.819], [46.279, 46.629]]],
+  "one/xhat": [49.204, 61.864, "Subtract the mean and divide by the standard deviation: nine becomes minus zero point two, three becomes minus one point four. Epsilon only guards against dividing by zero.", [[52.404, 52.964], [55.484, 56.004], [58.324, 58.864]]],
+  "one/gamma": [62.244, 73.934, "Then, as in batch norm, a learned scale, gamma, and shift, beta, with one entry of each per feature. With d features, that is two d learned numbers.", [[62.694, 62.904], [63.974, 64.304], [65.284, 65.534], [65.904, 66.204], [66.864, 67.104], [67.524, 67.814], [69.804, 70.374], [71.504, 71.774], [72.164, 72.314]]],
+  "one/turn": [74.314, 75.054, "Your turn.", []]
  }
 }

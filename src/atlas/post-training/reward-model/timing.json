@@ -1,21 +1,21 @@
 {
- "duration": 102.401,
+ "duration": 113.12,
  "scenes": {
-  "compare": [0.0, 43.39],
-  "loss": [43.39, 102.401]
+  "compare": [0.0, 45.55],
+  "loss": [45.55, 113.12]
  },
  "beats": {
   "compare/hard": [0.7, 6.984, "Grading an answer on a scale is hard for people. Saying which of two answers is better is easy.", [[3.55, 4.1], [6.18, 6.37]]],
-  "compare/score": [7.364, 16.682, "A reward model reads an answer and gives it one number, a score, r. Say answer a scores two, and answer b scores one.", [[10.604, 10.874], [11.464, 11.764], [12.134, 12.694], [14.714, 15.004]]],
-  "compare/sigma": [17.062, 26.993, "Its prediction that people prefer a is the sigmoid of the gap: sigma of two minus one, which is sigma of one, about zero point seven three.", [[19.302, 19.532], [20.902, 21.382], [23.142, 23.422], [24.772, 25.112]]],
-  "compare/soft": [27.373, 36.274, "That is softmax over the two scores: e to the score of a, over the sum for both. Divide through, and it is the same sigmoid.", [[29.713, 30.183], [31.603, 31.833], [33.083, 33.683], [34.503, 34.713]]],
-  "compare/gap": [36.654, 42.29, "Only the gap matters. Add ten to both scores, and the prediction does not move.", [[38.204, 38.754], [40.344, 40.594]]],
-  "loss/pairs": [44.09, 49.273, "The training data is pairs of answers to the same prompt, where a person picked the winner.", [[47.4, 47.74]]],
-  "loss/loss": [49.653, 61.839, "The loss is cross-entropy on that choice: minus the log of the probability the model gave the winner. With a preferred, minus the log of zero point seven three: zero point three one.", [[52.103, 52.583], [55.623, 56.233], [57.073, 57.443], [59.933, 60.383]]],
-  "loss/flip": [62.219, 69.695, "Had the person picked b, the model would have given that only zero point two seven, and the loss would be one point three one.", [[63.739, 64.079], [67.079, 67.389]]],
-  "loss/push": [70.075, 82.742, "The loss's slope is sigma minus one for the winner's score, and one minus sigma for the loser's. So lowering the loss raises the winner and lowers the loser, by zero point two seven each.", [[73.675, 73.965], [76.065, 76.545], [80.425, 80.725]]],
-  "loss/agree": [83.122, 90.914, "A pair the model already ranks right, with sigma near one, barely moves it. A pair it gets wrong moves it the most.", [[85.412, 85.632], [86.812, 87.102], [87.972, 88.482], [89.672, 89.862]]],
-  "loss/rank": [91.294, 100.181, "So the model learns to rank answers the way people do. A score alone means nothing; only its gap to another answer's score does.", [[94.574, 95.104], [96.824, 97.344]]],
-  "loss/turn": [100.561, 101.301, "Your turn.", []]
+  "compare/score": [7.364, 18.842, "A reward model reads an answer and gives it one number, a score, r. Answer a's score, r a, is two, and answer b's, r b, is one.", [[10.594, 10.894], [11.474, 11.804], [12.164, 12.814], [14.064, 14.334], [15.004, 15.174], [15.744, 16.134], [17.124, 17.364], [18.004, 18.254]]],
+  "compare/sigma": [19.222, 29.154, "Its prediction that people prefer a is the sigmoid of the gap: sigma of two minus one, which is sigma of one, about zero point seven three.", [[21.462, 21.692], [23.062, 23.542], [25.302, 25.582], [26.932, 27.272]]],
+  "compare/soft": [29.534, 38.435, "That is softmax over the two scores: e to the score of a, over the sum for both. Divide through, and it is the same sigmoid.", [[31.874, 32.344], [33.764, 33.994], [35.244, 35.844], [36.664, 36.874]]],
+  "compare/gap": [38.815, 44.45, "Only the gap matters. Add ten to both scores, and the prediction does not move.", [[40.365, 40.915], [42.505, 42.755]]],
+  "loss/pairs": [46.25, 55.895, "The training data is pairs of answers to the same prompt, where a person picked the winner. Call the winner's score r w and the loser's r l.", [[49.5, 49.8], [51.27, 51.87], [53.93, 54.23], [54.96, 55.15]]],
+  "loss/loss": [56.275, 72.559, "The loss, L, is cross-entropy on that choice: minus the log of sigma of r w minus r l, the probability the model gave the winner. With a preferred, minus the log of zero point seven three: zero point three one.", [[56.975, 57.215], [57.565, 57.815], [59.745, 60.215], [63.885, 64.345], [66.385, 67.025], [67.895, 68.235], [70.715, 71.145]]],
+  "loss/flip": [72.939, 80.414, "Had the person picked b, the model would have given that only zero point two seven, and the loss would be one point three one.", [[74.459, 74.799], [77.799, 78.109]]],
+  "loss/push": [80.794, 93.461, "The loss's slope is sigma minus one for the winner's score, and one minus sigma for the loser's. So lowering the loss raises the winner and lowers the loser, by zero point two seven each.", [[84.394, 84.684], [86.784, 87.264], [91.144, 91.444]]],
+  "loss/agree": [93.841, 101.634, "A pair the model already ranks right, with sigma near one, barely moves it. A pair it gets wrong moves it the most.", [[96.131, 96.351], [97.531, 97.821], [98.691, 99.201], [100.391, 100.581]]],
+  "loss/rank": [102.014, 110.9, "So the model learns to rank answers the way people do. A score alone means nothing; only its gap to another answer's score does.", [[105.294, 105.824], [107.544, 108.064]]],
+  "loss/turn": [111.28, 112.02, "Your turn.", []]
  }
 }

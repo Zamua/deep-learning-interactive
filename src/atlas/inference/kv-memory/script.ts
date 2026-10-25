@@ -20,7 +20,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'grid', say: 'The KV cache keeps, for every token seen so far, a key and a value at every layer.', code: 'model' },
         { id: 'vec', say: 'Each key and each value is a vector of d numbers, as wide as the model. Here d is four thousand, and there are thirty two layers.', code: 'model' },
-        { id: 'per', say: 'So one token costs two vectors, times thirty two layers, times four thousand numbers. At sixteen bits, two bytes each, that is {512,000|five hundred and twelve thousand} bytes: half a megabyte, for a single token.', code: ['per', 'kb'] },
+        { id: 'per', say: 'So one token costs two vectors, times thirty two layers, times four thousand numbers. At sixteen bits, two bytes each, that is {512,000|five hundred and twelve thousand} bytes for a single token: half a megabyte, or MB, where a megabyte is a million bytes.', code: ['per', 'kb'] },
       ],
     },
     {

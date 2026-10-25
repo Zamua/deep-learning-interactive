@@ -22,7 +22,7 @@ export const generators: Generator[] = [
       const all = v.filter(Boolean).length;
       const list = v.map((ok, i) => `${i}: ${word(ok)}`).join(', ');
       return {
-        prompt: `A draft model proposes $k = ${k}$ tokens. In one pass, the large model checks each drafted token in order, counting from 0, and its verdicts are ${list}. How many tokens does this pass add to the text?`,
+        prompt: `A draft model proposes $k = ${k}$ tokens, and one pass of the large model gives these verdicts on them, in order: ${list}. How many tokens does this pass add to the text?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, [
           { value: kept, why: cut === k ? 'That leaves out the bonus: when every guess is accepted, the same pass also gives the large model\'s next token after the last one.' : `That leaves out the large model's own token at position ${cut}, which replaces the rejected guess.` },
@@ -54,7 +54,7 @@ export const generators: Generator[] = [
       const v = askSpeed ? clean(tokens / passes) : tokens;
       const kept = acc.reduce((a, x) => a + x, 0);
       return {
-        prompt: `Speculative decoding drafts $k = ${k}$ tokens per pass. Over ${passes} passes of the large model, the accepted prefixes have lengths ${acc.join(', ')}. ${askSpeed ? 'Plain decoding writes one token per large-model pass. How many tokens did each pass write here on average, which is how many times fewer large-model passes it needs? Round to two decimals.' : 'How many tokens were written in all?'}`,
+        prompt: `Speculative decoding drafts $k = ${k}$ tokens per pass. Over ${passes} passes of the large model, the accepted prefixes have lengths ${acc.join(', ')}. ${askSpeed ? 'How many times fewer large-model passes than plain decoding did those tokens take? Round to two decimals.' : 'How many tokens were written in all?'}`,
         answer: askSpeed ? { kind: 'number', value: v, places: 2 } : { kind: 'number', value: v },
         traps: traps(v, [
           { value: askSpeed ? clean(kept / passes) : kept, why: 'That leaves out the one token every pass adds after its accepted prefix: the correction, or the bonus when all are accepted.' },

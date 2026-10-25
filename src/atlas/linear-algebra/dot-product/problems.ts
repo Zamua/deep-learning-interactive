@@ -61,7 +61,7 @@ export const generators: Generator[] = [
       const correct = v > 0 ? 0 : v === 0 ? 1 : 2;
       const sum = `$${prodTex(w, x)} = ${v}$`;
       return {
-        prompt: `$\\symw = ${vec(w)}$ and $\\symx = ${vec(x)}$. Without finishing the arithmetic if you can avoid it: is $\\symw \\cdot \\symx$ positive, zero or negative?`,
+        prompt: `$\\symw = ${vec(w)}$ and $\\symx = ${vec(x)}$. What is the sign of $\\symw \\cdot \\symx$?`,
         answer: {
           kind: 'choice',
           options: ['Positive: they point roughly the same way', 'Zero: they are perpendicular', 'Negative: they point roughly opposite ways'],

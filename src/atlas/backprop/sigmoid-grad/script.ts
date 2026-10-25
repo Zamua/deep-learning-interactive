@@ -19,7 +19,7 @@ export const script: LectureScript = {
         sigmoid(-2)    # 0.12              #@neg
       `,
       beats: [
-        { id: 'def', say: 'The sigmoid squashes any number into the range zero to one. {σ(x)|Sigma of x} is one over one plus e to the minus x.', code: 'def' },
+        { id: 'def', say: 'The sigmoid squashes any number into the range zero to one. Written {σ(x)|sigma of x}, with the Greek letter sigma, it is one over one plus e to the minus x.', code: 'def' },
         { id: 'zero', say: 'At zero, e to the zero is one, so sigma is one over two: a half.', code: 'zero' },
         { id: 'two', say: 'At two, e to the minus two is about {0.14|zero point one four}. One over {1.14|one point one four} is about {0.88|zero point eight eight}.', code: 'two' },
         { id: 'tails', say: 'Far to the right it creeps up toward one, and far to the left down toward zero. At minus two, it is {0.12|zero point one two}.', code: 'neg' },
@@ -37,7 +37,7 @@ export const script: LectureScript = {
         dx = local * dout                 #@chain
       `,
       beats: [
-        { id: 'rule', say: 'Its slope has a neat form: sigma times one minus sigma. Backprop can build it from the output it already has.', code: ['out', 'local'] },
+        { id: 'rule', say: 'Its slope, {dσ/dx|d sigma, d x}, has a neat form: sigma times one minus sigma. Backprop can build it from the output it already has.', code: ['out', 'local'] },
         { id: 'two', say: 'At x equals two, that is {0.88|zero point eight eight} times {0.12|zero point one two}: about {0.105|zero point one zero five}.', code: 'two' },
         { id: 'peak', say: 'The slope is steepest at zero: a half times a half, a quarter. It is never more than that.', code: 'peak' },
         { id: 'chain', say: 'In a graph, the sigmoid node multiplies the gradient from above by this local slope, so it shrinks the gradient at least four times.', code: 'chain' },

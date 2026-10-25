@@ -1,9 +1,9 @@
 {
- "duration": 119.84,
+ "duration": 123.301,
  "scenes": {
   "players": [0.0, 31.264],
   "dstep": [31.264, 74.569],
-  "gstep": [74.569, 119.84]
+  "gstep": [74.569, 123.301]
  },
  "beats": {
   "players/gen": [0.7, 11.665, "A generative adversarial network, or GAN, is two networks. The generator, G, turns random noise, z, into an image: a fake.", [[2.87, 3.1], [3.85, 4.1], [5.24, 5.84], [6.65, 6.82], [7.25, 7.56], [8.85, 9.03], [9.48, 9.82], [10.7, 11.09]]],
@@ -13,10 +13,10 @@
   "dstep/real": [39.378, 48.224, "Say D gives a real image zero point eight. Its cross-entropy is minus the log of zero point eight: zero point two two.", [[42.398, 42.948], [46.338, 46.848]]],
   "dstep/fake": [48.604, 62.512, "And it gives a fake zero point three. A fake's right answer is zero, whose probability is one minus zero point three, zero point seven. Minus the log of zero point seven is zero point three six.", [[50.884, 51.434], [53.394, 53.684], [56.624, 56.964], [57.994, 58.494], [60.604, 60.814]]],
   "dstep/sum": [62.892, 73.469, "D's loss is the two together: zero point five eight. Its step pushes the real score up and the fake score down, while G's weights stay fixed.", [[64.882, 65.332], [66.792, 67.332], [69.562, 69.812], [71.162, 71.552]]],
-  "gstep/flip": [75.269, 88.166, "Then it is G's turn. G is trained as if its fake were labeled real, so its loss is minus the log of D of G of z. At zero point three, that is one point two zero.", [[76.809, 77.389], [80.199, 80.609], [84.159, 84.669], [85.939, 86.269]]],
-  "gstep/back": [88.546, 97.462, "The gradient flows back through D, which is held fixed, and into G. G's step changes its fakes so that D's score on them rises.", [[90.566, 90.716], [91.776, 91.956], [92.796, 93.386]]],
-  "gstep/alternate": [97.842, 104.034, "The steps alternate, D then G, and each network keeps improving against the other.", [[99.032, 99.482], [99.892, 100.082], [100.702, 101.162]]],
-  "gstep/collapse": [104.414, 117.62, "One way it fails: G finds a few fakes that fool D, and makes only those, whatever z it is given. Each sample looks real, but the variety is gone. That is mode collapse.", [[105.614, 106.174], [108.734, 109.014], [110.264, 110.554], [111.884, 112.484], [113.894, 114.214], [115.574, 116.084]]],
-  "gstep/turn": [118.0, 118.74, "Your turn.", []]
+  "gstep/flip": [75.269, 91.627, "Then it is G's turn. G is trained as if its fake were labeled real, so its loss is minus the log of D of G of z: D's score on the fake that G makes from z. At zero point three, that is one point two zero.", [[76.859, 77.479], [80.329, 80.699], [84.259, 84.819], [87.629, 88.229], [89.499, 89.759]]],
+  "gstep/back": [92.007, 100.923, "The gradient flows back through D, which is held fixed, and into G. G's step changes its fakes so that D's score on them rises.", [[94.027, 94.177], [95.237, 95.417], [96.257, 96.847]]],
+  "gstep/alternate": [101.303, 107.495, "The steps alternate, D then G, and each network keeps improving against the other.", [[102.493, 102.943], [103.353, 103.543], [104.163, 104.623]]],
+  "gstep/collapse": [107.875, 121.081, "One way it fails: G finds a few fakes that fool D, and makes only those, whatever z it is given. Each sample looks real, but the variety is gone. That is mode collapse.", [[109.075, 109.635], [112.195, 112.475], [113.725, 114.015], [115.345, 115.945], [117.355, 117.675], [119.035, 119.545]]],
+  "gstep/turn": [121.461, 122.201, "Your turn.", []]
  }
 }

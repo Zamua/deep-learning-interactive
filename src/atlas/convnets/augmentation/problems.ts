@@ -51,7 +51,7 @@ export const generators: Generator[] = [
       const task = pick(rng, TASKS);
       const safe = rng.shuffle([...task.safe]).slice(0, 3);
       return {
-        prompt: `A model learns to label images of ${task.what}. Each time a training image is used, it is changed a little at random. Which change could make its label wrong?`,
+        prompt: `A model learns to label images of ${task.what}. Which random change to a training image could make its label wrong?`,
         answer: shuffled(rng, [{ text: TEXT[task.bad], why: null }, ...safe.map((t) => ({ text: TEXT[t], why: SAFE_WHY[t] }))]),
         solution: [
           `${task.why}`,
@@ -89,7 +89,7 @@ export const generators: Generator[] = [
       const b = H - c + 1;
       const v = a * b * (flip ? 2 : 1);
       return {
-        prompt: `Training images are $${W} \\times ${H}$ pixels (width by height). Each time one is used, a random $${c} \\times ${c}$ crop is cut at whole-pixel positions${flip ? ', and then flipped left to right half of the time' : ''}. How many different versions of one image can that give?`,
+        prompt: `A random $${c} \\times ${c}$ crop is cut at whole-pixel positions from a training image of $${W} \\times ${H}$ pixels (width by height)${flip ? ', then flipped left to right half of the time' : ''}. How many different versions of the image can that give?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: (W - c) * (H - c) * (flip ? 2 : 1), why: `That leaves out the $+1$: across, the crop can start at $0$ to $${W - c}$, which is $${a}$ places.` },

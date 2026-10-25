@@ -1,18 +1,18 @@
 {
- "duration": 86.784,
+ "duration": 101.364,
  "scenes": {
-  "shift": [0.0, 51.067],
-  "loss": [51.067, 86.784]
+  "shift": [0.0, 54.45],
+  "loss": [54.45, 101.364]
  },
  "beats": {
   "shift/task": [0.7, 9.968, "A language model reads text and, at every step, predicts what comes next. Here the tokens are characters, and the text is hello.", [[2.57, 2.73], [3.08, 3.25], [4.1, 4.34], [5.77, 6.29], [8.2, 8.53]]],
   "shift/shift": [10.348, 19.614, "So the inputs are h, e, l, l, and the targets are the same text shifted by one: e, l, l, o.", [[12.218, 12.458], [12.818, 13.068], [13.398, 13.578], [13.898, 14.358], [17.288, 17.798], [18.108, 18.268], [18.588, 18.748]]],
-  "shift/scores": [19.994, 30.376, "At each step, a linear layer turns the hidden state into one score for every token in the vocabulary: four here, h, e, l and o.", [[20.914, 21.194], [26.284, 26.774], [27.514, 27.924], [28.324, 28.634], [28.974, 29.244], [29.594, 29.764]]],
-  "shift/softmax": [30.756, 39.51, "Softmax turns the scores into probabilities for the next character. After reading h, this model gives e zero point five.", [[34.646, 35.256], [36.446, 36.706], [38.036, 38.276]]],
-  "shift/memory": [39.89, 49.967, "Look at steps two and three. Both read an l, but one must predict l and the other o. Only the memory, h, can tell them apart.", [[41.69, 42.18], [43.4, 43.72], [45.26, 45.45], [46.49, 47.04], [48.0, 48.29], [48.72, 48.93]]],
-  "loss/step": [51.767, 65.817, "Each step is a classification over the vocabulary, so its loss is cross-entropy. At step zero the target, e, got zero point five: the loss is minus its log, zero point six nine.", [[54.767, 55.117], [57.007, 57.657], [58.697, 58.917], [59.567, 59.767], [60.097, 60.367], [61.787, 62.237], [63.997, 64.357]]],
-  "loss/all": [66.197, 74.694, "Every step does the same against its own target: zero point nine two, zero point five one, and zero point two two.", [[69.057, 69.527], [70.857, 71.227], [72.527, 72.857]]],
-  "loss/total": [75.074, 84.563, "The loss for the whole text adds them up: two point three four. Divided by the four steps, that is about zero point five nine per step.", [[77.334, 77.854], [79.064, 79.634], [81.244, 81.534]]],
-  "loss/turn": [84.943, 85.684, "Your turn.", []]
+  "shift/scores": [19.994, 33.759, "At each step, a linear layer with weights W h y, from h to the output, turns the hidden state into one score for every token in the vocabulary: four here, h, e, l and o.", [[20.844, 21.094], [23.894, 24.104], [25.424, 25.694], [29.934, 30.394], [31.134, 31.504], [31.924, 32.104], [32.434, 32.694]]],
+  "shift/softmax": [34.139, 42.893, "Softmax turns the scores into probabilities for the next character. After reading h, this model gives e zero point five.", [[38.029, 38.639], [39.829, 40.089], [41.419, 41.659]]],
+  "shift/memory": [43.273, 53.35, "Look at steps two and three. Both read an l, but one must predict l and the other o. Only the memory, h, can tell them apart.", [[45.073, 45.563], [46.783, 47.103], [48.643, 48.833], [49.873, 50.423], [51.383, 51.673], [52.103, 52.313]]],
+  "loss/step": [55.15, 70.254, "Each step is a classification over the vocabulary, so its loss, L t, is cross-entropy. At step zero the target, e, got zero point five: the loss is minus its log, zero point six nine.", [[58.16, 58.5], [59.38, 59.61], [60.21, 60.52], [61.61, 62.22], [63.24, 63.41], [64.09, 64.36], [64.69, 64.91], [66.31, 66.78], [68.46, 68.8]]],
+  "loss/all": [70.634, 79.132, "Every step does the same against its own target: zero point nine two, zero point five one, and zero point two two.", [[73.494, 73.964], [75.294, 75.664], [76.964, 77.294]]],
+  "loss/total": [79.512, 99.144, "The loss for the whole text, L, adds them up: two point three four. In symbols, L is the sum over steps t of minus ln p t at y t, where y t is step t's target. Divided by the four steps, that is about zero point five nine per step.", [[81.062, 81.362], [81.712, 82.002], [82.622, 83.112], [84.292, 84.852], [85.592, 85.912], [91.092, 91.482], [93.722, 94.272], [95.862, 96.212]]],
+  "loss/turn": [99.524, 100.264, "Your turn.", []]
  }
 }

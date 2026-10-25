@@ -19,8 +19,8 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'perp', say: 'A stream of d numbers has room for only d directions at exact right angles. In two dimensions, two features fit perfectly.', code: 'd' },
-        { id: 'three', say: 'Three features? Give up exact right angles, and spread them a hundred and twenty degrees apart.', code: 'W' },
-        { id: 'cos', say: 'Now every pair overlaps: the dot product of any two directions is the cosine of a hundred and twenty degrees, minus a half.', code: 'cos' },
+        { id: 'three', say: 'Three features? Give up exact right angles, and spread them {120°|a hundred and twenty degrees} apart.', code: 'W' },
+        { id: 'cos', say: 'Now every pair overlaps. For unit directions, arrows of length one, the dot product is the cosine of the angle between them: one when they point the same way, zero at a right angle. Here it is {cos 120° = −0.5|the cosine of a hundred and twenty degrees, minus a half}.', code: 'cos' },
       ],
     },
     {
@@ -35,7 +35,7 @@ export const script: LectureScript = {
         (f @ W) @ W[0]             # 1 - 0.5 = 0.5    #@two
       `,
       beats: [
-        { id: 'store', say: 'Store a value: feature zero at one. The stream is its direction, one, zero.', code: 'one' },
+        { id: 'store', say: 'Store values by adding up each feature\'s value times its direction. Here the values, f, are one, zero, zero: feature zero alone, at one. The stream is its direction, one, zero.', code: 'one' },
         { id: 'read', say: 'Read each feature back with a dot product. Feature zero reads one, exactly right. Feature one reads minus a half: a leak, called interference.', code: 'read' },
         { id: 'both', say: 'Now turn on features zero and one together. Reading feature zero gives one, minus a half: only a half. The leak has eaten half the signal.', code: 'two' },
       ],

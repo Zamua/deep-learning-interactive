@@ -1,21 +1,21 @@
 {
- "duration": 117.717,
+ "duration": 143.657,
  "scenes": {
-  "moments": [0.0, 42.733],
-  "correct": [42.733, 80.652],
-  "step": [80.652, 117.717]
+  "moments": [0.0, 50.786],
+  "correct": [50.786, 96.897],
+  "step": [96.897, 143.657]
  },
  "beats": {
-  "moments/m": [0.7, 11.72, "Adam keeps two running averages for every parameter. The first, m, is a momentum: beta one times m, plus one minus beta one times the gradient.", [[3.69, 4.25], [4.88, 5.11], [5.48, 5.7], [6.51, 7.04], [8.56, 8.79]]],
-  "moments/v": [12.1, 21.444, "The second, v, averages the squared gradient the same way, with beta two. It tracks how big this parameter's gradients usually are.", [[12.8, 13.12], [13.54, 13.98], [16.45, 16.7], [17.64, 18.14]]],
-  "moments/betas": [21.824, 26.758, "Typical values are zero point nine and zero point nine nine nine.", [[24.374, 24.554]]],
-  "moments/zero": [27.138, 41.633, "Both start at zero. After one step with a gradient of two, m is a tenth of two, zero point two, and v is a thousandth of four, zero point zero zero four. Both are far too small.", [[28.718, 29.268], [31.538, 31.868], [33.318, 33.648], [34.678, 35.128], [37.168, 37.508], [39.488, 39.998]]],
-  "correct/bias": [43.433, 55.727, "Starting from zero drags both averages toward zero early on. Adam divides that out: m hat is m over one minus beta one to the t, where t counts the steps.", [[47.633, 48.243], [49.553, 50.133], [53.643, 54.053]]],
-  "correct/first": [56.107, 71.298, "At step one, that is zero point two over zero point one: exactly the gradient, two. And v hat is zero point zero zero four over zero point zero zero one: four, the squared gradient.", [[57.087, 57.437], [60.547, 60.997], [62.247, 62.637], [62.967, 63.547], [66.567, 66.837], [68.847, 69.247], [69.707, 70.077]]],
-  "correct/later": [71.678, 79.552, "As t grows, beta to the t shrinks toward zero, the divisor climbs to one, and the correction fades away.", [[72.788, 73.098], [75.568, 75.928], [77.568, 77.848]]],
-  "step/step": [81.352, 89.733, "The step is eta times m hat, divided by the square root of v hat, plus a tiny epsilon so it never divides by zero.", [[83.702, 83.922], [86.072, 86.362]]],
-  "step/first": [90.113, 101.503, "At step one that is eta times two over two: exactly eta. A gradient of five hundred, or of zero point zero zero two, gives the same first step.", [[91.083, 91.363], [93.493, 93.913], [95.033, 95.563], [97.063, 97.283], [99.653, 99.993]]],
-  "step/per": [101.883, 115.496, "Later, each step is the average gradient measured in units of its own typical size. A parameter whose gradients are always tiny still moves about eta per step, where plain gradient descent would barely move it.", [[102.383, 102.683], [107.203, 107.793], [110.313, 110.493], [112.523, 112.823]]],
-  "step/turn": [115.876, 116.617, "Your turn.", []]
+  "moments/m": [0.7, 17.461, "Adam keeps two running averages for every parameter. The first, m, is a momentum: beta one times m, plus one minus beta one times the gradient, where beta one, read \u201cbeta one\u201d, is the share of m kept each step.", [[3.76, 4.32], [4.95, 5.22], [5.58, 5.86], [6.7, 7.22], [8.75, 8.99], [11.75, 12.22], [13.23, 13.55], [13.85, 14.08], [14.83, 15.17]]],
+  "moments/v": [17.841, 29.497, "The second, v, here not a velocity, averages the squared gradient the same way, keeping a share beta two. It tracks how big this parameter's gradients usually are.", [[18.551, 18.831], [19.251, 19.641], [20.981, 21.371], [23.791, 24.091], [25.681, 26.151]]],
+  "moments/betas": [29.877, 34.811, "Typical values are zero point nine and zero point nine nine nine.", [[32.427, 32.607]]],
+  "moments/zero": [35.191, 49.686, "Both start at zero. After one step with a gradient of two, m is a tenth of two, zero point two, and v is a thousandth of four, zero point zero zero four. Both are far too small.", [[36.771, 37.321], [39.591, 39.921], [41.371, 41.701], [42.731, 43.181], [45.221, 45.561], [47.541, 48.051]]],
+  "correct/bias": [51.486, 70.638, "Starting from zero drags both averages toward zero early on, and Adam divides that out. m hat, the hat marking a corrected estimate, is m over one minus beta one to the t, where t counts the steps; v hat is v over one minus beta two to the t.", [[55.706, 56.016], [57.566, 58.456], [59.026, 59.366], [61.246, 61.566], [64.466, 64.796], [66.366, 66.976], [67.586, 67.766]]],
+  "correct/first": [71.018, 86.21, "At step one, that is zero point two over zero point one: exactly the gradient, two. And v hat is zero point zero zero four over zero point zero zero one: four, the squared gradient.", [[71.998, 72.348], [75.458, 75.908], [77.158, 77.548], [77.878, 78.458], [81.478, 81.748], [83.758, 84.158], [84.618, 84.988]]],
+  "correct/later": [86.59, 95.797, "As t grows, beta to the t, for either beta, shrinks toward zero, the divisor climbs to one, and the correction fades away.", [[87.7, 88.0], [89.13, 89.35], [90.28, 90.55], [91.93, 92.25], [93.88, 94.12]]],
+  "step/step": [97.597, 109.859, "The step is eta times m hat, divided by the square root of v hat, written root v hat, plus a tiny epsilon, the Greek letter epsilon, so it never divides by zero.", [[99.997, 100.237], [102.397, 102.757], [103.127, 103.287], [104.167, 104.587], [106.157, 106.487], [107.687, 108.007]]],
+  "step/first": [110.239, 127.444, "At step one, root v hat is the size of g, the gradient with its sign dropped, so the step is eta times two over two: exactly eta. A gradient of five hundred, or of zero point zero zero two, gives the same first step.", [[111.179, 111.609], [113.919, 114.339], [116.109, 116.579], [119.189, 119.699], [120.799, 121.399], [122.889, 123.169], [125.529, 125.919]]],
+  "step/per": [127.824, 141.437, "Later, each step is the average gradient measured in units of its own typical size. A parameter whose gradients are always tiny still moves about eta per step, where plain gradient descent would barely move it.", [[128.324, 128.624], [133.144, 133.734], [136.254, 136.434], [138.464, 138.764]]],
+  "step/turn": [141.817, 142.557, "Your turn.", []]
  }
 }

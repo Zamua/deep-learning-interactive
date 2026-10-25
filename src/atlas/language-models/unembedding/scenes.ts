@@ -84,7 +84,7 @@ function plane(s: Scene, a: number, lab: number): void {
 
 const tie: SceneDef = {
   marks: {
-    t: { tex: String.raw`\sym{WU}{W_U} = E \quad\Rightarrow\quad \syms_j = E_j \cdot \symh`, x: 0.5, y: 0.1, size: 4.6 },
+    t: { tex: String.raw`\sym{WU}{W_U} = E, \quad\text{so}\quad \syms_j = E_j \cdot \symh`, x: 0.5, y: 0.1, size: 4.6 },
   },
   draw(s) {
     const pt = s.ease('point', 0.7);

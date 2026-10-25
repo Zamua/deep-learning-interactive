@@ -37,7 +37,7 @@ export const generators: Generator[] = [
         const tok = words(rng, 1)[0]!;
         const v = clean(LN(p) - LN(q));
         return {
-          prompt: `The model being trained gives the token \`${tok}\` probability $${PI} = ${num(p)}$, and the reference model gave it $${REF} = ${num(q)}$. What is its log-ratio, $${KL}$? Round to two decimals.\n\nUse ${useLn([p, q])}.`,
+          prompt: `The token \`${tok}\` has $${PI} = ${num(p)}$ and $${REF} = ${num(q)}$. What is its log-ratio? Round to two decimals.\n\nUse ${useLn([p, q])}.`,
           answer: { kind: 'number', value: v, places: 2 },
           traps: traps(
             v,
@@ -61,7 +61,7 @@ export const generators: Generator[] = [
       const each = lp.map(([a, b]) => clean(a - b));
       const v = clean(each.reduce((s, x) => s + x, 0));
       return {
-        prompt: `The listing gives, for each token of a sampled answer, its log-probability under the model being trained, $\\ln ${PI}$, and under the reference, $\\ln ${REF}$. What is the answer's log-ratio $${KL}$, summed over its ${n} tokens?`,
+        prompt: `The listing gives each token's $\\ln ${PI}$ and $\\ln ${REF}$ for a sampled answer. What is the answer's log-ratio, summed over its ${n} tokens?`,
         code: table(toks, lp),
         answer: { kind: 'number', value: v },
         traps: traps(v, [
@@ -88,7 +88,7 @@ export const generators: Generator[] = [
       const v = clean(Rv - beta * kl);
       return {
         prompt: per
-          ? `A sampled answer gets reward $${R} = ${num(Rv)}$. Its tokens' log-ratios, $${KL}$, are $${each.map((x) => num(x)).join(',\\ ')}$. With $${BETA} = ${num(beta)}$, what is the penalized reward the model trains on?`
+          ? `A sampled answer gets reward $${R} = ${num(Rv)}$. Its tokens' log-ratios to the reference are $${each.map((x) => num(x)).join(',\\ ')}$. With $${BETA} = ${num(beta)}$, what is the penalized reward the model trains on?`
           : `A sampled answer gets reward $${R} = ${num(Rv)}$, and its log-ratio to the reference, summed over its tokens, is $${num(kl)}$. With $${BETA} = ${num(beta)}$, what is the penalized reward the model trains on?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
@@ -125,10 +125,10 @@ export const generators: Generator[] = [
       ];
       why[correct] = null;
       return {
-        prompt: `A model trains on the penalized reward $${R} - ${BETA}\\,${KL}$. Compared with a run at $${BETA} = ${num(base)}$, what happens at $${BETA} = ${num(other)}$?`,
+        prompt: `A model trains on its reward with a KL penalty. Compared with a run at $${BETA} = ${num(base)}$, what happens at $${BETA} = ${num(other)}$?`,
         answer: { kind: 'choice', options: opts, correct, why },
         solution: [
-          `$${BETA}$ is the price of drifting: each unit of log-ratio to the reference costs $${BETA}$ reward.`,
+          `The penalized reward is $${R} - ${BETA}\\,${KL}$, so $${BETA}$ is the price of drifting: each unit of log-ratio to the reference costs $${BETA}$ reward.`,
           big
             ? `At $${BETA} = ${num(other)}$ any drift costs far more than the reward gives back, so the model stays near the reference and improves little.`
             : `At $${BETA} = ${num(other)}$ drift is nearly free, so the model follows the reward wherever it leads, even into answers that score well but have stopped making sense.`,
@@ -149,7 +149,7 @@ export const generators: Generator[] = [
         const opt = (i: number) => `\`${toks[i]}\`: $${PI} = ${num(pq[i]![0])}$, $${REF} = ${num(pq[i]![1])}$`;
         const why = lr.map((x, i) => (i === top ? null : `Its log-ratio is $\\ln(${num(pq[i]![0])} / ${num(pq[i]![1])}) \\approx ${num(x, 2)}$, below \`${toks[top]}\`'s $${num(lr[top]!, 2)}$.${i === topP ? ` It has the largest $${PI}$, but the charge depends on the ratio to $${REF}$.` : ''}`));
         return {
-          prompt: `A sampled answer contains the tokens ${toks.map((t) => `\`${t}\``).join(', ')}. Each option gives a token's probability under the model being trained and under the reference. Which token adds the most to the KL penalty, $${BETA}\\,${KL}$?`,
+          prompt: `A sampled answer contains the tokens ${toks.map((t) => `\`${t}\``).join(', ')}. Which token adds the most to the KL penalty?`,
           answer: { kind: 'choice', options: toks.map((_, i) => opt(i)), correct: top, why },
           solution: [
             `Each token is charged $${BETA}$ times its log-ratio $\\ln(${PI} / ${REF})$: ${toks.map((t, i) => `\`${t}\` $\\approx ${num(lr[i]!, 2)}$`).join(', ')}.`,

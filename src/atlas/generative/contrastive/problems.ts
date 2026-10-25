@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
 import { int, ints, num, pick, round, vec } from '../../kit';
-import { E2, LN2, ORD, clean, dot, par, shuffled, terms, traps } from '../kit';
+import { E2, LN2, clean, dot, par, shuffled, terms, traps } from '../kit';
 
 const TAU = '\\sym{tau}{\\tau}';
 
@@ -29,15 +29,15 @@ export const generators: Generator[] = [
       const top = s.indexOf(Math.max(...s));
       const distinct = [...new Set(s)].sort((a, b) => b - a);
       const given = sim
-        ? `Its similarities to the ${n} candidates, the dot products of unit vectors, are $${vec(sim)}$, and the temperature is $${TAU} = ${num(tau)}$.`
+        ? `Its similarities to the ${n} candidates are $${vec(sim)}$, and the temperature is $${TAU} = ${num(tau)}$.`
         : `Its similarities to the ${n} candidates, already divided by the temperature, are $${vec(s)}$.`;
       return {
-        prompt: `In a contrastive batch, one anchor's positive is candidate ${k}, the ${ORD[k]} one. ${given} What is this row's loss? Round to two decimals.\n\nUse ${distinct.map((x) => `$e^{${x}} \\approx ${num(E2(x), 2)}$`).join(', ')}, and $\\ln ${num(T, 2)} \\approx ${num(lnT, 2)}$.`,
+        prompt: `In a contrastive batch, one anchor's positive is candidate ${k}, counting from 0. ${given} What is this row's loss? Round to two decimals.\n\nUse ${distinct.map((x) => `$e^{${x}} \\approx ${num(E2(x), 2)}$`).join(', ')}, and $\\ln ${num(T, 2)} \\approx ${num(lnT, 2)}$.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(
           v,
           [
-            { value: s[k]! - lnT, why: `That has the sign flipped. The loss is $\\ln(\\text{total}) - s_{${k}}$, never negative.` },
+            { value: s[k]! - lnT, why: 'That has the sign flipped. The loss is the log of the total minus the positive\'s score, never negative.' },
             { value: e[k]! / T, why: `That is the softmax probability of the positive. The loss is minus its log.` },
             ...(top !== k ? [{ value: lnT - s[top]!, why: `That treats candidate ${top}, the most similar, as the positive. The positive is fixed by the pairing: candidate ${k}.` }] : []),
           ],
@@ -45,8 +45,8 @@ export const generators: Generator[] = [
         ),
         solution: [
           ...(sim ? [`Divide by the temperature: $${vec(sim)} / ${num(tau)} = ${vec(s)}$.`] : []),
-          `Softmax over the row: the total is $${e.map((x) => num(x, 2)).join(' + ')} = ${num(T, 2)}$.`,
-          `The loss is cross-entropy with the positive as the right answer: $-\\ln(e^{${s[k]}} / ${num(T, 2)}) = \\ln ${num(T, 2)} - ${par(s[k]!)}$.`,
+          `The loss is the cross-entropy of a softmax over the row, with the positive as the right answer. The total is $${e.map((x) => num(x, 2)).join(' + ')} = ${num(T, 2)}$.`,
+          `So the loss is $-\\ln(e^{${s[k]}} / ${num(T, 2)}) = \\ln ${num(T, 2)} - ${par(s[k]!)}$.`,
           `$${num(lnT, 2)} - ${par(s[k]!)} = ${num(v, 2)}$.`,
         ],
       };
@@ -74,8 +74,8 @@ export const generators: Generator[] = [
       const tau = d < 0.35 ? pick(rng, [1, 0.5]) : pick(rng, [0.5, 0.2, 0.1, 0.25]);
       const v = clean(cos / tau);
       const prompt = raw
-        ? `An encoder outputs $${vec(a!)}$ for an image and $${vec(b!)}$ for another. Each output is scaled to length 1, and the score the softmax sees is their dot product divided by the temperature $${TAU} = ${num(tau)}$. What is the score?`
-        : `Two views have unit-length embeddings $${vec(ua)}$ and $${vec(ub)}$. The score the softmax sees is their dot product divided by the temperature $${TAU} = ${num(tau)}$. What is the score?`;
+        ? `An encoder outputs $${vec(a!)}$ for one view and $${vec(b!)}$ for another, and the temperature is $${TAU} = ${num(tau)}$. What score does the softmax see for this pair?`
+        : `Two views have unit-length embeddings $${vec(ua)}$ and $${vec(ub)}$, and the temperature is $${TAU} = ${num(tau)}$. What score does the softmax see for this pair?`;
       return {
         prompt: `${prompt} Round to two decimals.`,
         answer: { kind: 'number', value: v, places: 2 },
@@ -90,7 +90,7 @@ export const generators: Generator[] = [
         ),
         solution: [
           ...(raw ? [`Lengths: $${num(la)}$ and $${num(lb)}$. Unit vectors: $${vec(ua)}$ and $${vec(ub)}$.`] : []),
-          `Dot product: $${ua.map((x, i) => `${par(x)} \\cdot ${par(ub[i]!)}`).join(' + ')} = ${terms(ua.map((x, i) => clean(x * ub[i]!)))} = ${num(cos)}$.`,
+          `The score is the similarity, a dot product, divided by $${TAU}$. Dot product: $${ua.map((x, i) => `${par(x)} \\cdot ${par(ub[i]!)}`).join(' + ')} = ${terms(ua.map((x, i) => clean(x * ub[i]!)))} = ${num(cos)}$.`,
           `Divide by the temperature: $${num(cos)} / ${num(tau)} = ${num(round(v, 2))}$.`,
         ],
       };
@@ -125,7 +125,7 @@ export const generators: Generator[] = [
         };
       const lower = kind === 'lower';
       return {
-        prompt: `An anchor's similarities to its candidates are $${vec(sims)}$, divided by a temperature before the softmax. If the temperature ${lower ? `falls from $${num(hi)}$ to $${num(lo)}$` : `rises from $${num(lo)}$ to $${num(hi)}$`}, what happens to the softmax over the row?`,
+        prompt: `An anchor's similarities to its candidates are $${vec(sims)}$. If the temperature $${TAU}$ ${lower ? `falls from $${num(hi)}$ to $${num(lo)}$` : `rises from $${num(lo)}$ to $${num(hi)}$`}, what happens to the softmax over the row?`,
         answer: shuffled(rng, [
           { text: sharp, why: lower ? null : `That is what a lower $${TAU}$ does. Raising it divides the scores by more, so they bunch up.` },
           { text: flat, why: lower ? `That is what a higher $${TAU}$ does. Lowering it divides by less, stretching the scores apart.` : null },

@@ -24,7 +24,7 @@ export const script: LectureScript = {
         { id: 'layer', say: 'Count the arithmetic in one layer. W holds twelve weights, and x is the vector for one token.', code: ['W', 'x'] },
         { id: 'mult', say: 'Each weight multiplies one entry of x, and the product joins a running sum. Row one: three times two, plus one times one, plus zero, plus two: nine.', code: 'z' },
         { id: 'two', say: 'So each weight costs two floating point operations, or FLOPs, per token: one multiply and one add.', code: 'two' },
-        { id: 'model', say: 'Twelve weights make twenty four FLOPs. A model with N parameters spends about two N FLOPs on every token it reads forward.', code: 'model' },
+        { id: 'model', say: 'Twelve weights make twenty four FLOPs. Write N for a model\'s number of parameters: it spends about two N FLOPs on every token it reads forward.', code: 'model' },
       ],
     },
     {
@@ -43,7 +43,7 @@ export const script: LectureScript = {
         { id: 'dx', say: '{Wᵀ|W transpose} times {dz|d z} passes the gradient down to x, for the layer below: two FLOPs per weight.', code: 'dx' },
         { id: 'dW', say: 'And the outer product of {dz|d z} and x gives every weight its own gradient: two more.', code: 'dW' },
         { id: 'six', say: 'Two forward and four backward: six FLOPs per parameter, for every token.', code: 'six' },
-        { id: 'nd', say: 'Train N parameters on D tokens, and the whole run costs about six N D FLOPs. Call it C, the training compute.', code: 'nd' },
+        { id: 'nd', say: 'Write D for the number of training tokens. Then the whole run costs about six N D FLOPs. Call it C, the training compute.', code: 'nd' },
       ],
     },
     {

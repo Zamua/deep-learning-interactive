@@ -39,7 +39,7 @@ export const generators: Generator[] = [
         const v = clean(a ** n);
         const places = placesFor(v);
         return {
-          prompt: `In a one-unit RNN, $\\symWhh = ${num(w)}$ and the tanh's slope is about $${num(slope)}$ at every step, so going back one step multiplies the gradient by $\\symWhh$ times that slope. The loss sits at step ${n}. What is $\\partial \\symh_{${n}} / \\partial \\symh_0$?${roundNote(places)}`,
+          prompt: `In a one-unit RNN, $\\symWhh = ${num(w)}$ and the tanh's slope is about $${num(slope)}$ at every step. What is $\\partial \\symh_{${n}} / \\partial \\symh_0$?${roundNote(places)}`,
           answer: { kind: 'number', value: v, ...(places === undefined ? {} : { places }) },
           traps: apart(v, places, [
             { value: w ** n, why: 'That multiplies by $\\symWhh$ alone. Each step back also multiplies by the slope of the tanh.' },
@@ -58,7 +58,7 @@ export const generators: Generator[] = [
       const v = clean(a ** n);
       const places = placesFor(v);
       return {
-        prompt: `In a one-unit RNN, going back one step multiplies the gradient by $\\partial \\symh_t / \\partial \\symh_{t-1} = ${num(a)}$, the same at every step. The loss sits at step ${n}. What is $\\partial \\symh_{${n}} / \\partial \\symh_0$, the factor the gradient picks up on its way back to $\\symh_0$?${roundNote(places)}`,
+        prompt: `In a one-unit RNN, $\\partial \\symh_t / \\partial \\symh_{t-1} = ${num(a)}$ at every step. What is $\\partial \\symh_{${n}} / \\partial \\symh_0$?${roundNote(places)}`,
         answer: { kind: 'number', value: v, ...(places === undefined ? {} : { places }) },
         traps: apart(v, places, [
           { value: a * n, why: `That multiplies the factor by ${n}. Going back ${n} steps multiplies ${n} factors together: $${num(a)}^{${n}}$.` },
@@ -145,13 +145,14 @@ export const generators: Generator[] = [
             { value: g.map((x) => x * c), why: `That multiplies by $c$ without dividing by the norm, $${norm}$.` },
           ];
       return {
-        prompt: `Gradient clipping by norm with threshold $c = ${num(c)}$: if $\\lVert\\symg\\rVert > c$, rescale $\\symg$ to $\\symg \\cdot c / \\lVert\\symg\\rVert$; otherwise leave it. The gradient is $\\symg = ${vec(g)}$${d < 0.35 ? `, whose norm is $${norm}$` : ''}. What is $\\symg$ after clipping? Round to two decimals.`,
+        prompt: `The gradient is $\\symg = ${vec(g)}$, and the clipping threshold is $c = ${num(c)}$. What is $\\symg$ after clipping by norm? Round to two decimals.`,
         answer: { kind: 'vector', value: v, places: 2 },
         traps: vtraps(v, ts),
         solution: [
+          'Clipping by norm leaves $\\symg$ alone unless $\\lVert\\symg\\rVert > c$, and then multiplies it by $c / \\lVert\\symg\\rVert$, which shrinks it to length $c$.',
           `The norm: $\\lVert\\symg\\rVert = \\sqrt{${g.map((x) => (x < 0 ? `(${x})^2` : `${x}^2`)).join(' + ')}} = \\sqrt{${norm * norm}} = ${norm}$.`,
           under
-            ? `$${norm} \\le ${num(c)}$, so nothing happens: $\\symg$ stays $${vec(g)}$.`
+            ? `$${norm} < ${num(c)}$, so nothing happens: $\\symg$ stays $${vec(g)}$.`
             : `$${norm} > ${num(c)}$, so scale every entry by $c / \\lVert\\symg\\rVert = ${num(c)} / ${norm}$: $${vec(v, 2)}$.`,
           'The direction never changes; only the length is capped.',
         ],
@@ -168,7 +169,7 @@ export const generators: Generator[] = [
         const mean = clean(v / n);
         if (v === 0 || new Set(gs).size === 1) continue;
         return {
-          prompt: `A one-unit RNN uses the same weight $\\symWhh$ at each of its ${n} steps. Backprop through time gives the gradient of the loss through each use: ${gs.map((x, i) => `$${num(x)}$ at step ${i + 1}`).join(', ')}. What is the gradient of the loss with respect to $\\symWhh$?`,
+          prompt: `A one-unit RNN runs for ${n} steps. The gradient of the loss through its weight $\\symWhh$ at each step is ${gs.map((x, i) => `$${num(x)}$ at step ${i + 1}`).join(', ')}. What is the gradient of the loss with respect to $\\symWhh$?`,
           answer: { kind: 'number', value: v },
           traps: apart(v, undefined, [
             { value: gs[n - 1]!, why: 'That is only the last step\'s share. $\\symWhh$ acts at every step, and each use adds its own gradient.' },

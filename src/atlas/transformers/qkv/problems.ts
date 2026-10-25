@@ -38,10 +38,10 @@ export const generators: Generator[] = [
           ts.push({ value: matvec(Wt, x), why: `That dots $${X}$ with the columns of $${MAT[role]}$. Each entry of $${VEC[role]}$ is one row of $${MAT[role]}$ dotted with $${X}$.` });
         }
         const given = all
-          ? `The three maps are\n\n$$${WQ} = ${mat(Ws.q)},\\quad ${WK} = ${mat(Ws.k)},\\quad ${WV} = ${mat(Ws.v)}$$`
-          : `Its ${NAME[role]} map is\n\n$$${MAT[role]} = ${mat(Ws[role])}$$`;
+          ? `$$${WQ} = ${mat(Ws.q)},\\quad ${WK} = ${mat(Ws.k)},\\quad ${WV} = ${mat(Ws.v)}$$`
+          : `$$${MAT[role]} = ${mat(Ws[role])}$$`;
         return {
-          prompt: `A token is the vector $${X} = ${vecT(x)}$. ${given}\n\nWhat is the token's ${NAME[role]}, $${VEC[role]}$?`,
+          prompt: `A token is $${X} = ${vecT(x)}$, and\n\n${given}\n\nWhat is its ${NAME[role]}?`,
           answer: { kind: 'vector', value: ans },
           traps: vtraps(ans, ts),
           solution: [
@@ -64,7 +64,7 @@ export const generators: Generator[] = [
       const role = pick(rng, ['q', 'k', 'v'] as const);
       const ans = [dk, dm];
       return {
-        prompt: `Each token is a vector $${X}$ of $${D} = ${big(dm)}$ numbers. Its ${NAME[role]}, $${VEC[role]} = ${MAT[role]}\\,${X}$, has $${DK} = ${dk}$ entries. What is the shape of $${MAT[role]}$?`,
+        prompt: `Each token $${X}$ has $${D} = ${big(dm)}$ entries, and its ${NAME[role]} has ${role === 'v' ? dk : `$${DK} = ${dk}$`}. What is the shape of $${MAT[role]}$?`,
         answer: { kind: 'shape', value: ans },
         traps: straps(ans, [
           { value: [dm, dk], why: `That is the transpose. $${MAT[role]}\\,${X}$ takes one dot product per row, so it needs one row per entry of $${VEC[role]}$ and one column per entry of $${X}$.` },
@@ -72,7 +72,7 @@ export const generators: Generator[] = [
           { value: [dk, dk], why: `$${MAT[role]}$ multiplies $${X}$, which has ${bigText(dm)} entries, so it needs ${bigText(dm)} columns.` },
         ]),
         solution: [
-          `$${MAT[role]}\\,${X}$ is a matrix times a vector: each row of $${MAT[role]}$ is dotted with $${X}$ and gives one entry of $${VEC[role]}$.`,
+          `The ${NAME[role]} is $${VEC[role]} = ${MAT[role]}\\,${X}$, a matrix times a vector: each row of $${MAT[role]}$ is dotted with $${X}$ and gives one entry of $${VEC[role]}$.`,
           `So $${MAT[role]}$ has ${dk} rows, one per entry of $${VEC[role]}$, and ${bigText(dm)} columns, one per entry of $${X}$: $${shp(ans)}$.`,
         ],
       };
@@ -81,18 +81,16 @@ export const generators: Generator[] = [
   {
     id: 'score',
     make(rng, d) {
-      const ws = pick(rng, SENTENCES);
       const i = rng.int(4);
       const j = (i + 1 + rng.int(3)) % 4;
       const lo = d < 0.25 ? 0 : -2;
-      const who = `In the sentence ${ws.map((w) => `\`${w}\``).join(' ')}, token ${i}, \`${ws[i]}\`, is scoring token ${j}, \`${ws[j]}\`.`;
       if (d < 0.5) {
         const n = d < 0.25 ? 2 : 3;
         const qi = someInts(rng, n, lo, 3);
         const kj = someInts(rng, n, lo, 3);
         const s = dot(qi, kj);
         return {
-            prompt: `${who} Token ${i}'s query is $${q}_{${i}} = ${vecT(qi)}$ and token ${j}'s key is $${k}_{${j}} = ${vecT(kj)}$. What is the score $${q}_{${i}} \\cdot ${k}_{${j}}$?`,
+            prompt: `Token ${i}'s query is $${q}_{${i}} = ${vecT(qi)}$ and token ${j}'s key is $${k}_{${j}} = ${vecT(kj)}$. What score does token ${i} give token ${j}?`,
             answer: { kind: 'number', value: s },
             traps: traps(s, [
               { value: qi.reduce((a, b) => a + b, 0) + kj.reduce((a, b) => a + b, 0), why: 'That adds every entry of both vectors. A dot product multiplies matching entries, then adds the products.' },
@@ -109,7 +107,7 @@ export const generators: Generator[] = [
         const s = dot(qi, kj);
         if (s === dot(qi, xj)) continue;
         return {
-          prompt: `${who} Token ${i}'s query is $${q}_{${i}} = ${vecT(qi)}$. Token ${j} is $${X}_{${j}} = ${vecT(xj)}$, and the key map is $${WK} = ${mat(W)}$. What is the score of token ${i}'s query against token ${j}'s key?`,
+          prompt: `Token ${i}'s query is $${q}_{${i}} = ${vecT(qi)}$. Token ${j} is $${X}_{${j}} = ${vecT(xj)}$, and $${WK} = ${mat(W)}$. What score does token ${i} give token ${j}?`,
           answer: { kind: 'number', value: s },
           traps: traps(s, [{ value: dot(qi, xj), why: `That scores the query against $${X}_{${j}}$ itself. First make the key, $${k}_{${j}} = ${WK}\\,${X}_{${j}}$.` }]),
           solution: [
@@ -127,10 +125,10 @@ export const generators: Generator[] = [
       const i = rng.int(4);
       const j = (i + 1 + rng.int(3)) % 4;
       const kind = rng.int(3);
-      const tok = `In the sentence ${ws.map((w) => `\`${w}\``).join(' ')}, token ${i}, \`${ws[i]}\`, is building its output by attending to every token.`;
+      const tok = `In the sentence ${ws.map((w) => `\`${w}\``).join(' ')}, token ${i}, \`${ws[i]}\`, attends to every token.`;
       if (kind === 0) {
         return {
-          prompt: `${tok} Which vectors are weighted and added up to make that output?`,
+          prompt: `${tok} Which vectors are weighted and added up to make its output?`,
           answer: {
             kind: 'choice',
             options: [`The values, $${v}_0$ to $${v}_3$`, `The keys, $${k}_0$ to $${k}_3$`, `The queries, $${q}_0$ to $${q}_3$`, `The tokens themselves, $${X}_0$ to $${X}_3$`],
@@ -147,7 +145,7 @@ export const generators: Generator[] = [
       }
       if (kind === 1) {
         return {
-          prompt: `${tok} What decides how much of token ${j}, \`${ws[j]}\`, goes into that output?`,
+          prompt: `${tok} What decides how much of token ${j}, \`${ws[j]}\`, goes into its output?`,
           answer: {
             kind: 'choice',
             options: [

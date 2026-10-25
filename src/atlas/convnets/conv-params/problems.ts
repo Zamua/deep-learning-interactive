@@ -13,7 +13,7 @@ export const generators: Generator[] = [
       const per = F * F * C + 1;
       const v = K * per;
       return {
-        prompt: `A conv layer runs on inputs of shape $${shp([C, H, H])}$, channels first, with $\\symK = ${K}$ filters of size $${F} \\times ${F}$. How many parameters does it learn, weights and biases together?`,
+        prompt: `A conv layer runs on inputs of shape $${shp([C, H, H])}$, with $\\symK = ${K}$ filters of size $${F} \\times ${F}$. How many parameters does it learn?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: K * F * F * C, why: 'That counts the weights only. Each filter also has one bias: add $\\symK$.' },
@@ -40,7 +40,7 @@ export const generators: Generator[] = [
       const v = out * n + out;
       const conv = K * (9 + 1);
       return {
-        prompt: `A grayscale image is $${H} \\times ${H}$, shape $${shp([1, H, H])}$. A conv layer with $\\symK = ${K}$ filter${K > 1 ? 's' : ''} of size $3 \\times 3$ turns it into $${shp([K, h, h])}$, with $${K} \\times (9 + 1) = ${conv}$ parameters. A fully connected layer, with a weight from every input to every output as in a linear classifier, could map the same $${n}$ inputs to the same $${out}$ outputs instead. How many parameters would it need, weights and biases?`,
+        prompt: `A conv layer with $\\symK = ${K}$ filter${K > 1 ? 's' : ''} of size $3 \\times 3$ turns a grayscale image of shape $${shp([1, H, H])}$ into an output of shape $${shp([K, h, h])}$. How many parameters would a fully connected layer need to map the same input to the same output?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: out * n, why: 'That counts the weights only. A fully connected layer also has one bias per output.' },
@@ -50,7 +50,7 @@ export const generators: Generator[] = [
         solution: [
           `Fully connected, every one of the $${out}$ outputs has its own weight for each of the $${n}$ inputs: $${out} \\times ${n} = ${big(out * n)}$ weights.`,
           `Plus one bias per output: $${big(out * n)} + ${out} = ${big(v)}$.`,
-          `The conv layer needs only $${conv}$: each output sees a small patch, and every position shares the same $${K > 1 ? 'filters' : 'filter'}.`,
+          `The conv layer needs only $${conv}$: each output sees a small patch, and every position shares the same ${K > 1 ? 'filters' : 'filter'}.`,
         ],
       };
     },
@@ -82,7 +82,7 @@ export const generators: Generator[] = [
       };
       const after = kind === 'filters' ? 2 * K * per : kind === 'channels' ? K * (18 * C + 1) : kind === 'size' ? K * (36 * C + 1) : n;
       return {
-        prompt: `A conv layer has $\\symK = ${K}$ filters of size $3 \\times 3$ over $${C}$ input channels, on $${H} \\times ${H}$ images: $${K} \\times (9 \\cdot ${C} + 1) = ${big(n)}$ parameters. What happens to that count if ${k.change}?`,
+        prompt: `A conv layer has $\\symK = ${K}$ filters of size $3 \\times 3$ over $${C}$ input channels, on $${H} \\times ${H}$ images. What happens to its number of parameters if ${k.change}?`,
         answer: shuffled(rng, opts.map((text, i) => ({ text, why: i === k.correct ? null : why[kind][i]! }))),
         solution: [
           'The count is $\\symK(\\symF \\cdot \\symF \\cdot C + 1)$: filters, filter size and input depth. The image size and the amount of data do not appear.',

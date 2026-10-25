@@ -14,20 +14,21 @@ export const generators: Generator[] = [
       const x = e.map(E2);
       const total = sumOf(x);
       const a = x.map((v) => v / total);
-      const eTex = `e = ${vec(e)}`;
-      const lead = `The decoder scores the ${n} encoder states $\\symh_0, \\dots, \\symh_{${n - 1}}$ and gets $${eTex}$, one score per state. The attention weights are $\\alpha = \\mathrm{softmax}(e)$.`;
+      const lead = `The decoder's scores for the encoder states $\\symh_0, \\dots, \\symh_{${n - 1}}$ are $s = ${vec(e)}$.`;
+      const rule = 'The attention weights are the softmax of the scores: $\\alpha_j = e^{s_j} / \\sum_k e^{s_k}$.';
       const sum = sumOf(e);
       if (d < 0.35) {
         const j = rng.int(n);
         const v = a[j]!;
         return {
-          prompt: `${lead} What is $\\alpha_{${j}}$, the weight on $\\symh_{${j}}$? Round to two decimals.\n\nUse ${useExp(e)}.`,
+          prompt: `${lead} What is the attention weight $\\alpha_{${j}}$? Round to two decimals.\n\nUse ${useExp(e)}.`,
           answer: { kind: 'number', value: v, places: 2 },
           traps: traps(v, [
             { value: sum > 0 ? e[j]! / sum : NaN, why: 'That divides the score by the sum of the scores. Softmax exponentiates first.' },
             { value: 1 / n, why: `That spreads the attention evenly. Softmax gives more weight to higher scores.` },
           ]).filter((t) => Math.abs(t.value - v) >= 0.01),
           solution: [
+            rule,
             `Exponentiate each score: ${e.map((s) => `$e^{${s}} \\approx ${num(E2(s), 2)}$`).join(', ')}; they add up to $${num(total, 2)}$.`,
             `$\\alpha_{${j}} = ${num(x[j]!, 2)} / ${num(total, 2)} \\approx ${num(v, 2)}$.`,
           ],
@@ -35,7 +36,7 @@ export const generators: Generator[] = [
       }
       const top = argmax(e);
       return {
-        prompt: `${lead} What are the ${n} weights? Round to two decimals.\n\nUse ${useExp(e)}.`,
+        prompt: `${lead} What are the attention weights $[${e.map((_, j) => `\\alpha_{${j}}`).join(',\\ ')}]$? Round to two decimals.\n\nUse ${useExp(e)}.`,
         answer: { kind: 'vector', value: a, places: 2 },
         traps: vtraps(a, [
           ...(top >= 0 ? [{ value: onehot(n, top), why: 'That puts all the weight on the top score. Softmax gives every state some weight, more to higher scores.' }] : []),
@@ -43,6 +44,7 @@ export const generators: Generator[] = [
           { value: e.map(() => 1 / n), why: 'That spreads the attention evenly. Softmax gives more weight to higher scores.' },
         ]),
         solution: [
+          rule,
           `Exponentiate each score: ${e.map((s) => `$e^{${s}} \\approx ${num(E2(s), 2)}$`).join(', ')}.`,
           `They add up to $${num(total, 2)}$; divide each by it: $\\alpha \\approx ${vec(a, 2)}$.`,
         ],
@@ -60,7 +62,7 @@ export const generators: Generator[] = [
         const ctx = [0, 1].map((k) => clean(sumOf(hs.map((h, j) => a[j]! * h[k]!))));
         const top = argmax(a);
         return {
-          prompt: `The encoder states are ${states(hs)}, and the attention weights on them are $\\alpha = ${vec(a)}$. What is the context vector $\\sum_j \\alpha_j \\symh_j$? Round to two decimals.`,
+          prompt: `The encoder states are ${states(hs)}, and the attention weights on them are $\\alpha = ${vec(a)}$. What is the context vector? Round to two decimals.`,
           answer: { kind: 'vector', value: ctx, places: 2 },
           traps: vtraps(ctx, [
             { value: [0, 1].map((k) => sumOf(hs.map((h) => h[k]!))), why: 'That adds the states without their weights. Each state counts in proportion to its $\\alpha_j$.' },
@@ -68,6 +70,7 @@ export const generators: Generator[] = [
             ...(top >= 0 ? [{ value: hs[top]!, why: `That is only $\\symh_{${top}}$, the state with the largest weight. The context blends every state.` }] : []),
           ]),
           solution: [
+            'The context vector is the weighted sum of the states: $\\sum_j \\alpha_j \\symh_j$.',
             `Scale each state by its weight: ${hs.map((h, j) => `$${num(a[j]!)} \\times ${vec(h)} = ${vec(h.map((v) => clean(a[j]! * v)))}$`).join(', ')}.`,
             `Add them entry by entry: $${vec(ctx)}$.`,
             'The context is a weighted average of the encoder states, pulled toward the ones the decoder attends to.',
@@ -88,15 +91,15 @@ export const generators: Generator[] = [
         const low = e.indexOf(Math.min(...e));
         if (k < 0 || e.filter((v) => v === e[low]).length > 1 || new Set(hs.map(String)).size < n) continue;
         return {
-          prompt: `The decoder's state is $q = ${vec(q)}$, and it scores each encoder state with a dot product, $e_j = q \\cdot \\symh_j$. The encoder states are ${states(hs)}. Which state gets the largest attention weight? Give its index, counting from 0.`,
+          prompt: `The decoder's state is $q = ${vec(q)}$, and it scores each encoder state by its dot product with $q$. The encoder states are ${states(hs)}. For which $j$ is the attention weight $\\alpha_j$ largest?`,
           answer: { kind: 'number', value: k },
           traps: traps(k, [
-            { value: low, why: `That state has the lowest score, $e_{${low}} = ${e[low]}$. Softmax gives the most weight to the highest.` },
+            { value: low, why: `That state has the lowest score, $s_{${low}} = ${e[low]}$. Softmax gives the most weight to the highest.` },
             { value: k + 1, why: `That counts from 1. The top state is $\\symh_{${k}}$.` },
           ]),
           solution: [
-            `The scores: ${hs.map((h, j) => `$e_{${j}} = ${prodTex(q, h)} = ${e[j]}$`).join(', ')}.`,
-            `Softmax keeps the order, so the largest score, $e_{${k}} = ${e[k]}$, gets the largest weight: $\\symh_{${k}}$.`,
+            `The scores $s_j = q \\cdot \\symh_j$: ${hs.map((h, j) => `$s_{${j}} = ${prodTex(q, h)} = ${e[j]}$`).join(', ')}.`,
+            `Softmax keeps the order, so the largest score, $s_{${k}} = ${e[k]}$, gets the largest weight: $\\alpha_{${k}}$, on $\\symh_{${k}}$.`,
           ],
         };
       }
@@ -108,7 +111,7 @@ export const generators: Generator[] = [
       const H = pick(rng, [128, 256, 512, 1024]);
       const n = int(rng, 6, 60);
       return {
-        prompt: `A translation model reads a sentence of ${n} tokens with an encoder of $\\symH = ${H}$ hidden units. Without attention, the decoder starts from one vector of ${H} numbers. With attention, at every step it can read all ${n} encoder states, ${H} numbers each. What problem does that remove?`,
+        prompt: `A translation model reads a sentence of ${n} tokens with an encoder of $\\symH = ${H}$ hidden units. What problem does adding attention to its decoder remove?`,
         answer: {
           kind: 'choice',
           options: [

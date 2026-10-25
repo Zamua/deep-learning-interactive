@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
 import { int, pick } from '../../kit';
-import { big, bigText, D, DH, H, Q, q, shp, straps, T, traps, WK, WO, WQ, WV, X } from '../kit';
+import { big, bigText, D, DH, H, Q, shp, straps, T, traps, WK, WO, WQ, WV, X } from '../kit';
 
 /** A width and a head count that divides it, larger with difficulty. */
 function dims(rng: Rng, d: number): [number, number] {
@@ -62,10 +62,10 @@ export const generators: Generator[] = [
       let t = d < 0.5 ? int(rng, 5, 12) : pick(rng, [20, 50, 100, 128, 256]);
       if (t === dh || t === dm || t === h) t += 1;
       const which = pick(rng, d < 0.35 ? (['W', 'Q', 'cat'] as const) : (['W', 'Q', 'A', 'head', 'cat'] as const));
-      const setup = `Multi-head attention runs over $${T} = ${t}$ tokens of width $${D} = ${big(dm)}$, with $${H} = ${h}$ heads. Each head $i$ makes its own queries, $${q} = ${WQ}^{(i)} ${X}$, and stacks them one row per token.`;
+      const setup = `Multi-head attention runs over $${T} = ${t}$ tokens of width $${D} = ${big(dm)}$, with $${H} = ${h}$ heads.`;
       const ask = {
-        W: [`one head's query matrix $${WQ}^{(i)}$`, [dh, dm]],
-        Q: [`one head's queries $${Q}^{(i)}$`, [t, dh]],
+        W: [`one head's $${WQ}$`, [dh, dm]],
+        Q: [`one head's $${Q}$`, [t, dh]],
         A: [`one head's attention weights`, [t, t]],
         head: [`one head's output`, [t, dh]],
         cat: [`the heads' outputs concatenated side by side`, [t, dm]],
@@ -74,7 +74,7 @@ export const generators: Generator[] = [
       const ts: { value: number[]; why: string }[] = [];
       if (which === 'W') {
         ts.push({ value: [dm, dm], why: `That is the full-width matrix. Each head makes queries of only $${DH} = ${dh}$ entries.` });
-        ts.push({ value: [dm, dh], why: `That is the transpose: $${WQ}^{(i)} ${X}$ needs one row per query entry and one column per entry of $${X}$.` });
+        ts.push({ value: [dm, dh], why: `That is the transpose: $${WQ}\\,${X}$ needs one row per query entry and one column per entry of $${X}$.` });
       } else if (which === 'Q' || which === 'head') {
         ts.push({ value: [t, dm], why: `That is the full width. One head works in $${DH} = ${big(dm)} / ${h} = ${dh}$ dimensions.` });
         ts.push({ value: [dh, t], why: 'That is the transpose: one row per token.' });
@@ -87,8 +87,8 @@ export const generators: Generator[] = [
         ts.push({ value: [h * t, dh], why: 'That stacks the heads one under another. They are joined side by side, so the token rows stay.' });
       }
       const sol: Record<typeof which, string[]> = {
-        W: [`Each head's queries have $${DH} = ${big(dm)} / ${h} = ${dh}$ entries.`, `$${WQ}^{(i)}$ turns $${X}$, ${bigText(dm)} numbers, into ${dh}: one row per query entry, one column per entry of $${X}$, $${shp(ans)}$.`],
-        Q: [`Each head's queries have $${DH} = ${dh}$ entries.`, `One row per token: $${shp(ans)}$.`],
+        W: [`Each head's queries have $${DH} = ${big(dm)} / ${h} = ${dh}$ entries.`, `Its $${WQ}$ turns a token $${X}$, ${bigText(dm)} numbers, into a query of ${dh}: one row per query entry, one column per entry of $${X}$, $${shp(ans)}$.`],
+        Q: [`Each head's queries have $${DH} = ${big(dm)} / ${h} = ${dh}$ entries.`, `$${Q}$ stacks them one row per token: $${shp(ans)}$.`],
         A: ['Every head scores every token against every token, as a single attention does.', `So its weights are $(${T}, ${T}) = ${shp(ans)}$, whatever its width.`],
         head: [`Its weights, $(${t}, ${t})$, times its values, $(${t}, ${dh})$, give $${shp(ans)}$.`],
         cat: [`Each head outputs $(${t}, ${dh})$. Side by side, ${h} of them make $${h} \\times ${dh} = ${big(dm)}$ columns.`, `So the result is $${shp(ans)}$: back to the model width.`],
@@ -108,7 +108,7 @@ export const generators: Generator[] = [
       const dh = dm / h;
       const v = 4 * dm * dm;
       return {
-        prompt: `Multi-head attention with width $${D} = ${big(dm)}$ and $${H} = ${h}$ heads gives each head its own $${WQ}$, $${WK}$ and $${WV}$, each $(${dh}, ${big(dm)})$, and mixes the joined heads with $${WO}$, $(${big(dm)}, ${big(dm)})$. Ignoring biases, how many weights does it hold in all?`,
+        prompt: `Multi-head attention has width $${D} = ${big(dm)}$ and $${H} = ${h}$ heads. Ignoring biases, how many weights does it hold?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: 3 * dm * dm, why: `That leaves out $${WO}$, the $${D} \\times ${D}$ matrix that mixes the joined heads.` },
@@ -116,8 +116,9 @@ export const generators: Generator[] = [
           { value: 3 * dh * dm + dm * dm, why: `That counts only one head's three matrices, plus $${WO}$. All ${h} heads have their own.` },
         ]),
         solution: [
+          `Each head has its own $${WQ}$, $${WK}$ and $${WV}$, each $${DH} \\times ${D}$, with $${DH} = ${big(dm)} / ${h} = ${dh}$.`,
           `One head's $${WQ}$ is $${dh} \\times ${big(dm)}$. Across ${h} heads that is $${h} \\times ${dh} \\times ${big(dm)} = ${big(dm)} \\times ${big(dm)}$, a full $${D}^2$. The same holds for $${WK}$ and $${WV}$.`,
-          `$${WO}$ adds another $${D}^2$: $4${D}^2 = 4 \\times ${big(dm)}^2 = ${big(v)}$.`,
+          `$${WO}$, which mixes the joined heads, is $${D} \\times ${D}$: another $${D}^2$. In all, $4${D}^2 = 4 \\times ${big(dm)}^2 = ${big(v)}$.`,
           'It does not depend on the number of heads.',
         ],
       };

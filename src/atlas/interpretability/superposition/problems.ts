@@ -37,7 +37,7 @@ export const generators: Generator[] = [
       const active = [0, 1, 2].filter((i) => f[i] !== 0);
       const off = [0, 1, 2].filter((i) => f[i] === 0);
       return {
-        prompt: `${SETUP} The active features are ${active.map((i) => `$${fi(i)} = ${num(f[i]!)}$`).join(', ')}${off.length ? `; ${off.map((i) => `$${fi(i)}$`).join(' and ')} ${off.length > 1 ? 'are' : 'is'} off` : ''}. The stream is the sum of each feature's value times its direction. Reading feature ${k} takes the dot product of the stream with its direction${relu ? ', then a ReLU' : ''}. What do you read?`,
+        prompt: `${SETUP} The active features are ${active.map((i) => `$${fi(i)} = ${num(f[i]!)}$`).join(', ')}${off.length ? `; ${off.map((i) => `$${fi(i)}$`).join(' and ')} ${off.length > 1 ? 'are' : 'is'} off` : ''}. What does reading feature ${k} give${relu ? ' after a ReLU' : ''}?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, [
           { value: f[k]!, why: 'That ignores the other active features. Each one leaks in through its overlap of $-0.5$.' },
@@ -46,7 +46,7 @@ export const generators: Generator[] = [
           ...(relu ? [{ value: raw, why: 'That is the reading before the ReLU, which clips negative values to 0.' }] : []),
         ]),
         solution: [
-          `Reading feature ${k} gives its own value times 1, plus every other value times $-0.5$.`,
+          `The stream is each value times its direction, added up. Reading feature ${k} dots it with feature ${k}'s direction: its own value times 1, plus every other value times $-0.5$.`,
           `$${num(f[k]!)} ${others.map((i) => `- 0.5 \\times ${num(f[i]!)}`).join(' ')} = ${num(raw)}$.`,
           ...(relu ? [raw < 0 ? `The ReLU clips the negative reading to 0: the leak disappears.` : `The ReLU leaves a positive reading as it is: $${num(ans)}$.`] : []),
           leak === 0 ? 'No other feature is on, so the reading is clean.' : `The $${num(leak)}$ is interference from the other active features.`,
@@ -64,7 +64,7 @@ export const generators: Generator[] = [
       const ans = [0, 1].map((c) => clean(f.reduce((a, v, i) => a + v * DIRS[i]![c]!, 0)));
       const flip = [ans[0]!, clean(0.87 * (f[1]! + f[2]!))];
       return {
-        prompt: `${SETUP} Their directions are $[1,\\ 0]$ for feature 0, $[-0.5,\\ 0.87]$ for feature 1 and $[-0.5,\\ -0.87]$ for feature 2. The features have values $${F} = ${vec(f)}$. What is the 2-dimensional stream, the sum of each value times its direction? Round to two decimals.`,
+        prompt: `${SETUP} Their directions are $[1,\\ 0]$ for feature 0, $[-0.5,\\ 0.87]$ for feature 1 and $[-0.5,\\ -0.87]$ for feature 2. The features have values $${F} = ${vec(f)}$. What is the stream? Round to two decimals.`,
         answer: { kind: 'vector', value: ans, places: 2 },
         traps: vtraps(ans, [
           { value: [f[0]!, f[1]!], why: 'That puts features straight into the dimensions. Three features cannot each have a dimension of their own here: each adds its direction.' },
@@ -72,6 +72,7 @@ export const generators: Generator[] = [
           { value: flip, why: 'That gives feature 2 a second coordinate of $+0.87$. Its direction points down: $-0.87$.' },
         ], 2),
         solution: [
+          'The stream is each value times its direction, added up.',
           ...[0, 1, 2].filter((i) => f[i]).map((i) => `$${num(f[i]!)} \\times ${vec(DIRS[i]!)} = ${vec(DIRS[i]!.map((v) => clean(f[i]! * v)))}$.`),
           `Add them: $${vec(ans)}$.`,
           `Three values live in two numbers, so reading one back picks up the others: that is the interference.`,

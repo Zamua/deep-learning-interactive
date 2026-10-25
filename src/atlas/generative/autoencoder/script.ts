@@ -21,7 +21,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'input', say: 'Here is a handwritten digit, twenty eight by twenty eight pixels: seven hundred and eighty four numbers. Call them x.', code: 'x' },
         { id: 'encode', say: 'An encoder, an ordinary network of layers, maps x down: to two hundred and fifty six hidden units, then to just sixteen numbers. Those sixteen are the code, z.', code: 'enc' },
-        { id: 'decode', say: 'A decoder, a second network, mirrors it: from sixteen back up to two hundred and fifty six, then to seven hundred and eighty four. Its output, {x̂|x hat}, is the reconstruction.', code: 'dec' },
+        { id: 'decode', say: 'A decoder, a second network, mirrors it: from sixteen back up to two hundred and fifty six, then to seven hundred and eighty four. Its output is the reconstruction, written {x̂|x hat}: the hat marks x as the network rebuilt it.', code: 'dec' },
         { id: 'ratio', say: 'The narrow middle is the bottleneck. Each number of the code has to stand for seven hundred and eighty four over sixteen: forty nine numbers of the input.', code: 'ratio' },
       ],
     },
@@ -38,8 +38,8 @@ export const script: LectureScript = {
       beats: [
         { id: 'target', say: 'How is it trained? There are no labels here. The target is the input itself: the output should come back equal to x.', code: 'x' },
         { id: 'diff', say: 'So compare them entry by entry. Say x is one, zero and two, and {x̂|x hat} is a half, zero and three. The differences are a half, zero, and minus one.', code: 'd' },
-        { id: 'square', say: 'Square them and add: a quarter, plus zero, plus one. The squared error is {1.25|one point two five}. A miss in either direction counts.', code: 'loss' },
-        { id: 'train', say: 'Gradient steps on this loss train the encoder and the decoder together, and any pile of unlabeled images will do.', code: 'loss' },
+        { id: 'square', say: 'Square them and add: a quarter, plus zero, plus one, which is {1.25|one point two five}. That squared error is the loss, {L = ‖x − x̂‖²|L equals the norm of x minus x hat, squared}: the double bars mean a vector\'s length, and its square is this sum of squares.', code: 'loss' },
+        { id: 'train', say: 'A miss in either direction counts. Gradient steps on this loss train the encoder and the decoder together, and any pile of unlabeled images will do.', code: 'loss' },
       ],
     },
     {

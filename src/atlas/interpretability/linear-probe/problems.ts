@@ -20,7 +20,7 @@ export const generators: Generator[] = [
       const wh = dot(w, h);
       const ans = wh + b;
       return {
-        prompt: `A linear probe for "${prop}?" reads a token's residual stream $\\symh = ${vec(h)}$ with weights $\\symw = ${vec(w)}$ and bias $\\symb = ${num(b)}$. Its score is $\\symw \\cdot \\symh + \\symb$, and a positive score means yes. What is the score?`,
+        prompt: `A linear probe for "${prop}?" reads a token's residual stream $\\symh = ${vec(h)}$ with weights $\\symw = ${vec(w)}$ and bias $\\symb = ${num(b)}$. What is its score?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, [
           { value: wh, why: 'That leaves out the bias. The score is $\\symw \\cdot \\symh + \\symb$.' },
@@ -28,7 +28,7 @@ export const generators: Generator[] = [
           { value: h.reduce((a, x) => a + x, 0) + w.reduce((a, x) => a + x, 0) + b, why: 'That adds every entry. The dot product multiplies matching entries first.' },
         ]),
         solution: [
-          `$\\symw \\cdot \\symh = ${prods(w, h)} = ${wh}$.`,
+          `The score is $\\symw \\cdot \\symh + \\symb$, and $\\symw \\cdot \\symh = ${prods(w, h)} = ${wh}$.`,
           `Add the bias: $${wh} ${b < 0 ? '-' : '+'} ${num(Math.abs(b))} = ${num(ans)}$.`,
           ans > 0 ? 'Positive: the probe says yes.' : ans < 0 ? 'Negative: the probe says no.' : 'Exactly 0: right on the probe\'s boundary.',
         ],
@@ -59,7 +59,7 @@ export const generators: Generator[] = [
           answer: { kind: 'number', value: k },
           traps: traps(k, ts),
           solution: [
-            `Score each class, $\\symw_c \\cdot \\symh${d < 0.3 ? '' : ' + \\symb_c'}$: ${s.map((v, c) => `class ${c} gets $${v}$`).join(', ')}.`,
+            `Score each class $c$ as $\\symw_c \\cdot \\symh${d < 0.3 ? '' : ' + \\symb_c'}$: ${s.map((v, c) => `class ${c} gets $${v}$`).join(', ')}.`,
             `The largest is class ${k}, ${TENSES[k]}.`,
           ],
         };

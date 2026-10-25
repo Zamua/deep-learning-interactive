@@ -18,7 +18,7 @@ export const script: LectureScript = {
         L = data_loss + R                     #@add
       `,
       beats: [
-        { id: 'add', say: 'L2 regularization adds a second term to the loss: {λ|lambda} times the sum of the squared weights.', code: 'add' },
+        { id: 'add', say: 'L2 regularization adds a second term to the loss. The loss L becomes the data loss, {L_data|L data}, plus {λ|lambda}, the Greek letter lambda, times the sum of the squared weights, {Σᵢ wᵢ²|the sum over i of w i squared}.', code: 'add' },
         { id: 'example', say: 'Say the weights are two, minus one and zero, and {λ|lambda} is {0.1|zero point one}. Squared, they are four, one and zero.', code: ['w', 'lam'] },
         { id: 'sum', say: 'They add up to five, and {λ|lambda} times five is a penalty of {0.5|zero point five}, added to the data loss.', code: ['sum', 'add'] },
         { id: 'lam', say: '{λ|Lambda} sets the trade. At zero the penalty vanishes; large, and keeping the weights small matters more than fitting the data.', code: 'lam' },
@@ -36,7 +36,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'grad', say: 'The penalty\'s gradient is two {λ|lambda} w. Each weight\'s slope is proportional to the weight itself.', code: 'grad' },
         { id: 'example', say: 'For two, minus one and zero, with {λ|lambda} at {0.1|zero point one}, that is {0.4|zero point four}, minus {0.2|zero point two}, and zero.', code: 'grad' },
-        { id: 'step', say: 'The gradient step adds it to the data gradient: w becomes w, minus {η|eta} times g plus two {λ|lambda} w.', code: 'step' },
+        { id: 'step', say: 'The gradient step adds it to the data gradient, g: {w ← w − η(g + 2λw)|w gets w, minus eta times g plus two lambda w}.', code: 'step' },
         { id: 'shrink', say: 'Where the data gradient is zero, each step just multiplies the weight by one minus two {η|eta} {λ|lambda}. With {η|eta} at a half, that is {0.9|zero point nine}: two becomes {1.8|one point eight}, then {1.62|one point six two}.', code: 'decay' },
         { id: 'pull', say: 'So every step pulls every weight a little toward zero, and only the data can pull back. That is why L2 is also called weight decay.', code: ['step', 'decay'] },
       ],

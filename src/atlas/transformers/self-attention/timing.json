@@ -1,19 +1,19 @@
 {
- "duration": 105.364,
+ "duration": 107.979,
  "scenes": {
-  "stack": [0.0, 55.461],
-  "mix": [55.461, 105.364]
+  "stack": [0.0, 58.076],
+  "mix": [58.076, 107.979]
  },
  "beats": {
-  "stack/tokens": [0.7, 13.34, "So far, one token asked at a time. Self-attention lets every token ask at once. Stack the tokens as the rows of a matrix, X: T rows, one per token.", [[1.33, 1.65], [3.48, 4.01], [6.92, 7.47], [9.94, 10.35], [10.78, 11.25], [11.94, 12.31]]],
-  "stack/qkv": [13.72, 29.366, "Each token's query becomes one row of a matrix, Q; its key, one row of K; its value, one row of V. So Q and K are T by d k, and V is T by d v.", [[16.92, 17.17], [17.54, 18.14], [18.81, 19.13], [20.3, 20.81], [21.54, 21.87], [23.0, 23.64], [26.76, 27.15]]],
-  "stack/scores": [29.746, 41.124, "Then one matrix product scores every query against every key: Q times K transpose. T by d k, times d k by T, gives T by T.", [[30.146, 30.336], [34.046, 34.546], [36.266, 36.756], [37.936, 38.146], [39.636, 39.896]]],
-  "stack/entry": [41.504, 54.361, "Entry i, j is token i's query dotted with token j's key, divided by the square root of d k. Row two, column zero: how much fish looks at cats.", [[42.404, 42.834], [44.924, 45.104], [46.974, 47.184], [49.474, 50.314], [51.934, 52.404]]],
-  "mix/softmax": [56.161, 66.408, "Softmax runs along each row, giving the weights, A. Every row adds up to one: it is how one token splits its attention over all of them.", [[58.301, 58.561], [59.411, 59.821], [60.151, 60.811], [62.501, 63.051]]],
-  "mix/fish": [66.788, 73.133, "Here fish, row two, gives a half to cats and a quarter each to like and to itself.", [[67.628, 67.908], [68.588, 68.968], [71.888, 72.058]]],
-  "mix/out": [73.513, 82.011, "Then A times V. T by T, times T by d v, gives T by d v: one output row per token.", [[76.043, 76.393], [77.953, 78.293], [79.683, 80.183]]],
-  "mix/row": [82.391, 94.804, "Row two of the output is the weighted sum of the rows of V: half of two and zero, plus a quarter of zero and four, plus a quarter of four and four. That is two and two.", [[86.001, 86.601], [88.141, 88.461], [90.471, 90.811], [92.661, 93.171], [93.651, 93.881]]],
-  "mix/formula": [95.184, 103.144, "All of self-attention in one line: softmax of Q K transpose over the square root of d k, times V.", [[97.364, 97.874], [102.044, 102.374]]],
-  "mix/turn": [103.524, 104.264, "Your turn.", []]
+  "stack/tokens": [0.7, 13.549, "So far, one token asked at a time. Self-attention lets every token ask at once. Say there are T tokens: stack them as the rows of a matrix, X, T by d.", [[1.33, 1.59], [3.44, 4.01], [7.06, 7.63], [9.17, 9.57], [11.58, 11.91], [12.3, 12.54]]],
+  "stack/qkv": [13.929, 31.98, "Each token's query becomes one row of a matrix, Q; its key, one row of K; its value, one row of V. So Q and K are T by d k, and V is T by d v, where d v is each value's length.", [[17.089, 17.329], [17.699, 18.239], [18.889, 19.169], [20.349, 20.909], [21.649, 21.949], [23.099, 23.729], [26.799, 27.219], [29.299, 29.699]]],
+  "stack/scores": [32.36, 43.738, "Then one matrix product scores every query against every key: Q times K transpose. T by d k, times d k by T, gives T by T.", [[32.76, 32.95], [36.66, 37.16], [38.88, 39.37], [40.55, 40.76], [42.25, 42.51]]],
+  "stack/entry": [44.118, 56.976, "Entry i, j is token i's query dotted with token j's key, divided by the square root of d k. Row two, column zero: how much fish looks at cats.", [[45.018, 45.448], [47.538, 47.718], [49.588, 49.798], [52.088, 52.928], [54.548, 55.018]]],
+  "mix/softmax": [58.776, 69.022, "Softmax runs along each row, giving the weights, A. Every row adds up to one: it is how one token splits its attention over all of them.", [[60.916, 61.176], [62.026, 62.436], [62.766, 63.426], [65.116, 65.666]]],
+  "mix/fish": [69.402, 75.747, "Here fish, row two, gives a half to cats and a quarter each to like and to itself.", [[70.242, 70.522], [71.202, 71.582], [74.502, 74.672]]],
+  "mix/out": [76.127, 84.625, "Then A times V. T by T, times T by d v, gives T by d v: one output row per token.", [[78.657, 79.007], [80.567, 80.907], [82.297, 82.797]]],
+  "mix/row": [85.005, 97.418, "Row two of the output is the weighted sum of the rows of V: half of two and zero, plus a quarter of zero and four, plus a quarter of four and four. That is two and two.", [[88.615, 89.215], [90.755, 91.075], [93.085, 93.425], [95.275, 95.785], [96.265, 96.495]]],
+  "mix/formula": [97.798, 105.758, "All of self-attention in one line: softmax of Q K transpose over the square root of d k, times V.", [[99.978, 100.488], [104.658, 104.988]]],
+  "mix/turn": [106.138, 106.879, "Your turn.", []]
  }
 }

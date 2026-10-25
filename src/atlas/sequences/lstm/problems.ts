@@ -31,12 +31,11 @@ export const generators: Generator[] = [
   {
     id: 'cell',
     make(rng, d) {
-      const formula = d < 0.5 ? ' $c_t = f_t\\, c_{t-1} + i_t\\, g_t$' : ' $c_t$';
       if (d < 0.5) {
         const u = unit(rng, d);
         const v = cell(u);
         return {
-          prompt: `An LSTM unit's old cell state is $c_{t-1} = ${u.c}$. Its forget gate is $f_t = ${num(u.f)}$, its input gate $i_t = ${num(u.i)}$, and the candidate $g_t = ${num(u.g)}$. What is the new cell state${formula}?`,
+          prompt: `An LSTM unit's old cell state is $c_{t-1} = ${u.c}$. Its forget gate is $f_t = ${num(u.f)}$, its input gate $i_t = ${num(u.i)}$, and the candidate $g_t = ${num(u.g)}$. What is the new cell state $c_t$?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: u.f * u.c + u.g, why: 'That adds the whole candidate. The input gate scales it first: $i_t\\, g_t$.' },
@@ -45,6 +44,7 @@ export const generators: Generator[] = [
             { value: u.f * u.c, why: 'That only keeps part of the old cell. The new content, $i_t\\, g_t$, is added to it.' },
           ]),
           solution: [
+            'The update is $c_t = f_t\\, c_{t-1} + i_t\\, g_t$.',
             `Keep part of the old cell: $f_t\\, c_{t-1} = ${num(u.f)} \\times ${paren(u.c)} = ${num(clean(u.f * u.c))}$.`,
             `Write part of the candidate: $i_t\\, g_t = ${num(u.i)} \\times ${paren(u.g)} = ${num(clean(u.i * u.g))}$.`,
             `Add them: $c_t = ${num(clean(u.f * u.c))} + ${paren(clean(u.i * u.g))} = ${num(v)}$.`,
@@ -55,15 +55,15 @@ export const generators: Generator[] = [
       const v = us.map(cell);
       const col = (k: 'c' | 'f' | 'i' | 'o' | 'g') => vec(us.map((u) => u[k]));
       return {
-        prompt: `An LSTM layer with two units has the old cell state $c_{t-1} = ${col('c')}$. Its gates are $f_t = ${col('f')}$, $i_t = ${col('i')}$, $o_t = ${col('o')}$, and the candidate is $g_t = ${col('g')}$. What is the new cell state${formula}?`,
+        prompt: `An LSTM layer with two units has the old cell state $c_{t-1} = ${col('c')}$. Its gates are $f_t = ${col('f')}$, $i_t = ${col('i')}$, $o_t = ${col('o')}$, and the candidate is $g_t = ${col('g')}$. What is the new cell state $c_t$?`,
         answer: { kind: 'vector', value: v },
         traps: vtraps(v, [
-          { value: us.map((u) => u.o * u.c + u.i * u.g), why: 'That scales the old cell by the output gate. The forget gate decides what to keep: $f_t \\odot c_{t-1}$.' },
-          { value: us.map((u) => u.f * u.c + u.g), why: 'That adds the whole candidate. The input gate scales it first: $i_t \\odot g_t$.' },
-          { value: us.map((u) => u.c + u.i * u.g), why: 'That keeps all of the old cell. The forget gate scales it first: $f_t \\odot c_{t-1}$.' },
+          { value: us.map((u) => u.o * u.c + u.i * u.g), why: 'That scales the old cell by the output gate. The forget gate decides what to keep: $f_t\\, c_{t-1}$.' },
+          { value: us.map((u) => u.f * u.c + u.g), why: 'That adds the whole candidate. The input gate scales it first: $i_t\\, g_t$.' },
+          { value: us.map((u) => u.c + u.i * u.g), why: 'That keeps all of the old cell. The forget gate scales it first: $f_t\\, c_{t-1}$.' },
         ]),
         solution: [
-          'The update is $c_t = f_t \\odot c_{t-1} + i_t \\odot g_t$, entry by entry; $o_t$ only matters for $\\symh_t$.',
+          'The update is $c_t = f_t\\, c_{t-1} + i_t\\, g_t$, multiplying entry by entry; $o_t$ only matters for $\\symh_t$.',
           ...us.map((u, k) => `Unit ${k}: $${num(u.f)} \\times ${paren(u.c)} + ${num(u.i)} \\times ${paren(u.g)} = ${num(v[k]!)}$.`),
           `So $c_t = ${vec(v)}$.`,
         ],
@@ -75,9 +75,9 @@ export const generators: Generator[] = [
     make(rng, d) {
       const options = ['The forget gate $f_t$', 'The input gate $i_t$', 'The output gate $o_t$', 'The candidate $g_t$'];
       const does = [
-        'The forget gate scales the old cell state: $f_t \\odot c_{t-1}$.',
-        'The input gate scales the candidate before it is added: $i_t \\odot g_t$.',
-        'The output gate scales what leaves the cell: $\\symh_t = o_t \\odot \\tanh(c_t)$.',
+        'The forget gate scales the old cell state: $f_t\\, c_{t-1}$.',
+        'The input gate scales the candidate before it is added: $i_t\\, g_t$.',
+        'The output gate scales what leaves the cell: $\\symh_t = o_t \\tanh(c_t)$.',
         'The candidate is the new content itself, from a tanh; the gates decide how much of it counts.',
       ];
       if (d < 0.5 || rng.int(2) === 0) {
@@ -94,7 +94,7 @@ export const generators: Generator[] = [
           answer: { kind: 'choice', options, correct: k, why: does.map((w, j) => (j === k ? null : w)) },
           solution: [
             'Three gates, each a sigmoid between 0 and 1, scale three things; the candidate $g_t$, a tanh, is the content.',
-            '$c_t = f_t \\odot c_{t-1} + i_t \\odot g_t$ and $\\symh_t = o_t \\odot \\tanh(c_t)$.',
+            '$c_t = f_t\\, c_{t-1} + i_t\\, g_t$ and $\\symh_t = o_t \\tanh(c_t)$.',
             does[k]!,
           ],
         };
@@ -128,7 +128,7 @@ export const generators: Generator[] = [
       const n = pick(rng, [20, 30, 50]);
       const a = pick(rng, [0.5, 0.6, 0.7]);
       return {
-        prompt: `An LSTM's forget gate stays near $f = ${num(f)}$ for ${n} steps. In a plain RNN, each step back would multiply the gradient by about $${num(a)}$, leaving $${num(a)}^{${n}} \\approx ${sci(a ** n)}$. Why does the LSTM's cell state still get a useful gradient from ${n} steps back?`,
+        prompt: `An LSTM's forget gate stays near $f = ${num(f)}$ for ${n} steps. Why does its cell state still get a useful gradient from ${n} steps back, where a plain RNN's gradient would have vanished?`,
         answer: {
           kind: 'choice',
           options: [
@@ -146,8 +146,8 @@ export const generators: Generator[] = [
           ],
         },
         solution: [
-          '$c_t = f_t \\odot c_{t-1} + i_t \\odot g_t$, so one step back along the cell, $\\partial c_t / \\partial c_{t-1} = f_t$.',
-          `Over ${n} steps: $${num(f)}^{${n}} \\approx ${sci(f ** n)}$, against $${sci(a ** n)}$ for the plain RNN.`,
+          '$c_t = f_t\\, c_{t-1} + i_t\\, g_t$, so one step back along the cell, $\\partial c_t / \\partial c_{t-1} = f_t$.',
+          `Over ${n} steps: $${num(f)}^{${n}} \\approx ${sci(f ** n)}$. A plain RNN that multiplies by about $${num(a)}$ per step keeps $${num(a)}^{${n}} \\approx ${sci(a ** n)}$.`,
           'The cell is updated by addition, not squashed through a weight matrix, so a forget gate held near 1 keeps both the memory and its gradient.',
         ],
       };

@@ -65,7 +65,7 @@ export const generators: Generator[] = [
       if (!seq) {
         const v = [N, len];
         return {
-          prompt: `A $${sizeTex(m)}$ ${kind} image, with $C = ${C}$ channel${C > 1 ? 's' : ''}, is cut into $${m.p} \\times ${m.p}$ patches, and each patch is flattened into one row of numbers. What is the shape of the matrix holding all of the image's flattened patches, one row per patch?`,
+          prompt: `A $${sizeTex(m)}$ ${kind} image${C === 1 ? ', one channel per pixel,' : ''} is cut into $${m.p} \\times ${m.p}$ patches, and each patch is flattened into one row of numbers. What is the shape of the matrix holding all of the image's flattened patches?`,
           answer: { kind: 'shape', value: v },
           traps: straps(v, [
             { value: [N, m.p * m.p], why: `That leaves out the channels. Each of the $${m.p * m.p}$ pixels brings $C = ${C}$ numbers.` },
@@ -110,8 +110,8 @@ export const generators: Generator[] = [
       const v = len * dm + dm;
       const conv = rng.next() < 0.5;
       const how = conv
-        ? `The patch embedding is the layer \`nn.Conv2d(${C}, ${dm}, kernel_size=${P}, stride=${P})\`: ${dm} filters of size $${P} \\times ${P}$, each stepping one whole patch at a time.`
-        : `The patch embedding flattens each $${P} \\times ${P}$ patch of $C = ${C}$ channel${C > 1 ? 's' : ''} into one row and maps it, with one weight matrix and a bias, to a token of $d = ${dm}$ numbers.`;
+        ? `The patch embedding is the layer \`nn.Conv2d(${C}, ${dm}, kernel_size=${P}, stride=${P})\`.`
+        : `The patch embedding maps each patch, of $C = ${C}$ channel${C > 1 ? 's' : ''}, to a token of $d = ${dm}$ numbers.`;
       return {
         prompt: `A vision transformer reads $${side} \\times ${side}$ images in $${P} \\times ${P}$ patches. ${how} How many parameters does the patch embedding learn, weights and biases together?`,
         answer: { kind: 'number', value: v },

@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import { int, num, pick, round, vec } from '../../kit';
-import { AB, BLEND, EPS, LEVELS, X0, XT, bigText, clean, par, roots, shuffled, tenth, traps, vtraps } from '../kit';
+import { AB, BLEND, EPS, LEVELS, X0, XT, big, bigText, clean, par, roots, shuffled, tenth, traps, vtraps } from '../kit';
 
 export const generators: Generator[] = [
   {
@@ -23,11 +23,11 @@ export const generators: Generator[] = [
         { value: x0.map((x, i) => clean(x + eps[i]!)), why: 'That adds the noise to the image unscaled. Both are scaled first.' },
       ];
       return {
-        prompt: `${one ? 'One pixel of a clean image is' : 'A clean image has the pixels'} $${X0} = ${T(x0)}$, and the noise drawn for ${one ? 'it' : 'them'} is $${EPS} = ${T(eps)}$. At a step where $${AB} = ${num(ab)}$, what is $${XT}$, using $${BLEND}$?${rounded ? ' Round to two decimals.' : ''}\n\nUse ${roots(L)}.`,
+        prompt: `${one ? 'One pixel of a clean image is' : 'A clean image has the pixels'} $${X0} = ${T(x0)}$, and the noise drawn for ${one ? 'it' : 'them'} is $${EPS} = ${T(eps)}$. At a step where $${AB} = ${num(ab)}$, what is $${XT}$?${rounded ? ' Round to two decimals.' : ''}\n\nUse ${roots(L)}.`,
         answer: one ? { kind: 'number', value: v[0]!, places: 2 } : { kind: 'vector', value: v, places: 2 },
         traps: one ? traps(v[0]!, wrong.map((t) => ({ value: t.value[0]!, why: t.why })), 2) : vtraps(v, wrong, 2),
         solution: [
-          `The image is scaled by $\\sqrt{${num(ab)}} ${Math.abs(Math.sqrt(ab) - a) < 1e-9 ? '=' : '\\approx'} ${num(a)}$ and the noise by $\\sqrt{${num(clean(1 - ab))}} ${Math.abs(Math.sqrt(1 - ab) - b) < 1e-9 ? '=' : '\\approx'} ${num(b)}$.`,
+          `$${BLEND}$: the image is scaled by $\\sqrt{${num(ab)}} ${Math.abs(Math.sqrt(ab) - a) < 1e-9 ? '=' : '\\approx'} ${num(a)}$ and the noise by $\\sqrt{${num(clean(1 - ab))}} ${Math.abs(Math.sqrt(1 - ab) - b) < 1e-9 ? '=' : '\\approx'} ${num(b)}$.`,
           ...x0.map((x, i) => `${one ? '' : `Pixel ${i}: `}$${num(a)} \\cdot ${par(x)} + ${num(b)} \\cdot ${par(eps[i]!)} = ${num(clean(a * x))} ${b * eps[i]! < 0 ? '-' : '+'} ${num(clean(Math.abs(b * eps[i]!)))} = ${num(v[i]!)}$.`),
         ],
       };
@@ -43,7 +43,7 @@ export const generators: Generator[] = [
         const sig = kind === 'share';
         const v = sig ? ab : clean(1 - ab);
         return {
-          prompt: `A clean image $${X0}$ has pixels of variance 1, and the noise $${EPS}$ from \`np.random.randn\` has variance 1 too. At a step where $${AB} = ${num(ab)}$, what is the variance of the ${sig ? `image part, $\\sqrt{${AB}}\\,${X0}$` : `noise part, $\\sqrt{1 - ${AB}}\\,${EPS}$`}?`,
+          prompt: `A clean image $${X0}$ has pixels of variance 1. At a step where $${AB} = ${num(ab)}$, what is the variance of the ${sig ? 'image' : 'noise'} part of $${XT}$?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: sig ? a : b, why: `That is the factor itself, $${num(sig ? a : b)}$. Scaling by a factor multiplies the variance by its square.` },
@@ -51,7 +51,7 @@ export const generators: Generator[] = [
             { value: 1, why: `That is the variance of all of $${XT}$. The question asks about one part.` },
           ]),
           solution: [
-            `Scaling a number by $c$ multiplies its variance by $c^2$.`,
+            `The ${sig ? `image part is $\\sqrt{${AB}}\\,${X0}$` : `noise part is $\\sqrt{1 - ${AB}}\\,${EPS}$, and $${EPS}$ has variance 1`}. Scaling a number by $c$ multiplies its variance by $c^2$.`,
             sig ? `$(\\sqrt{${AB}})^2 \\times 1 = ${AB} = ${num(ab)}$.` : `$(\\sqrt{1 - ${AB}})^2 \\times 1 = 1 - ${AB} = ${num(v)}$.`,
             `The two parts add up to a variance of $${num(ab)} + ${num(clean(1 - ab))} = 1$: $${AB}$ is the share of the variance still made of image.`,
           ],
@@ -62,7 +62,7 @@ export const generators: Generator[] = [
         const v = fromA ? b : a;
         const given = fromA ? a : b;
         return {
-          prompt: `At some step, $${XT} = ${fromA ? `${num(a)}\\,${X0} + c\\,${EPS}` : `c\\,${X0} + ${num(b)}\\,${EPS}`}$, and the blend keeps the variance at 1, as $${BLEND}$ does. What is $c$? Round to two decimals.\n\nUse ${roots(L)}.`,
+          prompt: `At some step, $${XT} = ${fromA ? `${num(a)}\\,${X0} + c\\,${EPS}$` : `c\\,${X0} + ${num(b)}\\,${EPS}$`}. What is $c$? Round to two decimals.\n\nUse ${roots(L)}.`,
           answer: { kind: 'number', value: v, places: 2 },
           traps: traps(v, [
             { value: clean(1 - given), why: `That makes the two factors add up to 1. It is their squares that add up to 1: $${num(given)}^2 + c^2 = 1$.` },
@@ -79,7 +79,7 @@ export const generators: Generator[] = [
       const vx = pick(rng, [0.25, 0.5, 2, 4]);
       const v = clean(ab * vx + 1 - ab);
       return {
-        prompt: `The pixels of a clean image $${X0}$ have variance $${num(vx)}$, and the noise $${EPS}$ from \`np.random.randn\` has variance 1, drawn independently. At a step where $${AB} = ${num(ab)}$, what is the variance of $${XT}$, using $${BLEND}$?`,
+        prompt: `The pixels of a clean image $${X0}$ have variance $${num(vx)}$. At a step where $${AB} = ${num(ab)}$, what is the variance of $${XT}$?`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(v, [
           { value: 1, why: `The blend keeps the variance at 1 only when the image starts at variance 1. Here it starts at $${num(vx)}$.` },
@@ -87,8 +87,8 @@ export const generators: Generator[] = [
           { value: clean(ab * vx), why: 'That is the image part only. Independent variances add: include the noise part.' },
         ], 2),
         solution: [
-          `Image part: $${AB} \\times ${num(vx)} = ${num(clean(ab * vx))}$.`,
-          `Noise part: $(1 - ${AB}) \\times 1 = ${num(clean(1 - ab))}$.`,
+          `$${BLEND}$. Image part: $${AB} \\times ${num(vx)} = ${num(clean(ab * vx))}$.`,
+          `Noise part, with $${EPS}$ of variance 1: $(1 - ${AB}) \\times 1 = ${num(clean(1 - ab))}$.`,
           `They are independent, so the variances add: $${num(clean(ab * vx))} + ${num(clean(1 - ab))} = ${num(v)}$.`,
         ],
       };
@@ -102,7 +102,7 @@ export const generators: Generator[] = [
       const a = round(Math.sqrt(ab), 2);
       const b = round(Math.sqrt(1 - ab), 2);
       return {
-        prompt: `A diffusion model noises an image with $${BLEND}$. At one step, $${AB} = ${num(ab)}$, so $${XT} \\approx ${num(a)}\\,${X0} + ${num(b)}\\,${EPS}$. What does $${XT}$ look like?`,
+        prompt: `A diffusion model is noising an image. At one step, $${AB} = ${num(ab)}$. What does $${XT}$ look like?`,
         answer: shuffled(rng, [
           { text: 'Nearly the clean image, with a little noise on top', why: kind === 'clean' ? null : kind === 'mid' ? `Only $${num(ab)}$ of the variance is image here: the noise is as strong as the image.` : `Only $${num(ab)}$ of the variance is image here: it is almost all noise.` },
           { text: 'The image, plainly there, under noise about as strong as it is', why: kind === 'mid' ? null : kind === 'clean' ? `With $${AB} = ${num(ab)}$ the noise is scaled by only $${num(b)}$: a light dusting.` : `With $${AB} = ${num(ab)}$ the image is scaled by only $${num(a)}$: it is barely there.` },
@@ -110,6 +110,7 @@ export const generators: Generator[] = [
           { text: 'A faded copy of the image, with no noise at all', why: `The noise is scaled by $${num(b)}$, not 0. As $${AB}$ falls the image fades and the noise grows, keeping the variance at 1.` },
         ]),
         solution: [
+          `$${BLEND} \\approx ${num(a)}\\,${X0} + ${num(b)}\\,${EPS}$.`,
           `$${AB}$ is the share of $${XT}$'s variance that is still image: here $${num(ab)}$, and $${num(clean(1 - ab))}$ is noise.`,
           kind === 'clean' ? 'Close to 1: the image is nearly untouched.' : kind === 'mid' ? 'Around a half: image and noise are about equally strong.' : 'Close to 0: the image is almost gone, leaving nearly pure noise.',
         ],
@@ -121,7 +122,7 @@ export const generators: Generator[] = [
     make(rng) {
       const T = pick(rng, [100, 250, 500, 1000, 4000]);
       const kind = pick(rng, ['what', 'compare', 'compare', 'ends'] as const);
-      const lead = `A diffusion model noises images over ${bigText(T)} steps, with $${BLEND}$ at each step $t$.`;
+      const lead = `A diffusion model noises images over ${bigText(T)} steps.`;
       if (kind === 'what')
         return {
           prompt: `${lead} What does its noise schedule set?`,
@@ -154,7 +155,7 @@ export const generators: Generator[] = [
       const [pa, pb] = rng.shuffle([pick(rng, [0.6, 0.5, 0.7]), pick(rng, [0.1, 0.05, 0.2])]);
       const aMore = pa! > pb!;
       return {
-        prompt: `${lead} Two schedules are tried. At step $t = ${bigText(t)}$, schedule A has $${AB} = ${num(pa!)}$ and schedule B has $${AB} = ${num(pb!)}$. At that step, under which schedule does $${XT}$ keep more of the image?`,
+        prompt: `${lead} Two schedules are tried. At step $t = ${big(t)}$, schedule A has $${AB} = ${num(pa!)}$ and schedule B has $${AB} = ${num(pb!)}$. At that step, under which schedule does $${XT}$ keep more of the image?`,
         answer: shuffled(rng, [
           { text: 'Schedule A', why: aMore ? null : `A has the smaller $${AB}$, $${num(pa!)}$: less of its variance is image.` },
           { text: 'Schedule B', why: aMore ? `B has the smaller $${AB}$, $${num(pb!)}$: less of its variance is image.` : null },

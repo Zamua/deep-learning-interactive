@@ -35,9 +35,8 @@ export const generators: Generator[] = [
       const mix = (p: (x: number, e: number) => number) => x0.map((x, i) => clean(p(x, eps[i]!)));
       const v = mix((x, e) => (1 - t) * x + t * e);
       const one = n === 1;
-      const form = d < 0.5 ? `, on the straight line $${PATH}$` : ' on its straight line';
       return {
-        prompt: `${one ? 'A pixel of a clean image is' : 'Two pixels of a clean image are'} $${X0} = ${tex(x0)}$, and the noise drawn for ${one ? 'it' : 'them'} is $${EPS} = ${tex(eps)}$. Where does flow matching put $${XT}$ at $t = ${num(t)}$${form}? Round to two decimals.`,
+        prompt: `${one ? 'A pixel of a clean image is' : 'Two pixels of a clean image are'} $${X0} = ${tex(x0)}$, and the noise drawn for ${one ? 'it' : 'them'} is $${EPS} = ${tex(eps)}$. Where does flow matching put $${XT}$ at $t = ${num(t)}$? Round to two decimals.`,
         ...out(v, [
           { value: mix((x, e) => t * x + (1 - t) * e), why: `That swaps the weights. At $t = 0$ the point is the clean image, so $${X0}$ gets $1 - t = ${num(clean(1 - t))}$.` },
           { value: mix((x, e) => x + t * e), why: `That adds the noise without shrinking the image. $${X0}$ is scaled by $1 - t$.` },
@@ -45,7 +44,7 @@ export const generators: Generator[] = [
           { value: mix((x, e) => Math.sqrt(1 - t) * x + Math.sqrt(t) * e), why: 'That uses square roots, as the diffusion blend does. The straight line uses $1 - t$ and $t$ themselves.' },
         ]),
         solution: [
-          `On the line, $${X0}$ is scaled by $1 - t = ${num(clean(1 - t))}$ and $${EPS}$ by $t = ${num(t)}$.`,
+          `$${PATH}$: $${X0}$ is scaled by $1 - t = ${num(clean(1 - t))}$ and $${EPS}$ by $t = ${num(t)}$.`,
           ...x0.map((x, i) => `${one ? '' : `Pixel ${i}: `}$${num(clean(1 - t))} \\cdot ${par(x)} + ${num(t)} \\cdot ${par(eps[i]!)} = ${num(clean((1 - t) * x))} ${t * eps[i]! < 0 ? '-' : '+'} ${num(clean(Math.abs(t * eps[i]!)))} = ${num(v[i]!)}$.`),
           `The two weights add up to 1: at $t = 0$ the point is $${X0}$, at $t = 1$ it is $${EPS}$.`,
         ],
@@ -67,7 +66,7 @@ export const generators: Generator[] = [
         const total = sum(sq);
         const loss = clean(total / n);
         return {
-          prompt: `A clean image of ${n} pixels, $${X0} = ${vec(x0)}$, and its noise $${EPS} = ${vec(eps)}$ give a training point at $t = ${num(t)}$. The network looks at $${XT}$ and $t$ and guesses the velocity $${VHAT} = ${vec(guess)}$. What is the flow matching loss: the mean of the squared differences from the target velocity? Round to two decimals.`,
+          prompt: `A clean image $${X0} = ${vec(x0)}$ and its noise $${EPS} = ${vec(eps)}$ give a training point at $t = ${num(t)}$. The network looks at $${XT}$ and $t$ and guesses the velocity $${VHAT} = ${vec(guess)}$. What is the flow matching loss? Round to two decimals.`,
           answer: { kind: 'number', value: loss, places: 2 },
           traps: traps(loss, [
             { value: total, why: `That is the sum of the squares. The mean divides it by the ${n} pixels.` },
@@ -78,12 +77,12 @@ export const generators: Generator[] = [
           solution: [
             `The target velocity is $${V} = ${EPS} - ${X0} = ${vec(target)}$, whatever $t$ is.`,
             `Differences: $${VHAT} - ${V} = ${vec(diff)}$. Squares: $${vec(sq)}$, which add up to $${num(total)}$.`,
-            `Mean over the ${n} pixels: $${num(total)} / ${n} = ${num(loss)}$.`,
+            `The loss is their mean over the ${n} pixels: $${num(total)} / ${n} = ${num(loss)}$.`,
           ],
         };
       }
       return {
-        prompt: `A clean image of ${n} pixels is $${X0} = ${vec(x0)}$, and the noise drawn for it is $${EPS} = ${vec(eps)}$. The network sees the point on their straight line at $t = ${num(t)}$. What velocity $${V}$ is it trained to predict?`,
+        prompt: `A clean image is $${X0} = ${vec(x0)}$, and the noise drawn for it is $${EPS} = ${vec(eps)}$. The network sees their blend $${XT}$ at $t = ${num(t)}$. What velocity $${V}$ is it trained to predict?`,
         answer: { kind: 'vector', value: target },
         traps: vtraps(target, [
           { value: x0.map((x, i) => clean(x - eps[i]!)), why: `That points from the noise to the image. The velocity is how $${XT}$ moves as $t$ grows: toward the noise, $${EPS} - ${X0}$.` },
@@ -113,8 +112,7 @@ export const generators: Generator[] = [
       const v = two ? step1.map((p, i) => clean(p - dt * v2[i]!)) : step1;
       const t1 = clean(start - dt);
       const tEnd = two ? clean(start - 2 * dt) : t1;
-      const where = start === 1 ? 'at $t = 1$, pure noise' : `at $t = ${num(start)}$`;
-      const rule = d < 0.5 ? ` Each Euler step does $${EULER}$ and lowers $t$ by $\\Delta t$.` : '';
+      const where = `at $t = ${num(start)}$`;
       const guesses = two
         ? `the network guesses $${VHAT} = ${tex(v1)}$ at $t = ${num(start)}$ and $${VHAT} = ${tex(v2)}$ at $t = ${num(t1)}$`
         : `the network guesses $${VHAT} = ${tex(v1)}$ there`;
@@ -131,10 +129,10 @@ export const generators: Generator[] = [
             { value: v1.map((g) => clean(-dt * g)), why: `That is the move on its own. Add it to where the point was.` },
           ];
       return {
-        prompt: `A flow matching model samples by starting ${where}, and taking Euler steps of $\\Delta t = ${num(dt)}$ toward $t = 0$.${rule} The point starts at $${XT} = ${tex(x)}$, and ${guesses}. Where is it at $t = ${num(tEnd)}$?${d >= 0.35 ? ' Round to two decimals.' : ''}`,
+        prompt: `A flow matching model samples by starting ${where} and taking Euler steps of $\\Delta t = ${num(dt)}$ toward $t = 0$. The point starts at $${XT} = ${tex(x)}$, and ${guesses}. Where is it at $t = ${num(tEnd)}$?${d >= 0.35 ? ' Round to two decimals.' : ''}`,
         ...out(v, wrong),
         solution: [
-          `Each step moves against the velocity guess: $${EULER}$.`,
+          `Each step moves against the velocity guess, $${EULER}$, and lowers $t$ by $\\Delta t$.`,
           `${two ? 'Step 1' : 'The step'}: ${x.map((p, i) => `$${num(p)} - ${num(dt)} \\cdot ${par(v1[i]!)} = ${num(step1[i]!)}$`).join('; ')}, at $t = ${num(t1)}$.`,
           ...(two ? [`Step 2: ${step1.map((p, i) => `$${num(p)} - ${num(dt)} \\cdot ${par(v2[i]!)} = ${num(v[i]!)}$`).join('; ')}, at $t = ${num(tEnd)}$.`] : []),
         ],
@@ -145,7 +143,7 @@ export const generators: Generator[] = [
     id: 'ideas',
     make(rng) {
       const kind = pick(rng, ['target', 'direction', 'steady', 'one-step'] as const);
-      const lead = `A flow matching model is trained on ${pick(rng, SIZES)} images, with $${PATH}$ for $t$ from 0 to 1.`;
+      const lead = `A flow matching model is trained on ${pick(rng, SIZES)} images.`;
       if (kind === 'target')
         return {
           prompt: `${lead} What is the network trained to output?`,

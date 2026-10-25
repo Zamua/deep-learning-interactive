@@ -17,10 +17,10 @@ export const script: LectureScript = {
         s - s[y] + 1               # [1, 3, -3]       #@m
       `,
       beats: [
-        { id: 's', say: 'Scores again: cat three, dog five, ship minus one. The image is a cat, so y is zero.', code: ['s', 'y'] },
-        { id: 'line', say: 'The multiclass SVM loss wants the right class to win by a margin of at least one. Draw a line one below cat\'s score, at two.', code: 'm' },
+        { id: 's', say: 'Scores again, s: cat three, dog five, ship minus one. The image is a cat, so the right class, y, is zero.', code: ['s', 'y'] },
+        { id: 'line', say: 'A loss, L, is one number for how bad the scores are. The multiclass SVM loss, or hinge loss, wants the right class to win by a margin of at least one. Draw a line one below cat\'s score, at two.', code: 'm' },
         { id: 'poke', say: 'A wrong class that pokes above the line costs exactly how far it pokes. Dog, at five, is three above it.', code: 'm' },
-        { id: 'safe', say: 'Ship, far below the line, costs nothing. Its term is minus three, and the hinge clips it to zero: no credit for being low.', code: 'm' },
+        { id: 'safe', say: 'Ship, far below the line, costs nothing. Its term is minus three, and the hinge clips it to zero: {max(0, −3)|the max of zero and minus three}, the larger of the two, is zero. No credit for being low.', code: 'm' },
       ],
     },
     {
@@ -33,7 +33,7 @@ export const script: LectureScript = {
         # max(0, 3) + max(0, -3) = 3 + 0 = 3     #@sum
       `,
       beats: [
-        { id: 'formula', say: 'In symbols: for every wrong class j, take the larger of zero and {sⱼ − s[y] + 1|s j, minus s y, plus one}. Then add them up.', code: 'L' },
+        { id: 'formula', say: 'In symbols: for every wrong class, {j ≠ y|j not equal to y}, take {max(0, sⱼ − s[y] + 1)|the max of zero and s j, minus s y, plus one}. Then add them up.', code: 'L' },
         { id: 'skip', say: 'The right class is skipped. Its own term would always be one, a cost no score could ever remove.', code: 'skip' },
         { id: 'sum', say: 'Here that is three for dog, plus zero for ship. The loss is three.', code: 'sum' },
       ],

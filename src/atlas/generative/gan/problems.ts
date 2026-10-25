@@ -21,7 +21,7 @@ export const generators: Generator[] = [
         const b = pick(rng, fake);
         const v = round(-LN2(b), 2);
         return {
-          prompt: `The discriminator gives one of the generator's fakes $${DX('G(z)')} = ${num(b)}$. The generator is trained as if its fakes were labeled real. What is its loss on this fake? Round to two decimals.\n\nUse ${lnList([b, 1 - b])}.`,
+          prompt: `The discriminator gives one of the generator's fakes $${DX('G(z)')} = ${num(b)}$. What is the generator's loss on this fake? Round to two decimals.\n\nUse ${lnList([b, 1 - b])}.`,
           answer: { kind: 'number', value: v, places: 2 },
           traps: traps(v, [
             { value: -LN2(1 - b), why: `That is $-\\ln(1 - ${DX('G(z)')})$, the discriminator's loss on this fake. The generator wants it called real: $-\\ln ${DX('G(z)')}$.` },
@@ -40,7 +40,7 @@ export const generators: Generator[] = [
         const b = pick(rng, fake);
         const v = round(-LN2(a) - LN2(1 - b), 2);
         return {
-          prompt: `The discriminator sees one real image $x$ and one fake $G(z)$. It gives $${DX('x')} = ${num(a)}$ and $${DX('G(z)')} = ${num(b)}$, each the probability that the image is real. What is the discriminator's loss: its cross-entropy on the real image plus its cross-entropy on the fake? Round to two decimals.\n\nUse ${lnList([a, b, 1 - b])}.`,
+          prompt: `The discriminator gives a real image $x$ the score $${DX('x')} = ${num(a)}$ and a fake the score $${DX('G(z)')} = ${num(b)}$. What is the discriminator's loss? Round to two decimals.\n\nUse ${lnList([a, b, 1 - b])}.`,
           answer: { kind: 'number', value: v, places: 2 },
           traps: traps(v, [
             { value: -LN2(a) - LN2(b), why: `That uses $-\\ln ${DX('G(z)')}$ for the fake, as if it were labeled real. The fake's label is 0, so its loss is $-\\ln(1 - ${DX('G(z)')})$.` },
@@ -48,7 +48,7 @@ export const generators: Generator[] = [
             { value: LN2(a) + LN2(1 - b), why: 'That leaves out the minus signs. Each cross-entropy is minus a log.' },
           ], 2),
           solution: [
-            `The real image is labeled 1: its loss is $-\\ln ${DX('x')} = -\\ln ${num(a)} \\approx ${neg(a)}$.`,
+            `The loss is the cross-entropy on the real image plus the cross-entropy on the fake. The real image is labeled 1: its loss is $-\\ln ${DX('x')} = -\\ln ${num(a)} \\approx ${neg(a)}$.`,
             `The fake is labeled 0, so the probability of its right answer is $1 - ${num(b)} = ${num(clean(1 - b))}$: its loss is $-\\ln ${num(clean(1 - b))} \\approx ${neg(clean(1 - b))}$.`,
             `Together: $${neg(a)} + ${neg(clean(1 - b))} = ${num(v, 2)}$.`,
           ],
@@ -60,7 +60,7 @@ export const generators: Generator[] = [
       const lf = round((-LN2(1 - b[0]!) - LN2(1 - b[1]!)) / 2, 3);
       const v = round(lr + lf, 2);
       return {
-        prompt: `The discriminator sees two real images and two fakes. It gives the real ones $${num(a[0]!)}$ and $${num(a[1]!)}$, and the fakes $${num(b[0]!)}$ and $${num(b[1]!)}$, each the probability that the image is real. Its loss is the average cross-entropy over the real images plus the average over the fakes. What is it? Round to two decimals.\n\nUse ${lnList([...a, ...b.map((x) => 1 - x)])}.`,
+        prompt: `The discriminator gives two real images $${num(a[0]!)}$ and $${num(a[1]!)}$, and two fakes $${num(b[0]!)}$ and $${num(b[1]!)}$. Its loss is the average cross-entropy over the real images plus the average over the fakes. What is it? Round to two decimals.\n\nUse ${lnList([...a, ...b.map((x) => 1 - x)])}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(v, [
           { value: (-LN2(a[0]!) - LN2(a[1]!) - LN2(b[0]!) - LN2(b[1]!)) / 2, why: 'That treats the fakes as if they were labeled real. A fake\'s loss is $-\\ln(1 - D)$.' },

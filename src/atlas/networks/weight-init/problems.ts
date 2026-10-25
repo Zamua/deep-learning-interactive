@@ -26,15 +26,14 @@ function stdProblem(rng: Rng, d: number): Problem {
   const hint = !hard ? '' : he ? ` Use $${sqrt2}$.` : ` Use $\\sqrt{${n}} \\approx ${num(round(Math.sqrt(n), 2), 2)}$.`;
   const act = he ? 'ReLU' : 'tanh';
   const scheme = he ? 'He' : 'Xavier';
-  const rule = d < 0.35 ? (he ? ', which draws weights with variance $2/n$ for fan-in $n$' : ', which draws weights with variance $1/n$ for fan-in $n$') : '';
-  const where = viaShape ? `whose weight matrix has shape (${H}, ${n}), one row per unit,` : `whose units each have $n = ${n}$ inputs`;
+  const where = viaShape ? `whose weight matrix has shape (${H}, ${n})` : `whose units each have $n = ${n}$ inputs`;
   const ts = [
     { value: other, why: he ? 'That is Xavier\'s $1/\\sqrt{n}$, for tanh. A ReLU zeroes half its inputs, so He doubles the variance: $\\sqrt{2/n}$.' : 'That is He\'s $\\sqrt{2/n}$, for ReLU. tanh does not zero half its inputs, so Xavier keeps the variance at $1/n$: $1/\\sqrt{n}$.' },
     { value: (he ? 2 : 1) / n, why: `That is the variance. The standard deviation is its square root.` },
   ];
   if (viaShape) ts.push({ value: he ? Math.sqrt(2 / H) : 1 / Math.sqrt(H), why: `That uses ${H}, the number of units. The fan-in is the number of inputs each unit adds up: the ${n} columns.` });
   return {
-    prompt: `A ${act} layer ${where} uses ${scheme} initialization${rule}. What standard deviation should its weights have? Round to two decimals.${hint}`,
+    prompt: `A ${act} layer ${where} uses ${scheme} initialization. What standard deviation should its weights have?${placesFor(std) ? ' Round to two decimals.' : ''}${hint}`,
     answer: { kind: 'number', value: std, places: placesFor(std) },
     traps: traps(std, ts, P),
     solution: [
@@ -66,7 +65,7 @@ export const generators: Generator[] = [
             { value: Math.sqrt(n) * v, why: 'The variances add up, $n$ of them. It is the standard deviation that grows like $\\sqrt{n}$.' },
             { value: n * n * v, why: `Independent variances add: $${n} \\times ${num(v)}$, not $${n}^2 \\times ${num(v)}$.` },
           ]),
-          solution: [`For independent terms the variances add: $\\mathrm{Var}(z) = ${n} \\times ${num(v)} = ${num(want)}$.`],
+          solution: [`For independent terms the variances add: the variance of $z$ is $${n} \\times ${num(v)} = ${num(want)}$.`],
         };
       }
       if (kind === 1) {
@@ -88,7 +87,7 @@ export const generators: Generator[] = [
       const s = pick(rng, [1, 0.1, 0.01, 0.2, 0.5]);
       const want = clean(Math.sqrt(n) * s);
       return {
-        prompt: `A unit computes $z = \\sum_i \\symw_i \\symx_i$ over $n = ${n}$ inputs. Each input has mean 0 and variance 1, and each weight is drawn independently with mean 0 and standard deviation ${num(s)}. What is the standard deviation of $z$?`,
+        prompt: `A unit computes $z = \\symw \\cdot \\symx$ over $n = ${n}$ inputs. Each input has mean 0 and variance 1, and each weight is drawn independently with mean 0 and standard deviation ${num(s)}. What is the standard deviation of $z$?`,
         answer: { kind: 'number', value: want },
         traps: traps(want, [
           { value: n * s, why: 'Standard deviations do not add; variances do. Add the $n$ variances, then take the square root.' },
@@ -96,7 +95,7 @@ export const generators: Generator[] = [
           { value: s, why: 'That is one weight\'s. The sum of $n$ terms spreads $\\sqrt{n}$ times wider.' },
         ]),
         solution: [
-          `Each term $\\symw_i \\symx_i$ has variance $\\mathrm{Var}(\\symw)\\,\\mathrm{Var}(\\symx) = ${num(clean(s * s))} \\times 1$.`,
+          `Each term $\\symw_i \\symx_i$ has variance $${num(s)}^2 \\times 1 = ${num(clean(s * s))}$: the weight's variance times the input's.`,
           `The ${n} variances add: $${n} \\times ${num(clean(s * s))} = ${num(clean(n * s * s))}$.`,
           `So the standard deviation is $\\sqrt{${num(clean(n * s * s))}} = ${num(want)}$.${want === 1 ? ' Exactly 1: this is the scale Xavier initialization picks.' : ''}`,
         ],
@@ -109,7 +108,7 @@ export const generators: Generator[] = [
       const kind = rng.int(3);
       const options = [
         'The hidden units stay identical: they all get the same gradient',
-        'The units saturate near ±1, so their slopes and gradients nearly vanish',
+        'The units saturate near $-1$ or 1, so their slopes and gradients nearly vanish',
         'The activations shrink layer by layer toward 0, and so do the gradients',
         'Nothing goes wrong: any starting scale works as well as another',
       ];
@@ -155,7 +154,7 @@ export const generators: Generator[] = [
           },
           solution: [
             `The sum of ${n} terms has variance about $${n} \\times ${sd * sd} = ${n * sd * sd}$: a standard deviation near ${round(zsd, 0)}.`,
-            'tanh is flat beyond about $\\pm 3$, so nearly every unit sits at $-1$ or 1, where its slope is close to 0.',
+            'tanh is flat below about $-3$ and above 3, so nearly every unit sits at $-1$ or 1, where its slope is close to 0.',
             'Backprop multiplies by those slopes, so the gradients nearly vanish.',
           ],
         };

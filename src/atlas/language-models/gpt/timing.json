@@ -1,22 +1,22 @@
 {
- "duration": 104.989,
+ "duration": 106.055,
  "scenes": {
-  "into": [0.0, 33.103],
-  "through": [33.103, 60.754],
-  "out": [60.754, 104.989]
+  "into": [0.0, 34.17],
+  "through": [34.17, 61.82],
+  "out": [61.82, 106.055]
  },
  "beats": {
   "into/ids": [0.7, 12.575, "A decoder-only language model, the design behind GPT, reads a sequence of T token ids. Here T is four: the, cat, sat, on.", [[2.61, 2.86], [4.43, 4.8], [7.36, 7.85], [8.21, 8.39], [9.39, 9.87], [10.21, 10.64], [11.0, 11.33], [11.76, 12.15]]],
-  "into/embed": [12.955, 21.456, "First, each id is swapped for its row of the embedding table: T vectors of d numbers, an array of T by d.", [[13.505, 13.765], [17.115, 17.635], [19.355, 19.745]]],
-  "into/pos": [21.836, 32.003, "Attention ignores order, so each position adds a vector of its own, from a table with one row per position. The shape stays T by d.", [[23.566, 23.976], [26.506, 26.856], [29.156, 29.726], [30.666, 30.856]]],
-  "through/blocks": [33.803, 43.33, "Then come the transformer blocks, N of them, one after another. Each takes T by d and hands back T by d, so they stack.", [[35.643, 36.023], [36.563, 36.853], [38.073, 38.573], [40.203, 40.403], [42.123, 42.483]]],
-  "through/causal": [43.71, 51.358, "Every block's attention is causal. Position two sees positions zero, one and two, and never three.", [[45.82, 46.4], [48.71, 48.87], [49.98, 50.24]]],
-  "through/why": [51.738, 59.654, "So no position can peek at the token it will be asked to predict, and all T positions still run at once, in one pass.", [[55.368, 55.768], [58.388, 58.658]]],
-  "out/unembed": [61.454, 69.834, "At the top, the unembedding scores every vocabulary token at every position: T by d becomes T by V.", [[62.164, 62.434], [66.394, 67.004], [68.644, 68.844]]],
-  "out/softmax": [70.214, 75.233, "A softmax on each row turns those scores into next-token probabilities.", []],
-  "out/shift": [75.613, 86.564, "Each row predicts the token after its position. Row zero has read the, and predicts cat. Row one predicts sat, and row two predicts on.", [[78.483, 79.023], [80.803, 81.043], [82.143, 82.693], [84.363, 84.703], [85.993, 86.143]]],
-  "out/last": [86.944, 93.872, "Row three has read the whole sequence, so it predicts the token after all of it: a word not written yet.", [[89.214, 89.554], [91.814, 92.294]]],
-  "out/count": [94.252, 102.769, "So T tokens give T predictions, all from one forward pass, and training adds up a cross-entropy loss at every position.", [[96.702, 97.052], [98.822, 99.172]]],
-  "out/turn": [103.149, 103.889, "Your turn.", []]
+  "into/embed": [12.955, 22.522, "First, each id is swapped for its row of the embedding table: T vectors of d numbers, an array, x, of T by d.", [[13.495, 13.765], [17.225, 17.755], [19.465, 19.895], [20.525, 20.745], [21.205, 21.355]]],
+  "into/pos": [22.902, 33.07, "Attention ignores order, so each position adds a vector of its own, from a table with one row per position. The shape stays T by d.", [[24.632, 25.042], [27.572, 27.922], [30.222, 30.792], [31.732, 31.922]]],
+  "through/blocks": [34.87, 44.396, "Then come the transformer blocks, N of them, one after another. Each takes T by d and hands back T by d, so they stack.", [[36.71, 37.09], [37.63, 37.92], [39.14, 39.64], [41.27, 41.47], [43.19, 43.55]]],
+  "through/causal": [44.776, 52.424, "Every block's attention is causal. Position two sees positions zero, one and two, and never three.", [[46.886, 47.466], [49.776, 49.936], [51.046, 51.306]]],
+  "through/why": [52.804, 60.72, "So no position can peek at the token it will be asked to predict, and all T positions still run at once, in one pass.", [[56.434, 56.834], [59.454, 59.724]]],
+  "out/unembed": [62.52, 70.901, "At the top, the unembedding scores every vocabulary token at every position: T by d becomes T by V.", [[63.23, 63.5], [67.46, 68.07], [69.71, 69.91]]],
+  "out/softmax": [71.281, 76.299, "A softmax on each row turns those scores into next-token probabilities.", []],
+  "out/shift": [76.679, 87.63, "Each row predicts the token after its position. Row zero has read the, and predicts cat. Row one predicts sat, and row two predicts on.", [[79.549, 80.089], [81.869, 82.109], [83.209, 83.759], [85.429, 85.769], [87.059, 87.209]]],
+  "out/last": [88.01, 94.938, "Row three has read the whole sequence, so it predicts the token after all of it: a word not written yet.", [[90.28, 90.62], [92.88, 93.36]]],
+  "out/count": [95.318, 103.835, "So T tokens give T predictions, all from one forward pass, and training adds up a cross-entropy loss at every position.", [[97.768, 98.118], [99.888, 100.238]]],
+  "out/turn": [104.215, 104.955, "Your turn.", []]
  }
 }

@@ -37,13 +37,14 @@ export const generators: Generator[] = [
       const ans = U.map((u) => dot(u, x));
       const blk = int(rng, 0, 5);
       return {
-        prompt: `The unembedding $${WU}$ has one row per token. Partway through a model, after block ${blk}, a token's residual stream is $\\symx = ${vec(x)}$. The logit lens scores every token by the dot product of its row with $\\symx$. What are the scores, in table order?\n\n${table(words, U)}`,
+        prompt: `After block ${blk} of a model, a token's residual stream is $\\symx = ${vec(x)}$. What scores does the logit lens give the tokens in the table?\n\n${table(words, U)}`,
         answer: { kind: 'vector', value: ans },
         traps: vtraps(ans, [
           { value: U.map((u) => u.reduce((a, b) => a + b, 0)), why: 'That adds up each row without $\\symx$. Each entry of the row multiplies the matching entry of the stream.' },
           { value: U.map((u) => u.reduce((a, b, i) => a + b + x[i]!, 0)), why: 'That adds each row entry to the stream entry instead of multiplying them.' },
         ]),
         solution: [
+          `The lens scores the stream as the top does, $${WU}\\symx$: each token's row dotted with $\\symx$.`,
           ...words.map((w, j) => `$${tok(w)}$: $${prods(U[j]!, x)} = ${ans[j]}$.`),
           `So the scores are $${vec(ans)}$, and the lens's top token is $${tok(words[ans.indexOf(Math.max(...ans))]!)}$.`,
         ],

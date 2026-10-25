@@ -1,8 +1,8 @@
 {
- "duration": 111.123,
+ "duration": 116.204,
  "scenes": {
   "check": [0.0, 56.064],
-  "count": [56.064, 111.123]
+  "count": [56.064, 116.204]
  },
  "beats": {
   "check/slow": [0.7, 7.459, "Decoding writes one token per pass of the large model, and each of those passes mostly waits on memory.", [[4.17, 4.57]]],
@@ -14,7 +14,7 @@
   "count/all": [68.975, 76.547, "When all four guesses are accepted, the extra pick after the last one comes free: five tokens from a single pass.", [[70.935, 71.245], [73.895, 74.345]]],
   "count/speed": [76.927, 87.165, "Say four passes yield three, five, one and three tokens. Twelve tokens took four large passes instead of twelve: three times fewer.", [[78.997, 79.197], [79.727, 79.927], [81.547, 82.127], [85.597, 86.017]]],
   "count/same": [87.545, 95.517, "And the text is still the large model's own. With greedy decoding, every kept token is exactly the one it would have picked.", [[90.165, 90.735], [92.065, 92.355]]],
-  "count/sample": [95.897, 108.903, "With sampling, it keeps each guess with a chance set by how much it agrees, and after a rejection draws from what is left. Every token then comes out with exactly the large model's probabilities.", [[96.717, 97.007], [100.677, 101.027], [101.367, 101.527], [102.597, 102.817], [104.147, 104.777]]],
-  "count/turn": [109.283, 110.023, "Your turn.", []]
+  "count/sample": [95.897, 113.983, "With sampling, it keeps each guess with a chance set by how much it agrees: the large model's probability for that token over the small model's, capped at one. After a rejection it draws from what is left. Every token then comes out with exactly the large model's probabilities.", [[96.727, 96.977], [100.647, 101.107], [104.757, 105.067], [105.997, 106.587], [107.687, 107.877], [109.317, 109.907]]],
+  "count/turn": [114.363, 115.104, "Your turn.", []]
  }
 }

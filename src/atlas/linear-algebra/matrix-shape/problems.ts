@@ -29,7 +29,7 @@ export const generators: Generator[] = [
         const W = matrix(rng, m, n, 0, 9);
         if (kind === 3) {
           return {
-            prompt: `$$\\symW = ${mat(W)}$$\n\nWhat is the shape of $\\symW^{\\top}$, its transpose (\`W.T\`)? Give it as (rows, columns).`,
+            prompt: `$$\\symW = ${mat(W)}$$\n\nWhat is the shape of $\\symW^{\\top}$?`,
             answer: { kind: 'shape', value: [n, m] },
             solution: [
               `$\\symW$ has ${m} row${m > 1 ? 's' : ''} and ${n} column${n > 1 ? 's' : ''}: shape $${shapeTex([m, n])}$.`,
@@ -38,7 +38,7 @@ export const generators: Generator[] = [
           };
         }
         return {
-          prompt: `$$\\symW = ${mat(W)}$$\n\nWhat is the shape of $\\symW$? Give it as (rows, columns).`,
+          prompt: `$$\\symW = ${mat(W)}$$\n\nWhat is the shape of $\\symW$?`,
           answer: { kind: 'shape', value: [m, n] },
           solution: [
             `Rows run across: count them top to bottom. There ${m > 1 ? `are ${m}` : 'is 1'}.`,
@@ -58,7 +58,7 @@ export const generators: Generator[] = [
       if (d < 0.7) {
         const [m, n] = dims(rng, 2, 12);
         return {
-          prompt: `$\\symW$ has shape $${shapeTex([m, n])}$. What is the shape of $\\symW^{\\top}$, its transpose (\`W.T\`)?`,
+          prompt: `$\\symW$ has shape $${shapeTex([m, n])}$. What is the shape of $\\symW^{\\top}$?`,
           answer: { kind: 'shape', value: [n, m] },
           solution: [`Transposing turns each row into a column.`, `The ${m} rows become ${m} columns, and the ${n} columns become ${n} rows: $${shapeTex([n, m])}$.`],
         };
@@ -85,7 +85,7 @@ export const generators: Generator[] = [
       if (j < m && i < n) traps.push({ value: W[j]![i]!, why: `That is $\\symW[${j}, ${i}]$, with row and column swapped. The first index picks the row, the second the column.` });
       if (i > 0 && j > 0) traps.push({ value: W[i - 1]![j - 1]!, why: 'That counts rows and columns from 1. Both start at 0, so $\\symW[0, 0]$ is the top-left entry.' });
       return {
-        prompt: `$$\\symW = ${mat(W)}$$\n\nWhat is $\\symW[${i}, ${j}]$? Rows and columns count from 0.`,
+        prompt: `$$\\symW = ${mat(W)}$$\n\nWhat is $\\symW[${i}, ${j}]$?`,
         answer: { kind: 'number', value: v },
         traps: traps.filter((t) => t.value !== v),
         solution: [
@@ -116,15 +116,14 @@ export const generators: Generator[] = [
   },
   {
     id: 'valid-index',
-    make(rng, d) {
+    make(rng) {
       const [m, n] = dims(rng, 2, 6);
       const wide = m < n;
       // The right entry sits where its swap falls outside the matrix.
       const i = wide ? int(rng, 0, m - 1) : int(rng, n, m - 1);
       const j = wide ? int(rng, m, n - 1) : int(rng, 0, n - 1);
-      const sizes = d < 0.5 ? `: ${m} rows and ${n} columns` : '';
       return {
-        prompt: `$\\symW$ has shape $${shapeTex([m, n])}$${sizes}. Indices count from 0. Which of these is an entry of $\\symW$?`,
+        prompt: `$\\symW$ has shape $${shapeTex([m, n])}$. Which of these is an entry of $\\symW$?`,
         answer: {
           kind: 'choice',
           options: [`$\\symW[${i}, ${j}]$`, `$\\symW[${j}, ${i}]$`, `$\\symW[${m}, ${n}]$`],

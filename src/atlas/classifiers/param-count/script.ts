@@ -54,8 +54,8 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'two', say: 'Now chain two of these, so the outputs of the first are the inputs of the second. Four inputs go to H, five numbers in the middle, and those go to the three classes.' },
-        { id: 'l1', say: 'The first has D times H weights, one per line, plus H biases: twenty plus five, twenty five.', code: 'l1' },
-        { id: 'l2', say: 'The second has H times C weights, plus C biases: fifteen plus three, eighteen.', code: 'l2' },
+        { id: 'l1', say: 'The first map, {W₁|W one} and {b₁|b one}, has D times H weights, one per line, plus H biases: twenty plus five, twenty five.', code: 'l1' },
+        { id: 'l2', say: 'The second map, {W₂|W two} and {b₂|b two}, has H times C weights, plus C biases: fifteen plus three, eighteen.', code: 'l2' },
         { id: 'sum', say: 'Add the two: forty three. Each one is inputs times outputs, plus one bias per output.', code: 'sum' },
         { id: 'turn', say: 'Your turn.' },
       ],

@@ -84,7 +84,7 @@ export const generators: Generator[] = [
       const v = round(lo + 0.5 * span * (1 + cos), 4);
       const r4 = (x: number) => round(x, 4);
       return {
-        prompt: `Cosine decay runs from $\\symeta_{\\max} = ${num(hi)}$ to $\\symeta_{\\min} = ${num(lo)}$ over $T = ${big(T)}$ steps: $${COSINE}$. What is the learning rate at step $t = ${big(t)}$? Use $\\cos\\big(\\pi \\cdot ${label}\\big) ${cos === 0 || cos === 0.5 || cos === -0.5 ? '=' : '\\approx'} ${num(cos)}$, and round to four decimals.`,
+        prompt: `Cosine decay runs from $\\symeta_{\\max} = ${num(hi)}$ to $\\symeta_{\\min} = ${num(lo)}$ over $T = ${big(T)}$ steps. What is the learning rate at step $t = ${big(t)}$? Use $\\cos\\big(\\pi \\cdot ${label}\\big) ${cos === 0 || cos === 0.5 || cos === -0.5 ? '=' : '\\approx'} ${num(cos)}$, and round to four decimals.`,
         answer: { kind: 'number', value: v, places: 4 },
         traps: traps(v, [
           { value: r4(lo + span * (1 + cos)), why: 'That leaves out the $\\tfrac{1}{2}$. Without it the rate would start at twice the peak.' },
@@ -93,6 +93,7 @@ export const generators: Generator[] = [
           ...(lo > 0 ? [{ value: r4(0.5 * span * (1 + cos)), why: 'That leaves out $\\symeta_{\\min}$: the cosine part sits on top of it.' }] : []),
         ].filter((x) => Math.abs(x.value - v) >= 0.0001)),
         solution: [
+          `$${COSINE}$.`,
           `$t / T = ${big(t)} / ${big(T)} = ${label}$, and $\\cos(\\pi \\cdot ${label}) ${cos === 0 || Math.abs(cos) === 0.5 ? '=' : '\\approx'} ${num(cos)}$.`,
           `$1 + \\cos = ${num(clean(1 + cos))}$, and half the span is $\\tfrac{1}{2}(${num(hi)} - ${num(lo)}) = ${num(clean(span / 2))}$.`,
           `$\\symeta_t = ${num(lo)} + ${num(clean(span / 2))} \\times ${num(clean(1 + cos))} \\approx ${num(v, 4)}$.`,

@@ -1,22 +1,22 @@
 {
- "duration": 129.439,
+ "duration": 143.241,
  "scenes": {
-  "squeeze": [0.0, 45.25],
-  "loss": [45.25, 87.692],
-  "why": [87.692, 129.439]
+  "squeeze": [0.0, 48.549],
+  "loss": [48.549, 101.495],
+  "why": [101.495, 143.241]
  },
  "beats": {
   "squeeze/input": [0.7, 8.77, "Here is a handwritten digit, twenty eight by twenty eight pixels: seven hundred and eighty four numbers. Call them x.", [[2.3, 2.76], [4.79, 5.23], [7.24, 7.71]]],
   "squeeze/encode": [9.15, 21.495, "An encoder, an ordinary network of layers, maps x down: to two hundred and fifty six hidden units, then to just sixteen numbers. Those sixteen are the code, z.", [[10.02, 10.25], [12.04, 12.31], [13.6, 13.97], [16.31, 16.64], [18.52, 19.0], [20.69, 21.02]]],
-  "squeeze/decode": [21.875, 34.275, "A decoder, a second network, mirrors it: from sixteen back up to two hundred and fifty six, then to seven hundred and eighty four. Its output, x hat, is the reconstruction.", [[22.665, 22.925], [23.905, 24.105], [24.725, 25.265], [28.235, 28.575], [30.505, 31.095], [31.845, 32.095], [32.785, 33.045]]],
-  "squeeze/ratio": [34.655, 44.15, "The narrow middle is the bottleneck. Each number of the code has to stand for seven hundred and eighty four over sixteen: forty nine numbers of the input.", [[36.575, 37.125], [41.755, 42.255]]],
-  "loss/target": [45.95, 54.304, "How is it trained? There are no labels here. The target is the input itself: the output should come back equal to x.", [[47.08, 47.63], [48.88, 49.35], [51.33, 51.8]]],
-  "loss/diff": [54.684, 67.88, "So compare them entry by entry. Say x is one, zero and two, and x hat is a half, zero and three. The differences are a half, zero, and minus one.", [[56.934, 57.494], [58.954, 59.134], [60.254, 60.604], [61.514, 61.664], [62.314, 62.534], [63.654, 64.234], [65.294, 65.454], [65.994, 66.254]]],
-  "loss/square": [68.26, 78.618, "Square them and add: a quarter, plus zero, plus one. The squared error is one point two five. A miss in either direction counts.", [[69.64, 70.2], [70.86, 71.1], [71.91, 72.14], [72.78, 73.39], [75.85, 76.37]]],
-  "loss/train": [78.998, 86.592, "Gradient steps on this loss train the encoder and the decoder together, and any pile of unlabeled images will do.", [[81.028, 81.258], [83.528, 83.918]]],
-  "why/shapes": [88.392, 104.295, "Each weight matrix is outputs by inputs. The encoder has two fifty six by seven eighty four, then sixteen by two fifty six. The decoder mirrors it: two fifty six by sixteen, then seven eighty four by two fifty six.", [[91.262, 91.812], [94.972, 95.222], [97.442, 97.982], [99.262, 99.672], [101.422, 101.702]]],
-  "why/wide": [104.675, 115.617, "Why squeeze at all? Make the middle as wide as the input, and the network can simply copy x through. The loss drops to zero, and the code has learned nothing about digits.", [[105.865, 106.345], [108.395, 108.675], [111.075, 111.645], [113.015, 113.285]]],
-  "why/narrow": [115.997, 127.219, "With sixteen numbers, copying is impossible. To rebuild the image anyway, the code has to keep what matters most: the shape of the stroke, its slant, its thickness.", [[117.357, 117.607], [118.987, 119.547], [121.177, 121.447], [123.547, 123.957], [125.127, 125.377], [126.067, 126.347]]],
-  "why/turn": [127.599, 128.339, "Your turn.", []]
+  "squeeze/decode": [21.875, 37.574, "A decoder, a second network, mirrors it: from sixteen back up to two hundred and fifty six, then to seven hundred and eighty four. Its output is the reconstruction, written x hat: the hat marks x as the network rebuilt it.", [[22.665, 22.875], [23.885, 24.075], [24.685, 25.165], [28.125, 28.455], [30.305, 30.925], [32.885, 33.165], [33.495, 33.655], [34.325, 34.845]]],
+  "squeeze/ratio": [37.954, 47.449, "The narrow middle is the bottleneck. Each number of the code has to stand for seven hundred and eighty four over sixteen: forty nine numbers of the input.", [[39.874, 40.424], [45.054, 45.554]]],
+  "loss/target": [49.249, 57.603, "How is it trained? There are no labels here. The target is the input itself: the output should come back equal to x.", [[50.379, 50.929], [52.179, 52.649], [54.629, 55.099]]],
+  "loss/diff": [57.983, 71.178, "So compare them entry by entry. Say x is one, zero and two, and x hat is a half, zero and three. The differences are a half, zero, and minus one.", [[60.233, 60.793], [62.253, 62.433], [63.553, 63.903], [64.813, 64.963], [65.613, 65.833], [66.953, 67.533], [68.593, 68.753], [69.293, 69.553]]],
+  "loss/square": [71.558, 89.78, "Square them and add: a quarter, plus zero, plus one, which is one point two five. That squared error is the loss, L equals the norm of x minus x hat, squared: the double bars mean a vector's length, and its square is this sum of squares.", [[72.868, 73.418], [74.048, 74.248], [75.008, 75.168], [75.778, 76.108], [77.788, 78.428], [80.498, 80.978], [84.738, 85.218], [87.258, 87.538]]],
+  "loss/train": [90.16, 100.395, "A miss in either direction counts. Gradient steps on this loss train the encoder and the decoder together, and any pile of unlabeled images will do.", [[92.31, 92.94], [94.57, 94.74], [97.3, 97.65]]],
+  "why/shapes": [102.195, 118.097, "Each weight matrix is outputs by inputs. The encoder has two fifty six by seven eighty four, then sixteen by two fifty six. The decoder mirrors it: two fifty six by sixteen, then seven eighty four by two fifty six.", [[105.065, 105.615], [108.775, 109.025], [111.245, 111.785], [113.065, 113.475], [115.225, 115.505]]],
+  "why/wide": [118.477, 129.42, "Why squeeze at all? Make the middle as wide as the input, and the network can simply copy x through. The loss drops to zero, and the code has learned nothing about digits.", [[119.667, 120.147], [122.197, 122.477], [124.877, 125.447], [126.817, 127.087]]],
+  "why/narrow": [129.8, 141.021, "With sixteen numbers, copying is impossible. To rebuild the image anyway, the code has to keep what matters most: the shape of the stroke, its slant, its thickness.", [[131.16, 131.41], [132.79, 133.35], [134.98, 135.25], [137.35, 137.76], [138.93, 139.18], [139.87, 140.15]]],
+  "why/turn": [141.401, 142.141, "Your turn.", []]
  }
 }

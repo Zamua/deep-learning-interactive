@@ -1,24 +1,24 @@
 {
- "duration": 132.816,
+ "duration": 143.953,
  "scenes": {
-  "sample": [0.0, 42.341],
-  "trick": [42.341, 99.246],
-  "push": [99.246, 132.816]
+  "sample": [0.0, 48.191],
+  "trick": [48.191, 110.383],
+  "push": [110.383, 143.953]
  },
  "beats": {
-  "sample/ask": [0.7, 11.735, "A model answers a question by sampling. Asked seven times eight, it says fifty six half the time, fifty four three times in ten, and sixty four the rest.", [[3.13, 3.8], [5.35, 5.61], [7.58, 7.94], [9.87, 10.22]]],
-  "sample/reward": [12.115, 22.682, "A checker scores each answer: a reward, R, of one when it is right and zero when it is wrong. It is just a number, with nothing to differentiate.", [[13.985, 14.535], [15.185, 15.475], [15.855, 16.115], [17.525, 17.775], [19.265, 19.825], [20.885, 21.165]]],
-  "sample/goal": [23.062, 34.376, "Training should raise the expected reward: the average R over the model's answers, here zero point five. Its gradient would say how to change the parameters, theta.", [[25.442, 25.912], [28.312, 28.652], [29.002, 29.162], [30.212, 30.812], [33.592, 33.882]]],
-  "sample/stuck": [34.756, 41.241, "But theta reaches the reward only through which answer gets sampled, and a random draw has no slope.", [[36.476, 36.666], [38.816, 39.156]]],
-  "trick/sum": [43.041, 52.387, "Write the expected reward as a sum over answers: each answer's probability times its reward. Only the probabilities depend on theta.", [[46.191, 46.681], [49.391, 49.921]]],
-  "trick/trick": [52.767, 63.027, "Now the trick. The slope of log pi is the slope of pi divided by pi. So the gradient of pi is pi times the gradient of its log.", [[53.777, 54.417], [55.807, 55.987], [58.447, 58.987], [60.447, 60.687]]],
-  "trick/avg": [63.407, 73.986, "Put that in, and the gradient of the expected reward becomes a sum of pi times R times the gradient of log pi: an average over the model's own answers.", [[64.157, 64.457], [66.567, 66.797], [69.097, 69.287], [71.057, 71.537]]],
-  "trick/est": [74.366, 85.031, "So sample one answer, and multiply its reward by the gradient of its log-probability. That one sample is an estimate of the gradient: the policy gradient.", [[76.166, 76.416], [80.056, 80.656], [83.376, 83.816]]],
-  "trick/eg": [85.411, 98.146, "For fifty six, this model's gradient of log pi is zero point five, minus zero point three, minus zero point two. With R equal to one, the estimate is that same vector.", [[86.481, 86.971], [90.461, 90.701], [92.141, 92.381], [93.791, 94.441], [95.851, 96.181]]],
-  "push/up": [99.946, 110.33, "Step theta a little along the estimate, and the log-probability of the sampled answer rises, in proportion to R. A rewarded fifty six becomes more likely.", [[102.226, 102.476], [105.576, 105.826], [107.006, 107.586]]],
-  "push/zero": [110.71, 116.368, "A wrong answer gets R of zero, so its estimate is zero, and nothing moves.", [[112.95, 113.28], [114.77, 115.09]]],
-  "push/neg": [116.748, 121.049, "A negative reward flips the step, and makes that answer less likely.", [[118.828, 119.088]]],
-  "push/loss": [121.429, 130.596, "As a loss to minimize, it is minus R times log pi of the sample: cross-entropy on the model's own answer, weighted by its reward.", [[122.859, 123.079], [126.219, 126.739], [128.979, 129.209]]],
-  "push/turn": [130.976, 131.716, "Your turn.", []]
+  "sample/ask": [0.7, 15.464, "A model answers a question by sampling. Asked seven times eight, it says fifty six half the time, fifty four three times in ten, and sixty four the rest: its probabilities, written with the Greek letter pi.", [[3.05, 3.7], [5.25, 5.52], [7.52, 7.89], [9.87, 10.22], [11.72, 12.18], [13.26, 13.58]]],
+  "sample/reward": [15.844, 26.411, "A checker scores each answer: a reward, R, of one when it is right and zero when it is wrong. It is just a number, with nothing to differentiate.", [[17.714, 18.264], [18.914, 19.204], [19.584, 19.844], [21.254, 21.504], [22.994, 23.554], [24.614, 24.894]]],
+  "sample/goal": [26.791, 40.227, "Training should raise the expected reward, J: the average R over the model's answers, here zero point five. Its gradient would say how to change the model's parameters, written theta.", [[29.201, 29.691], [30.101, 30.601], [33.131, 33.481], [33.821, 33.981], [35.091, 35.631], [38.911, 39.261]]],
+  "sample/stuck": [40.607, 47.091, "But theta reaches the reward only through which answer gets sampled, and a random draw has no slope.", [[42.327, 42.517], [44.667, 45.007]]],
+  "trick/sum": [48.891, 60.83, "Write the expected reward as a sum over every answer y: its probability, pi of y, times its reward, R of y. Only the probabilities depend on theta.", [[52.861, 53.341], [54.351, 54.611], [55.371, 55.731], [56.781, 57.091], [57.821, 58.441]]],
+  "trick/trick": [61.21, 71.471, "Now the trick. The slope of log pi is the slope of pi divided by pi. So the gradient of pi is pi times the gradient of its log.", [[62.22, 62.86], [64.25, 64.43], [66.89, 67.43], [68.89, 69.13]]],
+  "trick/avg": [71.851, 82.43, "Put that in, and the gradient of the expected reward becomes a sum of pi times R times the gradient of log pi: an average over the model's own answers.", [[72.601, 72.901], [75.011, 75.241], [77.541, 77.731], [79.501, 79.981]]],
+  "trick/est": [82.81, 96.167, "So draw one answer from the model, written y drawn from pi, and multiply its reward by the gradient of its log-probability. That one sample is an estimate of the gradient: the policy gradient.", [[84.9, 85.19], [87.03, 87.46], [91.06, 91.75], [94.54, 95.03]]],
+  "trick/eg": [96.547, 109.283, "For fifty six, this model's gradient of log pi is zero point five, minus zero point three, minus zero point two. With R equal to one, the estimate is that same vector.", [[97.617, 98.107], [101.597, 101.837], [103.277, 103.517], [104.927, 105.577], [106.987, 107.317]]],
+  "push/up": [111.083, 121.467, "Step theta a little along the estimate, and the log-probability of the sampled answer rises, in proportion to R. A rewarded fifty six becomes more likely.", [[113.363, 113.613], [116.713, 116.963], [118.143, 118.723]]],
+  "push/zero": [121.847, 127.504, "A wrong answer gets R of zero, so its estimate is zero, and nothing moves.", [[124.087, 124.417], [125.907, 126.227]]],
+  "push/neg": [127.884, 132.186, "A negative reward flips the step, and makes that answer less likely.", [[129.964, 130.224]]],
+  "push/loss": [132.566, 141.733, "As a loss to minimize, it is minus R times log pi of the sample: cross-entropy on the model's own answer, weighted by its reward.", [[133.996, 134.216], [137.356, 137.876], [140.116, 140.346]]],
+  "push/turn": [142.113, 142.853, "Your turn.", []]
  }
 }

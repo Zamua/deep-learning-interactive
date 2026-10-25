@@ -1,22 +1,22 @@
 {
- "duration": 119.139,
+ "duration": 127.524,
  "scenes": {
-  "task": [0.0, 34.566],
-  "loss": [34.566, 78.898],
-  "image": [78.898, 119.139]
+  "task": [0.0, 37.996],
+  "loss": [37.996, 82.329],
+  "image": [82.329, 127.524]
  },
  "beats": {
   "task/mix": [0.7, 7.757, "Noise a clean image to some step t, as before: x t blends x zero with the noise epsilon.", [[3.02, 3.3], [4.01, 4.63]]],
   "task/sees": [8.137, 17.604, "The network sees only x t, and the step t, which tells it how much noise to expect. It never sees x zero or epsilon on their own.", [[10.247, 10.517], [11.437, 11.707], [13.897, 14.407]]],
-  "task/asks": [17.984, 25.19, "Its job is to guess the noise that was mixed in. Its output, epsilon hat, has the same shape as the image.", [[20.734, 21.214], [21.984, 22.214], [23.094, 23.364]]],
-  "task/why": [25.57, 33.466, "To pull the noise out of the blend, it has to learn what images look like: whatever does not look like an image must be noise.", [[27.4, 27.65], [29.75, 30.25], [32.1, 32.33]]],
-  "loss/compare": [35.266, 50.75, "The loss compares the guess with the noise that was really used. Say the noise was zero point five, minus one, two and zero, and the guess zero point three, minus zero point six, one point five and zero point two.", [[38.876, 39.466], [41.666, 41.926], [42.686, 42.996], [44.076, 44.456], [45.126, 45.366], [46.446, 46.716], [48.156, 48.456], [49.366, 49.526]]],
-  "loss/square": [51.13, 64.712, "The differences are zero point two, minus zero point four, zero point five and minus zero point two. Square them and average: about zero point one two, the mean squared error.", [[52.27, 52.57], [53.62, 53.93], [55.33, 55.67], [56.77, 57.03], [58.68, 59.29], [60.7, 61.15], [62.86, 63.25]]],
-  "loss/batch": [65.092, 77.798, "Training takes a random minibatch of clean images, gives each one its own random step and fresh noise, and takes a gradient step on the average loss. One batch trains every noise level at once.", [[68.082, 68.502], [71.592, 71.962], [74.432, 75.052]]],
-  "image/solve": [79.598, 89.17, "A guess of the noise is also a guess of the image. Solve the blend for x zero: take away the scaled noise, then undo the shrinking.", [[82.718, 83.408], [85.308, 85.798], [87.308, 87.578]]],
-  "image/pixel": [89.55, 97.543, "Say a pixel reads zero point five at alpha bar of zero point six four, and the guess of its noise is minus a half.", [[94.61, 94.96]]],
-  "image/sub": [97.923, 105.911, "Take away zero point six times minus a half: zero point five plus zero point three is zero point eight.", [[101.143, 101.713], [104.253, 104.483]]],
-  "image/div": [106.291, 116.919, "Divide by zero point eight, the square root of alpha bar: the clean pixel was about one. The better the noise guess, the closer this lands to the real image.", [[108.141, 108.651], [110.201, 110.751], [112.511, 113.181], [114.401, 114.651]]],
-  "image/turn": [117.299, 118.039, "Your turn.", []]
+  "task/asks": [17.984, 28.62, "Its job is to guess the noise that was mixed in. The guess is written epsilon hat: the hat marks an estimate of epsilon. It has the same shape as the image.", [[20.714, 21.304], [23.514, 24.034], [26.214, 26.704]]],
+  "task/why": [29.0, 36.896, "To pull the noise out of the blend, it has to learn what images look like: whatever does not look like an image must be noise.", [[30.83, 31.08], [33.18, 33.68], [35.53, 35.76]]],
+  "loss/compare": [38.696, 54.181, "The loss compares the guess with the noise that was really used. Say the noise was zero point five, minus one, two and zero, and the guess zero point three, minus zero point six, one point five and zero point two.", [[42.306, 42.896], [45.096, 45.356], [46.116, 46.426], [47.506, 47.886], [48.556, 48.796], [49.876, 50.146], [51.586, 51.886], [52.796, 52.956]]],
+  "loss/square": [54.561, 68.142, "The differences are zero point two, minus zero point four, zero point five and minus zero point two. Square them and average: about zero point one two, the mean squared error.", [[55.701, 56.001], [57.051, 57.361], [58.761, 59.101], [60.201, 60.461], [62.111, 62.721], [64.131, 64.581], [66.291, 66.681]]],
+  "loss/batch": [68.522, 81.229, "Training takes a random minibatch of clean images, gives each one its own random step and fresh noise, and takes a gradient step on the average loss. One batch trains every noise level at once.", [[71.512, 71.932], [75.022, 75.392], [77.862, 78.482]]],
+  "image/solve": [83.029, 97.555, "A guess of the noise is also a guess of the image. Solve the blend for x zero, with the guess in place of the noise: take away the scaled noise, then undo the shrinking. The result is the estimate x zero hat.", [[86.049, 86.679], [88.529, 88.769], [90.609, 91.069], [92.599, 92.849], [94.319, 94.829], [96.269, 96.419]]],
+  "image/pixel": [97.935, 105.928, "Say a pixel reads zero point five at alpha bar of zero point six four, and the guess of its noise is minus a half.", [[102.995, 103.345]]],
+  "image/sub": [106.308, 114.296, "Take away zero point six times minus a half: zero point five plus zero point three is zero point eight.", [[109.528, 110.098], [112.638, 112.868]]],
+  "image/div": [114.676, 125.304, "Divide by zero point eight, the square root of alpha bar: the clean pixel was about one. The better the noise guess, the closer this lands to the real image.", [[116.526, 117.036], [118.586, 119.136], [120.896, 121.566], [122.786, 123.036]]],
+  "image/turn": [125.684, 126.424, "Your turn.", []]
  }
 }

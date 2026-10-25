@@ -25,7 +25,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'one', say: 'A single attention gives each token one blend of the others. But a word may need several things at once: say, the noun it describes, and the word just before it.', code: 'dims' },
         { id: 'heads', say: 'Multi-head attention runs several attentions side by side. Each is a head, with its own query, key and value matrices, so each can look somewhere different.', code: 'loop' },
-        { id: 'width', say: 'The heads share the width. With d of {512|five hundred twelve} and h of eight heads, each head works in d over h dimensions: {64|sixty four}.', code: ['dims', 'width'] },
+        { id: 'width', say: 'The heads share the width. Write {h|h} for the number of heads: with d of {512|five hundred twelve} and h of eight, each head works in {d / h|d over h} dimensions, {64|sixty four}. That is one head\'s width, {d_head|d head}.', code: ['dims', 'width'] },
         { id: 'shapes', say: 'So one head\'s {Wq|W Q} is {64 by 512|sixty four by five hundred twelve}, its queries are T by {64|sixty four}, and its weights are T by T, as before.', code: 'shapes' },
       ],
     },
@@ -42,7 +42,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'concat', say: 'Each head outputs T by {64|sixty four}. Joined side by side, the eight make T by {512|five hundred twelve} again.', code: 'cat' },
         { id: 'wo', say: 'One more matrix, {Wo|W O}, d by d, mixes what the heads found into one output per token.', code: 'wo' },
-        { id: 'count', say: 'Now count the weights. Eight heads\' {Wq|W Q}s of {64 by 512|sixty four by five hundred twelve} hold as many as one d by d matrix. The same goes for {Wk|W K} and {Wv|W V}, and {Wo|W O} adds a fourth: four d squared.', code: 'count' },
+        { id: 'count', say: 'Now count the weights. Eight heads\' {Wq|W Q}s of {64 by 512|sixty four by five hundred twelve} hold as many as one d by d matrix. The same goes for {Wk|W K} and {Wv|W V}, and {Wo|W O} adds a fourth: {4d²|four d squared}.', code: 'count' },
         { id: 'same', say: 'That is exactly what a single head of full width would hold. Splitting into heads changes what attention can look for, not how many weights it has.', code: 'count' },
         { id: 'turn', say: 'Your turn.' },
       ],

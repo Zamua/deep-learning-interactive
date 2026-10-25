@@ -54,7 +54,7 @@ export const generators: Generator[] = [
       const out = perm.map((p) => y[p]!);
       const inv = perm.map((_, i) => y[perm.indexOf(i)]!);
       return {
-        prompt: `A self-attention layer with no position information reads ${sent(ws)}. The first feature of its outputs, one number per token in order, is $${vecT(y)}$. The same layer now reads ${sent(shuffled)}. What is the first feature of its outputs, in order?`,
+        prompt: `A self-attention layer with no position information reads ${sent(ws)}, and the first feature of its outputs, token by token, is $${vecT(y)}$. It now reads ${sent(shuffled)}. What is the first feature of its outputs now?`,
         answer: { kind: 'vector', value: out },
         traps: vtraps(out, [
           { value: y, why: 'That keeps the old order. Each output belongs to its token, so the outputs move with the tokens.' },
@@ -76,20 +76,20 @@ export const generators: Generator[] = [
       const v = tmax * dm;
       if (d >= 0.7 && rng.int(2) === 0) {
         return {
-          prompt: `A model learns one position vector of $${D} = ${dm}$ numbers for each position it can handle. Its position table $${P}$ holds $${big(v)}$ numbers. What is the longest input it can take, $${TMAX}$?`,
+          prompt: `A model of width $${D} = ${dm}$ has a learned position table of $${big(v)}$ numbers. What is the longest input it can take?`,
           answer: { kind: 'number', value: tmax },
           traps: traps(tmax, [{ value: v - dm, why: `That subtracts. The table is $${TMAX}$ rows of $${D}$ numbers: divide by $${D}$.` }]),
-          solution: [`$${P}$ has one row per position: shape $(${TMAX}, ${D})$, so it holds $${TMAX} \\times ${D}$ numbers.`, `$${TMAX} = ${big(v)} / ${dm} = ${big(tmax)}$ positions.`],
+          solution: [`The position table $${P}$ has one row per position up to the longest input, $${TMAX}$: shape $(${TMAX}, ${D})$, so it holds $${TMAX} \\times ${D}$ numbers.`, `$${TMAX} = ${big(v)} / ${dm} = ${big(tmax)}$ positions.`],
         };
       }
       return {
-        prompt: `A model learns one position vector for every position up to $${TMAX} = ${big(tmax)}$, each of $${D} = ${dm}$ numbers, the width of its token embeddings. How many numbers does its position table $${P}$ hold?`,
+        prompt: `A model of width $${D} = ${dm}$ takes inputs of up to $${TMAX} = ${big(tmax)}$ tokens. How many numbers does its learned position table hold?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: tmax + dm, why: `That adds. $${P}$ has $${TMAX}$ rows of $${D}$ numbers each: multiply.` },
           { value: tmax, why: `That is one number per position. Each position gets a whole vector of $${D} = ${dm}$ numbers.` },
         ]),
-        solution: [`$${P}$ has one row per position and one column per feature: shape $(${big(tmax)}, ${dm})$.`, `$${big(tmax)} \\times ${dm} = ${big(v)}$ numbers.`],
+        solution: [`The position table $${P}$ has one row per position and one column per feature: shape $(${big(tmax)}, ${dm})$.`, `$${big(tmax)} \\times ${dm} = ${big(v)}$ numbers.`],
       };
     },
   },
@@ -125,7 +125,7 @@ export const generators: Generator[] = [
         const v = E[id]!.map((x, i) => x + Pt[pos]![i]!);
         const words = order.map((o) => ws[o]!);
         return {
-          prompt: `The vocabulary is ${ws.map((w, i) => `\`${w}\` $= ${i}$`).join(', ')}, with embedding table $E$ and position table $${P}$ (row $i$ for position $i$, counting from 0):\n\n$$E = ${mat(E)},\\qquad ${P} = ${mat(Pt)}$$\n\nThe input is ${sent(words)}. What vector goes into the first layer for \`${ws[id]}\`?`,
+          prompt: `The vocabulary is ${ws.map((w, i) => `\`${w}\` $= ${i}$`).join(', ')}, with embedding table $E$ and position table $${P}$:\n\n$$E = ${mat(E)},\\qquad ${P} = ${mat(Pt)}$$\n\nThe input is ${sent(words)}. What vector goes into the first layer for \`${ws[id]}\`?`,
           answer: { kind: 'vector', value: v },
           traps: vtraps(v, [
             { value: E[id]!, why: `That is \`${ws[id]}\`'s embedding alone. Add the vector for its position, ${pos}.` },

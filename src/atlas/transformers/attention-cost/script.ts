@@ -18,7 +18,7 @@ export const script: LectureScript = {
         Wq.shape                     # (d_k, d): never grows      #@linear
       `,
       beats: [
-        { id: 'pairs', say: 'Self-attention scores every token against every token. T tokens make a T by T matrix: T squared scores. Four tokens, sixteen scores.', code: 'e' },
+        { id: 'pairs', say: 'Self-attention scores every token against every token. T tokens make a T by T matrix: {T²|T squared} scores. Four tokens, sixteen scores.', code: 'e' },
         { id: 'double', say: 'Double the tokens to eight, and there are sixty four scores: four times as many. Doubling T quadruples the scores.', code: 'double' },
         { id: 'linear', say: 'The queries, keys and values grow only in step with T: one row per token. And the weights do not grow at all.', code: 'linear' },
       ],

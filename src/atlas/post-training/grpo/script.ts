@@ -21,7 +21,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'value', say: 'A good baseline is the reward you expect for this very question. One way to get it is to train a second model to predict it: a value model, a whole second network to train.' },
-        { id: 'group', say: 'GRPO does without it. For each question, sample a group of answers, here eight, and check each one: a reward of one if it is right, zero if it is wrong.', code: ['group', 'r'] },
+        { id: 'group', say: 'GRPO does without it. For each question, sample a group of G answers, here eight, and check each one: a reward, r, of one if it is right, zero if it is wrong.', code: ['group', 'r'] },
         { id: 'mean', say: 'The group\'s mean reward is the baseline. Three of the eight are right, so it is {0.375|zero point three seven five}.', code: 'mean' },
         { id: 'std', say: 'Then divide by the group\'s standard deviation, how spread out its rewards are: here about {0.48|zero point four eight}. That puts every question\'s advantages on a similar scale.', code: ['std', 'A'] },
         { id: 'adv', say: 'Right answers get {1.29|one point two nine}, and wrong ones minus {0.77|zero point seven seven}.', code: 'A' },

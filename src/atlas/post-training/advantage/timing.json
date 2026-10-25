@@ -1,9 +1,9 @@
 {
- "duration": 113.185,
+ "duration": 119.071,
  "scenes": {
   "allup": [0.0, 30.941],
   "baseline": [30.941, 71.835],
-  "same": [71.835, 113.185]
+  "same": [71.835, 119.071]
  },
  "beats": {
   "allup/rewards": [0.7, 11.874, "A grader scores four answers a model sampled for one question, from zero to one: zero point nine, zero point six, zero point five and zero point two.", [[4.64, 4.99], [6.16, 6.74], [7.73, 8.07], [9.09, 9.41], [10.41, 10.68]]],
@@ -15,8 +15,8 @@
   "baseline/third": [61.939, 70.735, "Look at the third answer. Its reward, zero point five, is positive, but below what was expected, so now it gets pushed down.", [[63.209, 63.749], [64.519, 64.739], [65.759, 65.979], [66.779, 67.029], [68.609, 68.949]]],
   "same/sum": [72.535, 82.227, "Why is this allowed? Average the gradient of log pi over the model's answers. pi times the gradient of its log is just the gradient of pi.", [[73.765, 74.305], [77.855, 78.365], [80.325, 80.575]]],
   "same/one": [82.607, 89.919, "And the probabilities always add up to one, so their gradients add up to zero: they cannot all rise at once.", [[85.127, 85.497], [87.507, 87.977]]],
-  "same/zero": [90.299, 101.275, "So the baseline's share of the estimate, b times the gradient of log pi, averages to zero. The expected direction stays the same; only the noise drops.", [[92.699, 93.009], [95.369, 95.669], [96.859, 97.429], [99.549, 99.949]]],
-  "same/best": [101.655, 110.965, "The best baseline is the reward you expect for that very question: a running average of past rewards works, or a second model trained to predict it.", [[105.495, 106.035], [108.395, 108.705]]],
-  "same/turn": [111.345, 112.085, "Your turn.", []]
+  "same/zero": [90.299, 107.162, "So the baseline's share of the estimate, b times the gradient of log pi, averages to zero. That average over the model's answers is written E, for expected value: with or without b, it points the same way, and only the noise drops.", [[92.659, 92.989], [95.309, 95.659], [96.859, 97.389], [100.039, 100.189], [100.519, 100.809], [102.019, 102.509], [103.759, 104.029], [105.329, 105.639]]],
+  "same/best": [107.542, 116.851, "The best baseline is the reward you expect for that very question: a running average of past rewards works, or a second model trained to predict it.", [[111.382, 111.922], [114.282, 114.592]]],
+  "same/turn": [117.231, 117.971, "Your turn.", []]
  }
 }

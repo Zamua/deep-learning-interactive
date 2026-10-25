@@ -19,7 +19,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'hard', say: 'Grading an answer on a scale is hard for people. Saying which of two answers is better is easy.' },
-        { id: 'score', say: 'A reward model reads an answer and gives it one number, a score, r. Say answer a scores two, and answer b scores one.', code: 'r' },
+        { id: 'score', say: 'A reward model reads an answer and gives it one number, a score, r. Answer a\'s score, {r_a|r a}, is two, and answer b\'s, {r_b|r b}, is one.', code: 'r' },
         { id: 'sigma', say: 'Its prediction that people prefer a is the sigmoid of the gap: {σ(2 − 1)|sigma of two minus one}, which is sigma of one, about {0.73|zero point seven three}.', code: 'P' },
         { id: 'soft', say: 'That is softmax over the two scores: e to the score of a, over the sum for both. Divide through, and it is the same sigmoid.', code: 'soft' },
         { id: 'gap', say: 'Only the gap matters. Add ten to both scores, and the prediction does not move.', code: 'shift' },
@@ -38,8 +38,8 @@ export const script: LectureScript = {
         # d loss / d r_b = +0.27             #@grad
       `,
       beats: [
-        { id: 'pairs', say: 'The training data is pairs of answers to the same prompt, where a person picked the winner.', code: 'w' },
-        { id: 'loss', say: 'The loss is cross-entropy on that choice: minus the log of the probability the model gave the winner. With a preferred, minus the log of {0.73|zero point seven three}: {0.31|zero point three one}.', code: 'loss' },
+        { id: 'pairs', say: 'The training data is pairs of answers to the same prompt, where a person picked the winner. Call the winner\'s score {r_w|r w} and the loser\'s {r_l|r l}.', code: 'w' },
+        { id: 'loss', say: 'The loss, L, is cross-entropy on that choice: minus the log of {σ(r_w − r_l)|sigma of r w minus r l}, the probability the model gave the winner. With a preferred, minus the log of {0.73|zero point seven three}: {0.31|zero point three one}.', code: 'loss' },
         { id: 'flip', say: 'Had the person picked b, the model would have given that only {0.27|zero point two seven}, and the loss would be {1.31|one point three one}.', code: 'flip' },
         { id: 'push', say: 'The loss\'s slope is {σ|sigma} minus one for the winner\'s score, and one minus {σ|sigma} for the loser\'s. So lowering the loss raises the winner and lowers the loser, by {0.27|zero point two seven} each.', code: 'grad' },
         { id: 'agree', say: 'A pair the model already ranks right, with {σ|sigma} near one, barely moves it. A pair it gets wrong moves it the most.', code: 'grad' },

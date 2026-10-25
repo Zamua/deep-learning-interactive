@@ -41,7 +41,7 @@ export const script: LectureScript = {
         { id: 'all', say: 'When all four guesses are accepted, the extra pick after the last one comes free: five tokens from a single pass.', code: 'all' },
         { id: 'speed', say: 'Say four passes yield three, five, one and three tokens. Twelve tokens took four large passes instead of twelve: three times fewer.', code: 'speed' },
         { id: 'same', say: 'And the text is still the large model\'s own. With greedy decoding, every kept token is exactly the one it would have picked.' },
-        { id: 'sample', say: 'With sampling, it keeps each guess with a chance set by how much it agrees, and after a rejection draws from what is left. Every token then comes out with exactly the large model\'s probabilities.' },
+        { id: 'sample', say: 'With sampling, it keeps each guess with a chance set by how much it agrees: the large model\'s probability for that token over the small model\'s, capped at one. After a rejection it draws from what is left. Every token then comes out with exactly the large model\'s probabilities.' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

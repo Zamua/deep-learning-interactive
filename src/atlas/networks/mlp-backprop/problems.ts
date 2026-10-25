@@ -31,7 +31,8 @@ function back(rng: Rng, d: number, H: number): Back {
 
 const dS = 'd\\syms';
 const dH = 'd\\symh';
-const ON = (B: Back) => `$z = ${W1}\\symx + \\sym{b1}{b_1} = ${vec(B.z)}$ and $\\symh = \\mathrm{ReLU}(z) = ${vec(B.h)}$`;
+/** The forward pass's hidden layer, before and after the ReLU. */
+const ON = (B: Back) => `the pre-activations are $z = ${vec(B.z)}$, the hidden layer is $\\symh = ${vec(B.h)}$`;
 
 /** One worked line per hidden unit of dh = W2^T ds: column j of W2 dotted with ds. */
 const dhSteps = (B: Back) => B.dh.map((g, j) => `Unit ${j}: column ${j} of $${W2}$ dotted with $${dS}$: $${par(B.W2[0]![j]!)} \\cdot ${par(B.ds[0]!)} + ${par(B.W2[1]![j]!)} \\cdot ${par(B.ds[1]!)} = ${num(g)}$.`);
@@ -42,7 +43,7 @@ function dbProblem(rng: Rng, d: number): Problem {
   const zero = B.ds.map(() => 0);
   const options = [`$${vec(B.ds)}$`, `$${vec(B.dh)}$`, '$0$', `$${vec(zero)}$`];
   return {
-    prompt: `A two-layer network's scores are $\\syms = ${W2}\\symh + ${B2}$ with $${W2} = ${mat(B.W2)}$ and $\\symh = ${vec(B.h)}$. The loss sends back $${dS} = ${vec(B.ds)}$, its gradient on the scores. What is $d${B2}$?`,
+    prompt: `In a two-layer network, $${W2} = ${mat(B.W2)}$, the hidden layer is $\\symh = ${vec(B.h)}$, and $${dS} = ${vec(B.ds)}$. What is $d${B2}$?`,
     answer: {
       kind: 'choice',
       options,
@@ -76,12 +77,12 @@ function deadRowProblem(rng: Rng, d: number): Problem {
     });
     why.push(`Unit ${j} was off ($z_{${j}} = ${num(B.z[j]!)} < 0$). The ReLU's slope there is 0, so $dz_{${j}} = 0$ and its whole row is 0.`);
     return {
-      prompt: `In a two-layer network, ${ON(B)}, for the input $\\symx = ${vec(x)}$. The gradient arriving at the hidden layer is $${dH} = ${vec(B.dh)}$. Which row of $d${W1} = dz\\,\\symx^T$ is all zeros?`,
+      prompt: `In a two-layer network with input $\\symx = ${vec(x)}$, ${ON(B)}, and $${dH} = ${vec(B.dh)}$. Which row of $d${W1}$ is all zeros?`,
       answer: { kind: 'choice', options: ['Row 0', 'Row 1', 'Row 2', 'None of the rows'], correct: j, why },
       solution: [
         'The ReLU passes the gradient where its input was positive and stops it where it was negative: $dz = d\\symh$ masked by $z > 0$.',
         `$z = ${vec(B.z)}$, so $dz = ${vec(B.dz)}$.`,
-        `Row $k$ of $d${W1}$ is $dz_k\\,\\symx^T$. Only unit ${j}, which was off, has $dz_{${j}} = 0$: row ${j} is all zeros: no gradient from this example reaches that unit's weights.`,
+        `$d${W1} = dz\\,\\symx^T$, so row $k$ is $dz_k\\,\\symx^T$. Only unit ${j}, which was off, has $dz_{${j}} = 0$: row ${j} is all zeros: no gradient from this example reaches that unit's weights.`,
       ],
     };
   }
@@ -104,7 +105,7 @@ export const generators: Generator[] = [
       ];
       if (j < 2 && i < H) ts.unshift({ value: B.ds[j]! * B.h[i]!, why: `That is entry (${j}, ${i}): the indices are swapped. Row $i$ is the class, column $j$ the hidden unit.` });
       return {
-        prompt: `In a two-layer network, ${ON(B)}. The scores are $\\syms = ${W2}\\symh + ${B2}$, and the loss sends back $${dS} = ${vec(B.ds)}$. What is entry (${i}, ${j}) of $d${W2}$, row ${i} and column ${j}, counting from 0?`,
+        prompt: `In a two-layer network, ${ON(B)}, and $${dS} = ${vec(B.ds)}$. What is the entry in row ${i}, column ${j} of $d${W2}$, counting from 0?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, ts),
         solution: [
@@ -123,7 +124,7 @@ export const generators: Generator[] = [
       const ts = [{ value: B.dz, why: `That already applies the ReLU's mask: it is $dz$, one step further down. $${dH}$ is the gradient on the ReLU's output, before the mask.` }];
       if (H === 2) ts.unshift({ value: matvec(B.W2, B.ds), why: `That is $${W2}\\,${dS}$, without the transpose. Unit $j$ collects from column $j$ of $${W2}$: the weights it fed.` });
       return {
-        prompt: `In a two-layer network, ${ON(B)}. The scores are $\\syms = ${W2}\\symh + ${B2}$ with $${W2} = ${mat(B.W2)}$, and the loss sends back $${dS} = ${vec(B.ds)}$. What is $${dH}$, the gradient on $\\symh$${d < 0.5 ? `, $${W2}^T ${dS}$` : ''}?`,
+        prompt: `In a two-layer network, ${ON(B)}, $${W2} = ${mat(B.W2)}$, and $${dS} = ${vec(B.ds)}$. What is $${dH}$?`,
         answer: { kind: 'vector', value: B.dh },
         traps: vtraps(B.dh, ts),
         solution: [`$${dH} = ${W2}^T ${dS}$: each hidden unit collects the gradient of every score it fed, weighted by the weight it fed it through.`, ...dhSteps(B), `So $${dH} = ${vec(B.dh)}$. The ReLU's mask comes next, on the way to $z$.`],
@@ -136,7 +137,7 @@ export const generators: Generator[] = [
       const H = d < 0.35 ? 2 : 3;
       const B = back(rng, d, H);
       return {
-        prompt: `In a two-layer network, ${ON(B)}. The gradient arriving at the hidden layer is $${dH} = ${vec(B.dh)}$. What is $dz$, the gradient on the pre-activations $z$?`,
+        prompt: `In a two-layer network, ${ON(B)}, and $${dH} = ${vec(B.dh)}$. What is $dz$?`,
         answer: { kind: 'vector', value: B.dz },
         traps: vtraps(B.dz, [
           { value: B.dh, why: 'That skips the ReLU. Its slope is 0 wherever $z$ was negative, so the gradient stops there.' },

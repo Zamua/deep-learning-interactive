@@ -12,12 +12,12 @@ export const script: LectureScript = {
       title: 'Wider, not narrower',
       codeTitle: 'sae.py',
       code: `
-        f = relu(W_enc @ x + b_enc)   # m features, m >> d  #@enc
+        f = relu(W_enc @ x + b_enc)   # 8d to 16d features  #@enc
         x_hat = W_dec @ f             # back to d           #@dec
       `,
       beats: [
         { id: 'recall', say: 'An autoencoder squeezes its input through a narrow middle, then rebuilds it.' },
-        { id: 'flip', say: 'A sparse autoencoder turns that around. If a model stores more features than it has dimensions, the middle must be wider: often eight or sixteen times d.', code: 'enc' },
+        { id: 'flip', say: 'A sparse autoencoder turns that around. If a model stores more features than it has dimensions, the middle must be wider: often eight or sixteen times d. That ratio is the expansion factor.', code: 'enc' },
         { id: 'dict', say: 'Each middle unit is a feature, and each has its own direction in the decoder. Together they form a dictionary.', code: 'dec' },
       ],
     },
@@ -32,7 +32,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'err', say: 'Training balances two terms. The reconstruction error asks the rebuild to match x.', code: 'err' },
-        { id: 'l1', say: 'The L1 penalty adds {λ|lambda} times the sum of the features, which the ReLU keeps from going negative. For the code zero, two, zero, zero, a half, zero, zero, zero, with {λ|lambda} at {0.1|zero point one}, the penalty is {0.25|zero point two five}.', code: 'l1' },
+        { id: 'l1', say: 'The L1 penalty adds {λ Σⱼ fⱼ|lambda times the sum of the features}, which the ReLU keeps from going negative. For the code zero, two, zero, zero, a half, zero, zero, zero, with {λ|lambda} at {0.1|zero point one}, the penalty is {0.25|zero point two five}.', code: 'l1' },
         { id: 'zero', say: 'Every active feature costs something, so small, unhelpful ones are pushed all the way to zero. Only a few stay on for any one input.', code: 'loss' },
       ],
     },

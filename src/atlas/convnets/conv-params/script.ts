@@ -25,7 +25,7 @@ export const script: LectureScript = {
         { id: 'filter', say: 'Count what a conv layer learns. One filter over a color image is three by three in each of three channels: twenty seven weights.', code: ['layer', 'w'] },
         { id: 'bias', say: 'Plus one bias, added after the sum. Twenty eight numbers per filter.', code: 'b' },
         { id: 'k', say: 'With eight filters, that is eight times twenty eight: two hundred and twenty four.', code: 'total' },
-        { id: 'formula', say: 'In general: K, times F times F times C, plus one. Forget the C and you have counted a flat filter; forget the one and you have lost the biases.', code: 'total' },
+        { id: 'formula', say: 'In general, for K filters of size F by F over C input channels: K, times F times F times C, plus one. Forget the C and you have counted a flat filter; forget the one and you have lost the biases.', code: 'total' },
       ],
     },
     {

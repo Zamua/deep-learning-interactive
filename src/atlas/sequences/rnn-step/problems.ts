@@ -19,6 +19,9 @@ function weights(rng: Rng, m: number, n: number, lo: number, hi: number): number
   }
 }
 
+const PRE = 'The pre-activation is $\\symWhh\\symh_{t-1} + \\symWxh\\symx_t + \\symb$: everything before the tanh.';
+const STEP = (t = 't', prev = 't-1') => `The step computes $\\symh_{${t}} = \\tanh(\\symWhh\\symh_{${prev}} + \\symWxh\\symx_{${t}} + \\symb)$.`;
+
 /** The whole one-step setup as display math, on two lines so it fits a phone. */
 function given(Whh: string, h: string, Wxh: string, x: string, b: string, prev = 't-1', t = 't'): string {
   const top = `\\symWhh = ${Whh}, \\quad \\symh_{${prev}} = ${h}`;
@@ -38,7 +41,7 @@ export const generators: Generator[] = [
         const b = int(rng, -2, 2);
         const a = clean(whh * h + wxh * x + b);
         return {
-          prompt: `A one-unit RNN takes a step:\n\n${given(num(whh), num(h), num(wxh), num(x), num(b))}\n\nWhat is the pre-activation $\\symWhh\\symh_{t-1} + \\symWxh\\symx_t + \\symb$, before the tanh?`,
+          prompt: `A one-unit RNN takes a step:\n\n${given(num(whh), num(h), num(wxh), num(x), num(b))}\n\nWhat is the pre-activation?`,
           answer: { kind: 'number', value: a },
           traps: traps(a, [
             { value: whh * h + wxh * x, why: 'That leaves out the bias $\\symb$.' },
@@ -46,6 +49,7 @@ export const generators: Generator[] = [
             { value: wxh * x + b, why: 'That leaves out the memory term $\\symWhh\\symh_{t-1}$, the part that carries the past.' },
           ]),
           solution: [
+            PRE,
             `The memory term: $\\symWhh\\symh_{t-1} = ${num(whh)} \\times ${paren(h)} = ${num(clean(whh * h))}$.`,
             `The input term: $\\symWxh\\symx_t = ${num(wxh)} \\times ${num(x)} = ${num(wxh * x)}$.`,
             `Add them and the bias: $${num(clean(whh * h))} + ${paren(wxh * x)} + ${paren(b)} = ${num(a)}$.`,
@@ -67,10 +71,11 @@ export const generators: Generator[] = [
       ];
       if (D === 2) ts.push({ value: add(mv(Whh, x), mv(Wxh, h), b), why: 'That swaps the weights: $\\symWhh$ multiplies the old state $\\symh_{t-1}$, and $\\symWxh$ multiplies the input $\\symx_t$.' });
       return {
-        prompt: `An RNN with two hidden units takes a step:\n\n${given(mat(Whh), vec(h), mat(Wxh), vec(x), vec(b))}\n\nWhat is the pre-activation $\\symWhh\\symh_{t-1} + \\symWxh\\symx_t + \\symb$, before the tanh?`,
+        prompt: `An RNN with two hidden units takes a step:\n\n${given(mat(Whh), vec(h), mat(Wxh), vec(x), vec(b))}\n\nWhat is the pre-activation?`,
         answer: { kind: 'vector', value: a },
         traps: vtraps(a, ts),
         solution: [
+          PRE,
           `The memory term, row by row: $\\symWhh\\symh_{t-1} = ${vec(mh)}$.`,
           `The input term: $\\symWxh\\symx_t = ${vec(mx)}$.`,
           `Add them and the bias, entry by entry: $${vec(mh)} + ${vec(mx)} + ${vec(b)} = ${vec(a)}$.`,
@@ -93,13 +98,14 @@ export const generators: Generator[] = [
         const decoy = pick(rng, NICE.filter((v) => Math.abs(v) !== Math.abs(a)));
         const v = T2(a);
         return {
-          prompt: `A one-unit RNN takes ${first ? 'its first step, from $\\symh_0 = 0$' : 'a step'}:\n\n${given(num(whh), num(h), num(wxh), num(x), num(b), first ? '0' : 't-1', first ? '1' : 't')}\n\nWhat is $\\symh_{${first ? '1' : 't'}} = \\tanh(\\symWhh\\symh_{${first ? '0' : 't-1'}} + \\symWxh\\symx_{${first ? '1' : 't'}} + \\symb)$? Round to two decimals. Use ${useTanh([a, decoy])}.`,
+          prompt: `A one-unit RNN takes ${first ? 'its first step' : 'a step'}:\n\n${given(num(whh), num(h), num(wxh), num(x), num(b), first ? '0' : 't-1', first ? '1' : 't')}\n\nWhat is $\\symh_{${first ? '1' : 't'}}$? Round to two decimals. Use ${useTanh([a, decoy])}.`,
           answer: { kind: 'number', value: v, places: 2 },
           traps: traps(v, [
             { value: a, why: 'That is the pre-activation. The step ends by squashing it with tanh.' },
             { value: relu(a), why: 'That is ReLU. The recurrence squashes with tanh, which keeps $\\symh$ between $-1$ and $1$.' },
           ]).filter((t) => Math.abs(t.value - v) >= 0.01),
           solution: [
+            first ? STEP('1', '0') : STEP(),
             first
               ? `$\\symh_0 = 0$, so the memory term vanishes: $\\symWhh\\symh_0 = 0$.`
               : `The memory term: $\\symWhh\\symh_{t-1} = ${num(whh)} \\times ${paren(h)} = ${num(clean(whh * h))}$.`,
@@ -120,13 +126,14 @@ export const generators: Generator[] = [
       const v = a.map(T2);
       const decoy = pick(rng, NICE.filter((u) => !a.some((w) => Math.abs(w) === Math.abs(u))));
       return {
-        prompt: `An RNN with two hidden units takes a step:\n\n${given(mat(Whh), vec(h), mat(Wxh), vec(x), vec(b))}\n\nWhat is $\\symh_t = \\tanh(\\symWhh\\symh_{t-1} + \\symWxh\\symx_t + \\symb)$? Round to two decimals. Use ${useTanh([...a, decoy])}.`,
+        prompt: `An RNN with two hidden units takes a step:\n\n${given(mat(Whh), vec(h), mat(Wxh), vec(x), vec(b))}\n\nWhat is $\\symh_t$? Round to two decimals. Use ${useTanh([...a, decoy])}.`,
         answer: { kind: 'vector', value: v, places: 2 },
         traps: vtraps(v, [
           { value: a, why: 'That is the pre-activation. The step ends by squashing it with tanh, entry by entry.' },
           { value: a.map(relu), why: 'That is ReLU. The recurrence squashes with tanh, which keeps $\\symh$ between $-1$ and $1$.' },
         ]),
         solution: [
+          STEP(),
           `The memory term: $\\symWhh\\symh_{t-1} = ${vec(mh)}$; the input term: $\\symWxh\\symx_t = ${vec(mx)}$.`,
           `Pre-activation: $${vec(mh)} + ${vec(mx)} + ${vec(b)} = ${vec(a)}$.`,
           `Squash each entry: $\\symh_t = [\\tanh(${num(a[0]!)}),\\ \\tanh(${num(a[1]!)})] \\approx ${vec(v, 2)}$.`,
@@ -145,8 +152,8 @@ export const generators: Generator[] = [
       const emb = !small && rng.int(2) === 0;
       const what = d < 0.35 ? pick(rng, ['Whh', 'Wxh'] as const) : pick(rng, ['Whh', 'Wxh', 'b', 'h'] as const);
       const setup = emb
-        ? `An RNN reads tokens looked up in an embedding table of shape $(V, \\symD) = ${shapeTex([V, D])}$, so each input $\\symx_t$ has $\\symD = ${D}$ numbers. Its hidden state $\\symh_t$ has $\\symH = ${H}$.`
-        : `An RNN's hidden state $\\symh_t$ has $\\symH = ${H}$ numbers, and each input $\\symx_t$ has $\\symD = ${D}$.`;
+        ? `An RNN with $\\symH = ${H}$ hidden units reads tokens from an embedding table of shape $(V, \\symD) = ${shapeTex([V, D])}$.`
+        : `An RNN has $\\symH = ${H}$ hidden units, and each input $\\symx_t$ has $\\symD = ${D}$ numbers.`;
       const W_XH = 'That is $\\symWxh$\'s shape, which multiplies $\\symx_t$. $\\symWhh$ multiplies $\\symh_{t-1}$, $\\symH$ numbers, and gives $\\symH$ numbers.';
       const cases = {
         Whh: {
@@ -179,10 +186,10 @@ export const generators: Generator[] = [
         },
       }[what];
       return {
-        prompt: `${setup} What is the shape of $${cases.tex}$ in $\\symh_t = \\tanh(\\symWhh\\symh_{t-1} + \\symWxh\\symx_t + \\symb)$?`,
+        prompt: `${setup} What is the shape of $${cases.tex}$?`,
         answer: { kind: 'shape', value: cases.value },
         traps: cases.traps,
-        solution: what === 'Whh' || what === 'Wxh' ? ['A weight matrix that turns $m$ numbers into $n$ has shape $(n, m)$: one row per output.', cases.sol] : [cases.sol],
+        solution: [STEP(), ...(what === 'Whh' || what === 'Wxh' ? ['A weight matrix that turns $m$ numbers into $n$ has shape $(n, m)$: one row per output.'] : []), cases.sol],
       };
     },
   },
@@ -193,7 +200,7 @@ export const generators: Generator[] = [
       const n = int(rng, 5, 40);
       if (d < 0.5 || rng.int(2) === 0) {
         return {
-          prompt: `An RNN with $\\symH = ${H}$ hidden units reads a sequence of ${n} tokens, one step per token. How many different $\\symWhh$ matrices does it use?`,
+          prompt: `An RNN with $\\symH = ${H}$ hidden units reads a sequence of ${n} tokens. How many different $\\symWhh$ matrices does it use?`,
           answer: {
             kind: 'choice',
             options: ['One, used again at every step', `${n}, one for each step`, `${n - 1}, one for each step after the first`, `${H}, one for each hidden unit`],

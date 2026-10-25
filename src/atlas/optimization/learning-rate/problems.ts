@@ -51,7 +51,7 @@ export const generators: Generator[] = [
           { value: x0 - grad, why: 'That subtracts the whole gradient, leaving out $\\symeta$.' },
         ]),
         solution: [
-          `The gradient is $\\symf'(\\symx) = 2a\\symx = 2 \\times ${num(a)} \\times ${paren(x0)} = ${num(grad)}$.`,
+          `Here $a = ${num(a)}$, and the gradient of $a\\symx^2$ is $\\symf'(\\symx) = 2a\\symx = 2 \\times ${num(a)} \\times ${paren(x0)} = ${num(grad)}$.`,
           `The step: $\\symeta \\times ${paren(grad)} = ${num(step)}$.`,
           `$\\symx \\leftarrow ${minus(x0, step)} = ${num(v)}$.`,
           `Check with the factor: $1 - 2a\\symeta = 1 - 2 \\times ${num(a)} \\times ${num(eta)} = ${num(r)}$, and $${num(r)} \\times ${paren(x0)} = ${num(v)}$.`,
@@ -85,8 +85,8 @@ export const generators: Generator[] = [
           why,
         },
         solution: [
-          'Each step multiplies $\\symx$ by the same factor, $1 - 2a\\symeta$.',
-          `Here $1 - 2 \\times ${num(a)} \\times ${num(eta)} = ${fr}$.`,
+          'On $a\\symx^2$, each step multiplies $\\symx$ by the same factor, $1 - 2a\\symeta$.',
+          `Here $a = ${num(a)}$, so $1 - 2 \\times ${num(a)} \\times ${num(eta)} = ${fr}$.`,
           `So $\\symx$ goes $${xs.map((x) => num(round(x, 3))).join(',\\ ')},\\ \\dots$ (to three decimals).`,
           meaning[want]!,
         ],
@@ -100,7 +100,7 @@ export const generators: Generator[] = [
       const m = d >= 0.5 && rng.next() < 0.5 ? nonzero(rng, -3, 3) : 0;
       const v = clean(1 / a);
       return {
-        prompt: `For $\\symf(\\symx) = ${bowl(a, m)}$, what is the largest learning rate $\\symeta$ for which gradient descent does not diverge?`,
+        prompt: `For $\\symf(\\symx) = ${bowl(a, m)}$, what is the largest $\\symeta$ for which gradient descent does not diverge?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: 1 / (2 * a), why: 'That is the rate that lands on the minimum in one step (factor 0). Larger rates still converge by zigzagging, up to factor $-1$.' },
@@ -109,9 +109,9 @@ export const generators: Generator[] = [
         ]),
         solution: [
           ...(m === 0 ? [] : [`The shift only moves the minimum to $\\symx = ${num(m)}$. The gradient is $2a(\\symx ${m > 0 ? '-' : '+'} ${num(Math.abs(m))})$, so the distance to the minimum shrinks exactly as $\\symx$ does for $a\\symx^2$.`]),
-          'Each step multiplies the distance to the minimum by $1 - 2a\\symeta$.',
-          'It does not grow while that factor is at least $-1$: $1 - 2a\\symeta \\ge -1$ means $\\symeta \\le 1/a$.',
-          `Here $a = ${num(a)}$, so $\\symeta \\le 1/${num(a)} = ${num(v)}$. At exactly that rate $\\symx$ bounces between two points forever; any larger and it blows up.`,
+          'With $a$ the number in front of the square, each step multiplies the distance to the minimum by $1 - 2a\\symeta$.',
+          'It does not grow while that factor is at least $-1$, which means $\\symeta$ is at most $1/a$.',
+          `Here $a = ${num(a)}$, so the largest $\\symeta$ is $1/${num(a)} = ${num(v)}$. At exactly that rate $\\symx$ bounces between two points forever; any larger and it blows up.`,
         ],
       };
     },

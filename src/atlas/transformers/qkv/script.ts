@@ -27,7 +27,7 @@ export const script: LectureScript = {
         { id: 'query', say: 'The query, q, is {Wq|W Q} times x: what this token is looking for. With x equal to two and one, q is three and one.', code: 'q' },
         { id: 'key', say: 'The key, k, is {Wk|W K} times x: what this token offers to a query that comes looking. Here, two and one.', code: 'k' },
         { id: 'value', say: 'The value, v, is {Wv|W V} times x: what this token hands over when it is chosen. Here, one and four.', code: 'v' },
-        { id: 'shape', say: 'Each matrix has one row per entry of what it makes, and one column per entry of x. With tokens of {512|five hundred twelve} numbers and queries of {64|sixty four}, {Wq|W Q} is {64 by 512|sixty four by five hundred twelve}.', code: 'shape' },
+        { id: 'shape', say: 'Each matrix has one row per entry of what it makes, and one column per entry of x. Write {d|d} for a token\'s length and {dₖ|d k} for a query\'s: {Wq|W Q} is {dₖ by d|d k by d}. With d of {512|five hundred twelve} and {dₖ|d k} of {64|sixty four}, that is {64 by 512|sixty four by five hundred twelve}.', code: 'shape' },
       ],
     },
     {

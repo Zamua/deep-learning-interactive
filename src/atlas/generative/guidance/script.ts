@@ -17,8 +17,8 @@ export const script: LectureScript = {
         # training: prompt emptied 10% of the time  #@drop
       `,
       beats: [
-        { id: 'prompt', say: 'A denoiser can take a text prompt as an extra input, such as a red bicycle, and guess the noise with it in mind. Call that guess {ε_c|epsilon c}.', code: 'c' },
-        { id: 'drop', say: 'Train it with the prompt replaced by an empty one part of the time. Then the same network can also guess without the prompt: {ε_u|epsilon u}.', code: ['u', 'drop'] },
+        { id: 'prompt', say: 'A denoiser can take a text prompt as an extra input, such as a red bicycle, and guess the noise with it in mind. Call that guess {ε_c|epsilon c}: c for conditioned, shown the prompt.', code: 'c' },
+        { id: 'drop', say: 'Train it with the prompt replaced by an empty one part of the time. Then the same network can also guess without the prompt: {ε_u|epsilon u}, u for unconditioned.', code: ['u', 'drop'] },
         { id: 'diff', say: 'The difference, {ε_c|epsilon c} minus {ε_u|epsilon u}, is what the prompt changes: the direction the prompt points.', code: ['c', 'u'] },
       ],
     },
@@ -32,7 +32,7 @@ export const script: LectureScript = {
         # [0.2, -0.4] + 3 * [0.3, 0.3] = [1.1, 0.5] #@three
       `,
       beats: [
-        { id: 'rule', say: 'Guidance mixes the two. {ε̂|epsilon hat} is {ε_u|epsilon u}, plus w times the difference, where w is the guidance scale.', code: ['w', 'rule'] },
+        { id: 'rule', say: 'Guidance mixes the two. The guess it uses, {ε̂|epsilon hat}, is {ε_u|epsilon u}, plus w times the difference. Here w is not a weight but one number, the guidance scale.', code: ['w', 'rule'] },
         { id: 'ends', say: 'At w equal to zero, that is just {ε_u|epsilon u}: the prompt is ignored. At w equal to one, it is exactly {ε_c|epsilon c}.', code: 'rule' },
         { id: 'three', say: 'Above one, it steps past {ε_c|epsilon c}, further the way the prompt points. At w equal to three: {0.2|zero point two} plus three times {0.3|zero point three} is {1.1|one point one}, and minus {0.4|zero point four} plus {0.9|zero point nine} is {0.5|zero point five}.', code: 'three' },
         { id: 'use', say: 'An image is made by taking the guessed noise away a little at a time, over many steps. Guidance swaps in this guess at every step, so each step runs the network twice: once with the prompt, once without.', code: 'rule' },

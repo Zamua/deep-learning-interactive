@@ -1,19 +1,19 @@
 {
- "duration": 89.513,
+ "duration": 92.452,
  "scenes": {
-  "wide": [0.0, 25.866],
-  "loss": [25.866, 60.302],
-  "rebuild": [60.302, 89.513]
+  "wide": [0.0, 28.805],
+  "loss": [28.805, 63.241],
+  "rebuild": [63.241, 92.452]
  },
  "beats": {
   "wide/recall": [0.7, 5.94, "An autoencoder squeezes its input through a narrow middle, then rebuilds it.", [[4.35, 4.66]]],
-  "wide/flip": [6.32, 17.153, "A sparse autoencoder turns that around. If a model stores more features than it has dimensions, the middle must be wider: often eight or sixteen times d.", [[8.99, 9.5], [12.53, 12.82], [14.33, 14.81]]],
-  "wide/dict": [17.533, 24.766, "Each middle unit is a feature, and each has its own direction in the decoder. Together they form a dictionary.", [[19.403, 19.733], [22.343, 22.913]]],
-  "loss/err": [26.566, 32.649, "Training balances two terms. The reconstruction error asks the rebuild to match x.", [[28.526, 29.056]]],
-  "loss/l1": [33.029, 49.264, "The L1 penalty adds lambda times the sum of the features, which the ReLU keeps from going negative. For the code zero, two, zero, zero, a half, zero, zero, zero, with lambda at zero point one, the penalty is zero point two five.", [[36.869, 37.169], [39.309, 39.969], [42.469, 42.699], [43.269, 43.419], [44.669, 44.929], [46.709, 47.079]]],
-  "loss/zero": [49.644, 59.202, "Every active feature costs something, so small, unhelpful ones are pushed all the way to zero. Only a few stay on for any one input.", [[51.934, 52.344], [55.984, 56.564]]],
-  "rebuild/sum": [61.002, 75.404, "The rebuild is the sum of each active feature times its direction. Here, two times feature one's direction, one, zero, plus a half times feature four's, zero, two. That is two, one.", [[63.812, 63.962], [65.082, 65.652], [66.022, 66.342], [68.292, 68.602], [68.962, 69.132], [69.602, 69.962], [70.762, 70.912], [72.122, 72.442], [73.362, 73.832], [74.312, 74.502]]],
-  "rebuild/meaning": [75.784, 87.293, "Because each input uses only a few features, each feature tends to stand for one thing. That is what sparsity buys: a readable dictionary of what the model represents.", [[78.754, 79.144], [81.574, 82.134], [83.974, 84.414]]],
-  "rebuild/turn": [87.673, 88.413, "Your turn.", []]
+  "wide/flip": [6.32, 20.091, "A sparse autoencoder turns that around. If a model stores more features than it has dimensions, the middle must be wider: often eight or sixteen times d. That ratio is the expansion factor.", [[8.98, 9.58], [12.57, 12.88], [14.28, 14.79], [17.19, 17.77]]],
+  "wide/dict": [20.471, 27.705, "Each middle unit is a feature, and each has its own direction in the decoder. Together they form a dictionary.", [[22.341, 22.671], [25.281, 25.851]]],
+  "loss/err": [29.505, 35.588, "Training balances two terms. The reconstruction error asks the rebuild to match x.", [[31.465, 31.995]]],
+  "loss/l1": [35.968, 52.203, "The L1 penalty adds lambda times the sum of the features, which the ReLU keeps from going negative. For the code zero, two, zero, zero, a half, zero, zero, zero, with lambda at zero point one, the penalty is zero point two five.", [[39.808, 40.108], [42.248, 42.908], [45.408, 45.638], [46.208, 46.358], [47.608, 47.868], [49.648, 50.018]]],
+  "loss/zero": [52.583, 62.141, "Every active feature costs something, so small, unhelpful ones are pushed all the way to zero. Only a few stay on for any one input.", [[54.873, 55.283], [58.923, 59.503]]],
+  "rebuild/sum": [63.941, 78.342, "The rebuild is the sum of each active feature times its direction. Here, two times feature one's direction, one, zero, plus a half times feature four's, zero, two. That is two, one.", [[66.751, 66.901], [68.021, 68.591], [68.961, 69.281], [71.231, 71.541], [71.901, 72.071], [72.541, 72.901], [73.701, 73.851], [75.061, 75.381], [76.301, 76.771], [77.251, 77.441]]],
+  "rebuild/meaning": [78.722, 90.232, "Because each input uses only a few features, each feature tends to stand for one thing. That is what sparsity buys: a readable dictionary of what the model represents.", [[81.692, 82.082], [84.512, 85.072], [86.912, 87.352]]],
+  "rebuild/turn": [90.612, 91.352, "Your turn.", []]
  }
 }

@@ -33,7 +33,7 @@ export const generators: Generator[] = [
       const t = pick(rng, d < 0.35 ? [4, 5, 10, 20, 100] : [512, 1000, 1024, 2048, 4000]);
       const v = k * k;
       return {
-        prompt: `A model's attention reads $${T} = ${big(t)}$ tokens. The context is made ${k} times longer, $${T} = ${big(k * t)}$. How many times more attention scores are there?`,
+        prompt: `A model's attention reads $${T} = ${big(t)}$ tokens. If the context is made ${k} times longer, how many times as many attention scores are there?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: k, why: `That is how much $${T}$ grows. The scores grow with $${T}^2$: $${k}^2 = ${v}$.` },
@@ -90,7 +90,7 @@ export const generators: Generator[] = [
       const options = facts.map(label);
       const thing = {
         scores: `the number of attention scores in one head`,
-        queries: `the size of the query matrix $${Q}$`,
+        queries: `the size of $${Q}$`,
         weights: `the number of weights in $${WQ}$, $${WK}$ and $${WV}$`,
       }[what];
       const why = facts.map((x) => {
@@ -101,7 +101,7 @@ export const generators: Generator[] = [
         return 'The weight matrices are shared by every token: their shapes depend on the width, never on the number of tokens.';
       });
       return {
-        prompt: `A model's attention reads $${T} = ${big(t)}$ tokens. The context is made ${k} times longer, $${T} = ${big(k * t)}$. What happens to ${thing}?`,
+        prompt: `A model's attention reads $${T} = ${big(t)}$ tokens. The context is made ${k} times longer. What happens to ${thing}?`,
         answer: { kind: 'choice', options, correct: facts.indexOf(right), why },
         solution: [
           `Scores: one per pair of tokens, $${T}^2$, so $${k * k}$ times. Queries, keys and values: one row per token, so ${k} times.`,

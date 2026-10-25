@@ -54,8 +54,8 @@ const variety: SceneDef = {
       });
     });
     s.alpha(s.ease('which', 0.6, 0.6), () => {
-      s.text('6 upside down → 9', s.w / 2, s.h * 0.87, { size: 3.3, font: 'mono', color: s.c('red') });
-      s.text('red light, colors shifted → green', s.w / 2, s.h * 0.94, { size: 3.3, font: 'mono', color: s.c('red') });
+      s.text('6 upside down: a 9', s.w / 2, s.h * 0.87, { size: 3.3, font: 'mono', color: s.c('red') });
+      s.text('red light, colors shifted: green', s.w / 2, s.h * 0.94, { size: 3.3, font: 'mono', color: s.c('red') });
     });
   },
 };

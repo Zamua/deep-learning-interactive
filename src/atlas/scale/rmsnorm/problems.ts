@@ -69,7 +69,7 @@ export const generators: Generator[] = [
       ];
       if (Math.abs(mean(x)) > 1e-9) ts.push({ value: sd(x), why: 'That subtracts the mean first: the standard deviation, which layer norm divides by. RMSNorm skips the mean.' });
       return {
-        prompt: `A token's vector is $\\symx = ${vec(x)}$. What is its root mean square, the number RMSNorm divides by? Ignore the tiny $\\epsilon$.${places ? ' Round to two decimals.' : ''}${hint}`,
+        prompt: `A token's vector is $\\symx = ${vec(x)}$. What is its root mean square?${places ? ' Round to two decimals.' : ''}${hint}`,
         answer: { kind: 'number', value: r, places },
         traps: traps(r, ts, places),
         solution: [
@@ -96,11 +96,11 @@ export const generators: Generator[] = [
       ];
       if (!ones) ts.push({ value: x.map((v) => v / r), why: 'That leaves out the gains. Multiply each entry by its $\\symgamma_i$ last.' });
       return {
-        prompt: `RMSNorm divides a token's vector by its root mean square, then multiplies entry by entry by the gains $\\symgamma$. What does it give for $\\symx = ${vec(x)}$ ${ones ? 'with every gain at 1' : `with $\\symgamma = ${vec(gain)}$`}? Round to two decimals.`,
+        prompt: `What does RMSNorm output for $\\symx = ${vec(x)}$ ${ones ? 'with every gain at 1' : `with gains $\\symgamma = ${vec(gain)}$`}? Round to two decimals.`,
         answer: { kind: 'vector', value: ans, places: 2 },
         traps: vtraps(ans, ts, 2),
         solution: [
-          `Mean of the squares: $(${squares(x)}) / ${x.length} = ${num(ms(x))}$, so the RMS is $\\sqrt{${num(ms(x))}} = ${num(r)}$.`,
+          `RMSNorm divides by the root mean square, then multiplies by the gains. Mean of the squares: $(${squares(x)}) / ${x.length} = ${num(ms(x))}$, so the RMS is $\\sqrt{${num(ms(x))}} = ${num(r)}$.`,
           `Divide each entry by ${num(r)}: $${vec(x.map((v) => round(v / r, 2)))}$.`,
           ones ? 'The gains are all 1, so that is the output. Its RMS is exactly 1.' : `Multiply by the gains: $${vec(ans.map((v) => round(v, 2)))}$.`,
         ],
@@ -122,7 +122,7 @@ export const generators: Generator[] = [
           'Both normalize each token across its own features. It is batch norm that uses the rest of the batch.',
         ];
         return {
-          prompt: `Layer norm takes a token's $${D} = ${pick(rng, [64, 128, 256, 512, 768, 1024])}$ features, subtracts their mean, divides by their standard deviation, then applies a gain $\\symgamma$ and a shift $\\symbeta$. What does RMSNorm leave out?`,
+          prompt: `Next to layer norm over a token's $${D} = ${pick(rng, [64, 128, 256, 512, 768, 1024])}$ features, what does RMSNorm leave out?`,
           answer: { kind: 'choice', options, correct: 0, why: whys(4, 0, (i) => reasons[i]!) },
           solution: [
             `RMSNorm divides by the root mean square, $\\sqrt{\\tfrac{1}{${D}}\\sum_i \\symx_i^2}$, and multiplies by $\\symgamma$.`,

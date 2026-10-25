@@ -52,10 +52,10 @@ export const generators: Generator[] = [
       ];
       if (H === 2) ts.push({ value: add(matvec(transpose(N.W1), N.x), N.b1).map(relu), why: `That dots the columns of $${W1}$ with $\\symx$. Each hidden unit's weights are a row.` });
       return {
-        prompt: `A two-layer network's first layer has\n\n${given(N)}\n\nFor the input $\\symx = ${vec(N.x)}$, what is the hidden layer $\\symh = \\mathrm{ReLU}(${W1}\\symx + ${B1})$?`,
+        prompt: `A two-layer network's first layer has\n\n${given(N)}\n\nFor the input $\\symx = ${vec(N.x)}$, what is the hidden layer $\\symh$?`,
         answer: { kind: 'vector', value: N.h },
         traps: vtraps(N.h, ts),
-        solution: hiddenSteps(N),
+        solution: [`$\\symh = \\mathrm{ReLU}(${W1}\\symx + ${B1})$: one row of $${W1}$ per hidden unit.`, ...hiddenSteps(N)],
       };
     },
   },
@@ -69,12 +69,13 @@ export const generators: Generator[] = [
       const noRelu = add(matvec(N.W2, N.z), N.b2);
       const noB2 = matvec(N.W2, N.h);
       const swapped = H === 2 ? add(matvec(N.W1, N.h), N.b2) : null;
-      const ask = both ? `what are the scores $\\syms = ${W2}\\symh + ${B2}$? Enter class 0 first.` : `what is the score of class ${k}, $\\syms_{${k}}$, the ${k ? 'second' : 'first'} entry of $\\syms = ${W2}\\symh + ${B2}$?`;
+      const ask = both ? 'what are the scores $\\syms$?' : `what is the score of class ${k}, counting from 0?`;
       const steps = [
+        `$\\symh = \\mathrm{ReLU}(${W1}\\symx + ${B1})$, then $\\syms = ${W2}\\symh + ${B2}$.`,
         ...hiddenSteps(N),
         ...(both ? [0, 1] : [k]).map((c) => `Class ${c}: row ${c} of $${W2}$ dotted with $\\symh$, plus its bias: $${terms([prods(N.W2[c]!, N.h), N.b2[c]!])} = ${num(N.s[c]!)}$.`),
       ];
-      const prompt = `A two-layer network has\n\n${given(N)}\n\n$$${W2} = ${mat(N.W2)}, \\qquad ${B2} = ${vec(N.b2)}$$\n\nThe input is $\\symx = ${vec(N.x)}$. With $\\symh = \\mathrm{ReLU}(${W1}\\symx + ${B1})$, ${ask}`;
+      const prompt = `A two-layer network has\n\n${given(N)}\n\n$$${W2} = ${mat(N.W2)}, \\qquad ${B2} = ${vec(N.b2)}$$\n\nFor the input $\\symx = ${vec(N.x)}$, ${ask}`;
       if (both) {
         const ts = [
           { value: noRelu, why: `That skips the ReLU: it scores $${W1}\\symx + ${B1}$ itself. Zero its negative entries first.` },
@@ -137,7 +138,7 @@ export const generators: Generator[] = [
       };
       const dims = `$\\symD = ${D}$ input features, $\\symH = ${H}$ hidden units and $\\symC = ${C}$ classes`;
       return {
-        prompt: `A two-layer network $\\syms = ${W2}\\,\\mathrm{ReLU}(${W1}\\symx + ${B1}) + ${B2}$ has ${dims}. What is the shape of $${tex[what]}$?`,
+        prompt: `A two-layer network has ${dims}. What is the shape of $${tex[what]}$?`,
         answer: { kind: 'shape', value: shape[what]! },
         traps: straps(shape[what]!, ts[what]!),
         solution: [
@@ -155,7 +156,7 @@ export const generators: Generator[] = [
       const D = pick(rng, [2, 784, 3072]);
       const C = pick(rng, [2, 10]);
       return {
-        prompt: `A two-layer network with $\\symD = ${D}$ inputs, $\\symH = ${H}$ hidden units and $\\symC = ${C}$ classes is built without the ReLU: $\\symh = ${W1}\\symx + ${B1}$, then $\\syms = ${W2}\\symh + ${B2}$. What can it compute?`,
+        prompt: `A two-layer network with $\\symD = ${D}$ inputs, $\\symH = ${H}$ hidden units and $\\symC = ${C}$ classes has no ReLU between its layers. What can it compute?`,
         answer: {
           kind: 'choice',
           options: [

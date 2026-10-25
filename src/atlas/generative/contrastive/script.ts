@@ -19,7 +19,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'views', say: 'Here is a way to learn from images with no labels at all. Take an image and cut two random crops from it: two views of the same thing.', code: 'views' },
-        { id: 'embed', say: 'An encoder turns each view into a vector, and each vector is scaled to length one, so only its direction counts.', code: 'embed' },
+        { id: 'embed', say: 'An encoder turns each view into a vector, {z₁|z one} for the first view and {z₂|z two} for the second. Each is scaled to length one, so only its direction counts.', code: 'embed' },
         { id: 'sim', say: 'The similarity of two views is the dot product of their vectors: one when they point the same way, lower as they turn apart.', code: 'sim' },
         { id: 'batch', say: 'In a batch, view one of each image has one positive, the other view of the same image. The views of every other image are its negatives. In the grid of similarities, the positives sit on the diagonal.', code: 'sim' },
       ],
@@ -52,7 +52,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'range', say: 'Similarities of unit vectors stay between minus one and one: too narrow a range for a softmax to be confident.', code: 'sims' },
-        { id: 'divide', say: 'So the scores are similarities divided by a temperature, {τ|tau}, a small number such as {0.1|zero point one}. Dividing by it stretches the gaps between them.', code: 'cold' },
+        { id: 'divide', say: 'So the scores are similarities divided by a temperature, written {τ|tau}, the Greek letter tau: a small number such as {0.1|zero point one}. Dividing by it stretches the gaps between them.', code: 'cold' },
         { id: 'sharp', say: 'Here the similarities are {0.9|zero point nine}, {0.1|zero point one} and {0.5|zero point five}. Divided by one, the softmax stays soft: {0.47|zero point four seven} for the top. Divided by {0.1|zero point one}, the top takes {0.98|zero point nine eight}.', code: ['warm', 'cold'] },
         { id: 'hard', say: 'A small temperature also aims the push. The negatives most similar to the anchor hold most of the probability, so they are pushed away hardest.', code: 'cold' },
         { id: 'turn', say: 'Your turn.' },

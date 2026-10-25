@@ -40,7 +40,7 @@ const look: SceneDef = {
     s.alpha(s.ease('keep', 0.6, 2.5) * (1 - sc), () => s.text('one encoder state per input word', s.w / 2, s.h * 0.34, { size: 3.2, color: s.c('--ink-3') }));
     s.alpha(sc, () => {
       rich(s, [['q = [1, 0]', 'teal'], ['    score: q · hⱼ', '--ink-2']], s.w / 2, s.h * 0.32, { size: 3.2 });
-      rowLabel(s, 'e', xs[0]! - 9 * s.u, s.h * 0.41, 'purple', 3.6);
+      rowLabel(s, 's', xs[0]! - 9 * s.u, s.h * 0.41, 'purple', 3.6);
       cells(s, xs, s.h * 0.41, E.map(String), 'purple', { w: 10, h: 7, on: E.map(() => s.win('score', 'weights')) });
     });
     s.alpha(w, () => {

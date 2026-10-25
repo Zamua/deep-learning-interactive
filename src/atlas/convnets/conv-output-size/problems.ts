@@ -35,7 +35,7 @@ export const generators: Generator[] = [
       const v = outSize(W, F, S, P);
       const text =
         `An input is $W = ${W}$ wide. A filter of size $\\symF = ${F}$ slides over it with stride $\\symS = ${S}$` +
-        (P ? ` and $\\symP = ${P}$ zeros of padding on each side.` : ', with no padding.') +
+        (P ? ` and padding $\\symP = ${P}$.` : ' and no padding.') +
         ' How wide is the output?';
       return {
         prompt: text,
@@ -63,7 +63,7 @@ export const generators: Generator[] = [
         const o = W - F + 2 * P + 1;
         if (o !== W) {
           return {
-            prompt: `An input is $W = ${W}$ wide. With stride 1 and a filter of size $\\symF = ${F}$, how much padding $\\symP$ on each side makes the output $${o}$ wide?`,
+            prompt: `An input is $W = ${W}$ wide. With stride 1 and a filter of size $\\symF = ${F}$, what padding $\\symP$ makes the output $${o}$ wide?`,
             answer: { kind: 'number', value: P },
             traps: traps(P, [
               { value: 2 * P, why: 'That is the total padding over both sides. $\\symP$ counts the zeros on one side.' },
@@ -79,7 +79,7 @@ export const generators: Generator[] = [
       }
       const P = (F - 1) / 2;
       return {
-        prompt: `An input is $${W} \\times ${W}$. A layer uses $${F} \\times ${F}$ filters with stride 1. How much zero padding $\\symP$ on each side keeps the output $${W} \\times ${W}$?`,
+        prompt: `An input is $${W} \\times ${W}$. A layer uses $${F} \\times ${F}$ filters with stride 1. What padding $\\symP$ keeps the output $${W} \\times ${W}$?`,
         answer: { kind: 'number', value: P },
         traps: traps(P, [
           { value: F - 1, why: 'That is the total over both sides. $\\symP$ counts one side: half of $\\symF - 1$.' },
@@ -111,7 +111,7 @@ export const generators: Generator[] = [
       const show = (c: Setting) => `$\\symF = ${c.F}$, $\\symS = ${c.S}$, $\\symP = ${c.P}$`;
       const over = (c: Setting) => `${c.W - c.F + 2 * c.P}`;
       return {
-        prompt: `An input is $W = ${W}$ wide. Which of these settings does not fit: the filter cannot tile the padded input exactly, so the output size would not be a whole number?`,
+        prompt: `An input is $W = ${W}$ wide. Which of these settings does not fit?`,
         answer: shuffled(rng, [
           { text: show(wrong), why: null },
           ...goods.map((c) => ({ text: show(c), why: `That one fits: $(${W} - ${c.F} + ${2 * c.P}) / ${c.S} + 1 = ${over(c)} / ${c.S} + 1 = ${outSize(c.W, c.F, c.S, c.P)}$, a whole number.` })),

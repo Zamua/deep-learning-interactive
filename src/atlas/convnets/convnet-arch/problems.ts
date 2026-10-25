@@ -16,7 +16,7 @@ export const generators: Generator[] = [
         const K2 = pick(rng, [32, 64, 128].filter((k) => k !== K));
         const v = [K2, H / 4, H / 4];
         return {
-          prompt: `An input of shape $${shp([C, H, H])}$ goes through two stages, each a conv layer, a ReLU and ${POOL}. The first conv has $${K}$ filters, the second $${K2}$; both are $3 \\times 3$ with padding 1. What shape comes out, channels first?`,
+          prompt: `An input of shape $${shp([C, H, H])}$ goes through two stages, each a conv layer, a ReLU and ${POOL}. The first conv has $${K}$ filters, the second $${K2}$; both are $3 \\times 3$ with padding 1. What shape comes out?`,
           answer: { kind: 'shape', value: v },
           traps: atraps(v, [
             { value: [K2, H / 2, H / 2], why: 'That pools only once. Each stage ends in a pool, and each pool halves the height and width.' },
@@ -36,7 +36,7 @@ export const generators: Generator[] = [
       const h = H - F + 2 * P + 1;
       const v = [K, h / 2, h / 2];
       return {
-        prompt: `An input of shape $${shp([C, H, H])}$ goes through ${conv(K, F, P)}, then a ReLU, then ${POOL}. What shape comes out, channels first?`,
+        prompt: `An input of shape $${shp([C, H, H])}$ goes through ${conv(K, F, P)}, then a ReLU, then ${POOL}. What shape comes out?`,
         answer: { kind: 'shape', value: v },
         traps: atraps(v, [
           { value: [K, h, h], why: 'That stops before the pool. The $2 \\times 2$ pool with stride 2 halves the height and width.' },
@@ -60,7 +60,7 @@ export const generators: Generator[] = [
         const h = pick(rng, [2, 4, 5, 7, 8]);
         const v = K * h * h;
         return {
-          prompt: `The last pooling layer of a ConvNet outputs $${shp([K, h, h])}$ per example. \`nn.Flatten()\` turns that into one vector for the fully connected layer. How long is the vector?`,
+          prompt: `The last pooling layer of a ConvNet outputs $${shp([K, h, h])}$ per example, and \`nn.Flatten()\` follows. How long is the flattened vector?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: h * h, why: `That is one channel. Flatten keeps all $${K}$ of them, end to end.` },
@@ -104,7 +104,7 @@ export const generators: Generator[] = [
       const fcP = flat * N + N;
       const v = convP + fcP;
       return {
-        prompt: `A tiny ConvNet takes $${shp([C, H, H])}$ images: a $3 \\times 3$ conv with $${K}$ filters and padding 1, a ReLU, ${POOL}, a flatten, and a fully connected layer to $${N}$ class scores. How many parameters does it learn in all, weights and biases?`,
+        prompt: `A tiny ConvNet takes $${shp([C, H, H])}$ images: a $3 \\times 3$ conv with $${K}$ filters and padding 1, a ReLU, ${POOL}, a flatten, and a fully connected layer to $${N}$ class scores. How many parameters does it learn in all?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: K * 9 * C + flat * N, why: 'That leaves out the biases: one per filter, and one per class score.' },
@@ -131,7 +131,7 @@ export const generators: Generator[] = [
       if (d < 0.5) {
         const flat = K1 * (H / 2) * (H / 2);
         return {
-          prompt: `Put the layers of this classifier in order, from $${shp([C, H, H])}$ images to $${N}$ class scores. Each shows the shape it outputs.`,
+          prompt: `Put the layers of this classifier in order, from $${shp([C, H, H])}$ images to $${N}$ class scores.`,
           answer: {
             kind: 'order',
             items: [
@@ -152,7 +152,7 @@ export const generators: Generator[] = [
       const K2 = 2 * K1;
       const flat = K2 * (H / 4) * (H / 4);
       return {
-        prompt: `Put the layers of this classifier in order, from $${shp([C, H, H])}$ images to $${N}$ class scores. Each shows the shape it outputs.`,
+        prompt: `Put the layers of this classifier in order, from $${shp([C, H, H])}$ images to $${N}$ class scores.`,
         answer: {
           kind: 'order',
           items: [

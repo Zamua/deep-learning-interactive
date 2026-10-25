@@ -16,8 +16,9 @@ function scores(rng: Rng, d: number): [number, number] {
   }
 }
 
-const ra = `${r}(a)`;
-const rb = `${r}(b)`;
+const ra = `${r}_a`;
+const rb = `${r}_b`;
+const ri = (who: string) => `${r}_${who}`;
 const useLnSig = (zs: number[]) => [...new Set(zs.map(SIG))].sort((x, y) => y - x).map((p) => `$\\ln ${num(p, 2)} \\approx ${num(LN(p), 2)}$`).join(', ');
 
 export const generators: Generator[] = [
@@ -41,7 +42,7 @@ export const generators: Generator[] = [
           2,
         ),
         solution: [
-          `Answer ${who} wins with $\\sigma(${r}(${who}) - ${r}(${askA ? 'b' : 'a'}))$.`,
+          `Answer ${who} wins with $\\sigma(${ri(who)} - ${ri(askA ? 'b' : 'a')})$.`,
           `The gap: $${minus(askA ? a : b, askA ? b : a)} = ${num(z)}$.`,
           `$\\sigma(${num(z)}) \\approx ${num(v, 2)}$.`,
         ],
@@ -58,7 +59,7 @@ export const generators: Generator[] = [
       const w = aWins ? 'a' : 'b';
       const l = aWins ? 'b' : 'a';
       return {
-        prompt: `A labeler preferred answer ${w}. The reward model scores $${ra} = ${num(a)}$ and $${rb} = ${num(b)}$. What is its loss on this pair, $-\\ln \\sigma(${r}(${w}) - ${r}(${l}))$? Round to two decimals.\n\nUse ${useSig([z, -z])}, ${useLnSig([z, -z])}.`,
+        prompt: `A labeler preferred answer ${w}. The reward model scores $${ra} = ${num(a)}$ and $${rb} = ${num(b)}$. What is its loss on this pair? Round to two decimals.\n\nUse ${useSig([z, -z])}, ${useLnSig([z, -z])}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(
           v,
@@ -70,7 +71,7 @@ export const generators: Generator[] = [
           2,
         ),
         solution: [
-          `The gap, preferred minus other: $${r}(${w}) - ${r}(${l}) = ${minus(aWins ? a : b, aWins ? b : a)} = ${num(z)}$.`,
+          `The loss is $-\\ln \\sigma(${ri(w)} - ${ri(l)})$. The gap, preferred minus other: $${ri(w)} - ${ri(l)} = ${minus(aWins ? a : b, aWins ? b : a)} = ${num(z)}$.`,
           `$\\sigma(${num(z)}) \\approx ${num(SIG(z), 2)}$: the probability the model gives the labeler's choice.`,
           `The loss is $-\\ln ${num(SIG(z), 2)} \\approx ${num(v, 2)}$.${z < 0 ? ' Large, because the model scored the rejected answer higher.' : ''}`,
         ],
@@ -88,7 +89,7 @@ export const generators: Generator[] = [
       const lTex = `${r}_l`;
       const wrt = winner ? wTex : lTex;
       return {
-        prompt: `The reward-model loss on a pair is $\\symL = -\\ln \\sigma(${wTex} - ${lTex})$, where $${wTex}$ is the preferred answer's score. Here $${wTex} - ${lTex} = ${num(z)}$ and $\\sigma(${num(z)}) ${z === 0 ? '=' : '\\approx'} ${num(s, 2)}$. What is $\\dfrac{\\partial \\symL}{\\partial ${wrt}}$?`,
+        prompt: `For a reward model's loss on a pair with $${wTex} - ${lTex} = ${num(z)}$, where $\\sigma(${num(z)}) ${z === 0 ? '=' : '\\approx'} ${num(s, 2)}$, what is $\\dfrac{\\partial \\symL}{\\partial ${wrt}}$?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: clean(-v), why: winner ? 'That has the wrong sign. Raising the preferred score lowers the loss, so the slope is negative.' : 'That has the wrong sign. Raising the rejected score raises the loss, so the slope is positive.' },
@@ -96,7 +97,7 @@ export const generators: Generator[] = [
           { value: clean((winner ? -1 : 1) * s), why: 'That uses $\\sigma$ where the slope has $1 - \\sigma$.' },
         ]),
         solution: [
-          `With $z = ${wTex} - ${lTex}$: the slope of $-\\ln \\sigma(z)$ is $-\\dfrac{\\sigma(z)(1 - \\sigma(z))}{\\sigma(z)} = -(1 - \\sigma(z))$.`,
+          `The loss is $\\symL = -\\ln \\sigma(${wTex} - ${lTex})$. With $z = ${wTex} - ${lTex}$, the slope of $-\\ln \\sigma(z)$ is $-\\dfrac{\\sigma(z)(1 - \\sigma(z))}{\\sigma(z)} = -(1 - \\sigma(z))$.`,
           winner ? `$z$ rises one for one with $${wTex}$, so $\\dfrac{\\partial \\symL}{\\partial ${wTex}} = \\sigma(z) - 1 = ${num(s, 2)} - 1 = ${num(v)}$.` : `$z$ falls one for one as $${lTex}$ rises, so $\\dfrac{\\partial \\symL}{\\partial ${lTex}} = 1 - \\sigma(z) = 1 - ${num(s, 2)} = ${num(v)}$.`,
           `Lowering the loss raises the preferred score and lowers the other by the same amount, ${num(clean(1 - s))} here: ${s >= 0.8 ? 'small, since the model already agrees.' : s <= 0.5 ? 'large, since the model gets this pair wrong or is unsure.' : 'smaller the more the model already agrees.'}`,
         ],
@@ -113,14 +114,14 @@ export const generators: Generator[] = [
       const c = pick(rng, [5, 10, 20, 100]);
       if (rng.int(2) === 0) {
         return {
-          prompt: `A reward model scores two answers $${num(hi)}$ and $${num(lo)}$, so it predicts the first is preferred with probability $\\sigma(${num(gap)})$. Now add $${c}$ to every score it gives. What does it predict for the same pair?`,
+          prompt: `A reward model scores two answers to one prompt: $${ra} = ${num(hi)}$ and $${rb} = ${num(lo)}$. If $${c}$ is added to every score it gives, what probability does it give that people prefer answer a?`,
           answer: choose(`Still $\\sigma(${num(gap)})$: the gap has not changed`, [
-            [`More: $\\sigma(${num(clean(hi + c))})$, from the first answer's new score`, `The prediction is $\\sigma$ of the gap between the scores. Both grew by ${c}, so the gap is still ${num(gap)}.`],
+            [`More: $\\sigma(${num(clean(hi + c))})$, from answer a's new score`, `The prediction is $\\sigma$ of the gap between the scores. Both grew by ${c}, so the gap is still ${num(gap)}.`],
             ['Exactly one half: both answers moved together', 'Moving together keeps them apart by the same gap, and the prediction depends only on the gap.'],
             ['Less: the scores are now closer in ratio', 'Ratios of scores mean nothing to the model. Only their difference goes into the sigmoid.'],
           ]),
           solution: [
-            `The prediction is $\\sigma(${r}(a) - ${r}(b))$, and adding the same $${c}$ to both cancels in the difference.`,
+            `The prediction is $\\sigma(${ra} - ${rb})$, and adding the same $${c}$ to both cancels in the difference.`,
             `So it is still $\\sigma(${num(gap)})$. Comparisons fix only the gaps between scores, never their zero point.`,
           ],
         };
@@ -133,7 +134,7 @@ export const generators: Generator[] = [
           ['How many times better it is than an answer scoring 1', 'The model only learns differences between scores. Ratios mean nothing to it.'],
         ]),
         solution: [
-          `The loss depends only on differences $${r}(a) - ${r}(b)$ between answers to the same prompt.`,
+          `The loss depends only on differences $${ra} - ${rb}$ between answers to the same prompt.`,
           `Adding a constant to every score leaves every difference, and every prediction, unchanged. So $${num(hi)}$ means something only next to another answer's score.`,
         ],
       };

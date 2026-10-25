@@ -1,22 +1,22 @@
 {
- "duration": 103.117,
+ "duration": 109.495,
  "scenes": {
-  "add": [0.0, 36.665],
-  "mul": [36.665, 74.043],
-  "max": [74.043, 103.117]
+  "add": [0.0, 43.044],
+  "mul": [43.044, 80.421],
+  "max": [80.421, 109.495]
  },
  "beats": {
   "add/gate": [0.7, 7.984, "Zoom in on one node of a graph: an add gate. Going forward, it adds x and z to make q.", [[2.77, 3.15], [3.91, 4.49], [5.26, 5.5]]],
-  "add/up": [8.364, 17.652, "Going backward, a gradient arrives from above: how much the graph's final output, L, moves per unit of q. Say it is two.", [[9.324, 9.604], [11.354, 11.844], [13.824, 13.994], [14.354, 14.544], [16.084, 16.634]]],
-  "add/local": [18.032, 27.475, "The gate multiplies it by its local slopes. For an add, both are one: nudge x or z, and q moves by the same amount.", [[20.752, 21.252], [21.962, 22.222], [23.222, 23.712], [25.122, 25.392]]],
-  "add/copy": [27.855, 35.565, "So an add gate passes the gradient through unchanged to both inputs. Each gets the full two, not half of it.", [[32.425, 32.905], [34.375, 34.695]]],
-  "mul/gate": [37.365, 45.809, "A multiply gate works differently. Here x is three, z is minus four, and again two arrives from above.", [[39.375, 39.905], [40.275, 40.465], [41.375, 41.735], [43.175, 43.555], [44.125, 44.305]]],
-  "mul/slope": [46.189, 55.015, "q is x times z, so nudging x moves q by z times the nudge. The local slope for x is z.", [[48.129, 48.589], [52.339, 52.849]]],
-  "mul/swap": [55.395, 65.943, "So x gets z times the upstream gradient: minus four times two, minus eight. And z gets x times it: three times two, six.", [[58.485, 58.925], [60.455, 60.675], [61.385, 61.895], [63.685, 64.095], [65.075, 65.345]]],
-  "mul/rule": [66.323, 72.943, "Each input gets the other input's value, times the gradient from above. The multiply gate swaps.", [[68.823, 69.063], [70.693, 71.293]]],
-  "max/gate": [74.743, 81.023, "A max gate passes on the larger input. With x three and z five, q is five.", [[77.183, 77.683], [79.583, 79.873]]],
-  "max/route": [81.403, 93.022, "Nudge x a little, and q does not move at all. Nudge z, and q moves with it. So the larger input, z, gets all of the gradient, and x gets zero.", [[82.623, 82.933], [84.633, 85.233], [85.993, 86.273], [87.453, 88.013], [89.253, 89.443], [89.853, 90.143], [91.413, 91.653]]],
-  "max/router": [93.402, 100.897, "Add copies, multiply swaps, and max routes: the winner takes the whole gradient, and the other input gets nothing.", [[94.232, 94.402], [96.502, 96.962], [98.772, 99.022]]],
-  "max/turn": [101.277, 102.017, "Your turn.", []]
+  "add/up": [8.364, 20.039, "Going backward, a gradient arrives from above: partial f, partial q, how much the graph's final output, f, moves per unit of q. Say it is two.", [[9.274, 9.574], [11.354, 11.894], [12.714, 12.974], [13.804, 14.174], [16.074, 16.254], [16.614, 16.874], [18.474, 19.034]]],
+  "add/local": [20.419, 29.862, "The gate multiplies it by its local slopes. For an add, both are one: nudge x or z, and q moves by the same amount.", [[23.139, 23.639], [24.349, 24.609], [25.609, 26.099], [27.509, 27.779]]],
+  "add/copy": [30.242, 41.944, "So an add gate passes the gradient through unchanged to both inputs: partial f, partial x and partial f, partial z each get the full two, not half of it.", [[34.792, 35.282], [36.032, 36.202], [36.982, 37.242], [39.172, 39.402], [40.792, 41.042]]],
+  "mul/gate": [43.744, 52.187, "A multiply gate works differently. Here x is three, z is minus four, and again two arrives from above.", [[45.754, 46.284], [46.654, 46.844], [47.754, 48.114], [49.554, 49.934], [50.504, 50.684]]],
+  "mul/slope": [52.567, 61.394, "q is x times z, so nudging x moves q by z times the nudge. The local slope for x is z.", [[54.507, 54.967], [58.717, 59.227]]],
+  "mul/swap": [61.774, 72.322, "So x gets z times the upstream gradient: minus four times two, minus eight. And z gets x times it: three times two, six.", [[64.864, 65.304], [66.834, 67.054], [67.764, 68.274], [70.064, 70.474], [71.454, 71.724]]],
+  "mul/rule": [72.702, 79.321, "Each input gets the other input's value, times the gradient from above. The multiply gate swaps.", [[75.202, 75.442], [77.072, 77.672]]],
+  "max/gate": [81.121, 87.401, "A max gate passes on the larger input. With x three and z five, q is five.", [[83.561, 84.061], [85.961, 86.251]]],
+  "max/route": [87.781, 99.4, "Nudge x a little, and q does not move at all. Nudge z, and q moves with it. So the larger input, z, gets all of the gradient, and x gets zero.", [[89.001, 89.311], [91.011, 91.611], [92.371, 92.651], [93.831, 94.391], [95.631, 95.821], [96.231, 96.521], [97.791, 98.031]]],
+  "max/router": [99.78, 107.275, "Add copies, multiply swaps, and max routes: the winner takes the whole gradient, and the other input gets nothing.", [[100.61, 100.78], [102.88, 103.34], [105.15, 105.4]]],
+  "max/turn": [107.655, 108.395, "Your turn.", []]
  }
 }

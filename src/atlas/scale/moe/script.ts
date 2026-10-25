@@ -19,9 +19,9 @@ export const script: LectureScript = {
                   for gt, i in zip(gates, top))       #@sum
       `,
       beats: [
-        { id: 'swap', say: 'In a transformer block, every token runs through the same MLP. A mixture of experts keeps several MLPs instead, called experts. Here, four.' },
+        { id: 'swap', say: 'In a transformer block, every token runs through the same MLP. A mixture of experts, or {MoE|M O E}, keeps several MLPs instead, called experts. Call their number E: here, four.' },
         { id: 'router', say: 'A router, one small linear layer and a softmax, gives each expert a probability for the current token: {0.1|zero point one}, {0.5|zero point five}, {0.15|zero point one five} and {0.25|zero point two five}.', code: 'router' },
-        { id: 'top', say: 'Only the top k run. With k at two, that is experts one and three. The other two do no work for this token.', code: 'top' },
+        { id: 'top', say: 'Only the k most likely experts run, the top k. With k at two, that is experts one and three. The other two do no work for this token.', code: 'top' },
         { id: 'gates', say: 'Their probabilities add up to {0.75|zero point seven five}. Divide each by that total, and the gates become two thirds and one third, adding up to one again.', code: 'gates' },
         { id: 'sum', say: 'The layer\'s output is two thirds of expert one\'s output, plus one third of expert three\'s.', code: 'sum' },
       ],
@@ -50,7 +50,7 @@ export const script: LectureScript = {
       code: `
         share = counts / counts.sum()  # per expert  #@share
         # even load: every share is 1 / E            #@even
-        loss = task_loss + alpha * balance_loss      #@loss
+        loss = task_loss + 0.01 * balance_loss       #@loss
       `,
       beats: [
         { id: 'favor', say: 'One danger. Early in training, the router may happen to favor one expert.', code: 'share' },

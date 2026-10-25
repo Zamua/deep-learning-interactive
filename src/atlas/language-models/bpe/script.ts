@@ -44,7 +44,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'again', say: 'Then do it again, on the new text. Now h followed by u g is the top pair, twice.', code: 'loop' },
         { id: 'hug', say: 'It becomes token {257|two hundred fifty-seven}, the whole word hug, and seven tokens become five.', code: 'hug' },
-        { id: 'grow', say: 'Every merge adds exactly one token to the vocabulary. Merge zero made {256|two hundred fifty-six} and merge one made {257|two hundred fifty-seven}, so after k merges there are {256|two hundred fifty-six} plus k.', code: 'vocab' },
+        { id: 'grow', say: 'Every merge adds exactly one token to the vocabulary. Merge zero made {256|two hundred fifty-six} and merge one made {257|two hundred fifty-seven}, so after k merges the vocabulary size, V, is {256 + k|two hundred fifty-six plus k}.', code: 'vocab' },
         { id: 'real', say: 'Real tokenizers run tens of thousands of merges. Fifty thousand of them make a vocabulary of {50,256|fifty thousand two hundred fifty-six}, where common words are single tokens.', code: 'real' },
         { id: 'rows', say: 'And every new token gets an id of its own, so a row of its own in the embedding table.', code: 'vocab' },
         { id: 'turn', say: 'Your turn.' },

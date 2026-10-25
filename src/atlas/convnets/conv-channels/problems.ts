@@ -25,7 +25,7 @@ function layer(rng: Rng, d: number): Layer {
   return { C: pick(rng, [3, 32, 64]), H, W: pick(rng, [H, 2 * H]), K: pick(rng, [16, 64, 128]), F: pick(rng, [3, 5, 7]) };
 }
 
-const describe = (L: Layer) => `$\\symK = ${L.K}$ filters of size $${L.F} \\times ${L.F}$, each sliding one step at a time and staying inside the input`;
+const describe = (L: Layer) => `$\\symK = ${L.K}$ filters of size $${L.F} \\times ${L.F}$`;
 
 export const generators: Generator[] = [
   {
@@ -36,11 +36,11 @@ export const generators: Generator[] = [
       const w = L.W - L.F + 1;
       const v = [L.K, h, w];
       return {
-        prompt: `An input of shape $${shp([L.C, L.H, L.W])}$, channels first as PyTorch writes it, goes through a conv layer with ${describe(L)}. What is the output's shape, channels first?`,
+        prompt: `An input of shape $${shp([L.C, L.H, L.W])}$ goes through a conv layer with ${describe(L)}. What is the output's shape?`,
         answer: { kind: 'shape', value: v },
         traps: atraps(v, [
           { value: [L.C, h, w], why: 'That keeps the input\'s channels. Each filter makes one output channel, so the output has $\\symK$ channels.' },
-          { value: [h, w, L.K], why: 'Right numbers, channels last. Write it channels first, as PyTorch does: $(\\symK, H, W)$.' },
+          { value: [h, w, L.K], why: 'Right numbers, channels last. Write it channels first, as PyTorch does: channels, height, width.' },
           { value: [L.K, L.H, L.W], why: `That keeps the input's height and width. A $${L.F} \\times ${L.F}$ filter that stays inside fits only $${L.H} - ${L.F} + 1 = ${h}$ places down.` },
           { value: [L.K * L.C, h, w], why: 'That gives every input channel its own map. A filter spans all the channels and adds them into one map.' },
         ]),
@@ -61,7 +61,7 @@ export const generators: Generator[] = [
         const H = pick(rng, [16, 28, 32]);
         const K = pick(rng, [4, 10, 12, 20, 64]);
         return {
-          prompt: `A conv layer with $\\symK = ${K}$ filters of size $${F} \\times ${F}$ runs on an input of shape $${shp([C, H, H])}$, channels first. How deep is each filter: how many channels does it span?`,
+          prompt: `A conv layer with $\\symK = ${K}$ filters of size $${F} \\times ${F}$ runs on an input of shape $${shp([C, H, H])}$. How deep is each filter?`,
           answer: { kind: 'number', value: C },
           traps: traps(C, [
             { value: K, why: `That is the number of filters, which sets the output's depth. Each filter spans the input's depth.` },
@@ -101,15 +101,15 @@ export const generators: Generator[] = [
       const F = d < 0.4 ? 3 : pick(rng, [1, 3, 5, 7]);
       const v = [K, C, F, F];
       return {
-        prompt: `A layer is built as \`conv = nn.Conv2d(${C}, ${K}, kernel_size=${F})\`. What is \`conv.weight.shape\`? Give it as a shape.`,
+        prompt: `A layer is built as \`conv = nn.Conv2d(${C}, ${K}, kernel_size=${F})\`. What is \`conv.weight.shape\`?`,
         answer: { kind: 'shape', value: v },
         traps: atraps(v, [
-          { value: [C, K, F, F], why: 'In and out are swapped. PyTorch stores one filter per row of the first axis: out channels first, $(\\symK, C, \\symF, \\symF)$.' },
-          { value: [K, F, F], why: 'That leaves out each filter\'s depth. Every filter spans all $C$ input channels: $(\\symK, C, \\symF, \\symF)$.' },
-          { value: [F, F, C, K], why: 'That is the order TensorFlow uses. PyTorch writes $(\\symK, C, \\symF, \\symF)$: out channels, in channels, height, width.' },
+          { value: [C, K, F, F], why: 'In and out are swapped. PyTorch stacks the filters along the first axis: out channels, in channels, height, width.' },
+          { value: [K, F, F], why: `That leaves out each filter's depth. Every filter spans all ${C} input channel${C === 1 ? '' : 's'}, so the shape is out channels, in channels, height, width.` },
+          { value: [F, F, C, K], why: 'That is the order TensorFlow uses. PyTorch writes out channels, in channels, height, width.' },
         ]),
         solution: [
-          `\`nn.Conv2d(${C}, ${K}, ...)\` takes $C = ${C}$ channels in and makes $\\symK = ${K}$ channels out, with $${F} \\times ${F}$ filters.`,
+          `\`nn.Conv2d(${C}, ${K}, ...)\` takes $${C}$ channel${C === 1 ? '' : 's'} in and makes $\\symK = ${K}$ channels out, with $${F} \\times ${F}$ filters.`,
           `Each of the $${K}$ filters is $${C} \\times ${F} \\times ${F}$, and they stack along the first axis: $${shp(v)}$.`,
         ],
       };
@@ -125,7 +125,7 @@ export const generators: Generator[] = [
       const h = H - F + 1;
       const k = int(rng, 1, K - 1);
       return {
-        prompt: `A conv layer takes an input of shape $${shp([C, H, H])}$ and has $\\symK = ${K}$ filters of size $${F} \\times ${F}$, so its output is $${shp([K, h, h])}$. What is one output channel, \`out[${k}]\`?`,
+        prompt: `A conv layer with $\\symK = ${K}$ filters of size $${F} \\times ${F}$ turns an input of shape $${shp([C, H, H])}$ into \`out\`, of shape $${shp([K, h, h])}$. What is \`out[${k}]\`?`,
         answer: shuffled(rng, [
           { text: `Filter ${k}'s response at every position: a $${h} \\times ${h}$ map`, why: null },
           { text: `Input channel ${k % C}, filtered on its own`, why: `Each filter spans all ${C === 1 ? 'of the input' : `${C} input channels`} at once and adds them up, so an output channel does not belong to any one input channel.` },

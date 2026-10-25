@@ -18,7 +18,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'mix', say: 'Noise a clean image to some step t, as before: {x_t|x t} blends {x₀|x zero} with the noise {ε|epsilon}.', code: 'mix' },
         { id: 'sees', say: 'The network sees only {x_t|x t}, and the step t, which tells it how much noise to expect. It never sees {x₀|x zero} or {ε|epsilon} on their own.', code: 'ask' },
-        { id: 'asks', say: 'Its job is to guess the noise that was mixed in. Its output, {ε̂|epsilon hat}, has the same shape as the image.', code: 'ask' },
+        { id: 'asks', say: 'Its job is to guess the noise that was mixed in. The guess is written {ε̂|epsilon hat}: the hat marks an estimate of {ε|epsilon}. It has the same shape as the image.', code: 'ask' },
         { id: 'why', say: 'To pull the noise out of the blend, it has to learn what images look like: whatever does not look like an image must be noise.', code: 'ask' },
       ],
     },
@@ -48,7 +48,7 @@ export const script: LectureScript = {
         x0_hat = (xt - noise) / np.sqrt(a)  # 1.0 #@div
       `,
       beats: [
-        { id: 'solve', say: 'A guess of the noise is also a guess of the image. Solve the blend for {x₀|x zero}: take away the scaled noise, then undo the shrinking.', code: ['sub', 'div'] },
+        { id: 'solve', say: 'A guess of the noise is also a guess of the image. Solve the blend for {x₀|x zero}, with the guess in place of the noise: take away the scaled noise, then undo the shrinking. The result is the estimate {x̂₀|x zero hat}.', code: ['sub', 'div'] },
         { id: 'pixel', say: 'Say a pixel reads {0.5|zero point five} at {ᾱ|alpha bar} of {0.64|zero point six four}, and the guess of its noise is minus a half.', code: 'setup' },
         { id: 'sub', say: 'Take away {0.6|zero point six} times minus a half: {0.5|zero point five} plus {0.3|zero point three} is {0.8|zero point eight}.', code: 'sub' },
         { id: 'div', say: 'Divide by {0.8|zero point eight}, the square root of {ᾱ|alpha bar}: the clean pixel was about one. The better the noise guess, the closer this lands to the real image.', code: 'div' },

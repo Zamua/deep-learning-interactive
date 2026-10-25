@@ -63,8 +63,8 @@ export const generators: Generator[] = [
       const active = f.map((v, j) => [v, j] as const).filter(([v]) => v > 0);
       return {
         prompt: err
-          ? `A sparse autoencoder's loss is the reconstruction error plus $\\symlam \\sum_j ${F}_j$, with $\\symlam = ${num(lam)}$. For one activation the error is ${num(err)} and the code is $${F} = ${vec(f)}$. What is the loss?`
-          : `A sparse autoencoder charges an L1 penalty $\\symlam \\sum_j ${F}_j$ on its code, with $\\symlam = ${num(lam)}$. Its features are never negative. What is the penalty for the code $${F} = ${vec(f)}$?`,
+          ? `A sparse autoencoder has L1 strength $\\symlam = ${num(lam)}$. For one activation the reconstruction error is ${num(err)} and the code is $${F} = ${vec(f)}$. What is the loss?`
+          : `A sparse autoencoder has L1 strength $\\symlam = ${num(lam)}$. What is its L1 penalty for the code $${F} = ${vec(f)}$?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, [
           { value: err + lam * f.reduce((a, v) => a + v * v, 0), why: 'That squares the features: an L2 penalty. L1 adds them up as they are.' },
@@ -72,6 +72,7 @@ export const generators: Generator[] = [
           { value: err + sum, why: 'That leaves out $\\symlam$.' },
         ]),
         solution: [
+          `The L1 penalty is $\\symlam \\sum_j ${F}_j$: $\\symlam$ times the sum of the features${err ? ', and the loss adds it to the reconstruction error' : ''}.`,
           `Only ${and(active.map(([, j]) => `$${fj(j)}$`))} are nonzero: they add up to $${active.map(([v]) => num(v)).join(' + ')} = ${num(sum)}$.`,
           `Times $\\symlam$: $${num(lam)} \\times ${num(sum)} = ${num(l1)}$.`,
           ...(err ? [`Add the error: $${num(err)} + ${num(l1)} = ${num(ans)}$.`] : ['Every zero costs nothing, which is why the penalty pushes small features all the way to 0.']),
@@ -92,7 +93,7 @@ export const generators: Generator[] = [
       const active = [0, 1, 2, 3].filter((j) => f[j]! > 0);
       const big1 = active.reduce((a, j) => (f[j]! > f[a]! ? j : a), active[0]!);
       return {
-        prompt: `A sparse autoencoder's decoder gives each feature a direction: ${dirs.map((v, j) => `$${dir(j)} = ${vec(v)}$`).join(', ')}. For one activation the code is $${F} = ${vec(f)}$. What is the reconstruction $\\hat{\\symx}$, the sum of each feature's value times its direction?`,
+        prompt: `A sparse autoencoder's decoder gives each feature a direction: ${dirs.map((v, j) => `$${dir(j)} = ${vec(v)}$`).join(', ')}. For one activation the code is $${F} = ${vec(f)}$. What is the reconstruction?`,
         answer: { kind: 'vector', value: ans },
         traps: vtraps(ans, [
           { value: Array.from({ length: n }, (_, c) => clean(active.reduce((a, j) => a + dirs[j]![c]!, 0))), why: 'That adds the active directions without scaling them by the feature values.' },
@@ -100,7 +101,7 @@ export const generators: Generator[] = [
           { value: dirs[big1]!.map((v) => clean(v * f[big1]!)), why: 'That keeps only the largest feature. Every active feature adds its own direction.' },
         ]),
         solution: [
-          `Only ${and(active.map((j) => `$${fj(j)}$`))} are on, so only their directions count.`,
+          `The reconstruction $\\hat{\\symx}$ is each feature's value times its direction, added up. Only ${and(active.map((j) => `$${fj(j)}$`))} are on, so only their directions count.`,
           ...active.map((j) => `$${num(f[j]!)} \\times ${vec(dirs[j]!)} = ${vec(dirs[j]!.map((v) => clean(v * f[j]!)))}$.`),
           `Add them: $\\hat{\\symx} = ${vec(ans)}$.`,
         ],

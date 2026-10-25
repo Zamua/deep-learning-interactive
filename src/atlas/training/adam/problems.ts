@@ -20,9 +20,9 @@ export const generators: Generator[] = [
       const m = clean(b1 * m0 + (1 - b1) * g);
       const v = clean(b2 * v0 + (1 - b2) * g * g);
       const ans = askM ? m : v;
-      const state = fresh ? 'Both moments start at $m = v = 0$.' : askM ? `The first moment is $m = ${num(m0)}$.` : `The second moment is $v = ${num(v0)}$.`;
+      const beta = askM ? `\\beta_1 = ${num(b1)}` : `\\beta_2 = ${num(b2)}`;
       return {
-        prompt: `Adam keeps $${askM ? M_RULE : V_RULE}$, with $${askM ? `\\beta_1 = ${num(b1)}` : `\\beta_2 = ${num(b2)}`}$. ${state} The new gradient is $\\symg = ${num(g)}$. What is ${askM ? '$m$' : '$v$'} after this update?`,
+        prompt: `${fresh ? `Adam starts from $m = v = 0$ with $${beta}$. The first gradient` : `In Adam, ${askM ? `$m = ${num(m0)}$` : `$v = ${num(v0)}$`} and $${beta}$. The new gradient`} is $\\symg = ${num(g)}$. What is ${askM ? '$m$' : '$v$'} after the update?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, askM
           ? [
@@ -37,11 +37,13 @@ export const generators: Generator[] = [
             ]),
         solution: askM
           ? [
+              `The update: $${M_RULE}$.`,
               `$m = ${num(b1)} \\times ${paren(m0)} + ${num(clean(1 - b1))} \\times ${paren(g)}$.`,
               `$= ${num(clean(b1 * m0))} + ${paren(clean((1 - b1) * g))} = ${num(m)}$.`,
               fresh ? 'Starting from 0, $m$ is only a tenth of the gradient: biased toward 0, which the bias correction fixes.' : `It moved ${b1 === 0.9 ? 'a tenth' : 'a fifth'} of the way from $${num(m0)}$ toward the gradient $${num(g)}$.`,
             ]
           : [
+              `The update: $${V_RULE}$.`,
               `$\\symg^2 = ${num(clean(g * g))}$.`,
               `$v = ${num(b2)} \\times ${num(v0)} + ${num(clean(1 - b2))} \\times ${num(clean(g * g))} = ${num(clean(b2 * v0))} + ${num(clean((1 - b2) * g * g))} = ${num(v)}$.`,
               fresh ? 'Starting from 0, $v$ is far below $\\symg^2$: biased toward 0, which the bias correction fixes.' : '$v$ tracks how large this parameter\'s gradients usually are, whatever their sign.',
@@ -62,7 +64,7 @@ export const generators: Generator[] = [
         const ans = askM ? g : clean(g * g);
         const c = askM ? 0.1 : 0.001;
         return {
-          prompt: `After Adam's first step ($t = 1$, from $m = v = 0$, with $\\beta_1 = 0.9$, $\\beta_2 = 0.999$), ${askM ? `$m = ${num(m)}$` : `$v = ${num(v)}$`}. What is the bias-corrected ${askM ? '$\\hat m = m / (1 - \\beta_1^t)$' : '$\\hat v = v / (1 - \\beta_2^t)$'}?`,
+          prompt: `Adam starts from $m = v = 0$ with $\\beta_1 = 0.9$ and $\\beta_2 = 0.999$. After the first step, $t = 1$, ${askM ? `$m = ${num(m)}$` : `$v = ${num(v)}$`}. What is ${askM ? '$\\hat m$' : '$\\hat v$'}?`,
           answer: { kind: 'number', value: ans },
           traps: traps(ans, [
             { value: raw, why: 'That is the moment before correction. Divide by $1 - \\beta^t$, which is small early on.' },
@@ -70,6 +72,7 @@ export const generators: Generator[] = [
             { value: raw * c, why: 'That multiplies by $1 - \\beta^t$. The correction divides by it, scaling the moment up.' },
           ]),
           solution: [
+            askM ? 'The bias correction: $\\hat m = m / (1 - \\beta_1^t)$.' : 'The bias correction: $\\hat v = v / (1 - \\beta_2^t)$.',
             `At $t = 1$: $1 - ${askM ? '\\beta_1' : '\\beta_2'} = ${num(c)}$.`,
             `${askM ? '$\\hat m' : '$\\hat v'} = ${num(raw)} / ${num(c)} = ${num(ans)}$.`,
             askM ? `That is exactly the gradient, $${num(g)}$: at the first step the corrected average is the one gradient seen.` : `That is exactly $\\symg^2$: at the first step the corrected average is the one squared gradient seen.`,
@@ -82,7 +85,7 @@ export const generators: Generator[] = [
       const m2 = clean(0.9 * m1 + 0.1 * g2);
       const ans = round(m2 / 0.19, 2);
       return {
-        prompt: `Adam starts with $m = 0$ and $\\beta_1 = 0.9$. The first two gradients are $${num(g1)}$ and $${num(g2)}$. What is the bias-corrected $\\hat m = m / (1 - \\beta_1^t)$ after the second step? Use $1 - 0.9^2 = 0.19$, and round to two decimals.`,
+        prompt: `Adam starts from $m = 0$ with $\\beta_1 = 0.9$. The first two gradients are $${num(g1)}$ and $${num(g2)}$. What is $\\hat m$ after the second step? Round to two decimals.`,
         answer: { kind: 'number', value: ans, places: 2 },
         traps: traps(ans, [
           { value: m2, why: 'That is $m$ before correction. Divide by $1 - \\beta_1^2 = 0.19$.' },
@@ -92,7 +95,7 @@ export const generators: Generator[] = [
         solution: [
           `Step 1: $m = 0.1 \\times ${paren(g1)} = ${num(m1)}$.`,
           `Step 2: $m = 0.9 \\times ${paren(m1)} + 0.1 \\times ${paren(g2)} = ${num(m2)}$.`,
-          `Correct it: $\\hat m = ${num(m2)} / 0.19 \\approx ${num(ans, 2)}$.`,
+          `Correct it: $\\hat m = m / (1 - \\beta_1^2) = ${num(m2)} / 0.19 \\approx ${num(ans, 2)}$.`,
         ],
       };
     },
@@ -113,8 +116,8 @@ export const generators: Generator[] = [
       const sign = askW ? -1 : 1;
       return {
         prompt: askW
-          ? `Adam's update is $${STEP}$. A weight is at $\\symw = ${num(w)}$ with $\\hat m = ${num(mh)}$ and $\\hat v = ${num(vh)}$, and $\\symeta = ${num(eta)}$. Ignoring the tiny $\\epsilon$, where is $\\symw$ after the step?`
-          : `Adam's update is $${STEP}$. For one parameter $\\hat m = ${num(mh)}$ and $\\hat v = ${num(vh)}$, and $\\symeta = ${num(eta)}$. Ignoring the tiny $\\epsilon$, how far does the parameter move, $\\symeta\\,\\hat m / \\sqrt{\\hat v}$?`,
+          ? `In Adam, a weight at $\\symw = ${num(w)}$ has $\\hat m = ${num(mh)}$ and $\\hat v = ${num(vh)}$, with $\\symeta = ${num(eta)}$. Ignoring $\\epsilon$, where is $\\symw$ after the step?`
+          : `In Adam, a parameter has $\\hat m = ${num(mh)}$ and $\\hat v = ${num(vh)}$, with $\\symeta = ${num(eta)}$. Ignoring $\\epsilon$, how far does it move in one step?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, [
           { value: base + (sign * eta * mh) / vh, why: 'That divides by $\\hat v$ itself. Adam divides by its square root, $\\sqrt{\\hat v}$, the typical size of the gradient.' },
@@ -122,6 +125,7 @@ export const generators: Generator[] = [
           ...(askW ? [{ value: w + step, why: 'That steps uphill. The update subtracts the step, as gradient descent does.' }] : []),
         ]),
         solution: [
+          `The update: $${STEP}$.`,
           `$\\sqrt{\\hat v} = \\sqrt{${num(vh)}} = ${num(root)}$.`,
           `The step: $\\symeta\\,\\hat m / \\sqrt{\\hat v} = ${num(eta)} \\times ${paren(mh)} / ${num(root)} = ${num(step)}$.`,
           ...(askW ? [`$\\symw \\leftarrow ${minus(w, step)} = ${num(ans)}$.`] : []),
@@ -142,7 +146,7 @@ export const generators: Generator[] = [
         const reasons = [
           '',
           'Plain gradient descent scales the step with the gradient; Adam divides by $\\sqrt{\\hat v}$, which scales the same way, so the size cancels.',
-          'Adam divides by the size of the gradient, but $\\hat m$ carries that same size on top: the ratio is $\\pm 1$ for both.',
+          'Adam divides by the size of the gradient, but $\\hat m$ carries that same size on top: the ratio is 1 or $-1$ for both.',
           'The bias correction undoes the zero start: at $t = 1$, $\\hat m = \\symg$ and $\\hat v = \\symg^2$.',
         ];
         return {
@@ -150,7 +154,7 @@ export const generators: Generator[] = [
           answer: { kind: 'choice', options: opts, correct: 0, why: whys(4, 0, (i) => reasons[i]!) },
           solution: [
             'At $t = 1$ the bias correction gives $\\hat m = \\symg$ and $\\hat v = \\symg^2$.',
-            'So the step is $\\symeta\\,\\symg / \\sqrt{\\symg^2} = \\symeta\\,\\symg / |\\symg| = \\pm\\symeta$.',
+            'So the step is $\\symeta\\,\\symg / \\sqrt{\\symg^2} = \\symeta\\,\\symg / |\\symg|$: $\\symeta$, with the gradient\'s sign.',
             `Both move about $${num(eta)}$, whatever the size of their gradients.`,
           ],
         };

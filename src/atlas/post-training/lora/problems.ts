@@ -29,9 +29,8 @@ export const generators: Generator[] = [
     make(rng, d) {
       const { dd, k, rank } = setup(rng, d);
       const v = rank * (dd + k);
-      const hint = d < 0.5 ? ` It trains $${B}$, of shape $(d, ${r})$, and $${A}$, of shape $(${r}, k)$.` : '';
       return {
-        prompt: `A pretrained layer's weight matrix $\\symW$ has shape ${shapeOf(dd, k)}. LoRA freezes it and learns a change $${B}${A}$ of rank $${r} = ${rank}$.${hint} How many numbers does LoRA train for this layer?`,
+        prompt: `LoRA adapts a pretrained weight matrix $\\symW$ of shape ${shapeOf(dd, k)} at rank $${r} = ${rank}$. How many numbers does it train for this layer?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: dd * k, why: `That is every entry of $\\symW$: what full fine-tuning trains. LoRA trains only $${B}$ and $${A}$.` },
@@ -100,7 +99,7 @@ export const generators: Generator[] = [
                 { value: [k, dd], why: `That is $\\symW$ transposed. The product keeps $${B}$'s rows and $${A}$'s columns: $(d, k)$.` },
               ];
       return {
-        prompt: `A weight matrix $\\symW$ has shape ${shapeOf(dd, k)}. LoRA learns its change as $${B}${A}$ at rank $${r} = ${rank}$. What is the shape of $${name}$?`,
+        prompt: `LoRA adapts a weight matrix $\\symW$ of shape ${shapeOf(dd, k)} at rank $${r} = ${rank}$. What is the shape of $${name}$?`,
         answer: { kind: 'shape', value: v },
         traps: straps(v, ts),
         solution: [
@@ -115,7 +114,7 @@ export const generators: Generator[] = [
     id: 'init',
     make(rng, d) {
       const { dd, k, rank } = setup(rng, d);
-      const ctx = `LoRA adapts a weight matrix $\\symW$ of shape ${shapeOf(dd, k)} at rank $${r} = ${rank}$: the layer computes $\\symW\\symx + ${B}${A}\\symx$, with $\\symW$ frozen.`;
+      const ctx = `LoRA adapts a weight matrix $\\symW$ of shape ${shapeOf(dd, k)} at rank $${r} = ${rank}$.`;
       const kind = rng.int(3);
       if (kind === 0) {
         return {
@@ -125,7 +124,7 @@ export const generators: Generator[] = [
             ['Zero, until training fills in the update', `Only the new path is zero. $\\symW\\symx$ is still there.`],
             [`$${B}${A}\\symx$ alone, since $\\symW$ is frozen`, `Frozen means not trained, not skipped: $\\symW\\symx$ is still computed.`],
           ]),
-          solution: [`With $${B} = 0$, $${B}${A}\\symx = 0$ whatever $${A}$ holds.`, 'So the layer gives $\\symW\\symx$: training starts from exactly the pretrained model.'],
+          solution: [`The layer computes $\\symW\\symx + ${B}${A}\\symx$, with $\\symW$ frozen.`, `With $${B} = 0$, $${B}${A}\\symx = 0$ whatever $${A}$ holds.`, 'So the layer gives $\\symW\\symx$: training starts from exactly the pretrained model.'],
         };
       }
       if (kind === 1) {
@@ -136,15 +135,15 @@ export const generators: Generator[] = [
             ['So the update needs fewer numbers to store', `The count is $${r}(d + k)$ whatever the starting values are.`],
             [`So $${B}$ stays frozen while $${A}$ is trained`, `Both are trained. Zero is only where $${B}$ starts.`],
           ]),
-          solution: [`A zero $${B}$ makes $${B}${A} = 0$, so at step zero the layer computes exactly $\\symW\\symx$.`, `The model moves away from the pretrained one only as training changes $${B}$.`],
+          solution: [`The layer computes $\\symW\\symx + ${B}${A}\\symx$. A zero $${B}$ makes $${B}${A} = 0$, so at step zero it computes exactly $\\symW\\symx$.`, `The model moves away from the pretrained one only as training changes $${B}$.`],
         };
       }
       return {
-        prompt: `${ctx} After training, the update is merged: $\\symW' = \\symW + ${B}${A}$. What does the merged layer cost to run, compared with the original?`,
-        answer: choose(`The same: $\\symW'$ has $\\symW$'s shape, $(d, k)$`, [
-          [`More: each input also goes through $${B}$ and $${A}$`, `After merging, $${B}${A}$ is inside $\\symW'$: one matrix, one multiply.`],
-          [`Less: only $${r}(d + k)$ numbers are left`, `$\\symW'$ is a full $(d, k)$ matrix. The small count is what training stores, not what the merged layer holds.`],
-          [`Double: $\\symW$ and $\\symW'$ are both used`, `$\\symW'$ replaces $\\symW$; the layer multiplies by it alone.`],
+        prompt: `${ctx} After training, $${B}${A}$ is merged into $\\symW$. What does the merged layer cost to run, compared with the original?`,
+        answer: choose(`The same: the merged matrix has $\\symW$'s shape, $(d, k)$`, [
+          [`More: each input also goes through $${B}$ and $${A}$`, `After merging, $${B}${A}$ is inside the merged matrix: one matrix, one multiply.`],
+          [`Less: only $${r}(d + k)$ numbers are left`, `The merged matrix is a full $(d, k)$ matrix. The small count is what training stores, not what the merged layer holds.`],
+          ['Double: the original and the merged matrix are both used', `The merged matrix replaces $\\symW$; the layer multiplies by it alone.`],
         ]),
         solution: [`$${B}${A}$ is $(d, ${r})$ times $(${r}, k)$, which is $(d, k)$: the same shape as $\\symW$.`, `So $\\symW + ${B}${A}$ is one $(d, k)$ matrix, and the layer runs exactly as fast as before.`],
       };

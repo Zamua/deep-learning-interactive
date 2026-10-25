@@ -39,8 +39,8 @@ export const script: LectureScript = {
         W @ np.zeros(2) + b   # [1, 0, -2]  #@zero
       `,
       beats: [
-        { id: 'b', say: 'Then each class adds its bias, one number per class: one, zero, and minus two.', code: 'b' },
-        { id: 's', say: 'The scores come out five, one and three. Cat scores highest, so the classifier says cat.', code: ['s', 'pred'] },
+        { id: 'b', say: 'Then each class adds its bias, b, one number per class: one, zero, and minus two.', code: 'b' },
+        { id: 's', say: 'The scores, {s = Wx + b|s equals W x plus b}, come out five, one and three. Cat scores highest, so the classifier says cat.', code: ['s', 'pred'] },
         { id: 'forget', say: 'Leave the bias out, and ship wins instead, with five. The bias is part of the score, not an afterthought.', code: 'nob' },
         { id: 'zero', say: 'Set x to all zeros, and W times x vanishes. The scores are exactly b: each class\'s lean before it sees any evidence.', code: 'zero' },
         { id: 'turn', say: 'Your turn.' },

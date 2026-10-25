@@ -18,8 +18,8 @@ export const script: LectureScript = {
         # t = 1, g = 2:  m = 0.2, v = 0.004    #@zero
       `,
       beats: [
-        { id: 'm', say: 'Adam keeps two running averages for every parameter. The first, m, is a momentum: {β₁|beta one} times m, plus one minus {β₁|beta one} times the gradient.', code: 'm' },
-        { id: 'v', say: 'The second, v, averages the squared gradient the same way, with {β₂|beta two}. It tracks how big this parameter\'s gradients usually are.', code: 'v' },
+        { id: 'm', say: 'Adam keeps two running averages for every parameter. The first, m, is a momentum: {β₁|beta one} times m, plus one minus {β₁|beta one} times the gradient, where {β₁|beta one}, read “beta one”, is the share of m kept each step.', code: 'm' },
+        { id: 'v', say: 'The second, v, here not a velocity, averages the squared gradient the same way, keeping a share {β₂|beta two}. It tracks how big this parameter\'s gradients usually are.', code: 'v' },
         { id: 'betas', say: 'Typical values are {0.9|zero point nine} and {0.999|zero point nine nine nine}.', code: 'betas' },
         { id: 'zero', say: 'Both start at zero. After one step with a gradient of two, m is a tenth of two, {0.2|zero point two}, and v is a thousandth of four, {0.004|zero point zero zero four}. Both are far too small.', code: 'zero' },
       ],
@@ -34,9 +34,9 @@ export const script: LectureScript = {
         # t = 20:  1 - 0.9**20 = 0.88                      #@later
       `,
       beats: [
-        { id: 'bias', say: 'Starting from zero drags both averages toward zero early on. Adam divides that out: m hat is m over one minus {β₁|beta one} to the t, where t counts the steps.', code: 'm' },
-        { id: 'first', say: 'At step one, that is {0.2|zero point two} over {0.1|zero point one}: exactly the gradient, two. And v hat is {0.004|zero point zero zero four} over {0.001|zero point zero zero one}: four, the squared gradient.', code: ['m', 'v'] },
-        { id: 'later', say: 'As t grows, {β|beta} to the t shrinks toward zero, the divisor climbs to one, and the correction fades away.', code: 'later' },
+        { id: 'bias', say: 'Starting from zero drags both averages toward zero early on, and Adam divides that out. {m̂|m hat}, the hat marking a corrected estimate, is m over one minus {β₁|beta one} to the t, where t counts the steps; {v̂|v hat} is v over one minus {β₂|beta two} to the t.', code: ['m', 'v'] },
+        { id: 'first', say: 'At step one, that is {0.2|zero point two} over {0.1|zero point one}: exactly the gradient, two. And {v̂|v hat} is {0.004|zero point zero zero four} over {0.001|zero point zero zero one}: four, the squared gradient.', code: ['m', 'v'] },
+        { id: 'later', say: 'As t grows, {βᵗ|beta to the t}, for either beta, shrinks toward zero, the divisor climbs to one, and the correction fades away.', code: 'later' },
       ],
     },
     {
@@ -49,8 +49,8 @@ export const script: LectureScript = {
         # tiny gradients, tiny sqrt(v): about lr   #@per
       `,
       beats: [
-        { id: 'step', say: 'The step is {η|eta} times m hat, divided by the square root of v hat, plus a tiny epsilon so it never divides by zero.', code: 'step' },
-        { id: 'first', say: 'At step one that is {η|eta} times two over two: exactly {η|eta}. A gradient of five hundred, or of {0.002|zero point zero zero two}, gives the same first step.', code: 'first' },
+        { id: 'step', say: 'The step is {η|eta} times {m̂|m hat}, divided by the square root of {v̂|v hat}, written {√v̂|root v hat}, plus a tiny {ε|epsilon}, the Greek letter epsilon, so it never divides by zero.', code: 'step' },
+        { id: 'first', say: 'At step one, {√v̂|root v hat} is {\\|g\\||the size of g}, the gradient with its sign dropped, so the step is {η|eta} times two over two: exactly {η|eta}. A gradient of five hundred, or of {0.002|zero point zero zero two}, gives the same first step.', code: 'first' },
         { id: 'per', say: 'Later, each step is the average gradient measured in units of its own typical size. A parameter whose gradients are always tiny still moves about {η|eta} per step, where plain gradient descent would barely move it.', code: 'per' },
         { id: 'turn', say: 'Your turn.' },
       ],

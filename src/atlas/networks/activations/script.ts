@@ -20,7 +20,7 @@ export const script: LectureScript = {
         { id: 'relu', say: 'Three activations do most of the work. The ReLU keeps positive numbers and zeroes the rest: ReLU of two is two, and ReLU of minus two is zero.', code: 'relu' },
         { id: 'sigmoid', say: 'The sigmoid squashes any number into the range from zero to one. Sigmoid of zero is a half, and of two, about {0.88|zero point eight eight}. Of minus two, it is one minus that: {0.12|zero point one two}.', code: 'sig' },
         { id: 'tanh', say: 'Tanh squashes into the range from minus one to one, centered on zero. Tanh of one is about {0.76|zero point seven six}, and tanh of minus one is minus {0.76|zero point seven six}.', code: 'tanh' },
-        { id: 'ranges', say: 'So the ReLU\'s outputs run from zero up, with no limit. The sigmoid\'s stay between zero and one, and tanh\'s between minus one and one.', code: ['relu', 'sig', 'tanh'] },
+        { id: 'ranges', say: 'So the ReLU\'s outputs run from zero up with no limit: {[0, ∞)|zero to infinity}, where {∞|infinity} means no end. A square bracket includes its end, and a round one never reaches it. The sigmoid\'s outputs lie in {(0, 1)|zero to one}, and tanh\'s in {(−1, 1)|minus one to one}.', code: ['relu', 'sig', 'tanh'] },
       ],
     },
     {

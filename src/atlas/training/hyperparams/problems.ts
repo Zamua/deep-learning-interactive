@@ -21,7 +21,7 @@ export const generators: Generator[] = [
         const hi = lo + int(rng, 2, Math.min(4, -1 - lo));
         const v = [lo, hi];
         return {
-          prompt: `You want learning rates spread on a log scale between $${num(dec(lo))}$ and $${num(dec(hi))}$, sampled as $\\symeta = 10^{u}$. Between which two values should $u$ be drawn uniformly? Enter the low end, then the high end.`,
+          prompt: `Learning rates $\\symeta = 10^{u}$ should spread on a log scale between $${num(dec(lo))}$ and $${num(dec(hi))}$. What are the low and high ends of the uniform range for $u$?`,
           answer: { kind: 'vector', value: v },
           traps: vtraps(v, [
             { value: [hi, lo], why: 'Those are the right ends in the wrong order: the low end is the more negative one.' },
@@ -38,7 +38,7 @@ export const generators: Generator[] = [
       if (d < 0.35) {
         const v = dec(k);
         return {
-          prompt: `Random search sets the learning rate to $\\symeta = 10^{u}$. One trial draws $u = ${num(k)}$. What is $\\symeta$, as a decimal?`,
+          prompt: `Random search sets $\\symeta = 10^{u}$ and draws $u = ${num(k)}$. What is $\\symeta$?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: dec(k + 1), why: `That is $${p10(k + 1)}$: one decimal place off. $${p10(k)}$ has its 1 in the ${ORD[-k]} place after the point.` },
@@ -53,7 +53,7 @@ export const generators: Generator[] = [
       const v = clean(m * dec(k));
       const places = -k + 2;
       return {
-        prompt: `Random search sets the learning rate to $\\symeta = 10^{u}$. One trial draws $u = ${num(u)}$. What is $\\symeta$, as a decimal? Use $10^{${num(f)}} \\approx ${num(m)}$, and give three significant figures.`,
+        prompt: `Random search sets $\\symeta = 10^{u}$ and draws $u = ${num(u)}$. What is $\\symeta$? Use $10^{${num(f)}} \\approx ${num(m)}$, and give three significant figures.`,
         answer: { kind: 'number', value: v, places },
         traps: traps(v, [
           { value: m * dec(k + 1), why: `That is $${num(m)} \\times ${p10(k + 1)}$. Split $u$ so the fraction is positive: $${num(u)} = ${num(k)} + ${num(f)}$.` },

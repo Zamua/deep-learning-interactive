@@ -63,9 +63,9 @@ const dstep: SceneDef = {
     s.line(X(0.05), y0 + 3.5 * s.u, X(0.95), y0 + 3.5 * s.u, s.c('--axis'), 0.3);
     row(s, s.h * 0.3, REAL, 'real', '0.8', '1', '−ln 0.8 = 0.22', { d: s.ease('real', 0.6), loss: s.ease('real', 0.6, 2.5) }, 'orange');
     row(s, s.h * 0.55, FAKE, 'fake', '0.3', '0', '−ln 0.7 = 0.36', { d: s.ease('fake', 0.6), loss: s.ease('fake', 0.6, 4.5) }, 'green');
-    s.alpha(s.ease('fake', 0.6, 2.5), () => s.text('P(fake) = 1 − 0.3', X(0.58), s.h * 0.55 + 6 * s.u, { size: 3, font: 'mono', color: s.c('--ink-3') }));
+    s.alpha(s.ease('fake', 0.6, 2.5), () => s.text('fake: 1 − 0.3 = 0.7', X(0.58), s.h * 0.55 + 6 * s.u, { size: 3, font: 'mono', color: s.c('--ink-3') }));
     s.alpha(s.ease('sum', 0.6), () => {
-      rich(s, [['loss_D = 0.22 + 0.36 = ', '--ink-2'], ['0.58', 'red']], s.w / 2, s.h * 0.75, { size: 3.8, weight: 650, halo: true });
+      rich(s, [['D\'s loss = 0.22 + 0.36 = ', '--ink-2'], ['0.58', 'red']], s.w / 2, s.h * 0.75, { size: 3.8, weight: 650, halo: true });
       caption(s, 'step D: real up, fake down; G fixed', s.h * 0.88, 'red', 3.4);
     });
   },

@@ -125,7 +125,7 @@ const temperature: SceneDef = {
     const ys = s.h * 0.25;
     rowLabel(s, 'sim', xs[0]! - 10 * u, ys, 'green', 3.6);
     cells(s, xs, ys, SIM0.map((v) => fmt(v)), 'green', { w: 12, h: 7.5 });
-    s.alpha(s.win('range', 'divide'), () => caption(s, 'unit vectors: similarity in [−1, 1]', s.h * 0.38, '--ink-2', 3.4));
+    s.alpha(s.win('range', 'divide'), () => caption(s, 'unit vectors: similarity from −1 to 1', s.h * 0.38, '--ink-2', 3.4));
     const base = s.h * 0.82;
     const groups: [number, number[], string, number][] = [
       [s.w / 2 - 27 * u, WARM, 'τ = 1', s.ease('sharp', 0.8)],

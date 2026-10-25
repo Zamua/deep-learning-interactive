@@ -13,6 +13,9 @@ const sig = '\\sigma';
 const approx = (v: number): string => (round(v, 2) === round(v, 6) ? `= ${num(round(v, 2))}` : `= ${num(round(v, 4))} \\approx ${num(v, 2)}`);
 const P = 2;
 
+/** The rounding instruction, only when two decimals actually round the answer. */
+const round2 = (v: number): string => (placesFor(v) ? ' Round to two decimals.' : '');
+
 /** An input for the ReLU: whole numbers first, then tenths. */
 const reluInput = (rng: Rng, d: number): number => (d < 0.5 ? nonzero(rng, -5, 5) : nonzero(rng, -40, 40) / 10);
 
@@ -44,7 +47,7 @@ function sigmoidMirror(rng: Rng): Problem {
       { value: gv, why: `That is $${sig}(${num(given)})$ itself. Flipping the sign of the input flips the output around 0.5.` },
     ], P),
     solution: [
-      `The sigmoid is symmetric around $(0, 0.5)$: $${sig}(-z) = 1 - ${sig}(z)$.`,
+      `The sigmoid mirrors around its value at 0, a half: $${sig}(-z) = 1 - ${sig}(z)$.`,
       `So $${sig}(${num(ask)}) = 1 - ${num(gv, 2)} = ${num(want, 2)}$.`,
       ask < 0 ? 'A negative input gives less than a half, as it should.' : 'A positive input gives more than a half, as it should.',
     ],
@@ -63,7 +66,7 @@ function tanhMirror(rng: Rng): Problem {
       { value: 1 - gv, why: 'That is the sigmoid\'s mirror rule. tanh is centered on 0, so flipping the input flips the sign: $\\tanh(-z) = -\\tanh(z)$.' },
       { value: gv, why: `That is $\\tanh(${num(given)})$ itself. tanh is symmetric about 0, so the sign flips with the input.` },
     ], P),
-    solution: ['tanh is odd: $\\tanh(-z) = -\\tanh(z)$.', `So $\\tanh(${num(ask)}) = -(${num(gv, 2)}) = ${num(want, 2)}$.`],
+    solution: ['tanh is symmetric about 0: $\\tanh(-z) = -\\tanh(z)$.', `So $\\tanh(${num(ask)}) = -(${num(gv, 2)}) = ${num(want, 2)}$.`],
   };
 }
 
@@ -71,7 +74,7 @@ function atZero(rng: Rng): Problem {
   const f = rng.next() < 0.5;
   const v = f ? 0.5 : 0;
   return {
-    prompt: f ? `What is $${sig}(0)$, the sigmoid at 0?` : 'What is $\\tanh(0)$?',
+    prompt: f ? `What is $${sig}(0)$?` : 'What is $\\tanh(0)$?',
     answer: { kind: 'number', value: v, places: placesFor(v) },
     traps: traps(v, f ? [{ value: 0, why: 'That is tanh at 0. The sigmoid at 0 is $1 / (1 + e^{0}) = 1/2$: halfway between its limits 0 and 1.' }, { value: 1, why: '$e^{0} = 1$, so $\\sigma(0) = 1 / (1 + 1)$.' }] : [{ value: 0.5, why: 'That is the sigmoid at 0. tanh is centered on 0: halfway between $-1$ and 1.' }], P),
     solution: f ? ['$\\sigma(0) = 1 / (1 + e^{0}) = 1 / 2 = 0.5$: halfway between 0 and 1.'] : ['$\\tanh(0) = (e^{0} - e^{0}) / (e^{0} + e^{0}) = 0$: halfway between $-1$ and 1.'],
@@ -86,9 +89,9 @@ function reluSlope(rng: Rng, d: number): Problem {
     answer: { kind: 'number', value: v, places: placesFor(v) },
     traps: traps(v, [
       { value: relu(z), why: 'That is the ReLU\'s value there, not its slope.' },
-      { value: 1 - v, why: z > 0 ? 'Right of 0 the ReLU is the line $y = z$, so its slope is 1.' : 'Left of 0 the ReLU is flat at 0, so its slope is 0.' },
+      { value: 1 - v, why: z > 0 ? 'Right of 0 the ReLU passes its input through unchanged, so its slope is 1.' : 'Left of 0 the ReLU is flat at 0, so its slope is 0.' },
     ], P),
-    solution: ['The ReLU is flat (slope 0) for negative inputs and the line $y = z$ (slope 1) for positive ones.', `$${num(z)}$ is ${z > 0 ? 'positive, so the slope is 1' : 'negative, so the slope is 0'}.`],
+    solution: ['The ReLU is flat (slope 0) for negative inputs and passes positive ones through unchanged (slope 1).', `$${num(z)}$ is ${z > 0 ? 'positive, so the slope is 1' : 'negative, so the slope is 0'}.`],
   };
 }
 
@@ -98,12 +101,12 @@ function sigmoidSlope(rng: Rng, d: number): Problem {
   const v = d < 0.5 ? int(rng, 1, 9) / 10 : pick(rng, [...mid, ...mid.map((s) => clean(1 - s))]);
   const want = clean(v * (1 - v));
   return {
-    prompt: `At some input, $${sig}(z) = ${num(v)}$. What is the sigmoid's slope there? Round to two decimals.`,
+    prompt: `At some input, $${sig}(z) = ${num(v)}$. What is the sigmoid's slope there?${round2(want)}`,
     answer: { kind: 'number', value: want, places: placesFor(want) },
     traps: traps(want, [
       { value: v, why: 'That is the sigmoid\'s value. Its slope is $\\sigma(1 - \\sigma)$.' },
       { value: 1 - v, why: 'That is $1 - \\sigma$ alone. Multiply it by $\\sigma$.' },
-      { value: 1 - v * v, why: 'That is tanh\'s slope rule, $1 - \\tanh^2$. The sigmoid\'s is $\\sigma(1 - \\sigma)$.' },
+      { value: 1 - v * v, why: 'That is tanh\'s slope rule, $1 - \\tanh(z)^2$. The sigmoid\'s is $\\sigma(1 - \\sigma)$.' },
     ], P),
     solution: [`The sigmoid's slope is $${sig}(1 - ${sig})$.`, `$${num(v)} \\times ${num(clean(1 - v))} ${approx(want)}$.`, v === 0.5 ? 'That is its largest possible slope: a quarter, at $z = 0$.' : 'Never more than 0.25, the slope at $z = 0$.'],
   };
@@ -113,14 +116,14 @@ function tanhSlope(rng: Rng, d: number): Problem {
   const v = (d < 0.5 ? pick(rng, [0, 0.5, 0.6, 0.8, 0.9]) : pick(rng, TANH.map(([, t]) => t))) * (rng.next() < 0.4 ? -1 : 1) + 0;
   const want = clean(1 - v * v);
   return {
-    prompt: `At some input, $\\tanh(z) = ${num(v)}$. What is tanh's slope there? Round to two decimals.`,
+    prompt: `At some input, $\\tanh(z) = ${num(v)}$. What is tanh's slope there?${round2(want)}`,
     answer: { kind: 'number', value: want, places: placesFor(want) },
     traps: traps(want, [
-      { value: 1 - v, why: 'That forgets to square: the slope is $1 - \\tanh^2$.' },
-      { value: v * (1 - v), why: 'That is the sigmoid\'s slope rule, $\\sigma(1 - \\sigma)$. tanh\'s is $1 - \\tanh^2$.' },
-      { value: v * v, why: 'That is $\\tanh^2$ itself. The slope is 1 minus it.' },
+      { value: 1 - v, why: 'That forgets to square: the slope is $1 - \\tanh(z)^2$.' },
+      { value: v * (1 - v), why: 'That is the sigmoid\'s slope rule, $\\sigma(1 - \\sigma)$. tanh\'s is $1 - \\tanh(z)^2$.' },
+      { value: v * v, why: 'That is $\\tanh(z)^2$ itself. The slope is 1 minus it.' },
     ], P),
-    solution: ['tanh\'s slope is $1 - \\tanh^2(z)$.', `$1 - ${v < 0 ? `(${num(v)})` : num(v)}^2 = 1 - ${num(clean(v * v))} ${approx(want)}$.`, v === 0 ? 'At 0 the slope is 1, its largest.' : 'Squaring makes the sign of tanh irrelevant: the slope only depends on how far it is from 0.'],
+    solution: ['tanh\'s slope is $1 - \\tanh(z)^2$.', `$1 - ${v < 0 ? `(${num(v)})` : num(v)}^2 = 1 - ${num(clean(v * v))} ${approx(want)}$.`, v === 0 ? 'At 0 the slope is 1, its largest.' : 'Squaring makes the sign of tanh irrelevant: the slope only depends on how far it is from 0.'],
   };
 }
 
@@ -161,7 +164,7 @@ export const generators: Generator[] = [
         `For example $\\tanh(${num(lo)})$ is just above $-1$, and $\\tanh(${num(hi)})$ just below 1.`,
       ];
       return {
-        prompt: `Three units apply ${names[f]} to their pre-activations $z = ${vec(rng.shuffle(z.slice()))}$. Whatever the pre-activations are, their outputs always lie in which range?`,
+        prompt: `A layer applies ${names[f]} to the pre-activations $z = ${vec(rng.shuffle(z.slice()))}$. Which range holds its outputs, whatever $z$ is?`,
         answer: { kind: 'choice', options: RANGES, correct: [0, 1, 2][f]!, why: why[f] },
         solution: [
           ['The ReLU is $\\max(0, z)$: 0 for every negative input, and the input itself above 0, with no limit.', 'The sigmoid $1 / (1 + e^{-z})$ is always between 0 and 1: near 0 far left, near 1 far right.', 'tanh is between $-1$ and 1, and centered on 0: far left it nears $-1$, far right it nears 1.'][f]!,
@@ -178,7 +181,7 @@ export const generators: Generator[] = [
         const lo = hi + int(rng, 2, 6);
         const N = pick(rng, [50, 100, 500, 1000]);
         return {
-          prompt: `A ReLU unit's pre-activation is between $-${lo}$ and $-${hi}$ for every one of ${N} different inputs. On its way back, what gradient does backprop send through it to the weights feeding it?`,
+          prompt: `A ReLU unit's pre-activation is between $-${lo}$ and $-${hi}$ for every one of ${N} different inputs. What gradient reaches the weights feeding it?`,
           answer: {
             kind: 'choice',
             options: [
@@ -205,7 +208,7 @@ export const generators: Generator[] = [
       const L = int(rng, 3, 10);
       const g = 0.25 ** L;
       return {
-        prompt: `${L} units are chained one after another, each feeding the next. On the way back, backprop multiplies the gradient by one activation slope per unit. Why does far more gradient reach the first unit when they are ReLUs than when they are sigmoids?`,
+        prompt: `${L} units are chained, each feeding the next. Why does far more gradient reach the first unit when they are ReLUs than when they are sigmoids?`,
         answer: {
           kind: 'choice',
           options: [

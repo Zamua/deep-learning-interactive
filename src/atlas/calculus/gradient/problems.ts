@@ -25,7 +25,7 @@ export const generators: Generator[] = [
       const dvTex = joinSigned([mono(b, 'u'), { neg: c < 0, body: String(Math.abs(c)) }, ...(e ? [mono(2 * e, 'v')] : [])]);
       const sub = (parts: [number, number | null][]) => parts.map(([k, x], i) => `${i ? (k < 0 ? ' - ' : ' + ') : k < 0 ? '-' : ''}${Math.abs(k)}${x === null ? '' : ` \\cdot ${paren(x)}`}`).join('');
       return {
-        prompt: `$\\symf(u, v) = ${fTex}$. What is the gradient $\\nabla \\symf$ at $(u, v) = (${u}, ${v})$? Enter $[${P('u')},\\ ${P('v')}]$.`,
+        prompt: `For $\\symf(u, v) = ${fTex}$, what is the gradient $[${P('u')},\\ ${P('v')}]$ at $(u, v) = (${u}, ${v})$?`,
         answer: { kind: 'vector', value: [fu, fv] },
         solution: [
           `Partial in $u$, holding $v$ fixed: $${P('u')} = ${duTex} = ${sub([[2 * a, u], [b, v]])} = ${fu}$.`,
@@ -115,10 +115,10 @@ export const generators: Generator[] = [
       const C = pick(rng, [3, 10, 100, 5, 1000]);
       const D = pick(rng, [4, 3072, 784, 512, 20, 64]);
       const flat = d >= 0.4 && rng.int(3) === 0;
-      const [sym, shape, what] = flat ? ['\\symw', [C], `a vector $\\symw$ of ${C} numbers`] : ['\\symW', [C, D], `a grid $\\symW$ of numbers with ${C} rows and ${D} columns`];
+      const [sym, shape, what] = flat ? ['\\symw', [C], 'a vector $\\symw$'] : ['\\symW', [C, D], 'a matrix $\\symW$'];
       const tex = shape.length === 1 ? `(${shape[0]},)` : `(${shape.join(', ')})`;
       return {
-        prompt: `$\\symf$ turns ${what}, shape $${tex}$, into a single number. What is the shape of its gradient, $\\frac{\\partial \\symf}{\\partial ${sym}}$?`,
+        prompt: `$\\symf$ turns ${what} of shape $${tex}$ into a single number. What is the shape of $\\frac{\\partial \\symf}{\\partial ${sym}}$?`,
         answer: { kind: 'shape', value: shape },
         solution: [
           `The gradient holds one partial derivative for every entry of $${sym}$: how $\\symf$ changes when that one entry is nudged.`,

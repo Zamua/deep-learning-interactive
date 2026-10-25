@@ -1,22 +1,22 @@
 {
- "duration": 130.253,
+ "duration": 143.76,
  "scenes": {
   "hidden": [0.0, 50.156],
-  "scores": [50.156, 96.297],
-  "collapse": [96.297, 130.253]
+  "scores": [50.156, 107.069],
+  "collapse": [107.069, 143.76]
  },
  "beats": {
   "hidden/x": [0.7, 8.797, "A two-layer network starts like a linear classifier. Here the input, x, has two entries: one and two.", [[3.81, 4.37], [5.52, 5.69], [6.11, 6.31], [7.36, 7.68], [8.03, 8.19]]],
   "hidden/W1": [9.177, 19.648, "The first layer's weights, W one, have one row per hidden unit. Each row is one neuron's weights, so this layer is two neurons side by side.", [[10.627, 10.877], [11.647, 11.927], [13.767, 14.357], [16.467, 16.797]]],
   "hidden/z": [20.028, 35.08, "Dot each row with x, and add the biases, b one. Unit zero: two, minus two, plus one, is one. Unit one: one, minus four, plus zero, is minus three.", [[21.678, 21.858], [23.068, 23.408], [23.968, 24.778], [25.658, 26.198], [26.598, 26.828], [27.648, 27.838], [28.548, 28.788], [29.328, 30.068], [30.848, 31.408], [31.798, 32.048], [32.868, 33.038], [33.828, 34.068]]],
   "hidden/h": [35.46, 49.056, "Then the ReLU, entry by entry: one stays one, and minus three becomes zero. That is h, the hidden layer: h is the ReLU of W one x, plus b one.", [[36.56, 37.11], [38.23, 38.78], [39.87, 40.17], [42.24, 42.8], [43.76, 44.05], [44.85, 45.34], [47.83, 48.06]]],
-  "scores/W2": [50.856, 59.802, "The second layer scores h exactly as a linear classifier scores an input, with its own weights, W two, and biases, b two.", [[55.586, 55.866], [56.876, 57.036], [57.806, 58.086], [58.966, 59.236]]],
-  "scores/s": [60.182, 72.071, "Class zero: three times one, plus one times zero, plus zero: three. Class one: minus one, plus zero, plus one: zero.", [[61.102, 61.692], [62.722, 62.972], [64.382, 64.622], [65.352, 65.872], [66.272, 66.962], [67.672, 68.282], [69.062, 69.332], [70.102, 70.312], [70.932, 71.542]]],
-  "scores/forget": [72.451, 81.959, "Skip the ReLU, and h would be one and minus three. Class zero would score zero, not three. The bend changes the answer.", [[73.421, 73.801], [76.191, 76.791], [78.651, 78.871], [79.581, 80.161]]],
-  "scores/shapes": [82.339, 95.197, "The shapes chain together. W one is H by D: it turns D inputs into H hidden units. W two is C by H: it turns those into C scores.", [[83.899, 84.579], [86.689, 87.139], [89.969, 90.589], [92.739, 93.159]]],
-  "collapse/sub": [96.997, 111.815, "Take the ReLU out and substitute. The scores are W two times W one x, plus b one, plus b two. Multiply it out, and that is W two W one times x, plus a constant.", [[99.097, 99.607], [100.407, 100.757], [103.257, 103.497], [104.397, 104.627], [105.527, 106.067], [106.997, 107.197], [107.747, 108.037], [110.597, 110.857]]],
-  "collapse/one": [112.195, 121.396, "W two W one is a single C by D matrix. The two layers collapse into one linear classifier, however wide the middle is.", [[113.815, 113.975], [116.145, 116.665], [119.615, 119.905]]],
-  "collapse/bend": [121.776, 128.032, "The ReLU between them is what stops the collapse, and what lets the network bend its decision boundaries.", [[124.676, 124.916]]],
-  "collapse/turn": [128.412, 129.153, "Your turn.", []]
+  "scores/W2": [50.856, 63.314, "The second layer scores h exactly as a linear classifier scores an input, with its own weights, W two, and biases, b two: s is W two h, plus b two.", [[55.606, 55.946], [56.986, 57.156], [57.906, 58.176], [59.036, 59.236], [59.736, 60.346], [62.156, 62.386]]],
+  "scores/s": [63.694, 75.583, "Class zero: three times one, plus one times zero, plus zero: three. Class one: minus one, plus zero, plus one: zero.", [[64.614, 65.204], [66.234, 66.484], [67.894, 68.134], [68.864, 69.384], [69.784, 70.474], [71.184, 71.794], [72.574, 72.844], [73.614, 73.824], [74.444, 75.054]]],
+  "scores/forget": [75.963, 85.471, "Skip the ReLU, and h would be one and minus three. Class zero would score zero, not three. The bend changes the answer.", [[76.933, 77.313], [79.703, 80.303], [82.163, 82.383], [83.093, 83.673]]],
+  "scores/shapes": [85.851, 105.969, "The shapes chain together. Write D for the number of inputs, H for the number of hidden units, and C for the number of classes. W one is H by D: it turns D inputs into H hidden units. W two is C by H: it turns those into C scores.", [[87.401, 88.091], [90.261, 90.631], [92.461, 92.801], [94.771, 95.511], [97.551, 98.051], [100.861, 101.521], [103.501, 103.911]]],
+  "collapse/sub": [107.769, 125.322, "Take the ReLU out and substitute. The scores are W two times W one x, plus b one, plus b two. Multiply it out, and that is W two W one, the product of the two matrices, times x, plus a constant.", [[109.879, 110.429], [111.349, 111.729], [114.279, 114.519], [115.439, 115.639], [116.559, 117.189], [118.189, 118.359], [118.909, 119.219], [120.089, 120.239], [120.979, 121.309], [122.959, 123.269], [124.099, 124.359]]],
+  "collapse/one": [125.702, 134.903, "W two W one is a single C by D matrix. The two layers collapse into one linear classifier, however wide the middle is.", [[127.322, 127.482], [129.652, 130.172], [133.122, 133.412]]],
+  "collapse/bend": [135.283, 141.539, "The ReLU between them is what stops the collapse, and what lets the network bend its decision boundaries.", [[138.183, 138.423]]],
+  "collapse/turn": [141.919, 142.66, "Your turn.", []]
  }
 }

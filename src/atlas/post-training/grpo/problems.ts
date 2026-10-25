@@ -4,7 +4,6 @@ import { num, pick, round, vec } from '../../kit';
 import { ADV, choose, clean, G, traps, vtraps } from '../kit';
 
 const r = '\\sym{r}{r}';
-const ORD = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth'];
 
 /** Group sizes and right-answer counts, by difficulty: an exact standard deviation first. Sizes 4, 5 and 8 keep the mean a short decimal. */
 const EASY: [number, number][] = [[4, 2], [8, 4], [5, 1], [5, 4]];
@@ -43,7 +42,7 @@ export const generators: Generator[] = [
       const i = rng.int(rs.length);
       const v = round((rs[i]! - st.mean) / st.quoted, 6);
       return {
-        prompt: `GRPO samples a group of $${G} = ${rs.length}$ answers to one question, and a checker gives each a reward of 1 if right, 0 if wrong: $${r} = ${vec(rs)}$. The rewards' standard deviation is ${sdText(st)}. What is the advantage of answer ${i}, the ${ORD[i]}, $(${r} - \\text{mean}) / \\text{std}$? Round to two decimals.`,
+        prompt: `GRPO samples $${G} = ${rs.length}$ answers to one question, with rewards $${r} = ${vec(rs)}$ and standard deviation ${sdText(st)}. What is the advantage of answer ${i}, counting from 0? Round to two decimals.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(
           v,
@@ -55,7 +54,7 @@ export const generators: Generator[] = [
           2,
         ),
         solution: [
-          `The group mean: ${rs.filter((x) => x === 1).length} right out of ${rs.length}, so $${meanTex(st.mean)}$.`,
+          `The advantage is $(${r} - \\text{mean}) / \\text{std}$ over the group. The group mean: ${rs.filter((x) => x === 1).length} right out of ${rs.length}, so $${meanTex(st.mean)}$.`,
           `Answer ${i} got $${r} = ${rs[i]}$: $${rs[i]} - ${meanTex(st.mean)} = ${meanTex(rs[i]! - st.mean)}$.`,
           `Divide by the standard deviation: $${meanTex(rs[i]! - st.mean)} / ${num(st.quoted, st.places)} \\approx ${num(v, 2)}$.`,
         ],
@@ -69,7 +68,7 @@ export const generators: Generator[] = [
       const st = stats(rs);
       const v = rs.map((x) => round((x - st.mean) / st.quoted, 6));
       return {
-        prompt: `A group of $${G} = ${rs.length}$ answers to one question gets rewards $${r} = ${vec(rs)}$, 1 for right and 0 for wrong. Their standard deviation is ${sdText(st)}. What are GRPO's advantages for the group? Round to two decimals.`,
+        prompt: `A group of $${G} = ${rs.length}$ answers to one question gets rewards $${r} = ${vec(rs)}$, with standard deviation ${sdText(st)}. What are GRPO's advantages for the group? Round to two decimals.`,
         answer: { kind: 'vector', value: v, places: 2 },
         traps: vtraps(
           v,
@@ -81,7 +80,7 @@ export const generators: Generator[] = [
           2,
         ),
         solution: [
-          `The mean reward is $${meanTex(st.mean)}$: right answers are $${meanTex(1 - st.mean)}$ above it, wrong ones $${meanTex(st.mean)}$ below.`,
+          `Each advantage is $(${r} - \\text{mean}) / \\text{std}$. The mean reward is $${meanTex(st.mean)}$: right answers are $${meanTex(1 - st.mean)}$ above it, wrong ones $${meanTex(st.mean)}$ below.`,
           `Divide by $${num(st.quoted, st.places)}$: right answers get $\\approx ${num((1 - st.mean) / st.quoted, 2)}$, wrong ones $\\approx ${num(-st.mean / st.quoted, 2)}$.`,
           `So $${ADV} \\approx ${vec(v, 2)}$. They add up to zero: probability moves from the wrong answers to the right ones.`,
         ],
@@ -94,7 +93,7 @@ export const generators: Generator[] = [
       const n = pick(rng, [4, 5, 6, 8]);
       const right = rng.int(2) === 0;
       const rs = Array.from({ length: n }, () => (right ? 1 : 0));
-      const q = pick(rng, ['$17 + 25$', '$9 \\times 7$', '$2^{10}$', '$144 / 12$', '$\\sqrt{169}$']);
+      const q = pick(rng, ['$17 + 25$', '$9 \\times 7$', '$2^{10}$', '$144 / 12$', '$13 \\times 13$']);
       return {
         prompt: `GRPO samples $${G} = ${n}$ answers to the question ${q}, and ${right ? 'every one is right' : 'every one is wrong'}: $${r} = ${vec(rs)}$. What does this group do to the model?`,
         answer: choose('Nothing: every advantage is zero, so no answer is pushed', [
@@ -116,7 +115,7 @@ export const generators: Generator[] = [
       const k = rs.filter((x) => x === 1).length;
       const mean = clean(k / rs.length);
       return {
-        prompt: `GRPO samples $${G} = ${rs.length}$ answers to one question, and ${k} of them are right: $${r} = ${vec(rs)}$. What does it subtract from these rewards as the baseline?`,
+        prompt: `GRPO samples $${G} = ${rs.length}$ answers to one question, with rewards $${r} = ${vec(rs)}$. What does it subtract from these rewards as the baseline?`,
         answer: choose('The average reward of this group of answers', [
           ['A value model\'s prediction of the reward for this question', 'GRPO trains no value model. The group\'s mean stands in for it.'],
           ['The mean reward over every question in the batch', 'That mixes easy and hard questions. The baseline belongs to this question, so it is this group\'s mean.'],

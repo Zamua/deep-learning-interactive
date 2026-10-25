@@ -1,23 +1,23 @@
 {
- "duration": 124.289,
+ "duration": 143.541,
  "scenes": {
-  "blend": [0.0, 41.196],
-  "variance": [41.196, 81.658],
-  "schedule": [81.658, 124.289]
+  "blend": [0.0, 60.447],
+  "variance": [60.447, 100.91],
+  "schedule": [100.91, 143.541]
  },
  "beats": {
-  "blend/img": [0.7, 5.725, "Start from a clean image, x zero. Each pixel is one number.", [[2.26, 2.58], [3.46, 3.95]]],
-  "blend/eps": [6.105, 12.411, "Draw noise of the same shape from a standard normal: epsilon, one random number per pixel.", [[9.025, 9.585], [10.145, 10.615]]],
-  "blend/mix": [12.791, 25.674, "Then blend them. x t is the square root of alpha bar times x zero, plus the square root of one minus alpha bar times epsilon, where alpha bar is between zero and one.", [[13.921, 14.691], [18.601, 18.991], [22.651, 23.131]]],
-  "blend/pixel": [26.054, 40.096, "Take a pixel of one, with noise of minus a half, at alpha bar of zero point six four. The roots are zero point eight and zero point six: zero point eight minus zero point three is zero point five.", [[27.354, 27.644], [29.284, 29.534], [31.954, 32.514], [35.614, 36.114], [38.524, 38.784]]],
-  "variance/one": [41.896, 45.643, "Say the clean pixels have a variance of one, like the noise.", [[44.486, 44.746]]],
-  "variance/scale": [46.023, 56.578, "Scaling a number by c multiplies its variance by c squared. So the image part has variance alpha bar, and the noise part one minus alpha bar.", [[47.643, 47.803], [50.373, 50.893], [53.493, 53.843], [54.763, 54.983]]],
-  "variance/sum": [56.958, 70.031, "The two are independent, so their variances add: alpha bar, plus one minus alpha bar, is one. The blend keeps the spread of the pixels the same, and changes only what they are made of.", [[58.398, 58.688], [60.308, 60.888], [61.578, 61.848], [63.598, 63.818], [64.358, 65.058], [67.738, 68.008]]],
-  "variance/share": [70.411, 80.558, "So alpha bar is the share of the variance that is still image. At zero point six four: sixty four percent image, thirty six percent noise.", [[74.201, 75.081], [76.581, 77.031], [78.581, 78.861]]],
-  "schedule/steps": [82.358, 90.307, "A diffusion model noises images over many steps, say a thousand, and every step t has its own alpha bar.", [[85.698, 85.958], [86.968, 87.398]]],
-  "schedule/falls": [90.687, 101.617, "At step zero, alpha bar is one: the clean image. It falls as t grows, and by the last step it is close to zero: almost pure noise.", [[91.737, 92.137], [93.437, 93.877], [94.867, 95.347], [97.097, 97.407], [99.697, 100.117]]],
-  "schedule/sched": [101.997, 114.087, "That list of alpha bar values is the noise schedule. It sets how fast the image fades. This one keeps half of the variance at step five hundred; a faster one has lost most of it by then.", [[105.027, 105.537], [107.707, 108.287], [111.327, 111.797]]],
-  "schedule/jump": [114.467, 122.069, "And since the blend is a single formula, any step can be made straight from the clean image, without walking through the steps before it.", [[116.677, 117.037], [119.637, 119.887]]],
-  "schedule/turn": [122.449, 123.189, "Your turn.", []]
+  "blend/img": [0.7, 11.491, "Start from a clean image, written x zero: x with a small zero below, for step zero, before any noise. Each pixel is one number.", [[2.31, 2.8], [4.12, 4.63], [6.55, 6.84], [7.75, 8.02], [9.21, 9.71]]],
+  "blend/eps": [11.871, 23.446, "Draw noise of the same shape from a standard normal, with mean zero and variance one. It is written epsilon, the Greek letter epsilon: one random number per pixel.", [[14.861, 15.131], [17.261, 17.861], [18.491, 18.671], [19.271, 19.591], [21.041, 21.571]]],
+  "blend/mix": [23.826, 44.925, "Then blend them into the noised image, x t: the square root of alpha bar times x zero, plus the square root of one minus alpha bar times epsilon. Alpha bar, the Greek alpha with a bar on top, is a number between zero and one, and the small t is the step: how far the noising has gone.", [[26.066, 26.456], [27.156, 27.636], [30.396, 30.706], [34.306, 35.176], [35.856, 36.206], [38.156, 38.476], [40.436, 40.946], [42.786, 43.236]]],
+  "blend/pixel": [45.305, 59.347, "Take a pixel of one, with noise of minus a half, at alpha bar of zero point six four. The roots are zero point eight and zero point six: zero point eight minus zero point three is zero point five.", [[46.605, 46.895], [48.535, 48.785], [51.205, 51.765], [54.865, 55.365], [57.775, 58.035]]],
+  "variance/one": [61.147, 64.895, "Say the clean pixels have a variance of one, like the noise.", [[63.737, 63.997]]],
+  "variance/scale": [65.275, 75.83, "Scaling a number by c multiplies its variance by c squared. So the image part has variance alpha bar, and the noise part one minus alpha bar.", [[66.895, 67.055], [69.625, 70.145], [72.745, 73.095], [74.015, 74.235]]],
+  "variance/sum": [76.21, 89.283, "The two are independent, so their variances add: alpha bar, plus one minus alpha bar, is one. The blend keeps the spread of the pixels the same, and changes only what they are made of.", [[77.65, 77.94], [79.56, 80.14], [80.83, 81.1], [82.85, 83.07], [83.61, 84.31], [86.99, 87.26]]],
+  "variance/share": [89.663, 99.81, "So alpha bar is the share of the variance that is still image. At zero point six four: sixty four percent image, thirty six percent noise.", [[93.453, 94.333], [95.833, 96.283], [97.833, 98.113]]],
+  "schedule/steps": [101.61, 109.558, "A diffusion model noises images over many steps, say a thousand, and every step t has its own alpha bar.", [[104.95, 105.21], [106.22, 106.65]]],
+  "schedule/falls": [109.938, 120.868, "At step zero, alpha bar is one: the clean image. It falls as t grows, and by the last step it is close to zero: almost pure noise.", [[110.988, 111.388], [112.688, 113.128], [114.118, 114.598], [116.348, 116.658], [118.948, 119.368]]],
+  "schedule/sched": [121.248, 133.338, "That list of alpha bar values is the noise schedule. It sets how fast the image fades. This one keeps half of the variance at step five hundred; a faster one has lost most of it by then.", [[124.278, 124.788], [126.958, 127.538], [130.578, 131.048]]],
+  "schedule/jump": [133.718, 141.321, "And since the blend is a single formula, any step can be made straight from the clean image, without walking through the steps before it.", [[135.928, 136.288], [138.888, 139.138]]],
+  "schedule/turn": [141.701, 142.441, "Your turn.", []]
  }
 }

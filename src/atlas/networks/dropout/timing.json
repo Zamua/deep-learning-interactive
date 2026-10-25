@@ -1,18 +1,18 @@
 {
- "duration": 81.293,
+ "duration": 92.209,
  "scenes": {
-  "drop": [0.0, 50.202],
-  "test": [50.202, 81.293]
+  "drop": [0.0, 61.117],
+  "test": [61.117, 92.209]
  },
  "beats": {
   "drop/layer": [0.7, 8.022, "Here is a hidden layer's output, h: four units, with values two, one, three and two.", [[2.47, 2.85], [3.29, 3.67], [4.56, 4.89], [5.94, 6.2], [6.61, 6.83]]],
-  "drop/mask": [8.402, 19.744, "During training, dropout keeps each unit with probability p, here a half, and zeroes the rest. This time the random mask keeps units zero and two.", [[9.322, 9.662], [12.482, 12.882], [13.842, 14.202], [15.512, 16.052], [16.632, 16.842]]],
-  "drop/zeroed": [20.124, 24.261, "So the layer's output becomes two, zero, three, zero.", [[21.924, 22.144], [23.174, 23.374]]],
-  "drop/scale": [24.641, 34.941, "Then the kept units are divided by p. With p a half, that doubles them: four, zero, six, zero. This is inverted dropout.", [[27.181, 27.711], [28.721, 28.941], [29.791, 30.271], [30.691, 30.891], [31.421, 31.571], [32.041, 32.211], [32.681, 33.191]]],
-  "drop/why": [35.321, 49.102, "Why divide? A unit is kept only a fraction p of the time. Dividing by p makes up for it: on average, p times h over p is h, exactly what the unit gives without dropout.", [[36.231, 36.801], [39.791, 40.351], [42.331, 42.851], [43.471, 43.801], [46.151, 46.491]]],
-  "test/test": [50.902, 60.504, "At test time, every unit is kept and nothing is scaled. The layer passes h straight through: two, one, three, two.", [[51.792, 52.102], [53.342, 53.502], [54.772, 55.322], [57.542, 58.002], [58.372, 58.622], [59.052, 59.312], [59.782, 60.092]]],
-  "test/match": [60.884, 69.768, "Because training already divided by p, the next layer sees at test time what it saw on average in training. No correction is needed.", [[63.384, 63.824], [67.824, 68.334]]],
-  "test/lean": [70.148, 79.073, "And in training, any unit might vanish at any moment, so no unit can count on another being there. Each has to be useful on its own.", [[71.028, 71.308], [73.568, 73.948], [76.518, 77.018]]],
-  "test/turn": [79.453, 80.193, "Your turn.", []]
+  "drop/mask": [8.402, 25.176, "During training, dropout keeps each unit with probability p, here a half, and zeroes the rest. A random mask, m, decides: a one keeps a unit, and a zero drops it. This time it keeps units zero and two.", [[9.352, 9.672], [12.562, 12.952], [13.902, 14.272], [15.542, 16.152], [17.162, 17.322], [17.702, 17.902], [18.562, 19.102], [20.382, 20.602], [21.822, 22.372], [22.912, 23.102]]],
+  "drop/zeroed": [25.556, 32.836, "Multiply h by m, entry by entry, and the layer's output becomes two, zero, three, zero.", [[27.286, 27.646], [28.766, 29.136]]],
+  "drop/scale": [33.216, 45.857, "Then the kept units are divided by p. With p a half, that doubles them: four, zero, six, zero. This is inverted dropout; plain dropout skips the division.", [[35.746, 36.296], [37.296, 37.526], [38.386, 38.896], [39.336, 39.586], [40.096, 40.266], [40.726, 40.886], [41.376, 41.876], [43.566, 44.016]]],
+  "drop/why": [46.237, 60.017, "Why divide? A unit is kept only a fraction p of the time. Dividing by p makes up for it: on average, p times h over p is h, exactly what the unit gives without dropout.", [[47.147, 47.717], [50.707, 51.267], [53.247, 53.767], [54.387, 54.717], [57.067, 57.407]]],
+  "test/test": [61.817, 71.42, "At test time, every unit is kept and nothing is scaled. The layer passes h straight through: two, one, three, two.", [[62.707, 63.017], [64.257, 64.417], [65.687, 66.237], [68.457, 68.917], [69.287, 69.537], [69.967, 70.227], [70.697, 71.007]]],
+  "test/match": [71.8, 80.684, "Because training already divided by p, the next layer sees at test time what it saw on average in training. No correction is needed.", [[74.3, 74.74], [78.74, 79.25]]],
+  "test/lean": [81.064, 89.989, "And in training, any unit might vanish at any moment, so no unit can count on another being there. Each has to be useful on its own.", [[81.944, 82.224], [84.484, 84.864], [87.434, 87.934]]],
+  "test/turn": [90.369, 91.109, "Your turn.", []]
  }
 }

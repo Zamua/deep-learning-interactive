@@ -23,7 +23,7 @@ function setup(rng: Rng, d: number) {
 const mat = (W: number[][]) => `\\begin{bmatrix} ${W.map((r) => r.map((v) => num(v)).join(' & ')).join(' \\\\ ')} \\end{bmatrix}`;
 const Wij = (i: number, j: number) => `\\symW_{${i},${j}}`;
 const given = (o: ReturnType<typeof setup>) =>
-  `A linear classifier with 2 classes and 2 features has $\\symW = ${mat(o.W)}$, one row per class. The input is $\\symx = ${vec(o.x)}$ with label $\\symy = ${o.y}$, and softmax gives $\\symp = ${vec(o.p)}$.`;
+  `A linear classifier has $\\symW = ${mat(o.W)}$, one row per class, and the input $\\symx = ${vec(o.x)}$ has label $\\symy = ${o.y}$, counting from 0. Softmax gives $\\symp = ${vec(o.p)}$.`;
 const dsStep = (o: ReturnType<typeof setup>) => `The score gradient is $d\\syms = \\symp - \\mathrm{onehot}(\\symy) = ${vec(o.p)} - ${vec(o.y === 0 ? [1, 0] : [0, 1])} = ${vec(o.ds)}$.`;
 
 export const generators: Generator[] = [
@@ -38,7 +38,7 @@ export const generators: Generator[] = [
       const v = clean(o.W[i]![j]! - step);
       const w = o.W[i]![j]!;
       return {
-        prompt: `${given(o)} After one SGD step with $\\symeta = ${num(o.eta)}$, what is $${Wij(i, j)}$, the weight in row ${i}, column ${j} (counting from 0)?`,
+        prompt: `${given(o)} After one SGD step with $\\symeta = ${num(o.eta)}$, what is $${Wij(i, j)}$?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           ...(i === o.y ? [{ value: w - o.eta * o.p[i]! * o.x[j]!, why: `That uses $\\symp_{${i}}$ as the score gradient. Class ${i} is the correct class, so its entry is $\\symp_{${i}} - 1$.` }] : []),
@@ -62,7 +62,7 @@ export const generators: Generator[] = [
       const j = rng.int(2);
       const v = clean(o.ds[i]! * o.x[j]!);
       return {
-        prompt: `${given(o)} What is $\\partial \\symL / \\partial ${Wij(i, j)}$, the gradient for the weight in row ${i}, column ${j} (counting from 0)?`,
+        prompt: `${given(o)} For the cross-entropy loss $\\symL$, what is $\\partial \\symL / \\partial ${Wij(i, j)}$?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           ...(i === o.y ? [{ value: o.p[i]! * o.x[j]!, why: `That uses $\\symp_{${i}}$ as the score gradient. Class ${i} is the correct class, so its entry is $\\symp_{${i}} - 1$.` }] : []),
@@ -85,7 +85,7 @@ export const generators: Generator[] = [
       const after = d >= 0.5;
       const v = after ? o.b.map((b, i) => clean(b - o.eta * o.ds[i]!)) : o.ds;
       return {
-        prompt: `${given(o)} The biases are $\\symb = ${vec(o.b)}$. ${after ? `After one SGD step with $\\symeta = ${num(o.eta)}$, what is $\\symb$?` : 'What is the gradient $\\partial \\symL / \\partial \\symb$?'}`,
+        prompt: `${given(o)} The biases are $\\symb = ${vec(o.b)}$. ${after ? `After one SGD step with $\\symeta = ${num(o.eta)}$, what is $\\symb$?` : 'For the cross-entropy loss $\\symL$, what is $\\partial \\symL / \\partial \\symb$?'}`,
         answer: { kind: 'vector', value: v },
         traps: vtraps(
           v,
@@ -123,7 +123,7 @@ export const generators: Generator[] = [
       ];
       why[right ? 0 : 1] = null;
       return {
-        prompt: `${given(o)} After one SGD step, what happens to row ${k} of $\\symW$, the weights of class ${k}?`,
+        prompt: `${given(o)} After one SGD step, what happens to row ${k} of $\\symW$?`,
         answer: { kind: 'choice', options: ['It moves toward $\\symx$', 'It moves away from $\\symx$', 'It stays where it is', 'It shrinks toward 0'], correct: right ? 0 : 1, why },
         solution: [
           dsStep(o),

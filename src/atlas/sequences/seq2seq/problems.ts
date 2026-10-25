@@ -75,11 +75,11 @@ export const generators: Generator[] = [
       const m = src.length;
       const n = tgt.length;
       const kind = d < 0.35 ? 0 : d < 0.7 ? rng.int(2) : rng.int(3);
-      const base = `A seq2seq model translates ${quote(src)} (${m} tokens) into ${quote(tgt)} (${n} tokens). The decoder starts by reading \`<start>\` and must finish by predicting \`<end>\`.`;
+      const base = `A seq2seq model translates ${quote(src)} (${m} tokens) into ${quote(tgt)} (${n} tokens).`;
       if (kind === 2) {
         const v = m + n + 1;
         return {
-          prompt: `${base} How many steps do the encoder and the decoder take in all, one token per step?`,
+          prompt: `${base} How many steps do the encoder and the decoder take in all?`,
           answer: { kind: 'number', value: v },
           traps: [
             { value: m + n, why: 'That forgets `<end>`: the decoder needs one more step to predict it.' },
@@ -92,7 +92,7 @@ export const generators: Generator[] = [
       const v = n + 1;
       if (kind === 1) {
         return {
-          prompt: `${base} How many tokens does the decoder read in all, one per step?`,
+          prompt: `${base} How many tokens does the decoder read in all?`,
           answer: { kind: 'number', value: v },
           traps: [
             { value: n, why: 'That forgets `<start>`, which the decoder reads at its first step.' },
@@ -102,7 +102,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `${base} How many steps does the decoder take, predicting one token per step?`,
+        prompt: `${base} How many steps does the decoder take?`,
         answer: { kind: 'number', value: v },
         traps: [
           { value: n, why: 'That forgets `<end>`: the decoder must also predict where the output stops.' },
@@ -125,7 +125,7 @@ export const generators: Generator[] = [
       const wrong = pick(rng, OTHER.filter((w) => w !== tgt[k] && w !== tgt[k + 1] && !tgt.includes(w)));
       if (d < 0.5 || rng.int(2) === 0) {
         return {
-          prompt: `Training on ${quote(src)} → ${quote(tgt)} with teacher forcing, the decoder's step ${k}, counting from 0, should predict ${tok(tgt[k]!)} but predicts ${tok(wrong)}. What does the decoder read at step ${k + 1}?`,
+          prompt: `A seq2seq model is trained with teacher forcing to translate ${quote(src)} into ${quote(tgt)}. At step ${k}, counting from 0, the decoder should predict ${tok(tgt[k]!)} but predicts ${tok(wrong)}. What does it read at step ${k + 1}?`,
           answer: {
             kind: 'choice',
             options: [`The right token, ${tok(tgt[k]!)}`, `Its own guess, ${tok(wrong)}`, `The token it must predict next, ${tok(tgt[k + 1]!)}`, 'The encoder\'s final state, in place of a token'],
@@ -144,7 +144,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `At test time, the model translates ${quote(src)} with no target given. At step ${k}, counting from 0, the decoder predicts ${tok(wrong)}. What does it read at step ${k + 1}?`,
+        prompt: `At test time, a seq2seq model translates ${quote(src)} with no target given. At step ${k}, counting from 0, the decoder predicts ${tok(wrong)}. What does it read at step ${k + 1}?`,
         answer: {
           kind: 'choice',
           options: [`Its own prediction, ${tok(wrong)}`, 'The `<start>` token again', `The input token at the same position, ${tok(src[Math.min(k, src.length - 1)]!)}`, 'The encoder\'s final state, in place of a token'],

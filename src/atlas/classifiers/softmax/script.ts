@@ -58,10 +58,10 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'total', say: 'Second, add them up. The total is {10.48|ten point four eight}.', code: 'norm' },
-        { id: 'divide', say: 'Then divide each one by that total.', code: 'norm' },
+        { id: 'divide', say: 'Then divide each one by that total. These are the probabilities, p.', code: 'norm' },
         { id: 'result', say: 'Option zero gets {0.71|zero point seven one}, option one {0.26|zero point two six}, and option two {0.04|zero point zero four}.', code: 'norm' },
         { id: 'check', say: 'All positive, and they add up to one.', code: 'sum' },
-        { id: 'formula', say: 'In symbols: {pₖ is e to the sₖ, divided by the sum of e to the sⱼ|p k is e to the s k, divided by the sum of e to the s j}, over every option j.', code: ['exp', 'norm'] },
+        { id: 'formula', say: 'In symbols: {pₖ|p k}, option k\'s probability, is e to the {sₖ|s k}, over the total. {Σ|Sigma}, a capital Greek sigma, means add up: the total adds e to the {sⱼ|s j} over every option j.', code: ['exp', 'norm'] },
       ],
     },
     {

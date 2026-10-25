@@ -22,17 +22,17 @@ export const generators: Generator[] = [
       const rise = r4(f1 - f0);
       const v = r4(rise / h);
       const traps = [
-        { value: rise, why: `That is the rise, $${num(rise)}$. The slope divides it by the run, $h = ${num(h)}$.` },
+        { value: rise, why: `That is the rise, $${num(rise)}$. The slope divides it by the run, $${num(h)}$.` },
         { value: r4(h / rise), why: 'That is run over rise. The slope is rise over run.' },
         { value: -v, why: `That subtracts the wrong way round. The rise is the later value minus the earlier one: $${num(f1)} - ${paren(num(f0))}$.` },
       ];
       return {
-        prompt: `$\\symf(\\symx) = ${polyTex(ts)}$ has $\\symf(${num(x)}) = ${num(f0)}$ and $\\symf(${num(x1)}) = ${num(f1)}$. With $h = ${num(h)}$, what is the slope between the two points, $\\dfrac{\\symf(${num(x)} + h) - \\symf(${num(x)})}{h}$?`,
+        prompt: `$\\symf(\\symx) = ${polyTex(ts)}$ has $\\symf(${num(x)}) = ${num(f0)}$ and $\\symf(${num(x1)}) = ${num(f1)}$. What is the slope between these two points?`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: rise === 0 ? [] : cleanTraps(traps, v, 2),
         solution: [
+          `The slope between two points is rise over run, $\\dfrac{\\symf(${num(x)} + h) - \\symf(${num(x)})}{h}$, with run $h = ${num(x1)} - ${paren(num(x))} = ${num(h)}$.`,
           `The rise: $\\symf(${num(x1)}) - \\symf(${num(x)}) = ${num(f1)} - ${paren(num(f0))} = ${num(rise)}$.`,
-          `The run is $h = ${num(h)}$.`,
           `Rise over run: $${paren(num(rise))} / ${num(h)} = ${num(v)}$.`,
         ],
       };
@@ -64,13 +64,13 @@ export const generators: Generator[] = [
       if (at !== null) traps.push({ value: fAt, why: `That is $\\symf(${at})$, the height of the line there, not its slope.` });
       return {
         prompt: at === null
-          ? `What is the derivative $\\symf'(\\symx)$ of $\\symf(\\symx) = ${tex}$?`
-          : `$\\symf(\\symx) = ${tex}$. What is $\\symf'(${at})$, the slope at $\\symx = ${at}$?`,
+          ? `For $\\symf(\\symx) = ${tex}$, what is $\\symf'(\\symx)$?`
+          : `For $\\symf(\\symx) = ${tex}$, what is $\\symf'(${at})$?`,
         answer: { kind: 'number', value: slope },
         traps: cleanTraps(traps, slope),
         solution: [
           form === 'factor' ? `Multiply out: $\\symf(\\symx) = ${polyTex([{ c: slope, n: 1 }, { c: constant, n: 0 }])}$.` : form === 'half' ? `Split the fraction: $\\symf(\\symx) = ${num(slope)}\\symx ${constant < 0 ? '-' : '+'} ${num(Math.abs(constant))}$.` : `A straight line rises by the same amount for every step of 1 in $\\symx$.`,
-          `The number multiplying $\\symx$ is that rise per step: the slope is $${num(slope)}$${at === null ? '' : ' everywhere, including at $\\symx = ' + at + '$'}.`,
+          `The number multiplying $\\symx$ is that rise per step: the slope is $${num(slope)}$${at === null ? '' : ` everywhere, so $\\symf'(${at}) = ${num(slope)}$`}.`,
           'The constant term only shifts the line up or down, so it does not change the slope.',
         ],
       };
@@ -124,7 +124,7 @@ export const generators: Generator[] = [
           return `$\\symf(${x}) = ${fx}$ is the height of $\\symf$, not its direction. The sign of $\\symf'(${x}) = ${num(m)}$ gives the direction.`;
         });
         return {
-          prompt: `$\\symf(${x}) = ${fx}$ and $\\symf'(${x}) = ${num(m)}$. Near $\\symx = ${x}$, as $\\symx$ grows, is $\\symf$ going up, going down, or flat?`,
+          prompt: `$\\symf(${x}) = ${fx}$ and $\\symf'(${x}) = ${num(m)}$. Near $\\symx = ${x}$, as $\\symx$ grows, which way does $\\symf$ go?`,
           answer: { kind: 'choice', options, correct, why },
           solution: [
             `The derivative's sign gives the direction: $\\symf'(${x}) = ${num(m)}$ is ${m > 0 ? 'positive, so $\\symf$ goes up' : m < 0 ? 'negative, so $\\symf$ goes down' : 'zero, so $\\symf$ is level there'}.`,

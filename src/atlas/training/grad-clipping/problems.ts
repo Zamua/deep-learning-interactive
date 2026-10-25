@@ -38,9 +38,8 @@ export const generators: Generator[] = [
     make(rng, d) {
       const { g, norm } = gradient(rng, d);
       const s = clean(g.reduce((a, x) => a + x * x, 0));
-      const hint = d < 0.35 ? `, the square root of $\\symg \\cdot \\symg$` : '';
       return {
-        prompt: `Backprop gives the gradient $\\symg = ${vec(g)}$. What is its norm $${NORM}$${hint}?`,
+        prompt: `The gradient is $\\symg = ${vec(g)}$. What is $${NORM}$?`,
         answer: { kind: 'number', value: norm },
         traps: traps(norm, [
           { value: s, why: `That is $\\symg \\cdot \\symg$, the sum of the squares. The norm is its square root.` },
@@ -62,7 +61,6 @@ export const generators: Generator[] = [
       const under = d >= 0.5 && rng.int(4) === 0;
       const c = under ? pick(rng, [norm + 1, 2 * norm, 10 * norm]) : threshold(rng, norm, d);
       const v = under ? g : scaled(g, c, norm);
-      const rule = d < 0.5 ? ` If $${NORM} > ${C}$, clipping multiplies $\\symg$ by $${C} / ${NORM}$; otherwise it leaves $\\symg$ alone.` : '';
       const ts = under
         ? [
             { value: scaled(g, c, norm), why: `That rescales $\\symg$ to norm $${C}$, which here makes it longer. Its norm, $${num(norm)}$, is within $${C} = ${num(c)}$, so clipping leaves it alone: it only ever shrinks.` },
@@ -76,10 +74,11 @@ export const generators: Generator[] = [
             { value: g.map((x) => clean((x * norm) / c)), why: `That multiplies by $${NORM} / ${C}$, upside down: it makes the gradient longer.` },
           ];
       return {
-        prompt: `Gradient clipping uses the threshold $${C} = ${num(c)}$.${rule} The gradient is $\\symg = ${vec(g)}$. What is $\\symg$ after clipping? Round to two decimals.`,
+        prompt: `With $${C} = ${num(c)}$, what is $\\symg = ${vec(g)}$ after clipping? Round to two decimals.`,
         answer: { kind: 'vector', value: v, places: 2 },
         traps: vtraps(v, ts, 2),
         solution: [
+          `Clipping multiplies $\\symg$ by $${C} / ${NORM}$ when $${NORM} > ${C}$, and otherwise leaves it alone.`,
           `The norm: $${NORM} = \\sqrt{${sq(g)}} = \\sqrt{${num(clean(norm * norm))}} = ${num(norm)}$.`,
           under
             ? `$${num(norm)} \\le ${num(c)}$, so clipping leaves $\\symg$ alone: $${vec(g)}$.`
@@ -104,7 +103,7 @@ export const generators: Generator[] = [
         const stepv = cg.map((x) => clean(eta * x));
         const v = w.map((x, i) => clean(x - stepv[i]!));
         return {
-          prompt: `The weights are $\\symw = ${vec(w)}$ and backprop gives the gradient $\\symg = ${vec(g)}$. The gradient is clipped to norm at most $${C} = ${num(c)}$, then $\\symw$ takes one gradient step with step size $\\symeta = ${num(eta)}$. What is $\\symw$ after the step?`,
+          prompt: `The weights are $\\symw = ${vec(w)}$ and the gradient is $\\symg = ${vec(g)}$. After clipping with $${C} = ${num(c)}$ and one gradient step with $\\symeta = ${num(eta)}$, what is $\\symw$?`,
           answer: { kind: 'vector', value: v },
           traps: vtraps(v, [
             ...(under ? [] : [{ value: w.map((x, i) => x - eta * g[i]!), why: 'That steps with the unclipped gradient. Clip first, then step with the clipped one.' }]),
@@ -141,7 +140,7 @@ export const generators: Generator[] = [
         ];
         const prompt = shown
           ? `Two ways to tame $\\symg = ${vec(g)}$ with $${C} = ${num(c)}$: clip each entry to $[-${num(c)}, ${num(c)}]$ on its own, giving $${vec(each)}$, or multiply all of $\\symg$ by $${C} / ${NORM}$. Which is true?`
-          : `The gradient is $\\symg = ${vec(g)}$ and the threshold is $${C} = ${num(c)}$. One way clips each entry to $[-${num(c)}, ${num(c)}]$ on its own; the other multiplies all of $\\symg$ by $${C} / ${NORM}$. Which is true?`;
+          : `With $\\symg = ${vec(g)}$ and $${C} = ${num(c)}$, one way clips each entry to $[-${num(c)}, ${num(c)}]$ on its own; the other multiplies all of $\\symg$ by $${C} / ${NORM}$. Which is true?`;
         const v = scaled(g, c, norm);
         return {
           prompt,

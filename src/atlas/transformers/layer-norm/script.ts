@@ -17,7 +17,7 @@ export const script: LectureScript = {
         X.mean(axis=1)   # layer norm: a mean per example    #@row
       `,
       beats: [
-        { id: 'recall', say: 'Batch norm normalizes each feature over the examples in a batch: down a column.', code: ['X', 'col'] },
+        { id: 'recall', say: 'Stack a batch as a matrix, X, one example per row. Batch norm normalizes each feature over the examples: down a column.', code: ['X', 'col'] },
         { id: 'rows', say: 'Layer norm turns that sideways. It normalizes each example over its own features: along a row.', code: 'row' },
         { id: 'alone', say: 'So an example\'s output depends on that example alone. The batch size does not matter, and training and test work the same way, with no running averages.', code: 'row' },
       ],
@@ -39,7 +39,7 @@ export const script: LectureScript = {
         { id: 'mean', say: 'Their mean, {μ|mu}, is ten.', code: 'mu' },
         { id: 'var', say: 'The squared distances from it, one, forty nine, forty nine and one, average to twenty five, so the standard deviation is five.', code: 'var' },
         { id: 'xhat', say: 'Subtract the mean and divide by the standard deviation: nine becomes minus {0.2|zero point two}, three becomes minus {1.4|one point four}. Epsilon only guards against dividing by zero.', code: 'xhat' },
-        { id: 'gamma', say: 'Then, as in batch norm, a learned scale, {γ|gamma}, and shift, {β|beta}, with one entry of each per feature. With d features, that is two d learned numbers.', code: 'y' },
+        { id: 'gamma', say: 'Then, as in batch norm, a learned scale, {γ|gamma}, and shift, {β|beta}, with one entry of each per feature. With {d|d} features, that is {2d|two d} learned numbers.', code: 'y' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

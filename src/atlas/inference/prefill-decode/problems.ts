@@ -21,13 +21,13 @@ export const generators: Generator[] = [
       const P = d < 0.35 ? int(rng, 4, 30) : pick(rng, [int(rng, 20, 400), int(rng, 500, 4000)]);
       const n = d < 0.35 ? int(rng, 3, 12) : int(rng, 10, 600);
       const kind = d < 0.35 ? 'total' : pick(rng, ['total', 'decode', 'time'] as const);
-      const setup = `A prompt of ${bigText(P)} tokens goes into a language model, and it writes ${bigText(n)} new tokens. The prefill pass reads the whole prompt at once and gives the first new token.`;
+      const setup = `A prompt of ${bigText(P)} tokens goes into a language model, and it writes ${bigText(n)} new tokens.`;
       if (kind === 'time') {
         const pre = pick(rng, [20, 40, 50, 80, 100, 150, 200]);
         const dec = pick(rng, [5, 10, 20, 25, 40]);
         const v = clean((pre + (n - 1) * dec) / 1000);
         return {
-          prompt: `${setup} The prefill takes ${pre} ms and every later pass takes ${dec} ms. How many seconds until the last new token is written?`,
+          prompt: `${setup} The prefill takes ${pre} ms and every decode pass takes ${dec} ms. How many seconds until the last new token is written?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: clean((pre + n * dec) / 1000), why: 'That gives the first new token a decode pass of its own. The prefill already wrote it, so only the other tokens need decode passes.' },
@@ -36,7 +36,7 @@ export const generators: Generator[] = [
             { value: clean(((P + n - 1) * dec + pre) / 1000), why: 'That gives every prompt token a pass of its own. The prefill reads them all in one.' },
           ]),
           solution: [
-            `The prefill takes ${pre} ms and writes the first new token.`,
+            `The prefill runs the whole prompt in one pass, in ${pre} ms, and writes the first new token.`,
             `Each of the other $${big(n)} - 1 = ${big(n - 1)}$ tokens takes a decode pass: $${big(n - 1)} \\times ${dec} = ${big((n - 1) * dec)}$ ms.`,
             `In all $${pre} + ${big((n - 1) * dec)} = ${big(pre + (n - 1) * dec)}$ ms, which is $${num(v)}$ seconds.`,
           ],
@@ -69,7 +69,7 @@ export const generators: Generator[] = [
       const v = askMs ? ms : rate;
       const model = fromParams ? `a model of ${params} billion parameters stored at 2 bytes each` : `a model whose weights take ${gb} GB`;
       return {
-        prompt: `A GPU reads its memory at ${bigText(bw)} GB per second. It decodes one sequence with ${model}, and every decode pass must read every weight once. Ignoring everything else, ${askMs ? 'how many milliseconds does each new token take' : 'how many tokens per second can it write'}?`,
+        prompt: `A GPU reads its memory at ${bigText(bw)} GB per second. It decodes one sequence with ${model}. ${askMs ? 'At least how many milliseconds does each new token take' : 'At most how many tokens per second can it write'}?`,
         answer: { kind: 'number', value: v },
         traps: traps(
           v,
@@ -86,7 +86,7 @@ export const generators: Generator[] = [
         ),
         solution: [
           fromParams ? `The weights take $${params} \\times 2 = ${gb}$ GB.` : `The weights take ${gb} GB.`,
-          `Every pass reads all of them: $${gb} / ${big(bw)}$ of a second${askMs ? `, which is $${num(ms)}$ ms` : ''}.`,
+          `Every decode pass must read all of them, and that is most of its time: $${gb} / ${big(bw)}$ of a second${askMs ? `, which is $${num(ms)}$ ms` : ''}.`,
           askMs ? `So each new token takes $${num(ms)}$ ms.` : `So the GPU writes $${big(bw)} / ${gb} = ${rate}$ tokens per second at most.`,
         ],
       };

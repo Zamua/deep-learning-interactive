@@ -72,7 +72,7 @@ const loss: SceneDef = {
     const xs = columns(s, 3, 17);
     const lx = xs[0]! - 12 * u;
     const ys = [0.26, 0.4, 0.56, 0.72].map((f) => s.h * f);
-    s.show('L', s.ease('target', 0.6));
+    s.show('L', s.ease('square', 0.6, 3));
     rowLabel(s, 'x', lx, ys[0]!, 'orange', 3.8);
     cells(s, xs, ys[0]!, X3.map((v) => fmt(v)), 'orange', { w: 13, h: 8.5 });
     rowLabel(s, 'x̂', lx, ys[1]!, 'purple', 3.8);

@@ -271,7 +271,7 @@ const TWICE: { tex: string; who: 'x' | 'y'; uses: [string, string]; ok?: (v: V) 
     who: 'y',
     uses: ['the first add', 'the second add'],
     branch: () => [0, 0],
-    check: '$\\partial f / \\partial y = r + q$: each add passes on what the multiply sent it.',
+    check: '$\\partial f / \\partial y = (y + z) + (x + y)$: each add passes on what the multiply sent it.',
   },
   {
     tex: 'x \\cdot y + x \\cdot z',

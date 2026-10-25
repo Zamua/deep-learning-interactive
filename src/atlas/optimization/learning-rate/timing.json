@@ -1,22 +1,22 @@
 {
- "duration": 108.985,
+ "duration": 114.907,
  "scenes": {
-  "factor": [0.0, 38.141],
-  "race": [38.141, 74.992],
-  "limit": [74.992, 108.985]
+  "factor": [0.0, 42.217],
+  "race": [42.217, 79.068],
+  "limit": [79.068, 114.907]
  },
  "beats": {
-  "factor/bowl": [0.7, 12.841, "Take the simplest function to walk down, a bowl: f of x equals a x squared, with its minimum at zero. Here a is one, and x starts at one.", [[2.14, 2.48], [3.25, 3.61], [4.06, 4.66], [7.04, 7.4], [8.89, 9.48], [9.86, 10.02], [10.94, 11.26]]],
-  "factor/grad": [13.221, 25.062, "Its gradient is two a x. So one step takes x to x, minus eta times two a x. That step size, eta, is called the learning rate.", [[15.521, 15.961], [21.201, 21.651], [23.241, 23.491], [24.851, 25.031]]],
-  "factor/factor": [25.442, 37.041, "Pull out the x, and every step just multiplies x by the same factor: one minus two a eta. With eta at zero point three, that is zero point four.", [[26.482, 26.742], [30.292, 30.692], [32.642, 33.212], [35.032, 35.342]]],
-  "race/small": [38.841, 48.169, "With a learning rate of zero point zero five, the factor is zero point nine. Each step keeps ninety percent of x, and the ball creeps.", [[41.491, 41.781], [43.691, 44.271], [46.671, 46.931]]],
-  "race/good": [48.549, 55.347, "With zero point three, the factor is zero point four. x shrinks fast and slides straight in.", [[49.909, 50.149], [52.029, 52.539]]],
-  "race/zig": [55.727, 65.609, "With zero point eight, the factor is minus zero point six. Each step overshoots to the other side, but lands closer: it zigzags in.", [[57.017, 57.267], [59.757, 60.297], [62.567, 62.797], [63.887, 64.397]]],
-  "race/big": [65.989, 73.892, "With one point one, the factor is minus one point two. Every overshoot lands farther out, and the steps blow up.", [[67.199, 67.429], [69.629, 70.219], [72.339, 72.589]]],
-  "limit/line": [75.692, 82.222, "Plot the factor against eta. It starts at one and falls in a straight line as eta grows.", [[77.532, 78.082], [79.222, 79.422]]],
-  "limit/half": [82.602, 88.915, "At eta equals one over two a, it is zero: a single step lands right on the minimum.", [[84.912, 85.192], [85.962, 86.502]]],
-  "limit/edge": [89.295, 97.599, "At one over a, it reaches minus one, and x bounces between two points forever. Any larger, and it blows up.", [[90.535, 90.745], [92.105, 92.465], [95.175, 95.685], [96.445, 96.675]]],
-  "limit/steep": [97.979, 106.765, "A steeper bowl, a bigger a, makes the line fall faster. The largest learning rate that does not diverge is one over a.", [[98.989, 99.289], [100.169, 100.539], [102.239, 102.889]]],
-  "limit/turn": [107.145, 107.885, "Your turn.", []]
+  "factor/bowl": [0.7, 16.917, "Take the simplest function to walk down, a bowl: f of x equals a x squared, where a, a positive number, sets how steep it is. Its minimum is at zero. Here a is one, and x starts at one.", [[2.12, 2.43], [3.19, 3.54], [4.04, 4.67], [7.08, 7.5], [8.19, 8.4], [9.33, 9.6], [10.93, 11.48], [12.96, 13.51], [13.91, 14.08], [15.0, 15.3]]],
+  "factor/grad": [17.297, 29.138, "Its gradient is two a x. So one step takes x to x, minus eta times two a x. That step size, eta, is called the learning rate.", [[19.597, 20.037], [25.277, 25.727], [27.317, 27.567], [28.927, 29.107]]],
+  "factor/factor": [29.518, 41.117, "Pull out the x, and every step just multiplies x by the same factor: one minus two a eta. With eta at zero point three, that is zero point four.", [[30.558, 30.818], [34.368, 34.768], [36.718, 37.288], [39.108, 39.418]]],
+  "race/small": [42.917, 52.245, "With a learning rate of zero point zero five, the factor is zero point nine. Each step keeps ninety percent of x, and the ball creeps.", [[45.567, 45.857], [47.767, 48.347], [50.747, 51.007]]],
+  "race/good": [52.625, 59.423, "With zero point three, the factor is zero point four. x shrinks fast and slides straight in.", [[53.985, 54.225], [56.105, 56.615]]],
+  "race/zig": [59.803, 69.685, "With zero point eight, the factor is minus zero point six. Each step overshoots to the other side, but lands closer: it zigzags in.", [[61.093, 61.343], [63.833, 64.373], [66.643, 66.873], [67.963, 68.473]]],
+  "race/big": [70.065, 77.968, "With one point one, the factor is minus one point two. Every overshoot lands farther out, and the steps blow up.", [[71.275, 71.505], [73.705, 74.295], [76.415, 76.665]]],
+  "limit/line": [79.768, 86.298, "Plot the factor against eta. It starts at one and falls in a straight line as eta grows.", [[81.608, 82.158], [83.298, 83.498]]],
+  "limit/half": [86.678, 92.991, "At eta equals one over two a, it is zero: a single step lands right on the minimum.", [[88.988, 89.268], [90.038, 90.578]]],
+  "limit/edge": [93.371, 101.675, "At one over a, it reaches minus one, and x bounces between two points forever. Any larger, and it blows up.", [[94.611, 94.821], [96.181, 96.541], [99.251, 99.761], [100.521, 100.751]]],
+  "limit/steep": [102.055, 112.687, "A steeper bowl, a bigger a, makes the line fall faster. The largest learning rate that does not diverge, written eta max, is one over a.", [[103.055, 103.345], [104.215, 104.535], [106.205, 106.875], [109.545, 109.855], [111.125, 111.415]]],
+  "limit/turn": [113.067, 113.807, "Your turn.", []]
  }
 }

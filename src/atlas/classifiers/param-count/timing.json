@@ -1,9 +1,9 @@
 {
- "duration": 102.56,
+ "duration": 106.918,
  "scenes": {
   "grid": [0.0, 40.503],
   "grows": [40.503, 64.7],
-  "layers": [64.7, 102.56]
+  "layers": [64.7, 106.918]
  },
  "beats": {
   "grid/dims": [0.7, 11.392, "How many numbers make up a linear classifier? Say each input has four features, so D is four, and there are three classes, so C is three.", [[3.31, 3.94], [6.18, 6.42], [7.81, 8.23], [9.71, 9.95]]],
@@ -15,9 +15,9 @@
   "grows/side": [46.156, 55.514, "Feed it bigger images, and every row grows longer. Twice the width and twice the height is four times the pixels, so four times the weights.", [[47.536, 47.716], [49.416, 49.936], [53.516, 53.846]]],
   "grows/data": [55.894, 63.6, "One thing never enters the count: how many images it scores. Ten or a million, W keeps the same shape.", [[57.844, 58.314], [59.974, 60.354], [61.504, 61.854]]],
   "layers/two": [65.4, 76.547, "Now chain two of these, so the outputs of the first are the inputs of the second. Four inputs go to H, five numbers in the middle, and those go to the three classes.", [[66.95, 67.31], [70.42, 71.05], [72.64, 73.05], [74.25, 74.57]]],
-  "layers/l1": [76.927, 85.396, "The first has D times H weights, one per line, plus H biases: twenty plus five, twenty five.", [[79.507, 79.827], [80.727, 81.097], [82.587, 83.007], [84.197, 84.587]]],
-  "layers/l2": [85.776, 92.599, "The second has H times C weights, plus C biases: fifteen plus three, eighteen.", [[88.286, 88.446], [89.926, 90.386], [91.666, 92.016]]],
-  "layers/sum": [92.979, 100.34, "Add the two: forty three. Each one is inputs times outputs, plus one bias per output.", [[93.749, 94.249], [94.989, 95.629], [98.159, 98.429]]],
-  "layers/turn": [100.72, 101.46, "Your turn.", []]
+  "layers/l1": [76.927, 87.401, "The first map, W one and b one, has D times H weights, one per line, plus H biases: twenty plus five, twenty five.", [[77.797, 78.067], [79.707, 79.957], [81.757, 82.047], [82.917, 83.257], [84.727, 85.117], [86.277, 86.607]]],
+  "layers/l2": [87.781, 96.957, "The second map, W two and b two, has H times C weights, plus C biases: fifteen plus three, eighteen.", [[88.661, 88.941], [90.721, 90.941], [92.731, 92.891], [94.291, 94.731], [96.061, 96.381]]],
+  "layers/sum": [97.337, 104.698, "Add the two: forty three. Each one is inputs times outputs, plus one bias per output.", [[98.107, 98.607], [99.347, 99.987], [102.517, 102.787]]],
+  "layers/turn": [105.078, 105.818, "Your turn.", []]
  }
 }

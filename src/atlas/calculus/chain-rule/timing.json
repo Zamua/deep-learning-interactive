@@ -1,21 +1,21 @@
 {
- "duration": 96.682,
+ "duration": 118.924,
  "scenes": {
-  "chain": [0.0, 23.26],
-  "local": [23.26, 61.451],
-  "back": [61.451, 96.682]
+  "chain": [0.0, 36.583],
+  "local": [36.583, 83.693],
+  "back": [83.693, 118.924]
  },
  "beats": {
   "chain/chain": [0.7, 8.742, "Often one function feeds another. Here x goes in and u comes out, where u is three x plus one.", [[1.19, 1.34], [2.94, 3.5], [3.88, 4.06], [4.95, 5.1], [6.28, 6.59]]],
   "chain/feed": [9.122, 13.631, "Then u feeds a second function: z is u squared.", [[11.472, 11.952]]],
-  "chain/vals": [14.011, 22.16, "At x equals one, u is four, and z is sixteen. How fast does z change when x is nudged?", [[15.481, 15.801], [16.871, 17.141], [18.561, 19.231]]],
-  "local/du": [23.96, 32.27, "Each link has its own local slope. u is three x plus one, so u moves three times as fast as x.", [[26.25, 26.87], [28.83, 29.29]]],
-  "local/dz": [32.65, 39.221, "z is u squared, whose slope is two u. At u equals four, that is eight.", [[34.31, 34.63], [36.03, 36.64], [38.01, 38.25]]],
-  "local/nudge": [39.601, 50.773, "Now nudge x by zero point zero one. u moves three times that, zero point zero three. And z moves eight times that, zero point two four.", [[42.491, 43.041], [44.661, 45.011], [46.531, 47.061], [48.971, 49.331]]],
-  "local/mult": [51.153, 60.351, "So z moves three times eight, twenty four times as fast as x. That is the chain rule: multiply the local slopes.", [[53.443, 53.793], [56.233, 56.813], [58.093, 58.523]]],
-  "back/longer": [62.151, 73.089, "A chain can be as long as you like. Here x feeds u, u feeds v, and v feeds a last function, L. Each link has a local slope.", [[64.021, 64.661], [65.041, 65.211], [66.321, 66.691], [67.821, 68.141], [70.051, 70.251], [70.601, 71.221]]],
-  "back/back": [73.469, 83.223, "Start at the end and walk backwards, multiplying as you go: a half, times minus two is minus one, times three is minus three.", [[75.639, 75.949], [77.279, 77.839], [78.419, 78.629], [80.819, 81.229], [81.999, 82.199]]],
-  "back/backprop": [83.603, 94.462, "So a nudge to x moves L minus three times as much. And the walk finds more on the way: the slope of L with respect to v and to u as well.", [[87.813, 88.453], [90.363, 90.853], [92.953, 93.163]]],
-  "back/turn": [94.842, 95.582, "Your turn.", []]
+  "chain/vals": [14.011, 35.483, "At x equals one, u is four, and z is sixteen. How fast does z change when x is nudged? That rate is written d z, d x, read \u201cd z, d x\u201d: the derivative of z with respect to x, a tiny change in z over the tiny change in x that caused it.", [[15.421, 15.741], [16.761, 17.011], [18.401, 18.991], [21.901, 22.561], [25.391, 25.901], [26.221, 26.451], [27.051, 27.231], [27.881, 28.391], [30.951, 31.421], [32.851, 33.051]]],
+  "local/du": [37.283, 48.074, "Each link has its own local slope. u is three x plus one, so u moves three times as fast as x: d u, d x is three.", [[39.533, 40.043], [41.963, 42.323], [45.293, 45.733], [46.423, 46.723]]],
+  "local/dz": [48.454, 56.125, "z is u squared, whose slope is two u. At u equals four, d z, d u is eight.", [[50.084, 50.344], [51.784, 52.354], [53.704, 54.024]]],
+  "local/nudge": [56.505, 67.677, "Now nudge x by zero point zero one. u moves three times that, zero point zero three. And z moves eight times that, zero point two four.", [[59.395, 59.945], [61.565, 61.915], [63.435, 63.965], [65.875, 66.235]]],
+  "local/mult": [68.057, 82.593, "So z moves three times eight, twenty four times as fast as x. That is the chain rule: multiply the local slopes, d z, d x equals d z, d u times d u, d x.", [[70.277, 70.577], [72.977, 73.547], [74.827, 75.257], [76.927, 77.207], [77.807, 77.967]]],
+  "back/longer": [84.393, 95.33, "A chain can be as long as you like. Here x feeds u, u feeds v, and v feeds a last function, L. Each link has a local slope.", [[86.263, 86.903], [87.283, 87.453], [88.563, 88.933], [90.063, 90.383], [92.293, 92.493], [92.843, 93.463]]],
+  "back/back": [95.71, 105.465, "Start at the end and walk backwards, multiplying as you go: a half, times minus two is minus one, times three is minus three.", [[97.88, 98.19], [99.52, 100.08], [100.66, 100.87], [103.06, 103.47], [104.24, 104.44]]],
+  "back/backprop": [105.845, 116.703, "So a nudge to x moves L minus three times as much. And the walk finds more on the way: the slope of L with respect to v and to u as well.", [[110.055, 110.695], [112.605, 113.095], [115.195, 115.405]]],
+  "back/turn": [117.083, 117.824, "Your turn.", []]
  }
 }

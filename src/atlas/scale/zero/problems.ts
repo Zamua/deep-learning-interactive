@@ -3,7 +3,6 @@ import type { Generator } from '../../../mastery/domain/types';
 import { num, pick } from '../../kit';
 import { G, N, clean, traps, whys, words } from '../kit';
 
-const GB = 'A GB is $10^9$ bytes.';
 const M = '\\sym{m}{m}';
 const V = '\\sym{v}{v}';
 
@@ -20,12 +19,11 @@ function setup(rng: Rng, d: number): { n: number; g: number; mem: number[] } {
   }
 }
 
-const STAGES = [
-  'plain data parallelism, no sharding',
-  'stage 1, which shards the optimizer state: the master copy, $' + M + '$ and $' + V + '$',
-  'stage 2, which shards the optimizer state and the gradients',
-  'stage 3, which shards everything: the weights, the gradients and the optimizer state',
-];
+/** How a prompt names a stage: by what it shards when easy, by number when harder. */
+const named = (s: number, d: number): string =>
+  d >= 0.5
+    ? `ZeRO stage ${s}`
+    : ['nothing sharded', 'only the optimizer state sharded', 'the optimizer state and the gradients sharded', 'everything sharded'][s]!;
 
 const breakdown = (s: number, n: number, g: number): string =>
   [
@@ -42,7 +40,7 @@ export const generators: Generator[] = [
       const { n, g, mem } = setup(rng, d);
       const v = mem[3]!;
       return {
-        prompt: `A model with ${words(n * 1e9)} parameters trains with Adam, at 16 bytes per parameter, on $${G} = ${g}$ GPUs. With every part sharded (ZeRO stage 3), how many GB does each GPU hold? ${GB}`,
+        prompt: `A model with ${words(n * 1e9)} parameters trains with Adam on $${G} = ${g}$ GPUs, with ${named(3, d)}. How many GB does each GPU hold?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: mem[0]!, why: 'That is a full copy on every GPU, as plain data parallelism keeps. Sharding gives each GPU one slice.' },
@@ -59,9 +57,8 @@ export const generators: Generator[] = [
       const { n, g, mem } = setup(rng, d);
       const s = pick(rng, [1, 2]);
       const v = mem[s]!;
-      const name = d < 0.5 ? STAGES[s]! : `ZeRO stage ${s}`;
       return {
-        prompt: `A model with ${words(n * 1e9)} parameters trains with Adam (16-bit weights and gradients, 12 bytes of optimizer state) on $${G} = ${g}$ GPUs, using ${name}. How many GB does each GPU hold? ${GB}`,
+        prompt: `A model with ${words(n * 1e9)} parameters trains with Adam on $${G} = ${g}$ GPUs, with ${named(s, d)}. How many GB does each GPU hold?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: mem[3]!, why: `That shards everything, as stage 3 does. Stage ${s} keeps the 16-bit weights${s === 1 ? ' and gradients' : ''} whole on every GPU.` },
@@ -81,7 +78,7 @@ export const generators: Generator[] = [
       const correct = s - 1;
       const what = ['the optimizer state alone', 'the optimizer state and the gradients', 'the weights, the gradients and the optimizer state'];
       return {
-        prompt: `A model with ${words(n * 1e9)} parameters trains with Adam on $${G} = ${g}$ GPUs, using ZeRO stage ${s}. Which parts are split among the GPUs, so that each holds only one part in ${g}?`,
+        prompt: `A model with ${words(n * 1e9)} parameters trains with Adam on $${G} = ${g}$ GPUs, using ZeRO stage ${s}. Which parts are split among the GPUs?`,
         answer: {
           kind: 'choice',
           options,
@@ -101,7 +98,7 @@ export const generators: Generator[] = [
       const { n, g, mem } = setup(rng, d);
       if (d < 0.35) {
         return {
-          prompt: `A model with ${words(n * 1e9)} parameters trains on $${G} = ${g}$ GPUs. Next to plain data parallelism, how many times less memory does each GPU need with everything sharded (ZeRO stage 3)?`,
+          prompt: `A model with ${words(n * 1e9)} parameters trains on $${G} = ${g}$ GPUs. Next to plain data parallelism, how many times less memory does each GPU need with everything sharded?`,
           answer: { kind: 'number', value: g },
           traps: traps(g, [{ value: 16, why: '16 is the bytes per parameter, which every stage still stores somewhere. Sharding divides them among the GPUs.' }]),
           solution: [`Plain data parallelism keeps all 16 bytes per parameter on every GPU; stage 3 keeps one slice of them per GPU.`, `One slice in ${g}: ${g} times less memory each.`],
@@ -109,7 +106,7 @@ export const generators: Generator[] = [
       }
       const v = clean(mem[0]! - mem[3]!);
       return {
-        prompt: `A model with ${words(n * 1e9)} parameters trains with Adam, at 16 bytes per parameter, on $${G} = ${g}$ GPUs. Next to plain data parallelism, how many GB does each GPU save with everything sharded (ZeRO stage 3)? ${GB}`,
+        prompt: `A model with ${words(n * 1e9)} parameters trains with Adam on $${G} = ${g}$ GPUs. Next to plain data parallelism, how many GB does each GPU save with ${named(3, d)}?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: mem[3]!, why: 'That is what each GPU still holds with sharding. The saving is the full copy minus that.' },

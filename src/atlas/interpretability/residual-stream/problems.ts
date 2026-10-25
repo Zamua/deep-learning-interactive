@@ -23,7 +23,7 @@ export const generators: Generator[] = [
       const ans = sumAll([x0, ...writes]);
       const last = k / 2 - 1;
       return {
-        prompt: `A token's residual stream starts as its embedding $\\symx_0 = ${vec(x0)}$. Then ${names.map((nm, i) => `${nm} writes $${vec(writes[i]!)}$`).join(', ')}. What is the stream after block ${last}?`,
+        prompt: `A token's embedding is $\\symx_0 = ${vec(x0)}$. Then ${names.map((nm, i) => `${nm} writes $${vec(writes[i]!)}$`).join(', ')}. What is the token's residual stream after block ${last}?`,
         answer: { kind: 'vector', value: ans },
         traps: vtraps(ans, [
           { value: writes[k - 1]!, why: 'That is only the last write. Each part adds its output to the stream instead of replacing it.' },
@@ -31,7 +31,7 @@ export const generators: Generator[] = [
           { value: add(x0, writes[k - 1]!), why: 'That is $\\symx_0$ plus the last write alone. Every earlier write stays in the stream too.' },
         ]),
         solution: [
-          'Every attention and every MLP adds its output to the stream, so the stream is $\\symx_0$ plus every write so far.',
+          'The stream starts as the embedding $\\symx_0$, and every attention and every MLP adds its output to it, so the stream is $\\symx_0$ plus every write so far.',
           `$${[x0, ...writes].map((v) => vec(v)).join(' + ')} = ${vec(ans)}$.`,
         ],
       };
@@ -73,7 +73,7 @@ export const generators: Generator[] = [
       const T = pick(rng, [5, 8, 10, 16, 20]);
       const ans = [T, dim];
       return {
-        prompt: `A model with $${D} = ${big(dim)}$ has ${L} blocks, and each MLP widens a token to $4${D}$ inside. It reads ${T} tokens. What is the shape of the residual stream after block ${k}, as (tokens, numbers per token)?`,
+        prompt: `A model with $${D} = ${big(dim)}$ has ${L} blocks, and each MLP widens a token to $4${D}$ inside. It reads ${T} tokens. What is the shape of the residual stream after block ${k}?`,
         answer: { kind: 'shape', value: ans },
         traps: straps(ans, [
           { value: [T, dim * (k + 1)], why: `That grows the width with every block. Writes are added, not appended, so the width stays $${D}$.` },

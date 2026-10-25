@@ -1,8 +1,8 @@
 {
- "duration": 102.45,
+ "duration": 108.912,
  "scenes": {
   "chat": [0.0, 39.669],
-  "mask": [39.669, 102.45]
+  "mask": [39.669, 108.912]
  },
  "beats": {
   "chat/model": [0.7, 6.876, "Start from a pretrained language model: at every position of a text, it predicts the next token.", [[2.93, 3.4], [5.04, 5.27]]],
@@ -10,12 +10,12 @@
   "chat/markers": [14.444, 23.299, "A marker opens each turn: user, then the question; assistant, then the reply. An end token closes the reply.", [[16.294, 16.814], [17.294, 17.554], [18.394, 18.894], [19.534, 19.764], [20.624, 21.174]]],
   "chat/predict": [23.679, 30.121, "Run the model over all of it, and it predicts every token from the ones before, exactly as in pretraining.", [[25.309, 25.569], [28.139, 28.369]]],
   "chat/problem": [30.501, 38.569, "Grade every one of those predictions, and the model also learns to write the user's questions. We only want it to learn the replies.", [[32.691, 33.021], [36.001, 36.441]]],
-  "mask/mask": [40.369, 48.84, "So give every token a mask: one on the tokens the assistant wrote, and zero on everything else, both markers included.", [[42.509, 43.039], [44.979, 45.259], [47.099, 47.489]]],
-  "mask/end": [49.22, 56.329, "The end token gets a one too. It is part of the reply, and predicting it is how the model learns when to stop.", [[51.25, 51.72], [53.06, 53.31]]],
-  "mask/context": [56.709, 63.96, "The masked tokens stay in the input. The model still reads the question; it is just not graded on predicting it.", [[58.999, 59.499], [61.309, 61.789]]],
-  "mask/nll": [64.34, 82.015, "Each graded token adds minus the log of the probability the model gave it. Lima got zero point five, the full stop zero point eight, and the end token zero point nine: losses of zero point six nine, zero point two two and zero point one one.", [[68.83, 69.5], [71.32, 71.76], [72.41, 72.56], [73.54, 73.93], [74.91, 75.07], [76.22, 76.69], [78.69, 78.94], [80.22, 80.52]]],
-  "mask/mean": [82.395, 91.735, "The loss is their average. Divide by the number of ones in the mask, three, not by all nine tokens: zero point three four.", [[83.955, 84.465], [86.685, 86.995], [87.395, 87.835], [89.715, 90.215]]],
-  "mask/lr": [92.115, 100.23, "Then train as when fine-tuning any pretrained network, with a small learning rate, so the model keeps what it already knows.", [[92.565, 92.735], [93.225, 93.415], [96.005, 96.365], [97.685, 97.925]]],
-  "mask/turn": [100.61, 101.35, "Your turn.", []]
+  "mask/mask": [40.369, 49.41, "So give every token a mask, m: one on the tokens the assistant wrote, and zero on everything else, both markers included.", [[42.459, 42.839], [43.209, 43.839], [45.839, 46.099], [47.849, 48.069]]],
+  "mask/end": [49.79, 56.899, "The end token gets a one too. It is part of the reply, and predicting it is how the model learns when to stop.", [[51.82, 52.29], [53.63, 53.88]]],
+  "mask/context": [57.279, 64.53, "The masked tokens stay in the input. The model still reads the question; it is just not graded on predicting it.", [[59.569, 60.069], [61.879, 62.359]]],
+  "mask/nll": [64.91, 82.585, "Each graded token adds minus the log of the probability the model gave it. Lima got zero point five, the full stop zero point eight, and the end token zero point nine: losses of zero point six nine, zero point two two and zero point one one.", [[69.4, 70.07], [71.89, 72.33], [72.98, 73.13], [74.11, 74.5], [75.48, 75.64], [76.79, 77.26], [79.26, 79.51], [80.79, 81.09]]],
+  "mask/mean": [82.965, 98.198, "The loss, L, is their average: add up m t times minus log p t over every position t, and divide by the number of ones in the mask, three, not by all nine tokens: zero point three four.", [[83.625, 83.895], [84.255, 84.535], [85.485, 86.065], [90.795, 91.085], [93.425, 93.745], [94.125, 94.525], [96.385, 96.785]]],
+  "mask/lr": [98.578, 106.692, "Then train as when fine-tuning any pretrained network, with a small learning rate, so the model keeps what it already knows.", [[99.028, 99.198], [99.688, 99.878], [102.468, 102.828], [104.148, 104.388]]],
+  "mask/turn": [107.072, 107.812, "Your turn.", []]
  }
 }

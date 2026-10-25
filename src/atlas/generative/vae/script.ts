@@ -18,7 +18,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'plain', say: 'A plain autoencoder maps each input to one code: a single point.', code: 'plain' },
-        { id: 'two', say: 'A variational autoencoder, or VAE, gives two numbers for every code dimension instead: a mean, {μ|mu}, and a spread, {σ|sigma}. With a code of two dimensions, the encoder outputs four numbers.', code: 'two' },
+        { id: 'two', say: 'A variational autoencoder, or VAE, gives two numbers for every code dimension instead: a mean, written {μ|mu}, the Greek letter mu, and a spread, {σ|sigma}, the Greek letter sigma. Here {σ|sigma} is a standard deviation, not the sigmoid. With a code of two dimensions, the encoder outputs four numbers.', code: 'two' },
         { id: 'bell', say: 'Each pair describes a bell curve. Codes near the mean are likely, and the spread says how far they range: here one, give or take a half, and minus a half, give or take {0.2|zero point two}.', code: 'two' },
       ],
     },
@@ -33,7 +33,7 @@ export const script: LectureScript = {
         # dz/dmu = 1    dz/dsigma = eps         #@grad
       `,
       beats: [
-        { id: 'eps', say: 'In training, the decoder does not get the mean. First draw noise, {ε|epsilon}, from a standard normal, with mean zero and spread one: here {0.4|zero point four} and minus one.', code: 'eps' },
+        { id: 'eps', say: 'In training, the decoder does not get the mean. First draw noise from a standard normal, with mean zero and spread one. It is written {ε|epsilon}, the Greek letter epsilon: here {0.4|zero point four} and minus one.', code: 'eps' },
         { id: 'z', say: 'Stretch it by the spread and shift it by the mean: z is {μ|mu} plus {σ|sigma} times {ε|epsilon}. One, plus a half times {0.4|zero point four}, is {1.2|one point two}. Minus a half, plus {0.2|zero point two} times minus one, is minus {0.7|zero point seven}.', code: 'z' },
         { id: 'why', say: 'Every step draws a fresh code near the mean, and the decoder has to rebuild the same input from each one. So a whole neighborhood of codes comes to decode alike.', code: 'why' },
         { id: 'grad', say: 'The randomness sits in {ε|epsilon}, which no weight sets. So backprop still reaches {μ|mu} and {σ|sigma}: z moves one for one with {μ|mu}, and by {ε|epsilon} times any change in {σ|sigma}.', code: 'grad' },

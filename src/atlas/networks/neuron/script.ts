@@ -22,8 +22,8 @@ export const script: LectureScript = {
       beats: [
         { id: 'inputs', say: 'A neuron takes in a vector, x. This one has two entries: two and one.', code: 'x' },
         { id: 'weights', say: 'It keeps one weight per entry, w, here one and minus three, and multiplies each input by its weight.', code: 'w' },
-        { id: 'sum', say: 'Then it adds up the products, plus a bias, b, of two. Two, minus three, plus two: one. That sum, w dot x plus b, is the pre-activation.', code: ['b', 'z'] },
-        { id: 'relu', say: 'Last comes the bend, the activation. Here it is a ReLU: it keeps a positive number and turns a negative one into zero. One is positive, so the neuron outputs one.', code: 'a' },
+        { id: 'sum', say: 'Then it adds up the products, plus a bias, b, of two. Two, minus three, plus two: one. That sum is the pre-activation, {z = w · x + b|z, equal to w dot x plus b}.', code: ['b', 'z'] },
+        { id: 'relu', say: 'Last comes the bend, the activation. Here it is a ReLU, {max(0, z)|max of zero and z}: the larger of zero and z. It keeps a positive number and turns a negative one into zero. One is positive, so the output, a, is one.', code: 'a' },
         { id: 'neg', say: 'Feed it one and two instead. One, minus six, plus two is minus three, and the ReLU turns that into zero. The neuron stays silent.', code: 'neg' },
       ],
     },

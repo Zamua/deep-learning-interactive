@@ -68,7 +68,7 @@ export const generators: Generator[] = [
         const cluster = g === 1 ? `One GPU sustains $${sci(r, 14)}$ FLOPs per second.` : `The run uses ${words(g)} GPUs, each sustaining $${sci(r, 14)}$ FLOPs per second.`;
         const totalTex = `${flops} \\times 10^{${p + q}}`;
         return {
-          prompt: `A model with $${N} = ${sci(a, p)}$ parameters trains on $${D} = ${sci(b, q)}$ tokens. ${cluster} How many ${unit} does training take?${inHours ? ' An hour is 3,600 seconds.' : ''}`,
+          prompt: `A model with $${N} = ${sci(a, p)}$ parameters trains on $${D} = ${sci(b, q)}$ tokens. ${cluster} How many ${unit} does training take?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: v / 3, why: 'That counts only the forward pass, $2ND$. Training also runs the backward pass, which costs twice as much: $6ND$.' },
@@ -99,8 +99,8 @@ export const generators: Generator[] = [
       const c = clean(prod / 10 ** shift);
       const scaled = (x: number) => x / 10 ** shift;
       const ask = one
-        ? `A trained model has $${N} = ${sci(a, p)}$ parameters. Running it forward on one token, with no gradients, costs about $c \\times 10^{${k}}$ FLOPs. What is $c$?`
-        : `A trained model has $${N} = ${sci(a, p)}$ parameters. Scoring $${sci(b, q)}$ tokens with it runs only the forward pass, with no gradients. That costs about $c \\times 10^{${k}}$ FLOPs. What is $c$?`;
+        ? `A trained model has $${N} = ${sci(a, p)}$ parameters. Running it forward on one token costs about $c \\times 10^{${k}}$ FLOPs. What is $c$?`
+        : `A trained model has $${N} = ${sci(a, p)}$ parameters. Scoring $${sci(b, q)}$ tokens with it runs only the forward pass. That costs about $c \\times 10^{${k}}$ FLOPs. What is $c$?`;
       return {
         prompt: ask,
         answer: { kind: 'number', value: c },

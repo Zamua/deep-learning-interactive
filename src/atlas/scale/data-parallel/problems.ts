@@ -14,7 +14,7 @@ export const generators: Generator[] = [
       const ask = d < 0.35 ? 0 : rng.int(3);
       if (ask === 0) {
         return {
-          prompt: `Data parallelism on $${G} = ${g}$ GPUs, each working on ${b} examples per step. How many examples does one step's gradient average over?`,
+          prompt: `$${G} = ${g}$ GPUs each work on ${b} examples per step. How many examples does one step's gradient average over?`,
           answer: { kind: 'number', value: B },
           traps: traps(B, [
             { value: b, why: `That is one GPU's slice. The step averages the gradients of all ${g} slices: ${g} times as many examples.` },
@@ -51,7 +51,7 @@ export const generators: Generator[] = [
       const B = g * b;
       const n = s * B;
       return {
-        prompt: `A dataset has $\\symN = ${big(n)}$ examples. Data parallelism runs it on $${G} = ${g}$ GPUs, each working on ${b} examples per step. How many steps make one epoch?`,
+        prompt: `A dataset has $\\symN = ${big(n)}$ examples, and $${G} = ${g}$ GPUs each work on ${b} of them per step. How many steps make one epoch?`,
         answer: { kind: 'number', value: s },
         traps: traps(s, [
           { value: n / b, why: `That counts each GPU's slice as a step. All ${g} slices are processed in the same step, so one step covers ${commas(B)} examples.` },
@@ -75,7 +75,7 @@ export const generators: Generator[] = [
           if (sum % g !== 0) continue;
           const v = sum / g;
           return {
-            prompt: `$${G} = ${g}$ GPUs each hold a copy of the weights and compute a gradient on their own slice of the batch. For one weight, their gradients are ${gs.map((x, i) => `$${num(x)}$ on GPU ${i}`).join(', ')}. What gradient does every GPU use for its step?`,
+            prompt: `$${G} = ${g}$ GPUs train one model, each on its own slice of the batch. For one weight, their gradients are ${gs.map((x, i) => `$${num(x)}$ on GPU ${i}`).join(', ')}. What gradient does every GPU use for its step?`,
             answer: { kind: 'number', value: v },
             traps: traps(v, [
               { value: sum, why: `That is the sum. The step uses the average, the sum divided by ${g}: the gradient of the whole batch.` },
@@ -92,7 +92,7 @@ export const generators: Generator[] = [
         if (sums.some((s) => (s * 2) % g !== 0)) continue;
         const v = sums.map((s) => clean(s / g));
         return {
-          prompt: `$${G} = ${g}$ GPUs each compute a gradient for the same ${k} weights, on their own slices of the batch. ${rows.map((r, i) => `GPU ${i}: $${vecTex(r)}$`).join('; ')}. What gradient does every GPU use for its step?`,
+          prompt: `$${G} = ${g}$ GPUs train one model, each on its own slice of the batch. Their gradients for the same ${k} weights are ${rows.map((r, i) => `$${vecTex(r)}$ on GPU ${i}`).join(', ')}. What gradient does every GPU use for its step?`,
           answer: { kind: 'vector', value: v },
           traps: vtraps(v, [
             { value: sums, why: `That is the sum. The step uses the average: divide each entry by ${g}.` },

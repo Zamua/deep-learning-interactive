@@ -43,7 +43,7 @@ export const script: LectureScript = {
         iou    = inter / union   # 0.33           #@iou
       `,
       beats: [
-        { id: 'inter', say: 'First, their overlap, the intersection. Its left edge is the larger left, two, and its right edge the smaller right, five: three wide.', code: ['x', 'w'] },
+        { id: 'inter', say: 'First, their overlap, the intersection. Its left edge is the larger left, {max(1, 2)|the max of one and two}, which is two. Its right edge is the smaller right, {min(5, 6)|the min of five and six}, which is five. So it is three wide.', code: ['x', 'w'] },
         { id: 'tall', say: 'Its top is the larger top, two, and its bottom the smaller bottom, four: two tall. The intersection is three times two, six.', code: ['y', 'h', 'inter'] },
         { id: 'apart', say: 'If the boxes miss each other, right minus left comes out negative: no overlap, so the intersection is zero.', code: 'w' },
         { id: 'union', say: 'The union is everything either box covers: twelve plus twelve, minus the six they share, so the overlap is not counted twice. Eighteen.', code: 'union' },

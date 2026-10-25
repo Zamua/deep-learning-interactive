@@ -37,7 +37,7 @@ export const script: LectureScript = {
         { id: 'table', say: 'The fix is a second table, P, with one vector per position: row zero for the first token, row one for the second, and so on.', code: 'P' },
         { id: 'sum', say: 'Each token\'s input is its embedding plus the vector for its position. Dog at position zero: one and two, plus zero and one, is one and three.', code: ['E', 'add'] },
         { id: 'differ', say: 'Dog at position two gets one and two, plus one and minus one: two and one. The same word now enters differently in each place, so attention can tell the two sentences apart.', code: 'diff' },
-        { id: 'learned', say: 'The position vectors are learned, like the embeddings. A model that takes up to {1,024|one thousand and twenty four} tokens, with vectors of {768|seven hundred sixty eight} numbers, learns {1,024 by 768|one thousand and twenty four by seven hundred sixty eight}: about {786,000|seven hundred eighty six thousand} numbers.', code: 'size' },
+        { id: 'learned', say: 'The position vectors are learned, like the embeddings. Write {Tₘₐₓ|T max} for the most tokens a model takes: P is {Tₘₐₓ|T max} by d. With {1,024|one thousand and twenty four} tokens of {768|seven hundred sixty eight} numbers, that is about {786,000|seven hundred eighty six thousand} learned numbers.', code: 'size' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

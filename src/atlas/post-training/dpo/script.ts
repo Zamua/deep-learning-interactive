@@ -19,7 +19,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'rl', say: 'The usual route has two stages: fit a reward model to preference pairs, then sample answers and push their reward up, with a KL penalty to the reference.', code: 'rl' },
         { id: 'skip', say: 'Direct preference optimization skips both. No reward model, and no sampling: it trains on the pairs directly.' },
-        { id: 'implicit', say: 'It uses the model\'s own log-ratio to the reference as the reward: {β|beta} times the log of {π|pi} over {π_ref|pi ref}, for a whole answer.', code: 'imp' },
+        { id: 'implicit', say: 'It uses the model\'s own log-ratio to the reference as the reward: {β|beta} times the log of {π|pi} over {π_ref|pi ref}, for a whole answer. It is written {r̂|r hat}: the hat marks an implied reward, with no reward model behind it.', code: 'imp' },
         { id: 'eg', say: 'If the model gives an answer a log-probability of minus twelve, where the reference gave minus fifteen, the log-ratio is three. With {β|beta} at {0.1|zero point one}, the implicit reward is {0.3|zero point three}.', code: ['lp', 'imp'] },
         { id: 'leash', say: 'That reward grows only as the model moves away from the reference, and {β|beta} sets the exchange rate, as in the KL penalty.', code: 'imp' },
       ],
@@ -36,7 +36,7 @@ export const script: LectureScript = {
         # needs: pairs, pi, frozen pi_ref        #@needs
       `,
       beats: [
-        { id: 'plug', say: 'Put the implicit rewards of the chosen and the rejected answer into the reward model\'s loss: minus log sigmoid of their difference.', code: ['m', 'loss'] },
+        { id: 'plug', say: 'Call the chosen answer {y_w|y w} and the rejected one {y_l|y l}. Put their implicit rewards into the reward model\'s loss: minus log sigmoid of their difference.', code: ['m', 'loss'] },
         { id: 'm', say: 'Say the chosen answer\'s log-ratio is three, and the rejected one\'s is minus one. The gap is four; times {β|beta}, {0.4|zero point four}.', code: 'm' },
         { id: 'loss', say: '{σ(0.4)|Sigma of zero point four} is about {0.60|zero point six}, and minus its log is about {0.51|zero point five one}.', code: 'loss' },
         { id: 'push', say: 'Lowering the loss raises the chosen answer\'s probability relative to the reference, and lowers the rejected one\'s.', code: 'loss' },

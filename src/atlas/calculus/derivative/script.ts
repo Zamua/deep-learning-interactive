@@ -22,11 +22,11 @@ export const script: LectureScript = {
         rise / h                 # 3.0      #@rise
       `,
       beats: [
-        { id: 'line', say: 'A straight line climbs at the same rate everywhere. {2x + 1|Two x plus one} rises two for every step of one, so its slope is two.', code: 'line' },
+        { id: 'line', say: 'A straight line climbs at the same rate everywhere. Each time x steps along by one, {2x + 1|two x plus one} rises by two, so its slope is two.', code: 'line' },
         { id: 'shift', say: 'The plus one only sets the height. {2x − 2|Two x minus two} sits lower, but it tilts the same way: slope two. The constant never changes the slope.', code: 'shift' },
         { id: 'fall', say: 'A line that falls has a negative slope. {−3x + 4|Minus three x plus four} drops three for every step: slope minus three.', code: 'fall' },
         { id: 'forms', say: 'However the line is written, find the number multiplying x. Three times, x minus one, is three x minus three: slope three. Half of two x plus four is x plus two: slope one.', code: 'forms' },
-        { id: 'curve', say: 'A curve is steeper in some places than others. Take {f(x) = x²|f of x equals x squared}. How steep is it at x equals one?', code: 'f' },
+        { id: 'curve', say: 'A curve is steeper in some places than others. Take the function {f(x) = x²|f of x equals x squared}, where {f(x)|f of x} is the value f gives for the input x. How steep is it at x equals one?', code: 'f' },
         { id: 'two', say: 'Pick a second point a step h to the right, at x equals two. Between them, f goes from one to four.', code: 'xh' },
         { id: 'rise', say: 'The rise is the later value minus the earlier one: four minus one, three. Over a run of one, the slope between the two points is three.', code: 'rise' },
         { id: 'formula', say: 'Written out: the slope between x and x plus h is f of x plus h, minus f of x, all over h.', code: 'rise' },
@@ -45,9 +45,9 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'shrink', say: 'Now shrink the step. With h equal to a half, the slope is {2.5|two point five}. With a tenth, it is {2.1|two point one}.', code: ['loop', 'out'] },
-        { id: 'limit', say: 'As h shrinks toward zero, the slope settles on two. That limit is the derivative: {f′(1) = 2|f prime of one equals two}.', code: 'd' },
+        { id: 'limit', say: 'As h shrinks toward zero, the slope settles on two. That limit is the derivative of f at one, written {f′(1)|f prime of one}, read “f prime of one”: {f′(1) = 2|f prime of one equals two}.', code: 'd' },
         { id: 'tangent', say: 'The line with that slope just grazes the curve at x equals one. It is the tangent.', code: 'd' },
-        { id: 'line', say: 'A straight line has nothing to shrink: every step gives the same slope. So the derivative of {2x + 1|two x plus one} is two, at every x.', code: 'line' },
+        { id: 'line', say: 'A straight line has nothing to shrink: every step gives the same slope. So for {f(x) = 2x + 1|f of x equals two x plus one}, the derivative is two at every x: {f′(x) = 2|f prime of x equals two}.', code: 'line' },
       ],
     },
     {
@@ -64,10 +64,10 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'rate', say: 'Read the derivative as a rate. Near x equals one, f changes about two times as much as x does.', code: 'rate' },
-        { id: 'right', say: 'Nudge x from one to {1.01|one point zero one}. f changes by about two times {0.01|zero point zero one}: {0.02|zero point zero two}.', code: 'right' },
+        { id: 'right', say: 'Nudge x from one to {1.01|one point zero one}. f changes by about two times {0.01|zero point zero one}: {≈ 0.02|about zero point zero two}, where the wavy equals sign, {≈|approximately equals}, means “is about”.', code: 'right' },
         { id: 'value', say: 'So f of {1.01|one point zero one} is about one plus {0.02|zero point zero two}: {1.02|one point zero two}. The true value, {1.0201|one point zero two zero one}, is very close.', code: 'value' },
         { id: 'left', say: 'Nudge to the left instead, to {0.99|zero point nine nine}, and the change flips sign: about minus {0.02|zero point zero two}, so f is near {0.98|zero point nine eight}.', code: 'left' },
-        { id: 'rule', say: 'The same holds for any slope: the change in f is about f prime times the change in x.', code: 'rule' },
+        { id: 'rule', say: 'The same holds for any slope: the change in f is about f prime of x times the change in x. With {Δ|delta}, the Greek capital delta, for “the change in”: {Δf ≈ f′(x) Δx|delta f is about f prime of x times delta x}.', code: 'rule' },
       ],
     },
     {

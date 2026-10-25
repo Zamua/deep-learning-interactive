@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
 import { int, ints, num, pick, vec } from '../../kit';
-import { argmaxOf, dot, mat, ORDINAL, prods, terms } from '../kit';
+import { argmaxOf, dot, mat, prods, terms } from '../kit';
 
 /** Entry range by difficulty: whole numbers from 0 at first, then negatives. */
 const range = (d: number): [number, number] => (d < 0.35 ? [0, 3] : d < 0.7 ? [-2, 3] : [-3, 4]);
@@ -35,10 +35,10 @@ export const generators: Generator[] = [
       const b = ints(rng, C, Math.min(lo, 0), Math.min(hi, 2));
       const s = score(W, x, b);
       return {
-        prompt: `A linear classifier has weights $\\symW = ${mat(W)}$ and biases $\\symb = ${vec(b)}$. For the input $\\symx = ${vec(x)}$, what are the scores $\\syms = \\symW\\symx + \\symb$? Enter one score per class, class 0 first.`,
+        prompt: `A linear classifier has weights $\\symW = ${mat(W)}$ and biases $\\symb = ${vec(b)}$. For the input $\\symx = ${vec(x)}$, what are the scores $\\syms$?`,
         answer: { kind: 'vector', value: s },
         solution: [
-          `$\\symW$ has ${C} rows, one per class, and ${D} columns, one per entry of $\\symx$. Each class's score is its row dotted with $\\symx$, plus its bias.`,
+          `$\\syms = \\symW\\symx + \\symb$. $\\symW$ has ${C} rows, one per class, and ${D} columns, one per entry of $\\symx$: class $k$'s score is its row, $\\symw_k$, dotted with $\\symx$, plus its bias $\\symb_k$.`,
           ...W.map((_, k) => classStep(W, x, b, k)),
           `So $\\syms = ${vec(s)}$.`,
         ],
@@ -57,12 +57,12 @@ export const generators: Generator[] = [
       const v = dot(W[k]!, x) + b[k]!;
       const col = W.map((r) => r[k]!);
       const traps = [
-        { value: dot(W[k]!, x), why: `That is $\\symw_{${k}} \\cdot \\symx$ without the bias. Add $\\symb_{${k}} = ${b[k]}$.` },
+        { value: dot(W[k]!, x), why: `That is row ${k} dotted with $\\symx$, without the bias. Add $\\symb_{${k}} = ${b[k]}$.` },
         { value: dot(col, x) + b[k]!, why: `That uses column ${k} of $\\symW$. A class's weights are its row: row ${k} lines up with the entries of $\\symx$.` },
       ];
       if (k + 1 < n) traps.push({ value: dot(W[k + 1]!, x) + b[k + 1]!, why: `That is the score of class ${k + 1}, the next row. Classes count from 0, so class ${k} is row ${k}.` });
       return {
-        prompt: `$\\symW = ${mat(W)}$, $\\symx = ${vec(x)}$ and $\\symb = ${vec(b)}$. What is the score of class ${k}, $\\syms_{${k}}$? Classes count from 0, so class ${k} is the ${ORDINAL[k]} row.`,
+        prompt: `$\\symW = ${mat(W)}$, $\\symx = ${vec(x)}$ and $\\symb = ${vec(b)}$. What is the score of class ${k}, counting from 0?`,
         answer: { kind: 'number', value: v },
         traps: traps.filter((t, i) => t.value !== v && traps.findIndex((u) => u.value === t.value) === i),
         solution: [
@@ -84,20 +84,20 @@ export const generators: Generator[] = [
       const zeros = Array.from({ length: D }, () => 0);
       if (rng.int(2) === 0) {
         return {
-          prompt: `$\\symW = ${mat(W)}$ and $\\symb = ${vec(b)}$. The input is all zeros, $\\symx = ${vec(zeros)}$. What are the scores $\\syms = \\symW\\symx + \\symb$?`,
+          prompt: `$\\symW = ${mat(W)}$ and $\\symb = ${vec(b)}$. For the input $\\symx = ${vec(zeros)}$, what are the scores $\\syms$?`,
           answer: { kind: 'vector', value: b },
           solution: [
-            `Every product in $\\symW\\symx$ has a factor of 0, so $\\symW\\symx = ${vec(W.map(() => 0))}$.`,
+            `$\\syms = \\symW\\symx + \\symb$, and every product in $\\symW\\symx$ has a factor of 0, so $\\symW\\symx = ${vec(W.map(() => 0))}$.`,
             `What is left is the bias: $\\syms = \\symb = ${vec(b)}$.`,
             'The bias is each class\'s score before any evidence: its built-in lean.',
           ],
         };
       }
       return {
-        prompt: `A linear classifier with $\\symW = ${mat(W)}$ is shown the all-zero input $\\symx = ${vec(zeros)}$ and returns the scores $\\syms = ${vec(b)}$. What is $\\symb$?`,
+        prompt: `A linear classifier with $\\symW = ${mat(W)}$ gives the scores $\\syms = ${vec(b)}$ for the input $\\symx = ${vec(zeros)}$. What are its biases $\\symb$?`,
         answer: { kind: 'vector', value: b },
         solution: [
-          `With $\\symx$ all zeros, $\\symW\\symx = ${vec(W.map(() => 0))}$ whatever $\\symW$ holds.`,
+          `$\\syms = \\symW\\symx + \\symb$, and with $\\symx$ all zeros, $\\symW\\symx = ${vec(W.map(() => 0))}$ whatever $\\symW$ holds.`,
           `So $\\syms = \\symb$: the biases are $${vec(b)}$.`,
         ],
       };

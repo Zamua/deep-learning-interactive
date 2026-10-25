@@ -1,8 +1,8 @@
 {
- "duration": 117.425,
+ "duration": 124.444,
  "scenes": {
-  "three": [0.0, 67.41],
-  "match": [67.41, 117.425]
+  "three": [0.0, 74.429],
+  "match": [74.429, 124.444]
  },
  "beats": {
   "three/two": [0.7, 9.7, "In attention over the encoder, each encoder state did two jobs. It was scored against the decoder's state, and it was what got averaged.", [[2.44, 2.81], [4.99, 5.49], [7.64, 7.93]]],
@@ -10,12 +10,12 @@
   "three/query": [22.933, 33.145, "The query, q, is W Q times x: what this token is looking for. With x equal to two and one, q is three and one.", [[23.653, 23.833], [24.243, 24.503], [26.623, 27.093], [28.673, 29.263], [31.313, 31.663]]],
   "three/key": [33.525, 42.505, "The key, k, is W K times x: what this token offers to a query that comes looking. Here, two and one.", [[34.135, 34.355], [34.745, 34.965], [36.905, 37.385], [40.325, 40.815], [41.155, 41.475]]],
   "three/value": [42.885, 51.893, "The value, v, is W V times x: what this token hands over when it is chosen. Here, one and four.", [[43.595, 43.835], [44.245, 44.555], [44.825, 44.985], [46.745, 47.155], [49.625, 50.125], [50.475, 50.775]]],
-  "three/shape": [52.273, 66.31, "Each matrix has one row per entry of what it makes, and one column per entry of x. With tokens of five hundred twelve numbers and queries of sixty four, W Q is sixty four by five hundred twelve.", [[55.583, 55.853], [57.983, 58.613], [62.633, 63.073]]],
-  "match/ask": [68.11, 77.298, "Now three tokens: cats, like and fish. Token two, fish, asks with its query: one and one.", [[69.46, 69.97], [70.47, 70.79], [71.17, 71.48], [72.2, 72.75], [73.57, 73.8], [74.28, 74.52], [75.77, 76.14], [76.52, 76.67]]],
-  "match/score": [77.678, 85.441, "Its query is scored against every token's key, its own included, with a dot product: two, zero and one.", [[80.608, 80.878], [81.898, 82.208], [83.198, 83.568], [83.948, 84.228]]],
-  "match/weights": [85.821, 93.965, "Softmax turns the scores into weights: zero point six seven, zero point zero nine and zero point two four.", [[88.241, 88.781], [90.141, 90.481], [91.931, 92.231]]],
-  "match/mix": [94.345, 104.614, "Fish's output is the weighted sum of the values, mostly the value of cats, two and zero. It comes to one point five eight and zero point four two.", [[97.225, 97.525], [99.015, 99.345], [100.385, 100.945], [102.835, 103.005]]],
-  "match/roles": [104.994, 115.205, "So the keys decide how much each token counts, and the values decide what it brings. The three matrices are learned, and every token uses the same three.", [[107.964, 108.254], [110.304, 110.894], [112.574, 112.834]]],
-  "match/turn": [115.585, 116.325, "Your turn.", []]
+  "three/shape": [52.273, 73.329, "Each matrix has one row per entry of what it makes, and one column per entry of x. Write d for a token's length and d k for a query's: W Q is d k by d. With d of five hundred twelve and d k of sixty four, that is sixty four by five hundred twelve.", [[55.563, 55.863], [58.063, 58.693], [60.693, 60.953], [62.883, 63.473], [65.823, 66.413], [68.233, 68.443], [70.143, 70.503]]],
+  "match/ask": [75.129, 84.317, "Now three tokens: cats, like and fish. Token two, fish, asks with its query: one and one.", [[76.479, 76.989], [77.489, 77.809], [78.189, 78.499], [79.219, 79.769], [80.589, 80.819], [81.299, 81.539], [82.789, 83.159], [83.539, 83.689]]],
+  "match/score": [84.697, 92.459, "Its query is scored against every token's key, its own included, with a dot product: two, zero and one.", [[87.627, 87.897], [88.917, 89.227], [90.217, 90.587], [90.967, 91.247]]],
+  "match/weights": [92.839, 100.984, "Softmax turns the scores into weights: zero point six seven, zero point zero nine and zero point two four.", [[95.259, 95.799], [97.159, 97.499], [98.949, 99.249]]],
+  "match/mix": [101.364, 111.633, "Fish's output is the weighted sum of the values, mostly the value of cats, two and zero. It comes to one point five eight and zero point four two.", [[104.244, 104.544], [106.034, 106.364], [107.404, 107.964], [109.854, 110.024]]],
+  "match/roles": [112.013, 122.224, "So the keys decide how much each token counts, and the values decide what it brings. The three matrices are learned, and every token uses the same three.", [[114.983, 115.273], [117.323, 117.913], [119.593, 119.853]]],
+  "match/turn": [122.604, 123.344, "Your turn.", []]
  }
 }

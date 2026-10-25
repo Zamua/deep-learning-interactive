@@ -72,7 +72,7 @@ export const generators: Generator[] = [
       const sums = S.ps.map(total);
       const bySum = sums.indexOf(Math.max(...sums));
       return {
-        prompt: `Retrieval embeds a question as $${vtex(S.q)}$ and ${n} passages as ${listTex(S.ps)}. Every vector has size 1. Which passage scores highest? Passages count from 0.`,
+        prompt: `Retrieval embeds a question as $${vtex(S.q)}$ and ${n} passages as ${listTex(S.ps)}. Which passage scores highest?`,
         answer: { kind: 'number', value: best },
         traps: traps(best, [
           ...(sums.filter((x) => x === sums[bySum]).length === 1 ? [{ value: bySum, why: `Passage ${bySum} has the largest entries in total, but a score is the dot product with the question: it scores ${num(S.sc[bySum]!)}.` }] : []),
@@ -103,7 +103,7 @@ export const generators: Generator[] = [
       const wrong: (readonly [number, number])[] = [];
       for (const c of cands) if (label(c) !== label(right) && !wrong.some((w) => label(w) === label(c)) && wrong.length < 3) wrong.push(c);
       return {
-        prompt: `Retrieval embeds a question as $${vtex(S.q)}$ and four passages as ${listTex(S.ps)}. Every vector has size 1. With $k = 2$, which passages go into the prompt?`,
+        prompt: `Retrieval embeds a question as $${vtex(S.q)}$ and four passages as ${listTex(S.ps)}. With $k = 2$, which passages go into the prompt?`,
         answer: { kind: 'choice', options: [label(right), ...wrong.map(label)], correct: 0, why: [null, ...wrong.map(why)] },
         solution: ['Score each passage by its dot product with the question.', ...scoreSteps(S), `The two highest are passage ${r0} ($${num(S.sc[r0])}$) and passage ${r1} ($${num(S.sc[r1])}$).`],
       };
@@ -182,7 +182,7 @@ export const generators: Generator[] = [
             { value: Math.floor(C / n), why: 'That leaves no room for the instruction and the question, which share the same context.' },
             { value: Math.ceil((C - a - q) / n), why: 'That rounds up, and the last passage would not fit. Round down.' },
           ]),
-          solution: [`The instruction and the question take $${a} + ${q} = ${a + q}$ tokens, leaving $${C} - ${a + q} = ${C - a - q}$.`, `Each passage takes ${n}: $\\lfloor ${C - a - q} / ${n} \\rfloor = ${fit}$ passages.`],
+          solution: [`The instruction and the question take $${a} + ${q} = ${a + q}$ tokens, leaving $${C} - ${a + q} = ${C - a - q}$.`, `Each passage takes ${n}, and only whole passages fit: ${fit} of them take $${fit} \\times ${n} = ${fit * n}$, and one more would need $${(fit + 1) * n}$.`],
         };
       }
       const k = d < 0.35 ? int(rng, 2, 3) : int(rng, 3, 8);

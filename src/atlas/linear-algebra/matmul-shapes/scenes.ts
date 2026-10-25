@@ -82,7 +82,7 @@ const order: SceneDef = {
       s.text('@', x0 + 4 * q + 6 * u, top + 1.5 * q, { size: 4, font: 'mono', color: s.c('--ink-3') });
       block(s, x0 + 4 * q + 16 * u, top, 3 * q, 2 * q, 'blue', 'A', ['2', 'red'], ['3', '--ink-3']);
       rich(s, shapes(3, 4, 2, 3, 'red', null), s.w / 2, s.h * 0.48, { size: 3.8, weight: 600 });
-      s.text('inner 4 ≠ 2: no product  ✗', s.w / 2, s.h * 0.58, { size: 3.6, font: 'mono', color: s.c('red') });
+      s.text('inner 4 vs 2: no product  ✗', s.w / 2, s.h * 0.58, { size: 3.6, font: 'mono', color: s.c('red') });
     });
     s.alpha(s.ease('pair', 0.6, 0.3), () => {
       const q = 6 * u;

@@ -10,7 +10,7 @@ const TASKS: [string, number][] = [
   ['dishes of food', 101],
 ];
 const DOMAINS = ['chest X-rays', 'satellite images of farmland', 'microscope images of cells', 'ultrasound scans', 'radar images of storms'];
-const PRE = 'a network pretrained on ImageNet, 1.2 million labeled photos in 1,000 classes';
+const PRE = 'a network pretrained on ImageNet';
 
 export const generators: Generator[] = [
   {

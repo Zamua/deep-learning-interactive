@@ -15,9 +15,9 @@ export const generators: Generator[] = [
       const dm = d < 0.35 ? pick(rng, [2, 3, 4, 5, 10, 20]) : d < 0.7 ? pick(rng, [100, 200, 300, 400, 500]) : pick(rng, [1000, 2000, 3000, 4000, 5000]);
       const part = d < 0.5 ? 'all' : pick(rng, ['all', 'attn', 'mlp'] as const);
       const v = { all: 12, attn: 4, mlp: 8 }[part] * dm * dm;
-      const what = { all: 'one transformer block hold', attn: 'one block\'s attention hold', mlp: 'one block\'s MLP hold' }[part];
+      const what = { all: 'one block hold', attn: 'one block\'s attention hold', mlp: 'one block\'s MLP hold' }[part];
       return {
-        prompt: `A transformer has width $${D} = ${big(dm)}$, multi-head attention, and an MLP with a hidden layer of $4${D}$. Ignoring biases and layer norms, how many weights does ${what}?`,
+        prompt: `A transformer has width $${D} = ${big(dm)}$. Ignoring biases and layer norms, how many weights does ${what}?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           ...(part !== 'attn' ? [{ value: 4 * dm * dm, why: `That is the attention alone: $${WQ}$, $${WK}$, $${WV}$ and $${WO}$, four $${D} \\times ${D}$ matrices.` }] : []),
@@ -29,7 +29,7 @@ export const generators: Generator[] = [
         solution: [
           `Attention: $${WQ}$, $${WK}$, $${WV}$ and $${WO}$, each $${D} \\times ${D}$ across all heads: $4${D}^2$.`,
           `MLP: $${W1}$ is $4${D} \\times ${D}$ and $${W2}$ is $${D} \\times 4${D}$: $8${D}^2$.`,
-          `${part === 'all' ? `Together $12${D}^2` : part === 'attn' ? `So the attention holds $4${D}^2` : `So the MLP holds $8${D}^2`} $= ${{ all: 12, attn: 4, mlp: 8 }[part]} \\times ${big(dm)}^2 = ${big(v)}$.`,
+          `${part === 'all' ? `Together $12${D}^2` : part === 'attn' ? `So the attention holds $4${D}^2` : `So the MLP holds $8${D}^2`} = ${{ all: 12, attn: 4, mlp: 8 }[part]} \\times ${big(dm)}^2 = ${big(v)}$.`,
         ],
       };
     },
@@ -42,13 +42,13 @@ export const generators: Generator[] = [
         const n = int(rng, 2, 6);
         const v = 12 * dm * dm * n;
         return {
-          prompt: `A transformer stacks $${NB} = ${n}$ blocks of width $${D} = ${dm}$. Ignoring biases, layer norms and the embedding, about how many weights do its blocks hold, at $12${D}^2$ per block?`,
+          prompt: `A transformer stacks $${NB} = ${n}$ blocks of width $${D} = ${dm}$. Ignoring biases and layer norms, how many weights do its blocks hold?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: 12 * dm * dm, why: `That is one block. There are ${n}.` },
             { value: 12 * dm * n, why: `That uses $12${D}$ per block. It is $12${D}^2$.` },
           ]),
-          solution: [`One block: $12 \\times ${dm}^2 = ${12 * dm * dm}$.`, `${n} blocks: $${n} \\times ${12 * dm * dm} = ${v}$.`],
+          solution: [`One block holds $12${D}^2 = 12 \\times ${dm}^2 = ${12 * dm * dm}$.`, `${n} blocks: $${n} \\times ${12 * dm * dm} = ${v}$.`],
         };
       }
       const dm = pick(rng, [500, 1000, 2000]);
@@ -58,7 +58,7 @@ export const generators: Generator[] = [
       const emb = (voc * dm) / 1e6;
       const v = n * per + emb;
       return {
-        prompt: `A transformer has $${NB} = ${n}$ blocks of width $${D} = ${big(dm)}$ and a vocabulary of $${VOC} = ${big(voc)}$ tokens, each with an embedding row. Ignoring biases and layer norms, about how many million parameters does it have?`,
+        prompt: `A transformer has $${NB} = ${n}$ blocks of width $${D} = ${big(dm)}$ and a vocabulary of $${VOC} = ${big(voc)}$ tokens. Ignoring biases and layer norms, about how many million parameters does it have?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: n * per, why: `That is the blocks alone. The embedding table adds $${VOC} \\times ${D} = ${bigText(emb)}$ million.` },
@@ -103,7 +103,7 @@ export const generators: Generator[] = [
       const label = (x: number) => (x === 1 ? 'They stay the same' : `They grow ${x} times`);
       const options = [label(right), ...opts.map(label)];
       return {
-        prompt: `A transformer has $${NB} = ${n}$ blocks of width $${D} = ${dm}$. ${width ? `Its width grows ${f} times, to $${D} = ${f * dm}$, with the same ${n} blocks` : `It gets ${f} times as many blocks, $${NB} = ${f * n}$, with the same width`}. What happens to the number of weights in its blocks?`,
+        prompt: `A transformer has $${NB} = ${n}$ blocks of width $${D} = ${dm}$. ${width ? `Its width grows ${f} times, with the same ${n} blocks` : `It gets ${f} times as many blocks, with the same width`}. What happens to the number of weights in its blocks?`,
         answer: {
           kind: 'choice',
           options,

@@ -43,7 +43,7 @@ function hingeBars(s: Scene, vals: number[], y: number, names: string[], P: Plot
     s.alpha(o.line!, () => {
       const ly = Y(lineV);
       s.line(xs[0]! - 7.5 * s.u, ly, xs[xs.length - 1]! + 9 * s.u, ly, s.c('red'), 0.35, [1.4, 1.2]);
-      s.text(neg(`s_y-1 = ${+lineV.toFixed(1)}`), xs[0]! - 8.5 * s.u, ly, { size: 2.9, font: 'mono', align: 'right', color: s.c('red') });
+      s.text(neg(`s[y]-1 = ${+lineV.toFixed(1)}`), xs[0]! - 8.5 * s.u, ly, { size: 2.9, font: 'mono', align: 'right', color: s.c('red') });
     });
   }
   return { xs, Y };

@@ -126,7 +126,7 @@ export const generators: Generator[] = [
         let u = int(rng, -3, 9);
         if (u === x) u += 2;
         return {
-          prompt: `$u = u(\\symx)$ and $z = z(u)$. At $\\symx = ${x}$, $u(${x}) = ${u}$. Which product is $${D('z', '\\symx')}$ at $\\symx = ${x}$?`,
+          prompt: `$z$ is a function of $u$, and $u$ is a function of $\\symx$. At $\\symx = ${x}$, $u(${x}) = ${u}$. Which product is $${D('z', '\\symx')}$ at $\\symx = ${x}$?`,
           answer: {
             kind: 'choice',
             options: [`$z'(${u}) \\cdot u'(${x})$`, `$z'(${x}) \\cdot u'(${x})$`, `$z'(${u}) + u'(${x})$`, `$z(${u}) \\cdot u'(${x})$`],
@@ -150,7 +150,7 @@ export const generators: Generator[] = [
       const dx = 0.01;
       const opts = [s1 * s2, s1 + s2, s2, s1].map((v) => round(v * dx, 4));
       return {
-        prompt: `Along the chain $\\symx \\to u \\to z$, the local slopes are $${D('u', '\\symx')} = ${s1}$ and $${D('z', 'u')} = ${s2}$. If $\\symx$ goes up by $0.01$, about how much does $z$ change?`,
+        prompt: `$\\symx$ feeds $u$, and $u$ feeds $z$, with local slopes $${D('u', '\\symx')} = ${s1}$ and $${D('z', 'u')} = ${s2}$. If $\\symx$ goes up by $0.01$, about how much does $z$ change?`,
         answer: {
           kind: 'choice',
           options: opts.map((v) => `About $${num(v, 2)}$`),

@@ -21,7 +21,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'task', say: 'A language model reads text and, at every step, predicts what comes next. Here the tokens are characters, and the text is hello.', code: 'text' },
         { id: 'shift', say: 'So the inputs are h, e, l, l, and the targets are the same text shifted by one: e, l, l, o.', code: 'shift' },
-        { id: 'scores', say: 'At each step, a linear layer turns the hidden state into one score for every token in the vocabulary: four here, h, e, l and o.', code: ['vocab', 's'] },
+        { id: 'scores', say: 'At each step, a linear layer with weights {W_hy|W h y}, from h to the output, turns the hidden state into one score for every token in the vocabulary: four here, h, e, l and o.', code: ['vocab', 's'] },
         { id: 'softmax', say: 'Softmax turns the scores into probabilities for the next character. After reading h, this model gives e {0.5|zero point five}.', code: 'p' },
         { id: 'memory', say: 'Look at steps two and three. Both read an l, but one must predict l and the other o. Only the memory, h, can tell them apart.', code: 'shift' },
       ],
@@ -37,9 +37,9 @@ export const script: LectureScript = {
         L / 4               # 0.59 per step        #@mean
       `,
       beats: [
-        { id: 'step', say: 'Each step is a classification over the vocabulary, so its loss is cross-entropy. At step zero the target, e, got {0.5|zero point five}: the loss is minus its log, {0.69|zero point six nine}.', code: ['py', 'Lt'] },
+        { id: 'step', say: 'Each step is a classification over the vocabulary, so its loss, {Lₜ|L t}, is cross-entropy. At step zero the target, e, got {0.5|zero point five}: the loss is minus its log, {0.69|zero point six nine}.', code: ['py', 'Lt'] },
         { id: 'all', say: 'Every step does the same against its own target: {0.92|zero point nine two}, {0.51|zero point five one}, and {0.22|zero point two two}.', code: 'Lt' },
-        { id: 'total', say: 'The loss for the whole text adds them up: {2.34|two point three four}. Divided by the four steps, that is about {0.59|zero point five nine} per step.', code: ['L', 'mean'] },
+        { id: 'total', say: 'The loss for the whole text, L, adds them up: {2.34|two point three four}. In symbols, {L = Σₜ −ln pₜ[yₜ]|L is the sum over steps t of minus ln p t at y t}, where {yₜ|y t} is step t\'s target. Divided by the four steps, that is about {0.59|zero point five nine} per step.', code: ['L', 'mean'] },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

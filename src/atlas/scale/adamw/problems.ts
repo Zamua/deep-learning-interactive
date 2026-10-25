@@ -21,7 +21,7 @@ export const generators: Generator[] = [
       const step = clean(eta * inside);
       const ans = clean(w - step);
       return {
-        prompt: `AdamW updates a weight with $${AW}$. Here $\\symw = ${num(w)}$, $${MH} = ${num(m)}$, $${VH} = ${num(v)}$, $\\symeta = ${num(eta)}$ and $\\symlam = ${num(lam)}$. Where is $\\symw$ after the step?`,
+        prompt: `A weight at $\\symw = ${num(w)}$ has $${MH} = ${num(m)}$ and $${VH} = ${num(v)}$, with $\\symeta = ${num(eta)}$ and $\\symlam = ${num(lam)}$. Where is $\\symw$ after one AdamW step?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, [
           { value: w - eta * k, why: 'That is a plain Adam step: it leaves out the decay $\\symlam\\symw$ inside the bracket.' },
@@ -30,6 +30,7 @@ export const generators: Generator[] = [
           { value: w - eta * (k - decay), why: 'That subtracts the decay inside the bracket. It is added to the Adam step, so together they pull the weight toward zero.' },
         ]),
         solution: [
+          `AdamW steps $${AW}$.`,
           `$\\sqrt{${VH}} = \\sqrt{${num(v)}} = ${num(root)}$, so $${MH} / \\sqrt{${VH}} = ${num(m)} / ${num(root)} = ${num(k)}$.`,
           `The decay: $\\symlam\\symw = ${num(lam)} \\times ${paren(w)} = ${num(decay)}$.`,
           `Inside the bracket: $${num(k)} + ${paren(decay)} = ${num(inside)}$. Times $\\symeta$: $${num(eta)} \\times ${paren(inside)} = ${num(step)}$.`,
@@ -50,7 +51,7 @@ export const generators: Generator[] = [
       const ans = clean((eta * share) / root);
       const aw = clean(eta * share);
       return {
-        prompt: `Adam with L2 puts the decay in the gradient, $\\symg \\leftarrow \\symg + \\symlam\\symw$, so it goes through Adam's division by $\\sqrt{${VH}}$ like the rest. A weight at $\\symw = ${num(w)}$ has had ${large ? 'large' : 'tiny'} gradients: $\\sqrt{${VH}} = ${num(root)}$. With $\\symlam = ${num(lam)}$ and $\\symeta = ${num(eta)}$, how far does the decay part alone move it in one step? Its share of $${MH}$ is about $\\symlam\\symw$.`,
+        prompt: `Adam with L2 trains a weight at $\\symw = ${num(w)}$ with $\\sqrt{${VH}} = ${num(root)}$, $\\symlam = ${num(lam)}$ and $\\symeta = ${num(eta)}$. How far does the decay alone move it in one step?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, [
           { value: aw, why: 'That is AdamW\'s decay, $\\symeta\\symlam\\symw$. Inside the gradient the decay is also divided by $\\sqrt{\\sym{v}{\\hat v}}$.' },
@@ -58,7 +59,7 @@ export const generators: Generator[] = [
           { value: share / root, why: 'That leaves out the step size $\\symeta$.' },
         ]),
         solution: [
-          `The decay adds about $\\symlam\\symw = ${num(lam)} \\times ${num(w)} = ${num(share)}$ to $${MH}$.`,
+          `L2 adds $\\symlam\\symw$ to the gradient, so it adds about $\\symlam\\symw = ${num(lam)} \\times ${num(w)} = ${num(share)}$ to $${MH}$.`,
           `Adam divides by $\\sqrt{${VH}} = ${num(root)}$ and multiplies by $\\symeta$: $${num(eta)} \\times ${num(share)} / ${num(root)} = ${num(ans)}$.`,
           large
             ? `AdamW would move it $\\symeta\\symlam\\symw = ${num(aw)}$: ${num(root)} times more. Large gradients weaken decay that goes through the gradient.`
@@ -89,7 +90,7 @@ export const generators: Generator[] = [
           'The division rescales the decay; it does not remove it. A small $\\sqrt{\\sym{v}{\\hat v}}$ even makes it larger.',
         ];
         return {
-          prompt: `Adam with L2 adds $\\symlam\\symw$ to every gradient, with $\\symlam = ${num(lam)}$. Weight $a$ has had large gradients, $\\sqrt{\\sym{v}{\\hat v}} \\approx ${num(big)}$; weight $b$ tiny ones, $\\sqrt{\\sym{v}{\\hat v}} \\approx ${num(small)}$. Both sit at $\\symw = 1$. Which one is decayed more strongly per step?`,
+          prompt: `Adam with L2 trains two weights at $\\symw = 1$, with $\\symlam = ${num(lam)}$. Weight $a$ has $\\sqrt{\\sym{v}{\\hat v}} \\approx ${num(big)}$; weight $b$ has $\\sqrt{\\sym{v}{\\hat v}} \\approx ${num(small)}$. Which one is decayed more strongly per step?`,
           answer: { kind: 'choice', options, correct: 0, why: whys(4, 0, (i) => reasons[i]!) },
           solution: [
             'Inside the gradient, the decay $\\symlam\\symw$ is divided by $\\sqrt{\\sym{v}{\\hat v}}$ along with everything else.',
@@ -112,7 +113,7 @@ export const generators: Generator[] = [
           'Adam on its own has no decay: its steps follow the gradients, which can push a weight in either direction.',
         ];
         return {
-          prompt: `You want every weight to shrink by the same fraction $\\symeta\\symlam = ${num(clean(eta * lam))}$ each step, whatever its gradients, with $\\symeta = ${num(eta)}$ and $\\symlam = ${num(lam)}$. Which update does that?`,
+          prompt: `With $\\symeta = ${num(eta)}$ and $\\symlam = ${num(lam)}$, you want every weight to shrink by the same fraction each step, whatever its gradients. Which update does that?`,
           answer: { kind: 'choice', options, correct: 0, why: whys(4, 0, (i) => reasons[i]!) },
           solution: [
             'AdamW adds $\\symlam\\symw$ after the division by $\\sqrt{\\sym{v}{\\hat v}}$, so the decay part of the step is $\\symeta\\symlam\\symw$ for every weight.',

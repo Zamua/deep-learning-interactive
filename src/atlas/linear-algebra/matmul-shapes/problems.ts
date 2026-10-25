@@ -18,7 +18,7 @@ export const generators: Generator[] = [
       if (d >= 0.8 && rng.int(2) === 0) {
         const j = pick(rng, [2, 5, 16, 50].filter((v) => v !== m && v !== n && v !== k));
         return {
-          prompt: `$A$ has shape $${shapeTex([m, n])}$, $B$ has shape $${shapeTex([n, k])}$ and $C$ has shape $${shapeTex([k, j])}$. What is the shape of $ABC$ (\`A @ B @ C\`)?`,
+          prompt: `$A$ has shape $${shapeTex([m, n])}$, $B$ has shape $${shapeTex([n, k])}$ and $C$ has shape $${shapeTex([k, j])}$. What is the shape of $ABC$?`,
           answer: { kind: 'shape', value: [m, j] },
           solution: [
             `$AB$: inner dimensions ${n} and ${n} match, and the outer ones give $${shapeTex([m, k])}$.`,
@@ -27,7 +27,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `$A$ has shape $${shapeTex([m, n])}$ and $B$ has shape $${shapeTex([n, k])}$. What is the shape of $AB$ (\`A @ B\`)?`,
+        prompt: `$A$ has shape $${shapeTex([m, n])}$ and $B$ has shape $${shapeTex([n, k])}$. What is the shape of $AB$?`,
         answer: { kind: 'shape', value: [m, k] },
         solution: [
           `The inner dimensions, $A$'s columns and $B$'s rows, are ${n} and ${n}: they match, so the product works.`,
@@ -43,7 +43,7 @@ export const generators: Generator[] = [
         const [m, n, k] = sizes(rng, Math.min(d, 0.5));
         const pair = (a: [number, number], b: [number, number]) => `$${shapeTex(a)}$ times $${shapeTex(b)}$`;
         return {
-          prompt: 'Shapes are (rows, columns). Which of these matrix products is defined?',
+          prompt: 'Which of these matrix products is defined?',
           answer: {
             kind: 'choice',
             options: [pair([m, n], [n, k]), pair([m, n], [k, n]), pair([n, m], [n, k]), pair([k, n], [m, k])],
@@ -136,7 +136,7 @@ export const generators: Generator[] = [
       }
       if (kind === 2) {
         return {
-          prompt: `${given} The vector \`v\` has ${n} entries, shape $${shapeTex([n])}$. What is the shape of \`B @ v\`?`,
+          prompt: `$B$ has shape $${shapeTex([k, n])}$ and the vector \`v\` has shape $${shapeTex([n])}$. What is the shape of \`B @ v\`?`,
           answer: { kind: 'shape', value: [k] },
           traps: [{ value: [n], why: 'That is the length of `v`. Each row of $B$ dotted with `v` gives one number, so the result has one entry per row of $B$.' }],
           solution: [`$Bv$ is $${shapeTex([k, n])}$ times a vector of ${n}: the ${n}s match.`, `One dot product per row of $B$: the result has shape $${shapeTex([k])}$.`],

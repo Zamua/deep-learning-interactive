@@ -1,19 +1,19 @@
 {
- "duration": 106.34,
+ "duration": 107.307,
  "scenes": {
-  "round": [0.0, 62.994],
-  "bytes": [62.994, 106.34]
+  "round": [0.0, 63.961],
+  "bytes": [63.961, 107.307]
  },
  "beats": {
   "round/weights": [0.7, 7.324, "A model's weights are usually stored as sixteen bit numbers, two bytes each. Here are four of them.", [[4.25, 4.62], [5.58, 6.14]]],
   "round/grid": [7.704, 25.073, "Quantization stores small integers instead, plus one scale, s: what one integer step is worth. Four bits hold the integers from minus seven to seven, so with s at zero point one they cover minus zero point seven to zero point seven.", [[10.514, 10.864], [11.964, 12.344], [12.754, 13.214], [15.224, 15.804], [18.884, 19.314], [21.424, 21.704]]],
-  "round/divide": [25.453, 39.098, "To store a weight, divide by s and round to the nearest integer. Zero point seven becomes seven. Minus zero point three three becomes minus three point three, which rounds to minus three.", [[26.463, 26.773], [27.923, 28.083], [29.893, 30.493], [32.713, 33.313], [35.153, 35.393], [37.223, 37.543]]],
-  "round/back": [39.478, 50.524, "To use it, multiply back by s. Seven gives zero point seven again, but minus three gives minus zero point three, not minus zero point three three.", [[40.148, 40.408], [42.028, 42.628], [44.748, 45.118], [48.058, 48.388]]],
-  "round/error": [50.904, 61.894, "That gap is the rounding error. Rounding moves a weight at most half a step, so the error is never more than s over two: here, zero point zero five.", [[52.854, 53.424], [55.964, 56.394], [59.104, 59.614], [59.944, 60.204]]],
-  "bytes/b16": [63.694, 71.668, "Why bother? Memory. A model of seven billion parameters at sixteen bits takes fourteen gigabytes.", [[64.614, 65.234], [65.744, 66.284], [69.714, 69.934]]],
-  "bytes/b8": [72.048, 75.414, "At eight bits, one byte each, it takes seven.", [[73.018, 73.248], [74.218, 74.478]]],
-  "bytes/b4": [75.794, 87.327, "At four bits, half a byte each, three and a half: small enough for a much smaller GPU. The scales add almost nothing, since one scale is shared by many weights.", [[76.784, 77.024], [78.064, 78.384], [79.234, 79.674], [82.164, 82.664], [84.544, 84.794]]],
-  "bytes/coarse": [87.707, 104.12, "The price is precision. Eight bits run from minus one hundred and twenty seven to one hundred and twenty seven, four bits only from minus seven to seven. Over the same range, each step is about eighteen times as wide, and so is the largest error.", [[89.327, 89.967], [92.747, 92.937], [94.317, 94.827], [97.487, 98.117], [99.237, 99.447], [102.127, 102.397]]],
-  "bytes/turn": [104.5, 105.24, "Your turn.", []]
+  "round/divide": [25.453, 39.232, "To store a weight, divide by s and round to the nearest integer, q. Zero point seven becomes seven. Minus zero point three three becomes minus three point three, which rounds to minus three.", [[26.473, 26.763], [29.593, 29.863], [30.213, 30.843], [32.913, 33.453], [35.333, 35.553], [37.333, 37.633]]],
+  "round/back": [39.612, 51.491, "To use it, multiply q back by s. Seven gives zero point seven again, but minus three gives minus zero point three, not minus zero point three three.", [[40.272, 40.592], [42.742, 43.272], [45.472, 45.932], [48.972, 49.322]]],
+  "round/error": [51.871, 62.861, "That gap is the rounding error. Rounding moves a weight at most half a step, so the error is never more than s over two: here, zero point zero five.", [[53.821, 54.391], [56.931, 57.361], [60.071, 60.581], [60.911, 61.171]]],
+  "bytes/b16": [64.661, 72.635, "Why bother? Memory. A model of seven billion parameters at sixteen bits takes fourteen gigabytes.", [[65.581, 66.201], [66.711, 67.251], [70.681, 70.901]]],
+  "bytes/b8": [73.015, 76.38, "At eight bits, one byte each, it takes seven.", [[73.985, 74.215], [75.185, 75.445]]],
+  "bytes/b4": [76.76, 88.294, "At four bits, half a byte each, three and a half: small enough for a much smaller GPU. The scales add almost nothing, since one scale is shared by many weights.", [[77.75, 77.99], [79.03, 79.35], [80.2, 80.64], [83.13, 83.63], [85.51, 85.76]]],
+  "bytes/coarse": [88.674, 105.086, "The price is precision. Eight bits run from minus one hundred and twenty seven to one hundred and twenty seven, four bits only from minus seven to seven. Over the same range, each step is about eighteen times as wide, and so is the largest error.", [[90.294, 90.934], [93.714, 93.904], [95.284, 95.794], [98.454, 99.084], [100.204, 100.414], [103.094, 103.364]]],
+  "bytes/turn": [105.466, 106.207, "Your turn.", []]
  }
 }

@@ -3,7 +3,7 @@ import { int, num, pick, round } from '../../kit';
 import { choice, clean, power, powTex, traps, usePowers } from '../kit';
 
 /** Checkers that can tell a right answer from a wrong one, at least sometimes. */
-const CHECKERS = ['runs the unit tests on each program', 'plugs each answer back into the equation', 'checks each proof step by step with a proof checker', 'runs each SQL query and compares its result to the expected table'];
+const CHECKERS = ['runs the unit tests on each program', 'plugs each answer back into the equation', 'verifies each proof step by step', 'runs each SQL query and compares its result to the expected table'];
 
 export const generators: Generator[] = [
   {
@@ -16,7 +16,7 @@ export const generators: Generator[] = [
       const v = clean(1 - miss);
       const task = pick(rng, CHECKERS);
       return {
-        prompt: `A model writes a right answer with probability $p = ${num(p)}$ per sample, independently. Best-of-n draws $n = ${n}$ samples and keeps one that a perfect checker accepts; the checker ${task}. What is the chance at least one sample is right, so best-of-n succeeds? Round to two decimals.\n\nUse ${usePowers(q, [n])}.`,
+        prompt: `A model writes a right answer with probability $p = ${num(p)}$ per sample, independently. Best-of-n with $n = ${n}$ uses a perfect checker: it ${task}. What is the chance best-of-n succeeds? Round to two decimals.\n\nUse ${usePowers(q, [n])}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(v, [
           { value: miss, why: `That is $(1 - p)^{${n}}$, the chance every sample is wrong. Best-of-n succeeds in every other case: subtract it from 1.` },
@@ -25,7 +25,7 @@ export const generators: Generator[] = [
           { value: p, why: 'That is the chance for one sample. More samples give the checker more chances to find a right one.' },
         ]).filter((t) => Math.abs(t.value - v) >= 0.005),
         solution: [
-          `One sample is wrong with probability $1 - ${num(p)} = ${num(q)}$.`,
+          `With a perfect checker, best-of-n fails only when every sample is wrong. One sample is wrong with probability $1 - ${num(p)} = ${num(q)}$.`,
           `${n === 2 ? 'Both' : `All ${n}`} are wrong with probability $${powTex(q, n)}$, since they are independent.`,
           `Best-of-n fails only then, so it succeeds with $1 - ${num(miss)} \\approx ${num(v, 2)}$.`,
         ],
@@ -77,7 +77,7 @@ export const generators: Generator[] = [
             ? `accepts every right answer, but is also fooled by 1 wrong answer in ${k}`
             : `never accepts a wrong answer, but also rejects 1 right answer in ${m}`;
       return {
-        prompt: `Each sample is right with probability $p = ${num(p)}$. Best-of-n keeps an answer its checker accepts, and the checker ${what}. As $n$ grows, what happens to the chance that best-of-n returns a right answer?`,
+        prompt: `Each sample is right with probability $p = ${num(p)}$, and best-of-n's checker ${what}. As $n$ grows, what happens to the chance that best-of-n returns a right answer?`,
         answer: choice([
           { text: 'It climbs toward 1, just as $1 - (1 - p)^n$ says', why: kind === 'perfect' ? null : kind === 'fooled' ? 'That formula assumes the checker never accepts a wrong answer. This one does, so some of what it keeps is wrong however many samples are drawn.' : 'It does climb toward 1, but more slowly than that formula: a right answer only counts when the checker also accepts it.' },
           { text: 'It levels off below 1: wrong answers that get through keep being kept', why: kind === 'fooled' ? null : kind === 'perfect' ? 'A perfect checker never lets a wrong answer through, so nothing caps it.' : 'This checker never accepts a wrong answer, so nothing wrong is ever kept. Missing some right ones only means drawing more.' },

@@ -21,7 +21,7 @@ export const script: LectureScript = {
         { id: 'loop', say: 'A language model writes text one token at a time: run the model on the sequence so far, pick the next token, append it, and run again.', code: 'loop' },
         { id: 'redo', say: 'Done plainly, every step runs the whole sequence, so every block computes every token\'s key and value again, though only one token is new.', code: 'loop' },
         { id: 'same', say: 'And the old ones come out the same every time. With the causal mask, an earlier token never attends to a later one, so adding a token changes nothing before it.', code: 'loop' },
-        { id: 'count', say: 'Step one computes one key, step two computes two, up to T at step T. That adds up to T times T plus one, over two: for ten steps, fifty-five.', code: 'count' },
+        { id: 'count', say: 'Over T steps, step one computes one key, step two computes two, and step T computes T. That sum, {1 + 2 + … + T|one plus two, and so on up to T}, is {T(T + 1) / 2|T times T plus one, over two}: for ten steps, fifty-five.', code: 'count' },
       ],
     },
     {
@@ -41,7 +41,7 @@ export const script: LectureScript = {
         { id: 'keep', say: 'So keep them. The KV cache stores the keys and values of every token so far, in every block.', code: 'keep' },
         { id: 'step', say: 'Each step now computes a query, key and value for the newest token only, adds its key and value to the cache, and attends over everything stored.', code: 'step' },
         { id: 'work', say: 'Ten steps compute ten keys instead of fifty-five. For a thousand tokens, a thousand instead of half a million.', code: 'work' },
-        { id: 'shape', say: 'In one block, after T tokens, the cached keys form a T by d array, and the values another, each growing by one row per step.', code: 'shape' },
+        { id: 'shape', say: 'In one block, at step t, the cached keys form a t by d array, one row per token so far, and the values another. Each grows by one row per step.', code: 'shape' },
         { id: 'memory', say: 'The price is memory: two times the blocks, times T, times d numbers, for every sequence being written.', code: 'shape' },
         { id: 'turn', say: 'Your turn.' },
       ],

@@ -18,7 +18,7 @@ export const generators: Generator[] = [
       const total = sum(sq);
       const v = clean(total / n);
       return {
-        prompt: `A noised image $${XT}$ of ${n} pixels was made with the noise $${EPS} = ${vec(eps)}$. The network looks at $${XT}$ and guesses $${EHAT} = ${vec(pred)}$. What is the loss, the mean of the squared differences?${Math.abs(round(v, 2) - v) > 1e-9 ? ' Round to two decimals.' : ''}`,
+        prompt: `A noised image $${XT}$ of ${n} pixels was made with the noise $${EPS} = ${vec(eps)}$. The network looks at $${XT}$ and guesses $${EHAT} = ${vec(pred)}$. What is the loss?${Math.abs(round(v, 2) - v) > 1e-9 ? ' Round to two decimals.' : ''}`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(v, [
           { value: total, why: `That is the sum of the squares. The mean divides it by the ${n} pixels.` },
@@ -26,7 +26,7 @@ export const generators: Generator[] = [
           { value: clean(sum(diff.map(Math.abs)) / n), why: 'That averages the sizes of the misses. Square each difference first.' },
         ], 2),
         solution: [
-          `Differences: $${EPS} - ${EHAT} = ${vec(diff)}$.`,
+          `The loss is the mean squared error. Differences: $${EPS} - ${EHAT} = ${vec(diff)}$.`,
           `Squares: $${vec(sq)}$, which add up to $${num(total)}$.`,
           `Mean over the ${n} pixels: $${num(total)} / ${n} ${Math.abs(round(v, 2) - v) > 1e-9 ? '\\approx' : '='} ${num(round(v, 2))}$.`,
         ],
@@ -52,11 +52,11 @@ export const generators: Generator[] = [
         { value: est((x) => x / a), why: 'That only undoes the shrinking. Take away the scaled noise first.' },
       ];
       return {
-        prompt: `At a step where $${AB} = ${num(L[0])}$, the network sees ${one ? 'a pixel' : 'the pixels'} $${XT} = ${T(xt)}$ and predicts the noise $${EHAT} = ${T(e)}$. Rearranging $${BLEND}$, what estimate of the clean image $${X0}$ does that give? Round to two decimals.\n\nUse ${roots(L)}.`,
+        prompt: `At a step where $${AB} = ${num(L[0])}$, the network sees ${one ? 'a pixel' : 'the pixels'} $${XT} = ${T(xt)}$ and predicts the noise $${EHAT} = ${T(e)}$. What estimate of the clean image $${X0}$ does that give? Round to two decimals.\n\nUse ${roots(L)}.`,
         answer: one ? { kind: 'number', value: v[0]!, places: 2 } : { kind: 'vector', value: v, places: 2 },
         traps: one ? traps(v[0]!, wrong.map((w) => ({ value: w.value[0]!, why: w.why })), 2) : vtraps(v, wrong, 2),
         solution: [
-          `Solve the blend for the image: $${X0} = (${XT} - \\sqrt{1 - ${AB}}\\,${EPS}) / \\sqrt{${AB}}$, with the guess $${EHAT}$ in place of $${EPS}$.`,
+          `Solve $${BLEND}$ for the image: $${X0} = (${XT} - \\sqrt{1 - ${AB}}\\,${EPS}) / \\sqrt{${AB}}$, with the guess $${EHAT}$ in place of $${EPS}$.`,
           ...xt.map((x, i) => `${one ? '' : `Pixel ${i}: `}$(${num(x)} - ${num(b)} \\cdot ${par(e[i]!)}) / ${num(a)} = ${num(clean(x - b * e[i]!))} / ${num(a)} ${Math.abs(round(v[i]!, 2) - v[i]!) > 1e-9 ? '\\approx' : '='} ${num(round(v[i]!, 2))}$.`),
           'A good guess of the noise is a good guess of the image.',
         ],
@@ -69,7 +69,7 @@ export const generators: Generator[] = [
       const T = pick(rng, [100, 1000, 4000]);
       const t = int(rng, 1, T - 1);
       const kind = pick(rng, ['sees', 'asked', 'copy'] as const);
-      const lead = `A diffusion model is trained over ${bigText(T)} noise steps. One training image is noised at step $t = ${big(t)}$ with $${BLEND}$.`;
+      const lead = `A diffusion model is trained over ${bigText(T)} noise steps. One training image is noised to step $t = ${big(t)}$.`;
       if (kind === 'sees')
         return {
           prompt: `${lead} What does the network get as its input?`,
@@ -121,7 +121,7 @@ export const generators: Generator[] = [
       const items = [
         `Take a random minibatch of $${B}$ clean images $${X0}$`,
         `Give each one a random step $t$ and fresh noise $${EPS}$`,
-        `Mix them: $${BLEND}$`,
+        `Blend each image with its noise into $${XT}$`,
         `Run the network on each $${XT}$ and $t$ to get $${EHAT}$`,
         `Average $(${EPS} - ${EHAT})^2$ and take a gradient step`,
       ];

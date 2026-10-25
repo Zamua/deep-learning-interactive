@@ -37,8 +37,8 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'diff', say: 'Now compare backprop\'s answer, a, with the measured one, n. Their raw difference is not enough: off by one ten-thousandth is nothing next to a thousand, but huge next to two ten-thousandths.', code: 'a' },
-        { id: 'rel', say: 'So divide the difference by the larger of the two sizes. That is the relative error.', code: 'rel' },
-        { id: 'bands', say: 'Around {10⁻⁷|ten to the minus seven} or smaller, the two agree, and the gradient is right. Around {10⁻⁴|ten to the minus four}, be suspicious. Around {10⁻²|ten to the minus two} or more, there is a bug.', code: 'bands' },
+        { id: 'rel', say: 'So divide the size of the difference, {\\|a − n\\||the absolute value of a minus n}, by the larger of the two sizes. That is the relative error. The bars mean absolute value: a number\'s size, with its sign dropped.', code: 'rel' },
+        { id: 'bands', say: 'Around {10⁻⁷|ten to the minus seven} or smaller, written {1e-7|one e minus seven} in code, the two agree, and the gradient is right. Around {10⁻⁴|ten to the minus four}, be suspicious. Around {10⁻²|ten to the minus two} or more, there is a bug.', code: 'bands' },
         { id: 'bug', say: 'Say backprop used x where it should have used two x. It gives three where the slope is six: a relative error of a half. Clearly a bug.', code: 'bug' },
         { id: 'turn', say: 'Your turn.' },
       ],

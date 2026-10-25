@@ -73,13 +73,13 @@ export const generators: Generator[] = [
       const v = [p.m, p.l];
       const last = s[s.length - 1]!;
       return {
-        prompt: `One-pass softmax reads the scores $\\syms = ${vecT(s)}$ in order, keeping the running max $${M}$ and the running sum $${L}$ of $e^{\\syms - ${M}}$. What is $[${M},\\ ${L}]$ after the last score? Round to two decimals.\n\nUse ${useExp([...p.exps, ...s.map((x) => x - top)])}.`,
+        prompt: `One-pass softmax reads the scores $\\syms = ${vecT(s)}$ in order. What is $[${M},\\ ${L}]$ after the last score? Round to two decimals.\n\nUse ${useExp([...p.exps, ...s.map((x) => x - top)])}.`,
         answer: { kind: 'vector', value: v, places: 2 },
         traps: vtraps(v, [
           { value: [p.m, p.noRescale], why: `That never rescales $${L}$. Terms added before the max grew were measured against the old max, so they must shrink by $e^{\\text{old } ${M} - \\text{new } ${M}}$.` },
           { value: [last, p.l], why: `$${M}$ is the largest score so far, not the last one read.` },
         ], 2),
-        solution: [...p.steps, `So $[${M},\\ ${L}] \\approx [${num(p.m)},\\ ${f2(p.l)}]$: the same as $\\sum e^{\\syms - ${num(top)}}$ over every score.`],
+        solution: [`$${M}$ is the largest score so far and $${L}$ the sum of $e^{\\syms - ${M}}$ over the scores read so far, rescaled whenever $${M}$ grows.`, ...p.steps, `So $[${M},\\ ${L}] \\approx [${num(p.m)},\\ ${f2(p.l)}]$: the same as $\\sum e^{\\syms - ${num(top)}}$ over every score.`],
       };
     },
   },
@@ -93,7 +93,7 @@ export const generators: Generator[] = [
         const s = m + g;
         const v = ex(-g);
         return {
-          prompt: `One-pass softmax has a running max $${M} = ${m}$ and a running sum $${L} = ${num(l)}$ of $e^{\\syms - ${M}}$. The next score is $${s}$. By what factor must $${L}$ be multiplied before the new score's term is added?\n\nUse $e^{${g}} \\approx ${num(ex(g), 2)}$, $e^{-${g}} \\approx ${num(v, 2)}$.`,
+          prompt: `One-pass softmax has $${M} = ${m}$ and $${L} = ${num(l)}$, and the next score is $${s}$. By what factor must $${L}$ be multiplied before the new score's term is added?\n\nUse $e^{${g}} \\approx ${num(ex(g), 2)}$, $e^{-${g}} \\approx ${num(v, 2)}$.`,
           answer: { kind: 'number', value: v, places: 2 },
           traps: traps(v, [
             { value: ex(g), why: `That is $e^{\\text{new} - \\text{old}}$: it would grow the old terms. They were measured against ${m} and must now be measured against ${s}, so they shrink by $e^{${m} - ${s}}$.` },
@@ -110,7 +110,7 @@ export const generators: Generator[] = [
       const g = d < 0.75 ? int(rng, 1, 3) : pick(rng, [0.5, 1, 1.5, 2]);
       const s = clean(up ? m + g : m - g);
       const use = `Use $e^{${num(g)}} \\approx ${num(ex(g), 2)}$, $e^{-${num(g)}} \\approx ${num(ex(-g), 2)}$.`;
-      const prompt = `One-pass softmax has a running max $${M} = ${m}$ and a running sum $${L} = ${num(l)}$ of $e^{\\syms - ${M}}$. The next score is $${num(s)}$. What is $${L}$ after it? Round to two decimals.\n\n${use}`;
+      const prompt = `One-pass softmax has $${M} = ${m}$ and $${L} = ${num(l)}$, and the next score is $${num(s)}$. What is $${L}$ after it? Round to two decimals.\n\n${use}`;
       if (up) {
         const v = clean(l * ex(-g) + 1);
         return {
@@ -122,6 +122,7 @@ export const generators: Generator[] = [
             { value: l * ex(-g), why: 'That rescales but leaves out the new score\'s own term, $e^{0} = 1$.' },
           ], 2),
           solution: [
+            `$${L}$ is the sum of $e^{\\syms - ${M}}$ over the scores read so far.`,
             `$${num(s)}$ is a new max. Rescale: $${num(l)} \\times e^{-${num(g)}} \\approx ${num(l)} \\times ${num(ex(-g), 2)} \\approx ${f2(l * ex(-g))}$.`,
             `Add the new score's term, $e^{${num(s)} - ${num(s)}} = 1$: $${L} \\approx ${f2(v)}$, and $${M} = ${num(s)}$.`,
           ],
@@ -137,6 +138,7 @@ export const generators: Generator[] = [
           { value: l + ex(g), why: `That flips the exponent. The term is $e^{\\syms - ${M}} = e^{${num(s)} - ${m}}$, below 1.` },
         ], 2),
         solution: [
+          `$${L}$ is the sum of $e^{\\syms - ${M}}$ over the scores read so far.`,
           `$${num(s)}$ is below the max ${m}, so nothing is rescaled.`,
           `Add its term, $e^{${num(s)} - ${m}} \\approx ${num(ex(-g), 2)}$: $${L} \\approx ${num(l)} + ${num(ex(-g), 2)} = ${f2(v)}$.`,
         ],
@@ -155,7 +157,7 @@ export const generators: Generator[] = [
       const v = t / l;
       const isTop = s[i] === top;
       return {
-        prompt: `One-pass softmax has read a row of scores, $\\syms = ${vecT(s)}$, and ends with $${M} = ${top}$ and $${L} = ${num(l)}$. What softmax weight does score ${i}, the ${['first', 'second', 'third', 'fourth'][i]}, get? Round to two decimals.${isTop ? '' : `\n\nUse $e^{${num(s[i]! - top)}} \\approx ${num(t, 2)}$.`}`,
+        prompt: `One-pass softmax has read the scores $\\syms = ${vecT(s)}$ and ends with $${M} = ${top}$ and $${L} = ${num(l)}$. What softmax weight does score ${i} get, counting from 0? Round to two decimals.${isTop ? '' : `\n\nUse $e^{${num(s[i]! - top)}} \\approx ${num(t, 2)}$.`}`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(v, [
           { value: t, why: `That is the score's term, $e^{\\syms - ${M}}$, before dividing by $${L}$.` },

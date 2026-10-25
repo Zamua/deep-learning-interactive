@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
 import { int, num, pick, vec } from '../../kit';
-import { big, clean, shp, shuffled, straps, sum, tenth, traps } from '../kit';
+import { big, bigText, clean, shp, shuffled, straps, sum, tenth, traps } from '../kit';
 
 interface Input {
   /** What the input is, for the prompt. */
@@ -74,16 +74,16 @@ export const generators: Generator[] = [
       const v = sum(sq);
       const fine = d >= 0.35;
       return {
-        prompt: `An autoencoder gets the input $\\symx = ${vec(x)}$ and gives back $\\hat{\\symx} = ${vec(xh)}$. What is its squared error, $\\lVert \\symx - \\hat{\\symx} \\rVert^2$: the squared differences, summed over the entries?`,
+        prompt: `An autoencoder gets the input $\\symx = ${vec(x)}$ and gives back $\\hat{\\symx} = ${vec(xh)}$. What is its squared error $\\lVert \\symx - \\hat{\\symx} \\rVert^2$?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: sum(diff), why: 'That adds the differences without squaring them, so misses above and below cancel. Square each one first.' },
           { value: sum(diff.map(Math.abs)), why: 'That adds the sizes of the differences. Square each difference before adding.' },
-          { value: clean(v / x.length), why: `That is the mean of the squares. The question asks for the sum: do not divide by ${x.length}.` },
+          { value: clean(v / x.length), why: `That is the mean of the squares. The squared error is their sum: do not divide by ${x.length}.` },
           { value: clean(sum(diff) ** 2), why: 'That squares the sum of the differences. Square each difference, then add.' },
         ]),
         solution: [
-          `Differences, entry by entry: $\\symx - \\hat{\\symx} = ${vec(diff)}$.`,
+          `The squared error is the sum of the squared differences. Entry by entry: $\\symx - \\hat{\\symx} = ${vec(diff)}$.`,
           `Square each: $${vec(sq)}$.`,
           `Add them: $${sq.map((q) => num(q)).join(' + ')} = ${num(v)}$.${fine ? '' : ' Every miss counts, whichever way it goes.'}`,
         ],
@@ -104,11 +104,11 @@ export const generators: Generator[] = [
         dec1: { name: "the decoder's first weight matrix, the one that reads the code", v: [H, k], mirror: [k, H] },
         dec2: { name: "the decoder's last weight matrix", v: [D, H], mirror: [H, D] },
       };
-      const sizes = `The encoder maps $\\symD = ${big(D)}$ inputs to $\\symH = ${H}$ hidden units, then to a code of $k = ${k}$. The decoder mirrors it: $${k} \\to ${H} \\to ${big(D)}$.`;
+      const sizes = `The encoder maps $\\symD = ${big(D)}$ inputs to $\\symH = ${H}$ hidden units, then to a code of $k = ${k}$. The decoder mirrors it, from ${k} back to ${H} and then ${bigText(D)}.`;
       if (ask === 'codes' || ask === 'out') {
         const v = ask === 'codes' ? [B, k] : [B, D];
         return {
-          prompt: `${sizes} A batch $\\symX$ of $${B}$ inputs, one per row, goes through it. What is the shape of the ${ask === 'codes' ? 'codes the encoder hands to the decoder' : 'reconstructions that come out'}?`,
+          prompt: `${sizes} A batch of $${B}$ inputs, one per row, goes through it. What is the shape of the ${ask === 'codes' ? 'codes the encoder hands to the decoder' : 'reconstructions that come out'}?`,
           answer: { kind: 'shape', value: v },
           traps: straps(v, [
             { value: ask === 'codes' ? [B, D] : [B, k], why: ask === 'codes' ? 'That is the input\'s width. The code is the narrow middle: $k$ numbers per input.' : 'That is the code. The decoder expands it back to the input\'s size.' },
@@ -123,7 +123,7 @@ export const generators: Generator[] = [
       }
       const w = W[ask]!;
       return {
-        prompt: `${sizes} Each weight matrix has shape (outputs, inputs), as $\\sym{W1}{W_1}$ has shape $(\\symH, \\symD)$ in a two-layer network. What is the shape of ${w.name}?`,
+        prompt: `${sizes} What is the shape of ${w.name}?`,
         answer: { kind: 'shape', value: w.v },
         traps: straps(w.v, [
           { value: w.mirror, why: 'That is (inputs, outputs). The rows count the outputs: one row of weights per output.' },

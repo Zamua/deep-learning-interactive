@@ -1,9 +1,9 @@
 {
- "duration": 108.45,
+ "duration": 116.773,
  "scenes": {
   "drift": [0.0, 47.579],
-  "sum": [47.579, 83.218],
-  "beta": [83.218, 108.45]
+  "sum": [47.579, 91.541],
+  "beta": [91.541, 116.773]
  },
  "beats": {
   "drift/drift": [0.7, 9.92, "Training on a reward moves a model away from where it started. Pushed far enough, it finds answers that score well but have stopped making sense.", [[1.93, 2.09], [4.35, 4.92], [5.82, 6.07], [8.11, 8.34]]],
@@ -13,11 +13,11 @@
   "drift/neg": [37.872, 46.479, "A token the model now likes less than the reference did gets a negative log-ratio: the exclamation mark, minus zero point three.", [[40.882, 41.112], [42.712, 43.202], [44.372, 44.822]]],
   "sum/sum": [48.279, 62.469, "Add the log-ratios over the answer's tokens: here, two. Averaged over many sampled answers, that sum is the KL divergence: zero when the two models agree, and larger the further they part.", [[51.119, 51.549], [51.889, 52.179], [52.529, 53.199], [55.329, 55.619], [57.929, 58.399], [60.249, 60.579]]],
   "sum/never": [62.849, 68.996, "One answer's sum can come out negative, but the average over the model's own samples never does.", [[65.179, 65.569]]],
-  "sum/pen": [69.376, 73.449, "The model trains on its reward minus beta times that sum.", [[71.196, 71.366]]],
-  "sum/eg": [73.829, 82.118, "With a reward of one and beta at zero point one, the penalty is zero point two, and the model trains on zero point eight.", [[75.149, 75.329], [77.189, 77.579], [79.369, 79.779]]],
-  "beta/big": [83.918, 91.474, "A large beta makes any drift expensive. The model stays close to the reference, and its reward barely rises.", [[86.798, 87.278], [89.268, 89.488]]],
-  "beta/small": [91.854, 100.981, "A tiny beta makes drift nearly free. The model chases the reward wherever it leads, even into answers that only fool the reward.", [[94.634, 95.244], [97.924, 98.264]]],
-  "beta/mid": [101.361, 106.229, "In between, the model improves on the reward while it still writes like itself.", [[102.121, 102.411]]],
-  "beta/turn": [106.609, 107.35, "Your turn.", []]
+  "sum/pen": [69.376, 81.772, "The model trains on its reward minus that sum, scaled by a strength written with the Greek letter beta. The sum runs over the answer's tokens, y t, one for each position t.", [[72.416, 72.696], [75.816, 76.416], [78.726, 78.926], [79.646, 80.026]]],
+  "sum/eg": [82.152, 90.441, "With a reward of one and beta at zero point one, the penalty is zero point two, and the model trains on zero point eight.", [[83.472, 83.652], [85.512, 85.902], [87.692, 88.102]]],
+  "beta/big": [92.241, 99.797, "A large beta makes any drift expensive. The model stays close to the reference, and its reward barely rises.", [[95.121, 95.601], [97.591, 97.811]]],
+  "beta/small": [100.177, 109.304, "A tiny beta makes drift nearly free. The model chases the reward wherever it leads, even into answers that only fool the reward.", [[102.957, 103.567], [106.247, 106.587]]],
+  "beta/mid": [109.684, 114.553, "In between, the model improves on the reward while it still writes like itself.", [[110.444, 110.734]]],
+  "beta/turn": [114.933, 115.673, "Your turn.", []]
  }
 }

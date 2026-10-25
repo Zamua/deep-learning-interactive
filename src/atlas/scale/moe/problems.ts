@@ -90,7 +90,7 @@ export const generators: Generator[] = [
           `That is top-1. This router keeps $${K} = ${k}$.`,
         ];
         return {
-          prompt: `A router gives one token the logits $${vec(s)}$ for experts 0 to ${n - 1}, then a softmax, then keeps the top $${K} = ${k}$. Which experts run for this token?`,
+          prompt: `A router gives one token the logits $${vec(s)}$ for experts 0 to ${n - 1} and keeps the top $${K} = ${k}$. Which experts run for this token?`,
           answer: { kind: 'choice', options, correct: 0, why },
           solution: [
             'Softmax keeps the order of the scores: a larger logit always gets a larger probability.',
@@ -116,7 +116,7 @@ export const generators: Generator[] = [
         const ans = p[j]! / kept;
         if (Math.abs(ans - 1 / k) < 0.01) continue;
         return {
-          prompt: `The router's softmax gives $\\symp = ${vec(p)}$ over experts 0 to ${n - 1}. The layer keeps the top $${K} = ${k}$ and renormalizes their gates to add up to 1. What is the gate of expert ${j}? Round to two decimals.`,
+          prompt: `The router's softmax gives $\\symp = ${vec(p)}$ over experts 0 to ${n - 1}, and the layer keeps the top $${K} = ${k}$. What is the gate of expert ${j}? Round to two decimals.`,
           answer: { kind: 'number', value: ans, places: 2 },
           traps: traps(ans, [
             { value: p[j]!, why: 'That is the router\'s probability before renormalizing. The kept gates must add up to 1 again.' },
@@ -125,7 +125,7 @@ export const generators: Generator[] = [
           ], 2),
           solution: [
             `The top ${k}: ${label(top).toLowerCase()}, with $${top.map((i) => num(p[i]!)).join(' + ')} = ${num(kept)}$.`,
-            `Divide expert ${j}'s probability by that total: $${num(p[j]!)} / ${num(kept)} \\approx ${num(round(ans, 2), 2)}$.`,
+            `The kept gates are rescaled to add up to 1, so divide expert ${j}'s probability by that total: $${num(p[j]!)} / ${num(kept)} \\approx ${num(round(ans, 2), 2)}$.`,
             'The dropped experts get gate 0, and the kept gates add up to 1.',
           ],
         };

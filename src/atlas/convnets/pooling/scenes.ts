@@ -45,7 +45,7 @@ const maxScene: SceneDef = {
     out(mo, MAX, 1, s.win('out', 'avg'), 4);
     s.alpha(s.ease('out', 0.6, 0.8), () => {
       const y = tall ? mo.b + 4.5 * s.u : mo.b + 5 * s.u;
-      s.text('4 × 4 → 2 × 2', (mo.l + mo.r) / 2, y, { size: 3.2, font: 'mono', color: s.c('--ink-2') });
+      s.text('4 × 4 to 2 × 2', (mo.l + mo.r) / 2, y, { size: 3.2, font: 'mono', color: s.c('--ink-2') });
     });
     s.alpha(s.ease('avg', 0.6), () => {
       label(s, 'average', (ao.l + ao.r) / 2, ao.t - 3.6 * s.u, '--ink-2');

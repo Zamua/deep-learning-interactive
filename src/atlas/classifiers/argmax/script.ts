@@ -17,9 +17,9 @@ export const script: LectureScript = {
         s.argmax()    # 1: its position   #@arg
       `,
       beats: [
-        { id: 'scores', say: 'Here are four scores, one for each of four possible answers: two, seven, one and five.', code: 's' },
+        { id: 'scores', say: 'Here are four scores, s, one for each of four possible answers: two, seven, one and five.', code: 's' },
         { id: 'max', say: 'The largest value is seven. That is the max.', code: 'max' },
-        { id: 'arg', say: 'The argmax asks a different question: where is it? Counting from zero, as Python does, seven sits at position one.', code: 'arg' },
+        { id: 'arg', say: 'The argmax asks a different question: where is it? Counting from zero, as Python does, seven sits at position one. So {s₁|s one}, s with its position written small, is seven.', code: 'arg' },
         { id: 'predict', say: 'Often the position is what you want. With the answers numbered zero to three, the top pick is answer one.', code: 'arg' },
       ],
     },

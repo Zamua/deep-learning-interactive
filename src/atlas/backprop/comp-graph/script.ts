@@ -54,7 +54,7 @@ export const script: LectureScript = {
         f = e * z          # -5.44  #@mul
       `,
       beats: [
-        { id: 'max', say: 'The other pieces work the same way. A max node passes on the larger of its inputs: the max of one and minus two is one.', code: ['in', 'max'] },
+        { id: 'max', say: 'The other pieces work the same way. A max node passes on the larger of its inputs, written {max(x, z)|max of x and z}: the max of one and minus two is one.', code: ['in', 'max'] },
         { id: 'exp', say: 'An exp node raises e to its input. e to the one is about {2.72|two point seven two}.', code: 'exp' },
         { id: 'mul', say: 'And z feeds a second node too: the multiply. {2.72|Two point seven two} times minus two is about minus {5.44|five point four four}.', code: 'mul' },
         { id: 'turn', say: 'Your turn.' },

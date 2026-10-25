@@ -19,9 +19,9 @@ export const script: LectureScript = {
         # GPU i: gradient of the loss on x_i     #@grad
       `,
       beats: [
-        { id: 'copies', say: 'To train on several GPUs at once, give each one a full copy of the weights, w.', code: 'gpus' },
+        { id: 'copies', say: 'To train on several GPUs at once, give each one a full copy of the weights, w. Call the number of GPUs G: here, four.', code: 'gpus' },
         { id: 'slice', say: 'Every step, split the batch into slices, one per GPU. Four GPUs with thirty two examples each make a batch of a hundred and twenty eight.', code: ['B', 'slice'] },
-        { id: 'grad', say: 'Each GPU computes the gradient on its own slice: the average over its own thirty two examples, all four at the same time.', code: 'grad' },
+        { id: 'grad', say: 'Each GPU computes the gradient on its own slice, the average over its own thirty two examples, all four at the same time. GPU zero\'s is written {g₀|g zero}, GPU one\'s {g₁|g one}, and so on.', code: 'grad' },
       ],
     },
     {

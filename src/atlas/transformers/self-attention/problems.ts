@@ -25,8 +25,8 @@ export const generators: Generator[] = [
     make(rng, d) {
       const [t, dk, dv] = sizes(rng, d);
       const which = pick(rng, d < 0.35 ? (['Q', 'V', 'S', 'out'] as const) : (['Q', 'K', 'V', 'S', 'A', 'out'] as const));
-      const setup = `A sequence of $${T} = ${t}$ tokens goes through self-attention. Each token's query and key have $${DK} = ${dk}$ entries and its value has $${DV} = ${dv}$, stacked one row per token into $${Q}$, $${K}$ and $${V}$.`;
-      const name = { Q: `$${Q}$`, K: `$${K}$`, V: `$${V}$`, S: `the scores $${SCORE}$`, A: `the weights $${WEIGHTS}$`, out: `the output $${A}${V}$` }[which];
+      const setup = `Self-attention reads $${T} = ${t}$ tokens, with queries and keys of $${DK} = ${dk}$ entries and values of $${DV} = ${dv}$.`;
+      const name = { Q: `$${Q}$`, K: `$${K}$`, V: `$${V}$`, S: `$${SCORE}$`, A: `$${A}$`, out: `$${A}${V}$` }[which];
       const ans = { Q: [t, dk], K: [t, dk], V: [t, dv], S: [t, t], A: [t, t], out: [t, dv] }[which];
       const ts: { value: number[]; why: string }[] = [];
       if (which === 'Q' || which === 'K' || which === 'V') {
@@ -48,7 +48,7 @@ export const generators: Generator[] = [
         K: [`Each token's key is one row of $${K}$: ${t} rows of ${dk}.`],
         V: [`Each token's value is one row of $${V}$: ${t} rows of ${dv}.`],
         S: [`$${Q}$ is $(${t}, ${dk})$ and $${K}^{\\top}$ is $(${dk}, ${t})$.`, `The inner ${dk}s match and disappear: $(${t}, ${t})$, one score for every query against every key.`],
-        A: [`The scores $${SCORE}$ are $(${t}, ${dk}) \\times (${dk}, ${t}) = (${t}, ${t})$.`, `Dividing by $\\sqrt{${DK}}$ and the softmax along each row keep the shape.`],
+        A: [`The weights are $${WEIGHTS}$.`, `The scores $${SCORE}$ are $(${t}, ${dk}) \\times (${dk}, ${t}) = (${t}, ${t})$.`, `Dividing by $\\sqrt{${DK}}$ and the softmax along each row keep the shape.`],
         out: [`$${A}$ is $(${t}, ${t})$ and $${V}$ is $(${t}, ${dv})$.`, `The inner ${t}s match and disappear: $(${t}, ${dv})$, one row per token.`],
       }[which];
       return {
@@ -72,7 +72,7 @@ export const generators: Generator[] = [
         const col = [0, 1].map((c) => clean(W.reduce((a, r, j) => a + r[i]! * vals[j]![c]!, 0)));
         const places = placesFor(...out);
         return {
-          prompt: `Self-attention over ${n} tokens gives the weights and values\n\n$$${A} = ${mat(W)},\\qquad ${V} = ${mat(vals)}$$\n\nwith one row per token. What is token ${i}'s output, row ${i} of $${A}${V}$?${places ? ' Round to two decimals.' : ''}`,
+          prompt: `Self-attention over ${n} tokens has the weights and values\n\n$$${A} = ${mat(W)},\\qquad ${V} = ${mat(vals)}$$\n\nCounting tokens from 0, what is token ${i}'s output?${places ? ' Round to two decimals.' : ''}`,
           answer: { kind: 'vector', value: out, places },
           traps: vtraps(out, [
             { value: col, why: `That uses column ${i} of $${A}$. Token ${i}'s weights are row ${i}: how much it takes from each token.` },
@@ -102,13 +102,13 @@ export const generators: Generator[] = [
         if (Math.abs(1 - colRest - v) < 0.005 || 1 - colRest < 0) continue;
         const tex = `\\begin{bmatrix} ${W.map((r, a) => r.map((x, b) => (a === i && b === j ? '?' : num(x))).join(' & ')).join(' \\\\ ')} \\end{bmatrix}`;
         return {
-          prompt: `These are the attention weights $${WEIGHTS}$ for ${n} tokens, with one entry hidden:\n\n$$${A} = ${tex}$$\n\nWhat is the hidden entry?`,
+          prompt: `These are self-attention's weights for ${n} tokens, with one entry hidden:\n\n$$${A} = ${tex}$$\n\nWhat is the hidden entry?`,
           answer: { kind: 'number', value: v, places: placesFor(v) },
           traps: traps(v, [
             { value: clean(1 - colRest), why: `That makes column ${j} add up to 1. The softmax runs along each row: row ${i} adds up to 1.` },
             { value: rest, why: `That is what the other entries of row ${i} add up to. The hidden one is 1 minus that.` },
           ], placesFor(v)),
-          solution: [`The softmax runs along each row, so every row of $${A}$ adds up to 1.`, `Row ${i}'s other entries add up to $${num(rest)}$, so the hidden one is $1 - ${num(rest)} = ${num(v)}$.`],
+          solution: [`$${WEIGHTS}$, with the softmax along each row, so every row of $${A}$ adds up to 1.`, `Row ${i}'s other entries add up to $${num(rest)}$, so the hidden one is $1 - ${num(rest)} = ${num(v)}$.`],
         };
       }
     },
@@ -122,7 +122,7 @@ export const generators: Generator[] = [
       const sent = ws.map((w) => `\`${w}\``).join(' ');
       if (rng.int(2) === 0) {
         return {
-          prompt: `For the sentence ${sent}, self-attention computes the $4 \\times 4$ score matrix $${SCORE}$, rows and columns counting tokens from 0. What is entry $(${i}, ${j})$?`,
+          prompt: `For the sentence ${sent}, self-attention computes $${SCORE}$. Counting tokens from 0, what is its entry $(${i}, ${j})$?`,
           answer: {
             kind: 'choice',
             options: [
@@ -143,7 +143,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `For the sentence ${sent}, self-attention computes the weights $${WEIGHTS}$, a $4 \\times 4$ matrix. Which entries add up to 1?`,
+        prompt: `For the sentence ${sent}, self-attention computes its weights $${A}$, a $4 \\times 4$ matrix. Which entries add up to 1?`,
         answer: {
           kind: 'choice',
           options: [
@@ -160,7 +160,7 @@ export const generators: Generator[] = [
             `That is true of the scores $${SCORE}$. The softmax turns each row of them into weights that add up to 1.`,
           ],
         },
-        solution: [`The softmax runs along each row of the scores: one row per token asking, one entry per token asked.`, `So row ${i} adds up to 1, and token ${i}'s output is a weighted average of the values, $\\sum_j ${A}_{${i}j}\\, ${v}_j$.`],
+        solution: [`$${WEIGHTS}$, with the softmax along each row of the scores: one row per token asking, one entry per token asked.`, `So row ${i} adds up to 1, and token ${i}'s output is a weighted average of the values, with row ${i} as the weights.`],
       };
     },
   },

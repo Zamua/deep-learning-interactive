@@ -1,20 +1,20 @@
 {
- "duration": 121.522,
+ "duration": 125.828,
  "scenes": {
-  "draw": [0.0, 59.098],
-  "enough": [59.098, 121.522]
+  "draw": [0.0, 63.404],
+  "enough": [63.404, 125.828]
  },
  "beats": {
   "draw/draw": [0.7, 15.282, "Some answers can be checked. A program can be run against its tests, and a solution can be plugged back into its equation. Then there is a plan simpler than a vote: draw several answers, and keep one the checker accepts.", [[2.32, 2.93], [5.29, 5.65], [8.43, 9.03], [11.36, 11.97], [13.18, 13.34]]],
   "draw/check": [15.662, 24.284, "Here are four programs sampled for one task. The tests fail three of them and pass one, so best-of-n keeps that one.", [[18.542, 19.062], [21.662, 22.092]]],
   "draw/miss": [24.664, 38.305, "How often does this work? Say each sample is right with probability zero point three, so wrong with zero point seven. All four are wrong with zero point seven to the fourth, about zero point two four.", [[26.054, 26.784], [30.404, 30.664], [32.694, 33.224], [36.334, 36.644]]],
   "draw/hit": [38.685, 49.239, "That is the only way best-of-n fails. So it succeeds with one minus that, zero point seven six, from a model that is right less than a third of the time.", [[41.285, 41.775], [44.225, 44.525], [45.885, 46.215]]],
-  "draw/formula": [49.619, 57.998, "In general, one minus, one minus p, to the n. Every extra sample shrinks the chance that all of them miss.", [[50.369, 50.639], [51.479, 51.769], [52.799, 52.999], [53.619, 54.199]]],
-  "enough/curve": [59.798, 72.309, "Each sample adds less than the one before. With p at zero point three: zero point three with one sample, zero point five one with two, zero point six six with three.", [[62.328, 63.008], [64.888, 65.408], [67.448, 67.898], [69.718, 70.208]]],
-  "enough/seven": [72.689, 84.302, "To be right ninety percent of the time, find the smallest n that gets there. Six samples give zero point eight eight, not quite; seven give zero point nine two.", [[74.799, 75.069], [77.399, 77.969], [80.439, 80.799], [81.549, 81.999]]],
-  "enough/rare": [84.682, 98.294, "It works even when right answers are rare. At p of zero point one, one sample in ten is right, far too few to win a vote, yet twenty samples hold a right one eighty eight percent of the time.", [[87.302, 87.892], [89.642, 89.962], [91.802, 92.232], [93.952, 94.412]]],
-  "enough/fooled": [98.674, 111.108, "All this assumes the checker never accepts a wrong answer. If it is fooled one time in five, more samples bring more wrong answers past it, and success levels off near zero point six eight.", [[102.064, 102.644], [104.664, 105.024], [107.684, 107.984]]],
-  "enough/strict": [111.488, 119.301, "A checker that rejects some right answers only costs more samples. So above all, it must reject the wrong ones.", [[115.678, 116.138], [117.178, 117.388]]],
-  "enough/turn": [119.681, 120.422, "Your turn.", []]
+  "draw/formula": [49.619, 62.304, "In general, with n samples each right with probability p, the chance of a hit is one minus, one minus p, to the n. Every extra sample shrinks the chance that all of them miss.", [[50.379, 50.619], [53.679, 54.049], [56.149, 56.359], [58.129, 58.669]]],
+  "enough/curve": [64.104, 76.615, "Each sample adds less than the one before. With p at zero point three: zero point three with one sample, zero point five one with two, zero point six six with three.", [[66.634, 67.314], [69.194, 69.714], [71.754, 72.204], [74.024, 74.514]]],
+  "enough/seven": [76.995, 88.608, "To be right ninety percent of the time, find the smallest n that gets there. Six samples give zero point eight eight, not quite; seven give zero point nine two.", [[79.105, 79.375], [81.705, 82.275], [84.745, 85.105], [85.855, 86.305]]],
+  "enough/rare": [88.988, 102.6, "It works even when right answers are rare. At p of zero point one, one sample in ten is right, far too few to win a vote, yet twenty samples hold a right one eighty eight percent of the time.", [[91.608, 92.198], [93.948, 94.268], [96.108, 96.538], [98.258, 98.718]]],
+  "enough/fooled": [102.98, 115.414, "All this assumes the checker never accepts a wrong answer. If it is fooled one time in five, more samples bring more wrong answers past it, and success levels off near zero point six eight.", [[106.37, 106.95], [108.97, 109.33], [111.99, 112.29]]],
+  "enough/strict": [115.794, 123.607, "A checker that rejects some right answers only costs more samples. So above all, it must reject the wrong ones.", [[119.984, 120.444], [121.484, 121.694]]],
+  "enough/turn": [123.987, 124.728, "Your turn.", []]
  }
 }

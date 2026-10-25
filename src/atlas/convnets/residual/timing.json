@@ -1,19 +1,19 @@
 {
- "duration": 97.066,
+ "duration": 102.776,
  "scenes": {
-  "block": [0.0, 54.883],
-  "gradient": [54.883, 97.066]
+  "block": [0.0, 60.593],
+  "gradient": [60.593, 102.776]
  },
  "beats": {
   "block/plain": [0.7, 9.128, "A plain layer replaces its input with something new. A residual block keeps its input, x, and adds a change to it.", [[3.93, 4.52], [5.55, 5.7], [6.69, 6.9], [7.31, 7.6]]],
-  "block/add": [9.508, 22.208, "The layers inside, a conv, a ReLU and another conv, compute F of x. A shortcut carries x around them, and the two are added: y equals x plus F of x.", [[10.708, 11.018], [11.588, 11.888], [12.458, 12.608], [13.518, 13.838], [15.188, 15.728], [17.748, 18.058], [19.178, 19.708]]],
-  "block/example": [22.588, 32.903, "If x is two, minus one and three, and F gives a half, a half and minus one, then y is two and a half, minus a half, and two.", [[25.338, 25.728], [28.788, 29.248], [30.998, 31.208], [32.058, 32.268]]],
-  "block/zero": [33.283, 41.091, "To leave its input alone, a block only has to make F zero. So an extra block need not make the network worse.", [[34.793, 35.093], [37.243, 37.823]]],
-  "block/match": [41.471, 53.783, "The sum needs x and F of x in the same shape. When F shrinks the size with a stride, or changes the channels, the shortcut becomes a one by one conv with that stride, to match.", [[44.771, 45.311], [47.591, 47.831], [49.091, 49.471], [52.941, 53.181]]],
-  "gradient/split": [55.583, 63.366, "Going backward, the sum is an add gate: it hands the gradient arriving at y, g, to both of its inputs.", [[56.523, 56.803], [58.253, 58.753], [61.023, 61.323], [61.753, 62.003]]],
-  "gradient/paths": [63.746, 71.718, "Along the shortcut, g reaches x unchanged. Through F, it gets multiplied by F's slope, F prime.", [[64.806, 65.086], [67.136, 67.656], [68.336, 68.586], [70.636, 70.946]]],
-  "gradient/formula": [72.098, 81.365, "The two paths add up at x: g times one plus F prime. With g equal to two and a slope of a half, that is three.", [[74.108, 74.578], [76.888, 77.438], [80.228, 80.558]]],
-  "gradient/deep": [81.745, 94.846, "Now stack fifty layers. If each one halves the gradient, almost nothing reaches the first. With shortcuts, each block multiplies by one plus a slope, so the gradient arrives intact.", [[83.475, 84.005], [85.795, 86.105], [88.025, 88.665], [89.505, 89.755], [92.575, 92.915]]],
-  "gradient/turn": [95.226, 95.966, "Your turn.", []]
+  "block/add": [9.508, 27.918, "The layers inside, a conv, a ReLU and another conv, compute a function of x, written F of x. Here F names that function, not a filter size. A shortcut carries x around them, and the two are added: y equals x plus F of x.", [[10.688, 10.998], [11.598, 11.848], [13.538, 13.888], [15.438, 15.708], [16.068, 16.258], [16.988, 17.488], [17.848, 18.028], [19.518, 19.768], [20.918, 21.498], [23.548, 23.798], [24.898, 25.338], [26.628, 26.788]]],
+  "block/example": [28.298, 38.613, "If x is two, minus one and three, and F gives a half, a half and minus one, then y is two and a half, minus a half, and two.", [[31.048, 31.438], [34.498, 34.958], [36.708, 36.918], [37.768, 37.978]]],
+  "block/zero": [38.993, 46.801, "To leave its input alone, a block only has to make F zero. So an extra block need not make the network worse.", [[40.503, 40.803], [42.953, 43.533]]],
+  "block/match": [47.181, 59.493, "The sum needs x and F of x in the same shape. When F shrinks the size with a stride, or changes the channels, the shortcut becomes a one by one conv with that stride, to match.", [[50.481, 51.021], [53.301, 53.541], [54.801, 55.181], [58.651, 58.891]]],
+  "gradient/split": [61.293, 69.076, "Going backward, the sum is an add gate: it hands the gradient arriving at y, g, to both of its inputs.", [[62.233, 62.513], [63.963, 64.463], [66.733, 67.033], [67.463, 67.713]]],
+  "gradient/paths": [69.456, 77.428, "Along the shortcut, g reaches x unchanged. Through F, it gets multiplied by F's slope, F prime.", [[70.516, 70.796], [72.846, 73.366], [74.046, 74.296], [76.346, 76.656]]],
+  "gradient/formula": [77.808, 87.075, "The two paths add up at x: g times one plus F prime. With g equal to two and a slope of a half, that is three.", [[79.818, 80.288], [82.598, 83.148], [85.938, 86.268]]],
+  "gradient/deep": [87.455, 100.556, "Now stack fifty layers. If each one halves the gradient, almost nothing reaches the first. With shortcuts, each block multiplies by one plus a slope, so the gradient arrives intact.", [[89.185, 89.715], [91.505, 91.815], [93.735, 94.375], [95.215, 95.465], [98.285, 98.625]]],
+  "gradient/turn": [100.936, 101.676, "Your turn.", []]
  }
 }

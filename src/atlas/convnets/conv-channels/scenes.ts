@@ -74,7 +74,7 @@ const depth: SceneDef = {
         s.arrow(f.mx + 6 * s.u, fy, dx - 2 * s.u, dy, s.tint('gold', 0.9), 0.35, 2);
       });
     });
-    s.alpha(s.ease('one', 0.6, 2.4) * (1 - s.ease('map', 0.5)), () => s.text('27 products, added → 1 number', s.w / 2, s.h * 0.88, { size: 3.6, font: 'mono', color: s.c('gold') }));
+    s.alpha(s.ease('one', 0.6, 2.4) * (1 - s.ease('map', 0.5)), () => s.text('27 products add up to 1 number', s.w / 2, s.h * 0.88, { size: 3.6, font: 'mono', color: s.c('gold') }));
     s.alpha(s.ease('map', 0.6, 4), () => {
       label(s, '(30, 30)', f.ox + f.sz / 2, f.ly, 'gold');
       s.text('one output channel', s.w / 2, s.h * 0.88, { size: 3.6, font: 'mono', color: s.c('gold') });

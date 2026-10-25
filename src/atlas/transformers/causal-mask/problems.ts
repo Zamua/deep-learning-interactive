@@ -1,8 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import { int, num, pick } from '../../kit';
-import { big, bigText, DK, E2, K, Q, SENTENCES, softmax2, T, traps, useExp, vecT, vtraps } from '../kit';
+import { big, bigText, E2, SENTENCES, softmax2, T, traps, useExp, vecT, vtraps } from '../kit';
 
-const SCORE = `${Q}${K}^{\\top} / \\sqrt{${DK}}`;
 const sent = (ws: readonly string[]) => ws.map((w) => `\`${w}\``).join(' ');
 
 export const generators: Generator[] = [
@@ -13,7 +12,7 @@ export const generators: Generator[] = [
       const n = int(rng, 3, 4);
       const words = ws.slice(0, n);
       return {
-        prompt: `A causal mask is applied to the ${n} by ${n} scores $${SCORE}$ for ${sent(words)}, where row $i$ is token $i$'s query and column $j$ is token $j$'s key, counting from 0. Which entries does it set to $-\\infty$?`,
+        prompt: `A causal mask is applied to self-attention's scores for ${sent(words)}. Which entries, at row $i$ and column $j$, does it set to $-\\infty$?`,
         answer: {
           kind: 'choice',
           options: [
@@ -45,7 +44,7 @@ export const generators: Generator[] = [
         const i = rng.int(n);
         const v = i + 1;
         return {
-          prompt: `A causal mask is applied to self-attention over $${T} = ${n}$ tokens, counting from 0. How many tokens can token ${i} attend to?`,
+          prompt: `A causal mask is applied to self-attention over ${n} tokens. With tokens numbered from 0, how many can token ${i} attend to?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: i, why: `That leaves out token ${i} itself. A token may attend to itself and to every token before it.` },
@@ -61,7 +60,7 @@ export const generators: Generator[] = [
       const hidden = (n * (n - 1)) / 2;
       const v = masked ? hidden : kept;
       return {
-        prompt: `A causal mask is applied to the $${big(n)} \\times ${big(n)}$ scores of self-attention over $${T} = ${big(n)}$ tokens. How many of the $${big(n * n)}$ entries does it ${masked ? 'set to $-\\infty$' : 'keep'}?`,
+        prompt: `A causal mask is applied to self-attention over $${T} = ${big(n)}$ tokens. How many of the scores does it ${masked ? 'set to $-\\infty$' : 'keep'}?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: (n * n) / 2, why: `That is exactly half. The diagonal is ${masked ? 'kept' : 'kept too'}, so the split is $${T}(${T} + 1)/2$ kept and $${T}(${T} - 1)/2$ masked.` },

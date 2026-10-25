@@ -28,7 +28,7 @@ export const generators: Generator[] = [
       while (new Set(w).size < n);
       const v = w.map((x) => q(x, s));
       return {
-        prompt: `Weights $\\symw = ${vec(w)}$ are stored as 4-bit integers from $-7$ to $7$ with scale $s = ${num(s)}$, using $q = \\mathrm{round}(\\symw / s)$. What integers $q$ are stored?`,
+        prompt: `Weights $\\symw = ${vec(w)}$ are stored as 4-bit integers with scale $s = ${num(s)}$. What integers are stored?`,
         answer: { kind: 'vector', value: v },
         traps: vtraps(v, [
           { value: w.map((x) => Math.trunc(x / s) + 0), why: 'That drops the decimals of $\\symw / s$. Round to the nearest integer instead.' },
@@ -36,7 +36,7 @@ export const generators: Generator[] = [
           { value: w.map((x) => clean(q(x, s) * s)), why: 'That is the weight you get back, $q \\times s$. The stored values are the integers $q$.' },
         ]),
         solution: [
-          `Divide by $s = ${num(s)}$: $\\symw / s = ${vec(w.map((x) => round(x / s, 2) + 0))}$.`,
+          `Each weight is stored as $q = \\mathrm{round}(\\symw / s)$. Divide by $s = ${num(s)}$: $\\symw / s = ${vec(w.map((x) => round(x / s, 2) + 0))}$.`,
           `Round each to the nearest integer: $q = ${vec(v)}$.`,
           `All lie within $-7$ to $7$, so each fits in 4 bits.`,
         ],
@@ -52,7 +52,7 @@ export const generators: Generator[] = [
         const bits = pick(rng, [4, 8]);
         const v = clean(s / 2);
         return {
-          prompt: `Weights are stored as ${bits}-bit integers with scale $s = ${num(s)}$, rounding $\\symw / s$ to the nearest integer and multiplying back by $s$ to use it. For a weight inside the integers' range, what is the largest rounding error the round trip can leave?`,
+          prompt: `Weights are stored as ${bits}-bit integers with scale $s = ${num(s)}$. For a weight inside the integers' range, what is the largest rounding error?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: s, why: 'That is a whole step. Rounding to the nearest integer moves at most half a step.' },
@@ -60,7 +60,7 @@ export const generators: Generator[] = [
             { value: clean(s / 4), why: 'That is the average error over many weights, not the largest. The worst case is halfway between two steps.' },
           ]),
           solution: [
-            `The stored values are steps of $s = ${num(s)}$ apart.`,
+            `A weight is stored as the integer nearest $\\symw / s$ and used as that integer times $s$, so the values it can come back as are steps of $s = ${num(s)}$ apart.`,
             'Rounding sends a weight to the nearest step, so it moves at most half a step: the worst weights sit halfway between two.',
             `The largest error is $s / 2 = ${num(v)}$, whatever the number of bits.`,
           ],
@@ -73,7 +73,7 @@ export const generators: Generator[] = [
       const err = clean(Math.abs(w - back));
       const v = kind === 'back' ? back : err;
       return {
-        prompt: `A weight $\\symw = ${num(w)}$ is stored as $q = \\mathrm{round}(\\symw / s)$ with scale $s = ${num(s)}$, and used as $q \\times s$. ${kind === 'back' ? 'What value is used in its place?' : 'How far is the value used from the original weight? Give the size of the difference.'}`,
+        prompt: `A weight $\\symw = ${num(w)}$ is quantized with scale $s = ${num(s)}$. ${kind === 'back' ? 'What value is used in its place?' : 'How far is the value used from the original weight?'}`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: qi, why: `That is the stored integer $q$. Multiply it by $s = ${num(s)}$ to get the value used.` },
@@ -82,9 +82,9 @@ export const generators: Generator[] = [
           ...(kind === 'back' ? [{ value: w, why: 'That is the original weight. Rounding to a whole number of steps changes it slightly.' }] : []),
         ]),
         solution: [
-          `$\\symw / s = ${num(w)} / ${num(s)} = ${num(round(w / s, 2) + 0)}$, which rounds to $q = ${qi}$.`,
+          `It is stored as $q = \\mathrm{round}(\\symw / s)$: $\\symw / s = ${num(w)} / ${num(s)} = ${num(round(w / s, 2) + 0)}$, which rounds to $q = ${qi}$.`,
           `The value used is $q \\times s = ${qi} \\times ${num(s)} = ${num(back)}$.`,
-          ...(kind === 'error' ? [`It is off by $|${num(w)} - ${back < 0 ? `(${num(back)})` : num(back)}| = ${num(err)}$, less than half a step, $s / 2 = ${num(clean(s / 2))}$.`] : []),
+          ...(kind === 'error' ? [`$${num(w)}$ and $${num(back)}$ are $${num(err)}$ apart: less than half a step, $s / 2 = ${num(clean(s / 2))}$.`] : []),
         ],
       };
     },
@@ -136,7 +136,7 @@ export const generators: Generator[] = [
         const up = rng.next() < 0.5;
         const s2 = clean(up ? s * 2 : s / 2);
         return {
-          prompt: `A ${N}-billion-parameter model's weights are quantized with scale $s = ${num(s)}$. Using $s = ${num(s2)}$ instead, with integers of the same bit width, what happens to the largest rounding error?`,
+          prompt: `Weights are quantized with scale $s = ${num(s)}$. With $s = ${num(s2)}$ instead, and integers of the same bit width, what happens to the largest rounding error?`,
           answer: choice([
             { text: up ? 'It doubles: it is half a step, and the step doubles' : 'It halves: it is half a step, and the step halves', why: null },
             { text: 'It stays the same: the bit width sets the error', why: `The error is at most half a step, $s / 2$, and the step changed from $${num(s)}$ to $${num(s2)}$.` },

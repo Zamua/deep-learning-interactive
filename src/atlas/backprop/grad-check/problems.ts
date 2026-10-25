@@ -34,7 +34,7 @@ export const generators: Generator[] = [
       const xp = num(clean(x + h));
       const xm = num(clean(x - h));
       return {
-        prompt: `To check a gradient numerically, you evaluate $f$ a step $h = ${num(h)}$ either side of $x = ${num(x)}$: $f(${xp}) = ${num(fp)}$ and $f(${xm}) = ${num(fm)}$. What is the centered-difference estimate of $f'(${num(x)})$? Round to two decimals.`,
+        prompt: `For $h = ${num(h)}$, $f(${xp}) = ${num(fp)}$ and $f(${xm}) = ${num(fm)}$. What is the centered-difference estimate of $f'(${num(x)})$? Round to two decimals.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(
           v,
@@ -79,10 +79,11 @@ export const generators: Generator[] = [
       if (a < b) ts.push({ value: (a - b) / big, why: 'A relative error is a size, never negative: take the absolute value of $a - n$.' });
       const words = ['two', 'three', 'four', 'five'][places - 2];
       return {
-        prompt: `Backprop gives the gradient $a = ${num(a)}$, and the centered difference gives $n = ${num(b)}$. What is their relative error${d < 0.5 ? `, $${REL}$` : ''}? Round to ${words} decimals.`,
+        prompt: `Backprop gives the gradient $a = ${num(a)}$, and the centered difference gives $n = ${num(b)}$. What is their relative error? Round to ${words} decimals.`,
         answer: { kind: 'number', value: v, places },
         traps: traps(v, ts, places),
         solution: [
+          `The relative error is $${REL}$.`,
           `The difference: $|a - n| = |${num(a)} - ${b < 0 ? `(${num(b)})` : num(b)}| = ${num(diff)}$.`,
           `The larger size: $\\max(|a|, |n|) = ${num(big)}$.`,
           `So the relative error is $${num(diff)} / ${num(big)} \\approx ${num(round(v, places), places)}$${v >= 0.01 ? ': far too big to be rounding, so one of the two is wrong.' : '.'}`,
@@ -110,12 +111,12 @@ export const generators: Generator[] = [
             ? ['For a smooth function the two should agree to about $10^{-7}$. This is a thousand times worse: worth a look.', null, 'A clear bug gives errors near $10^{-2}$ or more. This is much smaller: suspicious, not certainly wrong.']
             : ['The two disagree in the second digit or sooner. Correct gradients agree to about $10^{-7}$.', 'Errors of $10^{-2}$ and more mean the formula is wrong, not just imprecise.', null];
       return {
-        prompt: `A gradient check on a graph with no max nodes, so no kinks, ${given}. What does that say about backprop's gradient?`,
+        prompt: `A gradient check on a graph with no max nodes ${given}. What does that say about backprop's gradient?`,
         answer: { kind: 'choice', options: [...VERDICTS], correct: cls, why },
         solution: [
           shown ? `The relative error is $|a - n| / \\max(|a|, |n|)$, about $${sci(rel)}$.` : `The relative error is $${sci(rel)}$.`,
           'Around $10^{-7}$ or less, the gradients agree. Around $10^{-4}$, be suspicious. Around $10^{-2}$ or more, there is a bug.',
-          cls === 0 ? 'So backprop is almost certainly right.' : cls === 1 ? 'So it is suspicious: check for kinks or a small mistake.' : 'So there is almost certainly a bug in the backward pass.',
+          cls === 0 ? 'So backprop is almost certainly right.' : cls === 1 ? 'So it is suspicious: worth checking for a small mistake.' : 'So there is almost certainly a bug in the backward pass.',
         ],
       };
     },
@@ -132,7 +133,7 @@ export const generators: Generator[] = [
       const mid = round(slope + c * h * h, 6);
       const fTex = `${c === 1 ? '' : c}x^{3}${b === 0 ? '' : b > 0 ? ` + ${b === 1 ? '' : b}x` : ` - ${-b}x`}`;
       return {
-        prompt: `For $f(x) = ${fTex}$ at $x = ${x}$ the true slope is $${slope}$. With $h = ${num(h)}$, the one-sided difference $\\frac{f(x + h) - f(x)}{h}$ gives $${num(one)}$, and the centered difference $\\frac{f(x + h) - f(x - h)}{2h}$ gives $${num(mid)}$. Why is the centered one so much closer?`,
+        prompt: `For $f(x) = ${fTex}$ at $x = ${x}$, the true slope is $${slope}$. With $h = ${num(h)}$, the one-sided difference gives $${num(one)}$ and the centered difference gives $${num(mid)}$. Why is the centered one so much closer?`,
         answer: {
           kind: 'choice',
           options: [
@@ -150,6 +151,7 @@ export const generators: Generator[] = [
           ],
         },
         solution: [
+          'The one-sided difference is $\\frac{f(x + h) - f(x)}{h}$, and the centered one is $\\frac{f(x + h) - f(x - h)}{2h}$.',
           `The one-sided error is $${num(round(one - slope, 6))}$, about $3 \\cdot ${c === 1 ? '' : `${c} \\cdot `}${x} \\cdot h$: it shrinks in proportion to $h$.`,
           `The centered error is $${num(round(mid - slope, 6))}$, which is $${c === 1 ? '' : `${c}`}h^{2}$: the first-order error on the right cancels the one on the left.`,
           'So the centered difference is the one to trust in a gradient check.',

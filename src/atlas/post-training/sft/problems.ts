@@ -57,7 +57,7 @@ export const generators: Generator[] = [
         const graded = mine.filter(Boolean).length;
         const last = cs[turns - 1]![1].length + 1;
         return {
-          prompt: `A training conversation is tokenized as in the listing, one turn per line. With the loss counted only on the assistant's tokens, how many of its ${toks.length} tokens carry loss?`,
+          prompt: `A training conversation is tokenized as in the listing, one turn per line. In supervised fine-tuning, how many of its ${toks.length} tokens carry loss?`,
           code: lines.join('\n'),
           answer: { kind: 'number', value: graded },
           traps: traps(graded, [
@@ -81,7 +81,7 @@ export const generators: Generator[] = [
       const total = sys + u[0]! + u[1]! + graded;
       const sysText = sys ? `a ${sys}-token system prompt, then ` : '';
       return {
-        prompt: `A training conversation has ${sysText}a user turn of ${u[0]} tokens, an assistant reply of ${a[0]} tokens, a second user turn of ${u[1]} tokens and a second reply of ${a[1]} tokens. Each reply's count includes the \`<end>\` token that closes it. With the loss counted only on the assistant's tokens, how many tokens carry loss?`,
+        prompt: `A training conversation has ${sysText}a user turn of ${u[0]} tokens, an assistant reply of ${a[0]} tokens, a second user turn of ${u[1]} tokens and a second reply of ${a[1]} tokens. Each reply's count includes the \`<end>\` token that closes it. In supervised fine-tuning, how many tokens carry loss?`,
         answer: { kind: 'number', value: graded },
         traps: traps(graded, [
           { value: total, why: 'That counts every token. The mask leaves out everything the assistant did not write.' },
@@ -115,7 +115,7 @@ export const generators: Generator[] = [
       const width = Math.max(...toks.map((t) => t.length)) + 3;
       const code = toks.map((t, i) => (i === 0 ? t : `${t.padEnd(width)}p = ${num(p[i]!)}`)).join('\n');
       return {
-        prompt: `The model reads the conversation in the listing. Beside each token is $\\symp$, the probability the model gave it, predicting it from the tokens before. ${d < 0.5 ? 'SFT averages $-\\ln \\symp$ over the assistant\'s tokens only.' : 'The loss is counted only on the assistant\'s tokens.'} What is the loss $\\symL$? Round to two decimals.\n\nUse ${useLn(p.filter((x) => x > 0))}.`,
+        prompt: `Beside each token of the conversation in the listing is $\\symp$, the probability the model gave it. What is the supervised fine-tuning loss $\\symL$? Round to two decimals.\n\nUse ${useLn(p.filter((x) => x > 0))}.`,
         code,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(
@@ -129,6 +129,7 @@ export const generators: Generator[] = [
           2,
         ),
         solution: [
+          'The loss averages $-\\ln \\symp$ over the tokens with mask 1, the ones the assistant wrote.',
           `The assistant's tokens are ${toks.filter((_, i) => mine[i]).map((t) => `\`${t}\``).join(', ')}; the \`<user>\` and \`<asst>\` markers and the question get mask 0.`,
           `Their losses: ${p.filter((_, i) => mine[i]).map((x) => `$-\\ln ${num(x)} \\approx ${num(-LN(x), 2)}$`).join(', ')}.`,
           `Average them: $(${sumTex(graded, 2)}) / ${n} = ${num(sum, 2)} / ${n} \\approx ${num(v, 2)}$.`,
@@ -147,7 +148,7 @@ export const generators: Generator[] = [
       const isAsst = toks.map((t) => t === '<asst>');
       const isEnd = toks.map((t) => t === '<end>');
       return {
-        prompt: `Write the loss mask $${M}$ for the ${toks.length} tokens of the conversation ${lines.map((l) => `\`${l}\``).join(' ')}, in order: 1 where a token carries loss, 0 where it does not.`,
+        prompt: `What is the loss mask $${M}$ for the ${toks.length} tokens of the conversation ${lines.map((l) => `\`${l}\``).join(' ')}?`,
         answer: { kind: 'vector', value: m },
         traps: vtraps(m, [
           { value: m.map((x) => 1 - x), why: 'That is the mask flipped. The loss belongs on the assistant\'s tokens, not the user\'s.' },

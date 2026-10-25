@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
 import { int, pick, scale, vec } from '../../kit';
-import { big, lit, times, traps, vtraps } from '../kit';
+import { big, commas, lit, times, traps, vtraps } from '../kit';
 
 const ALPHABETS = [
   ['a', 'b', 'c', 'd', 'e'],
@@ -140,7 +140,7 @@ export const generators: Generator[] = [
         const top = pairCounts(t)[0]!;
         const v = t.length - top.n;
         return {
-          prompt: `The tokens are ${listTex(t)}. BPE merges the most frequent neighboring pair. How many tokens are left?`,
+          prompt: `BPE makes its next merge on the tokens ${listTex(t)}. How many tokens are left?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: t.length - 1, why: `That removes one token in all. The pair occurs ${top.n} times, and each occurrence loses a token.` },
@@ -148,7 +148,7 @@ export const generators: Generator[] = [
             { value: t.length, why: 'A merge shortens the list: every occurrence of the pair becomes one token.' },
           ]),
           solution: [
-            `The most frequent pair is ${pairTex(top.a, top.b)}, ${top.n} times.`,
+            `BPE merges the most frequent neighboring pair: ${pairTex(top.a, top.b)}, ${top.n} times.`,
             `Each occurrence turns two tokens into one, so the list loses ${top.n}: $${t.length} - ${top.n} = ${v}$.`,
           ],
         };
@@ -191,7 +191,7 @@ export const generators: Generator[] = [
       if (kind === 0) {
         const v = 256 + k;
         return {
-          prompt: `Byte-level BPE starts from a vocabulary of the 256 possible bytes and then makes $${big(k)}$ merge${k === 1 ? '' : 's'}. How many tokens does the vocabulary hold?`,
+          prompt: `Byte-level BPE makes $${big(k)}$ merge${k === 1 ? '' : 's'}. How many tokens does its vocabulary hold?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: k, why: 'That counts only the merged tokens. The 256 bytes stay in the vocabulary.' },
@@ -204,19 +204,19 @@ export const generators: Generator[] = [
       if (kind === 1) {
         const v = 256 + k;
         return {
-          prompt: `Byte tokens have ids 0 to 255, and each BPE merge gives its new token the next free id. Counting merges from 0, what id does merge number $${big(k)}$ create?`,
+          prompt: `Counting merges from 0, what id does merge number $${big(k)}$ of byte-level BPE create?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
-            { value: 255 + k, why: 'That counts merges from 1. Merge 0 makes id 256, so merge $k$ makes $256 + k$.' },
+            { value: 255 + k, why: `That counts merges from 1. Merge 0 makes id 256, so merge ${commas(k)} makes $256 + ${big(k)}$.` },
             { value: k, why: 'The first 256 ids already belong to the bytes, so new ids start at 256.' },
-            { value: 257 + k, why: 'Merge 0 takes the first free id, 256; merge $k$ is $k$ ids later.' },
+            { value: 257 + k, why: `Merge 0 takes the first free id, 256; merge ${commas(k)} is ${commas(k)} ${k === 1 ? 'id' : 'ids'} later.` },
           ]),
-          solution: ['Ids 0 to 255 are taken by the bytes, so merge 0 makes id 256.', `Merge $${big(k)}$ comes $${big(k)}$ ids later: $256 + ${big(k)} = ${big(v)}$.`],
+          solution: ['Ids 0 to 255 are taken by the bytes, and each merge takes the next free id, so merge 0 makes id 256.', `Merge $${big(k)}$ comes $${big(k)}$ ${k === 1 ? 'id' : 'ids'} later: $256 + ${big(k)} = ${big(v)}$.`],
         };
       }
       const V = 256 + k;
       return {
-        prompt: `A byte-level BPE tokenizer should end up with a vocabulary of $${big(V)}$ tokens. Starting from the 256 bytes, how many merges does it make?`,
+        prompt: `A byte-level BPE tokenizer ends up with a vocabulary of $${big(V)}$ tokens. How many merges did it make?`,
         answer: { kind: 'number', value: k },
         traps: traps(k, [
           { value: V, why: 'The 256 bytes come for free; only the tokens beyond them need a merge each.' },

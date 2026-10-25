@@ -18,9 +18,9 @@ export const script: LectureScript = {
         J = 0.5 * 1 + 0.3 * 0 + 0.2 * 0  # 0.5  #@J
       `,
       beats: [
-        { id: 'ask', say: 'A model answers a question by sampling. Asked seven times eight, it says fifty six half the time, fifty four three times in ten, and sixty four the rest.', code: ['pi', 'sample'] },
+        { id: 'ask', say: 'A model answers a question by sampling. Asked seven times eight, it says fifty six half the time, fifty four three times in ten, and sixty four the rest: its probabilities, written with the Greek letter {π|pi}.', code: ['pi', 'sample'] },
         { id: 'reward', say: 'A checker scores each answer: a reward, R, of one when it is right and zero when it is wrong. It is just a number, with nothing to differentiate.', code: 'R' },
-        { id: 'goal', say: 'Training should raise the expected reward: the average R over the model\'s answers, here {0.5|zero point five}. Its gradient would say how to change the parameters, {θ|theta}.', code: 'J' },
+        { id: 'goal', say: 'Training should raise the expected reward, J: the average R over the model\'s answers, here {0.5|zero point five}. Its gradient would say how to change the model\'s parameters, written {θ|theta}.', code: 'J' },
         { id: 'stuck', say: 'But {θ|theta} reaches the reward only through which answer gets sampled, and a random draw has no slope.', code: 'sample' },
       ],
     },
@@ -37,10 +37,10 @@ export const script: LectureScript = {
         # ans = 56, R = 1: [0.5, -0.3, -0.2]      #@est
       `,
       beats: [
-        { id: 'sum', say: 'Write the expected reward as a sum over answers: each answer\'s probability times its reward. Only the probabilities depend on {θ|theta}.', code: 'sum' },
+        { id: 'sum', say: 'Write the expected reward as a sum over every answer y: its probability, {π(y)|pi of y}, times its reward, {R(y)|R of y}. Only the probabilities depend on {θ|theta}.', code: 'sum' },
         { id: 'trick', say: 'Now the trick. The slope of log {π|pi} is the slope of {π|pi} divided by {π|pi}. So the gradient of {π|pi} is {π|pi} times the gradient of its log.', code: 'trick' },
         { id: 'avg', say: 'Put that in, and the gradient of the expected reward becomes a sum of {π|pi} times R times the gradient of log {π|pi}: an average over the model\'s own answers.', code: 'avg' },
-        { id: 'est', say: 'So sample one answer, and multiply its reward by the gradient of its log-probability. That one sample is an estimate of the gradient: the policy gradient.', code: 'est' },
+        { id: 'est', say: 'So draw one answer from the model, written {y ∼ π|y drawn from pi}, and multiply its reward by the gradient of its log-probability. That one sample is an estimate of the gradient: the policy gradient.', code: 'est' },
         { id: 'eg', say: 'For fifty six, this model\'s gradient of log {π|pi} is {0.5|zero point five}, minus {0.3|zero point three}, minus {0.2|zero point two}. With R equal to one, the estimate is that same vector.', code: 'est' },
       ],
     },

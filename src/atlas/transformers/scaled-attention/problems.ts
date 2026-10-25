@@ -22,13 +22,13 @@ export const generators: Generator[] = [
           const s = clean(raw / r);
           const places = placesFor(s);
           return {
-            prompt: `A query and a key have length $${DK} = ${dk}$: $${q} = ${vecT(qv)}$ and $${k} = ${vecT(kv)}$. What is their scaled score, $${q} \\cdot ${k} / \\sqrt{${DK}}$?${places ? ' Round to two decimals.' : ''}`,
+            prompt: `A query is $${q} = ${vecT(qv)}$ and a key is $${k} = ${vecT(kv)}$. What is their scaled attention score?${places ? ' Round to two decimals.' : ''}`,
             answer: { kind: 'number', value: s, places },
             traps: traps(s, [
               { value: raw, why: `That is the dot product before scaling. Divide it by $\\sqrt{${dk}} = ${r}$.` },
               { value: raw / dk, why: `That divides by $${DK} = ${dk}$ itself. The scale is its square root, $${r}$.` },
             ], places),
-            solution: [`The dot product: $${prods(qv, kv)} = ${raw}$.`, `Divide by $\\sqrt{${dk}} = ${r}$: $${raw} / ${r} = ${num(round(s, 2))}$.`],
+            solution: [`The score is $${q} \\cdot ${k} / \\sqrt{${DK}}$, with $${DK} = ${dk}$ entries in each vector.`, `The dot product: $${prods(qv, kv)} = ${raw}$.`, `Divide by $\\sqrt{${dk}} = ${r}$: $${raw} / ${r} = ${num(round(s, 2))}$.`],
           };
         }
       }
@@ -99,7 +99,7 @@ export const generators: Generator[] = [
   {
     id: 'spread',
     make(rng, d) {
-      const coin = `The entries of a query and a key are random, each $+1$ or $-1$, so every product in $${q} \\cdot ${k}$ is $+1$ or $-1$ at random.`;
+      const coin = `The entries of a query and a key are random, each $+1$ or $-1$.`;
       if (d < 0.5) {
         const dk = pick(rng, ROOTS);
         const r = Math.sqrt(dk);
@@ -111,7 +111,7 @@ export const generators: Generator[] = [
             { value: 0, why: `That is the average over many draws. One score is a sum of coin flips that rarely cancel exactly: typically $\\sqrt{${DK}}$ from 0.` },
             { value: 1, why: `That is the typical size after dividing by $\\sqrt{${DK}}$. Unscaled, it is $\\sqrt{${DK}}$.` },
           ]),
-          solution: [`$${q} \\cdot ${k}$ adds up ${dk} random $\\pm 1$ terms; they partly cancel.`, `A sum of $${DK}$ such terms is typically about $\\sqrt{${DK}}$ from 0: $\\sqrt{${dk}} = ${r}$.`],
+          solution: [`$${q} \\cdot ${k}$ adds up ${dk} products, each $+1$ or $-1$ at random; they partly cancel.`, `A sum of $${DK}$ such terms is typically about $\\sqrt{${DK}}$ from 0: $\\sqrt{${dk}} = ${r}$.`],
         };
       }
       const a = pick(rng, [4, 9, 16, 25]);
@@ -124,7 +124,7 @@ export const generators: Generator[] = [
           { value: f, why: `That is how much $${DK}$ grows. The typical size grows like $\\sqrt{${DK}}$: $\\sqrt{${f}} = ${ratio}$.` },
           { value: 1, why: `The entries keep their size, but more of them are added up: the sum spreads out like $\\sqrt{${DK}}$.` },
         ]),
-        solution: [`A sum of $${DK}$ random $\\pm 1$ terms is typically about $\\sqrt{${DK}}$ from 0.`, `$\\sqrt{${a}} = ${Math.sqrt(a)}$ and $\\sqrt{${a * f}} = ${Math.sqrt(a * f)}$: $${ratio}$ times larger.`],
+        solution: [`A sum of $${DK}$ products, each $+1$ or $-1$ at random, is typically about $\\sqrt{${DK}}$ from 0.`, `$\\sqrt{${a}} = ${Math.sqrt(a)}$ and $\\sqrt{${a * f}} = ${Math.sqrt(a * f)}$: $${ratio}$ times larger.`],
       };
     },
   },

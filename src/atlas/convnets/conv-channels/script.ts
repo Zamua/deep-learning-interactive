@@ -21,7 +21,7 @@ export const script: LectureScript = {
       codeTitle: 'channels.py',
       code,
       beats: [
-        { id: 'image', say: 'A color image has three channels, red, green and blue, each a grid of pixels. Channels first, as PyTorch writes it, its shape is {(3, 32, 32)|three by thirty two by thirty two}.', code: 'x' },
+        { id: 'image', say: 'A color image has three channels, red, green and blue, each a grid of pixels. Channels first, as PyTorch writes it, its shape is {(C, H, W)|C by H by W}: channels, height and width. Here, {(3, 32, 32)|three by thirty two by thirty two}.', code: 'x' },
         { id: 'filter', say: 'A filter always has the full depth of its input. Here it is three by three by three: a three by three patch in every channel, twenty seven weights.', code: ['layer', 'w'] },
         { id: 'one', say: 'At each position it multiplies all twenty seven pairs and adds them up, giving one number. Not one per color: one.', code: 'layer' },
         { id: 'map', say: 'Slid over every position where it fits, those numbers fill one thirty by thirty map: a single output channel.', code: 'out' },

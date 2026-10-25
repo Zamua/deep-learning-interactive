@@ -41,7 +41,7 @@ export const script: LectureScript = {
         { id: 'x', say: 'Take a token\'s vector: one, minus five, five and seven.', code: 'x' },
         { id: 'sq', say: 'Square every entry: one, twenty five, twenty five, forty nine.', code: 'sq' },
         { id: 'mean', say: 'Their mean is a hundred over four: twenty five.', code: 'mean' },
-        { id: 'root', say: 'Its square root is five. That is the root mean square, the size of a typical entry.', code: 'root' },
+        { id: 'root', say: 'Its square root is five. That is the root mean square of x, written {rms(x)|R M S of x}: the size of a typical entry.', code: 'root' },
         { id: 'out', say: 'Divide by it: {0.2|zero point two}, minus one, one, and {1.4|one point four}. Now the root mean square is exactly one.', code: 'out' },
         { id: 'gain', say: 'Last, each feature is multiplied by its own learned gain {γ|gamma}, which starts at one. That is d parameters, where layer norm has two d.', code: 'out' },
       ],

@@ -85,7 +85,7 @@ const add: SceneDef = {
         on: s.win('local', 'copy'),
       }),
     );
-    equations(s, ['∂L/∂x = 1 × 2 = 2', '∂L/∂z = 1 × 2 = 2'], [after(s, 'copy', 0.45), after(s, 'copy', 0.55)]);
+    equations(s, ['∂f/∂x = 1 × 2 = 2', '∂f/∂z = 1 × 2 = 2'], [after(s, 'copy', 0.45), after(s, 'copy', 0.55)]);
   },
 };
 
@@ -117,7 +117,7 @@ const mul: SceneDef = {
     });
     fly(s, '−4', spot(s, 1, 0.4, 1), spot(s, 0, 0.82, 1), fx);
     fly(s, '3', spot(s, 0, 0.4, 1), spot(s, 1, 0.82, -1), fz);
-    equations(s, ['∂L/∂x = z × 2 = −8', '∂L/∂z = x × 2 = 6'], [after(s, 'swap', 0.4), after(s, 'swap', 0.9)]);
+    equations(s, ['∂f/∂x = z × 2 = −8', '∂f/∂z = x × 2 = 6'], [after(s, 'swap', 0.4), after(s, 'swap', 0.9)]);
   },
 };
 
@@ -146,7 +146,7 @@ const max: SceneDef = {
       hot: [0, after(s, 'gate', 0.75)],
     });
     const eq = 1 - s.ease('router', 0.5);
-    equations(s, ['∂L/∂x = 0', '∂L/∂z = 1 × 2 = 2'], [after(s, 'route', 0.92) * eq, after(s, 'route', 0.75) * eq]);
+    equations(s, ['∂f/∂x = 0', '∂f/∂z = 1 × 2 = 2'], [after(s, 'route', 0.92) * eq, after(s, 'route', 0.75) * eq]);
     const gap = s.tall ? 30 : 34;
     RULES.forEach(([g, verb], i) => {
       s.alpha(after(s, 'router', 0.1 + 0.15 * i), () => {

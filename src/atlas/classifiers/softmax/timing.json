@@ -1,10 +1,10 @@
 {
- "duration": 107.166,
+ "duration": 116.898,
  "scenes": {
   "scores": [0.0, 21.725],
   "exp": [21.725, 47.951],
-  "divide": [47.951, 78.891],
-  "gaps": [78.891, 107.166]
+  "divide": [47.951, 88.623],
+  "gaps": [88.623, 116.898]
  },
  "beats": {
   "scores/scores": [0.7, 7.266, "Here are three scores, one for each of three options: two, one, and minus one.", [[2.08, 2.49], [4.3, 4.76], [5.14, 5.53], [5.95, 6.24]]],
@@ -15,13 +15,13 @@
   "exp/pos": [31.666, 37.572, "e to any power is positive, so minus one becomes zero point three seven.", [[33.676, 34.126]]],
   "exp/grow": [37.952, 46.851, "And each extra point of score multiplies by about two point seven, so the top score pulls ahead: two becomes seven point three nine.", [[41.962, 42.322], [44.012, 44.482]]],
   "divide/total": [48.651, 52.982, "Second, add them up. The total is ten point four eight.", [[49.211, 49.581], [50.171, 50.711]]],
-  "divide/divide": [53.362, 56.048, "Then divide each one by that total.", [[53.782, 53.962]]],
-  "divide/result": [56.428, 65.79, "Option zero gets zero point seven one, option one zero point two six, and option two zero point zero four.", [[59.268, 59.868], [60.638, 60.928], [62.398, 62.828], [63.968, 64.238]]],
-  "divide/check": [66.17, 68.912, "All positive, and they add up to one.", [[67.16, 67.5]]],
-  "divide/formula": [69.292, 77.791, "In symbols: p k is e to the s k, divided by the sum of e to the s j, over every option j.", [[70.132, 70.632], [72.872, 73.122], [75.852, 76.132]]],
-  "gaps/shift": [79.591, 89.421, "Add five to every score. Every exponential gets multiplied by the same factor, and that factor cancels when we divide. Nothing changes.", [[81.421, 82.021], [85.221, 85.641], [87.851, 88.361]]],
-  "gaps/scale": [89.801, 96.968, "Double every score instead, and the gaps between them double. The top option grows to zero point eight eight.", [[91.661, 91.961], [93.671, 94.241]]],
-  "gaps/soft": [97.348, 104.946, "That is the name: a soft maximum. The top score gets most of the probability, but every option keeps a little.", [[98.358, 98.798], [99.908, 100.518], [102.798, 103.158]]],
-  "gaps/turn": [105.326, 106.066, "Your turn.", []]
+  "divide/divide": [53.362, 58.764, "Then divide each one by that total. These are the probabilities, p.", [[55.982, 56.542], [58.072, 58.382]]],
+  "divide/result": [59.144, 68.506, "Option zero gets zero point seven one, option one zero point two six, and option two zero point zero four.", [[61.984, 62.584], [63.354, 63.644], [65.114, 65.544], [66.684, 66.954]]],
+  "divide/check": [68.886, 71.628, "All positive, and they add up to one.", [[69.876, 70.216]]],
+  "divide/formula": [72.008, 87.523, "In symbols: p k, option k's probability, is e to the s k, over the total. Sigma, a capital Greek sigma, means add up: the total adds e to the s j over every option j.", [[72.848, 73.388], [74.098, 74.538], [76.078, 76.408], [77.978, 78.168], [79.008, 79.658], [80.208, 80.488], [81.838, 82.128], [82.478, 82.638], [83.108, 83.578]]],
+  "gaps/shift": [89.323, 99.153, "Add five to every score. Every exponential gets multiplied by the same factor, and that factor cancels when we divide. Nothing changes.", [[91.153, 91.753], [94.953, 95.373], [97.583, 98.093]]],
+  "gaps/scale": [99.533, 106.7, "Double every score instead, and the gaps between them double. The top option grows to zero point eight eight.", [[101.393, 101.693], [103.403, 103.973]]],
+  "gaps/soft": [107.08, 114.678, "That is the name: a soft maximum. The top score gets most of the probability, but every option keeps a little.", [[108.09, 108.53], [109.64, 110.25], [112.53, 112.89]]],
+  "gaps/turn": [115.058, 115.798, "Your turn.", []]
  }
 }

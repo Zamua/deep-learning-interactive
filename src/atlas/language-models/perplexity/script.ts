@@ -21,8 +21,8 @@ export const script: LectureScript = {
       beats: [
         { id: 'probs', say: 'A language model reads four tokens of text. At each step, it gave the right next token a probability of one half, then one quarter, one half, and one eighth.', code: 'probs' },
         { id: 'losses', say: 'Each step\'s loss is minus the log of that probability: {0.69|zero point six nine}, {1.39|one point three nine}, {0.69|zero point six nine} and {2.08|two point zero eight}.', code: 'losses' },
-        { id: 'mean', say: 'Averaged over the four tokens, the loss is about {1.21|one point two one} per token. True, but hard to picture.', code: 'mean' },
-        { id: 'exp', say: 'Perplexity undoes the log: it is e to the average loss. e to the {1.21|one point two one} is about {3.36|three point three six}.', code: 'ppl' },
+        { id: 'mean', say: 'Averaged over the four tokens, the loss, L, is about {1.21|one point two one} per token. True, but hard to picture.', code: 'mean' },
+        { id: 'exp', say: 'Perplexity undoes the log: it is {eᴸ|e to the L}, e to the average loss. e to the {1.21|one point two one} is about {3.36|three point three six}.', code: 'ppl' },
       ],
     },
     {

@@ -1,20 +1,20 @@
 {
- "duration": 81.352,
+ "duration": 96.685,
  "scenes": {
-  "margin": [0.0, 37.796],
-  "sum": [37.796, 63.24],
-  "zero": [63.24, 81.352]
+  "margin": [0.0, 51.376],
+  "sum": [51.376, 78.573],
+  "zero": [78.573, 96.685]
  },
  "beats": {
-  "margin/s": [0.7, 9.779, "Scores again: cat three, dog five, ship minus one. The image is a cat, so y is zero.", [[1.74, 2.32], [3.06, 3.5], [4.39, 4.86], [5.2, 5.39], [6.13, 6.75], [7.97, 8.23]]],
-  "margin/line": [10.159, 19.062, "The multiclass SVM loss wants the right class to win by a margin of at least one. Draw a line one below cat's score, at two.", [[15.339, 15.929], [18.169, 18.459]]],
-  "margin/poke": [19.442, 27.088, "A wrong class that pokes above the line costs exactly how far it pokes. Dog, at five, is three above it.", [[21.672, 21.892], [24.082, 24.682], [25.022, 25.182], [25.852, 26.102]]],
-  "margin/safe": [27.468, 36.696, "Ship, far below the line, costs nothing. Its term is minus three, and the hinge clips it to zero: no credit for being low.", [[27.898, 28.258], [29.438, 29.588], [30.508, 30.998], [32.668, 32.978], [34.718, 35.208]]],
-  "sum/formula": [38.496, 48.307, "In symbols: for every wrong class j, take the larger of zero and s j, minus s y, plus one. Then add them up.", [[39.336, 39.876], [41.626, 41.936], [44.306, 44.696], [45.866, 46.036], [46.666, 47.206]]],
-  "sum/skip": [48.687, 55.821, "The right class is skipped. Its own term would always be one, a cost no score could ever remove.", [[50.357, 50.877], [52.997, 53.397]]],
-  "sum/sum": [56.201, 62.14, "Here that is three for dog, plus zero for ship. The loss is three.", [[56.631, 56.851], [58.591, 58.881], [60.361, 60.901]]],
-  "zero/raise": [63.94, 69.611, "Raise cat's score to seven. The line rises to six, above every other class.", [[65.73, 66.25], [67.81, 68.06]]],
-  "zero/zero": [69.991, 79.132, "Every term is zero, so the loss is zero. That takes beating every other class by at least one. Just winning is not enough.", [[71.451, 71.791], [73.171, 73.691], [76.821, 77.311]]],
-  "zero/turn": [79.512, 80.252, "Your turn.", []]
+  "margin/s": [0.7, 12.377, "Scores again, s: cat three, dog five, ship minus one. The image is a cat, so the right class, y, is zero.", [[1.78, 2.39], [2.81, 3.42], [4.15, 4.77], [5.73, 6.31], [6.65, 6.82], [7.6, 8.28], [9.51, 9.87], [10.9, 11.06], [11.53, 11.7]]],
+  "margin/line": [12.757, 27.63, "A loss, L, is one number for how bad the scores are. The multiclass SVM loss, or hinge loss, wants the right class to win by a margin of at least one. Draw a line one below cat's score, at two.", [[13.447, 13.697], [14.077, 14.377], [16.777, 17.357], [19.267, 19.417], [20.447, 20.747], [23.957, 24.507], [26.737, 26.997]]],
+  "margin/poke": [28.01, 35.656, "A wrong class that pokes above the line costs exactly how far it pokes. Dog, at five, is three above it.", [[30.24, 30.46], [32.65, 33.25], [33.59, 33.75], [34.42, 34.67]]],
+  "margin/safe": [36.036, 50.276, "Ship, far below the line, costs nothing. Its term is minus three, and the hinge clips it to zero: the max of zero and minus three, the larger of the two, is zero. No credit for being low.", [[36.466, 36.796], [37.986, 38.156], [39.056, 39.606], [41.286, 41.626], [43.436, 43.946], [46.026, 46.336], [47.396, 47.686], [48.286, 48.806]]],
+  "sum/formula": [52.076, 63.64, "In symbols: for every wrong class, j not equal to y, take the max of zero and s j, minus s y, plus one. Then add them up.", [[52.916, 53.516], [54.966, 55.226], [56.736, 57.186], [59.586, 59.976], [61.206, 61.406], [62.026, 62.576]]],
+  "sum/skip": [64.02, 71.154, "The right class is skipped. Its own term would always be one, a cost no score could ever remove.", [[65.69, 66.21], [68.33, 68.73]]],
+  "sum/sum": [71.534, 77.473, "Here that is three for dog, plus zero for ship. The loss is three.", [[71.964, 72.184], [73.924, 74.214], [75.694, 76.234]]],
+  "zero/raise": [79.273, 84.944, "Raise cat's score to seven. The line rises to six, above every other class.", [[81.063, 81.583], [83.143, 83.393]]],
+  "zero/zero": [85.324, 94.464, "Every term is zero, so the loss is zero. That takes beating every other class by at least one. Just winning is not enough.", [[86.784, 87.124], [88.504, 89.024], [92.154, 92.644]]],
+  "zero/turn": [94.844, 95.585, "Your turn.", []]
  }
 }

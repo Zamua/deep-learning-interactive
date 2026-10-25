@@ -21,8 +21,8 @@ export const script: LectureScript = {
       beats: [
         { id: 'weights', say: 'A model\'s weights are usually stored as sixteen bit numbers, two bytes each. Here are four of them.', code: 'w' },
         { id: 'grid', say: 'Quantization stores small integers instead, plus one scale, s: what one integer step is worth. Four bits hold the integers from minus seven to seven, so with s at {0.1|zero point one} they cover minus {0.7|zero point seven} to {0.7|zero point seven}.', code: 'scale' },
-        { id: 'divide', say: 'To store a weight, divide by s and round to the nearest integer. {0.7|Zero point seven} becomes seven. Minus {0.33|zero point three three} becomes minus {3.3|three point three}, which rounds to minus three.', code: 'q' },
-        { id: 'back', say: 'To use it, multiply back by s. Seven gives {0.7|zero point seven} again, but minus three gives minus {0.3|zero point three}, not minus {0.33|zero point three three}.', code: 'back' },
+        { id: 'divide', say: 'To store a weight, divide by s and round to the nearest integer, q. {0.7|Zero point seven} becomes seven. Minus {0.33|zero point three three} becomes minus {3.3|three point three}, which rounds to minus three.', code: 'q' },
+        { id: 'back', say: 'To use it, multiply q back by s. Seven gives {0.7|zero point seven} again, but minus three gives minus {0.3|zero point three}, not minus {0.33|zero point three three}.', code: 'back' },
         { id: 'error', say: 'That gap is the rounding error. Rounding moves a weight at most half a step, so the error is never more than s over two: here, {0.05|zero point zero five}.', code: 'err' },
       ],
     },

@@ -96,7 +96,7 @@ export const generators: Generator[] = [
       const kind = d < 0.35 ? 0 : rng.int(3);
       if (kind === 0) {
         return {
-          prompt: `A decoder-only model reads a sequence of $T = ${big(T)}$ tokens in one forward pass. How many next-token predictions, rows of probabilities over the vocabulary, come out?`,
+          prompt: `A decoder-only model reads a sequence of $T = ${big(T)}$ tokens in one forward pass. How many next-token predictions come out?`,
           answer: { kind: 'number', value: T },
           traps: traps(T, [
             { value: 1, why: 'A causal model predicts at every position at once, not only at the end.' },
@@ -141,7 +141,7 @@ export const generators: Generator[] = [
       if (d < 0.5 || rng.int(2) === 0) {
         const i = int(rng, 1, w.length - 3);
         return {
-          prompt: `${text} The output at position ${i}, ${lit(w[i]!)}, is a row of probabilities. Which token is it trained to predict?`,
+          prompt: `${text} Which token is the output at position ${i}, ${lit(w[i]!)}, trained to predict?`,
           answer: {
             kind: 'choice',
             options: [lit(w[i + 1]!), lit(w[i]!), lit(w[i - 1]!), lit(w[w.length - 1]!)],
@@ -179,9 +179,9 @@ export const generators: Generator[] = [
     make(rng, d) {
       const { T, dim, V, N } = sizes(rng, d);
       const items = [
-        `Look up each token id's row of $E$: shape $${shapeTex([T, dim])}$`,
-        `Add each position's vector: still $${shapeTex([T, dim])}$`,
-        `Run ${N} causal transformer blocks: still $${shapeTex([T, dim])}$`,
+        `Look up each token id's row of $E$: $${shapeTex([T, dim])}$`,
+        `Add each position's vector: $${shapeTex([T, dim])}$`,
+        `Run ${N} causal transformer blocks: $${shapeTex([T, dim])}$`,
         `Multiply by $${WU}$: ${commas(V)} scores per position, $${shapeTex([T, V])}$`,
         `Softmax each row: next-token probabilities, $${shapeTex([T, V])}$`,
       ];

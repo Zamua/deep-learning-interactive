@@ -22,9 +22,9 @@ export const script: LectureScript = {
       codeTitle: 'out_size.py',
       code,
       beats: [
-        { id: 'row', say: 'An input seven wide, and a filter three wide. How many places can the filter sit?', code: 'count' },
+        { id: 'row', say: 'An input of width W, here seven, and a filter of size F, here three. How many places can the filter sit?', code: 'count' },
         { id: 'slide', say: 'It starts at the left edge and steps one entry at a time, until its right end reaches the last entry.', code: 'count' },
-        { id: 'count', say: 'That makes five positions, so five outputs: the width, minus the filter size, plus one. The plus one counts the very first position.', code: ['def', 'count'] },
+        { id: 'count', say: 'That makes five positions, so five outputs: the width, minus the filter size, plus one, {W − F + 1|W minus F, plus one}. The plus one counts the very first position.', code: ['def', 'count'] },
       ],
     },
     {

@@ -33,8 +33,6 @@ function image(rng: Rng, D: number): number[] {
   }
 }
 
-const rowTex = (c: number) => `\\symw_{${c}}`;
-
 export const generators: Generator[] = [
   {
     id: 'top-pixel',
@@ -58,11 +56,11 @@ export const generators: Generator[] = [
         return `Its weight is $${num(v)}$, smaller in size than pixel ${top}'s $${num(row[top]!)}$.`;
       });
       return {
-        prompt: `A linear classifier scores a ${D}-pixel image $\\symx = ${vec(x)}$ with $\\syms = \\symW\\symx$, where $\\symW = ${mat(W)}$ has one row per class. Which pixel does the saliency map for class ${c} light up most? Pixels count from 0.`,
+        prompt: `A linear classifier scores the image $\\symx = ${vec(x)}$ with $\\syms = \\symW\\symx$, where $\\symW = ${mat(W)}$. Which pixel does class ${c}'s saliency map light up most, counting from 0?`,
         answer: { kind: 'choice', options: row.map((_, j) => `Pixel ${j}`), correct: top, why },
         solution: [
-          `$\\syms_{${c}} = ${rowTex(c)} \\cdot \\symx$, so $${dd(`\\syms_{${c}}`, '\\symx_j')}$ is pixel $j$'s weight in row ${c}: $${vec(row)}$.`,
-          `The saliency map is its size: $${vec(g)}$. The pixel values do not enter.`,
+          `$\\syms_{${c}}$ is row ${c} of $\\symW$ dotted with $\\symx$, so $${dd(`\\syms_{${c}}`, '\\symx_j')}$ is pixel $j$'s weight in that row: $${vec(row)}$.`,
+          `The saliency map is the size of each, $|${dd(`\\syms_{${c}}`, '\\symx_j')}|$: $${vec(g)}$. The pixel values do not enter.`,
           `The largest is pixel ${top}, with $|${num(row[top]!)}| = ${g[top]}$.`,
         ],
       };
@@ -82,7 +80,7 @@ export const generators: Generator[] = [
       const v = abs(row);
       const col = c < D ? abs(W.map((r) => r[c]!)) : null;
       return {
-        prompt: `A linear classifier scores the image $\\symx = ${vec(x)}$ with $\\syms = \\symW\\symx + \\symb$, where $\\symW = ${mat(W)}$ and $\\symb = ${vec(b)}$. What is the saliency map for class ${c}, the size of $${dd(`\\syms_{${c}}`, '\\symx_j')}$ for each pixel $j$, pixel 0 first?`,
+        prompt: `A linear classifier scores the image $\\symx = ${vec(x)}$ with $\\syms = \\symW\\symx + \\symb$, where $\\symW = ${mat(W)}$ and $\\symb = ${vec(b)}$. What is class ${c}'s saliency map?`,
         answer: { kind: 'vector', value: v },
         traps: vtraps(v, [
           { value: row, why: 'That is the gradient itself, signs and all. The saliency map takes its absolute value: a negative weight moves the score just as much.' },
@@ -90,9 +88,9 @@ export const generators: Generator[] = [
           ...(col ? [{ value: col, why: `That is column ${c} of $\\symW$, one entry per class. Class ${c}'s score uses row ${c}: one weight per pixel.` }] : []),
         ]),
         solution: [
-          `$\\syms_{${c}} = ${rowTex(c)} \\cdot \\symx + \\symb_{${c}}$. The bias does not depend on $\\symx$, so it drops out of the gradient.`,
-          `Nudging pixel $j$ moves $\\syms_{${c}}$ by its weight times the nudge, so $${dd(`\\syms_{${c}}`, '\\symx')} = ${rowTex(c)} = ${vec(row)}$.`,
-          `Take the size of each: $${vec(v)}$.`,
+          `$\\syms_{${c}}$ is row ${c} of $\\symW$ dotted with $\\symx$, plus $\\symb_{${c}}$. The bias does not depend on $\\symx$, so it drops out of the gradient.`,
+          `Nudging pixel $j$ moves $\\syms_{${c}}$ by its weight times the nudge, so $${dd(`\\syms_{${c}}`, '\\symx')}$ is row ${c} itself: $${vec(row)}$.`,
+          `The saliency map is the size of each entry, $|${dd(`\\syms_{${c}}`, '\\symx_j')}|$: $${vec(v)}$.`,
         ],
       };
     },
@@ -109,12 +107,12 @@ export const generators: Generator[] = [
         const wrong = rng.shuffle([
           { text: 'Pixel values are never negative, so their gradients cannot be either', why: 'The pixels are positive, but a gradient is a slope: it is negative when brightening the pixel lowers the score.' },
           { text: 'It turns the gradient into shares that add up to 1', why: 'Absolute values do not add up to 1; that would also take dividing by their sum. The absolute value only drops the sign.' },
-          { text: `A negative gradient means pixel ${j} does not affect $\\syms_{${c}}$, so its sign is dropped`, why: `A gradient of $${num(g[j]!)}$ means $\\syms_{${c}}$ moves ${-g[j]!} times as fast as the pixel, downward. Only a zero gradient means a pixel does not matter.` },
+          { text: `A negative gradient means pixel ${j} does not affect the score, so its sign is dropped`, why: `A gradient of $${num(g[j]!)}$ means the score moves ${-g[j]!} times as fast as the pixel, downward. Only a zero gradient means a pixel does not matter.` },
           { text: 'It ranks the pixels by how much each adds to the score right now', why: 'What a pixel adds now is its value times its weight. The map measures how fast the score moves when the pixel changes.' },
         ]).slice(0, 3);
         return {
-          prompt: `The gradient of class ${c}'s score with respect to the pixels is $${dd(`\\syms_{${c}}`, '\\symx')} = ${vec(g)}$. The saliency map shows its absolute value, $${vec(abs(g))}$, so pixel ${j}, with $${num(g[j]!)}$, is the brightest spot. Why take the absolute value?`,
-          answer: shuffled(rng, [{ text: `Pixel ${j} moves $\\syms_{${c}}$ the most, just downward`, why: null }, ...wrong]),
+          prompt: `The gradient of class ${c}'s score with respect to the pixels is $${vec(g)}$. Its saliency map, $${vec(abs(g))}$, is brightest at pixel ${j}, counting from 0. Why take the absolute value?`,
+          answer: shuffled(rng, [{ text: `Pixel ${j} moves the score the most, just downward`, why: null }, ...wrong]),
           solution: [
             `The sign of $${dd(`\\syms_{${c}}`, '\\symx_j')}$ says which way the score moves when pixel $j$ gets brighter; its size says how fast.`,
             `Pixel ${j}'s $${num(g[j]!)}$ moves the score faster than any other pixel, downward. The class depends on it most, so it should light up.`,
@@ -152,7 +150,7 @@ export const generators: Generator[] = [
         const tex = `\\syms = ${a}\\max(0,\\ ${inner})${e ? ` ${e < 0 ? '-' : '+'} ${Math.abs(e) === 1 ? '' : Math.abs(e)}\\symx_1` : ''}`;
         const pix = `\\symx_${k}`;
         return {
-          prompt: `A model scores a two-pixel image with $${tex}$. For the image $\\symx = ${vec(x)}$, what is the saliency of pixel ${k}, the size of $${dd('\\syms', pix)}$?`,
+          prompt: `A model scores the image $\\symx = ${vec(x)}$ with $${tex}$. What is the saliency of pixel ${k}?`,
           answer: { kind: 'number', value: ans },
           traps: traps(ans, [
             ...(on ? [] : [{ value: Math.abs(a * coef + (k === 1 ? e : 0)), why: `The max gets $${q}$ and outputs 0 here, so it routes no gradient back through that path.` }]),
@@ -168,7 +166,7 @@ export const generators: Generator[] = [
               : `Backward from $\\syms$: the max output 0 because $${q} < 0$, so it sends 0 back. Nothing reaches the pixels through it.`,
             ...(on ? [`Pixel ${k}'s term multiplies it by $${coef}$: $${a} \\times ${par(coef)} = ${a * coef}$.`] : []),
             ...(e && k === 1 ? [`Pixel 1 also gets $${e}$ straight from the $${e}\\symx_1$ term. Paths add: $${on ? a * coef : 0} + ${par(e)} = ${grad}$.`] : []),
-            `The saliency is $|${grad}| = ${ans}$.`,
+            `The saliency is the size of the gradient: $|${dd('\\syms', pix)}| = |${grad}| = ${ans}$.`,
           ],
         };
       }

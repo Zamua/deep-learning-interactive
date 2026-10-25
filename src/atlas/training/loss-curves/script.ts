@@ -19,7 +19,7 @@ export const script: LectureScript = {
         lr = 1e-3   # fast, then keeps going    #@good
       `,
       beats: [
-        { id: 'axes', say: 'A loss curve plots the training loss as training goes on. Its shape says what is wrong.', code: 'axes' },
+        { id: 'axes', say: 'A loss curve plots the training loss, L, as training goes on. Its shape says what is wrong.', code: 'axes' },
         { id: 'low', say: 'A learning rate too low: the loss falls, but slowly, in an almost straight line.', code: 'low' },
         { id: 'high', say: 'Too high: it drops fast at first, then stalls at a high level, its steps too big to settle into the valley.', code: 'high' },
         { id: 'huge', say: 'Far too high: the loss shoots up, and soon prints nan, not a number.', code: 'huge' },

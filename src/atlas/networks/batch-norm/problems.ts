@@ -4,6 +4,9 @@ import { int, ints, num, pick, round, vec } from '../../kit';
 import { clean, mat, nonzero, placesFor, sum, terms, traps } from '../kit';
 
 const P = 2;
+
+/** The rounding instruction, only when two decimals actually round the answer. */
+const round2 = (v: number): string => (placesFor(v) ? ' Round to two decimals.' : '');
 const xh = '\\hat{x}';
 const G = '\\symgamma';
 const BETA = '\\symbeta';
@@ -53,7 +56,7 @@ export const generators: Generator[] = [
         ];
         if (j < B) ts.splice(1, 0, { value: sum(X[j]!) / F, why: `That averages row ${j}: one example's features. Batch norm averages one feature over the examples of the batch: a column.` });
         return {
-          prompt: `A batch of ${B} examples with ${F} features each, one example per row:\n\n$$X = ${mat(X)}$$\n\nBatch norm normalizes feature ${j} (column ${j}, counting from 0). What is its batch mean $\\mu$?${Number.isInteger(mu) ? '' : ' Round to two decimals.'}`,
+          prompt: `A batch of ${B} examples with ${F} features each, one example per row:\n\n$$X = ${mat(X)}$$\n\nWhat is the batch mean $\\mu$ of feature ${j}, counting from 0?${round2(mu)}`,
           answer: { kind: 'number', value: mu, places: placesFor(mu) },
           traps: traps(mu, ts, P),
           solution: [`Feature ${j} is column ${j}: $${vec(col)}$, one value per example.`, `Its mean over the batch: $(${terms(col)}) / ${B} = ${num(sum(col))} / ${B} = ${num(round(mu, 2))}$.`],
@@ -73,7 +76,7 @@ export const generators: Generator[] = [
         const want = clean((x - mu) / sd);
         const varT = clean(sd * sd);
         return {
-          prompt: `One feature takes the values $${vec(xs)}$ across a batch of ${xs.length} examples. What does batch norm turn the value at index ${k}, $x = ${num(x)}$, into? Ignore $\\epsilon$, and round to two decimals.`,
+          prompt: `One feature takes the values $${vec(xs)}$ across a batch. What is $${xh}$ for $x = ${num(x)}$?${round2(want)}`,
           answer: { kind: 'number', value: want, places: placesFor(want) },
           traps: traps(want, [
             { value: (x - mu) / varT, why: 'That divides by the variance. Divide by its square root, the standard deviation.' },
@@ -89,7 +92,7 @@ export const generators: Generator[] = [
       }
       const { mu, v, sd, x, t } = point(rng);
       return {
-        prompt: `Over a batch, one feature has mean $\\mu = ${num(mu)}$ and variance $\\sigma^2 = ${num(v)}$. What does batch norm turn the value $x = ${num(x)}$ into? Ignore $\\epsilon$, and round to two decimals.`,
+        prompt: `Over a batch, one feature has $\\mu = ${num(mu)}$ and $\\sigma^2 = ${num(v)}$. What is $${xh}$ for $x = ${num(x)}$?${round2(t)}`,
         answer: { kind: 'number', value: t, places: placesFor(t) },
         traps: traps(t, [
           { value: (x - mu) / v, why: 'That divides by the variance. Divide by its square root, the standard deviation.' },
@@ -109,7 +112,7 @@ export const generators: Generator[] = [
         const b = nonzero(rng, -3, 3);
         const y = clean(g * xhat + b);
         return {
-          prompt: `Batch norm has normalized a value to $${xh} = ${num(xhat)}$. The feature's learned scale is $${G} = ${num(g)}$ and its shift is $${BETA} = ${num(b)}$. What is the output $y$?`,
+          prompt: `With $${xh} = ${num(xhat)}$, $${G} = ${num(g)}$ and $${BETA} = ${num(b)}$, what is the batch-norm output $y$?`,
           answer: { kind: 'number', value: y, places: placesFor(y) },
           traps: traps(y, [
             { value: g * (xhat + b), why: `That adds $${BETA}$ before scaling. The order is scale, then shift: $${G}${xh} + ${BETA}$.` },
@@ -124,7 +127,7 @@ export const generators: Generator[] = [
       const b = nonzero(rng, -3, 3);
       const y = clean(g * t + b);
       return {
-        prompt: `At test time, a batch-norm layer's running averages for one feature are $\\mu = ${num(mu)}$ and $\\sigma^2 = ${num(v)}$, and its learned $${G} = ${num(g)}$ and $${BETA} = ${num(b)}$. What does it output for $x = ${num(x)}$? Ignore $\\epsilon$, and round to two decimals.`,
+        prompt: `At test time, a batch-norm layer has running averages $\\mu = ${num(mu)}$ and $\\sigma^2 = ${num(v)}$ for one feature, with $${G} = ${num(g)}$ and $${BETA} = ${num(b)}$. What does it output for $x = ${num(x)}$?${round2(y)}`,
         answer: { kind: 'number', value: y, places: placesFor(y) },
         traps: traps(y, [
           { value: g * t, why: `That leaves out the shift. Add $${BETA} = ${b}$.` },
@@ -141,12 +144,10 @@ export const generators: Generator[] = [
   {
     id: 'test-time',
     make(rng) {
-      const B = pick(rng, [32, 64, 128, 256]);
-      const mu = nonzero(rng, -20, 30) / 10;
-      const v = int(rng, 2, 25) / 10;
+      const B = pick(rng, [32, 64, 128, 256, 512]);
       const one = rng.next() < 0.5;
       return {
-        prompt: `A network with batch norm was trained on batches of $\\symB = ${B}$, keeping running averages of each feature's mean and variance (for feature 0, about $\\mu = ${num(mu)}$ and $\\sigma^2 = ${num(v)}$). At test time it ${one ? 'classifies one image at a time' : 'classifies a batch of test images'}. Which mean and variance does batch norm use for feature 0 of a test image?`,
+        prompt: `A network with batch norm was trained on batches of ${B}. At test time it ${one ? 'classifies one image at a time' : 'classifies a batch of test images'}. Which mean and variance does batch norm use for a test image's features?`,
         answer: {
           kind: 'choice',
           options: [
@@ -160,12 +161,12 @@ export const generators: Generator[] = [
             null,
             one ? 'With one image the batch mean is that image\'s value and the variance is 0, so every feature would normalize to 0.' : 'Then an image\'s prediction would change with whichever other images happen to share its batch.',
             `The layers after it were trained on normalized values. Skipping the normalization shifts and rescales everything they see, and $${G}$ and $${BETA}$ were learned for normalized inputs.`,
-            `0 and 1 are what $\\hat{x}$ ends up with, not the statistics of $x$. Feature 0 itself has a mean near ${num(mu)} and a variance near ${num(v)}.`,
+            `0 and 1 are what $\\hat{x}$ ends up with after normalizing, not the statistics it is normalized with.`,
           ],
         },
         solution: [
           'During training, each batch is normalized with its own mean and variance, and the layer keeps running averages of both.',
-          `At test time it normalizes with those running averages, here about $\\mu = ${num(mu)}$ and $\\sigma^2 = ${num(v)}$, then applies $${G}$ and $${BETA}$.`,
+          `At test time it normalizes with those running averages, then applies $${G}$ and $${BETA}$.`,
           'So each test image gets the same treatment whatever else is in its batch, even a batch of one.',
         ],
       };

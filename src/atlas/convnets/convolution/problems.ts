@@ -43,7 +43,7 @@ export const generators: Generator[] = [
       const win = x.slice(i, i + 3);
       const v = out[i]!;
       return {
-        prompt: `The filter $\\symw = ${vec(w)}$ slides along $\\symx = ${vec(x)}$ one step at a time, staying inside the input, and takes a dot product at each position. What is output entry ${i}, counting from 0?`,
+        prompt: `The filter $\\symw = ${vec(w)}$ slides along $\\symx = ${vec(x)}$. What is output entry ${i}, counting from 0?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           ...(i > 0 ? [{ value: out[i - 1]!, why: `That is output ${i - 1}. Counting from 0, output ${i} is the window that starts at $\\symx_{${i}}$.` }] : []),
@@ -86,7 +86,7 @@ export const generators: Generator[] = [
       const pt = patch(x, i, j);
       const nz = w.flat().map((wv, k) => [wv, pt.flat()[k]!] as const).filter(([wv]) => wv !== 0);
       return {
-        prompt: `The $3 \\times 3$ filter $\\symw$ slides over the $4 \\times 4$ image $\\symx$ one step at a time, staying inside it, giving a $2 \\times 2$ output. What is the output in row ${i}, column ${j}, counting from 0?\n\n$$\\symx = ${mat(x)}, \\qquad \\symw = ${mat(w)}$$`,
+        prompt: `The $3 \\times 3$ filter $\\symw$ slides over the $4 \\times 4$ image $\\symx$. What is the output in row ${i}, column ${j}, counting from 0?\n\n$$\\symx = ${mat(x)}, \\qquad \\symw = ${mat(w)}$$`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           ...(i !== j ? [{ value: at2d(x, w, j, i), why: `That is row ${j}, column ${i}: rows and columns swapped. Row ${i} means the window starts ${i} row${i === 1 ? '' : 's'} down.` }] : []),
@@ -111,7 +111,7 @@ export const generators: Generator[] = [
       const out = conv1d(x, w);
       const windows = out.map((_, i) => x.slice(i, i + F));
       return {
-        prompt: `Slide the filter $\\symw = ${vec(w)}$ along $\\symx = ${vec(x)}$ one step at a time, staying inside the input, and take the dot product at each position. What is the whole output, in order?`,
+        prompt: `What does the filter $\\symw = ${vec(w)}$ output as it slides along $\\symx = ${vec(x)}$?`,
         answer: { kind: 'vector', value: out },
         traps: atraps(out, [
           { value: conv1d(x, [...w].reverse()), why: 'That flips the filter. A convolution layer slides it as it is: its first weight sits on the first entry of each window.' },

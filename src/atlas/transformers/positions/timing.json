@@ -1,8 +1,8 @@
 {
- "duration": 91.42,
+ "duration": 92.576,
  "scenes": {
   "blind": [0.0, 38.121],
-  "add": [38.121, 91.42]
+  "add": [38.121, 92.576]
  },
  "beats": {
   "blind/one": [0.7, 11.701, "Self-attention scores every token against every token, and nothing in a score says where a token sits. Take dog bites man, and one number from each output.", [[4.12, 4.51], [7.41, 7.97], [8.27, 8.43], [9.54, 9.87]]],
@@ -12,7 +12,7 @@
   "add/table": [38.821, 48.064, "The fix is a second table, P, with one vector per position: row zero for the first token, row one for the second, and so on.", [[40.651, 40.891], [41.241, 41.601], [43.241, 43.701], [45.481, 45.801], [47.141, 47.411]]],
   "add/sum": [48.444, 59.24, "Each token's input is its embedding plus the vector for its position. Dog at position zero: one and two, plus zero and one, is one and three.", [[50.694, 50.904], [52.604, 53.284], [54.824, 55.334], [56.274, 56.484], [57.884, 58.164]]],
   "add/differ": [59.62, 72.184, "Dog at position two gets one and two, plus one and minus one: two and one. The same word now enters differently in each place, so attention can tell the two sentences apart.", [[62.27, 62.55], [64.05, 64.53], [65.4, 66.21], [69.24, 69.56]]],
-  "add/learned": [72.564, 89.2, "The position vectors are learned, like the embeddings. A model that takes up to one thousand and twenty four tokens, with vectors of seven hundred sixty eight numbers, learns one thousand and twenty four by seven hundred sixty eight: about seven hundred eighty six thousand numbers.", [[74.304, 74.564], [75.614, 76.194], [79.424, 79.654], [82.074, 82.334], [85.984, 86.414]]],
-  "add/turn": [89.58, 90.32, "Your turn.", []]
+  "add/learned": [72.564, 90.355, "The position vectors are learned, like the embeddings. Write T max for the most tokens a model takes: P is T max by d. With one thousand and twenty four tokens of seven hundred sixty eight numbers, that is about seven hundred eighty six thousand learned numbers.", [[74.344, 74.604], [75.624, 76.264], [79.484, 80.004], [82.054, 82.594], [86.494, 86.784]]],
+  "add/turn": [90.735, 91.476, "Your turn.", []]
  }
 }

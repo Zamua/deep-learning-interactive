@@ -1,20 +1,20 @@
 {
- "duration": 101.81,
+ "duration": 103.519,
  "scenes": {
   "heads": [0.0, 33.953],
-  "share": [33.953, 65.562],
-  "extremes": [65.562, 101.81]
+  "share": [33.953, 67.271],
+  "extremes": [67.271, 103.519]
  },
  "beats": {
   "heads/mha": [0.7, 11.004, "In multi-head attention, each of h query heads has its own key head and value head. Here h is eight, each head sixty four numbers wide.", [[2.1, 2.46], [6.37, 6.91], [7.28, 7.44], [8.33, 8.74]]],
   "heads/cache": [11.384, 24.4, "While generating, the KV cache keeps every earlier token's keys and values. Per token and layer, that is two, times h, times the head width: one thousand and twenty four numbers.", [[12.404, 12.674], [16.544, 17.114], [18.394, 18.654], [19.454, 19.774], [20.574, 20.834], [21.904, 22.324]]],
   "heads/big": [24.78, 32.853, "Across every layer and every token of a long context, that adds up to gigabytes, all read again for every new token.", [[28.27, 28.58], [30.04, 30.45]]],
-  "share/group": [34.653, 46.527, "Grouped-query attention keeps all eight query heads, but only g key-value heads. With g at two, each key head and value head is shared by a group of four query heads.", [[37.803, 38.013], [40.103, 40.743], [41.923, 42.233]]],
-  "share/attend": [46.907, 53.712, "Each query head still makes its own scores and its own mix. It just reads the keys and values of its group.", [[50.667, 51.107]]],
-  "share/shrink": [54.092, 64.462, "The cache now holds two times g times sixty four: two hundred and fifty six numbers per token, four times smaller. It shrinks by h over g.", [[57.472, 57.902], [60.372, 60.752], [62.002, 62.462]]],
-  "extremes/mha": [66.262, 76.542, "At one extreme, g equals h: every query head has its own key and value head. That is ordinary multi-head attention, with the largest cache.", [[67.252, 67.552], [68.842, 69.372], [72.302, 72.812], [74.962, 75.252]]],
-  "extremes/mqa": [76.922, 90.075, "At the other, g is one: all the query heads share a single key head and value head, and the cache is h times smaller. That is multi-query attention, and it can cost some quality.", [[77.692, 77.982], [79.082, 79.652], [83.002, 83.442], [85.542, 86.082], [88.012, 88.332]]],
-  "extremes/between": [90.455, 99.59, "Grouped-query attention sits in between, close to multi-head quality at a fraction of the cache. Many large models keep eight key-value heads.", [[92.825, 93.145], [96.095, 96.655]]],
-  "extremes/turn": [99.97, 100.71, "Your turn.", []]
+  "share/group": [34.653, 48.235, "Grouped-query attention keeps all eight query heads, but only g key-value heads, each a key head and a value head shared by one group of query heads. With g at two, each is shared by four.", [[37.863, 38.143], [40.143, 40.593], [44.853, 45.373], [46.403, 46.723]]],
+  "share/attend": [48.615, 55.421, "Each query head still makes its own scores and its own mix. It just reads the keys and values of its group.", [[52.375, 52.815]]],
+  "share/shrink": [55.801, 66.171, "The cache now holds two times g times sixty four: two hundred and fifty six numbers per token, four times smaller. It shrinks by h over g.", [[59.181, 59.611], [62.081, 62.461], [63.711, 64.171]]],
+  "extremes/mha": [67.971, 78.251, "At one extreme, g equals h: every query head has its own key and value head. That is ordinary multi-head attention, with the largest cache.", [[68.961, 69.261], [70.551, 71.081], [74.011, 74.521], [76.671, 76.961]]],
+  "extremes/mqa": [78.631, 91.784, "At the other, g is one: all the query heads share a single key head and value head, and the cache is h times smaller. That is multi-query attention, and it can cost some quality.", [[79.401, 79.691], [80.791, 81.361], [84.711, 85.151], [87.251, 87.791], [89.721, 90.041]]],
+  "extremes/between": [92.164, 101.299, "Grouped-query attention sits in between, close to multi-head quality at a fraction of the cache. Many large models keep eight key-value heads.", [[94.534, 94.854], [97.804, 98.364]]],
+  "extremes/turn": [101.679, 102.419, "Your turn.", []]
  }
 }

@@ -15,7 +15,7 @@ const QUESTIONS: [string, string[]][] = [
   ['3 \\times 13', ['39', '36', '33']],
 ];
 
-const GLP = (y: string) => `\\nabla_{${TH}} \\ln ${PI}(${y})`;
+const GLP = (y: string) => `\\nabla \\ln ${PI}(${y})`;
 
 /** Three probabilities in tenths (or hundredths when hard), adding up to 1. */
 function probs(rng: Rng, d: number): number[] {
@@ -45,7 +45,7 @@ export const generators: Generator[] = [
       if (!twin) {
         const v = g.map((x) => clean(Rv * x));
         return {
-          prompt: `A model samples answer $y$ and gets reward $${R} = ${num(Rv)}$. The gradient of that answer's log-probability is $${GLP('y')} = ${vec(g)}$. What is the policy-gradient estimate, $${R}\\, ${GLP('y')}$?`,
+          prompt: `A model samples answer $y$ and gets reward $${R} = ${num(Rv)}$, with $${GLP('y')} = ${vec(g)}$. What is the policy-gradient estimate?`,
           answer: { kind: 'vector', value: v },
           traps: vtraps(v, [
             { value: g, why: `That is $${GLP('y')}$ alone. The estimate scales it by the reward, $${R} = ${num(Rv)}$.` },
@@ -63,7 +63,7 @@ export const generators: Generator[] = [
       const R2 = pick(rng, [0, 1, -1, 2].filter((x) => x !== Rv));
       const v = g.map((x, i) => clean((Rv * x + R2 * g2[i]!) / 2));
       return {
-        prompt: `A model samples two answers. The first gets $${R} = ${num(Rv)}$ and has $${GLP('y_1')} = ${vec(g)}$; the second gets $${R} = ${num(R2)}$ and has $${GLP('y_2')} = ${vec(g2)}$. What is the policy-gradient estimate averaged over the two samples?`,
+        prompt: `A model samples two answers, $y_1$ and $y_2$. The first gets $${R} = ${num(Rv)}$ and has $${GLP('y_1')} = ${vec(g)}$; the second gets $${R} = ${num(R2)}$ and has $${GLP('y_2')} = ${vec(g2)}$. What is the policy-gradient estimate averaged over the two samples?`,
         answer: { kind: 'vector', value: v },
         traps: vtraps(v, [
           { value: g.map((x, i) => clean(Rv * x + R2 * g2[i]!)), why: 'That is the sum of the two estimates. Average them: divide by 2.' },
@@ -89,7 +89,7 @@ export const generators: Generator[] = [
       const DL = `\\dfrac{\\partial \\ln ${PI}(y)}{\\partial ${TH}_0}`;
       if (!back) {
         return {
-          prompt: `A sampled answer $y$ has probability $${PI}(y) = ${num(pv)}$, and nudging the parameter $${TH}_0$ changes that probability at the rate $${DP} = ${num(dp)}$. What is $${DL}$?`,
+          prompt: `For one parameter $${TH}_0$, a sampled answer $y$ has $${PI}(y) = ${num(pv)}$ and $${DP} = ${num(dp)}$. What is $${DL}$?`,
           answer: { kind: 'number', value: g },
           traps: traps(g, [
             { value: dp, why: `That is the slope of $${PI}(y)$ itself. The slope of its log divides by $${PI}(y)$.` },
@@ -104,7 +104,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `A sampled answer $y$ has probability $${PI}(y) = ${num(pv)}$, and $${DL} = ${num(g)}$. At what rate does $${PI}(y)$ itself change with $${TH}_0$, $${DP}$?`,
+        prompt: `For one parameter $${TH}_0$, a sampled answer $y$ has $${PI}(y) = ${num(pv)}$ and $${DL} = ${num(g)}$. What is $${DP}$?`,
         answer: { kind: 'number', value: dp },
         traps: traps(dp, [
           { value: g, why: `That is the slope of the log. The slope of $${PI}(y)$ is $${PI}(y)$ times it.` },
@@ -131,7 +131,7 @@ export const generators: Generator[] = [
       ];
       why[correct] = null;
       return {
-        prompt: `Asked $${q}$, a model samples the answer ${a}, which it gives probability $${num(p)}$, and the reward is $${R} = ${num(Rv)}$. After a small step along the policy-gradient estimate, what happens to $${PI}(\\text{${ans[k]}})$?`,
+        prompt: `Asked $${q}$, a model samples the answer ${a}, with $${PI}(\\text{${ans[k]}}) = ${num(p)}$, and gets reward $${R} = ${num(Rv)}$. After a small step along the policy-gradient estimate, what happens to $${PI}(\\text{${ans[k]}})$?`,
         answer: { kind: 'choice', options: ['It goes up', 'It goes down', 'It stays the same', 'It depends on whether it was the most likely answer'], correct, why },
         solution: [
           `The estimate is $${R}\\,${GLP('y')}$, and a step along $${GLP('y')}$ raises $\\ln ${PI}(y)$.`,
@@ -159,14 +159,14 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `The expected reward is $J = \\sum_y ${PI}(y)\\,${R}(y)$, and the reward comes from ${src}. Why does the policy gradient use $${R}(y)\\,${GLP('y')}$ for a sampled answer $y$?`,
+        prompt: `The reward comes from ${src}. Why does the policy gradient use $${R}(y)\\,${GLP('y')}$ for a sampled answer $y$?`,
         answer: choose(`$\\nabla ${PI} = ${PI}\\,\\nabla\\ln ${PI}$ turns $\\nabla J$ into an average over sampled answers`, [
           [`The log of the reward is easier to differentiate than the reward`, `The reward is not differentiated at all, and there is no log of it: the log is of $${PI}$.`],
           [`The log keeps each probability between zero and one`, `$${PI}$ stays a probability either way. The log is there to rewrite the gradient, not to bound anything.`],
           [`The random draw is differentiated, and the log makes it smooth`, `A random draw has no derivative. The log trick is how the gradient avoids differentiating it.`],
         ]),
         solution: [
-          `$\\nabla J = \\sum_y ${R}(y)\\,\\nabla ${PI}(y)$: only the probabilities depend on $${TH}$.`,
+          `The expected reward is $J = \\sum_y ${PI}(y)\\,${R}(y)$, so $\\nabla J = \\sum_y ${R}(y)\\,\\nabla ${PI}(y)$: only the probabilities depend on $${TH}$.`,
           `Write $\\nabla ${PI}(y) = ${PI}(y)\\,\\nabla \\ln ${PI}(y)$, and the sum becomes $\\sum_y ${PI}(y)\\,${R}(y)\\,\\nabla\\ln ${PI}(y)$: an average over answers drawn from $${PI}$.`,
           'So one sampled answer gives an estimate: its reward times the gradient of its log-probability.',
         ],

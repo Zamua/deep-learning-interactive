@@ -162,7 +162,7 @@ export const generators: Generator[] = [
         null,
         null,
         kind === 2 ? 'Put both in the same units first: perplexity is $e$ to the loss. Then the numbers differ.' : 'Their numbers differ, and perplexity, $e^{\\symL}$, rises whenever the loss does: one is strictly better.',
-        'Both models are scored on the same text with the same vocabulary, and perplexity rises with the loss whatever $V$ is.',
+        'Both models are scored on the same text with the same vocabulary, and perplexity rises with the loss whatever the vocabulary size.',
       ];
       why[better === 'A' ? 1 : 0] = `Model ${worse} has the higher ${kind === 1 ? 'perplexity, so the higher loss' : kind === 0 ? 'loss, so the higher perplexity' : 'perplexity once both are in the same units'}: it is less sure of the right tokens.`;
       return {

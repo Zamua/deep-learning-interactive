@@ -37,7 +37,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'sum', say: 'Add the log-ratios over the answer\'s tokens: here, two. Averaged over many sampled answers, that sum is the KL divergence: zero when the two models agree, and larger the further they part.', code: ['tok', 'sum'] },
         { id: 'never', say: 'One answer\'s sum can come out negative, but the average over the model\'s own samples never does.', code: 'sum' },
-        { id: 'pen', say: 'The model trains on its reward minus {β|beta} times that sum.', code: 'pen' },
+        { id: 'pen', say: 'The model trains on its reward minus that sum, scaled by a strength written with the Greek letter {β|beta}. The sum runs over the answer\'s tokens, {yₜ|y t}, one for each position t.', code: 'pen' },
         { id: 'eg', say: 'With a reward of one and {β|beta} at {0.1|zero point one}, the penalty is {0.2|zero point two}, and the model trains on {0.8|zero point eight}.', code: 'pen' },
       ],
     },

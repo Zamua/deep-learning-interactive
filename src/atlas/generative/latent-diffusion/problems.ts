@@ -105,10 +105,10 @@ export const generators: Generator[] = [
       const lat = latentOf(s);
       const img = [s.h, s.w, 3];
       const kind = pick(rng, ['encode', 'decode', 'start', 'guess'] as const);
-      const lead = `A latent diffusion model works with color images of shape $${shp(img)}$, written (height, width, channels). ${encoderText(s)}.`;
+      const lead = `A latent diffusion model works with color images of shape $${shp(img)}$. ${encoderText(s)}.`;
       if (kind === 'decode')
         return {
-          prompt: `A latent diffusion model's encoder makes each side of an image ${s.f} times shorter and keeps ${s.c} numbers at each spot. Generation ends with a latent of shape $${shp(lat)}$, written (height, width, channels). What shape is the color image the decoder turns it into?`,
+          prompt: `A latent diffusion model's encoder makes each side of an image ${s.f} times shorter and keeps ${s.c} numbers at each spot. Generation ends with a latent of shape $${shp(lat)}$. What shape is the color image the decoder turns it into?`,
           answer: { kind: 'shape', value: img },
           traps: straps(img, [
             { value: [s.h, s.w, s.c], why: `That keeps the latent's ${s.c} channels. A color image has 3: red, green and blue.` },

@@ -19,9 +19,9 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'block', say: 'Inside a transformer block, attention and the MLP each add their output to their input: x, plus attention of x, then plus the MLP.', code: ['attn', 'mlp'] },
-        { id: 'stream', say: 'Read it the other way round. Each token has one running vector, the residual stream. It starts as the token\'s embedding, x zero.', code: 'x0' },
-        { id: 'writes', say: 'Every attention and every MLP reads the stream and adds a write to it. Say x zero is one, zero, two. Attention writes zero, one, minus one, and the MLP writes two, zero, one.', code: ['attn', 'mlp'] },
-        { id: 'total', say: 'The stream is now their sum: three, one, two. After the last block, it is x zero plus every write.', code: ['attn', 'mlp'] },
+        { id: 'stream', say: 'Read it the other way round. Each token has one running vector, the residual stream. It starts as the token\'s embedding, {x₀|x zero}.', code: 'x0' },
+        { id: 'writes', say: 'Every attention and every MLP reads the stream and adds a write to it. Say {x₀|x zero} is one, zero, two. Attention writes zero, one, minus one, and the MLP writes two, zero, one.', code: ['attn', 'mlp'] },
+        { id: 'total', say: 'The stream is now their sum: three, one, two. After the last block, it is {x₀|x zero} plus every write.', code: ['attn', 'mlp'] },
       ],
     },
     {

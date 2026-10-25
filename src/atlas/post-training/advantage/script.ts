@@ -51,7 +51,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'sum', say: 'Why is this allowed? Average the gradient of log {π|pi} over the model\'s answers. {π|pi} times the gradient of its log is just the gradient of {π|pi}.', code: 'sum' },
         { id: 'one', say: 'And the probabilities always add up to one, so their gradients add up to zero: they cannot all rise at once.', code: 'one' },
-        { id: 'zero', say: 'So the baseline\'s share of the estimate, b times the gradient of log {π|pi}, averages to zero. The expected direction stays the same; only the noise drops.', code: 'zero' },
+        { id: 'zero', say: 'So the baseline\'s share of the estimate, b times the gradient of log {π|pi}, averages to zero. That average over the model\'s answers is written {𝔼|E}, for expected value: with or without b, it points the same way, and only the noise drops.', code: 'zero' },
         { id: 'best', say: 'The best baseline is the reward you expect for that very question: a running average of past rewards works, or a second model trained to predict it.' },
         { id: 'turn', say: 'Your turn.' },
       ],

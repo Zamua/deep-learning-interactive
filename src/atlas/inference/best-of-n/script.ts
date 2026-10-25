@@ -23,7 +23,7 @@ export const script: LectureScript = {
         { id: 'check', say: 'Here are four programs sampled for one task. The tests fail three of them and pass one, so best-of-n keeps that one.', code: 'check' },
         { id: 'miss', say: 'How often does this work? Say each sample is right with probability {0.3|zero point three}, so wrong with {0.7|zero point seven}. All four are wrong with {0.7⁴|zero point seven to the fourth}, about {0.24|zero point two four}.', code: ['p', 'miss'] },
         { id: 'hit', say: 'That is the only way best-of-n fails. So it succeeds with one minus that, {0.76|zero point seven six}, from a model that is right less than a third of the time.', code: 'hit' },
-        { id: 'formula', say: 'In general, {1 − (1 − p)ⁿ|one minus, one minus p, to the n}. Every extra sample shrinks the chance that all of them miss.', code: ['miss', 'hit'] },
+        { id: 'formula', say: 'In general, with n samples each right with probability p, the chance of a hit is {1 − (1 − p)ⁿ|one minus, one minus p, to the n}. Every extra sample shrinks the chance that all of them miss.', code: ['miss', 'hit'] },
       ],
     },
     {

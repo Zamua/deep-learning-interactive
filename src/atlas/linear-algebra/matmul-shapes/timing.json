@@ -1,18 +1,18 @@
 {
- "duration": 80.407,
+ "duration": 86.558,
  "scenes": {
-  "columns": [0.0, 41.763],
-  "order": [41.763, 80.407]
+  "columns": [0.0, 47.914],
+  "order": [47.914, 86.558]
  },
  "beats": {
-  "columns/many": [0.7, 10.81, "Multiplying two matrices is many matrix-vector products at once. A multiplies each column of B, and each answer becomes a column of the result.", [[5.05, 5.65], [7.84, 8.18]]],
-  "columns/inner": [11.19, 21.885, "So each column of B must be as long as a row of A: A's columns must equal B's rows. These are the inner dimensions, three and three.", [[14.98, 15.59], [18.18, 18.74], [20.45, 20.73], [21.15, 21.3]]],
-  "columns/outer": [22.265, 31.731, "The result keeps the outer ones: A's two rows, and B's four columns. Two by three, times three by four, gives two by four.", [[24.175, 24.685], [25.765, 25.955], [27.455, 27.975], [28.825, 29.055], [30.315, 30.595]]],
-  "columns/rule": [32.111, 40.663, "In general, m by n, times n by k, gives m by k. The inner n's must match, and they disappear.", [[32.821, 33.161], [34.101, 34.341], [35.701, 35.961], [37.201, 37.781], [39.491, 39.741]]],
-  "order/swap": [42.463, 52.747, "Order matters. B times A is three by four, times two by three: the inner dimensions are four and two, so there is no product.", [[43.673, 44.263], [45.473, 45.633], [46.773, 46.983], [48.213, 48.773], [50.973, 51.303]]],
-  "order/pair": [53.127, 63.295, "Now take A, two by three, and a new matrix M, two by four. A times M fails too: its inner dimensions are three and two.", [[54.127, 54.447], [55.277, 55.477], [56.957, 57.227], [58.017, 58.617], [60.487, 60.917]]],
-  "order/fix": [63.675, 71.374, "Transposing A swaps its shape to three by two. Three by two, times two by four, gives three by four.", [[64.885, 65.035], [67.125, 67.685], [68.595, 68.755], [70.005, 70.165]]],
-  "order/flip": [71.754, 78.187, "M transpose times A works as well, and lays the same numbers out the other way: four by three.", [[74.304, 74.604], [76.624, 77.054]]],
-  "order/turn": [78.567, 79.307, "Your turn.", []]
+  "columns/many": [0.7, 14.132, "Multiplying two matrices, A and B, is written A B, and it is many matrix-vector products at once. A multiplies each column of B, and each answer becomes a column of the result.", [[2.46, 2.65], [3.58, 3.83], [4.35, 4.54], [5.22, 5.68], [8.5, 9.1], [11.24, 11.56]]],
+  "columns/inner": [14.512, 25.207, "So each column of B must be as long as a row of A: A's columns must equal B's rows. These are the inner dimensions, three and three.", [[18.302, 18.912], [21.502, 22.062], [23.772, 24.052], [24.472, 24.622]]],
+  "columns/outer": [25.587, 35.053, "The result keeps the outer ones: A's two rows, and B's four columns. Two by three, times three by four, gives two by four.", [[27.497, 28.007], [29.087, 29.277], [30.777, 31.297], [32.147, 32.377], [33.637, 33.917]]],
+  "columns/rule": [35.433, 46.814, "In general, for any sizes m, n and k, m by n, times n by k, gives m by k. The inner n's must match, and they disappear.", [[36.183, 36.353], [37.773, 37.933], [38.963, 39.373], [40.263, 40.493], [41.853, 42.153], [43.303, 43.883], [45.633, 45.853]]],
+  "order/swap": [48.614, 58.898, "Order matters. B times A is three by four, times two by three: the inner dimensions are four and two, so there is no product.", [[49.824, 50.414], [51.624, 51.784], [52.924, 53.134], [54.364, 54.924], [57.124, 57.454]]],
+  "order/pair": [59.278, 69.446, "Now take A, two by three, and a new matrix M, two by four. A times M fails too: its inner dimensions are three and two.", [[60.278, 60.598], [61.428, 61.628], [63.108, 63.378], [64.168, 64.768], [66.638, 67.068]]],
+  "order/fix": [69.826, 77.525, "Transposing A swaps its shape to three by two. Three by two, times two by four, gives three by four.", [[71.036, 71.186], [73.276, 73.836], [74.746, 74.906], [76.156, 76.316]]],
+  "order/flip": [77.905, 84.338, "M transpose times A works as well, and lays the same numbers out the other way: four by three.", [[80.455, 80.755], [82.775, 83.205]]],
+  "order/turn": [84.718, 85.458, "Your turn.", []]
  }
 }

@@ -32,7 +32,7 @@ export const generators: Generator[] = [
       const ws = [[0, 0], [0, 1], [1, 0], [1, 1]].map(([i, j]) => win(x, i!, j!));
       const v = ws.map((w) => pool(w, op));
       return {
-        prompt: `Apply $2 \\times 2$ ${op} pooling with stride 2 to this $4 \\times 4$ channel. Give the output row by row: top left, top right, bottom left, bottom right.${op === 'average' ? ' Round to two decimals.' : ''}\n\n$$${mat(x)}$$`,
+        prompt: `What does $2 \\times 2$ ${op} pooling with stride 2 output for this $4 \\times 4$ channel, read row by row?${op === 'average' ? ' Round to two decimals.' : ''}\n\n$$${mat(x)}$$`,
         answer: { kind: 'vector', value: v, places: op === 'average' ? 2 : undefined },
         traps: atraps(v, [
           { value: ws.map((w) => pool(w, other(op))), why: `That is ${other(op)} pooling. This asks for the ${op} of each window.` },
@@ -61,7 +61,7 @@ export const generators: Generator[] = [
       const v = pool(w, op);
       const shifted = [x[i]![j]!, x[i]![j + 1]!, x[i + 1]![j]!, x[i + 1]![j + 1]!];
       return {
-        prompt: `A $${n} \\times ${n}$ channel goes through $2 \\times 2$ ${op} pooling with stride 2, giving a $${m} \\times ${m}$ output. What is the output in row ${i}, column ${j}, counting from 0?${op === 'average' ? ' Round to two decimals.' : ''}\n\n$$${mat(x)}$$`,
+        prompt: `This $${n} \\times ${n}$ channel goes through $2 \\times 2$ ${op} pooling with stride 2. What is the output in row ${i}, column ${j}, counting from 0?${op === 'average' ? ' Round to two decimals.' : ''}\n\n$$${mat(x)}$$`,
         answer: { kind: 'number', value: v, places: op === 'average' ? 2 : undefined },
         traps: traps(v, [
           { value: pool(shifted, op), why: `That window starts at row ${i}, column ${j}. With stride 2, output row ${i} covers input rows ${2 * i} and ${2 * i + 1}.` },
@@ -100,7 +100,7 @@ export const generators: Generator[] = [
       }
       const v = [C, h, h];
       return {
-        prompt: `An input has $${C}$ channels, stacked grids of $${H} \\times ${H}$: shape $${shp([C, H, H])}$. It goes through $${F} \\times ${F}$ max pooling with stride ${S}. What is the output's shape, channels first?`,
+        prompt: `An input of shape $${shp([C, H, H])}$ goes through $${F} \\times ${F}$ max pooling with stride ${S}. What is the output's shape?`,
         answer: { kind: 'shape', value: v },
         traps: atraps(v, [
           { value: [C / 2, h, h], why: 'Pooling works on each channel separately: the number of channels stays the same.' },
@@ -122,7 +122,7 @@ export const generators: Generator[] = [
       const H = pick(rng, [8, 16, 28, 32, 56]);
       if (rng.int(2) === 0) {
         return {
-          prompt: `A filter's output map, $${H} \\times ${H}$, says how well the filter matches the input at each position. It goes through $2 \\times 2$ max pooling with stride 2, down to $${H / 2} \\times ${H / 2}$. What does each output value keep from its window?`,
+          prompt: `A filter's $${H} \\times ${H}$ output map goes through $2 \\times 2$ max pooling with stride 2. What does each output value keep from its window?`,
           answer: shuffled(rng, [
             { text: 'How well the filter matched, but not where in the window', why: null },
             { text: 'The average response over the window, every value counted equally', why: 'That is average pooling. Max pooling keeps only the largest value.' },

@@ -26,7 +26,7 @@ function neuron(rng: Rng, d: number, sign?: 1 | -1): Neuron {
 }
 
 const preSteps = (N: Neuron) => [
-  `Multiply matching entries of $\\symw$ and $\\symx$ and add: $${prods(N.w, N.x)} = ${num(N.wx)}$.`,
+  `The pre-activation is $z = \\symw \\cdot \\symx + \\symb$. Multiply matching entries of $\\symw$ and $\\symx$ and add: $${prods(N.w, N.x)} = ${num(N.wx)}$.`,
   `Add the bias: $z = ${terms([N.wx, N.b])} = ${num(N.z)}$.`,
 ];
 
@@ -36,7 +36,7 @@ export const generators: Generator[] = [
     make(rng, d) {
       const N = neuron(rng, d, rng.next() < 0.5 ? -1 : 1);
       return {
-        prompt: `A neuron has weights $\\symw = ${vec(N.w)}$ and bias $\\symb = ${num(N.b)}$. For the input $\\symx = ${vec(N.x)}$, what is its pre-activation $z = \\symw \\cdot \\symx + \\symb$?`,
+        prompt: `A neuron has weights $\\symw = ${vec(N.w)}$ and bias $\\symb = ${num(N.b)}$. For the input $\\symx = ${vec(N.x)}$, what is its pre-activation $z$?`,
         answer: { kind: 'number', value: N.z },
         traps: traps(N.z, [
           { value: N.wx, why: `That is $\\symw \\cdot \\symx$ alone. Add the bias, $${num(N.b)}$.` },
@@ -52,9 +52,8 @@ export const generators: Generator[] = [
     make(rng, d) {
       const N = neuron(rng, d, rng.next() < 0.55 ? -1 : 1);
       const a = relu(N.z);
-      const rule = d < 0.5 ? ' computes $a = \\max(0,\\ \\symw \\cdot \\symx + \\symb)$' : ' uses a ReLU activation';
       return {
-        prompt: `A neuron${rule}. Its weights are $\\symw = ${vec(N.w)}$ and its bias is $\\symb = ${num(N.b)}$. What is its output $a$ for the input $\\symx = ${vec(N.x)}$?`,
+        prompt: `A ReLU neuron has weights $\\symw = ${vec(N.w)}$ and bias $\\symb = ${num(N.b)}$. What is its output $a$ for the input $\\symx = ${vec(N.x)}$?`,
         answer: { kind: 'number', value: a },
         traps: traps(a, [
           { value: N.z, why: `That is the pre-activation, $${num(N.z)}$. The ReLU turns a negative sum into 0.` },
@@ -91,9 +90,9 @@ export const generators: Generator[] = [
         answer: {
           kind: 'choice',
           options: [
-            'Every $\\symx$ with $\\symw \\cdot \\symx + \\symb \\le 0$: half the plane',
+            'Every $\\symx$ where $\\symw \\cdot \\symx + \\symb$ is 0 or less: half the plane',
             'Only the single input $\\symx = [0,\\ 0]$, the origin',
-            'Every $\\symx$ with $\\symw \\cdot \\symx \\le 0$: half the plane',
+            'Every $\\symx$ where $\\symw \\cdot \\symx$ is 0 or less: half the plane',
             'No input at all: a ReLU output is always positive',
           ],
           correct: 0,

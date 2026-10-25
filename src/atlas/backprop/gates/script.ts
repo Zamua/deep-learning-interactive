@@ -19,9 +19,9 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'gate', say: 'Zoom in on one node of a graph: an add gate. Going forward, it adds x and z to make q.', code: 'fwd' },
-        { id: 'up', say: 'Going backward, a gradient arrives from above: how much the graph\'s final output, L, moves per unit of q. Say it is two.', code: 'up' },
+        { id: 'up', say: 'Going backward, a gradient arrives from above: {∂f/∂q|partial f, partial q}, how much the graph\'s final output, f, moves per unit of q. Say it is two.', code: 'up' },
         { id: 'local', say: 'The gate multiplies it by its local slopes. For an add, both are one: nudge x or z, and q moves by the same amount.', code: 'local' },
-        { id: 'copy', say: 'So an add gate passes the gradient through unchanged to both inputs. Each gets the full two, not half of it.', code: 'local' },
+        { id: 'copy', say: 'So an add gate passes the gradient through unchanged to both inputs: {∂f/∂x|partial f, partial x} and {∂f/∂z|partial f, partial z} each get the full two, not half of it.', code: 'local' },
       ],
     },
     {

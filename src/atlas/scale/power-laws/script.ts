@@ -19,9 +19,9 @@ export const script: LectureScript = {
         plt.yscale('log')   # a straight line  #@line
       `,
       beats: [
-        { id: 'runs', say: 'Train the same kind of model with more and more compute: the total arithmetic of training, counted in floating point operations, or FLOPs. Each dot is one run\'s final loss.', code: 'runs' },
+        { id: 'runs', say: 'Train the same kind of model with more and more compute, C: the total arithmetic of training, counted in floating point operations, or FLOPs. Each dot is one run\'s final loss, L.', code: 'runs' },
         { id: 'flat', say: 'On ordinary axes the loss plunges, then flattens, and most of the runs crowd into one corner.', code: 'flat' },
-        { id: 'log', say: 'Now space both axes by powers of ten, so that every step to the right is ten times the compute.', code: 'log' },
+        { id: 'log', say: 'Now space both axes by powers of ten, so that every step to the right is ten times the compute. These are log-log axes.', code: 'log' },
         { id: 'line', say: 'The runs fall on a straight line. That is a scaling law.', code: 'line' },
       ],
     },
@@ -37,8 +37,8 @@ export const script: LectureScript = {
         slope = (0.4 - 0.6) / (20 - 18)  # -0.1  #@slope
       `,
       beats: [
-        { id: 'law', say: 'The law says L equals a times C to the minus {α|alpha}. C is the compute, and a and {α|alpha} are fixed numbers, fit to the runs.', code: 'law' },
-        { id: 'logs', say: 'Take logs to base ten. They count powers of ten: the log of {10²⁰|ten to the twenty} is twenty.' },
+        { id: 'law', say: 'The law says L equals a times C to the minus {α|alpha}. The numbers a and {α|alpha}, the Greek letter alpha, are fixed by fitting the runs. {α|Alpha} is the scaling exponent.', code: 'law' },
+        { id: 'logs', say: 'Take logs to base ten, written {log₁₀|log base ten}, or here just log. They count powers of ten: the log of {10²⁰|ten to the twenty} is twenty.' },
         { id: 'power', say: 'A log turns a product into a sum, and a power into a multiple: the log of C to the minus {α|alpha} is minus {α|alpha} times the log of C.', code: 'line' },
         { id: 'line', say: 'So log L is log a, minus {α|alpha} times log C: a straight line, with slope minus {α|alpha}.', code: 'line' },
         { id: 'slope', say: 'Read the slope off two runs. From {10¹⁸|ten to the eighteen} to {10²⁰|ten to the twenty} FLOPs, two powers of ten, log L falls from {0.6|zero point six} to {0.4|zero point four}. Minus {0.2|zero point two} over two: a slope of minus {0.1|zero point one}.', code: 'slope' },

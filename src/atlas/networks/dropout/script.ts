@@ -20,9 +20,9 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'layer', say: 'Here is a hidden layer\'s output, h: four units, with values two, one, three and two.', code: 'h' },
-        { id: 'mask', say: 'During training, dropout keeps each unit with probability p, here a half, and zeroes the rest. This time the random mask keeps units zero and two.', code: 'mask' },
-        { id: 'zeroed', say: 'So the layer\'s output becomes two, zero, three, zero.', code: 'zero' },
-        { id: 'scale', say: 'Then the kept units are divided by p. With p a half, that doubles them: four, zero, six, zero. This is inverted dropout.', code: 'scale' },
+        { id: 'mask', say: 'During training, dropout keeps each unit with probability p, here a half, and zeroes the rest. A random mask, m, decides: a one keeps a unit, and a zero drops it. This time it keeps units zero and two.', code: 'mask' },
+        { id: 'zeroed', say: 'Multiply h by m, entry by entry, and the layer\'s output becomes two, zero, three, zero.', code: 'zero' },
+        { id: 'scale', say: 'Then the kept units are divided by p. With p a half, that doubles them: four, zero, six, zero. This is inverted dropout; plain dropout skips the division.', code: 'scale' },
         { id: 'why', say: 'Why divide? A unit is kept only a fraction p of the time. Dividing by p makes up for it: on average, p times h over p is h, exactly what the unit gives without dropout.', code: 'scale' },
       ],
     },

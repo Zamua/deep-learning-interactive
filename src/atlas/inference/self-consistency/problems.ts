@@ -122,7 +122,7 @@ export const generators: Generator[] = [
       const greedy = rng.next() < 0.5;
       const n = pick(rng, [3, 5, 7, 9, 15]);
       const T = greedy ? 0 : pick(rng, [0.5, 0.7, 0.8, 1]);
-      const tTex = greedy ? '$\\symT \\to 0$, which is greedy decoding' : `temperature $\\symT = ${num(T)}$`;
+      const tTex = greedy ? 'temperature $\\symT \\to 0$' : `temperature $\\symT = ${num(T)}$`;
       return {
         prompt: `Self-consistency samples ${n} chains of thought for one question at ${tTex}, then votes on the final answers. What does the vote give?`,
         answer: choice([

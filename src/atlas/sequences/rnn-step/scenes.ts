@@ -38,7 +38,7 @@ const step: SceneDef = {
     f: { tex: String.raw`\symh_t = \tanh(\symWhh\symh_{t-1} + \symWxh\symx_t + \symb)`, x: 0.5, y: 0.08, size: 4.6 },
   },
   draw(s) {
-    s.show('f', s.ease('inputs', 0.6, 2));
+    s.show('f', s.ease('tanh', 0.6, 5));
     const y1 = s.h * 0.3;
     const y2 = s.h * 0.53;
     // Before the products: just the memory and the token, side by side.
@@ -75,7 +75,7 @@ const step: SceneDef = {
     s.alpha(s.ease('sum', 0.6, 2.5), () => {
       op('=', 4);
       stack(s, at(14), ys, lab(A), '--ink-2', { gap: 9 });
-      name('a', 14, '--ink-2');
+      name('z', 14, '--ink-2');
     });
     s.alpha(s.ease('tanh', 0.6), () => {
       s.arrow(at(21), ys, at(32), ys, s.c('--ink-3'), 0.4, 2);

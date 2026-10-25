@@ -37,10 +37,10 @@ export const script: LectureScript = {
         # W1: (H, D)    W2: (C, H)           #@shapes
       `,
       beats: [
-        { id: 'W2', say: 'The second layer scores h exactly as a linear classifier scores an input, with its own weights, {W₂|W two}, and biases, {b₂|b two}.', code: 'W2' },
+        { id: 'W2', say: 'The second layer scores h exactly as a linear classifier scores an input, with its own weights, {W₂|W two}, and biases, {b₂|b two}: {s = W₂h + b₂|s is W two h, plus b two}.', code: 'W2' },
         { id: 's', say: 'Class zero: three times one, plus one times zero, plus zero: three. Class one: minus one, plus zero, plus one: zero.', code: 's' },
         { id: 'forget', say: 'Skip the ReLU, and h would be one and minus three. Class zero would score zero, not three. The bend changes the answer.', code: 'noRelu' },
-        { id: 'shapes', say: 'The shapes chain together. {W₁|W one} is H by D: it turns D inputs into H hidden units. {W₂|W two} is C by H: it turns those into C scores.', code: 'shapes' },
+        { id: 'shapes', say: 'The shapes chain together. Write D for the number of inputs, H for the number of hidden units, and C for the number of classes. {W₁|W one} is H by D: it turns D inputs into H hidden units. {W₂|W two} is C by H: it turns those into C scores.', code: 'shapes' },
       ],
     },
     {
@@ -53,7 +53,7 @@ export const script: LectureScript = {
         W = W2 @ W1    # shape (C, D)         #@one
       `,
       beats: [
-        { id: 'sub', say: 'Take the ReLU out and substitute. The scores are {W₂|W two} times {W₁ x plus b₁|W one x, plus b one}, plus {b₂|b two}. Multiply it out, and that is {W₂ W₁|W two W one} times x, plus a constant.', code: 'sub' },
+        { id: 'sub', say: 'Take the ReLU out and substitute. The scores are {W₂|W two} times {W₁ x plus b₁|W one x, plus b one}, plus {b₂|b two}. Multiply it out, and that is {W₂ W₁|W two W one}, the product of the two matrices, times x, plus a constant.', code: 'sub' },
         { id: 'one', say: '{W₂ W₁|W two W one} is a single C by D matrix. The two layers collapse into one linear classifier, however wide the middle is.', code: 'one' },
         { id: 'bend', say: 'The ReLU between them is what stops the collapse, and what lets the network bend its decision boundaries.' },
         { id: 'turn', say: 'Your turn.' },

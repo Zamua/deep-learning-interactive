@@ -18,7 +18,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'freeze', say: 'Does the residual stream at some layer know whether a word is a noun? Freeze the model, and collect its stream, h, for many words, each labeled noun or not.', code: 'h' },
-        { id: 'fit', say: 'Then fit a linear classifier on them: a score, w dot h plus b, positive for a noun. Only w and b are trained. The model never changes.', code: ['score', 'pred'] },
+        { id: 'fit', say: 'Then fit a linear classifier on them: a score, {w · h + b|w dot h plus b}, positive for a noun. Only w and b are trained. The model never changes.', code: ['score', 'pred'] },
         { id: 'example', say: 'Say h is two, minus one and a half, w is one, two and minus two, and b is a half. The score is two, minus two, minus one, plus a half: minus a half. The probe says: not a noun.', code: 'score' },
       ],
     },

@@ -3,8 +3,8 @@ import { int, num, pick, round } from '../../kit';
 import { clean, dd, n, traps } from '../kit';
 
 const sig = (x: number) => 1 / (1 + Math.exp(-x));
-const UP = dd('\\symL', '\\sigma');
-const DX = dd('\\symL', 'x');
+const UP = dd('f', '\\sigma');
+const DX = dd('f', 'x');
 /** Two significant figures, for small gradients. */
 const sig2 = (v: number) => Number(v.toPrecision(2));
 
@@ -18,7 +18,7 @@ export const generators: Generator[] = [
       const v = 1 / (1 + e);
       const eTex = x === 0 ? 'e^{0} = 1' : `e^{${num(-x)}} \\approx ${num(e, 2)}`;
       return {
-        prompt: `What is $\\sigma(x) = \\dfrac{1}{1 + e^{-x}}$ at $x = ${num(x)}$? Use $${eTex}$. Round to two decimals.`,
+        prompt: `What is $\\sigma(${num(x)})$? Use $${eTex}$. Round to two decimals.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(
           v,
@@ -30,6 +30,7 @@ export const generators: Generator[] = [
           2,
         ),
         solution: [
+          '$\\sigma(x) = \\dfrac{1}{1 + e^{-x}}$.',
           `$e^{-x} = e^{${num(-x)}} ${x === 0 ? '=' : '\\approx'} ${num(e, 2)}$.`,
           `$1 + e^{-x} ${x === 0 ? '=' : '\\approx'} ${num(round(1 + e, 2))}$.`,
           `$\\sigma(${num(x)}) = 1 / ${num(round(1 + e, 2))} \\approx ${num(v, 2)}$. ${x > 0 ? 'Above a half, as every positive input gives.' : x < 0 ? 'Below a half, as every negative input gives.' : 'Exactly a half, the middle of the curve.'}`,
@@ -54,8 +55,8 @@ export const generators: Generator[] = [
       return {
         prompt:
           up === 1
-            ? `A sigmoid node outputs $\\sigma(x) = ${num(s)}$. What is its local slope, $\\dfrac{d\\sigma}{dx}$? Round to ${places === 2 ? 'two' : 'three'} decimals.`
-            : `A sigmoid node outputs $\\sigma(x) = ${num(s)}$, and the gradient arriving from above is $${UP} = ${num(up)}$. What gradient reaches its input, $${DX}$? Round to three decimals.`,
+            ? `A sigmoid node outputs $\\sigma(x) = ${num(s)}$. What is $\\dfrac{d\\sigma}{dx}$? Round to ${places === 2 ? 'two' : 'three'} decimals.`
+            : `A sigmoid node outputs $\\sigma(x) = ${num(s)}$, with $${UP} = ${num(up)}$. What is $${DX}$? Round to three decimals.`,
         answer: { kind: 'number', value: v, places },
         traps: traps(v, ts, places),
         solution: [
@@ -74,8 +75,8 @@ export const generators: Generator[] = [
       const atZero = d >= 0.5 && rng.int(2) === 0;
       return {
         prompt: atZero
-          ? `A sigmoid node's input is $x = 0$, and the gradient arriving from above is $${UP} = ${num(g)}$. What gradient reaches $x$?`
-          : `The gradient arriving at a sigmoid node from above is $${UP} = ${num(g)}$. Whatever its input $x$, what is the largest $${DX}$ can be?`,
+          ? `A sigmoid node's input is $x = 0$, with $${UP} = ${num(g)}$. What is $${DX}$?`
+          : `A sigmoid node has $${UP} = ${num(g)}$. Whatever its input $x$, what is the largest $${DX}$ can be?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: g, why: 'That passes the gradient through unchanged. The sigmoid\'s slope is never more than $0.25$.' },
@@ -98,7 +99,7 @@ export const generators: Generator[] = [
       const tiny = sig2(g * s * (1 - s));
       const options = [`About $${num(tiny)}$: almost none of it`, `About $${num(g)}$: nearly all of it`, `About $${num(clean(g / 4))}$: a quarter of it`];
       return {
-        prompt: `A sigmoid node's input is $x = ${num(x)}$, where $\\sigma(x) \\approx ${num(s, 4)}$. The gradient arriving from above is $${UP} = ${num(g)}$. How much of it reaches $x$?`,
+        prompt: `A sigmoid node's input is $x = ${num(x)}$, where $\\sigma(x) \\approx ${num(s, 4)}$, and $${UP} = ${num(g)}$. How much of that gradient reaches $x$?`,
         answer: {
           kind: 'choice',
           options,

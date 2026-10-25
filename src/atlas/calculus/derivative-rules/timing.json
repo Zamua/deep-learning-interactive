@@ -1,22 +1,22 @@
 {
- "duration": 91.622,
+ "duration": 99.397,
  "scenes": {
-  "power": [0.0, 30.808],
-  "sums": [30.808, 61.43],
-  "explog": [61.43, 91.622]
+  "power": [0.0, 38.584],
+  "sums": [38.584, 69.205],
+  "explog": [69.205, 99.397]
  },
  "beats": {
-  "power/sq": [0.7, 10.626, "Derivatives follow rules, so the limit is rarely needed. For x squared, bring the two down in front and lower the power by one: two x.", [[2.36, 2.67], [4.38, 4.95], [5.93, 6.25], [7.69, 7.87], [9.42, 9.95]]],
-  "power/cube": [11.006, 13.857, "x cubed becomes three x squared.", []],
-  "power/rule": [14.237, 21.221, "In general, x to the n becomes n times x to the n minus one. That is the power rule.", [[14.967, 15.267], [19.197, 19.757]]],
-  "power/check": [21.601, 29.708, "Check it at x equals two. The measured slope of x cubed is twelve, and three times two squared is twelve.", [[23.511, 24.101], [26.721, 27.141]]],
-  "sums/factor": [31.508, 40.053, "A number in front comes along for the ride. Five x cubed becomes five times three x squared: fifteen x squared.", [[33.808, 34.368], [38.128, 38.598]]],
-  "sums/sum": [40.433, 46.8, "A sum is differentiated one term at a time. Two x is a line with slope two.", [[43.563, 44.183]]],
-  "sums/zero": [47.18, 53.152, "A constant on its own is flat, so its derivative is zero. The seven drops out.", [[49.22, 49.57], [51.39, 51.88]]],
-  "sums/whole": [53.532, 60.33, "So five x cubed plus two x plus seven has derivative fifteen x squared plus two.", [[56.842, 57.092], [57.942, 58.182]]],
-  "explog/ex": [62.13, 69.312, "e to the x is special: it is its own derivative. At every point, its slope equals its height.", [[63.84, 64.34], [65.86, 66.35], [67.29, 67.56]]],
-  "explog/eax": [69.692, 78.845, "With a number multiplying x in the power, that number comes out in front: e to the three x has derivative three e to the three x.", [[72.162, 72.502], [74.182, 74.762], [76.912, 77.072]]],
-  "explog/ln": [79.225, 89.402, "And ln x has derivative one over x: steep near zero, flatter as x grows. At x equals two, its slope is a half.", [[82.395, 82.925], [84.075, 84.345], [85.985, 86.535], [87.795, 88.045]]],
-  "explog/turn": [89.782, 90.522, "Your turn.", []]
+  "power/sq": [0.7, 16.779, "Derivatives follow rules, so the limit is rarely needed. For x squared, bring the two down in front and lower the power by one: x squared becomes two x. The arrow stands for \u201cbecomes\u201d, from a function to its derivative.", [[2.33, 2.65], [4.37, 4.98], [5.94, 6.23], [7.66, 7.87], [9.43, 10.04], [11.88, 12.44], [14.48, 14.86]]],
+  "power/cube": [17.159, 20.009, "x cubed becomes three x squared.", []],
+  "power/rule": [20.389, 28.996, "In general, for any power n, x to the n becomes n times x to the n minus one. That is the power rule.", [[21.129, 21.389], [22.679, 23.099], [27.059, 27.559]]],
+  "power/check": [29.376, 37.484, "Check it at x equals two. The measured slope of x cubed is twelve, and three times two squared is twelve.", [[31.286, 31.876], [34.496, 34.916]]],
+  "sums/factor": [39.284, 47.829, "A number in front comes along for the ride. Five x cubed becomes five times three x squared: fifteen x squared.", [[41.584, 42.144], [45.904, 46.374]]],
+  "sums/sum": [48.209, 54.576, "A sum is differentiated one term at a time. Two x is a line with slope two.", [[51.339, 51.959]]],
+  "sums/zero": [54.956, 60.928, "A constant on its own is flat, so its derivative is zero. The seven drops out.", [[56.996, 57.346], [59.166, 59.656]]],
+  "sums/whole": [61.308, 68.105, "So five x cubed plus two x plus seven has derivative fifteen x squared plus two.", [[64.618, 64.868], [65.718, 65.958]]],
+  "explog/ex": [69.905, 77.087, "e to the x is special: it is its own derivative. At every point, its slope equals its height.", [[71.615, 72.115], [73.635, 74.125], [75.065, 75.335]]],
+  "explog/eax": [77.467, 86.62, "With a number multiplying x in the power, that number comes out in front: e to the three x has derivative three e to the three x.", [[79.937, 80.277], [81.957, 82.537], [84.687, 84.847]]],
+  "explog/ln": [87.0, 97.177, "And ln x has derivative one over x: steep near zero, flatter as x grows. At x equals two, its slope is a half.", [[90.17, 90.7], [91.85, 92.12], [93.76, 94.31], [95.57, 95.82]]],
+  "explog/turn": [97.557, 98.297, "Your turn.", []]
  }
 }

@@ -25,11 +25,11 @@ export const generators: Generator[] = [
       ];
       if (k > 1) tr.push({ value: L * tenTo(alpha), why: `That is one factor of ten. ${times.toLocaleString('en-US')} times the compute is ${k} factors of ten: use $${pow(k * alpha)}$.` });
       return {
-        prompt: `A family of models follows $${LAW}$ with $${ALPHA} = ${num(alpha)}$. A run with compute $${C}$ ends at loss $\\symL = ${num(L)}$. What loss does a run with ${times.toLocaleString('en-US')} times the compute reach? Round to two decimals.\n\nUse ${given.join(top > 2 ? ', ' : ' and ')}.`,
+        prompt: `A family of models follows a scaling law with $${ALPHA} = ${num(alpha)}$. One run ends at loss $\\symL = ${num(L)}$. What loss does a run with ${times.toLocaleString('en-US')} times its compute reach? Round to two decimals.\n\nUse ${given.join(top > 2 ? ', ' : ' and ')}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: ptraps(v, 2, tr),
         solution: [
-          `Multiplying $${C}$ by ${times.toLocaleString('en-US')} multiplies $${C}^{-${ALPHA}}$ by $${k === 1 ? '' : `(10^{${k}})^{-${num(alpha)}} = `}${pow(k * alpha)} \\approx ${num(f, 2)}$, and $a$ stays the same.`,
+          `The law is $${LAW}$. Multiplying $${C}$ by ${times.toLocaleString('en-US')} multiplies $${C}^{-${ALPHA}}$ by $${k === 1 ? '' : `(10^{${k}})^{-${num(alpha)}} = `}${pow(k * alpha)} \\approx ${num(f, 2)}$, and $a$ stays the same.`,
           `So the loss is multiplied by ${num(f, 2)}: $${num(L)} \\times ${num(f, 2)} \\approx ${num(v, 2)}$.`,
         ],
       };
@@ -101,7 +101,7 @@ export const generators: Generator[] = [
       if (loglog) {
         const options = [`A straight line with slope $-${num(alpha)}$`, `A straight line with slope $-${a}$`, 'A curve that falls steeply, then flattens out', `A straight line with slope $${num(alpha)}$`];
         return {
-          prompt: `Plot ${law} with both axes on a log scale, every power of ten evenly spaced. What does it look like?`,
+          prompt: `Plot ${law} on log-log axes. What does it look like?`,
           answer: {
             kind: 'choice',
             options,

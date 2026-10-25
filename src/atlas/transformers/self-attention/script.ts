@@ -19,9 +19,9 @@ export const script: LectureScript = {
         e = Q @ K.T / np.sqrt(d_k)              # (T, T)                    #@e
       `,
       beats: [
-        { id: 'tokens', say: 'So far, one token asked at a time. Self-attention lets every token ask at once. Stack the tokens as the rows of a matrix, X: T rows, one per token.', code: 'X' },
-        { id: 'qkv', say: 'Each token\'s query becomes one row of a matrix, Q; its key, one row of K; its value, one row of V. So Q and K are T by {dₖ|d k}, and V is T by {dᵥ|d v}.', code: 'qkv' },
-        { id: 'scores', say: 'Then one matrix product scores every query against every key: Q times K transpose. T by {dₖ|d k}, times {dₖ|d k} by T, gives T by T.', code: 'e' },
+        { id: 'tokens', say: 'So far, one token asked at a time. Self-attention lets every token ask at once. Say there are T tokens: stack them as the rows of a matrix, X, T by d.', code: 'X' },
+        { id: 'qkv', say: 'Each token\'s query becomes one row of a matrix, Q; its key, one row of K; its value, one row of V. So Q and K are T by {dₖ|d k}, and V is T by {dᵥ|d v}, where {dᵥ|d v} is each value\'s length.', code: 'qkv' },
+        { id: 'scores', say: 'Then one matrix product scores every query against every key: {QKᵀ|Q times K transpose}. T by {dₖ|d k}, times {dₖ|d k} by T, gives T by T.', code: 'e' },
         { id: 'entry', say: 'Entry i, j is token i\'s query dotted with token j\'s key, divided by the square root of {dₖ|d k}. Row two, column zero: how much fish looks at cats.', code: 'e' },
       ],
     },
@@ -39,7 +39,7 @@ export const script: LectureScript = {
         { id: 'fish', say: 'Here fish, row two, gives a half to cats and a quarter each to like and to itself.', code: 'A' },
         { id: 'out', say: 'Then A times V. T by T, times T by {dᵥ|d v}, gives T by {dᵥ|d v}: one output row per token.', code: 'out' },
         { id: 'row', say: 'Row two of the output is the weighted sum of the rows of V: half of two and zero, plus a quarter of zero and four, plus a quarter of four and four. That is two and two.', code: 'row' },
-        { id: 'formula', say: 'All of self-attention in one line: softmax of Q K transpose over the square root of {dₖ|d k}, times V.', code: ['A', 'out'] },
+        { id: 'formula', say: 'All of self-attention in one line: {softmax(QKᵀ / √dₖ) V|softmax of Q K transpose over the square root of d k, times V}.', code: ['A', 'out'] },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

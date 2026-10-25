@@ -118,7 +118,7 @@ const repeat: SceneDef = {
       const xs = spread(s, 3, s.tall ? 30 : 34);
       const yy = s.h * 0.68;
       s.rrect(xs[0]! - 13 * s.u, yy - 4.5 * s.u, 26 * s.u, 9 * s.u, 1.4, { fill: s.tint('orange', 0.12), stroke: s.tint('orange', 0.6), lw: 0.3 });
-      s.text('ids 0 … 255', xs[0]!, yy - 0.4 * s.u, { size: 3, font: 'mono', weight: 600, color: s.c('orange') });
+      s.text('ids 0 to 255', xs[0]!, yy - 0.4 * s.u, { size: 3, font: 'mono', weight: 600, color: s.c('orange') });
       note(s, 'the bytes', xs[0]!, yy + 8 * s.u, '--ink-3', 2.8);
       ['ug', 'hug'].forEach((t, i) => {
         s.alpha(s.ease('grow', 0.5, 1.6 + 1.6 * i), () => {

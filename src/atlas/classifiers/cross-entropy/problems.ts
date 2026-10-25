@@ -41,7 +41,7 @@ export const generators: Generator[] = [
       if (top >= 0 && top !== y) traps.push({ value: -LN(p[top]!), why: `That uses option ${top}'s probability, the largest. The loss looks only at the right option, $\\symy = ${y}$.` });
       const lns = [...new Set(p)].sort((a, b) => b - a);
       return {
-        prompt: `Softmax gives the probabilities $\\symp = ${vec(p)}$, and the right answer is option $\\symy = ${y}$, counting from 0. What is the cross-entropy loss $\\symL$? Round to two decimals.\n\nUse ${lns.map((q) => `$\\ln ${num(q)} \\approx ${num(LN(q), 2)}$`).join(', ')}.`,
+        prompt: `The probabilities are $\\symp = ${vec(p)}$, and the right answer is option $\\symy = ${y}$, counting from 0. What is the cross-entropy loss? Round to two decimals.\n\nUse ${lns.map((q) => `$\\ln ${num(q)} \\approx ${num(LN(q), 2)}$`).join(', ')}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps.filter((t, i) => Math.abs(t.value - v) >= 0.01 && traps.findIndex((u) => u.value === t.value) === i),
         solution: [
@@ -69,7 +69,7 @@ export const generators: Generator[] = [
       ];
       if (top >= 0 && top !== y) traps.push({ value: round(lnT - s[top]!, 2), why: `That uses option ${top}'s score, the top one. The loss uses the right option, $\\symy = ${y}$.` });
       return {
-        prompt: `The scores are $\\syms = ${vec(s)}$ and the right answer is option $\\symy = ${y}$, counting from 0. Softmax turns the scores into probabilities. What is the cross-entropy loss? Round to two decimals.\n\nUse ${distinct.map((x) => `$e^{${x}} \\approx ${num(E(x), 2)}$`).join(', ')}, and $\\ln ${num(T, 2)} \\approx ${num(lnT, 2)}$.`,
+        prompt: `The scores are $\\syms = ${vec(s)}$ and the right answer is option $\\symy = ${y}$, counting from 0. What is the cross-entropy loss? Round to two decimals.\n\nUse ${distinct.map((x) => `$e^{${x}} \\approx ${num(E(x), 2)}$`).join(', ')}, and $\\ln ${num(T, 2)} \\approx ${num(lnT, 2)}$.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps.filter((t, i) => Math.abs(t.value - v) >= 0.01 && traps.findIndex((u) => u.value === t.value) === i),
         solution: [
@@ -90,7 +90,7 @@ export const generators: Generator[] = [
       const how = pick(rng, ['are all equal', 'are all the same number']);
       const parts = LN_PARTS[C];
       return {
-        prompt: `There are $C = ${C}$ options, and their scores ${how}. Softmax turns the scores into probabilities. Whichever option is right, what is the cross-entropy loss? Round to two decimals.\n\nUse ${table}.`,
+        prompt: `There are $C = ${C}$ options, and their scores ${how}. Whichever option is right, what is the cross-entropy loss? Round to two decimals.\n\nUse ${table}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: [
           { value: -v, why: 'That is $\\ln(1/C)$, without the minus sign. The loss is never negative.' },
@@ -112,7 +112,7 @@ export const generators: Generator[] = [
       const up = rng.int(2) === 0;
       const never = 'A probability is at most 1, so its log is at most 0, and the minus sign makes the loss 0 or more.';
       return {
-        prompt: `The probability given to the right answer is $\\symp_{\\symy} = ${p0}$, so its loss is $\\symL = -\\ln ${p0} \\approx ${num(-LN(p0), 2)}$. As $\\symp_{\\symy}$ moves toward ${up ? '1, a confident right answer' : '0, a confident wrong answer'}, what happens to $\\symL$?`,
+        prompt: `The right answer's probability is $\\symp_{\\symy} = ${p0}$. As it moves toward ${up ? 1 : 0}, what happens to the cross-entropy loss $\\symL$?`,
         answer: {
           kind: 'choice',
           options: ['It shrinks toward 0', 'It grows without limit', 'It turns negative', 'It levels off at 1'],

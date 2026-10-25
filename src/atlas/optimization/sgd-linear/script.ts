@@ -21,10 +21,10 @@ export const script: LectureScript = {
         b -= lr * db                            #@step
       `,
       beats: [
-        { id: 'x', say: 'Here is one full training step for a tiny linear classifier, with two features and two classes. The input x is two, one, and the correct class is class zero.' },
+        { id: 'x', say: 'Here is one full step of stochastic gradient descent, or SGD, for a tiny linear classifier, with two features and two classes. The input x is two, one, and the correct class is class zero.' },
         { id: 'scores', say: 'Forward: the scores are W x plus b, one per class: one, and {1.85|one point eight five}.', code: 's' },
         { id: 'probs', say: 'Softmax turns them into probabilities, {0.3|zero point three} and {0.7|zero point seven}. The model leans the wrong way.', code: 'p' },
-        { id: 'grad', say: 'Backward: the gradient on the scores is p minus the one-hot label, minus {0.7|zero point seven} and plus {0.7|zero point seven}.', code: 'ds' },
+        { id: 'grad', say: 'Backward: the gradient on the scores, ds for short, is p minus the one-hot label: minus {0.7|zero point seven} and plus {0.7|zero point seven}.', code: 'ds' },
         { id: 'update', say: 'Then every weight and bias steps against its own gradient. What is left is to find those gradients.', code: ['dW', 'step'] },
       ],
     },
@@ -40,8 +40,8 @@ export const script: LectureScript = {
         db = ds                 # [-0.7, 0.7]   #@db
       `,
       beats: [
-        { id: 'chain', say: 'Score i is row i of W dotted with x, plus b i. So nudging the weight W i j moves score i by x j times as much.', code: 'ds' },
-        { id: 'outer', say: 'By the chain rule, the gradient on W i j is ds i times x j. Every entry of ds times every entry of x: an outer product.', code: 'outer' },
+        { id: 'chain', say: 'Score {sᵢ|s i} is row i of W dotted with x, plus {bᵢ|b i}. So nudging the weight {Wᵢⱼ|W i j}, in row i and column j, moves score i by {xⱼ|x j} times as much.', code: 'ds' },
+        { id: 'outer', say: 'By the chain rule, the gradient on {Wᵢⱼ|W i j}, {∂L/∂Wᵢⱼ|partial L, partial W i j}, is {dsᵢ|d s i} times {xⱼ|x j}. Every entry of ds times every entry of x: an outer product.', code: 'outer' },
         { id: 'db', say: 'Each bias adds straight into its own score, so its gradient is just ds.', code: 'db' },
       ],
     },

@@ -21,8 +21,8 @@ export const script: LectureScript = {
       beats: [
         { id: 'pair', say: 'The dot product takes two vectors of the same length, here w and x, and gives back a single number.', code: ['w', 'x'] },
         { id: 'mult', say: 'First, multiply matching entries: two times one is two, minus one times four is minus four, and three times two is six.', code: 'mul' },
-        { id: 'add', say: 'Then add up the products: two, minus four and six make four.', code: 'dot' },
-        { id: 'formula', say: 'In symbols, {w · x|w dot x} is the sum, over every position i, of {wᵢ xᵢ|w i times x i}.', code: 'dot' },
+        { id: 'add', say: 'Then add up the products: two, minus four and six make four. That sum is written {w · x|w dot x}, read “w dot x”.', code: 'dot' },
+        { id: 'formula', say: 'In symbols, {w · x = Σᵢ wᵢ xᵢ|w dot x is the sum over i of w i times x i}. {wᵢ|w i} is entry i of w, the same as {w[i]|w of i}, and the big {Σ|sigma}, a Greek capital S, means add up what follows for every position i.', code: 'dot' },
         { id: 'weigh', say: 'Read w as weights: each entry of x counts as much as its weight says, and a negative weight makes it count against.', code: 'mul' },
       ],
     },

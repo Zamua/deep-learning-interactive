@@ -3,7 +3,7 @@ import type { Generator } from '../../../mastery/domain/types';
 import { int, num, pick, round, vec } from '../../kit';
 import { ADV, BASE, choose, clean, minus, paren, PI, R, sumTex, TH, traps, vtraps } from '../kit';
 
-const GLP = `\\nabla_{${TH}} \\ln ${PI}(y)`;
+const GLP = `\\nabla \\ln ${PI}(y)`;
 
 /** Rewards for `n` sampled answers: tenths in [0, 1], harder with negatives and more of them. */
 function rewards(rng: Rng, n: number, d: number): number[] {
@@ -27,8 +27,8 @@ export const generators: Generator[] = [
       const v = r.map((x) => clean(x - b));
       return {
         prompt: own
-          ? `A model samples ${n} answers to one question and they get rewards $${R} = ${vec(r)}$. Using their mean as the baseline $${BASE}$, what are the advantages $${ADV} = ${R} - ${BASE}$?`
-          : `A model samples ${n} answers to one question and they get rewards $${R} = ${vec(r)}$. The baseline is $${BASE} = ${num(b)}$. What are the advantages $${ADV} = ${R} - ${BASE}$?`,
+          ? `A model samples ${n} answers to one question and they get rewards $${R} = ${vec(r)}$. Using their mean as the baseline $${BASE}$, what are the advantages $${ADV}$?`
+          : `A model samples ${n} answers to one question and they get rewards $${R} = ${vec(r)}$. The baseline is $${BASE} = ${num(b)}$. What are the advantages $${ADV}$?`,
         answer: { kind: 'vector', value: v },
         traps: vtraps(v, [
           { value: r, why: 'Those are the rewards themselves. Subtract the baseline from each.' },
@@ -36,7 +36,7 @@ export const generators: Generator[] = [
         ]),
         solution: [
           ...(own ? [`The baseline is the mean reward: $(${sumTex(r)}) / ${n} = ${num(mean)}$.`] : []),
-          `Subtract it from each reward: ${r.map((x, i) => `$${minus(x, b)} = ${num(v[i]!)}$`).join(', ')}.`,
+          `The advantage is $${ADV} = ${R} - ${BASE}$, so subtract the baseline from each reward: ${r.map((x, i) => `$${minus(x, b)} = ${num(v[i]!)}$`).join(', ')}.`,
           `So $${ADV} = ${vec(v)}$: positive for answers better than expected, negative for worse.`,
         ],
       };
@@ -53,7 +53,7 @@ export const generators: Generator[] = [
       const v = clean(a * g);
       const DL = `\\dfrac{\\partial \\ln ${PI}(y)}{\\partial ${TH}_0}`;
       return {
-        prompt: `A sampled answer $y$ gets reward $${R} = ${num(Rv)}$, the baseline is $${BASE} = ${num(b)}$, and $${DL} = ${num(g)}$. What is entry 0 of the policy-gradient estimate with this baseline?`,
+        prompt: `For one parameter $${TH}_0$, a sampled answer $y$ gets reward $${R} = ${num(Rv)}$ and has $${DL} = ${num(g)}$. With the baseline $${BASE} = ${num(b)}$, what is the policy-gradient estimate's entry for $${TH}_0$?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: clean(Rv * g), why: `That leaves out the baseline: it uses $${R}$, not the advantage $${R} - ${BASE}$.` },
@@ -62,7 +62,7 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `The advantage: $${ADV} = ${R} - ${BASE} = ${minus(Rv, b)} = ${num(a)}$.`,
-          `The estimate is $${ADV}\\,${GLP}$, so entry 0 is $${num(a)} \\times ${paren(g)} = ${num(v)}$.`,
+          `The estimate is $${ADV}\\,${GLP}$, so its entry for $${TH}_0$ is $${num(a)} \\times ${paren(g)} = ${num(v)}$.`,
           a > 0 ? 'The answer beat the baseline, so this pushes it up.' : 'The answer fell short of the baseline, so this pushes it down.',
         ],
       };
@@ -84,7 +84,7 @@ export const generators: Generator[] = [
       ];
       why[correct] = null;
       return {
-        prompt: `For a question, the baseline is $${BASE} = ${num(b)}$, the reward the model usually gets. It samples an answer that scores $${R} = ${num(Rv)}$. After a small step along $(${R} - ${BASE})\\,${GLP}$, how does that answer's probability change?`,
+        prompt: `On a question with baseline $${BASE} = ${num(b)}$, a model samples an answer with reward $${R} = ${num(Rv)}$. After a small step along the policy-gradient estimate with this baseline, how does that answer's probability change?`,
         answer: { kind: 'choice', options: ['It goes up: the answer is pushed up', 'It goes down: the answer is pushed down', 'It stays the same: the answer is not pushed'], correct, why },
         solution: [
           `The advantage is $${ADV} = ${R} - ${BASE} = ${minus(Rv, b)} = ${num(a)}$.`,
@@ -99,7 +99,7 @@ export const generators: Generator[] = [
       const b = pick(rng, [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.25, 0.75]);
       if (rng.int(2) === 0) {
         return {
-          prompt: `Rewards on a question are usually around $${num(b)}$, so every reward is replaced by the advantage $${R} - ${BASE}$, with $${BASE} = ${num(b)}$. What does that do to the policy-gradient estimates?`,
+          prompt: `Rewards on a question are usually around $${num(b)}$, so the policy-gradient estimates use the advantage with baseline $${BASE} = ${num(b)}$ in place of each reward $${R}$. What does that do to the estimates?`,
           answer: choose('Each one is less noisy, and their average is unchanged', [
             ['Their average now points somewhere else', `The average of $${BASE}\\,${GLP}$ over the model's answers is zero, so the average direction is unchanged.`],
             ['Their average becomes zero, so nothing is learned', `Only the $${BASE}$ part averages to zero. $${R}\\,${GLP}$ keeps its average.`],
@@ -113,7 +113,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `A baseline of $${BASE} = ${num(b)}$ is subtracted from every reward. Its share of the estimate, $${BASE}\\,${GLP}$, averages to zero over the model's answers, because $\\sum_y ${PI}(y)\\,${GLP} = 0$. Why is that sum zero?`,
+        prompt: `With a baseline $${BASE} = ${num(b)}$, the term $${BASE}\\,${GLP}$ averages to zero over the model's answers, because $\\sum_y ${PI}(y)\\,${GLP} = 0$. Why is that sum zero?`,
         answer: choose(`It equals $\\nabla \\sum_y ${PI}(y) = \\nabla 1$, and 1 does not change with $${TH}$`, [
           [`Every single $${GLP}$ is zero`, 'They are not: each one points where its own answer gets more likely. They cancel only when weighted by $\\pi$ and added up.'],
           ['The rewards average to zero', 'No reward appears in this sum: it is over the probabilities alone.'],

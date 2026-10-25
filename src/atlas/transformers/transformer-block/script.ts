@@ -22,9 +22,9 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'io', say: 'A transformer block takes T tokens, each a vector of d numbers, and returns T vectors of d numbers. Same shape in and out, so blocks can be stacked.', code: 'io' },
-        { id: 'attn', say: 'First the tokens exchange information: layer norm, then multi-head attention, and the result is added back to the input. A residual connection: x plus attention of layer norm of x.', code: 'attn' },
+        { id: 'attn', say: 'First the tokens exchange information: layer norm, then multi-head attention, and the result is added back to the input. A residual connection: {x + Attn(LN(x))|x plus attention of layer norm of x}.', code: 'attn' },
         { id: 'mlp', say: 'Then each token is processed on its own: layer norm again, then an MLP, added back the same way.', code: 'mlp' },
-        { id: 'width', say: 'The MLP widens each token to four d numbers, applies a ReLU, and comes back down to d. With d of {768|seven hundred sixty eight}, its hidden layer is {3,072|three thousand and seventy two} wide.', code: 'width' },
+        { id: 'width', say: 'The MLP widens each token to {4d|four d} numbers, applies a ReLU, and comes back down to d. With d of {768|seven hundred sixty eight}, its hidden layer is {3,072|three thousand and seventy two} wide.', code: 'width' },
       ],
     },
     {

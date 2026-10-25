@@ -20,7 +20,7 @@ export const generators: Generator[] = [
       const ans = askV ? v1 : w1;
       const base = askV ? 0 : w;
       return {
-        prompt: `Gradient descent with momentum: ${RULE}. The weight is at $\\symw = ${num(w)}$ with velocity $\\symv = ${num(v0)}$, and the gradient is $\\symg = ${num(g)}$. With $\\mu = ${num(mu)}$ and $\\symeta = ${num(eta)}$, what is ${askV ? 'the new velocity $\\symv$' : '$\\symw$ after the step'}?`,
+        prompt: `A weight at $\\symw = ${num(w)}$ has velocity $\\symv = ${num(v0)}$ and gradient $\\symg = ${num(g)}$. With $\\mu = ${num(mu)}$ and $\\symeta = ${num(eta)}$, what is ${askV ? '$\\symv$' : '$\\symw$'} after one momentum step?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, [
           { value: base - eta * g, why: 'That is a plain gradient step: it ignores the velocity already built up.' },
@@ -29,6 +29,7 @@ export const generators: Generator[] = [
           ...(askV ? [] : [{ value: w + v0, why: 'That moves by the old velocity. Update $\\symv$ first, then move by the new one.' }]),
         ]),
         solution: [
+          `The update: ${RULE}.`,
           `New velocity: $\\symv = \\mu\\symv - \\symeta\\symg = ${num(mu)} \\times ${paren(v0)} - ${num(eta)} \\times ${paren(g)} = ${minus(clean(mu * v0), clean(eta * g))} = ${num(v1)}$.`,
           ...(askV ? [] : [`Move by it: $\\symw = ${plus(w, v1)} = ${num(w1)}$.`]),
           v0 === 0 ? 'From rest the first momentum step is the same as a plain gradient step.' : `The old velocity carried $${num(clean(mu * v0))}$ into this step on top of the new push $${num(clean(-eta * g))}$.`,
@@ -51,7 +52,7 @@ export const generators: Generator[] = [
       const askV = d >= 0.5 && rng.next() < 0.4;
       const ans = askV ? v2 : w2;
       return {
-        prompt: `Gradient descent with momentum (${RULE}) starts at rest, $\\symv = 0$, with $\\symw = ${num(w0)}$, $\\mu = ${num(mu)}$ and $\\symeta = ${num(eta)}$. The gradient is $${num(g1)}$ at the first step and $${num(g2)}$ at the second. What is ${askV ? 'the velocity $\\symv$ after the second step' : '$\\symw$ after two steps'}?`,
+        prompt: `Momentum starts from $\\symv = 0$ with $\\symw = ${num(w0)}$, $\\mu = ${num(mu)}$ and $\\symeta = ${num(eta)}$. The gradient is $${num(g1)}$ at the first step and $${num(g2)}$ at the second. What is ${askV ? 'the velocity $\\symv$ after the second step' : '$\\symw$ after two steps'}?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, askV
           ? [
@@ -64,6 +65,7 @@ export const generators: Generator[] = [
               { value: w0 + v2, why: 'That leaves out the first step\'s move. The weight moves by $\\symv$ at both steps.' },
             ]),
         solution: [
+          `The update: ${RULE}.`,
           `Step 1: $\\symv = -${num(eta)} \\times ${paren(g1)} = ${num(v1)}$, so $\\symw = ${plus(w0, v1)} = ${num(w1)}$.`,
           `Step 2: $\\symv = ${num(mu)} \\times ${paren(v1)} - ${num(eta)} \\times ${paren(g2)} = ${num(v2)}$${askV ? '.' : `, so $\\symw = ${plus(w1, v2)} = ${num(w2)}$.`}`,
           `A plain gradient step would have moved $${num(clean(-eta * g2))}$ at step 2; momentum adds $${num(clean(mu * v1))}$ carried from step 1.`,
@@ -115,7 +117,7 @@ export const generators: Generator[] = [
       const factor = clean(1 / (1 - mu));
       if (d < 0.4) {
         return {
-          prompt: `Under gradient descent with momentum (${RULE}), the gradient stays the same, step after step. With $\\mu = ${num(mu)}$, the velocity settles at how many times a plain gradient step $-\\symeta\\symg$? Round to two decimals if needed.`,
+          prompt: `Under momentum with $\\mu = ${num(mu)}$, the gradient stays the same, step after step. The velocity settles at how many times a plain gradient step $-\\symeta\\symg$? Round to two decimals if needed.`,
           answer: { kind: 'number', value: factor, places: 2 },
           traps: traps(factor, [
             { value: 1, why: 'Momentum does change the size: the pushes pile up in $\\symv$ until the decay balances them.' },
@@ -133,7 +135,7 @@ export const generators: Generator[] = [
       const g = d < 0.7 ? nonzero(rng, -5, 5) : tenth(rng, -3, 3);
       const v = clean((-eta * g) / (1 - mu));
       return {
-        prompt: `Under gradient descent with momentum (${RULE}) with $\\mu = ${num(mu)}$ and $\\symeta = ${num(eta)}$, the gradient stays at $\\symg = ${num(g)}$ step after step. What value does the velocity $\\symv$ approach? Round to three decimals if needed.`,
+        prompt: `Under momentum with $\\mu = ${num(mu)}$ and $\\symeta = ${num(eta)}$, the gradient stays at $\\symg = ${num(g)}$ step after step. What value does $\\symv$ approach? Round to three decimals if needed.`,
         answer: { kind: 'number', value: v, places: 3 },
         traps: traps(v, [
           { value: -eta * g, why: 'That is a single plain step. The pushes pile up in $\\symv$ until the decay balances them, at $1/(1-\\mu)$ times that.' },

@@ -1,18 +1,18 @@
 {
- "duration": 59.393,
+ "duration": 65.467,
  "scenes": {
-  "position": [0.0, 29.963],
-  "accuracy": [29.963, 59.393]
+  "position": [0.0, 36.036],
+  "accuracy": [36.036, 65.467]
  },
  "beats": {
-  "position/scores": [0.7, 8.358, "Here are four scores, one for each of four possible answers: two, seven, one and five.", [[2.08, 2.52], [4.84, 5.4], [5.76, 6.07], [6.6, 6.9], [7.31, 7.59]]],
-  "position/max": [8.738, 12.178, "The largest value is seven. That is the max.", [[10.518, 10.948]]],
-  "position/arg": [12.558, 21.313, "The argmax asks a different question: where is it? Counting from zero, as Python does, seven sits at position one.", [[14.898, 15.428], [16.168, 16.798], [18.988, 19.388]]],
-  "position/predict": [21.693, 28.863, "Often the position is what you want. With the answers numbered zero to three, the top pick is answer one.", [[23.773, 24.383], [26.673, 26.983], [27.683, 27.843]]],
-  "accuracy/rows": [30.663, 37.814, "Now four questions at once: one row of three scores for each, and its right answer, y, beside it.", [[32.463, 32.953], [35.003, 35.243], [36.343, 36.533], [36.993, 37.143]]],
-  "accuracy/pred": [38.194, 43.751, "The argmax of each row is its pick: one, zero, two and zero.", [[40.524, 41.094], [41.474, 41.714], [42.264, 42.474], [42.864, 43.064]]],
-  "accuracy/compare": [44.131, 50.872, "Check them against y. Three match. The second question's answer was two, not zero.", [[45.471, 45.971], [47.061, 47.571], [49.761, 50.031]]],
-  "accuracy/acc": [51.252, 57.173, "The share that match is the accuracy: three out of four, zero point seven five.", [[53.492, 53.962], [55.082, 55.602]]],
-  "accuracy/turn": [57.553, 58.293, "Your turn.", []]
+  "position/scores": [0.7, 9.338, "Here are four scores, s, one for each of four possible answers: two, seven, one and five.", [[2.21, 2.65], [3.1, 3.51], [5.81, 6.33], [6.72, 7.06], [7.6, 7.94], [8.36, 8.59]]],
+  "position/max": [9.718, 13.158, "The largest value is seven. That is the max.", [[11.498, 11.928]]],
+  "position/arg": [13.538, 27.387, "The argmax asks a different question: where is it? Counting from zero, as Python does, seven sits at position one. So s one, s with its position written small, is seven.", [[15.878, 16.438], [17.158, 17.768], [19.938, 20.288], [22.158, 22.678], [23.888, 24.338], [26.428, 26.698]]],
+  "position/predict": [27.767, 34.936, "Often the position is what you want. With the answers numbered zero to three, the top pick is answer one.", [[29.847, 30.457], [32.747, 33.057], [33.757, 33.917]]],
+  "accuracy/rows": [36.736, 43.888, "Now four questions at once: one row of three scores for each, and its right answer, y, beside it.", [[38.536, 39.026], [41.076, 41.316], [42.416, 42.606], [43.066, 43.216]]],
+  "accuracy/pred": [44.268, 49.824, "The argmax of each row is its pick: one, zero, two and zero.", [[46.598, 47.168], [47.548, 47.788], [48.338, 48.548], [48.938, 49.138]]],
+  "accuracy/compare": [50.204, 56.946, "Check them against y. Three match. The second question's answer was two, not zero.", [[51.544, 52.044], [53.134, 53.644], [55.834, 56.104]]],
+  "accuracy/acc": [57.326, 63.246, "The share that match is the accuracy: three out of four, zero point seven five.", [[59.566, 60.036], [61.156, 61.676]]],
+  "accuracy/turn": [63.626, 64.367, "Your turn.", []]
  }
 }

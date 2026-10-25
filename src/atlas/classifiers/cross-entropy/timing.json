@@ -1,21 +1,21 @@
 {
- "duration": 97.5,
+ "duration": 111.345,
  "scenes": {
-  "loss": [0.0, 37.333],
-  "curve": [37.333, 61.829],
-  "scores": [61.829, 97.5]
+  "loss": [0.0, 38.497],
+  "curve": [38.497, 72.789],
+  "scores": [72.789, 111.345]
  },
  "beats": {
   "loss/p": [0.7, 7.362, "Softmax hands back probabilities: zero point seven, zero point two and zero point one.", [[2.87, 3.43], [4.46, 4.76], [5.81, 6.01]]],
   "loss/y": [7.742, 18.67, "Say option zero turns out to be right, so y is zero. The loss is one number that says how bad the guess was, and it looks only at that option's probability.", [[10.112, 10.422], [11.942, 12.562], [15.852, 16.172]]],
-  "loss/L": [19.05, 25.839, "The loss is minus the log of it. Minus the log of zero point seven is about zero point three six.", [[21.17, 21.67], [23.69, 23.84]]],
-  "loss/wrong": [26.219, 36.233, "Had option two been the right one, it would be minus the log of zero point one: two point three zero. Less probability on the truth, more loss.", [[28.119, 28.439], [30.899, 31.429], [32.779, 33.339], [34.999, 35.359]]],
-  "curve/curve": [38.033, 43.013, "Here is the loss, minus log p, for every p from zero to one.", [[39.113, 39.393], [40.473, 40.713]]],
-  "curve/one": [43.393, 53.348, "At p equal to one, a confident right answer, the loss is zero. It never dips below zero, because the log of a probability is never positive.", [[44.863, 45.113], [46.563, 46.943], [48.143, 48.553], [50.223, 50.503]]],
-  "curve/zero": [53.728, 60.729, "As p falls toward zero, the loss climbs without limit. A confident wrong answer costs the most.", [[55.498, 55.768], [57.568, 58.068]]],
-  "scores/s": [62.529, 69.279, "From scores, softmax makes p of y equal to e to the right score, over the total, T.", [[63.449, 63.719], [67.469, 67.809], [68.679, 68.909]]],
-  "scores/rule": [69.659, 85.289, "Take minus the log, and the loss is the log of the total, minus the right option's score. For scores two, one and minus one, with y equal to zero, that is two point three five minus two: zero point three five.", [[71.029, 71.359], [73.309, 73.559], [75.299, 75.899], [76.969, 77.129], [78.509, 78.759], [80.239, 80.609], [81.049, 81.229], [83.299, 83.729]]],
-  "scores/init": [85.669, 95.28, "When all the scores are equal, each of C options gets one over C, and the loss is log C. With ten options, two point three zero.", [[87.259, 87.639], [90.179, 90.489], [92.059, 92.659], [93.599, 93.919]]],
-  "scores/turn": [95.66, 96.4, "Your turn.", []]
+  "loss/L": [19.05, 27.003, "The loss, L, is minus the log of it. Minus the log of zero point seven is about zero point three six.", [[19.8, 20.07], [20.42, 20.71], [22.11, 22.66], [24.7, 24.94]]],
+  "loss/wrong": [27.383, 37.397, "Had option two been the right one, it would be minus the log of zero point one: two point three zero. Less probability on the truth, more loss.", [[29.283, 29.603], [32.063, 32.593], [33.943, 34.503], [36.163, 36.523]]],
+  "curve/curve": [39.197, 51.424, "Here is the loss, minus log p, for every p from zero to one. The arrow reads \u201cgoes to\u201d: a p of zero point seven goes to a loss of zero point three six.", [[40.277, 40.557], [41.657, 41.897], [44.077, 44.657], [45.557, 45.727], [46.457, 47.007], [48.697, 48.867]]],
+  "curve/one": [51.804, 61.759, "At p equal to one, a confident right answer, the loss is zero. It never dips below zero, because the log of a probability is never positive.", [[53.274, 53.524], [54.974, 55.354], [56.554, 56.964], [58.634, 58.914]]],
+  "curve/zero": [62.139, 71.689, "As p falls toward zero, the loss climbs without limit, toward infinity, infinity. A confident wrong answer costs the most.", [[63.989, 64.249], [66.059, 66.329], [67.339, 67.649], [68.499, 69.059]]],
+  "scores/s": [73.489, 82.166, "From scores, softmax makes p of y, the right option's probability, equal to e to its score, over the total, T.", [[74.399, 74.679], [76.579, 76.849], [78.409, 78.729], [80.419, 80.689], [81.539, 81.779]]],
+  "scores/rule": [82.546, 99.134, "Take minus the log, and the loss is the log of the total, minus the right option's score, s of y. For scores two, one and minus one, with y equal to zero, that is two point three five minus two: zero point three five.", [[83.916, 84.216], [86.196, 86.446], [88.186, 88.536], [89.276, 89.906], [90.906, 91.076], [92.416, 92.676], [94.096, 94.436], [94.856, 95.006], [97.036, 97.596]]],
+  "scores/init": [99.514, 109.124, "When all the scores are equal, each of C options gets one over C, and the loss is log C. With ten options, two point three zero.", [[101.104, 101.484], [104.024, 104.334], [105.904, 106.504], [107.444, 107.764]]],
+  "scores/turn": [109.504, 110.245, "Your turn.", []]
  }
 }

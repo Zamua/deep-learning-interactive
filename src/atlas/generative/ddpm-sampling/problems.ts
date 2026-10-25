@@ -100,17 +100,16 @@ export const generators: Generator[] = [
             ]
           : []),
       ];
-      const lead = `One sampling step goes from step $t$ down to $t - 1$. For ${one ? 'one pixel' : 'two pixels'}, it has the estimate $${XHAT} = ${T(xh)}$ and the network's noise guess $${EHAT} = ${T(e)}$. At step $t - 1$, $${ABP} = ${num(ab)}$, and the sampler sets $${SIG}^2 = ${num(s2)}$ of the variance aside for fresh noise.`;
-      const form = d < 0.5 ? ` The step is $${STEP}$.` : '';
+      const lead = `One sampling step goes from step $t$ down to $t - 1$. For ${one ? 'one pixel' : 'two pixels'}, it has the estimate $${XHAT} = ${T(xh)}$ and the network's noise guess $${EHAT} = ${T(e)}$. At step $t - 1$, $${ABP} = ${num(ab)}$ and $${SIG}^2 = ${num(s2)}$.`;
       const ask = full
         ? ` The fresh noise drawn is $${Z} = ${T(z)}$. What is $${XP}$? Round to two decimals.\n\nUse ${rt(ab, a)}, ${rt(k2, k)} and ${rt(s2, sg)}.`
-        : ` What is the step's mean: $${XP}$ before the fresh noise $${SIG}\\,${Z}$ is added? Round to two decimals.\n\nUse ${rt(ab, a)} and ${rt(k2, k)}.`;
+        : ` What is the step's mean? Round to two decimals.\n\nUse ${rt(ab, a)} and ${rt(k2, k)}.`;
       return {
-        prompt: lead + form + ask,
+        prompt: lead + ask,
         answer: one ? { kind: 'number', value: v[0]!, places: 2 } : { kind: 'vector', value: v, places: 2 },
         traps: one ? traps(v[0]!, wrong.map((w) => ({ value: w.value[0]!, why: w.why })), 2) : vtraps(v, wrong, 2),
         solution: [
-          `The image part is scaled by $\\sqrt{${ABP}} = \\sqrt{${num(ab)}} ${Math.abs(Math.sqrt(ab) - a) < 1e-9 ? '=' : '\\approx'} ${num(a)}$.`,
+          `$${STEP}$, and the mean is all of it but $${SIG}\\,${Z}$. The image part is scaled by $\\sqrt{${ABP}} = \\sqrt{${num(ab)}} ${Math.abs(Math.sqrt(ab) - a) < 1e-9 ? '=' : '\\approx'} ${num(a)}$.`,
           `The noise share is $1 - ${num(ab)} = ${num(share)}$. With $${num(s2)}$ set aside for fresh noise, the guess keeps $${num(k2)}$, so it is scaled by $\\sqrt{${num(k2)}} = ${num(k)}$.`,
           ...xh.map((x, i) => `${one ? 'Mean' : `Pixel ${i}`}: $${num(a)} \\cdot ${par(x)} + ${num(k)} \\cdot ${par(e[i]!)} = ${num(clean(a * x))} ${k * e[i]! < 0 ? '-' : '+'} ${num(clean(Math.abs(k * e[i]!)))} = ${num(mean[i]!)}$.`),
           ...(full ? [`Add $${SIG}\\,${Z}$ with $${SIG} \\approx ${num(sg)}$: ${mean.map((m, i) => `$${num(m)} + ${num(sg)} \\cdot ${par(z[i]!)} = ${num(v[i]!)}$`).join('; ')}.`] : []),
@@ -191,8 +190,8 @@ export const generators: Generator[] = [
             kind: 'order',
             items: [
               `Run the network on $${XT}$ and $t$ to get the noise guess $${EHAT}$`,
-              `Estimate the clean image: $${XHAT} = (${XT} - \\sqrt{1 - ${ABT}}\\,${EHAT}) / \\sqrt{${ABT}}$`,
-              `Blend it back at step $t - 1$: $\\sqrt{${ABP}}\\,${XHAT} + \\sqrt{1 - ${ABP} - ${SIG}^2}\\,${EHAT}$`,
+              `Estimate the clean image $${XHAT}$ from $${XT}$ and $${EHAT}$`,
+              `Blend $${XHAT}$ and part of $${EHAT}$ back in at step $t - 1$`,
               `Add fresh noise $${SIG}\\,${Z}$, with $${Z}$ drawn from \`np.random.randn\``,
             ],
           },

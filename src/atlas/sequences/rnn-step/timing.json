@@ -1,20 +1,20 @@
 {
- "duration": 104.409,
+ "duration": 125.13,
  "scenes": {
-  "step": [0.0, 53.006],
-  "unroll": [53.006, 104.409]
+  "step": [0.0, 73.727],
+  "unroll": [73.727, 125.13]
  },
  "beats": {
-  "step/carry": [0.7, 8.991, "A recurrent network reads a sequence one token at a time, and carries a memory from step to step: the hidden state, h.", [[4.3, 4.59], [6.74, 7.26], [8.14, 8.52]]],
-  "step/inputs": [9.371, 19.441, "Each step takes two things: the memory so far, h of t minus one, and the new input, x of t, the embedding of the current token.", [[11.221, 11.731], [12.931, 13.261], [14.711, 15.131], [16.221, 16.511], [17.231, 17.661]]],
-  "step/mem": [19.821, 26.279, "W h h mixes the old memory. Here it gives zero point five and minus one.", [[22.651, 23.241]]],
-  "step/inp": [26.659, 30.852, "W x h brings in the input: one and zero.", [[29.169, 29.639]]],
-  "step/sum": [31.232, 39.866, "Add the two, and a bias b of minus zero point five and zero point five. That makes one and minus zero point five.", [[32.032, 32.272], [35.062, 35.232], [36.532, 37.032], [37.982, 38.172]]],
-  "step/tanh": [40.246, 51.906, "Then tanh squashes each entry to between minus one and one: zero point seven six and minus zero point four six. That is the new memory, h of t.", [[44.336, 44.956], [46.416, 46.616], [48.766, 49.316], [50.656, 51.056]]],
-  "unroll/unroll": [53.706, 66.296, "To read a whole sequence, repeat the step. h one comes from h zero and x one, h two from h one and x two, and so on. h zero starts at all zeros.", [[55.156, 55.366], [56.226, 56.906], [59.546, 60.146], [62.486, 62.706], [63.286, 63.956]]],
-  "unroll/same": [66.676, 78.492, "Every step uses the same three weights: W h h, W x h, and b. Nothing is new per step, so one network reads a sequence of any length.", [[69.216, 69.646], [70.766, 71.126], [72.286, 72.556], [73.106, 73.716], [75.336, 75.656]]],
-  "unroll/memory": [78.872, 85.911, "And h is all that passes from step to step: everything read so far, squeezed into H numbers.", [[81.992, 82.532], [83.912, 84.162]]],
-  "unroll/shapes": [86.291, 102.189, "The shapes follow. W h h turns H numbers into H, so it is H by H. W x h turns an input of D numbers into H, so it is H by D. And b has H entries.", [[87.351, 88.001], [89.271, 89.421], [91.251, 91.581], [93.301, 93.941], [95.251, 95.421], [97.851, 98.161], [99.741, 100.291]]],
-  "unroll/turn": [102.569, 103.309, "Your turn.", []]
+  "step/carry": [0.7, 11.903, "A recurrent network reads a sequence one token at a time, and carries a memory from step to step: the hidden state, h. A subscript t numbers the steps.", [[4.36, 4.64], [6.78, 7.28], [8.18, 8.43], [8.85, 9.39]]],
+  "step/inputs": [12.283, 22.266, "Step t takes two things: the memory so far, h of t minus one, and the new input, x of t, the embedding of the current token.", [[14.253, 14.703], [15.923, 16.193], [17.573, 17.973], [19.163, 19.393], [20.093, 20.503]]],
+  "step/mem": [22.646, 33.85, "W h h mixes the old memory. Its subscript reads h to h: the hidden-to-hidden weights. Here it gives zero point five and minus one.", [[25.386, 25.876], [27.036, 27.206], [28.196, 28.636], [30.176, 30.726]]],
+  "step/inp": [34.23, 41.558, "W x h, the input-to-hidden weights, x to h, brings in the input: one and zero.", [[35.57, 35.98], [37.51, 37.72], [38.57, 38.85], [40.03, 40.4]]],
+  "step/sum": [41.938, 52.229, "Add the two, and a bias b of minus zero point five and zero point five. That makes the pre-activation, z: one and minus zero point five.", [[42.678, 42.918], [46.978, 47.448], [49.028, 49.238], [49.648, 50.018]]],
+  "step/tanh": [52.609, 72.627, "Then tanh squashes each entry to between minus one and one: zero point seven six and minus zero point four six. That is the new memory: h of t is the tanh of W h h times h of t minus one, plus W x h times x of t, plus b.", [[56.779, 57.319], [58.749, 58.979], [61.089, 61.649], [63.029, 63.549], [68.359, 68.749], [70.369, 70.559], [71.619, 71.939]]],
+  "unroll/unroll": [74.427, 87.017, "To read a whole sequence, repeat the step. h one comes from h zero and x one, h two from h one and x two, and so on. h zero starts at all zeros.", [[75.877, 76.087], [76.947, 77.627], [80.267, 80.867], [83.207, 83.427], [84.007, 84.677]]],
+  "unroll/same": [87.397, 99.213, "Every step uses the same three weights: W h h, W x h, and b. Nothing is new per step, so one network reads a sequence of any length.", [[89.937, 90.367], [91.487, 91.847], [93.007, 93.277], [93.827, 94.437], [96.057, 96.377]]],
+  "unroll/memory": [99.593, 106.632, "And h is all that passes from step to step: everything read so far, squeezed into H numbers.", [[102.713, 103.253], [104.633, 104.883]]],
+  "unroll/shapes": [107.012, 122.91, "The shapes follow. W h h turns H numbers into H, so it is H by H. W x h turns an input of D numbers into H, so it is H by D. And b has H entries.", [[108.072, 108.722], [109.992, 110.142], [111.972, 112.302], [114.022, 114.662], [115.972, 116.142], [118.572, 118.882], [120.462, 121.012]]],
+  "unroll/turn": [123.29, 124.03, "Your turn.", []]
  }
 }

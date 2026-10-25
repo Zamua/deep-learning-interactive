@@ -7,18 +7,16 @@ import { N, big, clean, traps, words } from '../kit';
 const size = (rng: Rng, d: number): number =>
   pick(rng, d < 0.35 ? [1, 2, 3, 5] : d < 0.7 ? [7, 13, 0.5, 1.5, 6] : [70, 175, 34, 0.125, 2.5, 65]);
 
-const RECIPE = '16-bit weights and gradients, a 32-bit master copy of the weights, and Adam\'s $\\sym{m}{m}$ and $\\sym{v}{v}$ in 32 bits';
 const PARTS = '2 (16-bit weights) + 2 (gradients) + 4 (master copy) + 4 ($\\sym{m}{m}$) + 4 ($\\sym{v}{v}$) = 16';
-const GB = 'A GB is $10^9$ bytes.';
 
 /** A part of the 16 bytes per parameter, what it costs, and the slip it invites. */
 const PIECES: { name: string; bytes: number; slip: { bytes: number; why: string } }[] = [
   { name: 'the 16-bit weights', bytes: 2, slip: { bytes: 4, why: 'That is the 32-bit master copy. The weights the math uses are 16-bit: 2 bytes each.' } },
   { name: 'the gradients', bytes: 2, slip: { bytes: 4, why: 'Gradients are kept in 16 bits, like the weights they come from: 2 bytes each.' } },
-  { name: 'the 32-bit master copy of the weights', bytes: 4, slip: { bytes: 2, why: 'That is the 16-bit copy. The master copy is 32-bit: 4 bytes each.' } },
+  { name: 'the master copy of the weights', bytes: 4, slip: { bytes: 2, why: 'That is the 16-bit copy. The master copy is 32-bit: 4 bytes each.' } },
   { name: 'Adam\'s $\\sym{m}{m}$ and $\\sym{v}{v}$ together', bytes: 8, slip: { bytes: 4, why: 'That is only one of them. $\\sym{m}{m}$ and $\\sym{v}{v}$ take 4 bytes each: 8 together.' } },
   { name: 'the optimizer\'s state (the master copy, $\\sym{m}{m}$ and $\\sym{v}{v}$)', bytes: 12, slip: { bytes: 8, why: 'That leaves out the master copy. The optimizer keeps it as well as $\\sym{m}{m}$ and $\\sym{v}{v}$: 4 + 4 + 4 = 12 bytes.' } },
-  { name: 'the weights and gradients together', bytes: 4, slip: { bytes: 8, why: 'Both are 16-bit, 2 bytes each: 4 together. 8 would need them in 32 bits.' } },
+  { name: 'the 16-bit weights and the gradients together', bytes: 4, slip: { bytes: 8, why: 'Both are 16-bit, 2 bytes each: 4 together. 8 would need them in 32 bits.' } },
 ];
 
 export const generators: Generator[] = [
@@ -28,7 +26,7 @@ export const generators: Generator[] = [
       const n = size(rng, d);
       const v = clean(16 * n);
       return {
-        prompt: `A model with ${words(n * 1e9)} parameters trains with Adam: ${RECIPE}. How many GB does that take, before anything else? ${GB}`,
+        prompt: `A model with ${words(n * 1e9)} parameters trains with Adam. How many GB does its training state take?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: 2 * n, why: 'That counts only the 16-bit weights. Training also keeps gradients, a master copy and Adam\'s two moments: 16 bytes per parameter.' },
@@ -53,7 +51,7 @@ export const generators: Generator[] = [
         if (v < 2) continue;
         const short = Math.floor(total / mem + 1e-9);
         return {
-          prompt: `A model with ${words(n * 1e9)} parameters trains with Adam, at 16 bytes per parameter. What is the fewest ${mem} GB GPUs that can hold that, counting nothing else? ${GB}`,
+          prompt: `A model with ${words(n * 1e9)} parameters trains with Adam. What is the fewest ${mem} GB GPUs that can hold its training state?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             ...(short !== v && short > 0 ? [{ value: short, why: `$${big(total)} / ${mem} \\approx ${num(round(total / mem, 2))}$: ${short} GPU${short > 1 ? 's leave' : ' leaves'} part of it with nowhere to go, so round up.` }] : []),
@@ -75,7 +73,7 @@ export const generators: Generator[] = [
       const p = pick(rng, PIECES);
       const v = clean(p.bytes * n);
       return {
-        prompt: `A model with ${words(n * 1e9)} parameters trains with Adam: ${RECIPE}. How many GB go to ${p.name}? ${GB}`,
+        prompt: `A model with ${words(n * 1e9)} parameters trains with Adam. How many GB of its training state go to ${p.name}?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: p.slip.bytes * n, why: p.slip.why },
@@ -95,11 +93,11 @@ export const generators: Generator[] = [
       const n = size(rng, d);
       const b = pick(rng, [32, 64, 128, 256, 512]);
       const kind = rng.int(3);
-      const start = `A model with ${words(n * 1e9)} parameters trains with Adam on batches of ${b} examples, at 16 bytes per parameter.`;
+      const start = `A model with ${words(n * 1e9)} parameters trains with Adam on batches of ${b} examples.`;
       if (kind === 0) {
         const options = ['It stays the same', 'It doubles', 'It grows by 16 bytes per example', 'It halves'];
         return {
-          prompt: `${start} The batch grows to ${2 * b} examples. What happens to the memory for the weights, gradients, master copy and Adam's state?`,
+          prompt: `${start} The batch grows to ${2 * b} examples. What happens to the memory its training state takes?`,
           answer: {
             kind: 'choice',
             options,
@@ -112,7 +110,7 @@ export const generators: Generator[] = [
       if (kind === 1) {
         const options = ['It doubles', 'It stays the same', 'It grows four times', 'It grows by only 16 bytes'];
         return {
-          prompt: `${start} A new model has twice as many parameters, ${words(2 * n * 1e9)}. What happens to that memory?`,
+          prompt: `${start} A new model has twice as many parameters, ${words(2 * n * 1e9)}. What happens to the memory its training state takes?`,
           answer: {
             kind: 'choice',
             options,
@@ -124,7 +122,7 @@ export const generators: Generator[] = [
       }
       const options = ['8 bytes', '16 bytes, as before', '12 bytes', '4 bytes'];
       return {
-        prompt: `${start} It switches from Adam to plain gradient descent, which keeps no $\\sym{m}{m}$ or $\\sym{v}{v}$ but still uses the 16-bit weights, gradients and master copy. How many bytes per parameter does that take?`,
+        prompt: `${start} It switches from Adam to plain gradient descent, still with 16-bit weights and gradients and a 32-bit master copy. How many bytes per parameter does its training state take?`,
         answer: {
           kind: 'choice',
           options,

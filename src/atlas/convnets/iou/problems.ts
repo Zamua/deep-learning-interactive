@@ -20,7 +20,6 @@ const iou = (a: Box, b: Box): number => inter(a, b) / union(a, b);
 const hull = (a: Box, b: Box): number => (Math.max(a[2], b[2]) - Math.min(a[0], b[0])) * (Math.max(a[3], b[3]) - Math.min(a[1], b[1]));
 
 const tex = (b: Box): string => `(${b.join(', ')})`;
-const CORNERS = 'Boxes are $(x_1, y_1, x_2, y_2)$: the top-left corner, then the bottom-right one, with $y$ counted down as in an image.';
 
 type Kind = 'overlap' | 'nested' | 'apart';
 
@@ -106,7 +105,7 @@ export const generators: Generator[] = [
       const e = edges(a, b);
       const crossed = (e.r - e.l) * (e.bt - e.t);
       return {
-        prompt: `${CORNERS} Box A is $${tex(a)}$ and box B is $${tex(b)}$. What is their IoU, the area of their intersection over the area of their union? Round to two decimals.`,
+        prompt: `Box A is $${tex(a)}$ and box B is $${tex(b)}$. What is their IoU? Round to two decimals.`,
         answer: { kind: 'number', value: round(v, 4), places: 2 },
         traps: traps(round(v, 4), [
           { value: I / (area(a) + area(b)), why: 'That divides by the two areas added up, which counts the overlap twice. The union is area A plus area B, minus the intersection.' },
@@ -132,10 +131,10 @@ export const generators: Generator[] = [
       const e = edges(a, b);
       const crossed = (e.r - e.l) * (e.bt - e.t);
       const askUnion = d >= 0.35 && rng.int(2) === 0;
-      const lead = `${CORNERS} Box A is $${tex(a)}$ and box B is $${tex(b)}$.`;
+      const lead = `Box A is $${tex(a)}$ and box B is $${tex(b)}$.`;
       if (askUnion) {
         return {
-          prompt: `${lead} What is the area of their union, the region inside either box?`,
+          prompt: `${lead} What is the area of their union?`,
           answer: { kind: 'number', value: U },
           traps: traps(U, [
             { value: area(a) + area(b), why: 'That adds the two areas, so the overlap is counted twice. Subtract the intersection once.' },
@@ -146,7 +145,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `${lead} What is the area of their intersection, the region inside both boxes?`,
+        prompt: `${lead} What is the area of their intersection?`,
         answer: { kind: 'number', value: I },
         traps: traps(I, [
           ...(I === 0 ? [{ value: crossed, why: 'A side of the overlap came out negative: the boxes miss each other, so the intersection is 0, whatever the product says.' }] : []),
@@ -200,7 +199,7 @@ export const generators: Generator[] = [
         for (const w of [chain, ...usual]) if (picked.length < 3 && fresh(w.set, picked.map((p) => p.set))) picked.push(w);
         if (picked.length < 3) continue;
         const L = (i: number) => 'ABCDE'[i]!;
-        const table = `\\begin{array}{c|${'c'.repeat(n)}} & ${boxes.map((_, i) => L(i)).join(' & ')} \\\\ \\hline ${M.map((r, i) => `${L(i)} & ${r.map((v, j) => (i === j ? '\\cdot' : num(v))).join(' & ')}`).join(' \\\\ ')} \\end{array}`;
+        const table = `\\begin{array}{c|${'c'.repeat(n)}} & ${boxes.map((_, i) => L(i)).join(' & ')} \\\\ \\hline ${M.map((r, i) => `${L(i)} & ${r.map((v, j) => (i === j ? '' : num(v))).join(' & ')}`).join(' \\\\ ')} \\end{array}`;
         const steps: string[] = [];
         let rest = [...desc];
         while (rest.length) {
@@ -214,7 +213,7 @@ export const generators: Generator[] = [
           rest = rest.filter((o) => !over(best, o));
         }
         return {
-          prompt: `A detector proposes ${n} boxes with these confidences: ${boxes.map((_, i) => `${L(i)} $${num(scores[i]!)}$`).join(', ')}. Their IoUs with each other are in the table. Non-max suppression with IoU threshold $${num(thresh)}$: which boxes survive?\n\n$$${table}$$`,
+          prompt: `A detector proposes ${n} boxes with these confidences: ${boxes.map((_, i) => `${L(i)} $${num(scores[i]!)}$`).join(', ')}. The table gives their IoUs with each other. Which boxes survive non-max suppression with IoU threshold $${num(thresh)}$?\n\n$$${table}$$`,
           answer: shuffled(rng, [{ text: setText(right), why: null }, ...picked.map((w) => ({ text: setText(w.set), why: w.why }))]),
           solution: [
             `Sort by confidence, highest first: ${desc.map((i) => `${L(i)} $${num(scores[i]!)}$`).join(', ')}.`,

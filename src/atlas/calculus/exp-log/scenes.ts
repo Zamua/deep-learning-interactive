@@ -53,7 +53,7 @@ const LN_ROWS: [number, string][] = [
 
 const log: SceneDef = {
   marks: {
-    ask: { tex: String.raw`\ln y = \, ? \quad\Longleftrightarrow\quad e^{\,?} = y`, x: 0.5, y: 0.67, size: 5 },
+    ask: { tex: String.raw`\ln y = \, ? \quad\text{means}\quad e^{\,?} = y`, x: 0.5, y: 0.67, size: 5 },
     undo: { tex: String.raw`\ln(e^{a}) = a \qquad e^{\ln a} = a`, x: 0.5, y: 0.89, size: 4.8 },
   },
   draw(s) {

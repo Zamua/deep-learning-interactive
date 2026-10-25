@@ -1,8 +1,8 @@
 {
- "duration": 85.558,
+ "duration": 89.445,
  "scenes": {
   "rows": [0.0, 50.01],
-  "bias": [50.01, 85.558]
+  "bias": [50.01, 89.445]
  },
  "beats": {
   "rows/x": [0.7, 6.69, "An input arrives as a vector, x. This one has two features: two and one.", [[3.11, 3.61], [5.18, 5.56], [5.9, 6.09]]],
@@ -10,10 +10,10 @@
   "rows/row": [19.742, 30.451, "Each class scores the input with its own row. Cat's row is one and two. Dot it with x: one times two, plus two times one, is four.", [[22.592, 23.102], [24.912, 25.482], [26.582, 27.052], [28.072, 28.272], [29.542, 29.782]]],
   "rows/all": [30.831, 39.227, "Dog's row gives one, and ship's gives five. That is all W times x does: one dot product per row.", [[32.311, 32.601], [34.131, 34.761], [37.131, 37.561]]],
   "rows/col": [39.607, 48.91, "Always a row, never a column. A column holds one weight per class, three of them here, so it does not even line up with the two features.", [[40.607, 40.957], [41.957, 42.507], [44.717, 45.137], [45.977, 46.327]]],
-  "bias/b": [50.71, 57.648, "Then each class adds its bias, one number per class: one, zero, and minus two.", [[51.17, 51.34], [53.18, 53.55], [54.93, 55.38], [55.75, 56.0]]],
-  "bias/s": [58.028, 64.877, "The scores come out five, one and three. Cat scores highest, so the classifier says cat.", [[59.008, 59.158], [59.708, 59.928], [61.068, 61.668], [62.858, 63.138]]],
-  "bias/forget": [65.257, 72.952, "Leave the bias out, and ship wins instead, with five. The bias is part of the score, not an afterthought.", [[66.547, 66.847], [68.247, 68.517], [69.167, 69.757], [71.517, 71.787]]],
-  "bias/zero": [73.332, 83.338, "Set x to all zeros, and W times x vanishes. The scores are exactly b: each class's lean before it sees any evidence.", [[75.182, 75.462], [77.552, 78.082], [79.812, 80.342]]],
-  "bias/turn": [83.718, 84.458, "Your turn.", []]
+  "bias/b": [50.71, 58.574, "Then each class adds its bias, b, one number per class: one, zero, and minus two.", [[53.07, 53.39], [53.78, 54.24], [55.63, 56.1], [56.47, 56.75], [57.29, 57.47]]],
+  "bias/s": [58.954, 68.764, "The scores, s equals W x plus b, come out five, one and three. Cat scores highest, so the classifier says cat.", [[59.754, 60.044], [62.324, 62.684], [63.674, 63.904], [64.964, 65.544], [66.774, 67.064]]],
+  "bias/forget": [69.144, 76.839, "Leave the bias out, and ship wins instead, with five. The bias is part of the score, not an afterthought.", [[70.434, 70.734], [72.134, 72.404], [73.054, 73.644], [75.404, 75.674]]],
+  "bias/zero": [77.219, 87.225, "Set x to all zeros, and W times x vanishes. The scores are exactly b: each class's lean before it sees any evidence.", [[79.069, 79.349], [81.439, 81.969], [83.699, 84.229]]],
+  "bias/turn": [87.605, 88.345, "Your turn.", []]
  }
 }

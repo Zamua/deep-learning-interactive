@@ -1,20 +1,20 @@
 {
- "duration": 93.874,
+ "duration": 99.554,
  "scenes": {
-  "count": [0.0, 24.77],
-  "pad": [24.77, 53.097],
-  "stride": [53.097, 93.874]
+  "count": [0.0, 30.451],
+  "pad": [30.451, 58.778],
+  "stride": [58.778, 99.554]
  },
  "beats": {
-  "count/row": [0.7, 6.46, "An input seven wide, and a filter three wide. How many places can the filter sit?", [[2.19, 2.38], [3.92, 4.48]]],
-  "count/slide": [6.84, 13.328, "It starts at the left edge and steps one entry at a time, until its right end reaches the last entry.", [[8.4, 8.56], [10.52, 10.75]]],
-  "count/count": [13.708, 23.67, "That makes five positions, so five outputs: the width, minus the filter size, plus one. The plus one counts the very first position.", [[15.368, 15.638], [17.028, 17.478], [17.978, 18.298], [19.598, 19.838], [20.498, 21.008]]],
-  "pad/pad": [25.47, 33.412, "Padding, P, adds a border of zeros on each side. With P equal to one, the input becomes nine wide.", [[25.99, 26.21], [26.58, 27.0], [29.3, 29.88], [31.3, 31.62]]],
-  "pad/slide": [33.792, 39.684, "Now the filter fits in seven places, and the output is seven wide, the same as the input.", [[36.152, 36.422], [38.212, 38.502]]],
-  "pad/same": [40.064, 51.997, "That is the usual choice. With stride one, P equal to F minus one, over two, keeps the size: one for a three by three filter, two for a five by five.", [[41.634, 42.184], [43.184, 43.514], [46.234, 46.504], [47.484, 48.004], [49.904, 50.304]]],
-  "stride/jump": [53.797, 63.133, "The stride, S, is how far the filter jumps each time. With a stride of two it lands on every other position: four of them.", [[54.607, 54.877], [55.317, 55.617], [58.107, 58.707], [59.927, 60.087], [62.037, 62.447]]],
-  "stride/formula": [63.513, 79.704, "So divide by the stride before adding the one. W minus F plus two P, over S, plus one. Here, seven minus three plus two is six, over two is three, plus one: four.", [[66.533, 67.253], [68.623, 68.803], [69.763, 70.083], [70.793, 71.033], [71.663, 72.363], [72.743, 73.123], [75.873, 76.283], [77.653, 78.093], [78.703, 79.253]]],
-  "stride/fit": [80.084, 91.653, "The division has to come out whole. Eight wide, with a filter of three and a stride of two, gives three and a half: the last jump hangs over the edge, so that setting does not fit.", [[82.124, 82.704], [83.404, 83.624], [86.004, 86.264], [87.434, 87.924], [89.684, 89.964]]],
-  "stride/turn": [92.033, 92.774, "Your turn.", []]
+  "count/row": [0.7, 9.381, "An input of width W, here seven, and a filter of size F, here three. How many places can the filter sit?", [[2.43, 2.71], [3.58, 3.99], [5.69, 6.02], [6.83, 7.39]]],
+  "count/slide": [9.761, 16.25, "It starts at the left edge and steps one entry at a time, until its right end reaches the last entry.", [[11.321, 11.481], [13.441, 13.671]]],
+  "count/count": [16.63, 29.351, "That makes five positions, so five outputs: the width, minus the filter size, plus one, W minus F, plus one. The plus one counts the very first position.", [[18.23, 18.48], [19.96, 20.5], [21.0, 21.39], [22.77, 22.96], [23.59, 24.05], [25.34, 25.54], [26.15, 26.74]]],
+  "pad/pad": [31.151, 39.093, "Padding, P, adds a border of zeros on each side. With P equal to one, the input becomes nine wide.", [[31.671, 31.891], [32.261, 32.681], [34.981, 35.561], [36.981, 37.301]]],
+  "pad/slide": [39.473, 45.365, "Now the filter fits in seven places, and the output is seven wide, the same as the input.", [[41.833, 42.103], [43.893, 44.183]]],
+  "pad/same": [45.745, 57.678, "That is the usual choice. With stride one, P equal to F minus one, over two, keeps the size: one for a three by three filter, two for a five by five.", [[47.315, 47.865], [48.865, 49.195], [51.915, 52.185], [53.165, 53.685], [55.585, 55.985]]],
+  "stride/jump": [59.478, 68.814, "The stride, S, is how far the filter jumps each time. With a stride of two it lands on every other position: four of them.", [[60.288, 60.558], [60.998, 61.298], [63.788, 64.388], [65.608, 65.768], [67.718, 68.128]]],
+  "stride/formula": [69.194, 85.384, "So divide by the stride before adding the one. W minus F plus two P, over S, plus one. Here, seven minus three plus two is six, over two is three, plus one: four.", [[72.214, 72.934], [74.304, 74.484], [75.444, 75.764], [76.474, 76.714], [77.344, 78.044], [78.424, 78.804], [81.554, 81.964], [83.334, 83.774], [84.384, 84.934]]],
+  "stride/fit": [85.764, 97.334, "The division has to come out whole. Eight wide, with a filter of three and a stride of two, gives three and a half: the last jump hangs over the edge, so that setting does not fit.", [[87.804, 88.384], [89.084, 89.304], [91.684, 91.944], [93.114, 93.604], [95.364, 95.644]]],
+  "stride/turn": [97.714, 98.454, "Your turn.", []]
  }
 }

@@ -20,7 +20,7 @@ export const generators: Generator[] = [
       const step = clean(eta * g);
       const v = clean(w - step);
       return {
-        prompt: `At $\\symw = ${num(w)}$, the gradient of $\\symf$ is $\\symg = ${num(g)}$. With step size $\\symeta = ${num(eta)}$, where is $\\symw$ after one gradient step?`,
+        prompt: `At $\\symw = ${num(w)}$ the gradient is $\\symg = ${num(g)}$. With $\\symeta = ${num(eta)}$, where is $\\symw$ after one gradient step?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: w + step, why: 'That adds $\\symeta\\symg$: a step uphill. The update subtracts it, $\\symw - \\symeta\\symg$.' },
@@ -46,7 +46,7 @@ export const generators: Generator[] = [
       const step = g.map((x) => clean(eta * x));
       const v = w.map((x, i) => clean(x - step[i]!));
       return {
-        prompt: `At $\\symw = ${vec(w)}$, the gradient of $\\symf$ is $\\symg = ${vec(g)}$. With step size $\\symeta = ${num(eta)}$, what is $\\symw$ after one gradient step?`,
+        prompt: `At $\\symw = ${vec(w)}$ the gradient is $\\symg = ${vec(g)}$. With $\\symeta = ${num(eta)}$, what is $\\symw$ after one gradient step?`,
         answer: { kind: 'vector', value: v },
         traps: vtraps(v, [
           { value: w.map((x, i) => x + step[i]!), why: 'That adds $\\symeta\\symg$: a step uphill. The update subtracts it, $\\symw - \\symeta\\symg$.' },
@@ -83,7 +83,7 @@ export const generators: Generator[] = [
       ];
       why[correct] = null;
       return {
-        prompt: `One input of $\\symf$ is at $${wj} = ${num(w)}$. ${given} After one gradient step with a small step size, what does $${wj}$ do?`,
+        prompt: `One input of $\\symf$ is at $${wj} = ${num(w)}$. ${given} After one gradient step, what does $${wj}$ do?`,
         answer: { kind: 'choice', options: ['It goes up', 'It goes down', 'It stays where it is', 'It depends on the step size'], correct, why },
         solution: [
           nudge ? `The slope is the change in $\\symf$ over the nudge: $\\symg = ${g > 0 ? '' : '-'}${num(clean(Math.abs(g) * 0.01))} / 0.01 = ${num(g)}$.` : `The gradient is $\\symg = ${num(g)}$.`,
@@ -103,7 +103,7 @@ export const generators: Generator[] = [
       const one = g.length === 1;
       const gTex = one ? `\\symg = ${num(g[0]!)}` : `\\symg = ${vec(g)}`;
       return {
-        prompt: `At the current point the gradient of $\\symf$ is $${gTex}$. One gradient step with $\\symeta = ${num(eta)}$ changes $\\symf$ by about how much? Use the slope to estimate it (a negative answer means $\\symf$ goes down).`,
+        prompt: `The gradient of $\\symf$ is $${gTex}$. Estimate the change in $\\symf$ from one gradient step with $\\symeta = ${num(eta)}$.`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: eta * sq, why: 'That has the wrong sign. A small step against the gradient always lowers $\\symf$, so the change is negative.' },

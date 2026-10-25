@@ -37,7 +37,7 @@ export const generators: Generator[] = [
       if (k < dim) ts.push({ value: E.map((r) => r[k]!), why: `That is column ${k}. A token's vector is a row of $E$: one row per token, ${dim} numbers each.` });
       const ask = words
         ? `The vocabulary is ${words.map((w, i) => `${lit(w)} $= ${i}$`).join(', ')}, and the embedding table is\n\n$$E = ${mat(E)}$$\n\nWhat is the embedding of ${lit(words[k])}?`
-        : `An embedding table has one row per token id, counting from 0 as Python does:\n\n$$E = ${mat(E)}$$\n\nWhat vector does token id ${k} get?`;
+        : `The embedding table is\n\n$$E = ${mat(E)}$$\n\nWhat vector does token id ${k} get, counting ids from 0?`;
       return {
         prompt: ask,
         answer: { kind: 'vector', value: row },
@@ -90,8 +90,8 @@ export const generators: Generator[] = [
       const ids = single ? [n] : [B, n];
       const out = [...ids, dim];
       const given = single
-        ? `A sequence of ${n} token ids, \`ids\`, has shape $${shapeTex(ids)}$.`
-        : `An array of token ids, \`ids\`, has shape $${shapeTex(ids)}$: ${B} sequences of ${n} tokens each.`;
+        ? `A sequence of token ids, \`ids\`, has shape $${shapeTex(ids)}$.`
+        : `An array of token ids, \`ids\`, has shape $${shapeTex(ids)}$.`;
       return {
         prompt: `${given} The embedding table $E$ has shape $(V, d) = ${shapeTex([V, dim])}$. What is the shape of \`E[ids]\`?`,
         answer: { kind: 'shape', value: out },
@@ -113,7 +113,7 @@ export const generators: Generator[] = [
       const k = rng.int(V);
       const oh = Array.from({ length: V }, (_, i) => (i === k ? 1 : 0));
       return {
-        prompt: `$E$ has shape $${shapeTex([V, dim])}$: one row per token. Token id ${k}, written as a one-hot vector, is $${vec(oh)}$. Why does \`onehot @ E\` equal row ${k} of $E$?`,
+        prompt: `An embedding table $E$ has shape $${shapeTex([V, dim])}$. Token id ${k}, written as a one-hot vector, is $${vec(oh)}$. Why does \`onehot @ E\` equal row ${k} of $E$?`,
         answer: {
           kind: 'choice',
           options: [

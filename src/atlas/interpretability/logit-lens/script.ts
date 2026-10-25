@@ -18,7 +18,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'top', say: 'At the top, the model scores every token by multiplying the final stream by the unembedding: one row per token, one dot product each.', code: 'top' },
-        { id: 'sum', say: 'But the final stream is just x zero plus every block\'s write, and a partial sum is the same kind of vector.' },
+        { id: 'sum', say: 'But the final stream is just {x₀|x zero} plus every block\'s write, and a partial sum is the same kind of vector.' },
         { id: 'lens', say: 'So multiply the stream partway up by the same unembedding. That is the logit lens: what the model would predict if it stopped there.', code: ['loop', 'lens'] },
       ],
     },

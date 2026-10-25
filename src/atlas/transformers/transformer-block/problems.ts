@@ -36,7 +36,7 @@ export const generators: Generator[] = [
             'Add the sum to the MLP\'s output',
           ];
       return {
-        prompt: `A pre-norm transformer block takes $${T} = ${t}$ tokens of width $${D} = ${big(dm)}$, an input $${X}$ of shape $${io}$. Put its steps in order.`,
+        prompt: `A pre-norm transformer block takes an input $${X}$ of $${T} = ${t}$ tokens of width $${D} = ${big(dm)}$. Put its steps in order.`,
         answer: { kind: 'order', items },
         solution: [
           `First the attention branch: layer norm, then multi-head attention, then add the input back: $${X} + \\mathrm{Attn}(\\mathrm{LN}(${X}))$.`,
@@ -115,7 +115,7 @@ export const generators: Generator[] = [
       const sum1 = x.map((v, i) => clean(v + a[i]!));
       if (d < 0.5) {
         return {
-          prompt: `In a pre-norm block, a token enters as $${X} = ${vecT(x)}$. The attention branch, multi-head attention applied to the layer-normed tokens, returns $${vecT(a)}$ for it. What does the token carry into the MLP branch?`,
+          prompt: `In a pre-norm block, a token enters as $${X} = ${vecT(x)}$, and the attention branch returns $${vecT(a)}$ for it. What does the token carry into the MLP branch?`,
           answer: { kind: 'vector', value: sum1 },
           traps: vtraps(sum1, [
             { value: a, why: `That is the attention output alone. The block adds it to $${X}$: the residual connection.` },

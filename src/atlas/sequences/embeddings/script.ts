@@ -23,7 +23,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'ids', say: 'Arithmetic works on numbers, not letters. So every token in the vocabulary gets an id: h is zero, e is one, l is two, and o is three.', code: 'vocab' },
-        { id: 'table', say: 'An embedding is a table, E, with one row per token. Each row is a vector of d numbers. Here d is three, so E is four by three.', code: 'E' },
+        { id: 'table', say: 'An embedding is a table, E, with one row per token: V rows, where V is the vocabulary size, the number of tokens. Each row is a vector of d numbers, where d is the embedding size. Here V is four and d is three, so E is four by three.', code: 'E' },
         { id: 'lookup', say: 'To embed the letter l, take its id, two, and read row two of E: {0.5|zero point five}, minus one, two.', code: 'lookup' },
         { id: 'learned', say: 'The rows are free numbers: nothing in them comes from how a token is spelled, so tokens that are used alike can have rows that are alike.', code: 'E' },
         { id: 'count', say: 'The table holds V times d numbers: twelve here. With fifty thousand tokens and d of {768|seven hundred sixty-eight}, that is over {38|thirty-eight} million.', code: 'count' },

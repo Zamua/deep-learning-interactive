@@ -297,7 +297,7 @@ export const generators: Generator[] = [
       const ex = t.nodes.find((x) => x[1] === 'exp');
       const places = ex ? 2 : undefined;
       return {
-        prompt: `The graph computes $f = ${t.tex}$, one node per operation. With ${inputs(v, vars)}, what is $f$?${ex ? ` ${expHint(env[ex[2][0]!]!)} Round to two decimals.` : ''}`,
+        prompt: `For $f = ${t.tex}$ at ${inputs(v, vars)}, what is $f$?${ex ? ` ${expHint(env[ex[2][0]!]!)} Round to two decimals.` : ''}`,
         answer: { kind: 'number', value: f, ...(places ? { places } : {}) },
         traps: traps(f, t.traps?.(v, env) ?? [], places),
         solution: [
@@ -320,7 +320,7 @@ export const generators: Generator[] = [
       const ans = env[nm]!;
       const others = t.nodes.filter((_, i) => i !== k && t.nodes[i]![1] !== 'exp');
       return {
-        prompt: `A graph has the nodes ${nodeList(t.nodes)}. With ${inputs(v, vars)}, what value does node $${nm}$ carry?`,
+        prompt: `A graph has the nodes ${nodeList(t.nodes)}. At ${inputs(v, vars)}, what is $${nm}$?`,
         answer: { kind: 'number', value: ans },
         traps: traps(
           ans,
@@ -380,7 +380,7 @@ export const generators: Generator[] = [
       const nodes: Node[] = t.nodes.map(([op, args], i) => [names[i]!, op, args.map((a) => (a.startsWith('#') ? names[Number(a.slice(1))]! : a))]);
       const items = nodes.map(([nm, op, args]) => `$${nm} = ${opTex(op, args)}$`);
       return {
-        prompt: `The forward pass evaluates the graph of $f = ${t.tex}$, one node per operation. Put its nodes in the order they run.`,
+        prompt: `Put the nodes of $f = ${t.tex}$ in the order the forward pass runs them.`,
         answer: { kind: 'order', items },
         solution: nodes.map(([nm, op, args], i) =>
           i === 0

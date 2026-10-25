@@ -19,7 +19,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'chain', say: 'Often one function feeds another. Here x goes in and u comes out, where u is three x plus one.', code: ['x', 'u'] },
         { id: 'feed', say: 'Then u feeds a second function: z is u squared.', code: 'z' },
-        { id: 'vals', say: 'At x equals one, u is four, and z is sixteen. How fast does z change when x is nudged?', code: ['x', 'u', 'z'] },
+        { id: 'vals', say: 'At x equals one, u is four, and z is sixteen. How fast does z change when x is nudged? That rate is written {dz/dx|d z, d x}, read “d z, d x”: the derivative of z with respect to x, a tiny change in z over the tiny change in x that caused it.', code: ['x', 'u', 'z'] },
       ],
     },
     {
@@ -33,10 +33,10 @@ export const script: LectureScript = {
         dz_dx = dz_du * du_dx  # 24           #@mult
       `,
       beats: [
-        { id: 'du', say: 'Each link has its own local slope. u is three x plus one, so u moves three times as fast as x.', code: 'du' },
-        { id: 'dz', say: 'z is u squared, whose slope is two u. At u equals four, that is eight.', code: 'dz' },
+        { id: 'du', say: 'Each link has its own local slope. u is three x plus one, so u moves three times as fast as x: {du/dx = 3|d u, d x is three}.', code: 'du' },
+        { id: 'dz', say: 'z is u squared, whose slope is two u. At u equals four, {dz/du = 8|d z, d u is eight}.', code: 'dz' },
         { id: 'nudge', say: 'Now nudge x by {0.01|zero point zero one}. u moves three times that, {0.03|zero point zero three}. And z moves eight times that, {0.24|zero point two four}.', code: 'nudge' },
-        { id: 'mult', say: 'So z moves three times eight, twenty four times as fast as x. That is the chain rule: multiply the local slopes.', code: 'mult' },
+        { id: 'mult', say: 'So z moves three times eight, twenty four times as fast as x. That is the chain rule: multiply the local slopes, {dz/dx = dz/du · du/dx|d z, d x equals d z, d u times d u, d x}.', code: 'mult' },
       ],
     },
     {

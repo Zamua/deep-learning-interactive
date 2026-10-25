@@ -1,9 +1,9 @@
 {
- "duration": 86.665,
+ "duration": 93.577,
  "scenes": {
   "grid": [0.0, 36.954],
   "index": [36.954, 65.292],
-  "transpose": [65.292, 86.665]
+  "transpose": [65.292, 93.577]
  },
  "beats": {
   "grid/grid": [0.7, 6.25, "A matrix is a grid of numbers: rows that run across, and columns that run down.", [[2.69, 3.16], [4.47, 4.65]]],
@@ -16,8 +16,8 @@
   "index/eg": [43.766, 51.625, "W of zero, two is in row zero, the first row, and column two, the third column: it is two.", [[45.036, 45.416], [46.986, 47.266], [48.006, 48.376], [49.246, 49.586], [50.376, 50.856]]],
   "index/eg2": [52.005, 56.727, "W of one, zero is the second row's first entry: zero.", [[55.635, 56.185]]],
   "index/out": [57.107, 64.192, "And W of two, zero does not exist. With two rows, the rows are zero and one.", [[57.947, 58.167], [59.457, 59.607], [60.627, 61.177], [62.097, 62.347]]],
-  "transpose/flip": [65.992, 72.864, "Transposing a matrix turns its rows into columns. W transpose has shape three by two.", [[69.362, 69.932]]],
-  "transpose/ij": [73.244, 84.444, "Entry i, j of the transpose is entry j, i of the original: the five at W of one, two lands at W transpose of two, one.", [[74.144, 74.584], [77.254, 77.414], [78.564, 79.164], [80.924, 81.304]]],
-  "transpose/turn": [84.824, 85.565, "Your turn.", []]
+  "transpose/flip": [65.992, 79.81, "Transposing a matrix turns its rows into columns. The transpose of W is written W transpose, with a raised T, and in code W dot T. It has shape three by two.", [[69.402, 69.922], [73.332, 73.592], [74.732, 75.182], [75.922, 76.202], [77.432, 77.992]]],
+  "transpose/ij": [80.19, 91.356, "Row i, column j of the transpose holds what was at row j, column i: the five at W of one, two lands at W transpose of two, one.", [[81.03, 81.22], [82.93, 83.18], [85.64, 86.21], [87.89, 88.26]]],
+  "transpose/turn": [91.736, 92.477, "Your turn.", []]
  }
 }

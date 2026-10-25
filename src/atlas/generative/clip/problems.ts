@@ -34,10 +34,10 @@ export const generators: Generator[] = [
     make(rng, d) {
       const N = d < 0.35 ? pick(rng, [3, 4, 5, 8, 10]) : pick(rng, [16, 32, 64, 256, 1024, 32768]);
       const whole = d >= 0.35 && rng.next() < 0.5;
-      const lead = `A batch holds $N = ${big(N)}$ image and caption pairs. Every image is compared with every caption, giving an $N \\times N$ similarity matrix.`;
+      const lead = `A batch holds $N = ${big(N)}$ image and caption pairs.`;
       if (!whole)
         return {
-          prompt: `${lead} Image ${int(rng, 0, Math.min(N, 10) - 1)}'s row compares it with all ${bigText(N)} captions. How many of them are negatives for it?`,
+          prompt: `${lead} In image ${int(rng, 0, Math.min(N, 10) - 1)}'s row of the similarity matrix, how many captions are negatives?`,
           answer: { kind: 'number', value: N - 1 },
           traps: traps(N - 1, [
             { value: N, why: 'That counts the image\'s own caption too. It is the one positive in the row.' },
@@ -51,7 +51,7 @@ export const generators: Generator[] = [
         };
       const v = N * (N - 1);
       return {
-        prompt: `${lead} How many entries of the matrix pair an image with a caption that is not its own?`,
+        prompt: `${lead} How many entries of the similarity matrix pair an image with a caption that is not its own?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: N * N, why: 'That counts every entry, the diagonal too. The diagonal entries are the right pairs.' },
@@ -79,7 +79,7 @@ export const generators: Generator[] = [
         { text: 'Neither: the loss only looks at the diagonal', why: 'The softmax over each row uses every entry. The diagonal is pushed up and every other entry down.' },
       ];
       return {
-        prompt: `A batch holds $${N}$ image and caption pairs, so the similarity matrix is $${N} \\times ${N}$, with rows for images and columns for captions, counting from 0. Entry $(${i}, ${j})$ compares image ${i} with caption ${j}. During training, which way does the loss push that similarity?`,
+        prompt: `A batch holds $${N}$ image and caption pairs, numbered from 0. During training, which way does the loss push the similarity of image ${i} with caption ${j}?`,
         answer: shuffled(rng, opts),
         solution: [
           'Pair $k$ of the batch is image $k$ with the caption written for it, so the right pairs sit on the diagonal, at $(k, k)$.',
@@ -93,10 +93,10 @@ export const generators: Generator[] = [
     make(rng, d) {
       const { z, t, names, sc } = scene(rng, d);
       const best = sc.indexOf(Math.max(...sc));
-      const caps = names.map((nm, k) => `"${photo(nm)}" $\\to ${vec(t[k]!)}$`).join(', ');
+      const caps = names.map((nm, k) => `"${photo(nm)}" as $${vec(t[k]!)}$`).join(', ');
       const work = (k: number) => `$${t[k]!.map((x, i) => `${par(x)} \\cdot ${par(z[i]!)}`).join(' + ')} = ${num(sc[k]!)}$`;
       return {
-        prompt: `A trained CLIP embeds an image as $${vec(z)}$. The text encoder embeds one caption per class: ${caps}. Taking the similarity as the dot product, which class does zero-shot classification give the image?`,
+        prompt: `A trained CLIP embeds an image as $${vec(z)}$. The text encoder embeds one caption per class: ${caps}. Which class does zero-shot classification give the image?`,
         answer: shuffled(
           rng,
           names.map((nm, k) => ({
@@ -105,6 +105,7 @@ export const generators: Generator[] = [
           })),
         ),
         solution: [
+          'Score each caption by its similarity to the image: their dot product.',
           ...names.map((nm, k) => `"${photo(nm)}": ${work(k)}.`),
           `The highest similarity is $${num(sc[best]!)}$: the image is classed as ${names[best]}. No image of any of these classes was needed to build this classifier.`,
         ],
@@ -120,14 +121,14 @@ export const generators: Generator[] = [
         const N = pick(rng, [8, 16, 32, 64, 256, 1024]);
         const v = [N, N];
         return {
-          prompt: `A batch of $N = ${big(N)}$ images goes through CLIP's image encoder, giving a matrix $Z$ of shape $${shp([N, dm])}$, one unit-length row per image. Their $${big(N)}$ captions go through the text encoder, giving $T$ of shape $${shp([N, dm])}$. What is the shape of the similarity matrix $Z T^{\\top}$?`,
+          prompt: `CLIP's image encoder turns a batch of $${big(N)}$ images into $Z$, shape $${shp([N, dm])}$, and its text encoder turns their captions into $T$, shape $${shp([N, dm])}$. What is the shape of the similarity matrix, $Z$ times $T$ transposed?`,
           answer: { kind: 'shape', value: v },
           traps: straps(v, [
             { value: [N, dm], why: 'That is the shape of one side\'s embeddings. The product compares every image with every caption.' },
-            { value: [dm, dm], why: `That is $Z^{\\top} T$, which mixes the embedding dimensions. $Z T^{\\top}$ takes one dot product per image and caption.` },
+            { value: [dm, dm], why: 'That is $Z$ transposed times $T$, which mixes the embedding dimensions. $Z$ times $T$ transposed takes one dot product per image and caption.' },
           ]),
           solution: [
-            `$Z$ is $${shp([N, dm])}$ and $T^{\\top}$ is $${shp([dm, N])}$: the inner sizes, $${dm}$, match.`,
+            `$Z$ is $${shp([N, dm])}$ and $T$ transposed is $${shp([dm, N])}$: the inner sizes, $${dm}$, match.`,
             `The product is $${shp(v)}$: entry $(i, j)$ is the dot product of image $i$ with caption $j$.`,
           ],
         };
@@ -136,7 +137,7 @@ export const generators: Generator[] = [
       const K = pick(rng, [3, 10, 100, 1000].filter((k) => k !== M));
       const v = [M, K];
       return {
-        prompt: `To classify $${M}$ images into $${bigText(K)}$ classes, CLIP embeds the images as $Z$, shape $${shp([M, dm])}$, and one caption per class, "a photo of a ...", as $T$, shape $${shp([K, dm])}$. What is the shape of the score matrix $Z T^{\\top}$, images by classes?`,
+        prompt: `To classify $${M}$ images into $${bigText(K)}$ classes, CLIP embeds the images as $Z$, shape $${shp([M, dm])}$, and one caption per class, "a photo of a ...", as $T$, shape $${shp([K, dm])}$. What is the shape of the score matrix, $Z$ times $T$ transposed?`,
         answer: { kind: 'shape', value: v },
         traps: straps(v, [
           { value: [K, M], why: 'That is the transpose, classes by images. $Z$ comes first, so its rows, the images, are the rows of the result.' },
@@ -144,7 +145,7 @@ export const generators: Generator[] = [
           { value: [M, M], why: 'That would compare images with images. Here the columns are the class captions.' },
         ]),
         solution: [
-          `$Z$ is $${shp([M, dm])}$ and $T^{\\top}$ is $${shp([dm, K])}$.`,
+          `$Z$ is $${shp([M, dm])}$ and $T$ transposed is $${shp([dm, K])}$.`,
           `The product is $${shp(v)}$: one row per image, one score per class. Each image takes the class with the highest score in its row.`,
         ],
       };

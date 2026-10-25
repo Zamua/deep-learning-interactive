@@ -42,7 +42,7 @@ export const generators: Generator[] = [
         const options = [lits(tgt), lits(L.slice(0, -1)), lits(L.slice(2)), lits(tgt.map(() => L[L.length - 1]!))];
         if (new Set(options).size < options.length) continue;
         return {
-          prompt: `A character-level model reads the text ${lit(w)} one character at a time: ${lits(L.slice(0, -1))}. At each step it is scored on predicting the next character. What are its targets, step by step?`,
+          prompt: `A character-level language model reads the text ${lit(w)} one character at a time: ${lits(L.slice(0, -1))}. What are its targets, step by step?`,
           answer: {
             kind: 'choice',
             options,
@@ -77,7 +77,7 @@ export const generators: Generator[] = [
         ...(top >= 0 ? [{ value: -LN2(p[top]!), why: `That uses the largest probability, for ${lit(vocab[top])}. The loss looks only at the target, ${lit(L[t + 1])}.` }] : []),
       ];
       return {
-        prompt: `A character model reads ${lit(w)} with the vocabulary ${ids(vocab)}. At step ${t}, counting from 0, it has read ${lit(w.slice(0, t + 1))}, and it outputs $\\symp = ${vec(p)}$ for the next character, in vocabulary order. What is the loss at this step? Round to two decimals.\n\nUse ${useLn(p)}.`,
+        prompt: `A character model reads ${lit(w)} with the vocabulary ${ids(vocab)}. After ${lit(w.slice(0, t + 1))} it outputs $\\symp = ${vec(p)}$. What is the loss at this step? Round to two decimals.\n\nUse ${useLn(p)}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(v, ts).filter((tr) => Math.abs(tr.value - v) >= 0.01),
         solution: [
@@ -103,7 +103,7 @@ export const generators: Generator[] = [
         const v = mean ? round(total / 2, 2) : total;
         const wrong = rows.map((r, t) => clean(-LN2(r[t]!)));
         return {
-          prompt: `A character model with the vocabulary ${ids(L)} reads ${lit(w)}. After ${lit(L[0])} it outputs $\\symp = ${vec(rows[0]!)}$, and after ${lit(L.slice(0, 2).join(''))} it outputs $\\symp = ${vec(rows[1]!)}$, both in vocabulary order. ${ask}? Round to two decimals.\n\nUse ${useLn(rows.flat())}.`,
+          prompt: `A character model with the vocabulary ${ids(L)} reads ${lit(w)}. After ${lit(L[0])} it outputs $\\symp = ${vec(rows[0]!)}$, and after ${lit(L.slice(0, 2).join(''))} it outputs $\\symp = ${vec(rows[1]!)}$. ${ask}? Round to two decimals.\n\nUse ${useLn(rows.flat())}.`,
           answer: { kind: 'number', value: v, places: 2 },
           traps: traps(v, [
             { value: mean ? total : round(total / 2, 2), why: mean ? 'That is the total. The average divides it by the number of steps, 2.' : 'That is the average. The total adds the two steps\' losses.' },
@@ -124,9 +124,10 @@ export const generators: Generator[] = [
       const losses = qs.map((q) => clean(-LN2(q)));
       const total = clean(losses.reduce((a, b) => a + b, 0));
       const v = mean ? round(total / n, 2) : total;
-      const list = qs.map((q, t) => `$${num(q)}$ to ${lit(L[t + 1])} after ${lit(L.slice(0, t + 1).join(''))}`).join(', ');
+      const items = qs.map((q, t) => `$${num(q)}$ to ${lit(L[t + 1])} after ${lit(L.slice(0, t + 1).join(''))}`);
+      const list = items.length > 2 ? `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}` : items.join(' and ');
       return {
-        prompt: `A character model reads ${lit(w)}. At each step it gives the right next character these probabilities: ${list}. ${ask}? Round to two decimals.\n\nUse ${useLn(qs)}.`,
+        prompt: `A character model reading ${lit(w)} gives probability ${list}. ${ask}? Round to two decimals.\n\nUse ${useLn(qs)}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(v, [
           { value: mean ? total : round(total / n, 2), why: mean ? `That is the total. The average divides it by the number of steps, ${n}.` : 'That is the average. The total adds every step\'s loss.' },
@@ -150,7 +151,7 @@ export const generators: Generator[] = [
         const t = int(rng, 3, Math.min(n - 1, 40));
         if (new Set([V, H, n, t + 1]).size < 4) continue;
         return {
-          prompt: `A character model has a vocabulary of $V = ${V}$ characters and $\\symH = ${H}$ hidden units, and it reads sequences of ${n} characters. At step ${t}, its output layer scores the next character, and softmax turns the scores into probabilities. How many probabilities?`,
+          prompt: `A character model has a vocabulary of $V = ${V}$ characters and $\\symH = ${H}$ hidden units, and it reads sequences of ${n} characters. At step ${t}, how many probabilities does its softmax output?`,
           answer: {
             kind: 'choice',
             options: [`${V}: one for each character in the vocabulary`, `${n}: one for each position in the sequence`, `${H}: one for each hidden unit`, `${t + 1}: one for each character read so far`],

@@ -18,7 +18,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'ids', say: 'A decoder-only language model, the design behind GPT, reads a sequence of T token ids. Here T is four: the, cat, sat, on.', code: 'ids' },
-        { id: 'embed', say: 'First, each id is swapped for its row of the embedding table: T vectors of d numbers, an array of T by d.', code: 'embed' },
+        { id: 'embed', say: 'First, each id is swapped for its row of the embedding table: T vectors of d numbers, an array, x, of T by d.', code: 'embed' },
         { id: 'pos', say: 'Attention ignores order, so each position adds a vector of its own, from a table with one row per position. The shape stays T by d.', code: 'pos' },
       ],
     },

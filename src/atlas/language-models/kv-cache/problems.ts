@@ -10,11 +10,11 @@ export const generators: Generator[] = [
       const cached = rng.int(3) === 0;
       const tri = (T * (T + 1)) / 2;
       const v = cached ? T : tri;
-      const setup = `A decoder-only model generates text one token at a time. At step $t$, counting from 1, the sequence has $t$ tokens, and the model computes the next one. It runs $T = ${big(T)}$ steps.`;
+      const setup = `A decoder-only model generates one token per step for $T = ${big(T)}$ steps. At step $t$, counting from 1, the sequence has $t$ tokens.`;
       return {
         prompt: cached
           ? `${setup} With a KV cache, how many key vectors does one block compute over all ${commas(T)} steps?`
-          : `${setup} Without a KV cache, every step runs the model on the whole sequence so far. How many key vectors does one block compute over all ${commas(T)} steps?`,
+          : `${setup} Without a KV cache, how many key vectors does one block compute over all ${commas(T)} steps?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: cached ? tri : T, why: cached ? 'That is the count without a cache. With one, each step computes a key only for its newest token.' : 'That is the count with a cache. Without one, step $t$ recomputes keys for all $t$ tokens.' },
@@ -38,14 +38,14 @@ export const generators: Generator[] = [
       if (kind === 0) {
         const v = [T, dim];
         return {
-          prompt: `A model with vectors of $d = ${dim}$ numbers is generating with a KV cache. After ${commas(T)} tokens, what is the shape of one block's cache of ${what}s, one row per token?`,
+          prompt: `A model with vectors of $d = ${dim}$ numbers is generating with a KV cache. After ${commas(T)} tokens, what is the shape of one block's cache of ${what}s?`,
           answer: { kind: 'shape', value: v },
           traps: [
             { value: [T, T], why: 'That is the shape of the attention scores between every pair of tokens. The cache keeps one vector per token.' },
-            { value: [dim, T], why: 'That is the transpose. The cache has one row per token, as the prompt lays it out.' },
+            { value: [dim, T], why: 'That is the transpose. The cache grows by one row per token.' },
             { value: [dim], why: 'That is one token. The cache keeps a vector for every token so far.' },
           ],
-          solution: [`Each token has one ${what} vector of $d = ${dim}$ numbers per block.`, `After ${commas(T)} tokens the block stores ${commas(T)} of them: $${shapeTex(v)}$.`],
+          solution: [`Each token has one ${what} vector of $d = ${dim}$ numbers per block.`, `After ${commas(T)} tokens the block stores ${commas(T)} of them, one row per token: $${shapeTex(v)}$.`],
         };
       }
       if (kind === 1) {
@@ -82,7 +82,7 @@ export const generators: Generator[] = [
       const dim = d < 0.5 ? pick(rng, [4, 8, 16, 32]) : pick(rng, [64, 128, 256, 512]);
       const v = 2 * L * T * dim;
       return {
-        prompt: `A model has ${L} transformer block${L > 1 ? 's' : ''} with vectors of $d = ${dim}$ numbers. After ${commas(T)} tokens, how many numbers does its KV cache hold, keys and values together?`,
+        prompt: `A model has ${L} transformer block${L > 1 ? 's' : ''} with vectors of $d = ${dim}$ numbers. After ${commas(T)} tokens, how many numbers does its KV cache hold?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: L * T * dim, why: 'That counts only the keys. Every token also has a value vector of the same size.' },

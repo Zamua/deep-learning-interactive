@@ -25,7 +25,7 @@ export const generators: Generator[] = [
       if (up) {
         const v = [dm, H / k];
         return {
-          prompt: `A layer's weight matrix $${W1}$ has shape ${shape([dm, H])}: one row per input number and one column per output, so the layer computes $\\symx ${W1}$ for an input row $\\symx$ of ${commas(dm)} numbers. It is split by columns across ${k} GPUs. What shape is each GPU's piece?`,
+          prompt: `A layer's weight matrix $${W1}$ has shape ${shape([dm, H])} and is split by columns across ${k} GPUs. What shape is each GPU's piece?`,
           answer: { kind: 'shape', value: v },
           traps: straps(v, [
             { value: [dm / k, H], why: 'That splits the rows. Splitting by columns keeps every row and gives each GPU a block of the columns.' },
@@ -40,7 +40,7 @@ export const generators: Generator[] = [
       }
       const v = [H / k, dm];
       return {
-        prompt: `The next layer's matrix $${W2}$ has shape ${shape([H, dm])}: it takes the ${commas(H)} outputs back down to ${commas(dm)}. To match a column split of the layer before, it is split by rows across ${k} GPUs. What shape is each GPU's piece?`,
+        prompt: `A layer's weight matrix $${W2}$ has shape ${shape([H, dm])} and is split by rows across ${k} GPUs. What shape is each GPU's piece?`,
         answer: { kind: 'shape', value: v },
         traps: straps(v, [
           { value: [H, dm / k], why: 'That splits the columns. Splitting by rows keeps every column and gives each GPU a block of the rows.' },
@@ -61,7 +61,7 @@ export const generators: Generator[] = [
       const per = L / S;
       if (d < 0.35) {
         return {
-          prompt: `A network of ${L} layers is split into ${S} pipeline stages, each a run of consecutive layers on its own GPU, all the same size. How many layers does each stage hold?`,
+          prompt: `A network of ${L} layers is split into ${S} equal pipeline stages. How many layers does each stage hold?`,
           answer: { kind: 'number', value: per },
           traps: traps(per, [{ value: L - S, why: 'The stages share the layers out: divide the number of layers by the number of stages.' }]),
           solution: [`${L} layers in ${S} equal runs: $${L} / ${S} = ${per}$ layers per stage.`],
@@ -70,7 +70,7 @@ export const generators: Generator[] = [
       const j = int(rng, per, L - 1);
       const v = Math.floor(j / per);
       return {
-        prompt: `A network of ${L} layers is split into ${S} pipeline stages of consecutive layers, all the same size. Counting layers and stages from 0, which stage holds layer ${j}?`,
+        prompt: `A network of ${L} layers is split into ${S} equal pipeline stages. Counting layers and stages from 0, which stage holds layer ${j}?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: v + 1, why: 'That counts stages from 1. Counting from 0, stage 0 holds the first run of layers.' },
@@ -156,7 +156,7 @@ export const generators: Generator[] = [
       const dm = pick(rng, [512, 1024, 2048]);
       const options = ['A partial sum of the output, which the GPUs add together', `A block of ${commas(dm / k)} of the outputs, each complete`, 'The whole output, the same on every GPU'];
       return {
-        prompt: `$${W2}$ has shape ${shape([4 * dm, dm])} and is split by rows across ${k} GPUs, each holding the rows that read its own ${commas((4 * dm) / k)} inputs. What does each GPU's product give?`,
+        prompt: `$${W2}$ has shape ${shape([4 * dm, dm])} and is split by rows across ${k} GPUs, each with its own ${commas((4 * dm) / k)} of the inputs. What does each GPU's product give?`,
         answer: {
           kind: 'choice',
           options,

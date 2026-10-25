@@ -123,9 +123,9 @@ export const generators: Generator[] = [
       const mid = d >= 0.35;
       return {
         prompt:
-          `A segmentation network labels every pixel of a color image of shape $${shp([3, H, Wd])}$, channels first, as one of $\\symC = ${C}$ classes.` +
-          (mid ? ` Its convolutions shrink the image to $${shp([deep, H / f, Wd / f])}$, then transposed convolutions grow it back.` : '') +
-          ' What is the shape of its output scores, channels first?',
+          `A segmentation network with $\\symC = ${C}$ classes takes color images of shape $${shp([3, H, Wd])}$.` +
+          (mid ? ` Its convolutions shrink an image to $${shp([deep, H / f, Wd / f])}$, then transposed convolutions grow it back.` : '') +
+          ' What is the shape of its output scores?',
         answer: { kind: 'shape', value: v },
         traps: atraps(v, [
           { value: [C], why: 'That is one score per class for the whole image, as a classifier gives. Segmentation scores every pixel.' },

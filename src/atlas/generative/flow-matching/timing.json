@@ -1,22 +1,22 @@
 {
- "duration": 135.66,
+ "duration": 143.22,
  "scenes": {
-  "line": [0.0, 54.764],
-  "train": [54.764, 79.469],
-  "sample": [79.469, 135.66]
+  "line": [0.0, 54.693],
+  "train": [54.693, 81.941],
+  "sample": [81.941, 143.22]
  },
  "beats": {
   "line/arc": [0.7, 13.376, "Take a two pixel image, x zero, as a point in the plane, and its noise epsilon as another. As alpha bar falls, the diffusion blend travels from one to the other along a curve.", [[2.21, 2.46], [3.27, 3.5], [4.72, 5.07], [7.11, 7.71], [9.29, 9.58]]],
   "line/line": [13.756, 26.994, "Flow matching takes the straight line instead. x t is one minus t, times x zero, plus t times epsilon, with t running from zero, the image, to one, pure noise.", [[16.286, 16.846], [18.966, 19.176], [20.286, 20.556], [22.166, 22.556], [24.236, 24.446], [24.986, 25.326], [25.846, 26.146]]],
   "line/point": [27.374, 40.453, "Say x zero is one and zero, and epsilon is minus one and two. At t of a quarter, take three quarters of x zero plus a quarter of epsilon: a half, and a half.", [[29.884, 30.264], [32.584, 33.214], [34.394, 34.714], [36.664, 36.854], [38.364, 38.894], [39.454, 39.734]]],
-  "line/v": [40.833, 53.664, "Along the line, the point moves at a steady velocity: v is epsilon minus x zero, here minus two and two, for each unit of t. It is the same at every t.", [[41.733, 41.993], [44.053, 44.633], [47.233, 47.583], [49.543, 49.923], [51.263, 51.813]]],
-  "train/net": [55.464, 63.361, "Train the network as before, with a new target. It sees x t and t, and guesses the velocity: v hat.", [[57.134, 57.324], [58.274, 58.764], [60.674, 60.954], [62.344, 62.664]]],
-  "train/loss": [63.741, 78.369, "The loss is the squared error against epsilon minus x zero, averaged. A guess of minus one and a half, and two, misses by a half and by zero: the loss is a quarter over two, zero point one two five.", [[67.671, 67.871], [68.471, 69.071], [70.931, 71.091], [71.731, 71.991], [73.991, 74.461], [76.311, 76.691]]],
-  "sample/start": [80.169, 86.219, "To make an image, start at t equals one, with pure noise, and walk back to zero.", [[81.129, 81.369], [83.229, 83.479], [84.469, 84.749]]],
-  "sample/euler": [86.599, 98.04, "Each Euler step asks the network for v hat at the current point, and moves against it: x t minus delta t times v hat. Then t drops by delta t.", [[87.679, 87.829], [90.669, 90.909], [92.009, 92.499], [95.279, 95.799], [96.139, 96.319]]],
-  "sample/ex": [98.42, 111.289, "Start from minus one and two, with delta t of a half. If the guess is minus two and two, the step adds one and takes away one: the point lands on zero and one, at t of a half.", [[100.48, 100.73], [102.24, 102.86], [104.84, 105.1], [107.45, 107.93], [109.93, 110.17]]],
-  "sample/exact": [111.669, 121.646, "A second step lands on one and zero: the image. On a straight line the velocity never changes, so even one long step would land exactly.", [[114.209, 114.609], [115.239, 115.829], [118.499, 118.799]]],
-  "sample/bend": [122.026, 133.44, "But the network never sees which image a noise came from, so its velocity is an average over every line through the point, and its paths bend a little. A few steps follow them well.", [[125.296, 125.646], [129.356, 129.686], [131.236, 131.786]]],
-  "sample/turn": [133.82, 134.56, "Your turn.", []]
+  "line/v": [40.833, 53.593, "Along the line, the point moves at a steady velocity, v: epsilon minus x zero, here minus two and two, for each unit of t. It is the same at every t.", [[41.703, 41.973], [44.103, 44.553], [44.963, 45.383], [47.203, 47.583], [47.943, 48.093], [49.483, 49.833], [51.193, 51.763]]],
+  "train/net": [55.393, 65.833, "Train the network as before, with a new target. It sees x t and t, and guesses the velocity: v hat, the hat marking a guess of v.", [[57.123, 57.283], [58.243, 58.873], [60.803, 61.143], [62.473, 62.823], [63.513, 63.963]]],
+  "train/loss": [66.213, 80.841, "The loss is the squared error against epsilon minus x zero, averaged. A guess of minus one and a half, and two, misses by a half and by zero: the loss is a quarter over two, zero point one two five.", [[70.143, 70.343], [70.943, 71.543], [73.403, 73.563], [74.203, 74.463], [76.463, 76.933], [78.783, 79.163]]],
+  "sample/start": [82.641, 88.691, "To make an image, start at t equals one, with pure noise, and walk back to zero.", [[83.601, 83.841], [85.701, 85.951], [86.941, 87.221]]],
+  "sample/euler": [89.071, 105.6, "Each Euler step asks the network for v hat at the current point, and moves against it: the new x t is the old one minus delta t times v hat, where delta t is the step's size in t. Then t drops by delta t.", [[93.081, 93.301], [94.431, 95.031], [96.211, 96.401], [99.641, 100.031], [102.801, 103.361], [103.741, 103.921]]],
+  "sample/ex": [105.98, 118.849, "Start from minus one and two, with delta t of a half. If the guess is minus two and two, the step adds one and takes away one: the point lands on zero and one, at t of a half.", [[108.04, 108.29], [109.8, 110.42], [112.4, 112.66], [115.01, 115.49], [117.49, 117.73]]],
+  "sample/exact": [119.229, 129.206, "A second step lands on one and zero: the image. On a straight line the velocity never changes, so even one long step would land exactly.", [[121.769, 122.169], [122.799, 123.389], [126.059, 126.359]]],
+  "sample/bend": [129.586, 141.0, "But the network never sees which image a noise came from, so its velocity is an average over every line through the point, and its paths bend a little. A few steps follow them well.", [[132.856, 133.206], [136.916, 137.246], [138.796, 139.346]]],
+  "sample/turn": [141.38, 142.12, "Your turn.", []]
  }
 }

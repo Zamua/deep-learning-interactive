@@ -18,7 +18,7 @@ export const generators: Generator[] = [
       const ans = sw.map((v, i) => clean(v * b[i]!));
       const zs = [...new Set(a)].sort((p, q) => p - q);
       return {
-        prompt: `In a gated MLP, one token's two projections are $a = ${vec(a)}$ (the gate) and $b = ${vec(b)}$. Each hidden unit outputs $\\operatorname{swish}(a_i)\\,b_i$, where $\\operatorname{swish}(z) = z\\,\\sigma(z)$. What are the hidden units? Round to two decimals.\n\nUse ${zs.map((z) => `$\\sigma(${z}) ${z === 0 ? '=' : '\\approx'} ${num(sig(z))}$`).join(', ')}.`,
+        prompt: `In a gated MLP, one token's gate projection is $a = ${vec(a)}$ and its up projection is $b = ${vec(b)}$. What are its hidden units? Round to two decimals.\n\nUse ${zs.map((z) => `$\\sigma(${z}) ${z === 0 ? '=' : '\\approx'} ${num(sig(z))}$`).join(', ')}.`,
         answer: { kind: 'vector', value: ans, places: 2 },
         traps: vtraps(ans, [
           { value: a.map((z, i) => z * b[i]!), why: 'That multiplies $a$ by $b$ with no gate. Swish first scales each $a_i$ by $\\sigma(a_i)$.' },
@@ -26,7 +26,7 @@ export const generators: Generator[] = [
           { value: sw, why: 'That is $\\operatorname{swish}(a)$ alone. Multiply each entry by its $b_i$.' },
         ], 2),
         solution: [
-          `Swish each gate entry: ${a.map((z, i) => `$${paren(z)} \\times ${num(sig(z))} = ${num(sw[i]!)}$`).join(', ')}.`,
+          `Each hidden unit is $\\operatorname{swish}(a_i)\\,b_i$, with $\\operatorname{swish}(z) = z\\,\\sigma(z)$. Swish each gate entry: ${a.map((z, i) => `$${paren(z)} \\times ${num(sig(z))} = ${num(sw[i]!)}$`).join(', ')}.`,
           `Multiply by $b$ entry by entry: ${sw.map((v, i) => `$${paren(v)} \\times ${paren(b[i]!)} = ${num(ans[i]!)}$`).join(', ')}.`,
           `So the hidden units are $${vec(ans.map((v) => round(v, 2)))}$.`,
         ],
@@ -41,7 +41,7 @@ export const generators: Generator[] = [
       if (relu) {
         const ans = 8 * dim * dim;
         return {
-          prompt: `A block's ReLU MLP widens each token from $${D} = ${big(dim)}$ to $4${D}$ hidden units and back. How many weights do its two matrices hold, ignoring biases?`,
+          prompt: `A block's ReLU MLP widens each token from $${D} = ${big(dim)}$ to $4${D}$ hidden units and back. How many weights does it hold, ignoring biases?`,
           answer: { kind: 'number', value: ans },
           traps: traps(ans, [
             { value: 4 * dim * dim, why: `That is one matrix, $${D} \\times 4${D}$. The MLP has two: up and back down.` },
@@ -57,7 +57,7 @@ export const generators: Generator[] = [
       const h = d < 0.4 ? pick(rng, [2, 3, 4]) * dim : (8 * dim) / 3;
       const ans = 3 * dim * h;
       return {
-        prompt: `A gated MLP maps $${D} = ${big(dim)}$ features to $h = ${big(h)}$ hidden units with two matrices, the gate and the up projection, and back to $${D}$ with a third. How many weights does it hold, ignoring biases?`,
+        prompt: `A gated MLP maps $${D} = ${big(dim)}$ features to $h = ${big(h)}$ hidden units and back. How many weights does it hold, ignoring biases?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, [
           { value: 2 * dim * h, why: 'That counts two matrices. A gated MLP has three: gate, up and down.' },
@@ -78,7 +78,7 @@ export const generators: Generator[] = [
       const dim = d < 0.5 ? pick(rng, [30, 60, 90, 150, 300, 600]) : pick(rng, [384, 480, 768, 960, 1536, 3072]);
       const ans = (8 * dim) / 3;
       return {
-        prompt: `A block's ReLU MLP has hidden width $4${D}$, with $${D} = ${big(dim)}$. A gated MLP replaces it, with three matrices of shape $${D} \\times h$ or $h \\times ${D}$. What hidden width $h$ gives it the same number of weights?`,
+        prompt: `A gated MLP replaces a block's ReLU MLP of hidden width $4${D}$, with $${D} = ${big(dim)}$. What hidden width $h$ gives it the same number of weights?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, [
           { value: 4 * dim, why: `That keeps the old width $4${D}$. With a third matrix the gated MLP would then be half again as big.` },
@@ -128,9 +128,10 @@ export const generators: Generator[] = [
         ? ['', `That is swish for large positive inputs. Here $\\sigma(${z})$ is nearly 0, which pulls the product to 0.`, 'That is $\\sigma(0)$, the sigmoid at zero, not swish at $' + z + '$.', 'That is what $\\sigma$ approaches for large positive inputs; here it is near 0.']
         : ['', `That is swish for large negative inputs. Here $\\sigma(${z})$ is nearly 1, so swish is nearly $${z}$ itself.`, 'That is $\\sigma(0)$, the sigmoid at zero, not swish at $' + z + '$.', 'That is $\\sigma(' + z + ')$ alone. Swish multiplies it by $' + z + '$.'];
       return {
-        prompt: `Swish is $\\operatorname{swish}(z) = z\\,\\sigma(z)$. What is it, roughly, at $z = ${z}$?`,
+        prompt: `Roughly, what is $\\operatorname{swish}(z)$ at $z = ${z}$?`,
         answer: { kind: 'choice', options, correct: 0, why: whys(4, 0, (i) => reasons[i]!) },
         solution: [
+          '$\\operatorname{swish}(z) = z\\,\\sigma(z)$.',
           neg ? `$\\sigma(${z})$ is nearly 0, so $z\\,\\sigma(z)$ is nearly 0: a large negative input is shut off.` : `$\\sigma(${z})$ is nearly 1, so $z\\,\\sigma(z)$ is nearly $${z}$: a large positive input passes through.`,
           'Swish is a smooth ReLU: near 0 far to the left, near $z$ far to the right, with a soft bend and a small dip below 0 in between.',
         ],

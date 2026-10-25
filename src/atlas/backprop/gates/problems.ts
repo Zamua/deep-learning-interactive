@@ -6,8 +6,8 @@ import { clean, dd, n, nonzero, par, tenth, traps, vtraps } from '../kit';
 type Gate = 'add' | 'mul' | 'max';
 
 const TEX: Record<Gate, string> = { add: 'x + z', mul: 'x \\cdot z', max: '\\max(x, z)' };
-const NAME: Record<Gate, string> = { add: 'An add', mul: 'A multiply', max: 'A max' };
-const UP = dd('\\symL', 'q');
+const D = (v: string) => dd('f', v);
+const UP = D('q');
 
 /** Two different inputs and an upstream gradient, harder with difficulty. */
 function setup(rng: Rng, d: number, big = false): { a: number; c: number; g: number } {
@@ -34,14 +34,14 @@ function explain(gate: Gate, a: number, c: number, g: number): string[] {
   if (gate === 'add') {
     return [
       'An add gate\'s local slopes are both 1: nudging $x$ or $z$ moves $q$ by the same amount.',
-      `So it passes the upstream gradient through unchanged: $${dd('\\symL', 'x')} = ${dd('\\symL', 'z')} = 1 \\times ${par(g)} = ${n(g)}$.`,
+      `So it passes the upstream gradient through unchanged: $${D('x')} = ${D('z')} = 1 \\times ${par(g)} = ${n(g)}$.`,
     ];
   }
   if (gate === 'mul') {
     return [
       'A multiply gate\'s local slope for each input is the other input: $\\partial q / \\partial x = z$ and $\\partial q / \\partial z = x$.',
-      `So $${dd('\\symL', 'x')} = z \\times ${par(g)} = ${par(c)} \\times ${par(g)} = ${n(gx)}$.`,
-      `And $${dd('\\symL', 'z')} = x \\times ${par(g)} = ${par(a)} \\times ${par(g)} = ${n(gz)}$.`,
+      `So $${D('x')} = z \\times ${par(g)} = ${par(c)} \\times ${par(g)} = ${n(gx)}$.`,
+      `And $${D('z')} = x \\times ${par(g)} = ${par(a)} \\times ${par(g)} = ${n(gz)}$.`,
     ];
   }
   const big = a > c ? 'x' : 'z';
@@ -54,7 +54,7 @@ function explain(gate: Gate, a: number, c: number, g: number): string[] {
 }
 
 const given = (gate: Gate, a: number, c: number, g: number) =>
-  `${NAME[gate]} gate computes $q = ${TEX[gate]}$ with $x = ${n(a)}$ and $z = ${n(c)}$. The gradient arriving from above is $${UP} = ${n(g)}$.`;
+  `A gate computes $q = ${TEX[gate]}$ at $x = ${n(a)}$ and $z = ${n(c)}$, with $${UP} = ${n(g)}$.`;
 
 export const generators: Generator[] = [
   {
@@ -89,7 +89,7 @@ export const generators: Generator[] = [
                   { value: g / 2, why: 'That splits the gradient. A max gate sends all of it to the larger input, and none to the smaller.' },
                 ];
       return {
-        prompt: `${given(gate, a, c, g)} What gradient does the gate send to $${v}$, that is, $${dd('\\symL', v)}$?`,
+        prompt: `${given(gate, a, c, g)} What is $${D(v)}$?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, ts),
         solution: explain(gate, a, c, g),
@@ -118,7 +118,7 @@ export const generators: Generator[] = [
                 { value: a > c ? [0, g] : [g, 0], why: 'That routes the gradient to the smaller input. The larger one is the input $q$ follows.' },
               ];
       return {
-        prompt: `${given(gate, a, c, g)} What gradients does the gate send back? Answer $\\left[${dd('\\symL', 'x')},\\ ${dd('\\symL', 'z')}\\right]$.`,
+        prompt: `${given(gate, a, c, g)} What is the gradient $\\left[${D('x')},\\ ${D('z')}\\right]$?`,
         answer: { kind: 'vector', value: ans },
         traps: vtraps(ans, ts),
         solution: explain(gate, a, c, g).concat(`So the gate sends back $[${n(ans[0])},\\ ${n(ans[1])}]$.`),
@@ -140,7 +140,7 @@ export const generators: Generator[] = [
       ];
       why[correct] = null;
       return {
-        prompt: `A gate takes $x = ${n(a)}$ and $z = ${n(c)}$ and outputs $q$. When the gradient $${UP} = ${n(g)}$ arrives from above, it sends $${n(gx)}$ to $x$ and $${n(gz)}$ to $z$. Which gate is it?`,
+        prompt: `A gate takes $x = ${n(a)}$ and $z = ${n(c)}$ and outputs $q$. With $${UP} = ${n(g)}$, it sends back $${D('x')} = ${n(gx)}$ and $${D('z')} = ${n(gz)}$. Which gate is it?`,
         answer: { kind: 'choice', options: ['An add gate, $q = x + z$', 'A multiply gate, $q = x \\cdot z$', 'A max gate, $q = \\max(x, z)$'], correct, why },
         solution: [
           gate === 'add'
@@ -177,7 +177,7 @@ export const generators: Generator[] = [
               ? ['A max gate has no values to swap: it only routes the gradient.', 'Nothing was split. The trouble is that the smaller input got any gradient at all.', null, `They are not right: nudging the smaller input, $${small}$, does not move $q$, so its gradient is 0.`]
               : [`The numbers already follow the rule. ${rule}`, `The numbers already follow the rule. ${rule}`, `The numbers already follow the rule. ${rule}`, null];
       return {
-        prompt: `${given(gate, a, c, g)} A backward pass sends $${n(shown[0]!)}$ to $x$ and $${n(shown[1]!)}$ to $z$. What, if anything, is wrong?`,
+        prompt: `${given(gate, a, c, g)} A backward pass gives $${D('x')} = ${n(shown[0]!)}$ and $${D('z')} = ${n(shown[1]!)}$. What, if anything, is wrong?`,
         answer: {
           kind: 'choice',
           options: ['The values of $x$ and $z$ should have been swapped', 'The gradient should have been copied, not split in half', 'Only the larger input should have received the gradient', 'Nothing: both gradients are right'],

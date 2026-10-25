@@ -1,22 +1,22 @@
 {
- "duration": 88.975,
+ "duration": 99.98,
  "scenes": {
-  "list": [0.0, 34.563],
-  "image": [34.563, 64.827],
-  "ops": [64.827, 88.975]
+  "list": [0.0, 43.921],
+  "image": [43.921, 74.185],
+  "ops": [74.185, 99.98]
  },
  "beats": {
   "list/list": [0.7, 9.928, "A vector is a list of numbers, kept in order. This one, x, holds four: three, minus one, four, and two.", [[2.68, 2.85], [3.62, 4.24], [4.77, 4.97], [5.4, 5.61], [6.35, 6.88], [7.33, 7.64], [8.36, 8.64], [9.11, 9.31]]],
-  "list/dim": [10.308, 18.884, "How many numbers it holds is its length, or its dimension. This x is four-dimensional, written x in R four.", [[12.668, 12.928], [13.938, 14.558], [16.478, 16.888]]],
-  "list/index": [19.264, 27.593, "Each entry has an index: its position. Python counts from zero, so x of zero is the first entry, three.", [[20.914, 21.254], [22.004, 22.524], [24.024, 24.324], [26.794, 27.114]]],
-  "list/last": [27.973, 33.463, "That makes the last of four entries x of three. There is no x of four.", [[30.053, 30.243], [31.253, 31.783]]],
-  "image/image": [35.263, 41.881, "Anything described by numbers can be a vector. Take a tiny color image, four pixels by four.", [[37.953, 38.533], [40.073, 40.433]]],
-  "image/rgb": [42.261, 47.727, "Each pixel is three numbers: how much red, how much green, and how much blue.", [[44.191, 44.641], [45.351, 45.641], [46.501, 46.731]]],
-  "image/flat": [48.107, 56.029, "Lay every number out in one row, and the image becomes a vector of four times four times three: forty eight entries.", [[50.267, 50.547], [54.187, 54.637]]],
-  "image/big": [56.409, 63.727, "A thirty two by thirty two color photo works the same way: three thousand and seventy two numbers in one vector.", [[59.949, 60.479]]],
-  "ops/add": [65.527, 74.085, "Two vectors of the same length add entry by entry: first plus first, second plus second, third plus third.", [[68.827, 69.357], [70.627, 71.057], [72.327, 72.817], [73.197, 73.347]]],
-  "ops/scale": [74.465, 80.515, "Multiplying by a number scales every entry. Two times u doubles each one.", [[77.585, 78.145], [79.165, 79.325]]],
-  "ops/same": [80.895, 86.755, "The lengths have to match. Give v a fourth entry, and u has nothing to add to it.", [[82.425, 82.945], [84.655, 84.895]]],
-  "ops/turn": [87.135, 87.875, "Your turn.", []]
+  "list/dim": [10.308, 26.411, "How many numbers it holds is its length, or its dimension. This x is four-dimensional, written x in R four. R stands for the real numbers, R four for every list of four of them, and in reads \u201cis in\u201d.", [[12.738, 13.008], [13.948, 14.548], [16.428, 16.808], [18.718, 19.338], [21.178, 21.598], [23.888, 24.318], [25.438, 25.708]]],
+  "list/index": [26.791, 36.951, "Each entry has an index: its position, written in square brackets. Python counts from zero, so x of zero is the first entry, three.", [[28.511, 28.851], [29.651, 29.871], [31.351, 31.771], [33.331, 33.611], [36.131, 36.481]]],
+  "list/last": [37.331, 42.821, "That makes the last of four entries x of three. There is no x of four.", [[39.411, 39.601], [40.611, 41.141]]],
+  "image/image": [44.621, 51.239, "Anything described by numbers can be a vector. Take a tiny color image, four pixels by four.", [[47.311, 47.891], [49.431, 49.791]]],
+  "image/rgb": [51.619, 57.085, "Each pixel is three numbers: how much red, how much green, and how much blue.", [[53.549, 53.999], [54.709, 54.999], [55.859, 56.089]]],
+  "image/flat": [57.465, 65.387, "Lay every number out in one row, and the image becomes a vector of four times four times three: forty eight entries.", [[59.625, 59.905], [63.545, 63.995]]],
+  "image/big": [65.767, 73.085, "A thirty two by thirty two color photo works the same way: three thousand and seventy two numbers in one vector.", [[69.307, 69.837]]],
+  "ops/add": [74.885, 83.442, "Two vectors of the same length add entry by entry: first plus first, second plus second, third plus third.", [[78.185, 78.715], [79.985, 80.415], [81.685, 82.175], [82.555, 82.705]]],
+  "ops/scale": [83.822, 91.52, "Multiplying by a number scales every entry. Two times u, written two u, doubles each one.", [[87.022, 87.622], [88.702, 88.952], [90.002, 90.372]]],
+  "ops/same": [91.9, 97.76, "The lengths have to match. Give v a fourth entry, and u has nothing to add to it.", [[93.43, 93.95], [95.66, 95.9]]],
+  "ops/turn": [98.14, 98.88, "Your turn.", []]
  }
 }

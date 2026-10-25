@@ -49,7 +49,7 @@ export const generators: Generator[] = [
       const same = Fs.every((F) => F === Fs[0]);
       const list = same ? `${Fs.length} conv layer${Fs.length > 1 ? 's' : ''}, each $${Fs[0]} \\times ${Fs[0]}$` : `conv layers of size ${Fs.map((F) => `$${F} \\times ${F}$`).join(', then ')}`;
       return {
-        prompt: `A network stacks ${list}, all with stride 1. How wide is the receptive field of one unit in the last layer: the side of the input square it can see?`,
+        prompt: `A network stacks ${list}, all with stride 1. How wide is the receptive field of one unit in the last layer?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: Fs.reduce((a, F) => a + F, 0), why: 'That adds the filter sizes. Neighboring windows overlap, so each layer adds only $\\symF - 1$.' },
@@ -77,7 +77,7 @@ export const generators: Generator[] = [
         early += (l.F - 1) * jj;
       }
       return {
-        prompt: `Starting from the input, a network applies ${ls.map(name).join(', then ')}. How wide is the receptive field of one unit after the last layer, in input pixels?`,
+        prompt: `Starting from the input, a network applies ${ls.map(name).join(', then ')}. How wide is the receptive field of one unit in the last layer?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: flat, why: 'That treats every layer as stride 1. After a stride-2 layer, neighboring units sit 2 input pixels apart, so the next layer\'s window spans twice as much.' },
@@ -123,7 +123,7 @@ export const generators: Generator[] = [
       const single = Fb * Fb;
       const ask = pick(rng, ['stack', 'single', 'diff'] as const);
       const v = ask === 'stack' ? stack : ask === 'single' ? single : single - stack;
-      const what = ask === 'stack' ? `does the stack have, all layers together` : ask === 'single' ? `does the single filter that sees the same region have` : `does the stack save, against the single filter that sees the same region`;
+      const what = ask === 'stack' ? `does the stack have` : ask === 'single' ? `does the single filter that sees the same region have` : `does the stack save, against the single filter that sees the same region`;
       return {
         prompt: `A stack of ${L} conv layers, each one $${F} \\times ${F}$ filter with stride 1, works on a grayscale image. How many weights ${what}?`,
         answer: { kind: 'number', value: v },

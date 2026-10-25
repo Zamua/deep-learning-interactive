@@ -37,7 +37,7 @@ export const script: LectureScript = {
         # unit 1: -1*(-0.5) + 1*0.5 = 1.0    #@u1
       `,
       beats: [
-        { id: 'dh', say: 'To keep going, we need the gradient on h. It is {W₂|W two} transposed, times ds: each hidden unit collects the gradient of every score it fed, weighted by the weight it fed it through.', code: ['W2', 'dh'] },
+        { id: 'dh', say: 'To keep going, we need the gradient on h, {dh|d h}. It is {W₂|W two} transposed, times ds: each hidden unit collects the gradient of every score it fed, weighted by the weight it fed it through.', code: ['W2', 'dh'] },
         { id: 'u0', say: 'Unit zero fed score zero with weight one, and score one with weight two. One times minus a half, plus two times a half, is a half.', code: 'u0' },
         { id: 'u1', say: 'Unit one, with weights minus one and one: a half, plus a half, is one.', code: 'u1' },
       ],
@@ -55,7 +55,7 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'mask', say: 'Now the ReLU. Its slope is one where its input was positive and zero where it was negative. So the gradient passes where a unit was on, and stops where it was off.', code: 'mask' },
-        { id: 'apply', say: 'Unit zero was on, so it keeps its half. Unit one was off, so its gradient of one becomes zero.', code: 'apply' },
+        { id: 'apply', say: 'Unit zero was on, so it keeps its half. Unit one was off, so its gradient of one becomes zero. That is {dz|d z}, the gradient on the pre-activations.', code: 'apply' },
         { id: 'dW1', say: 'From here, the first layer works like the second: the gradient on {W₁|W one} is that masked gradient times x transposed. The off unit\'s row is all zeros: from this example, no gradient reaches its weights at all.', code: 'dW1' },
         { id: 'turn', say: 'Your turn.' },
       ],

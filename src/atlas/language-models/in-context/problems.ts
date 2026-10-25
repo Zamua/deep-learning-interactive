@@ -89,7 +89,7 @@ export const generators: Generator[] = [
             { value: Math.floor(C / m), why: 'That leaves no room for the instruction and the new input, which share the same context.' },
             { value: Math.ceil((C - a - q) / m), why: 'That rounds up, and the last example would not fit. Round down.' },
           ]),
-          solution: [`The instruction and the input take $${a} + ${q} = ${a + q}$ tokens, leaving $${big(C)} - ${a + q} = ${big(C - a - q)}$.`, `Each example takes ${m}: $\\lfloor ${big(C - a - q)} / ${m} \\rfloor = ${fit}$ examples.`],
+          solution: [`The instruction and the input take $${a} + ${q} = ${a + q}$ tokens, leaving $${big(C)} - ${a + q} = ${big(C - a - q)}$.`, `Each example takes ${m}, and only whole examples fit: ${fit} of them take $${fit} \\times ${m} = ${big(fit * m)}$, and one more would need $${big((fit + 1) * m)}$.`],
         };
       }
       const v = a + k * m + q;
@@ -124,7 +124,7 @@ export const generators: Generator[] = [
       ];
       why[correct] = null;
       return {
-        prompt: `A pretrained model gets this prompt to ${t.does}, ending with the new input ${lit(q[0])}, and continues it. What kind of prompting is this?`,
+        prompt: `A pretrained model continues this prompt, which ends with the new input ${lit(q[0])}. What kind of prompting is this?`,
         code,
         answer: { kind: 'choice', options: ['Zero-shot', 'One-shot', 'Few-shot', 'Fine-tuning'], correct, why },
         solution: [

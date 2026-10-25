@@ -40,12 +40,12 @@ export const script: LectureScript = {
         xt = mean + np.sqrt(s2) * z        # 0.87  #@fresh
       `,
       beats: [
-        { id: 'guess', say: 'Here is one step, from t down to t minus one. Say {ᾱₜ|alpha bar t} is {0.64|zero point six four}, a pixel reads {0.5|zero point five}, and the network guesses its noise is minus a half.', code: 'guess' },
+        { id: 'guess', say: 'Here is one step, from t down to t minus one. Say {ᾱₜ|alpha bar t}, the {ᾱ|alpha bar} of step t, is {0.64|zero point six four}, a pixel reads {0.5|zero point five}, and the network guesses its noise is minus a half.', code: 'guess' },
         { id: 'est', say: 'First, estimate the clean image, as before: take away {0.6|zero point six} times the guess, and divide by {0.8|zero point eight}. {x̂₀|x zero hat} is one.', code: 'est' },
-        { id: 'back', say: 'Then blend it back in, one step down, where {ᾱₜ₋₁|alpha bar t minus one} is {0.81|zero point eight one}. Its square root, {0.9|zero point nine}, scales {x̂₀|x zero hat}.', code: 'back' },
-        { id: 'split', say: 'That leaves {0.19|zero point one nine} for noise. Set {σ²|sigma squared} of it aside for fresh noise, here {0.03|zero point zero three}. The other {0.16|zero point one six} goes to the guess, scaled by its root, {0.4|zero point four}.', code: 'split' },
+        { id: 'back', say: 'Then rebuild the image at step t minus one from three parts: the estimate, part of the guess, and fresh noise z, scaled by {σ|sigma}, here a plain number, not the sigmoid. At that step, {ᾱₜ₋₁|alpha bar t minus one} is {0.81|zero point eight one}, and its root, {0.9|zero point nine}, scales {x̂₀|x zero hat}.', code: 'back' },
+        { id: 'split', say: 'That leaves {0.19|zero point one nine} for noise. Set {σ²|sigma squared} of it aside for the fresh noise, here {0.03|zero point zero three}. The other {0.16|zero point one six} goes to the guess, scaled by its root, {0.4|zero point four}.', code: 'split' },
         { id: 'mean', say: 'So the step\'s mean is {0.9|zero point nine} times one, plus {0.4|zero point four} times minus a half: {0.7|zero point seven}.', code: 'mean' },
-        { id: 'fresh', say: 'Last, add {σ|sigma} times fresh noise z, from a standard normal. With z equal to one, {xₜ₋₁|x t minus one} is {0.7|zero point seven} plus {0.17|zero point one seven}: {0.87|zero point eight seven}.', code: 'fresh' },
+        { id: 'fresh', say: 'Last, add {σ|sigma} times z, a fresh draw from a standard normal. With z equal to one, {xₜ₋₁|x t minus one} is {0.7|zero point seven} plus {0.17|zero point one seven}: {0.87|zero point eight seven}.', code: 'fresh' },
       ],
     },
     {

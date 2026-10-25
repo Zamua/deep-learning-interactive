@@ -55,7 +55,7 @@ export const generators: Generator[] = [
       const places = a % 90 === 0 ? undefined : 2;
       const query = rng.int(2) === 0;
       return {
-        prompt: `One pair of a ${query ? 'query' : 'key'} is $${query ? q : k} = ${vecT(p)}$. Rotate it by $${deg(a)}$, using ${cs(a)}. What is the rotated pair?${places ? ' Round to two decimals.' : ''}`,
+        prompt: `One pair of a ${query ? 'query' : 'key'} is $${query ? q : k} = ${vecT(p)}$. What is it after a $${deg(a)}$ rotation?${places ? ' Round to two decimals.' : ''}\n\nUse ${cs(a)}.`,
         answer: { kind: 'vector', value: v, places },
         traps: vtraps(v, [
           { value: [clean(p[0]! * c + p[1]! * s), clean(-p[0]! * s + p[1]! * c)], why: 'That turns it the other way, clockwise. The minus sign belongs on $b\\sin{}$ in the first entry: $[a\\cos{} - b\\sin{},\\ a\\sin{} + b\\cos{}]$.' },
@@ -81,7 +81,7 @@ export const generators: Generator[] = [
         const m = int(rng, 6, 60);
         const v = clean(m * ths[j]!);
         return {
-          prompt: `A query of $${DK} = 6$ entries is cut into three pairs, which turn by $${ths.map(deg).join('$, $')}$ per position. By how many degrees is pair ${j} (counting from 0) of the query at position ${m} turned?`,
+          prompt: `A query of $${DK} = 6$ entries is cut into three pairs, which turn by $${ths.map(deg).join('$, $')}$ per position. Counting pairs and positions from 0, by how many degrees is pair ${j} of the query at position ${m} turned?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: m * ths[0]!, why: `That uses pair 0's turn per position. Pair ${j} turns by $${deg(ths[j]!)}$.` },
@@ -95,7 +95,7 @@ export const generators: Generator[] = [
       const m = d < 0.35 ? int(rng, 2, 8) : int(rng, 6, 24);
       const v = m * th;
       return {
-        prompt: `Rotary positions turn one pair of every query and key by $${TH} = ${deg(th)}$ per position. By how many degrees is that pair of the ${pick(rng, ['query', 'key'])} at position ${m} turned? Positions count from 0.`,
+        prompt: `With rotary positions, one pair of every query and key turns by $${TH} = ${deg(th)}$ per position. Counting positions from 0, by how many degrees is that pair of the ${pick(rng, ['query', 'key'])} at position ${m} turned?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: (m + 1) * th, why: `That counts positions from 1. Position 0 is not turned at all, so position $m$ turns by $m${TH}$.` },

@@ -31,7 +31,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'label', say: 'A classifier gives a whole image one label. Segmentation labels every pixel: this one is sky, that one tree, those ground.', code: ['x', 'label'] },
         { id: 'shrink', say: 'A ConvNet shrinks as it goes. Strided convolutions and pooling take a {64 × 64|sixty four by sixty four} image down to {8 × 8|eight by eight}, with {256|two hundred and fifty six} channels.', code: 'shrink' },
-        { id: 'grow', say: 'To label every pixel, it must grow back: one score per class at every pixel, {C × 64 × 64|C by sixty four by sixty four}. Each pixel\'s highest score is its label.', code: ['grow', 'label'] },
+        { id: 'grow', say: 'To label every pixel, it must grow back: a score for each of the C classes at every pixel, {C × 64 × 64|C by sixty four by sixty four}. Each pixel\'s label is the {argmax|arg max} of its scores: the class with the highest one.', code: ['grow', 'label'] },
       ],
     },
     {
@@ -60,7 +60,7 @@ export const script: LectureScript = {
         up_size(16, F=4, S=2, P=1)   # 32        #@undo
       `,
       beats: [
-        { id: 'starts', say: 'How long is the output? The first stamp starts at zero, and each of the other W minus one starts S further on. So the last starts at S times W minus one: four.', code: ['def', 'seven'] },
+        { id: 'starts', say: 'How long is the output? With an input W wide, here three, the first stamp starts at zero, and each of the other {W − 1|W minus one} starts S further on. So the last starts at S times W minus one: four.', code: ['def', 'seven'] },
         { id: 'width', say: 'Add the last stamp\'s width, F, and the output is seven long.', code: ['def', 'seven'] },
         { id: 'pad', say: 'Padding works backwards here: it trims P entries off each end. With P of one, seven becomes five. So the size is S times W minus one, plus F, minus two P.', code: ['def', 'pad'] },
         { id: 'undo', say: 'It is the convolution size rule, run backwards. A convolution with a filter of four, stride two and padding one takes thirty two down to sixteen. The transposed one takes sixteen back: two times fifteen, plus four, minus two, is thirty two.', code: 'undo' },

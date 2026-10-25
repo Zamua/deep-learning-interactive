@@ -56,8 +56,8 @@ export const script: LectureScript = {
         W.T[2, 1]    # 5, the same   #@ij
       `,
       beats: [
-        { id: 'flip', say: 'Transposing a matrix turns its rows into columns. {W.T|W transpose} has shape three by two.', code: ['W', 'T'] },
-        { id: 'ij', say: 'Entry i, j of the transpose is entry j, i of the original: the five at {W[1, 2]|W of one, two} lands at {W.T[2, 1]|W transpose of two, one}.', code: 'ij' },
+        { id: 'flip', say: 'Transposing a matrix turns its rows into columns. The transpose of W is written {Wᵀ|W transpose}, with a raised T, and in code {W.T|W dot T}. It has shape three by two.', code: ['W', 'T'] },
+        { id: 'ij', say: 'Row i, column j of the transpose holds what was at row j, column i: the five at {W[1, 2]|W of one, two} lands at {W.T[2, 1]|W transpose of two, one}.', code: 'ij' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

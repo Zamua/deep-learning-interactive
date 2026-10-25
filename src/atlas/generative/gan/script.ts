@@ -52,7 +52,7 @@ export const script: LectureScript = {
         # update gen's weights only        #@back
       `,
       beats: [
-        { id: 'flip', say: 'Then it is G\'s turn. G is trained as if its fake were labeled real, so its loss is minus the log of D of G of z. At {0.3|zero point three}, that is {1.20|one point two zero}.', code: 'flip' },
+        { id: 'flip', say: 'Then it is G\'s turn. G is trained as if its fake were labeled real, so its loss is minus the log of {D(G(z))|D of G of z}: D\'s score on the fake that G makes from z. At {0.3|zero point three}, that is {1.20|one point two zero}.', code: 'flip' },
         { id: 'back', say: 'The gradient flows back through D, which is held fixed, and into G. G\'s step changes its fakes so that D\'s score on them rises.', code: 'back' },
         { id: 'alternate', say: 'The steps alternate, D then G, and each network keeps improving against the other.', code: ['flip', 'back'] },
         { id: 'collapse', say: 'One way it fails: G finds a few fakes that fool D, and makes only those, whatever z it is given. Each sample looks real, but the variety is gone. That is mode collapse.', code: 'flip' },

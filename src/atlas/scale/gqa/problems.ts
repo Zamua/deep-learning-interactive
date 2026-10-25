@@ -76,7 +76,7 @@ export const generators: Generator[] = [
       const size = pick(rng, [8, 16, 32, 48, 64, 128]);
       const ans = (size * g) / h;
       return {
-        prompt: `With ordinary multi-head attention ($\\sym{heads}{h} = ${h}$ heads, each with its own key and value), a batch's KV cache takes ${size} GB. The model is rebuilt with ${kv(g)}, keeping $\\sym{heads}{h} = ${h}$ query heads and everything else. How many GB does the cache take now?`,
+        prompt: `With ordinary multi-head attention over $\\sym{heads}{h} = ${h}$ heads, a batch's KV cache takes ${size} GB. The model is rebuilt with ${kv(g)}, keeping $\\sym{heads}{h} = ${h}$ query heads and everything else. How many GB does the cache take now?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, [
           { value: (size * h) / g, why: 'That multiplies by $\\sym{heads}{h}/\\sym{kvheads}{g}$. Fewer key-value heads mean a smaller cache: multiply by $\\sym{kvheads}{g}/\\sym{heads}{h}$.' },

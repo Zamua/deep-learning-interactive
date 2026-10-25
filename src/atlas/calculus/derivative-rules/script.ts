@@ -21,9 +21,9 @@ export const script: LectureScript = {
         3 * 2**2                # 12       #@check
       `,
       beats: [
-        { id: 'sq', say: 'Derivatives follow rules, so the limit is rarely needed. For x squared, bring the two down in front and lower the power by one: two x.', code: 'sq' },
+        { id: 'sq', say: 'Derivatives follow rules, so the limit is rarely needed. For x squared, bring the two down in front and lower the power by one: x squared becomes two x. {The arrow →|The arrow} stands for “becomes”, from a function to its derivative.', code: 'sq' },
         { id: 'cube', say: 'x cubed becomes three x squared.', code: 'cube' },
-        { id: 'rule', say: 'In general, {xⁿ|x to the n} becomes {n xⁿ⁻¹|n times x to the n minus one}. That is the power rule.', code: 'rule' },
+        { id: 'rule', say: 'In general, for any power n, {xⁿ|x to the n} becomes {n xⁿ⁻¹|n times x to the n minus one}. That is the power rule.', code: 'rule' },
         { id: 'check', say: 'Check it at x equals two. The measured slope of x cubed is twelve, and three times two squared is twelve.', code: 'check' },
       ],
     },

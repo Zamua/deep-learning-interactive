@@ -31,15 +31,16 @@ export const generators: Generator[] = [
       const v = data === null ? R : clean(data + R);
       const absSum = sum(w.map(Math.abs));
       return {
-        prompt: `The weights are $\\symw = ${vec(w)}$ and the regularization strength is $\\symlam = ${num(lam)}$. ${data === null ? `What is the L2 penalty $${penaltyTex}$?` : `The data loss is $${num(data)}$. What is the full loss, the data loss plus $${penaltyTex}$?`}`,
+        prompt: `The weights are $\\symw = ${vec(w)}$ and $\\symlam = ${num(lam)}$. ${data === null ? 'What is the L2 penalty?' : `The data loss is $${num(data)}$. What is the loss with the L2 penalty added?`}`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: data === null ? S : data + S, why: 'That leaves out $\\symlam$: the sum of squares is multiplied by the regularization strength.' },
-          { value: (data ?? 0) + lam * absSum, why: 'That adds up the sizes $|\\symw_i|$, which is the L1 penalty. L2 squares each weight.' },
+          { value: (data ?? 0) + lam * absSum, why: 'That adds up the weights\' sizes, ignoring their signs: the L1 penalty. L2 squares each weight.' },
           { value: (data ?? 0) + lam * sum(w) ** 2, why: 'That squares the sum of the weights. L2 squares each weight first, then adds.' },
           ...(data === null ? [] : [{ value: R, why: 'That is the penalty alone. The full loss adds it to the data loss.' }]),
         ]),
         solution: [
+          `The L2 penalty is $${penaltyTex}$.`,
           `Square each weight and add: $${squares(w)} = ${sumTex(w.map((x) => clean(x * x)))} = ${num(S)}$.`,
           `Times $\\symlam$: $${num(lam)} \\times ${num(S)} = ${num(R)}$.`,
           ...(data === null ? [] : [`Add the data loss: $${num(data)} + ${num(R)} = ${num(v)}$.`]),
@@ -60,8 +61,8 @@ export const generators: Generator[] = [
       const plus = (u: number[]) => (withData ? u.map((x, i) => clean(x + g[i]!)) : u);
       return {
         prompt: withData
-          ? `The weights are $\\symw = ${vec(w)}$ with $\\symlam = ${num(lam)}$, and the gradient of the data loss is $\\symg = ${vec(g)}$. What is the gradient of the full loss, data loss plus $${penaltyTex}$?`
-          : `The weights are $\\symw = ${vec(w)}$ and $\\symlam = ${num(lam)}$. What is the gradient of the L2 penalty $${penaltyTex}$ with respect to $\\symw$?`,
+          ? `The weights are $\\symw = ${vec(w)}$ with $\\symlam = ${num(lam)}$, and the gradient of the data loss is $\\symg = ${vec(g)}$. What is the gradient of the loss with the L2 penalty added?`
+          : `The weights are $\\symw = ${vec(w)}$ and $\\symlam = ${num(lam)}$. What is the gradient of the L2 penalty with respect to $\\symw$?`,
         answer: { kind: 'vector', value: v },
         traps: vtraps(v, [
           { value: plus(w.map((x) => lam * x)), why: 'That is $\\symlam\\symw$: the 2 from differentiating $\\symw^2$ is missing. The gradient of $\\symlam\\symw^2$ is $2\\symlam\\symw$.' },
@@ -89,8 +90,8 @@ export const generators: Generator[] = [
       const v = clean(w - eta * full);
       return {
         prompt: flat
-          ? `A weight is at $\\symw = ${num(w)}$, where the data loss is flat: its gradient is $0$. With the L2 penalty $\\symlam\\symw^2$, $\\symlam = ${num(lam)}$ and learning rate $\\symeta = ${num(eta)}$, where is $\\symw$ after one gradient step?`
-          : `A weight is at $\\symw = ${num(w)}$ and the gradient of the data loss there is $\\symg = ${num(g)}$. With the L2 penalty $\\symlam\\symw^2$, $\\symlam = ${num(lam)}$ and $\\symeta = ${num(eta)}$, where is $\\symw$ after one step of $\\symw \\leftarrow \\symw - \\symeta(\\symg + 2\\symlam\\symw)$?`,
+          ? `A weight is at $\\symw = ${num(w)}$, where the data loss has gradient $0$. With an L2 penalty, $\\symlam = ${num(lam)}$ and $\\symeta = ${num(eta)}$, where is $\\symw$ after one gradient step?`
+          : `A weight is at $\\symw = ${num(w)}$, where the data loss has gradient $\\symg = ${num(g)}$. With an L2 penalty, $\\symlam = ${num(lam)}$ and $\\symeta = ${num(eta)}$, where is $\\symw$ after one gradient step?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           ...(flat ? [] : [{ value: w - eta * g, why: 'That leaves out the penalty: the step uses $\\symg + 2\\symlam\\symw$, not $\\symg$ alone.' }]),
@@ -99,6 +100,7 @@ export const generators: Generator[] = [
           ...(flat ? [{ value: w, why: 'The data gradient is 0, but the penalty\'s is not: $2\\symlam\\symw$ still pulls the weight toward 0.' }] : [{ value: w - eta * 2 * lam * w, why: 'That leaves out the data gradient $\\symg$: the step uses both.' }]),
         ]),
         solution: [
+          'With the penalty $\\symlam\\symw^2$, the step is $\\symw \\leftarrow \\symw - \\symeta(\\symg + 2\\symlam\\symw)$, with $\\symg$ the data gradient.',
           `The full gradient is $\\symg + 2\\symlam\\symw = ${num(g)} + 2 \\times ${num(lam)} \\times ${paren(w)} = ${num(full)}$.`,
           `The step: $\\symeta \\times ${paren(full)} = ${num(clean(eta * full))}$.`,
           `$\\symw \\leftarrow ${minus(w, clean(eta * full))} = ${num(v)}$.`,

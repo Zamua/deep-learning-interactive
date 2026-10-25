@@ -34,7 +34,7 @@ export const script: LectureScript = {
         cache = 2 * n_kv * d_head     # 256           #@cache
       `,
       beats: [
-        { id: 'group', say: 'Grouped-query attention keeps all eight query heads, but only g key-value heads. With g at two, each key head and value head is shared by a group of four query heads.', code: ['g', 'group'] },
+        { id: 'group', say: 'Grouped-query attention keeps all eight query heads, but only g key-value heads, each a key head and a value head shared by one group of query heads. With g at two, each is shared by four.', code: ['g', 'group'] },
         { id: 'attend', say: 'Each query head still makes its own scores and its own mix. It just reads the keys and values of its group.', code: 'rep' },
         { id: 'shrink', say: 'The cache now holds two times g times sixty four: two hundred and fifty six numbers per token, four times smaller. It shrinks by h over g.', code: 'cache' },
       ],

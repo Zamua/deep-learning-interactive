@@ -1,20 +1,20 @@
 {
- "duration": 104.503,
+ "duration": 111.575,
  "scenes": {
   "vote": [0.0, 40.04],
-  "odds": [40.04, 104.503]
+  "odds": [40.04, 111.575]
  },
  "beats": {
   "vote/paths": [0.7, 10.115, "Sample a chain of thought at a temperature above zero, and every run takes a different path. Ask for seventeen times twenty four, five times.", [[3.75, 4.05], [6.17, 6.77], [9.03, 9.23]]],
   "vote/answers": [10.495, 19.0, "Most paths reach four hundred and eight, by different routes. One slips to three hundred and ninety eight, another to four hundred and eighteen.", [[12.775, 12.965], [13.915, 14.455], [16.585, 16.965]]],
   "vote/vote": [19.38, 28.005, "Self-consistency ignores the paths and counts the final answers. Four hundred and eight has three votes of five, so it wins.", [[23.64, 24.22], [26.84, 27.17]]],
   "vote/greedy": [28.385, 38.94, "This needs real sampling. As the temperature goes to zero, greedy decoding writes the same path every time, and five copies of one answer add nothing.", [[30.135, 30.715], [32.415, 32.785], [35.945, 36.295]]],
-  "odds/p": [40.74, 51.571, "Why does voting help? Say each sample is right with probability zero point seven, independently. Take three, and the vote is right when at least two of them are.", [[42.12, 42.8], [46.48, 46.7], [47.48, 48.09], [48.84, 49.09]]],
-  "odds/three": [51.951, 57.897, "All three right: zero point seven cubed, which is zero point three four three.", [[52.941, 53.501], [55.141, 55.471], [55.901, 56.051]]],
-  "odds/two": [58.277, 72.219, "Exactly two right: the wrong one can be the first, the second or the third sample. Three ways, each zero point seven squared times zero point three, so zero point four four one in all.", [[59.697, 60.247], [61.797, 62.037], [62.627, 62.777], [63.937, 64.587], [65.407, 65.797], [69.237, 69.577]]],
-  "odds/sum": [72.599, 82.969, "Together, zero point seven eight four: better than one sample's zero point seven. When most samples are right, the majority is right even more often.", [[73.139, 73.569], [75.219, 75.749], [78.299, 78.989], [80.369, 80.659]]],
-  "odds/below": [83.349, 91.51, "It cuts both ways. At zero point four, a majority of three is right only zero point three five two of the time.", [[84.699, 85.139], [86.399, 86.609], [91.279, 91.489]]],
-  "odds/compare": [91.89, 102.283, "And the vote needs answers that can be compared: a number, a letter, yes or no. Five stories never match word for word, so there is nothing to count.", [[94.38, 94.82], [95.4, 95.59], [96.17, 96.45], [97.39, 97.99], [100.37, 100.65], [102.06, 102.25]]],
-  "odds/turn": [102.663, 103.403, "Your turn.", []]
+  "odds/p": [40.74, 52.946, "Why does voting help? Say each sample is right with probability p, here zero point seven, independently. Take three, and the vote is right when at least two of them are.", [[42.12, 42.88], [45.82, 46.17], [47.6, 47.9], [48.75, 49.38], [50.11, 50.39]]],
+  "odds/three": [53.326, 59.273, "All three right: zero point seven cubed, which is zero point three four three.", [[54.316, 54.876], [56.516, 56.846], [57.276, 57.426]]],
+  "odds/two": [59.653, 73.594, "Exactly two right: the wrong one can be the first, the second or the third sample. Three ways, each zero point seven squared times zero point three, so zero point four four one in all.", [[61.073, 61.623], [63.173, 63.413], [64.003, 64.153], [65.313, 65.963], [66.783, 67.173], [70.613, 70.953]]],
+  "odds/sum": [73.974, 90.041, "Together, zero point seven eight four, or in symbols p cubed, plus three p squared times one minus p: better than one sample's zero point seven. When most samples are right, the majority is right even more often.", [[74.514, 74.834], [76.544, 76.914], [77.964, 78.264], [79.014, 79.224], [82.074, 82.694], [85.344, 85.994], [87.444, 87.724]]],
+  "odds/below": [90.421, 98.582, "It cuts both ways. At zero point four, a majority of three is right only zero point three five two of the time.", [[91.771, 92.211], [93.471, 93.681], [98.351, 98.561]]],
+  "odds/compare": [98.962, 109.354, "And the vote needs answers that can be compared: a number, a letter, yes or no. Five stories never match word for word, so there is nothing to count.", [[101.452, 101.892], [102.472, 102.662], [103.242, 103.522], [104.462, 105.062], [107.442, 107.722], [109.132, 109.322]]],
+  "odds/turn": [109.734, 110.475, "Your turn.", []]
  }
 }

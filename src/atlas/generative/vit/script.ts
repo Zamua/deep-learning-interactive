@@ -20,9 +20,9 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'seq', say: 'A transformer reads a sequence of vectors, one per token. An image is a grid of pixels: here thirty two by thirty two, with three color values each.', code: 'img' },
-        { id: 'cut', say: 'To make it a sequence, cut it into squares of P by P pixels, the patches. Here P is eight.', code: 'cut' },
+        { id: 'cut', say: 'To make it a sequence, cut it into squares of P by P pixels, the patches, with P for patch size. Here P is eight.', code: 'cut' },
         { id: 'count', say: 'Thirty two over eight is four patches along each side, so four times four: sixteen patches, read in order like words on a page.', code: 'count' },
-        { id: 'formula', say: 'In general, an H by H image gives H over P, squared. Two hundred and twenty four pixels in patches of sixteen gives fourteen squared: one hundred and ninety six.', code: 'big' },
+        { id: 'formula', say: 'In general, an H by H image gives N patches, where N is H over P, squared. Two hundred and twenty four pixels in patches of sixteen gives fourteen squared: one hundred and ninety six.', code: 'big' },
       ],
     },
     {

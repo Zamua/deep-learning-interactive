@@ -80,7 +80,7 @@ const block: SceneDef = {
       s.text('F(x): (128, 28, 28)   ✗ cannot add', s.w / 2, y + 6.5 * s.u, { ...o, color: s.c('red') });
       s.alpha(s.ease('match', 0.6, 3.5), () => {
         s.text('shortcut: 1 × 1 conv, 128 filters, stride 2', s.w / 2, y + 15 * s.u, { ...o, size: 3.1, color: s.c('--ink-2') });
-        s.text('(64, 56, 56) → (128, 28, 28)   ✓', s.w / 2, y + 21.5 * s.u, { ...o, color: s.c('green') });
+        s.text('(64, 56, 56) to (128, 28, 28)   ✓', s.w / 2, y + 21.5 * s.u, { ...o, color: s.c('green') });
       });
     });
   },

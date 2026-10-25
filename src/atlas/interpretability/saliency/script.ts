@@ -25,9 +25,9 @@ export const script: LectureScript = {
       code: linear,
       beats: [
         { id: 'setup', say: 'A linear classifier scores an image of four pixels, x, with one row of W per class: s is W times x.', code: ['x', 'W', 's'] },
-        { id: 'ask', say: 'Which pixels does class zero\'s score depend on most? Ask its gradient with respect to the pixels: how fast {s₀|s zero} moves as each pixel is nudged.', code: 's' },
+        { id: 'ask', say: 'Which pixels does class zero\'s score, {s₀|s zero}, depend on most? Ask its gradient with respect to the pixels: how fast {s₀|s zero} moves as each pixel is nudged.', code: 's' },
         { id: 'nudge', say: '{s₀|s zero} is row zero of W dotted with x: each pixel times its weight, added up. Nudge pixel one, and only its term moves: by its weight, minus three, times the nudge.', code: ['W', 's'] },
-        { id: 'row', say: 'So the gradient is row zero itself: one, minus three, zero, two. In backprop terms, the add copies and each multiply swaps. The pixel values drop out, and so would a bias.', code: 'g' },
+        { id: 'row', say: 'So the gradient, {∂s₀/∂x|partial s zero, partial x}, one partial per pixel, is row zero itself: one, minus three, zero, two. In backprop terms, the add copies and each multiply swaps. The pixel values drop out, and so would a bias.', code: 'g' },
       ],
     },
     {
@@ -37,8 +37,8 @@ export const script: LectureScript = {
       code: linear,
       beats: [
         { id: 'sign', say: 'The sign says which way the score moves; the size says how fast. Minus three moves it as fast as plus three would, just downward.', code: 'g' },
-        { id: 'abs', say: 'So a saliency map takes the absolute value of the gradient: one, three, zero, two.', code: 'sal' },
-        { id: 'show', say: 'Painted onto the image, pixel one lights up most: class zero is most sensitive to it. Pixel two, with weight zero, does not matter at all.', code: 'top' },
+        { id: 'abs', say: 'So a saliency map takes the absolute value of the gradient, its size with the sign dropped: one, three, zero, two. It is written between two bars, {\\|∂s₀/∂x\\||the absolute value of partial s zero, partial x}.', code: 'sal' },
+        { id: 'show', say: 'Painted onto the image, pixel one lights up most. It is the map\'s argmax, the position of its largest entry: class zero is most sensitive to it. Pixel two, with weight zero, does not matter at all.', code: 'top' },
         { id: 'other', say: 'Each class has its own map. Class two\'s row is minus one, zero, four, minus two, so for class two, pixel two lights up instead.', code: 'W' },
       ],
     },

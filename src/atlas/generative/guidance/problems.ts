@@ -18,7 +18,7 @@ export const generators: Generator[] = [
       const diff = ec.map((x, i) => clean(x - eu[i]!));
       const v = eu.map((x, i) => clean(x + w * diff[i]!));
       return {
-        prompt: `For one noised image and the prompt "${pick(rng, ['a red bicycle', 'a cat on a sofa', 'a lighthouse at night', 'a bowl of lemons', 'a snowy mountain'])}", the denoiser predicts $${EU} = ${vec(eu)}$ without the prompt and $${EC} = ${vec(ec)}$ with it. With guidance scale $${WG} = ${num(w)}$, what is $${RULE}$?${d >= 0.35 ? ' Round to two decimals.' : ''}`,
+        prompt: `For one noised image and the prompt "${pick(rng, ['a red bicycle', 'a cat on a sofa', 'a lighthouse at night', 'a bowl of lemons', 'a snowy mountain'])}", the denoiser predicts $${EU} = ${vec(eu)}$ and $${EC} = ${vec(ec)}$. With guidance scale $${WG} = ${num(w)}$, what is the guided guess $${EHAT}$?${d >= 0.35 ? ' Round to two decimals.' : ''}`,
         answer: { kind: 'vector', value: v, places: 2 },
         traps: vtraps(
           v,
@@ -31,7 +31,7 @@ export const generators: Generator[] = [
           2,
         ),
         solution: [
-          `What the prompt changes: $${EC} - ${EU} = ${vec(diff)}$.`,
+          `$${RULE}$. What the prompt changes: $${EC} - ${EU} = ${vec(diff)}$.`,
           `Scale it: $${num(w)} \\times ${vec(diff)} = ${vec(diff.map((x) => clean(w * x)))}$.`,
           `Add it to $${EU}$: $${vec(eu)} + ${vec(diff.map((x) => clean(w * x)))} = ${vec(v)}$.`,
         ],
@@ -48,7 +48,7 @@ export const generators: Generator[] = [
       const key = w === 0 ? 'u' : w === 1 ? 'c' : 'mid';
       const say = (k: string) => (k === 'u' ? `$${WG} = 0$ gives exactly that` : k === 'c' ? `$${WG} = 1$ gives exactly that` : `$${WG} = 0.5$ gives that`);
       return {
-        prompt: `The denoiser predicts $${EU} = ${vec(eu)}$ without the prompt and $${EC} = ${vec(ec)}$ with it. With guidance scale $${WG} = ${num(w)}$, which noise guess $${RULE}$ is used?`,
+        prompt: `The denoiser predicts $${EU} = ${vec(eu)}$ and $${EC} = ${vec(ec)}$. With guidance scale $${WG} = ${num(w)}$, which noise guess $${EHAT}$ is used?`,
         answer: shuffled(rng, [
           { text: `$${vec(eu)}$, the guess without the prompt`, why: key === 'u' ? null : `${say('u')}: the push $${WG}(${EC} - ${EU})$ vanishes and the prompt is ignored. Here $${WG} = ${num(w)}$.` },
           { text: `$${vec(ec)}$, the guess with the prompt`, why: key === 'c' ? null : `${say('c')}: $${EU} + (${EC} - ${EU}) = ${EC}$, plain conditioning. Here $${WG} = ${num(w)}$.` },

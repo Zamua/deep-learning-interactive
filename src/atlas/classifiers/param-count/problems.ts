@@ -13,7 +13,7 @@ const IMAGES: [number, number, number][] = [
   [32, 32, 1],
   [64, 64, 1],
 ];
-const image = ([h, w, c]: [number, number, number]) => `$${h} \\times ${w}$ ${c === 3 ? 'color images (3 numbers per pixel)' : 'grayscale images (1 number per pixel)'}`;
+const image = ([h, w, c]: [number, number, number]) => `$${h} \\times ${w}$ ${c === 3 ? 'color images' : 'grayscale images (1 number per pixel)'}`;
 
 export const generators: Generator[] = [
   {
@@ -42,12 +42,13 @@ export const generators: Generator[] = [
       if (img && img[2] === 3) traps.push({ value: C * img[0] * img[1] + C, why: 'That leaves out the color channels: each pixel is 3 numbers, so $\\symD$ is 3 times the pixel count.' });
       return {
         prompt: img
-          ? `A linear classifier takes ${image(img)}, flattened into one vector, and scores $\\symC = ${C}$ classes. How many parameters does it have, weights and biases together?`
-          : `A linear classifier takes $\\symD = ${big(D)}$ input features and scores $\\symC = ${C}$ classes. How many parameters does it have, weights and biases together?`,
+          ? `A linear classifier takes ${image(img)}, flattened into one vector, and scores $\\symC = ${C}$ classes. How many parameters does it have?`
+          : `A linear classifier takes $\\symD = ${big(D)}$ input features and scores $\\symC = ${C}$ classes. How many parameters does it have?`,
         answer: { kind: 'number', value: v },
         traps: traps.filter((t) => t.value !== v),
         solution: [
-          ...(img ? [`Flattened, one image is $\\symD = ${img.join(' \\times ')} = ${big(D)}$ numbers.`] : []),
+          ...(img ? [`Flattened, one image is $\\symD = ${img.join(' \\times ')} = ${big(D)}$ numbers${img[2] === 3 ? ', 3 per pixel' : ''}.`] : []),
+          'Its parameters are its weights and its biases.',
           `$\\symW$ has one row per class and one weight per input in each row: $${C} \\times ${big(D)} = ${big(C * D)}$ weights.`,
           `$\\symb$ has one bias per class: $${C}$ more.`,
           `Total: $\\symC\\symD + \\symC = ${big(C * D)} + ${C} = ${big(v)}$.`,
@@ -73,10 +74,11 @@ export const generators: Generator[] = [
         { value: D * H * C, why: 'That multiplies all three sizes. Count each map on its own, inputs times outputs plus biases, then add the two.' },
       ];
       return {
-        prompt: `Two linear maps run in a row: the first turns $\\symD = ${big(D)}$ inputs into $H = ${H}$ numbers, and the second turns those into $\\symC = ${C}$ class scores. Each has its own weights and biases. How many parameters do they have in all?`,
+        prompt: `Two linear maps run in a row: the first turns $\\symD = ${big(D)}$ inputs into $H = ${H}$ numbers, and the second turns those into $\\symC = ${C}$ class scores. How many parameters do they have in all?`,
         answer: { kind: 'number', value: v },
         traps: traps.filter((t, i) => t.value !== v && traps.findIndex((u) => u.value === t.value) === i),
         solution: [
+          'Each map has its own weights and biases.',
           `The first map, $\\symD \\to H$: $${big(D)} \\times ${H} = ${big(D * H)}$ weights plus $${H}$ biases, $${big(l1)}$.`,
           `The second map, $H \\to \\symC$: $${H} \\times ${C} = ${big(H * C)}$ weights plus $${C}$ biases, $${big(l2)}$.`,
           `Add the two: $${big(l1)} + ${big(l2)} = ${big(v)}$.`,
@@ -95,7 +97,7 @@ export const generators: Generator[] = [
         const name = ['\\symW_1', '\\symb_1', '\\symW_2', '\\symb_2'][which]!;
         const value = [[H, D], [H], [C, H], [C]][which]!;
         return {
-          prompt: `Two linear maps run in a row: $h = \\symW_1\\symx + \\symb_1$ gives $H = ${H}$ numbers, then $\\syms = \\symW_2 h + \\symb_2$ scores them, from $\\symD = ${big(D)}$ inputs to $\\symC = ${C}$ classes. What is the shape of $${name}$?${which % 2 ? ' A vector\'s shape is one number.' : ''}`,
+          prompt: `Two linear maps run in a row: $h = \\symW_1\\symx + \\symb_1$ gives $H = ${H}$ numbers, then $\\syms = \\symW_2 h + \\symb_2$ scores them, from $\\symD = ${big(D)}$ inputs to $\\symC = ${C}$ classes. What is the shape of $${name}$?`,
           answer: { kind: 'shape', value },
           solution: [
             which < 2 ? `The first map turns $\\symD = ${big(D)}$ inputs into $H = ${H}$ outputs.` : `The second map turns the $H = ${H}$ numbers of $h$ into $\\symC = ${C}$ scores.`,
@@ -107,7 +109,7 @@ export const generators: Generator[] = [
       }
       const isW = rng.int(2) === 0;
       return {
-        prompt: `A linear classifier computes $\\syms = \\symW\\symx + \\symb$ for $\\symD = ${big(D)}$ inputs and $\\symC = ${C}$ classes. What is the shape of $${isW ? '\\symW' : '\\symb'}$?${isW ? '' : ' A vector\'s shape is one number.'}`,
+        prompt: `A linear classifier computes $\\syms = \\symW\\symx + \\symb$ for $\\symD = ${big(D)}$ inputs and $\\symC = ${C}$ classes. What is the shape of $${isW ? '\\symW' : '\\symb'}$?`,
         answer: { kind: 'shape', value: isW ? [C, D] : [C] },
         solution: isW
           ? [
@@ -149,7 +151,7 @@ export const generators: Generator[] = [
             'The images are inputs, not parameters: $\\symW$ and $\\symb$ keep their shapes however many there are.',
           ],
           solution: [
-            'The count is $\\symC\\symD + \\symC$: it depends on the input size and the number of classes only.',
+            'That depends on the input size and the number of classes only.',
             `More images mean more scores to compute, not more numbers in $\\symW$ and $\\symb$: still $${big(n)}$.`,
           ],
         },
@@ -168,7 +170,7 @@ export const generators: Generator[] = [
           ],
         },
         color: {
-          change: 'it takes color images of the same size, 3 numbers per pixel',
+          change: 'it takes color images of the same size',
           correct: 2,
           why: [
             'Color triples $\\symD$, and every row of $\\symW$ gets that much longer.',
@@ -198,9 +200,9 @@ export const generators: Generator[] = [
       };
       const k = cases[kind]!;
       return {
-        prompt: `A linear classifier scores $\\symC = ${C}$ classes from ${base.img} images, $\\symD = ${big(D)}$ inputs, so it has $${C} \\times ${big(D)} + ${C} = ${big(n)}$ parameters. What happens to that count if ${k.change}?`,
+        prompt: `A linear classifier scores $\\symC = ${C}$ classes from ${base.img} images, $\\symD = ${big(D)}$ inputs. What happens to its parameter count if ${k.change}?`,
         answer: { kind: 'choice', options: ['It stays the same', 'It doubles', 'It roughly triples', 'It roughly quadruples'], correct: k.correct, why: k.why },
-        solution: k.solution,
+        solution: [`It has $\\symC\\symD + \\symC = ${count(C, D).slice(1, -1)}$ parameters.`, ...k.solution],
       };
     },
   },

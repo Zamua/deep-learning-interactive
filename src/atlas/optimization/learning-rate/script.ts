@@ -19,7 +19,7 @@ export const script: LectureScript = {
         # same as x = (1 - 2*a*lr) * x     #@factor
       `,
       beats: [
-        { id: 'bowl', say: 'Take the simplest function to walk down, a bowl: f of x equals a x squared, with its minimum at zero. Here a is one, and x starts at one.', code: 'x' },
+        { id: 'bowl', say: 'Take the simplest function to walk down, a bowl: f of x equals a x squared, where a, a positive number, sets how steep it is. Its minimum is at zero. Here a is one, and x starts at one.', code: 'x' },
         { id: 'grad', say: 'Its gradient is two a x. So one step takes x to x, minus {η|eta} times two a x. That step size, {η|eta}, is called the learning rate.', code: ['g', 'step'] },
         { id: 'factor', say: 'Pull out the x, and every step just multiplies x by the same factor: one minus two a {η|eta}. With {η|eta} at {0.3|zero point three}, that is {0.4|zero point four}.', code: 'factor' },
       ],
@@ -55,7 +55,7 @@ export const script: LectureScript = {
         { id: 'line', say: 'Plot the factor against {η|eta}. It starts at one and falls in a straight line as {η|eta} grows.', code: 'line' },
         { id: 'half', say: 'At {η|eta} equals one over two a, it is zero: a single step lands right on the minimum.', code: 'half' },
         { id: 'edge', say: 'At one over a, it reaches minus one, and x bounces between two points forever. Any larger, and it blows up.', code: 'edge' },
-        { id: 'steep', say: 'A steeper bowl, a bigger a, makes the line fall faster. The largest learning rate that does not diverge is one over a.', code: 'steep' },
+        { id: 'steep', say: 'A steeper bowl, a bigger a, makes the line fall faster. The largest learning rate that does not diverge, written {ηₘₐₓ|eta max}, is one over a.', code: 'steep' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

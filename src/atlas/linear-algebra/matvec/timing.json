@@ -1,18 +1,18 @@
 {
- "duration": 73.68,
+ "duration": 86.714,
  "scenes": {
-  "rows": [0.0, 34.536],
-  "shapes": [34.536, 73.68]
+  "rows": [0.0, 39.63],
+  "shapes": [39.63, 86.714]
  },
  "beats": {
-  "rows/setup": [0.7, 10.022, "Multiplying a matrix by a vector is a stack of dot products. Here W has two rows of three, and x has three entries.", [[2.89, 3.05], [4.65, 5.27], [5.64, 5.91], [7.88, 8.23]]],
-  "rows/row0": [10.402, 21.079, "Dot the first row of W with x: one times two, plus two times one, plus zero times three. That is four, the first entry of the result.", [[12.892, 13.422], [14.442, 14.722], [16.022, 16.292], [17.822, 18.312], [19.142, 19.522]]],
-  "rows/row1": [21.459, 27.566, "The second row gives the second entry: six, minus one, plus six. Eleven.", [[23.579, 24.099], [24.589, 24.789], [25.569, 25.789], [26.549, 27.019]]],
-  "rows/result": [27.946, 33.436, "So W x is four, eleven: one entry for each row of W.", [[29.936, 30.226], [30.726, 31.196]]],
-  "shapes/match": [35.236, 44.769, "Each row is dotted with x, so a row and x must be the same length: the number of columns of W must equal the length of x.", [[37.216, 37.596], [40.656, 41.086], [42.686, 42.886]]],
-  "shapes/out": [45.149, 54.771, "And there is one dot product per row, so the result has one entry per row of W. A two by three matrix turns three numbers into two.", [[47.319, 47.679], [50.629, 51.279], [52.739, 52.899]]],
-  "shapes/big": [55.151, 64.39, "The sizes can be anything. A ten by three thousand and seventy two W turns an image of three thousand and seventy two numbers into ten.", [[56.731, 57.251], [60.161, 60.411]]],
-  "shapes/fail": [64.77, 71.459, "Give it a vector of the wrong length, and a column of W has no partner: the product is not defined.", [[66.59, 66.89], [69.15, 69.69]]],
-  "shapes/turn": [71.839, 72.58, "Your turn.", []]
+  "rows/setup": [0.7, 15.115, "Multiplying a matrix W by a vector x is written W x, the two side by side, and it is a stack of dot products. Here W has two rows of three, and x has three entries.", [[3.89, 4.05], [4.6, 4.75], [5.76, 6.11], [7.6, 7.98], [10.1, 10.64], [13.12, 13.42]]],
+  "rows/row0": [15.495, 26.172, "Dot the first row of W with x: one times two, plus two times one, plus zero times three. That is four, the first entry of the result.", [[17.985, 18.515], [19.535, 19.815], [21.115, 21.385], [22.915, 23.405], [24.235, 24.615]]],
+  "rows/row1": [26.552, 32.66, "The second row gives the second entry: six, minus one, plus six. Eleven.", [[28.672, 29.192], [29.682, 29.882], [30.662, 30.882], [31.642, 32.112]]],
+  "rows/result": [33.04, 38.53, "So W x is four, eleven: one entry for each row of W.", [[35.03, 35.32], [35.82, 36.29]]],
+  "shapes/match": [40.33, 49.863, "Each row is dotted with x, so a row and x must be the same length: the number of columns of W must equal the length of x.", [[42.31, 42.69], [45.75, 46.18], [47.78, 47.98]]],
+  "shapes/out": [50.243, 67.805, "And there is one dot product per row, so the result has one entry per row of W. A two by three matrix turns three numbers into two: two by three, times three, gives two, where the at sign is the product and the arrow points to what comes out.", [[52.503, 52.893], [55.923, 56.563], [59.853, 60.463], [61.293, 61.493], [62.233, 62.463], [63.113, 63.613], [65.473, 65.763]]],
+  "shapes/big": [68.185, 77.425, "The sizes can be anything. A ten by three thousand and seventy two W turns an image of three thousand and seventy two numbers into ten.", [[69.765, 70.285], [73.195, 73.445]]],
+  "shapes/fail": [77.805, 84.494, "Give it a vector of the wrong length, and a column of W has no partner: the product is not defined.", [[79.625, 79.925], [82.185, 82.725]]],
+  "shapes/turn": [84.874, 85.614, "Your turn.", []]
  }
 }

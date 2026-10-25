@@ -22,10 +22,10 @@ export const generators: Generator[] = [
       const v = mu.map((m, i) => clean(m + sig[i]! * eps[i]!));
       const vars = sig.map((s) => clean(s * s));
       const given = variance
-        ? `The encoder gives the means $${MU} = ${vec(mu)}$ and the variances $${SIG}^2 = ${vec(vars)}$`
-        : `The encoder gives the means $${MU} = ${vec(mu)}$ and the spreads $${SIG} = ${vec(sig)}$`;
+        ? `A VAE's encoder gives the means $${MU} = ${vec(mu)}$ and the variances $${SIG}^2 = ${vec(vars)}$`
+        : `A VAE's encoder gives the means $${MU} = ${vec(mu)}$ and the spreads $${SIG} = ${vec(sig)}$`;
       return {
-        prompt: `A VAE's code has ${n} dimensions. ${given}. The noise drawn from \`np.random.randn\` is $${EPS} = ${vec(eps)}$. What code $${Z}$ goes to the decoder?${d >= 0.35 ? ' Round to two decimals.' : ''}`,
+        prompt: `${given}, and the noise drawn is $${EPS} = ${vec(eps)}$. What code $${Z}$ goes to the decoder?${d >= 0.35 ? ' Round to two decimals.' : ''}`,
         answer: { kind: 'vector', value: v, places: 2 },
         traps: vtraps(
           v,
@@ -39,8 +39,8 @@ export const generators: Generator[] = [
         ),
         solution: [
           ...(variance ? [`The spreads are the square roots of the variances: $${SIG} = ${vec(sig)}$.`] : []),
-          `Stretch the noise by the spreads: $${SIG}${EPS} = ${vec(sig.map((s, i) => clean(s * eps[i]!)))}$.`,
-          `Shift it by the means: $${Z} = ${MU} + ${SIG}${EPS} = ${vec(v)}$.`,
+          `The code is $${Z} = ${MU} + ${SIG}${EPS}$. Stretch the noise by the spreads: $${SIG}${EPS} = ${vec(sig.map((s, i) => clean(s * eps[i]!)))}$.`,
+          `Shift it by the means: $${Z} = ${vec(v)}$.`,
           'Each dimension has its own mean and spread, so each is stretched and shifted on its own.',
         ],
       };
@@ -55,7 +55,7 @@ export const generators: Generator[] = [
       const lead = `For one input, a VAE's encoder gives $${MU} = ${num(mu)}$ and $${SIG} = ${num(sig)}$ for one code dimension.`;
       if (kind === 'noise')
         return {
-          prompt: `${lead} During training, the decoder gets $${Z} = ${MU} + ${SIG}${EPS}$, a fresh random code near $${num(mu)}$ each time, instead of $${MU}$ itself. Why add the noise?`,
+          prompt: `${lead} During training, the decoder gets a fresh random code near $${num(mu)}$ each time, instead of $${MU}$ itself. Why add the noise?`,
           answer: shuffled(rng, [
             { text: `So the decoder must rebuild the input from any code near ${num(mu)}, and nearby codes decode alike`, why: null },
             { text: 'To make the reconstruction error smaller, since noisy codes are easier to decode', why: 'The noise makes reconstruction harder, not easier: the decoder never sees the exact code. The point is what that forces.' },
@@ -70,7 +70,7 @@ export const generators: Generator[] = [
         };
       if (kind === 'trick')
         return {
-          prompt: `${lead} The code is computed as $${Z} = ${MU} + ${SIG}${EPS}$, with $${EPS}$ drawn by \`np.random.randn\`, rather than by asking for a random number with mean $${num(mu)}$ and spread $${num(sig)}$ directly. Why write it that way?`,
+          prompt: `${lead} The code is computed as $${Z} = ${MU} + ${SIG}${EPS}$, rather than drawn directly as a random number with mean $${num(mu)}$ and spread $${num(sig)}$. Why write it that way?`,
           answer: shuffled(rng, [
             { text: 'The noise holds all the randomness and has no weights, so gradients reach the mean and spread', why: null },
             { text: 'It gives codes with a different spread, closer to what the data needs', why: `It gives the same codes: stretching standard noise by ${num(sig)} and shifting it by ${num(mu)} is exactly a draw with that mean and spread.` },
@@ -173,7 +173,7 @@ export const generators: Generator[] = [
         };
       const v = (H + 1) * 2 * k;
       return {
-        prompt: `${lead} That layer outputs a mean and a spread for every code dimension, with one weight per hidden unit and one bias for each output. How many parameters does it have?`,
+        prompt: `${lead} Each of that layer's outputs has one weight per hidden unit and one bias. How many parameters does it have?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: (H + 1) * k, why: `That makes one output per code dimension. Each dimension needs two: a mean and a spread.` },

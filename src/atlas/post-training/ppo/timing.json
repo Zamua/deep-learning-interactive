@@ -1,22 +1,22 @@
 {
- "duration": 103.68,
+ "duration": 108.704,
  "scenes": {
-  "ratio": [0.0, 44.352],
-  "clip": [44.352, 103.68]
+  "ratio": [0.0, 45.754],
+  "clip": [45.754, 108.704]
  },
  "beats": {
   "ratio/batch": [0.7, 6.642, "Sampling answers is slow, so we would like to make several updates from each batch of samples.", [[2.53, 2.79]]],
   "ratio/old": [7.022, 15.477, "Call the model that sampled the batch pi old. After the first update, the model being trained, pi, already differs from it.", [[9.922, 10.482], [11.772, 12.052], [13.282, 13.502], [13.912, 14.172]]],
-  "ratio/rho": [15.857, 24.667, "So each sampled token is weighed by the ratio of its new probability to its old one, rho. Before any update, it is one.", [[21.247, 21.527], [21.937, 22.567], [23.737, 23.967]]],
-  "ratio/eg": [25.047, 32.934, "If pi old gave a token zero point two and pi now gives it zero point three, the ratio is one point five.", [[27.877, 28.167], [30.597, 30.987]]],
-  "ratio/obj": [33.314, 43.252, "The objective is the ratio times the advantage. Raising it makes tokens with a positive advantage more likely, and those with a negative one less likely.", [[36.394, 36.954], [40.494, 40.854], [42.244, 42.404]]],
-  "clip/trust": [45.052, 53.235, "But the samples only tell us about answers near pi old. Push a ratio far from one, and the estimate stops being trustworthy.", [[48.462, 49.062], [50.702, 50.972]]],
-  "clip/clip": [53.615, 61.964, "So PPO clips the ratio to between one minus epsilon and one plus epsilon, with epsilon often zero point two.", [[59.335, 59.725]]],
-  "clip/min": [62.344, 65.947, "Then it takes the smaller of the clipped and the unclipped term.", [[64.394, 64.544]]],
-  "clip/pos": [66.327, 75.184, "With a positive advantage, the objective rises with the ratio until one point two, then goes flat: no reward for pushing further.", [[67.787, 68.037], [71.417, 71.807], [72.897, 73.377]]],
-  "clip/neg": [75.564, 82.625, "With a negative advantage, it rises as the ratio falls, until zero point eight, and then goes flat.", [[76.944, 77.184], [79.394, 79.634], [81.034, 81.354]]],
-  "clip/wrong": [83.005, 90.881, "Taking the smaller term means clipping only ever removes a reward. A ratio that moved the wrong way is still pulled back.", [[84.325, 84.495], [87.185, 87.745]]],
-  "clip/why": [91.261, 101.46, "So one batch can serve several updates, and none of them moves the model far. The KL penalty has a different job: keeping the whole run near the reference.", [[93.711, 93.951], [95.801, 96.481], [98.631, 99.111]]],
-  "clip/turn": [101.84, 102.58, "Your turn.", []]
+  "ratio/rho": [15.857, 26.069, "So each sampled token is weighed by the ratio of its new probability to its old one, written with the Greek letter rho. Before any update, it is one.", [[21.167, 21.537], [23.367, 23.967], [25.077, 25.317]]],
+  "ratio/eg": [26.449, 34.336, "If pi old gave a token zero point two and pi now gives it zero point three, the ratio is one point five.", [[29.279, 29.569], [31.999, 32.389]]],
+  "ratio/obj": [34.716, 44.654, "The objective is the ratio times the advantage. Raising it makes tokens with a positive advantage more likely, and those with a negative one less likely.", [[37.796, 38.356], [41.896, 42.256], [43.646, 43.806]]],
+  "clip/trust": [46.454, 54.637, "But the samples only tell us about answers near pi old. Push a ratio far from one, and the estimate stops being trustworthy.", [[49.864, 50.464], [52.104, 52.374]]],
+  "clip/clip": [55.017, 66.988, "So PPO picks a small clip range, written with the Greek letter epsilon, often zero point two, and clips the ratio to between one minus epsilon and one plus epsilon.", [[57.777, 58.067], [59.907, 60.297], [61.867, 62.267], [65.297, 65.567]]],
+  "clip/min": [67.368, 70.97, "Then it takes the smaller of the clipped and the unclipped term.", [[69.418, 69.568]]],
+  "clip/pos": [71.35, 80.208, "With a positive advantage, the objective rises with the ratio until one point two, then goes flat: no reward for pushing further.", [[72.81, 73.06], [76.44, 76.83], [77.92, 78.4]]],
+  "clip/neg": [80.588, 87.648, "With a negative advantage, it rises as the ratio falls, until zero point eight, and then goes flat.", [[81.968, 82.208], [84.418, 84.658], [86.058, 86.378]]],
+  "clip/wrong": [88.028, 95.905, "Taking the smaller term means clipping only ever removes a reward. A ratio that moved the wrong way is still pulled back.", [[89.348, 89.518], [92.208, 92.768]]],
+  "clip/why": [96.285, 106.483, "So one batch can serve several updates, and none of them moves the model far. The KL penalty has a different job: keeping the whole run near the reference.", [[98.735, 98.975], [100.825, 101.505], [103.655, 104.135]]],
+  "clip/turn": [106.863, 107.604, "Your turn.", []]
  }
 }

@@ -1,24 +1,24 @@
 {
- "duration": 124.236,
+ "duration": 129.358,
  "scenes": {
-  "router": [0.0, 52.08],
-  "params": [52.08, 87.495],
-  "balance": [87.495, 124.236]
+  "router": [0.0, 57.202],
+  "params": [57.202, 92.617],
+  "balance": [92.617, 129.358]
  },
  "beats": {
-  "router/swap": [0.7, 11.672, "In a transformer block, every token runs through the same MLP. A mixture of experts keeps several MLPs instead, called experts. Here, four.", [[1.96, 2.22], [4.86, 5.41], [8.64, 8.96], [10.09, 10.57], [10.94, 11.17]]],
-  "router/router": [12.052, 25.441, "A router, one small linear layer and a softmax, gives each expert a probability for the current token: zero point one, zero point five, zero point one five and zero point two five.", [[12.762, 13.092], [14.572, 14.742], [15.882, 16.182], [19.232, 19.782], [20.742, 21.052], [22.092, 22.402], [23.662, 23.932]]],
-  "router/top": [25.821, 34.396, "Only the top k run. With k at two, that is experts one and three. The other two do no work for this token.", [[27.341, 27.861], [29.031, 29.311], [31.481, 32.011]]],
-  "router/gates": [34.776, 44.457, "Their probabilities add up to zero point seven five. Divide each by that total, and the gates become two thirds and one third, adding up to one again.", [[37.916, 38.516], [40.156, 40.406], [42.876, 43.206]]],
-  "router/sum": [44.837, 50.98, "The layer's output is two thirds of expert one's output, plus one third of expert three's.", [[48.447, 48.727]]],
-  "params/count": [52.78, 60.333, "Now count parameters. Say a layer has eight experts of a hundred million parameters each, and k is two.", [[54.25, 54.82], [58.8, 59.07]]],
-  "params/total": [60.713, 68.294, "All eight must be stored, since the next token might need any of them: eight hundred million. That is the total.", [[62.323, 62.603], [64.903, 65.373], [66.573, 67.033]]],
-  "params/active": [68.674, 76.822, "But one token runs only two of them: two hundred million. That is the active count, and it sets the compute per token.", [[70.964, 71.404], [72.564, 73.114], [74.574, 74.864]]],
-  "params/grow": [77.202, 86.395, "Double the experts to sixteen, and the total doubles while the active count stays put. The model can store more, at the same work per token.", [[79.162, 79.412], [82.492, 83.072], [84.422, 84.702]]],
-  "balance/favor": [88.195, 93.679, "One danger. Early in training, the router may happen to favor one expert.", [[89.095, 89.775], [90.785, 91.075]]],
-  "balance/feed": [94.059, 101.765, "That expert gets more tokens, so more gradient, so it improves fastest, and the router favors it even more.", [[96.019, 96.249], [97.469, 97.769], [99.469, 99.729]]],
-  "balance/collapse": [102.145, 113.258, "Soon one expert does most of the work. The others sit idle: parameters stored and paid for, barely trained. And the busy one makes the whole layer wait.", [[102.695, 102.905], [104.805, 105.295], [106.545, 107.005], [108.905, 109.265], [110.175, 110.685]]],
-  "balance/fix": [113.638, 122.016, "The fix is a small extra loss that is lowest when every expert gets an equal share of the tokens: one over E each.", [[119.938, 120.398]]],
-  "balance/turn": [122.396, 123.136, "Your turn.", []]
+  "router/swap": [0.7, 14.68, "In a transformer block, every token runs through the same MLP. A mixture of experts, or M O E, keeps several MLPs instead, called experts. Call their number E: here, four.", [[1.99, 2.28], [4.91, 5.45], [7.94, 8.24], [10.15, 10.42], [11.53, 12.0], [13.21, 13.65], [14.0, 14.21]]],
+  "router/router": [15.06, 28.448, "A router, one small linear layer and a softmax, gives each expert a probability for the current token: zero point one, zero point five, zero point one five and zero point two five.", [[15.77, 16.1], [17.58, 17.75], [18.89, 19.19], [22.24, 22.79], [23.75, 24.06], [25.1, 25.41], [26.67, 26.94]]],
+  "router/top": [28.828, 39.518, "Only the k most likely experts run, the top k. With k at two, that is experts one and three. The other two do no work for this token.", [[31.568, 31.938], [32.678, 33.258], [34.328, 34.598], [36.638, 37.178]]],
+  "router/gates": [39.898, 49.578, "Their probabilities add up to zero point seven five. Divide each by that total, and the gates become two thirds and one third, adding up to one again.", [[43.038, 43.638], [45.278, 45.528], [47.998, 48.328]]],
+  "router/sum": [49.958, 56.102, "The layer's output is two thirds of expert one's output, plus one third of expert three's.", [[53.568, 53.848]]],
+  "params/count": [57.902, 65.454, "Now count parameters. Say a layer has eight experts of a hundred million parameters each, and k is two.", [[59.372, 59.942], [63.922, 64.192]]],
+  "params/total": [65.834, 73.416, "All eight must be stored, since the next token might need any of them: eight hundred million. That is the total.", [[67.444, 67.724], [70.024, 70.494], [71.694, 72.154]]],
+  "params/active": [73.796, 81.943, "But one token runs only two of them: two hundred million. That is the active count, and it sets the compute per token.", [[76.086, 76.526], [77.686, 78.236], [79.696, 79.986]]],
+  "params/grow": [82.323, 91.517, "Double the experts to sixteen, and the total doubles while the active count stays put. The model can store more, at the same work per token.", [[84.283, 84.533], [87.613, 88.193], [89.543, 89.823]]],
+  "balance/favor": [93.317, 98.8, "One danger. Early in training, the router may happen to favor one expert.", [[94.217, 94.897], [95.907, 96.197]]],
+  "balance/feed": [99.18, 106.886, "That expert gets more tokens, so more gradient, so it improves fastest, and the router favors it even more.", [[101.14, 101.37], [102.59, 102.89], [104.59, 104.85]]],
+  "balance/collapse": [107.266, 118.379, "Soon one expert does most of the work. The others sit idle: parameters stored and paid for, barely trained. And the busy one makes the whole layer wait.", [[107.816, 108.026], [109.926, 110.416], [111.666, 112.126], [114.026, 114.386], [115.296, 115.806]]],
+  "balance/fix": [118.759, 127.138, "The fix is a small extra loss that is lowest when every expert gets an equal share of the tokens: one over E each.", [[125.059, 125.519]]],
+  "balance/turn": [127.518, 128.258, "Your turn.", []]
  }
 }

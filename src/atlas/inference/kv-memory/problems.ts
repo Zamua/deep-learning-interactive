@@ -29,7 +29,7 @@ export const generators: Generator[] = [
       const v = clean(total / 1e6);
       const who = batch === 1 ? `one sequence of ${bigText(tokens)} tokens` : `${batch} sequences of ${bigText(tokens)} tokens each`;
       return {
-        prompt: `A model has ${m.layers} layers and width $d = ${big(m.d)}$, and its KV cache stores each number in ${bytesWord(m.bytes)}. How many MB (millions of bytes) of cache does ${who} need?`,
+        prompt: `A model has ${m.layers} layers and width $d = ${big(m.d)}$, and its KV cache stores each number in ${bytesWord(m.bytes)}. How many MB of cache does ${who} need?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: v / 2, why: m.bytes === 2 ? 'That is half: either one vector per token per layer, where the cache keeps a key and a value, or numbers counted instead of bytes, at 2 bytes each.' : 'That stores one vector per token per layer. The cache keeps two: a key and a value.' },
@@ -40,7 +40,7 @@ export const generators: Generator[] = [
         solution: [
           `The cache holds $${FORMULA}${batch > 1 ? ' \\times \\text{sequences}' : ''}$.`,
           `$2 \\times ${m.layers} \\times ${big(tokens)} \\times ${big(m.d)} \\times ${m.bytes}${batch > 1 ? ` \\times ${batch}` : ''} = ${big(total)}$ bytes.`,
-          `That is $${big(v)}$ MB.`,
+          `A megabyte is a million bytes, so that is $${big(v)}$ MB.`,
         ],
       };
     },
@@ -55,7 +55,7 @@ export const generators: Generator[] = [
         const n = (free * 1e9) / per;
         if (!Number.isInteger(n) || n < 100) continue;
         return {
-          prompt: `A model has ${m.layers} layers and width $d = ${big(m.d)}$, and its KV cache stores each number in ${bytesWord(m.bytes)}. After loading the weights, ${free} GB (${free} billion bytes) of memory is left for the cache. How many tokens' worth of cache fit, across all sequences?`,
+          prompt: `A model has ${m.layers} layers and width $d = ${big(m.d)}$, and its KV cache stores each number in ${bytesWord(m.bytes)}. After loading the weights, ${free} GB of memory is left for the cache. How many tokens' worth of cache fit, across all sequences?`,
           answer: { kind: 'number', value: n },
           traps: traps(n, [
             { value: n * 2, why: m.bytes === 2 ? 'That is twice too many: either one vector per token per layer, where the cache keeps a key and a value, or one byte per number instead of 2.' : 'That gives each token one vector per layer. The cache keeps two: a key and a value.' },
@@ -64,7 +64,7 @@ export const generators: Generator[] = [
           ]),
           solution: [
             `One token costs $2 \\times ${m.layers} \\times ${big(m.d)} \\times ${m.bytes} = ${big(per)}$ bytes: a key and a value of $d$ numbers at every layer.`,
-            `$${big(free * 1e9)} / ${big(per)} = ${big(n)}$ tokens.`,
+            `${free} GB is $${big(free * 1e9)}$ bytes, and $${big(free * 1e9)} / ${big(per)} = ${big(n)}$ tokens.`,
           ],
         };
       }

@@ -1,20 +1,20 @@
 {
- "duration": 97.662,
+ "duration": 107.503,
  "scenes": {
-  "implicit": [0.0, 52.34],
-  "loss": [52.34, 97.662]
+  "implicit": [0.0, 58.892],
+  "loss": [58.892, 107.503]
  },
  "beats": {
   "implicit/rl": [0.7, 11.436, "The usual route has two stages: fit a reward model to preference pairs, then sample answers and push their reward up, with a KL penalty to the reference.", [[2.82, 3.4], [5.68, 6.03], [8.92, 9.29]]],
   "implicit/skip": [11.816, 20.176, "Direct preference optimization skips both. No reward model, and no sampling: it trains on the pairs directly.", [[14.736, 15.476], [17.666, 18.156]]],
-  "implicit/implicit": [20.556, 29.423, "It uses the model's own log-ratio to the reference as the reward: beta times the log of pi over pi ref, for a whole answer.", [[24.436, 24.986], [27.946, 28.276]]],
-  "implicit/eg": [29.803, 42.926, "If the model gives an answer a log-probability of minus twelve, where the reference gave minus fifteen, the log-ratio is three. With beta at zero point one, the implicit reward is zero point three.", [[33.463, 33.733], [35.783, 36.123], [37.653, 38.273], [40.123, 40.433]]],
-  "implicit/leash": [43.306, 51.24, "That reward grows only as the model moves away from the reference, and beta sets the exchange rate, as in the KL penalty.", [[47.006, 47.346], [49.376, 49.626]]],
-  "loss/plug": [53.04, 61.167, "Put the implicit rewards of the chosen and the rejected answer into the reward model's loss: minus log sigmoid of their difference.", [[58.42, 58.84]]],
-  "loss/m": [61.547, 71.188, "Say the chosen answer's log-ratio is three, and the rejected one's is minus one. The gap is four; times beta, zero point four.", [[64.377, 64.727], [66.807, 67.347], [68.447, 68.957], [69.767, 70.157]]],
-  "loss/loss": [71.568, 78.505, "Sigma of zero point four is about zero point six, and minus its log is about zero point five one.", [[74.958, 75.338]]],
-  "loss/push": [78.885, 85.881, "Lowering the loss raises the chosen answer's probability relative to the reference, and lowers the rejected one's.", [[83.795, 84.155]]],
-  "loss/needs": [86.261, 95.441, "All it needs is the pairs, the model being trained, and a frozen reference. Every number comes from reading fixed answers, so nothing is sampled.", [[87.881, 88.181], [89.331, 89.511], [90.771, 91.301], [93.901, 94.101]]],
-  "loss/turn": [95.821, 96.562, "Your turn.", []]
+  "implicit/implicit": [20.556, 35.975, "It uses the model's own log-ratio to the reference as the reward: beta times the log of pi over pi ref, for a whole answer. It is written r hat: the hat marks an implied reward, with no reward model behind it.", [[24.506, 24.976], [27.906, 28.156], [29.206, 29.816], [30.476, 30.716], [31.406, 31.936], [33.946, 34.206]]],
+  "implicit/eg": [36.355, 49.478, "If the model gives an answer a log-probability of minus twelve, where the reference gave minus fifteen, the log-ratio is three. With beta at zero point one, the implicit reward is zero point three.", [[40.015, 40.285], [42.335, 42.675], [44.205, 44.825], [46.675, 46.985]]],
+  "implicit/leash": [49.858, 57.792, "That reward grows only as the model moves away from the reference, and beta sets the exchange rate, as in the KL penalty.", [[53.558, 53.898], [55.928, 56.178]]],
+  "loss/plug": [59.592, 71.009, "Call the chosen answer y w and the rejected one y l. Put their implicit rewards into the reward model's loss: minus log sigmoid of their difference.", [[61.922, 62.242], [63.282, 63.502], [64.282, 64.942], [68.082, 68.562]]],
+  "loss/m": [71.389, 81.03, "Say the chosen answer's log-ratio is three, and the rejected one's is minus one. The gap is four; times beta, zero point four.", [[74.219, 74.569], [76.649, 77.189], [78.289, 78.799], [79.609, 79.999]]],
+  "loss/loss": [81.41, 88.346, "Sigma of zero point four is about zero point six, and minus its log is about zero point five one.", [[84.8, 85.18]]],
+  "loss/push": [88.726, 95.723, "Lowering the loss raises the chosen answer's probability relative to the reference, and lowers the rejected one's.", [[93.636, 93.996]]],
+  "loss/needs": [96.103, 105.283, "All it needs is the pairs, the model being trained, and a frozen reference. Every number comes from reading fixed answers, so nothing is sampled.", [[97.723, 98.023], [99.173, 99.353], [100.613, 101.143], [103.743, 103.943]]],
+  "loss/turn": [105.663, 106.403, "Your turn.", []]
  }
 }
