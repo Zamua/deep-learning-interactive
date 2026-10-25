@@ -7,6 +7,8 @@ import { Page } from './core/page';
 import { color, withAlpha } from './core/plot';
 import { DONE, last, lectureState, readState } from './core/progress';
 import { hasLecture } from './lectures/index';
+import { ATLAS_COURSE, GRAPH } from './atlas/index';
+import { Learner } from './mastery/learner';
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 
@@ -337,7 +339,7 @@ export function renderIndex(main: HTMLElement): void {
     h('div', {},
       h('div', { class: 'hero-kicker' }, 'Interactive courses'),
       h('h1', { class: 'hero-title', html: 'Deep learning, <em>one line of code</em> at a time.' }),
-      h('p', { class: 'hero-lede' }, 'Two courses, ten years apart. The first is Stanford\'s CS231n as taught in 2016: how machines learned to see. The second picks up where it ends: transformers, scale, and models trained by feedback.'))));
+      h('p', { class: 'hero-lede' }, 'Two courses, ten years apart, and a third built differently. The first is Stanford\'s CS231n as taught in 2016: how machines learned to see. The second picks up where it ends: transformers, scale, and models trained by feedback. The third is a map of concepts you master one at a time, with problems until each one sticks.'))));
   const cont = continueCard(null);
   if (cont) root.prepend(cont);
   const grid = h('div', { class: 'courses' });
@@ -352,6 +354,13 @@ export function renderIndex(main: HTMLElement): void {
       h('div', { class: 'course-blurb' }, k.blurb),
       h('div', { class: 'course-foot' }, h('span', {}, stats), h('span', { class: 'course-go', html: `Open ${icon('arrowRight')}` }))));
   }
+  const st = [...new Learner(GRAPH).statuses().values()];
+  const mastered = st.filter((s) => s === 'mastered' || s === 'due' || s === 'slipping').length;
+  grid.append(h('a', { class: 'course-card course-card-atlas', href: `#/${ATLAS_COURSE.id}` },
+    h('div', { class: 'course-top' }, h('span', { class: 'course-code' }, ATLAS_COURSE.code), h('span', { class: 'course-era' }, ATLAS_COURSE.era)),
+    h('div', { class: 'course-title' }, ATLAS_COURSE.title),
+    h('div', { class: 'course-blurb' }, ATLAS_COURSE.blurb),
+    h('div', { class: 'course-foot' }, h('span', {}, [`${st.length} concepts`, mastered ? `${mastered} mastered` : ''].filter(Boolean).join(' · ')), h('span', { class: 'course-go', html: `Open ${icon('arrowRight')}` }))));
   root.append(grid);
   root.append(h('footer', { class: 'home-foot', html: page.md('An independent study companion. CS231n was created at Stanford by Fei-Fei Li, Andrej Karpathy and Justin Johnson; DL26 is this site\'s own continuation.') }));
 }

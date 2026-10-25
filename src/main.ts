@@ -14,6 +14,8 @@ import { Page } from './core/page';
 import { DONE, lectureState, readState, saveRead } from './core/progress';
 import { progressMark, renderCourse, renderIndex } from './home';
 import { hasLecture, loadLecture } from './lectures/index';
+import { ATLAS_COURSE, DOMAINS, GRAPH } from './atlas/index';
+import { Learner } from './mastery/learner';
 
 const store = {
   get(k: string): string | null {
@@ -82,7 +84,7 @@ const BRAND_MARK = (() => {
 })();
 const brand = h('a', { class: 'brand' }, h('span', { class: 'brand-mark', html: BRAND_MARK }), brandName, h('span', { class: 'brand-sub' }, 'interactive'));
 /** The top bar names the course being read, and leads back to its contents; outside a course, the index. */
-function setBrand(course: CourseMeta | null): void {
+function setBrand(course: Pick<CourseMeta, 'id' | 'code'> | null): void {
   brandName.textContent = course ? course.code.toLowerCase() : 'deep learning';
   brand.setAttribute('href', course ? `#/${course.id}` : '#/');
   document.body.classList.toggle('in-course', !!course);
@@ -104,7 +106,7 @@ function buildNav(course: CourseMeta | null, active: string): void {
   if (!course) {
     nav.append(h('div', { class: 'side-part' }, 'Courses'));
     const ul = h('ul', { class: 'side-list' });
-    for (const k of COURSES) {
+    for (const k of [...COURSES, ATLAS_COURSE]) {
       const a = h('a', { href: `#/${k.id}`, class: 'side-link' }, h('span', { class: 'side-num' }, k.code), h('span', { class: 'side-title' }, k.title));
       a.addEventListener('click', () => setNav(false));
       ul.append(h('li', {}, a));
@@ -191,6 +193,10 @@ let renderToken = 0;
 
 async function route(): Promise<void> {
   const [, id = '', section = ''] = location.hash.replace(/^#\/?/, '#').split(/[#/]/);
+  if (id === 'atlas') {
+    await routeAtlas();
+    return;
+  }
   const key = id === 'watch' ? `watch/${section}` : id;
   if (key === currentId && currentId) {
     if (section && id !== 'watch') document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -267,6 +273,55 @@ async function route(): Promise<void> {
   if (section) requestAnimationFrame(() => document.getElementById(section)?.scrollIntoView({ block: 'start' }));
   else window.scrollTo(0, 0);
   trackReading(meta, article, toc, !section);
+}
+
+async function routeAtlas(): Promise<void> {
+  const parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean).slice(1);
+  const key = ['atlas', ...parts].join('/');
+  if (key === currentId) return;
+  const token = ++renderToken;
+  disposeAll();
+  currentId = key;
+  main.innerHTML = '';
+  setBrand(ATLAS_COURSE);
+  buildAtlasNav(parts[0] ?? '');
+  const c = parts[0] ? GRAPH.get(parts[0]) : undefined;
+  document.title = c ? `${c.title} · atlas interactive` : `${ATLAS_COURSE.code}: ${ATLAS_COURSE.title} · interactive`;
+  window.scrollTo(0, 0);
+  try {
+    const { renderAtlas } = await import('./mastery/ui/index');
+    if (token !== renderToken) return;
+    await renderAtlas(main, parts, () => token === renderToken);
+  } catch (e) {
+    console.error(e);
+    if (await reloadIfStale()) return;
+    main.innerHTML = '';
+    main.append(h('div', { class: 'fig-error' }, `This page failed to load: ${(e as Error).message}`));
+  }
+}
+
+function buildAtlasNav(active: string): void {
+  nav.innerHTML = '';
+  const st = new Learner(GRAPH).statuses();
+  const all = h('a', { class: 'side-all', href: '#/', html: `${icon('arrowLeft')} All courses` });
+  all.addEventListener('click', () => setNav(false));
+  nav.append(all, h('a', { class: 'side-course', href: '#/atlas' }, h('span', { class: 'side-course-code' }, ATLAS_COURSE.code), h('span', { class: 'side-course-title' }, ATLAS_COURSE.title)));
+  for (const d of DOMAINS) {
+    nav.append(h('div', { class: 'side-part' }, d.title));
+    const ul = h('ul', { class: 'side-list' });
+    for (const c of GRAPH.order.filter((x) => x.domain === d.id)) {
+      const s = st.get(c.id)!;
+      const mark = s === 'mastered' || s === 'due' ? h('span', { class: 'side-mark done', html: icon('check') }) : s === 'locked' ? h('span', { class: 'side-mark at-side-lock', html: icon('lock') }) : '';
+      const a = h('a', { href: `#/atlas/${c.id}`, class: `side-link${c.id === active ? ' on' : ''}${s === 'locked' ? ' soon' : ''}` },
+        h('span', { class: 'side-num', style: `color:var(--c-${d.color})` }, '●'),
+        h('span', { class: 'side-title' }, c.title),
+        mark);
+      a.addEventListener('click', () => setNav(false));
+      ul.append(h('li', {}, a));
+    }
+    nav.append(ul);
+  }
+  nav.append(h('div', { class: 'side-foot' }, `${GRAPH.order.length} concepts, and growing.`));
 }
 
 /**
@@ -354,7 +409,14 @@ async function renderWatch(id: string, token: number): Promise<void> {
     const [def, { mountLecture }] = await Promise.all([pending, import('./lecture/player')]);
     if (token !== renderToken) return;
     main.innerHTML = '';
-    mountLecture(main, def, meta);
+    mountLecture(main, def, {
+      back: `#/${meta.id}`,
+      kicker: `Chapter ${meta.num} · Lecture`,
+      poster: [`Chapter ${meta.num}`, 'Lecture'],
+      artist: `Chapter ${meta.num}: ${meta.title}`,
+      noun: 'lecture',
+      end: { kicker: 'That was the lecture', title: 'Now explore it yourself', action: 'Open the chapter', href: `#/${meta.id}` },
+    });
   } catch (e) {
     console.error(e);
     if (await reloadIfStale()) return;

@@ -1,5 +1,5 @@
 // Screenshots a lecture near the end of every beat (or of the named beats), for review.
-// Usage: node tools/lecture/shots.mjs <lecture-id> <out-dir> [width=402] [height=874] [mobile=1] [scene/beat ...]
+// Usage: node tools/lecture/shots.mjs <lecture-id | atlas-<concept-id>> <out-dir> [width=402] [height=874] [mobile=1] [scene/beat ...]
 // Env: BASE=url, THEME=dark, FRAC=0.85 (how far into each beat)
 import { mkdirSync } from 'node:fs';
 import { chromium } from 'playwright';
@@ -11,6 +11,7 @@ if (!id || !out) {
 }
 mkdirSync(out, { recursive: true });
 const base = process.env.BASE ?? 'http://127.0.0.1:5340/';
+const route = id.startsWith('atlas-') ? `atlas/${id.slice(6)}/watch` : `watch/${id}`;
 const browser = await chromium.launch({ channel: 'chrome' });
 const ctx = await browser.newContext({
   viewport: { width: +w, height: +h },
@@ -30,7 +31,7 @@ async function arm() {
       break;
     } catch (e) {
       if (i >= 5) throw e;
-      await page.goto(`${base}#/watch/${id}`).catch(() => {});
+      await page.goto(`${base}#/${route}`).catch(() => {});
     }
   }
   await page.waitForTimeout(800);
@@ -40,7 +41,7 @@ async function arm() {
 }
 const armed = () => page.evaluate(() => window.__armed === 1).catch(() => false);
 
-await page.goto(`${base}#/watch/${id}`);
+await page.goto(`${base}#/${route}`);
 await page.waitForFunction(() => window.__lec, null, { timeout: 30000 });
 await page.waitForTimeout(800);
 await page.screenshot({ path: `${out}/000-poster.png` });

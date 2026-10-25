@@ -1380,3 +1380,13 @@ button.layer:hover .layer-t,
 a.layer:not(.layer-watch):hover .layer-t {
   color: var(--ink);
 }
+
+/* Atlas pieces shown outside the Atlas pages: its course card and nav marks. */
+.course-card-atlas .course-code {
+  color: var(--c-teal);
+}
+.at-side-lock .ico {
+  width: 12px;
+  height: 12px;
+  opacity: 0.6;
+}
