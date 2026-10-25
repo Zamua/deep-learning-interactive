@@ -1,5 +1,4 @@
 import '../styles/lecture.css';
-import type { ChapterMeta } from '../chapters/index';
 import { CodePanel } from '../core/code';
 import { icon } from '../core/controls';
 import { h, onDispose } from '../core/dom';
@@ -21,6 +20,20 @@ export interface LectureDef {
   audio: string;
   /** Notes on the calls in this lecture's code, beyond the shared library ones. */
   glossary?: Glossary;
+}
+
+/** Where a lecture sits: its back link, its labels, and where the end card leads. */
+export interface LectureFrame {
+  back: string;
+  /** Above the scene title, e.g. "Chapter 4 · Lecture". */
+  kicker: string;
+  /** The poster's line before the running time, e.g. ["Chapter 4", "Lecture"]. */
+  poster: string[];
+  /** Media session artist. */
+  artist: string;
+  /** What to call it in messages: "lecture" or "explainer". */
+  noun: string;
+  end: { kicker: string; title: string; action: string; href: string };
 }
 
 interface TBeat {
@@ -211,7 +224,7 @@ const store = {
 };
 
 /** Builds the full-screen lecture player for `def` into `host`. */
-export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMeta): void {
+export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureFrame): void {
   const { scenes, duration, exact } = layout(def.script, def.timing);
   const log = new LectureLog(def.script.id, duration);
   const prefKey = 'cs231n.lec.prefs';
@@ -236,9 +249,9 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   const sceneTitle = h('div', { class: 'lec-scene-title' });
   const sceneCount = h('div', { class: 'lec-count' });
   const top = h('header', { class: 'lec-top' },
-    h('a', { class: 'lec-back', href: `#/${meta.id}`, 'aria-label': 'Back to the chapter', html: icon('arrowLeft') }),
+    h('a', { class: 'lec-back', href: frame.back, 'aria-label': 'Back', html: icon('arrowLeft') }),
     h('div', { class: 'lec-titles' },
-      h('div', { class: 'lec-kicker' }, `Chapter ${meta.num} · Lecture`),
+      h('div', { class: 'lec-kicker' }, frame.kicker),
       sceneTitle),
     sceneCount);
 
@@ -366,7 +379,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     chip.innerHTML = `<span>${i + 1}</span>${s.title}`;
     listItems.forEach((b, k) => b.classList.toggle('on', k === i));
     if ('mediaSession' in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({ title: `${s.title}`, artist: `Chapter ${meta.num}: ${meta.title}`, album: 'cs231n interactive' });
+      navigator.mediaSession.metadata = new MediaMetadata({ title: `${s.title}`, artist: frame.artist, album: 'cs231n interactive' });
     }
   }
 
@@ -508,7 +521,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
       // AbortError: a pause landed before playback began.
       if (['NotAllowedError', 'AbortError'].includes((e as DOMException).name)) return;
       clock.goSilent();
-      notice.textContent = 'The narration could not play here, so the lecture is running with captions only.';
+      notice.textContent = `The narration could not play here, so the ${frame.noun} is running with captions only.`;
       await clock.play();
     }
     if (clock.silent) onPlaying();
@@ -588,7 +601,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
       const wasPlaying = !audio.paused || root.classList.contains('waiting');
       clock.goSilent();
       root.classList.remove('waiting');
-      notice.textContent = 'The narration failed to load, so the lecture is running with captions only.';
+      notice.textContent = `The narration failed to load, so the ${frame.noun} is running with captions only.`;
       if (wasPlaying) {
         void clock.play();
         onPlaying();
@@ -926,9 +939,9 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
   // ---- poster and end card
   const saved = log.pos;
   const heard = log.heardIn();
-  const posterPlay = h('button', { class: 'lec-poster-play', type: 'button', html: `${icon('playFill')}<span>${saved ? 'Start over' : 'Play the lecture'}</span>` });
+  const posterPlay = h('button', { class: 'lec-poster-play', type: 'button', html: `${icon('playFill')}<span>${saved ? 'Start over' : `Play the ${frame.noun}`}</span>` });
   const poster = h('div', { class: 'lec-poster' },
-    h('div', { class: 'lec-poster-kicker' }, [`Chapter ${meta.num}`, 'Lecture', `${Math.round(duration / 60)} min`, heard >= 0.02 ? `${Math.round(heard * 100)}% heard` : ''].filter(Boolean).join(' · ')),
+    h('div', { class: 'lec-poster-kicker' }, [...frame.poster, duration < 90 ? `${Math.round(duration)} s` : `${Math.round(duration / 60)} min`, heard >= 0.02 ? `${Math.round(heard * 100)}% heard` : ''].filter(Boolean).join(' · ')),
     h('h1', { class: 'lec-poster-title' }, def.script.title),
     h('div', { class: 'lec-poster-actions' }, posterPlay));
   posterPlay.addEventListener('click', (e) => {
@@ -952,10 +965,10 @@ export function mountLecture(host: HTMLElement, def: LectureDef, meta: ChapterMe
     void play();
   });
   const endcard = h('div', { class: 'lec-end' },
-    h('div', { class: 'lec-poster-kicker' }, 'That was the lecture'),
-    h('h2', { class: 'lec-end-title' }, 'Now explore it yourself'),
+    h('div', { class: 'lec-poster-kicker' }, frame.end.kicker),
+    h('h2', { class: 'lec-end-title' }, frame.end.title),
     h('div', { class: 'lec-poster-actions' },
-      h('a', { class: 'btn btn-primary', href: `#/${meta.id}`, html: `Open the chapter ${icon('arrowRight')}` }),
+      h('a', { class: 'btn btn-primary', href: frame.end.href, html: `${frame.end.action} ${icon('arrowRight')}` }),
       replay));
   stage.append(poster, endcard);
 

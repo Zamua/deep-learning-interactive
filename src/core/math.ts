@@ -69,5 +69,6 @@ export function md(src: string, symIdx: Map<string, string> = new Map()): string
     }
     return `<p>${inline(t.replace(/\n/g, ' '))}</p>`;
   });
-  return out.join('\n').replace(/(\d+)/g, (_, n: string) => stash[Number(n)]!);
+  // A word joiner keeps punctuation on the line of the math before it.
+  return out.join('\n').replace(/(\d+)([,.;:!?)])?/g, (_, n: string, punct?: string) => stash[Number(n)]! + (punct ? `\u2060${punct}` : ''));
 }
