@@ -1,9 +1,11 @@
 # cs231n-course: notes for a coding agent
 
 A Vite + TypeScript static site (no framework) hosting interactive courses: CS231n (Winter
-2016) and DL26, its continuation (transformers, scale, post-training). Hash routes: `#/` the
-course index, `#/<course-id>` a course's front page, `#/<chapter-id>[/<section-id>]` a
-chapter, `#/watch/<chapter-id>` its lecture. Chapter ids are unique across courses.
+2016), DL26, its continuation (transformers, scale, post-training), and Atlas, a mastery
+course built as a concept graph with generated problems. Hash routes: `#/` the course index,
+`#/<course-id>` a course's front page, `#/<chapter-id>[/<section-id>]` a chapter,
+`#/watch/<chapter-id>` its lecture, `#/atlas/...` the Atlas pages (see `docs/MASTERY.md`).
+Chapter ids are unique across courses.
 `docs/AUTHORING.md` is the chapter-writing contract and the API reference; read it before
 touching a chapter. `docs/DL26.md` is DL26's syllabus and replaces AUTHORING's course section
 for DL26 chapters.
@@ -12,9 +14,11 @@ for DL26 chapters.
 
     npm run dev                          vite on 127.0.0.1:5340
     npm run build                        tsc --noEmit && vite build -> dist/
+    npm test                             Vitest (src/**/*.test.ts): mastery domain + every Atlas generator
     node tools/shot.mjs <route> <name> [w h mobile full]   Playwright + system Chrome screenshot
                                          (prints page errors; env SCROLL='.fig:2', THEME=dark)
-    node tools/lecture/build.mjs <id> [--check]   synthesize a lecture's narration (ElevenLabs via OpenRouter, or Kokoro)
+    node tools/lecture/build.mjs <id> [--check]   synthesize a lecture's narration (ElevenLabs via OpenRouter, or Kokoro);
+                                         an Atlas explainer's id is atlas-<concept-id>
     node tools/lecture/shots.mjs <id> <dir> [w h mobile] [scene/beat ...]   screenshot every beat
     node tools/lecture/lookup.mjs [<id> ...]   lookup terms still missing a note
 
@@ -35,6 +39,12 @@ for DL26 chapters.
   beat-anchored easing and a drawing kit in stage units; `types.ts`: script and timing types;
   `lookup.ts`: the cards for symbols and calls; `glossary.ts`: note types and `callKey`).
   `src/lectures/<id>/`: one lecture per chapter. `docs/LECTURES.md` is the authoring guide.
+- `src/mastery/`: the Atlas engine. `domain/` is pure and unit tested (concept graph, student
+  model, scheduler, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
+  learner's records in localStorage; `ui/` renders the map, concept pages, sessions and
+  placement. `src/atlas/<domain>/<concept>/` holds each concept: `meta.ts`, `problems.ts`, and
+  an explainer (`script.ts`, `scenes.ts`, `explainer.ts`) played by the lecture player.
+  `docs/MASTERY.md` is the design and the authoring contract.
 
 ## Invariants
 

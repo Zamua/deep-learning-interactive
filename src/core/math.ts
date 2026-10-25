@@ -69,6 +69,8 @@ export function md(src: string, symIdx: Map<string, string> = new Map()): string
     }
     return `<p>${inline(t.replace(/\n/g, ' '))}</p>`;
   });
-  // A word joiner keeps punctuation on the line of the math before it.
-  return out.join('\n').replace(/(\d+)([,.;:!?)])?/g, (_, n: string, punct?: string) => stash[Number(n)]! + (punct ? `\u2060${punct}` : ''));
+  // Punctuation right after inline math goes inside its last box, so it never wraps onto a line of its own.
+  const glue = (html: string, punct: string) =>
+    /<\/span><\/span><\/span>$/.test(html) ? html.replace(/(<\/span><\/span><\/span>)$/, `<span class="tex-punct">${punct}</span>$1`) : `${html}\u2060${punct}`;
+  return out.join('\n').replace(/(\d+)([,.;:!?)])?/g, (_, n: string, punct?: string) => (punct ? glue(stash[Number(n)]!, punct) : stash[Number(n)]!));
 }

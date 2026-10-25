@@ -9,12 +9,16 @@ most chapters open with a narrated lecture. Unofficial and unaffiliated.
   Winter 2016.
 - **DL26**: the continuation, 2017 to 2026: transformers, scale, and post-training. Syllabus in
   `docs/DL26.md`.
+- **Atlas**: AI by mastery. A graph of small concepts, each with a short voiced explainer and
+  generated problems; mastering a concept unlocks the ones built on it, and mastered concepts
+  come back as spaced reviews. Progress stays in the browser. Design in `docs/MASTERY.md`.
 
 ## Run
 
     npm install
     npm run dev        # http://127.0.0.1:5340
     npm run build      # typecheck + static build to dist/
+    npm test           # Vitest: the mastery engine, and every Atlas problem generator
 
 `dist/` is a plain static site (hash routing, relative asset paths) and can be served from
 any static host.
