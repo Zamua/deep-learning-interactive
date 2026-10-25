@@ -13,6 +13,7 @@ import type { Answer, Concept, Generator, Problem } from '../domain/types';
 import type { Learner } from '../learner';
 import { atlasRoot, dots, plural, render } from './common';
 import { explainerId } from './concept';
+import { celebrate } from './celebrate';
 import { wireLookup } from './lookup';
 import { makePad } from './pads';
 import { syncReminders } from '../push';
@@ -172,7 +173,8 @@ function responseText(a: Answer, r: Response): string {
 }
 
 /** After an answer: right or wrong, why, the worked solution, and what changed. Resolves on Next. */
-function feedback(frame: { body: HTMLElement; dock: HTMLElement }, c: Concept, p: Problem, got: Asked, before: ConceptRecord, after: ConceptRecord, graph: Learner['graph']): Promise<void> {
+function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLElement }, c: Concept, p: Problem, got: Asked, before: ConceptRecord, after: ConceptRecord, learner: Learner): Promise<void> {
+  const graph = learner.graph;
   const { verdict } = got;
   const a = p.answer;
   const inline = a.kind !== 'choice' && a.kind !== 'order';
@@ -186,7 +188,8 @@ function feedback(frame: { body: HTMLElement; dock: HTMLElement }, c: Concept, p
   }
   const news: HTMLElement[] = [];
   if (after.mastered && !before.mastered) {
-    const unlocked = graph.dependents.get(c.id)!.filter((d) => graph.get(d)!.prereqs.every((pid) => pid === c.id || after.mastered));
+    const unlocked = graph.dependents.get(c.id)!.filter((d) => graph.get(d)!.prereqs.every((pid) => pid === c.id || learner.record(pid).mastered));
+    void celebrate(frame.root, learner, c.id, unlocked, unlocked[0] ?? learner.next(c.id)?.concept);
     news.push(h('div', { class: 'at-news', html: `${icon('sparkle')} <b>${c.title} mastered.</b> ${unlocked.length ? `Unlocks ${unlocked.map((d) => graph.get(d)!.title).join(', ')}.` : 'It will come back for review tomorrow.'}` }));
   } else if (before.slipping && !after.slipping) {
     news.push(h('div', { class: 'at-news', html: `${icon('sparkle')} <b>${c.title} is back to mastered.</b>` }));
@@ -293,7 +296,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       results.push({ id: c.id, ok: got.verdict.ok });
       last = c.id;
       frame.setProgress(results.length, SESSION_LENGTH, `${results.length} of ${SESSION_LENGTH}`);
-      await feedback(frame, c, problem, got, before, after, learner.graph);
+      await feedback(frame, c, problem, got, before, after, learner);
     }
   };
 
