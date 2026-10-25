@@ -313,7 +313,7 @@ export const generators: Generator[] = [
       const name = 'xyz'[k]!;
       const ans = t.grad(v)[k]!;
       return {
-        prompt: `Backprop through $f = ${t.tex}$ at ${at(v)}. What is $${D(name)}$?`,
+        prompt: `For $f = ${t.tex}$ at ${at(v)}, what is $${D(name)}$?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, t.wrong(v).map((w) => ({ value: w.value[k]!, why: w.why }))),
         solution: t.steps(v).concat(`So $${D(name)} = ${n(ans)}$.`),
@@ -327,7 +327,7 @@ export const generators: Generator[] = [
       const v = draw(rng, d, t.ok);
       const ans = t.grad(v).map(clean);
       return {
-        prompt: `Backprop through $f = ${t.tex}$ at ${at(v)}. What is the gradient $\\left[${D('x')},\\ ${D('y')},\\ ${D('z')}\\right]$?`,
+        prompt: `For $f = ${t.tex}$ at ${at(v)}, what is the gradient $\\left[${D('x')},\\ ${D('y')},\\ ${D('z')}\\right]$?`,
         answer: { kind: 'vector', value: ans },
         traps: vtraps(ans, t.wrong(v)),
         solution: t.steps(v).concat(`So the gradient is $[${ans.map((x) => n(x)).join(',\\ ')}]$.`),
@@ -351,7 +351,7 @@ export const generators: Generator[] = [
         const who = t.who;
         const vars = t.tex.includes('z') ? at(v) : `$x = ${n(v.x)}$ and $y = ${n(v.y)}$`;
         return {
-          prompt: `Backprop through $f = ${t.tex}$ at ${vars}. What is $${D(who)}$?`,
+          prompt: `For $f = ${t.tex}$ at ${vars}, what is $${D(who)}$?`,
           answer: {
             kind: 'choice',
             options: opts.map((o) => `$${n(o)}$`),
