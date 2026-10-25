@@ -4,6 +4,7 @@ import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
 import { streak, type Status } from '../domain/model';
 import type { Learner } from '../learner';
+import { disableReminders, enableReminders, loadPrefs, pushSupport, sendTest, syncReminders } from '../push';
 import { exportSnapshot, importSnapshot } from '../store';
 import { atlasRoot, dots, plural, whenDue } from './common';
 import { graphView } from './graph-view';
@@ -44,6 +45,52 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
   const st = [...learner.statuses().values()];
   const mastered = st.filter((x) => x === 'mastered' || x === 'due' || x === 'slipping').length;
   root.append(h('a', { class: 'at-maplink', href: '#/atlas/graph', html: `${icon('graph')} <span>The whole map</span><small>${mastered} of ${st.length} mastered</small>${icon('arrowRight')}` }));
+  const rem = reminders(learner);
+  if (rem) root.append(rem);
+  void syncReminders(learner);
+}
+
+/** The daily reminder switch, when this browser can receive push. */
+function reminders(learner: Learner): HTMLElement | null {
+  const support = pushSupport();
+  if (support === 'no') return null;
+  const box = h('div', { class: 'at-remind' }, h('div', { class: 'home-lbl' }, 'Daily reminder'));
+  if (support === 'install') {
+    box.append(h('p', { class: 'at-small' }, 'Reminders work once Atlas is on your home screen: tap Share, then Add to Home Screen, and open it from there.'));
+    return box;
+  }
+  let prefs = loadPrefs();
+  const time = h('input', { type: 'time', class: 'at-time', value: prefs.time, 'aria-label': 'Reminder time' });
+  const toggle = h('button', { type: 'button', class: 'at-switch', role: 'switch' });
+  const status = h('p', { class: 'at-small at-remind-s' });
+  const test = h('button', { type: 'button', class: 'at-stuck at-remind-test' }, 'Send a test');
+  const draw = (msg?: string) => {
+    toggle.setAttribute('aria-checked', String(prefs.on));
+    toggle.textContent = prefs.on ? 'On' : 'Off';
+    test.hidden = !prefs.on;
+    status.textContent = msg ?? (prefs.on ? `One nudge a day, skipped on days you practice.${prefs.next ? ` Next: ${new Date(prefs.next).toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' })}.` : ''}` : 'One nudge a day at this time, skipped on days you practice.');
+  };
+  const run = async (f: () => Promise<unknown>) => {
+    toggle.disabled = true;
+    try {
+      await f();
+    } catch (e) {
+      draw((e as Error).message);
+      return;
+    } finally {
+      toggle.disabled = false;
+    }
+    draw();
+  };
+  toggle.addEventListener('click', () => void run(async () => (prefs = prefs.on ? await disableReminders() : await enableReminders(learner, time.value || '19:00'))));
+  time.addEventListener('change', () => {
+    if (prefs.on) void run(async () => (prefs = await enableReminders(learner, time.value || '19:00')));
+    else prefs = { ...prefs, time: time.value };
+  });
+  test.addEventListener('click', () => void sendTest().then(() => draw('Sent. It should arrive in a few seconds.'), (e: Error) => draw(e.message)));
+  draw();
+  box.append(h('div', { class: 'at-remind-row' }, time, toggle), status, test);
+  return box;
 }
 
 function hasExplainerLink(id: string): HTMLElement | undefined {

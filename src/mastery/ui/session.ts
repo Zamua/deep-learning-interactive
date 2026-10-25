@@ -14,6 +14,7 @@ import type { Learner } from '../learner';
 import { atlasRoot, dots, plural, render } from './common';
 import { explainerId } from './concept';
 import { makePad } from './pads';
+import { syncReminders } from '../push';
 
 /** Problems per session: about fifteen minutes. */
 export const SESSION_LENGTH = 20;
@@ -279,6 +280,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         worked: () => gen.make(new Rng(rng.int(2 ** 31)), pick.difficulty),
       });
       const after = learner.answer(c.id, gen.id, { ok: got.verdict.ok, seconds: got.seconds, help: got.help });
+      void syncReminders(learner);
       if (after.mastered && !before.mastered) masteredNow.push(c.id);
       tag.replaceWith(problemTag(c, pick, after));
       results.push({ id: c.id, ok: got.verdict.ok });

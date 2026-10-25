@@ -1,0 +1,16 @@
+// The push Worker's contract: bindings and the vars it expects. Per-environment names and
+// values live with the operator's deploy config; the VAPID private key is a secret.
+{
+  "name": "cs231n-push",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-10-01",
+  "durable_objects": {
+    "bindings": [{ "name": "REMINDERS", "class_name": "Reminders" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Reminders"] }],
+  "vars": {
+    "VAPID_PUBLIC_KEY": "",
+    "VAPID_SUBJECT": "",
+    "ALLOWED_ORIGINS": "http://127.0.0.1:5340"
+  }
+}
