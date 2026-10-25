@@ -49,12 +49,15 @@ export interface Timing {
 /** Gaps the narration track leaves, shared by the builder and the player's estimate. */
 export const GAP = { sceneLead: 0.7, beat: 0.38, sceneTail: 1.1 };
 
+/** `{shown|spoken}`; a `|` inside the shown half is written `\|`, as in `{\|x\||the size of x}`. */
+const PAIR = /\{((?:\\\||[^|{}])*)\|([^{}]*)\}/g;
+
 /** Caption text for a beat: the `shown` half of every `{shown|spoken}`. */
 export function shownText(say: string): string {
-  return say.replace(/\{([^|{}]*)\|([^{}]*)\}/g, '$1');
+  return say.replace(PAIR, (_, shown: string) => shown.replaceAll('\\|', '|'));
 }
 
 /** Voice text for a beat: the `spoken` half of every `{shown|spoken}`. */
 export function spokenText(say: string): string {
-  return say.replace(/\{([^|{}]*)\|([^{}]*)\}/g, '$2');
+  return say.replace(PAIR, '$2');
 }
