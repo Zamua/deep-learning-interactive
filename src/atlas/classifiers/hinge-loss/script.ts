@@ -33,7 +33,7 @@ export const script: LectureScript = {
         # max(0, 3) + max(0, -3) = 3 + 0 = 3     #@sum
       `,
       beats: [
-        { id: 'formula', say: 'In symbols: for every wrong class j, take the larger of zero and {sⱼ − s_y + 1|s j, minus s y, plus one}. Then add them up.', code: 'L' },
+        { id: 'formula', say: 'In symbols: for every wrong class j, take the larger of zero and {sⱼ − s[y] + 1|s j, minus s y, plus one}. Then add them up.', code: 'L' },
         { id: 'skip', say: 'The right class is skipped. Its own term would always be one, a cost no score could ever remove.', code: 'skip' },
         { id: 'sum', say: 'Here that is three for dog, plus zero for ship. The loss is three.', code: 'sum' },
       ],
