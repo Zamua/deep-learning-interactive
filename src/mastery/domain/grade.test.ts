@@ -41,17 +41,18 @@ describe('grade', () => {
     expect(grade(p, 'seven').unreadable).toBeTruthy();
   });
 
-  it('grades shapes exactly', () => {
-    const p = P({ kind: 'shape', value: [10, 3072] });
+  it('grades shapes exactly and explains a transposed one', () => {
+    const p = P({ kind: 'shape', value: [10, 3072] }, [{ value: [3072, 10], why: 'transposed' }]);
     expect(grade(p, '10x3072').ok).toBe(true);
-    expect(grade(p, '(3072, 10)').ok).toBe(false);
-    expect(grade(p, '(10)').ok).toBe(false);
+    expect(grade(p, '(3072, 10)')).toEqual({ ok: false, why: 'transposed' });
+    expect(grade(p, '(10)')).toEqual({ ok: false });
   });
 
-  it('grades vectors entrywise', () => {
-    const p = P({ kind: 'vector', value: [0.705, 0.259, 0.035], places: 2 });
+  it('grades vectors entrywise and explains a known wrong vector', () => {
+    const p = P({ kind: 'vector', value: [0.705, 0.259, 0.035], places: 2 }, [{ value: [2, 1, -1], why: 'still the scores' }]);
     expect(grade(p, '[0.71, 0.26, 0.04]').ok).toBe(true);
-    expect(grade(p, '[0.71, 0.26]').ok).toBe(false);
+    expect(grade(p, '[0.71, 0.26]')).toEqual({ ok: false });
+    expect(grade(p, '[2, 1, -1]')).toEqual({ ok: false, why: 'still the scores' });
   });
 
   it('grades choices and says what a wrong pick means', () => {

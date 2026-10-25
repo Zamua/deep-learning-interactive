@@ -1034,3 +1034,8 @@ body.at-on .side {
 .at-file p {
   margin: 0 0 10px;
 }
+.at-prompt code,
+.at-steps code,
+.at-why code {
+  white-space: nowrap;
+}

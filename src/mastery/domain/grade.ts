@@ -55,18 +55,19 @@ export function grade(p: Problem, r: Response): Verdict {
       const x = typeof r === 'string' ? parseNumber(r) : null;
       if (x === null) return { ok: false, unreadable: 'Enter a number, like 0.25, -3 or 1/4.' };
       if (closeTo(x, a.value, a.places)) return { ok: true };
-      const trap = p.traps?.find((t) => closeTo(x, t.value, a.places));
-      return trap ? { ok: false, why: trap.why } : { ok: false };
+      return caught(p, (t) => typeof t === 'number' && closeTo(x, t, a.places));
     }
     case 'shape': {
       const s = typeof r === 'string' ? parseShape(r) : null;
       if (!s) return { ok: false, unreadable: 'Enter a shape, like (10, 3072).' };
-      return { ok: s.length === a.value.length && s.every((d, i) => d === a.value[i]) };
+      const same = (t: number[]) => s.length === t.length && s.every((d, i) => d === t[i]);
+      return same(a.value) ? { ok: true } : caught(p, (t) => Array.isArray(t) && same(t));
     }
     case 'vector': {
       const v = typeof r === 'string' ? parseVector(r) : null;
       if (!v) return { ok: false, unreadable: 'Enter numbers separated by commas, like [0.5, 0.25].' };
-      return { ok: v.length === a.value.length && v.every((x, i) => closeTo(x, a.value[i]!, a.places)) };
+      const same = (t: number[]) => v.length === t.length && v.every((x, i) => closeTo(x, t[i]!, a.places));
+      return same(a.value) ? { ok: true } : caught(p, (t) => Array.isArray(t) && same(t));
     }
     case 'choice': {
       if (typeof r !== 'number') return { ok: false, unreadable: 'Pick one option.' };
@@ -86,6 +87,12 @@ export function grade(p: Problem, r: Response): Verdict {
       }
     }
   }
+}
+
+/** A wrong answer, explained by the first trap it matches. */
+function caught(p: Problem, matches: (value: number | number[]) => boolean): Verdict {
+  const trap = p.traps?.find((t) => matches(t.value));
+  return trap ? { ok: false, why: trap.why } : { ok: false };
 }
 
 /** The response that `grade` accepts for a problem: what the self-check and tests submit. */

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Rng } from '../core/rand';
 import { md, setMacros } from '../core/math';
 import { codeIndex, symbolMacros } from '../core/symbols';
-import { closeTo, expectedResponse, grade } from '../mastery/domain/grade';
+import { expectedResponse, grade } from '../mastery/domain/grade';
 import { parse } from '../mastery/domain/expr';
 import type { Problem } from '../mastery/domain/types';
 import { CONCEPTS, folderIssues, GRAPH, hasExplainer, loadGenerators } from './index';
@@ -30,7 +30,12 @@ function problemIssues(p: Problem): string[] {
     const xs = a.kind === 'number' ? [a.value] : a.value;
     if (!xs.every(Number.isFinite)) out.push('answer is not finite');
   }
-  if (a.kind === 'number') for (const t of p.traps ?? []) if (closeTo(t.value, a.value, a.places)) out.push(`trap ${t.value} equals the answer`);
+  for (const t of p.traps ?? []) {
+    const r = typeof t.value === 'number' ? String(t.value) : a.kind === 'shape' ? `(${t.value.join(', ')})` : `[${t.value.join(', ')}]`;
+    if (a.kind === 'choice' || a.kind === 'order' || a.kind === 'expr') out.push('traps only apply to number, shape and vector answers');
+    else if (grade(p, r).ok) out.push(`trap ${r} is graded right`);
+    else if (!grade(p, r).why) out.push(`trap ${r} does not match its own answer kind`);
+  }
   if (a.kind === 'choice') {
     if (new Set(a.options).size !== a.options.length) out.push('repeated option');
     if (!(a.correct >= 0 && a.correct < a.options.length)) out.push('correct option out of range');

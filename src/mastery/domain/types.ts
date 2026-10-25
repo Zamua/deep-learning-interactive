@@ -43,10 +43,10 @@ export interface Problem {
   /** The worked solution, one step per entry. */
   solution: string[];
   /**
-   * Likely mistakes for number answers: a wrong value that matches `value` (to the answer's
-   * places) gets `why` as its explanation.
+   * Likely mistakes for number, shape and vector answers: a wrong response equal to `value`
+   * (a number, or the shape or vector as an array) gets `why` as its explanation.
    */
-  traps?: { value: number; why: string }[];
+  traps?: { value: number | number[]; why: string }[];
 }
 
 export interface Generator {

@@ -5,8 +5,13 @@ export const ATLAS_SYMBOLS: SymbolMap = {
   x: {
     color: 'orange',
     name: 'x: the input',
-    code: ['x', 'X'],
     about: 'What goes in: a vector of numbers, such as an image flattened into one column, or the variable of a function. In a classifier it is given; only the parameters change.',
+  },
+  X: {
+    color: 'orange',
+    name: 'X: a batch of inputs, one per row',
+    code: ['X', 'X_batch'],
+    about: 'N examples stacked as the rows of a matrix of shape (N, D). X @ W.T scores the whole batch at once, one row of scores per example.',
   },
   w: {
     color: 'blue',
@@ -66,6 +71,11 @@ export const ATLAS_SYMBOLS: SymbolMap = {
     color: 'slate',
     name: 'C: the number of classes',
     about: 'How many answers the classifier chooses between: 10 for CIFAR-10. It is the number of rows of W and the length of s.',
+  },
+  H: {
+    color: 'slate',
+    name: 'H: the number of hidden units',
+    about: 'The width of a hidden layer: how many numbers the first layer hands to the next. A choice, not something the data fixes.',
   },
   N: {
     color: 'slate',
