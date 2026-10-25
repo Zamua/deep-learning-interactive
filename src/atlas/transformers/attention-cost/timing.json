@@ -1,0 +1,17 @@
+{
+ "duration": 65.692,
+ "scenes": {
+  "square": [0.0, 30.221],
+  "memory": [30.221, 65.692]
+ },
+ "beats": {
+  "square/pairs": [0.7, 12.042, "Self-attention scores every token against every token. T tokens make a T by T matrix: T squared scores. Four tokens, sixteen scores.", [[4.25, 4.88], [7.49, 7.95], [9.25, 9.72], [10.51, 10.79]]],
+  "square/double": [12.422, 20.59, "Double the tokens to eight, and there are sixty four scores: four times as many. Doubling T quadruples the scores.", [[13.972, 14.222], [15.882, 16.212], [17.502, 18.082], [18.962, 19.122]]],
+  "square/linear": [20.97, 29.121, "The queries, keys and values grow only in step with T: one row per token. And the weights do not grow at all.", [[24.93, 25.45], [26.74, 27.22]]],
+  "memory/bytes": [30.921, 40.375, "Each score is stored in two bytes. One score matrix for a thousand tokens is a million scores: two million bytes, two megabytes.", [[33.221, 33.751], [37.441, 37.851], [39.041, 39.441]]],
+  "memory/long": [40.755, 48.305, "At eight thousand tokens, it is sixty four million scores, one hundred twenty eight megabytes, for a single head.", [[42.335, 42.565], [44.735, 45.075], [46.885, 47.165]]],
+  "memory/heads": [48.685, 55.662, "And every head computes its own. With sixteen heads, one layer holds about two gigabytes of scores.", [[50.775, 51.315], [52.535, 52.805]]],
+  "memory/why": [56.042, 63.471, "That square is why long inputs are expensive for attention: twice the context, four times the work and memory.", [[59.722, 60.262], [61.312, 61.562]]],
+  "memory/turn": [63.851, 64.592, "Your turn.", []]
+ }
+}

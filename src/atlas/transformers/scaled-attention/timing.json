@@ -1,0 +1,19 @@
+{
+ "duration": 107.824,
+ "scenes": {
+  "scale": [0.0, 45.211],
+  "why": [45.211, 107.824]
+ },
+ "beats": {
+  "scale/formula": [0.7, 11.059, "Scaled dot-product attention changes one thing. Each score is the dot product of a query and a key, divided by the square root of d k, their length.", [[3.69, 4.28], [7.39, 7.73], [9.97, 10.36]]],
+  "scale/example": [11.439, 21.771, "Here the vectors have four entries, so d k is four. The dot product is four, the square root of four is two, so the score is two.", [[11.879, 12.029], [13.769, 14.049], [15.849, 16.419], [17.809, 18.249], [20.009, 20.389]]],
+  "scale/row": [22.151, 30.27, "Do the same for every key. Dot products of four, zero and two become scores of two, zero and one.", [[23.861, 24.451], [25.851, 26.061], [27.191, 27.501], [28.881, 29.111]]],
+  "scale/softmax": [30.65, 44.111, "Then softmax, as before. With e squared about seven point three nine and e about two point seven two, the weights are zero point six seven, zero point zero nine and zero point two four.", [[32.62, 33.24], [35.8, 36.01], [38.08, 38.48], [40.58, 40.84], [42.28, 42.55]]],
+  "why/coin": [45.911, 58.38, "Why the square root? Picture a query and a key whose entries are plus or minus one, at random. Each product in their dot product is then plus or minus one, like a coin flip.", [[47.171, 47.891], [49.621, 49.801], [52.051, 52.261], [52.841, 53.511], [55.261, 55.451], [57.131, 57.461]]],
+  "why/sum": [58.76, 69.668, "Add up d k of them and they partly cancel. The total typically lands about the square root of d k from zero: two for four terms, eight for sixty four.", [[61.46, 62.04], [66.05, 66.62], [67.92, 68.32]]],
+  "why/sharp": [70.048, 90.01, "So longer vectors give bigger scores, and big scores make softmax all or nothing. Two, zero and one give zero point six seven, zero point zero nine and zero point two four. Four times bigger, they give zero point nine eight, zero, and zero point zero two.", [[72.638, 73.018], [75.888, 76.688], [77.048, 77.488], [80.218, 80.598], [81.988, 82.198], [83.658, 84.178], [85.278, 85.568], [87.258, 87.538], [88.088, 88.338]]],
+  "why/stuck": [90.39, 98.601, "With one weight near one, nudging a score barely moves any weight, so the queries and keys get almost no gradient to learn from.", [[91.9, 92.23], [94.52, 94.91]]],
+  "why/fix": [98.981, 105.604, "Dividing by the square root of d k brings a typical score back to about one, however long the vectors are.", [[101.321, 101.481], [103.831, 104.151]]],
+  "why/turn": [105.984, 106.724, "Your turn.", []]
+ }
+}

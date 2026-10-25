@@ -1,0 +1,18 @@
+{
+ "duration": 88.704,
+ "scenes": {
+  "parts": [0.0, 47.849],
+  "flow": [47.849, 88.704]
+ },
+ "beats": {
+  "parts/io": [0.7, 11.992, "A transformer block takes T tokens, each a vector of d numbers, and returns T vectors of d numbers. Same shape in and out, so blocks can be stacked.", [[3.13, 3.45], [5.28, 5.62], [8.02, 8.55], [10.19, 10.51]]],
+  "parts/attn": [12.372, 25.618, "First the tokens exchange information: layer norm, then multi-head attention, and the result is added back to the input. A residual connection: x plus attention of layer norm of x.", [[14.802, 15.272], [15.982, 16.412], [18.042, 18.392], [20.632, 21.222], [22.462, 22.912]]],
+  "parts/mlp": [25.998, 33.609, "Then each token is processed on its own: layer norm again, then an MLP, added back the same way.", [[26.468, 26.638], [28.698, 29.198], [30.158, 30.518], [31.798, 32.168]]],
+  "parts/width": [33.989, 46.749, "The MLP widens each token to four d numbers, applies a ReLU, and comes back down to d. With d of seven hundred sixty eight, its hidden layer is three thousand and seventy two wide.", [[37.459, 37.799], [38.739, 38.999], [40.459, 41.109], [43.109, 43.419]]],
+  "flow/x": [48.549, 54.186, "Follow one token through, with d of two. It enters as one and two.", [[50.209, 50.559], [51.719, 52.249]]],
+  "flow/a": [54.566, 63.534, "For this token, the attention branch returns zero point five and minus one. Added to the input, that makes one point five and one.", [[55.476, 55.756], [59.416, 60.076], [61.086, 61.346]]],
+  "flow/m": [63.914, 74.739, "The MLP branch, reading the normalized sum, returns minus zero point five and two. Added on, that makes one and three: the block's output.", [[65.254, 65.554], [67.114, 67.404], [70.314, 70.914], [71.534, 71.774], [73.294, 73.694]]],
+  "flow/path": [75.119, 86.484, "The input runs straight through the adds, and each branch only adds a change, as in a residual block. With the norms at the start of each branch, this is called a pre-norm block.", [[77.369, 77.639], [79.929, 80.169], [81.589, 82.199], [84.279, 84.579]]],
+  "flow/turn": [86.864, 87.604, "Your turn.", []]
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "duration": 91.452,
+ "scenes": {
+  "peek": [0.0, 48.346],
+  "renorm": [48.346, 91.452]
+ },
+ "beats": {
+  "peek/predict": [0.7, 13.669, "A model that writes text predicts each next token from the ones before it. Trained on cats like fresh fish, position zero should predict like, position one should predict fresh, and so on.", [[5.14, 5.76], [7.83, 8.17], [10.3, 10.77], [12.75, 13.03]]],
+  "peek/cheat": [14.049, 23.218, "Self-attention trains every position at once. But then cats can attend to like, the very token it is meant to predict, and simply copy it.", [[17.019, 17.599], [18.069, 18.239], [19.659, 19.889], [21.849, 22.109]]],
+  "peek/fail": [23.598, 28.412, "That trick is useless when generating, where the next token does not exist yet.", [[25.938, 26.158]]],
+  "peek/mask": [28.792, 35.445, "So before the softmax, every score whose key comes after its query is set to minus infinity.", [[30.512, 30.792], [33.632, 33.782]]],
+  "peek/grid": [35.825, 47.246, "In the grid of scores, that is everything above the diagonal. Each row keeps itself and the past: row zero keeps one entry, and row three keeps all four.", [[37.145, 37.495], [38.005, 38.225], [39.845, 40.405], [42.765, 43.265], [45.015, 45.315]]],
+  "renorm/row": [49.046, 58.74, "Take row one, like. Its scores are two, zero, three and one, but the last two belong to fresh and fish, which come later.", [[50.126, 50.476], [50.866, 51.376], [52.696, 52.886], [53.436, 53.626], [54.736, 55.226], [57.656, 57.896]]],
+  "renorm/hide": [59.12, 66.021, "Both become minus infinity, and e to the minus infinity is zero, so they get no weight at all.", [[61.02, 61.4], [63.89, 64.28]]],
+  "renorm/weights": [66.401, 78.577, "The softmax shares everything among what is left: e squared over e squared plus one is zero point eight eight, and the other gets zero point one two. They still add up to one.", [[69.411, 69.951], [72.241, 72.411], [73.941, 74.301], [76.581, 77.151]]],
+  "renorm/count": [78.957, 89.232, "How many entries survive? One, plus two, plus three, up to T: T times T plus one, over two. Ten of the sixteen here.", [[80.587, 81.157], [81.557, 81.777], [83.267, 83.517], [84.247, 84.777], [86.417, 86.607], [87.217, 87.747]]],
+  "renorm/turn": [89.612, 90.352, "Your turn.", []]
+ }
+}

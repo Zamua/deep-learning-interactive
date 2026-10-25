@@ -1,0 +1,17 @@
+{
+ "duration": 80.15,
+ "scenes": {
+  "block": [0.0, 47.29],
+  "model": [47.29, 80.15]
+ },
+ "beats": {
+  "block/attn": [0.7, 14.673, "Count the weights in one block. Attention has four matrices, W Q, W K, W V and W O, each d by d once the heads are put together: four d squared.", [[2.46, 3.12], [5.06, 5.49], [6.28, 6.6], [7.4, 7.74], [8.51, 8.71], [9.67, 10.03], [12.91, 13.41]]],
+  "block/mlp": [15.053, 26.518, "The MLP has two: W one, four d by d, and W two, d by four d. Each is four d squared, so eight d squared.", [[16.613, 17.163], [17.993, 18.263], [19.503, 19.843], [21.013, 21.283], [22.423, 23.003], [24.643, 24.953], [25.313, 25.483]]],
+  "block/small": [26.898, 36.636, "The biases and the layer norms' gamma and beta are only vectors of length d or four d, tiny next to d squared, so they are left out.", [[29.798, 30.008], [32.808, 33.308], [35.028, 35.418]]],
+  "block/total": [37.016, 46.19, "That makes twelve d squared per block: a third in attention, two thirds in the MLP. With d of a thousand, twelve million.", [[39.556, 40.026], [41.156, 41.446], [43.116, 43.666], [44.866, 45.216]]],
+  "model/stack": [47.99, 56.915, "Stack N blocks and multiply: twelve N d squared. Twelve blocks of width a thousand hold one hundred forty four million.", [[50.06, 50.6], [52.11, 52.68], [54.64, 54.84]]],
+  "model/embed": [57.295, 68.942, "Then the embedding table, V by d: one row for each token in the vocabulary. Fifty thousand tokens add fifty million, for one hundred ninety four million in all.", [[58.755, 59.195], [60.205, 60.755], [63.095, 63.665], [66.255, 66.575]]],
+  "model/scale": [69.322, 77.93, "Width counts twice. Double d, and the blocks hold four times as many weights. Double the number of blocks, and they only double.", [[70.752, 71.232], [71.892, 72.262], [74.742, 75.262], [76.662, 76.852]]],
+  "model/turn": [78.31, 79.05, "Your turn.", []]
+ }
+}
