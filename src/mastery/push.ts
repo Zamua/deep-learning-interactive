@@ -89,7 +89,10 @@ export async function disableReminders(): Promise<ReminderPrefs> {
 
 export async function sendTest(): Promise<void> {
   const sub = await (await navigator.serviceWorker.getRegistration())?.pushManager.getSubscription();
-  if (!sub) throw new Error('Reminders are not on in this browser.');
+  if (!sub) {
+    savePrefs({ ...loadPrefs(), on: false, next: undefined });
+    throw new Error('This browser dropped its reminder subscription. Turn reminders on again.');
+  }
   await api('POST', '/test', { endpoint: sub.endpoint });
 }
 
@@ -104,7 +107,7 @@ export async function syncReminders(learner: Learner): Promise<void> {
   if (!p.on) return;
   const sub = await (await navigator.serviceWorker.getRegistration())?.pushManager.getSubscription();
   if (!sub) {
-    savePrefs({ ...p, on: false });
+    savePrefs({ ...p, on: false, next: undefined });
     return;
   }
   const newDay = p.synced !== undefined && new Date(p.synced).toDateString() !== new Date().toDateString();

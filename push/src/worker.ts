@@ -64,8 +64,10 @@ export class Reminders extends DurableObject<Env> {
     if (!e) return { error: 'unknown' };
     if (Date.now() - e.lastTest < 60_000) return { error: 'too soon' };
     e.lastTest = Date.now();
-    await this.ctx.storage.put(key, e);
-    return { status: await this.send(e, 'test') };
+    const status = await this.send(e, 'test');
+    if (status === 404 || status === 410) await this.ctx.storage.delete(key);
+    else await this.ctx.storage.put(key, e);
+    return { status };
   }
 
   async alarm(): Promise<void> {
@@ -109,6 +111,8 @@ export class Reminders extends DurableObject<Env> {
       },
       body,
     });
+    // The push host and status only: the endpoint itself identifies the browser.
+    if (!res.ok) console.log('push refused', kind, new URL(e.endpoint).host, res.status, (await res.text()).slice(0, 200));
     return res.status;
   }
 }
@@ -163,7 +167,13 @@ export default {
     }
     if (url.pathname === '/test' && req.method === 'POST') {
       const r = await stub.test(endpoint);
-      return json(r, 'error' in r ? 429 : 200, h);
+      if ('error' in r) {
+        return r.error === 'unknown'
+          ? json({ error: 'The reminder service has no subscription for this browser. Turn reminders off and on again.' }, 404, h)
+          : json({ error: 'One test a minute. Try again shortly.' }, 429, h);
+      }
+      if (r.status < 200 || r.status >= 300) return json({ error: `The push service refused the test (${r.status}).` }, 502, h);
+      return json(r, 200, h);
     }
     return json({ error: 'not found' }, 404, h);
   },

@@ -47,7 +47,6 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
   root.append(h('a', { class: 'at-maplink', href: '#/atlas/graph', html: `${icon('graph')} <span>The whole map</span><small>${mastered} of ${st.length} mastered</small>${icon('arrowRight')}` }));
   const rem = reminders(learner);
   if (rem) root.append(rem);
-  void syncReminders(learner);
 }
 
 /** The daily reminder switch, when this browser can receive push. */
@@ -87,8 +86,17 @@ function reminders(learner: Learner): HTMLElement | null {
     if (prefs.on) void run(async () => (prefs = await enableReminders(learner, time.value || '19:00')));
     else prefs = { ...prefs, time: time.value };
   });
-  test.addEventListener('click', () => void sendTest().then(() => draw('Sent. It should arrive in a few seconds.'), (e: Error) => draw(e.message)));
+  test.addEventListener('click', () => void sendTest().then(() => draw('Sent. It should arrive in a few seconds.'), (e: Error) => {
+    prefs = loadPrefs();
+    draw(e.message);
+  }));
   draw();
+  // The saved switch can outlive the browser's subscription; the sync finds that out.
+  void syncReminders(learner).catch(() => {}).then(() => {
+    if (toggle.disabled) return;
+    prefs = loadPrefs();
+    draw();
+  });
   box.append(h('div', { class: 'at-remind-row' }, time, toggle), status, test);
   return box;
 }
