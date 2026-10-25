@@ -40,7 +40,7 @@ export const script: LectureScript = {
         w @ x    # -5: opposite   #@opp
       `,
       beats: [
-        { id: 'arrows', say: 'In two dimensions, picture each vector as an arrow from the origin. Here w is two, one.', code: 'w' },
+        { id: 'arrows', say: 'In two dimensions, picture each vector as an arrow from the origin. Here w is the arrow to the point two, one.', code: 'w' },
         { id: 'same', say: 'When x points roughly the same way, like three, one, the products agree, and the dot product is positive: seven.', code: 'same' },
         { id: 'perp', say: 'Turn x to minus one, two, at a right angle to w, and the products cancel: minus two plus two is zero.', code: 'perp' },
         { id: 'opp', say: 'Turn it further, to minus two, minus one, and the dot product goes negative: minus five.', code: 'opp' },

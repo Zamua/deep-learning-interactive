@@ -1,0 +1,23 @@
+{
+ "duration": 112.157,
+ "scenes": {
+  "multiply": [0.0, 42.558],
+  "sign": [42.558, 87.51],
+  "example": [87.51, 112.157]
+ },
+ "beats": {
+  "multiply/pair": [0.7, 7.991, "The dot product takes two vectors of the same length, here w and x, and gives back a single number.", [[3.83, 4.2], [4.55, 4.72], [5.83, 6.21]]],
+  "multiply/mult": [8.371, 18.621, "First, multiply matching entries: two times one is two, minus one times four is minus four, and three times two is six.", [[8.911, 9.261], [11.061, 11.481], [13.041, 13.481], [16.031, 16.431]]],
+  "multiply/add": [19.001, 24.243, "Then add up the products: two, minus four and six make four.", [[20.631, 21.131], [21.481, 21.971]]],
+  "multiply/formula": [24.623, 32.219, "In symbols, w dot x is the sum, over every position i, of w i times x i.", [[25.463, 25.793], [27.793, 28.003], [29.563, 29.863]]],
+  "multiply/weigh": [32.599, 41.458, "Read w as weights: each entry of x counts as much as its weight says, and a negative weight makes it count against.", [[34.659, 35.299], [38.569, 38.969]]],
+  "sign/arrows": [43.258, 51.609, "In two dimensions, picture each vector as an arrow from the origin. Here w is the arrow to the point two, one.", [[44.448, 44.818], [47.508, 48.118], [50.488, 50.648], [51.008, 51.158]]],
+  "sign/same": [51.989, 60.406, "When x points roughly the same way, like three, one, the products agree, and the dot product is positive: seven.", [[54.289, 54.549], [55.949, 56.399], [57.469, 57.769], [59.469, 59.909]]],
+  "sign/perp": [60.786, 69.415, "Turn x to minus one, two, at a right angle to w, and the products cancel: minus two plus two is zero.", [[62.516, 62.806], [63.196, 63.456], [64.966, 65.276], [66.506, 67.036], [68.526, 68.716]]],
+  "sign/opp": [69.795, 76.611, "Turn it further, to minus two, minus one, and the dot product goes negative: minus five.", [[70.725, 71.065], [71.975, 72.195], [72.945, 73.355], [75.145, 75.615]]],
+  "sign/agree": [76.991, 86.41, "So the sign says whether two vectors agree: positive when they point the same way, zero at a right angle, negative when they point apart.", [[79.841, 80.401], [82.231, 82.651], [84.121, 84.611]]],
+  "example/ask": [88.21, 97.369, "Your turn. w is two, three, one, and x is four, one, two. What is w dot x?", [[88.84, 89.56], [90.92, 91.18], [91.64, 91.9], [92.29, 92.73], [95.12, 95.71]]],
+  "example/mult": [97.749, 106.187, "Multiply matching entries: two times four is eight, three times one is three, one times two is two.", [[99.519, 100.069], [101.649, 102.139], [103.869, 104.439]]],
+  "example/add": [106.567, 111.057, "Add the products: eight plus three plus two is thirteen.", [[107.567, 108.097], [109.987, 110.157]]]
+ }
+}

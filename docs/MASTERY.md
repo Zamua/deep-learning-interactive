@@ -215,7 +215,7 @@ Twenty-one concepts, from vectors to one gradient step on a linear classifier:
 | optimization | learning-rate | gd-step |
 | optimization | softmax-grad | cross-entropy, chain-rule |
 | optimization | sgd-linear | softmax-grad, linear-score, gd-step |
-| optimization | minibatch | sgd-linear |
+| optimization | minibatch | gd-step |
 
 About 40 minutes of explainers in total. Later domains follow the other courses: backprop and
 computational graphs, networks, training, convolution, sequence models, attention and

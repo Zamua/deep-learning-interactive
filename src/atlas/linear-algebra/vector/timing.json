@@ -1,0 +1,25 @@
+{
+ "duration": 112.015,
+ "scenes": {
+  "list": [0.0, 34.563],
+  "image": [34.563, 64.827],
+  "ops": [64.827, 87.855],
+  "example": [87.855, 112.015]
+ },
+ "beats": {
+  "list/list": [0.7, 9.928, "A vector is a list of numbers, kept in order. This one, x, holds four: three, minus one, four, and two.", [[2.68, 2.85], [3.62, 4.24], [4.77, 4.97], [5.4, 5.61], [6.35, 6.88], [7.33, 7.64], [8.36, 8.64], [9.11, 9.31]]],
+  "list/dim": [10.308, 18.884, "How many numbers it holds is its length, or its dimension. This x is four-dimensional, written x in R four.", [[12.668, 12.928], [13.938, 14.558], [16.478, 16.888]]],
+  "list/index": [19.264, 27.593, "Each entry has an index: its position. Python counts from zero, so x of zero is the first entry, three.", [[20.914, 21.254], [22.004, 22.524], [24.024, 24.324], [26.794, 27.114]]],
+  "list/last": [27.973, 33.463, "That makes the last of four entries x of three. There is no x of four.", [[30.053, 30.243], [31.253, 31.783]]],
+  "image/image": [35.263, 41.881, "Anything described by numbers can be a vector. Take a tiny color image, four pixels by four.", [[37.953, 38.533], [40.073, 40.433]]],
+  "image/rgb": [42.261, 47.727, "Each pixel is three numbers: how much red, how much green, and how much blue.", [[44.191, 44.641], [45.351, 45.641], [46.501, 46.731]]],
+  "image/flat": [48.107, 56.029, "Lay every number out in one row, and the image becomes a vector of four times four times three: forty eight entries.", [[50.267, 50.547], [54.187, 54.637]]],
+  "image/big": [56.409, 63.727, "A thirty two by thirty two color photo works the same way: three thousand and seventy two numbers in one vector.", [[59.949, 60.479]]],
+  "ops/add": [65.527, 74.085, "Two vectors of the same length add entry by entry: first plus first, second plus second, third plus third.", [[68.827, 69.357], [70.627, 71.057], [72.327, 72.817], [73.197, 73.347]]],
+  "ops/scale": [74.465, 80.515, "Multiplying by a number scales every entry. Two times u doubles each one.", [[77.585, 78.145], [79.165, 79.325]]],
+  "ops/same": [80.895, 86.755, "The lengths have to match. Give v a fourth entry, and u has nothing to add to it.", [[82.425, 82.945], [84.655, 84.895]]],
+  "example/ask": [88.555, 97.581, "Your turn. u is two, zero, three, and v is one, four, two. What is u plus v?", [[89.205, 89.835], [91.075, 91.235], [92.375, 92.875], [93.525, 93.675], [94.835, 95.005], [95.395, 95.965]]],
+  "example/pairs": [97.961, 104.697, "Pair up matching entries: two plus one, zero plus four, three plus two.", [[99.631, 100.181], [101.211, 101.791], [103.001, 103.531]]],
+  "example/sum": [105.077, 110.915, "So u plus v is three, four, five. Still three entries long.", [[107.637, 107.817], [108.947, 109.437]]]
+ }
+}

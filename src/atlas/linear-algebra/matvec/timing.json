@@ -1,0 +1,22 @@
+{
+ "duration": 98.925,
+ "scenes": {
+  "rows": [0.0, 34.536],
+  "shapes": [34.536, 72.559],
+  "example": [72.559, 98.925]
+ },
+ "beats": {
+  "rows/setup": [0.7, 10.022, "Multiplying a matrix by a vector is a stack of dot products. Here W has two rows of three, and x has three entries.", [[2.89, 3.05], [4.65, 5.27], [5.64, 5.91], [7.88, 8.23]]],
+  "rows/row0": [10.402, 21.079, "Dot the first row of W with x: one times two, plus two times one, plus zero times three. That is four, the first entry of the result.", [[12.892, 13.422], [14.442, 14.722], [16.022, 16.292], [17.822, 18.312], [19.142, 19.522]]],
+  "rows/row1": [21.459, 27.566, "The second row gives the second entry: six, minus one, plus six. Eleven.", [[23.579, 24.099], [24.589, 24.789], [25.569, 25.789], [26.549, 27.019]]],
+  "rows/result": [27.946, 33.436, "So W x is four, eleven: one entry for each row of W.", [[29.936, 30.226], [30.726, 31.196]]],
+  "shapes/match": [35.236, 44.769, "Each row is dotted with x, so a row and x must be the same length: the number of columns of W must equal the length of x.", [[37.216, 37.596], [40.656, 41.086], [42.686, 42.886]]],
+  "shapes/out": [45.149, 54.771, "And there is one dot product per row, so the result has one entry per row of W. A two by three matrix turns three numbers into two.", [[47.319, 47.679], [50.629, 51.279], [52.739, 52.899]]],
+  "shapes/big": [55.151, 64.39, "The sizes can be anything. A ten by three thousand and seventy two W turns an image of three thousand and seventy two numbers into ten.", [[56.731, 57.251], [60.161, 60.411]]],
+  "shapes/fail": [64.77, 71.459, "Give it a vector of the wrong length, and a column of W has no partner: the product is not defined.", [[66.59, 66.89], [69.15, 69.69]]],
+  "example/ask": [73.259, 82.38, "Your turn. W has rows two, one and zero, three, and x is one, two. What is W x?", [[73.909, 74.649], [76.379, 76.589], [77.729, 77.979], [78.409, 78.699], [80.399, 80.899]]],
+  "example/r0": [82.76, 88.673, "Row zero dotted with x: two times one, plus one times two, is four.", [[84.72, 85.21], [86.19, 86.41], [87.8, 88.01]]],
+  "example/r1": [89.053, 94.421, "Row one: zero times one, plus three times two, is six.", [[89.783, 90.403], [91.623, 91.933], [93.413, 93.673]]],
+  "example/ans": [94.801, 97.825, "So W x is four, six.", [[97.011, 97.211]]]
+ }
+}

@@ -5,6 +5,6 @@ export const meta: ConceptMeta = {
   title: 'Learning rate',
   blurb: 'How big each step is: too small crawls, too large overshoots or blows up.',
   prereqs: ['gd-step'],
-  mastery: { streak: 4, seconds: 25 },
+  mastery: { streak: 4, seconds: 35 },
   deeper: [{ chapter: 'optimization', section: 'gradient-descent' }],
 };

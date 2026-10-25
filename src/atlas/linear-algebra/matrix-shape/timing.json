@@ -1,0 +1,27 @@
+{
+ "duration": 103.625,
+ "scenes": {
+  "grid": [0.0, 36.739],
+  "index": [36.739, 65.077],
+  "transpose": [65.077, 85.329],
+  "example": [85.329, 103.625]
+ },
+ "beats": {
+  "grid/grid": [0.7, 6.25, "A matrix is a grid of numbers: rows that run across, and columns that run down.", [[2.69, 3.16], [4.47, 4.65]]],
+  "grid/rows": [6.63, 9.493, "This one, W, has two rows,", [[7.26, 7.53], [8.17, 8.34]]],
+  "grid/cols": [9.873, 11.337, "and three columns.", [[11.143, 11.303]]],
+  "grid/shape": [11.717, 18.102, "Its shape is the rows, then the columns: two by three. Rows always come first.", [[13.247, 13.557], [14.517, 14.857], [15.827, 16.387]]],
+  "grid/count": [18.482, 21.642, "It holds two times three: six numbers.", [[20.262, 20.732]]],
+  "grid/big": [22.022, 35.639, "Real ones are bigger. A classifier with ten classes, for images of three thousand and seventy two numbers, has one row per class and one column per input number: ten by three thousand and seventy two.", [[23.422, 24.042], [26.002, 26.232], [28.902, 29.192], [30.752, 30.952], [32.832, 33.292]]],
+  "index/ij": [37.439, 43.171, "To pick out one entry, give its row, then its column. Both count from zero.", [[38.769, 39.129], [39.969, 40.229], [41.269, 41.749]]],
+  "index/eg": [43.551, 51.409, "W of zero, two is in row zero, the first row, and column two, the third column: it is two.", [[44.821, 45.201], [46.771, 47.051], [47.791, 48.161], [49.031, 49.371], [50.161, 50.641]]],
+  "index/eg2": [51.789, 56.512, "W of one, zero is the second row's first entry: zero.", [[55.419, 55.969]]],
+  "index/out": [56.892, 63.977, "And W of two, zero does not exist. With two rows, the rows are zero and one.", [[57.732, 57.952], [59.242, 59.392], [60.412, 60.962], [61.882, 62.132]]],
+  "transpose/flip": [65.777, 72.649, "Transposing a matrix turns its rows into columns. W transpose has shape three by two.", [[69.147, 69.717]]],
+  "transpose/ij": [73.029, 84.229, "Entry i, j of the transpose is entry j, i of the original: the five at W of one, two lands at W transpose of two, one.", [[73.929, 74.369], [77.039, 77.199], [78.349, 78.949], [80.709, 81.089]]],
+  "example/ask": [86.029, 89.234, "Your turn. What is the shape of this matrix?", [[86.649, 87.229]]],
+  "example/rows": [89.614, 94.106, "Count the rows, top to bottom: one, two, three.", [[90.604, 90.894], [91.714, 92.234], [92.574, 92.954], [93.354, 93.644]]],
+  "example/cols": [94.486, 98.571, "Count the columns, left to right: one, two.", [[95.496, 95.796], [96.766, 97.326], [97.696, 98.156]]],
+  "example/ans": [98.951, 102.525, "Rows first: the shape is three by two.", [[100.001, 100.611]]]
+ }
+}

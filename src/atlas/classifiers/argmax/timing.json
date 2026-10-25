@@ -1,0 +1,21 @@
+{
+ "duration": 76.949,
+ "scenes": {
+  "position": [0.0, 28.158],
+  "accuracy": [28.158, 56.351],
+  "example": [56.351, 76.949]
+ },
+ "beats": {
+  "position/scores": [0.7, 5.552, "Here are four scores: two, seven, one and five.", [[2.12, 2.66], [3.05, 3.35], [3.84, 4.15], [4.58, 4.83]]],
+  "position/max": [5.932, 9.371, "The largest value is seven. That is the max.", [[7.712, 8.142]]],
+  "position/arg": [9.751, 18.506, "The argmax asks a different question: where is it? Counting from zero, as Python does, seven sits at position one.", [[12.091, 12.621], [13.361, 13.991], [16.181, 16.581]]],
+  "position/predict": [18.886, 27.058, "For a classifier, that position is the answer. The scores belong to classes zero to three, so it predicts class one.", [[19.946, 20.136], [21.796, 22.356], [24.956, 25.266]]],
+  "accuracy/rows": [28.858, 36.07, "Now four images at once: one row of three scores for each, and its right label, y, beside it.", [[30.658, 31.128], [33.218, 33.508], [34.638, 34.818], [35.258, 35.418]]],
+  "accuracy/pred": [36.45, 42.259, "The argmax of each row is the prediction: one, zero, two and zero.", [[38.97, 39.49], [39.88, 40.15], [40.71, 40.97], [41.37, 41.55]]],
+  "accuracy/compare": [42.639, 48.95, "Check them against the labels. Three match. The second image was class two, not zero.", [[44.139, 44.589], [45.649, 46.089], [47.889, 48.109]]],
+  "accuracy/acc": [49.33, 55.251, "The share that match is the accuracy: three out of four, zero point seven five.", [[51.57, 52.04], [53.16, 53.68]]],
+  "example/ask": [57.051, 64.763, "Your turn. The scores are four, minus one, six and three. What is the argmax?", [[57.661, 58.231], [59.131, 59.511], [59.981, 60.381], [61.161, 61.521], [62.021, 62.211], [62.851, 63.441]]],
+  "example/max": [65.143, 67.151, "The largest score is six.", []],
+  "example/arg": [67.531, 75.849, "Count from zero: four is at zero, minus one at one, and six at two. The argmax is two.", [[68.581, 69.131], [70.391, 70.811], [72.251, 72.591], [73.851, 74.411]]]
+ }
+}
