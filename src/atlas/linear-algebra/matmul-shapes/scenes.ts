@@ -74,7 +74,7 @@ const order: SceneDef = {
   draw(s) {
     const u = s.u;
     const top = s.h * 0.13;
-    const sw = s.win('swap', 'batch');
+    const sw = s.win('swap', 'pair');
     s.alpha(sw, () => {
       const q = 6 * u;
       const x0 = s.w / 2 - (4 * q + 16 * u + 3 * q) / 2;
@@ -84,25 +84,24 @@ const order: SceneDef = {
       rich(s, shapes(3, 4, 2, 3, 'red', null), s.w / 2, s.h * 0.48, { size: 3.8, weight: 600 });
       s.text('inner 4 ≠ 2: no product  ✗', s.w / 2, s.h * 0.58, { size: 3.6, font: 'mono', color: s.c('red') });
     });
-    const b = s.ease('batch', 0.6, 0.3);
-    s.alpha(b, () => {
-      const bw = 34 * u;
-      const x0 = s.w / 2 - (2 * bw + 14 * u) / 2 + 3 * u;
-      block(s, x0, top, bw, 20 * u, 'orange', 'X', ['N', 'slate'], ['D', 'slate']);
-      block(s, x0 + bw + 14 * u, top, bw, 11 * u, 'blue', 'W', ['C', 'slate'], ['D', 'slate']);
+    s.alpha(s.ease('pair', 0.6, 0.3), () => {
+      const q = 6 * u;
+      const x0 = s.w / 2 - (3 * q + 16 * u + 4 * q) / 2;
+      block(s, x0, top, 3 * q, 2 * q, 'blue', 'A', ['2', '--ink-3'], ['3', 'slate']);
+      block(s, x0 + 3 * q + 16 * u, top, 4 * q, 2 * q, 'orange', 'M', ['2', 'slate'], ['4', '--ink-3']);
     });
     // Left-aligned so the three products line up.
     const lx = s.w / 2 - 36 * u;
     const line = (a: [string, Ink], b: [string, Ink], runs: [string, Ink][], y: number) =>
       rich(s, [a, [' @ ', '--ink-3'], b, ...runs], lx, y, { size: 3.5, weight: 600, align: 'left' });
-    s.alpha(s.ease('fix', 0.6), () => {
-      line(['X', 'orange'], ['W    ', 'blue'], [['(N, ', '--ink-2'], ['D', 'red'], [') @ (', '--ink-2'], ['C', 'red'], [', D)  ✗', '--ink-2']], s.h * 0.5);
+    s.alpha(s.ease('pair', 0.6, 1.2), () => {
+      line(['A', 'blue'], ['M    ', 'orange'], [['(2, ', '--ink-2'], ['3', 'red'], [') @ (', '--ink-2'], ['2', 'red'], [', 4)  ✗', '--ink-2']], s.h * 0.5);
     });
-    s.alpha(s.ease('fix', 0.6, 2.2), () => {
-      line(['X', 'orange'], ['W.T  ', 'blue'], [['(N, ', '--ink-2'], ['D', INNER], [') @ (', '--ink-2'], ['D', INNER], [', C) → ', '--ink-2'], ['(N, C)', OUTER]], s.h * 0.61);
+    s.alpha(s.ease('fix', 0.6, 1.2), () => {
+      line(['A.T', 'blue'], ['M  ', 'orange'], [['(3, ', '--ink-2'], ['2', INNER], [') @ (', '--ink-2'], ['2', INNER], [', 4) → ', '--ink-2'], ['(3, 4)', OUTER]], s.h * 0.61);
     });
     s.alpha(s.ease('flip', 0.6), () => {
-      line(['W', 'blue'], ['X.T  ', 'orange'], [['(C, ', '--ink-2'], ['D', INNER], [') @ (', '--ink-2'], ['D', INNER], [', N) → ', '--ink-2'], ['(C, N)', OUTER]], s.h * 0.72);
+      line(['M.T', 'orange'], ['A  ', 'blue'], [['(4, ', '--ink-2'], ['2', INNER], [') @ (', '--ink-2'], ['2', INNER], [', 3) → ', '--ink-2'], ['(4, 3)', OUTER]], s.h * 0.72);
     });
   },
 };

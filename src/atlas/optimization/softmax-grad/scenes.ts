@@ -6,7 +6,7 @@ const S = [1.8, 1.1, 0];
 const P = [0.6, 0.3, 0.1];
 const Y = 1;
 const G = P.map((p, i) => p - (i === Y ? 1 : 0));
-/** A confident, correct model: what `done` morphs the probabilities to. */
+/** Nearly all the probability on the correct option: what `done` morphs the probabilities to. */
 const DONE_P = [0.02, 0.97, 0.01];
 const f1 = (v: number) => (Math.abs(v) < 0.005 ? '0' : v.toFixed(Math.abs(v) < 0.1 ? 2 : 1));
 

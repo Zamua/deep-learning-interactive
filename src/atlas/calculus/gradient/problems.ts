@@ -104,7 +104,7 @@ export const generators: Generator[] = [
         answer: { kind: 'choice', options: options.map((o) => `$${o}$`), correct: 0, why },
         solution: [
           'The gradient points in the direction where $\\symf$ rises fastest.',
-          raise ? `So to raise $\\symf$, step along it: $${vec(g)}$.` : `So to lower $\\symf$, step against it: $-\\nabla \\symf = ${vec(minus)}$. This is how training lowers a loss.`,
+          raise ? `So to raise $\\symf$, step along it: $${vec(g)}$.` : `So to lower $\\symf$, step against it: $-\\nabla \\symf = ${vec(minus)}$.`,
         ],
       };
     },
@@ -114,14 +114,14 @@ export const generators: Generator[] = [
     make(rng, d) {
       const C = pick(rng, [3, 10, 100, 5, 1000]);
       const D = pick(rng, [4, 3072, 784, 512, 20, 64]);
-      const bias = d >= 0.4 && rng.int(3) === 0;
-      const [sym, shape, what] = bias ? ['\\symb', [C], 'the biases $\\symb$'] : ['\\symW', [C, D], 'the weights $\\symW$'];
+      const flat = d >= 0.4 && rng.int(3) === 0;
+      const [sym, shape, what] = flat ? ['\\symw', [C], `a vector $\\symw$ of ${C} numbers`] : ['\\symW', [C, D], `a grid $\\symW$ of numbers with ${C} rows and ${D} columns`];
       const tex = shape.length === 1 ? `(${shape[0]},)` : `(${shape.join(', ')})`;
       return {
-        prompt: `${what[0]!.toUpperCase()}${what.slice(1)} have shape $${tex}$, and the loss $\\symL$ is a single number. What is the shape of the gradient $\\symg = \\frac{\\partial \\symL}{\\partial ${sym}}$?`,
+        prompt: `$\\symf$ turns ${what}, shape $${tex}$, into a single number. What is the shape of its gradient, $\\frac{\\partial \\symf}{\\partial ${sym}}$?`,
         answer: { kind: 'shape', value: shape },
         solution: [
-          `$\\symg$ holds one partial derivative for every entry of $${sym}$: how $\\symL$ changes when that one entry is nudged.`,
+          `The gradient holds one partial derivative for every entry of $${sym}$: how $\\symf$ changes when that one entry is nudged.`,
           `So it has exactly the shape of $${sym}$: $${tex}$.`,
           'A step can then subtract it entry by entry.',
         ],

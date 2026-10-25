@@ -143,7 +143,7 @@ function orderPad(items: string[], rng: Rng, renderMd: (s: string) => string): P
   const listeners: (() => void)[] = [];
   const list = h('ol', { class: 'at-order' });
   const left = h('div', { class: 'at-pool' });
-  const display = h('div', { class: 'at-ordering' }, h('div', { class: 'at-order-hint' }, 'Tap the steps in order. Tap a placed step to take it back.'), list, left);
+  const display = h('div', { class: 'at-ordering' }, h('div', { class: 'at-order-hint' }, 'Tap them in order. Tap a placed one to take it back.'), list, left);
   const draw = () => {
     list.innerHTML = '';
     left.innerHTML = '';

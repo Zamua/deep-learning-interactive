@@ -5,7 +5,7 @@ import { bars, cells, columns, downArrows, rowLabel } from '../../draw';
 const f2 = (v: number) => v.toFixed(2);
 const neg = (t: string) => t.replace(/-/g, '−');
 
-/** Probability bars with class numbers under them and a gold `y` tag under the right class. */
+/** Probability bars with option numbers under them and a gold `y` tag under the right one. */
 function probBars(s: Scene, p: number[], yAt: number, o: { hi?: number[]; base?: number; tag?: number } = {}) {
   const xs = columns(s, p.length, s.tall ? 24 : 26);
   const base = o.base ?? s.h * 0.6;

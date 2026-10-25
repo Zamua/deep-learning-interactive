@@ -20,7 +20,7 @@ export const script: LectureScript = {
         p.sum()    # 1.0           #@sum
       `,
       beats: [
-        { id: 'scores', say: 'A classifier hands back one score per class. Here there are three: two, one, and minus one.', code: 's' },
+        { id: 'scores', say: 'Here are three scores, one for each of three options: two, one, and minus one.', code: 's' },
         { id: 'want', say: 'Often we want probabilities instead. Every one positive, and all of them adding up to one.' },
         { id: 'fail', say: 'These scores fail both tests. Minus one is negative, and together they add up to two.', code: 's' },
       ],
@@ -59,9 +59,9 @@ export const script: LectureScript = {
       beats: [
         { id: 'total', say: 'Second, add them up. The total is {10.48|ten point four eight}.', code: 'norm' },
         { id: 'divide', say: 'Then divide each one by that total.', code: 'norm' },
-        { id: 'result', say: 'Class zero gets {0.71|zero point seven one}, class one {0.26|zero point two six}, and class two {0.04|zero point zero four}.', code: 'norm' },
+        { id: 'result', say: 'Option zero gets {0.71|zero point seven one}, option one {0.26|zero point two six}, and option two {0.04|zero point zero four}.', code: 'norm' },
         { id: 'check', say: 'All positive, and they add up to one.', code: 'sum' },
-        { id: 'formula', say: 'In symbols: {pₖ is e to the sₖ, divided by the sum of e to the sⱼ|p k is e to the s k, divided by the sum of e to the s j}, over every class j.', code: ['exp', 'norm'] },
+        { id: 'formula', say: 'In symbols: {pₖ is e to the sₖ, divided by the sum of e to the sⱼ|p k is e to the s k, divided by the sum of e to the s j}, over every option j.', code: ['exp', 'norm'] },
       ],
     },
     {
@@ -75,8 +75,8 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'shift', say: 'Add five to every score. Every exponential gets multiplied by the same factor, and that factor cancels when we divide. Nothing changes.', code: ['base', 'shift'] },
-        { id: 'scale', say: 'Double every score instead, and the gaps between them double. The top class grows to {0.88|zero point eight eight}.', code: ['base', 'scale'] },
-        { id: 'soft', say: 'That is the name: a soft maximum. The top score gets most of the probability, but every class keeps a little.', code: 'scale' },
+        { id: 'scale', say: 'Double every score instead, and the gaps between them double. The top option grows to {0.88|zero point eight eight}.', code: ['base', 'scale'] },
+        { id: 'soft', say: 'That is the name: a soft maximum. The top score gets most of the probability, but every option keeps a little.', code: 'scale' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

@@ -74,7 +74,7 @@ export const generators: Generator[] = [
         'Each step keeps almost all of $\\symx$, so it creeps toward 0: it gets there, slowly.',
         'Each step keeps the same sign and shrinks $\\symx$ by a good share: it slides straight in.',
         'Each step flips the sign but shrinks the size: $\\symx$ overshoots the minimum, by less every time, and settles.',
-        'Each step flips the sign and grows the size: every overshoot lands farther out, and training diverges.',
+        'Each step flips the sign and grows the size: every overshoot lands farther out, and $\\symx$ diverges.',
       ];
       return {
         prompt: `Gradient descent runs on $\\symf(\\symx) = ${bowl(a)}$ from $\\symx = ${num(x0)}$ with $\\symeta = ${num(eta)}$. What does $\\symx$ do over the next steps?`,

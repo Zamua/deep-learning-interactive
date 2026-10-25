@@ -1,18 +1,18 @@
 {
- "duration": 57.471,
+ "duration": 59.393,
  "scenes": {
-  "position": [0.0, 28.158],
-  "accuracy": [28.158, 57.471]
+  "position": [0.0, 29.963],
+  "accuracy": [29.963, 59.393]
  },
  "beats": {
-  "position/scores": [0.7, 5.552, "Here are four scores: two, seven, one and five.", [[2.12, 2.66], [3.05, 3.35], [3.84, 4.15], [4.58, 4.83]]],
-  "position/max": [5.932, 9.371, "The largest value is seven. That is the max.", [[7.712, 8.142]]],
-  "position/arg": [9.751, 18.506, "The argmax asks a different question: where is it? Counting from zero, as Python does, seven sits at position one.", [[12.091, 12.621], [13.361, 13.991], [16.181, 16.581]]],
-  "position/predict": [18.886, 27.058, "For a classifier, that position is the answer. The scores belong to classes zero to three, so it predicts class one.", [[19.946, 20.136], [21.796, 22.356], [24.956, 25.266]]],
-  "accuracy/rows": [28.858, 36.07, "Now four images at once: one row of three scores for each, and its right label, y, beside it.", [[30.658, 31.128], [33.218, 33.508], [34.638, 34.818], [35.258, 35.418]]],
-  "accuracy/pred": [36.45, 42.259, "The argmax of each row is the prediction: one, zero, two and zero.", [[38.97, 39.49], [39.88, 40.15], [40.71, 40.97], [41.37, 41.55]]],
-  "accuracy/compare": [42.639, 48.95, "Check them against the labels. Three match. The second image was class two, not zero.", [[44.139, 44.589], [45.649, 46.089], [47.889, 48.109]]],
-  "accuracy/acc": [49.33, 55.251, "The share that match is the accuracy: three out of four, zero point seven five.", [[51.57, 52.04], [53.16, 53.68]]],
-  "accuracy/turn": [55.631, 56.371, "Your turn.", []]
+  "position/scores": [0.7, 8.358, "Here are four scores, one for each of four possible answers: two, seven, one and five.", [[2.08, 2.52], [4.84, 5.4], [5.76, 6.07], [6.6, 6.9], [7.31, 7.59]]],
+  "position/max": [8.738, 12.178, "The largest value is seven. That is the max.", [[10.518, 10.948]]],
+  "position/arg": [12.558, 21.313, "The argmax asks a different question: where is it? Counting from zero, as Python does, seven sits at position one.", [[14.898, 15.428], [16.168, 16.798], [18.988, 19.388]]],
+  "position/predict": [21.693, 28.863, "Often the position is what you want. With the answers numbered zero to three, the top pick is answer one.", [[23.773, 24.383], [26.673, 26.983], [27.683, 27.843]]],
+  "accuracy/rows": [30.663, 37.814, "Now four questions at once: one row of three scores for each, and its right answer, y, beside it.", [[32.463, 32.953], [35.003, 35.243], [36.343, 36.533], [36.993, 37.143]]],
+  "accuracy/pred": [38.194, 43.751, "The argmax of each row is its pick: one, zero, two and zero.", [[40.524, 41.094], [41.474, 41.714], [42.264, 42.474], [42.864, 43.064]]],
+  "accuracy/compare": [44.131, 50.872, "Check them against y. Three match. The second question's answer was two, not zero.", [[45.471, 45.971], [47.061, 47.571], [49.761, 50.031]]],
+  "accuracy/acc": [51.252, 57.173, "The share that match is the accuracy: three out of four, zero point seven five.", [[53.492, 53.962], [55.082, 55.602]]],
+  "accuracy/turn": [57.553, 58.293, "Your turn.", []]
  }
 }

@@ -119,7 +119,7 @@ export const generators: Generator[] = [
         `Only the correct class's row moves toward $\\symx$. Class ${k}'s score gradient is $\\symp_{${k}} = ${num(o.p[k]!)} > 0$, so the step subtracts a multiple of $\\symx$.`,
         `The correct class's score gradient is $\\symp_{\\symy} - 1 < 0$, so subtracting $\\symeta\\,(\\symp_{\\symy} - 1)\\,\\symx$ adds a positive multiple of $\\symx$.`,
         'Every row gets a gradient, $d\\syms_k\\, \\symx$, and it is zero only if $\\symp_k$ is exactly 0 or 1.',
-        'Nothing in this step pulls weights toward 0; that is what weight decay adds. The step adds a multiple of $\\symx$ to the row.',
+        'Nothing in this step pulls weights toward 0. The step adds a multiple of $\\symx$ to the row.',
       ];
       why[right ? 0 : 1] = null;
       return {

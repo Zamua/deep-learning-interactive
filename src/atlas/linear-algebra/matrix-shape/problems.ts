@@ -10,8 +10,8 @@ function dims(rng: Parameters<Generator['make']>[0], lo: number, hi: number): [n
   return [m, n];
 }
 
-/** Classifier sizes: classes, and the numbers in one flattened input. */
-const CLASSES = [3, 10, 100, 1000];
+/** Large sizes: how many images are stacked as rows, and the numbers in one flattened image. */
+const ROWS = [3, 10, 100, 1000];
 const INPUTS: [string, number][] = [
   ['a 32 by 32 color image (3,072 numbers)', 3072],
   ['a 28 by 28 grayscale image (784 numbers)', 784],
@@ -63,12 +63,12 @@ export const generators: Generator[] = [
           solution: [`Transposing turns each row into a column.`, `The ${m} rows become ${m} columns, and the ${n} columns become ${n} rows: $${shapeTex([n, m])}$.`],
         };
       }
-      const C = pick(rng, CLASSES);
+      const C = pick(rng, ROWS);
       const [what, D] = pick(rng, INPUTS);
       return {
-        prompt: `A classifier's weights $\\symW$ have one row per class and one column per input number. There are ${C} classes, and each input is ${what}. What is the shape of $\\symW$?`,
+        prompt: `$\\symW$ stacks ${C} flattened images, one per row, and each image is ${what}. What is the shape of $\\symW$?`,
         answer: { kind: 'shape', value: [C, D] },
-        solution: [`One row per class: ${C} rows.`, `One column per input number: ${D} columns.`, `Rows first: $${shapeTex([C, D])}$.`],
+        solution: [`One row per image: ${C} rows.`, `One column per number in an image: ${D} columns.`, `Rows first: $${shapeTex([C, D])}$.`],
       };
     },
   },
@@ -98,7 +98,7 @@ export const generators: Generator[] = [
   {
     id: 'count',
     make(rng, d) {
-      const [m, n] = d < 0.35 ? dims(rng, 2, 6) : d < 0.7 ? [int(rng, 2, 12), pick(rng, [10, 20, 25, 50, 100])] : [pick(rng, CLASSES), pick(rng, INPUTS)[1]];
+      const [m, n] = d < 0.35 ? dims(rng, 2, 6) : d < 0.7 ? [int(rng, 2, 12), pick(rng, [10, 20, 25, 50, 100])] : [pick(rng, ROWS), pick(rng, INPUTS)[1]];
       if (d >= 0.5 && rng.int(2) === 0) {
         return {
           prompt: `A matrix with ${m} rows holds ${m * n} numbers. How many columns does it have?`,

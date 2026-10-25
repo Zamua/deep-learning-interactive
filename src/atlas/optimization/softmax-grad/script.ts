@@ -19,9 +19,9 @@ export const script: LectureScript = {
         # [0.6, -0.7, 0.1]                  #@ds
       `,
       beats: [
-        { id: 'chain', say: 'A classifier\'s scores, s, go through softmax to give probabilities, p. The loss is minus the log of the correct class\'s probability. Here the correct class is class one, so the loss is minus log {0.3|zero point three}, about {1.2|one point two}.', code: ['s', 'p', 'L'] },
-        { id: 'ask', say: 'To train, we need the gradient: how the loss changes as each score moves.', code: 'ds' },
-        { id: 'answer', say: 'It comes out remarkably simple: p, minus the one-hot label. Here, {0.6|zero point six}, minus {0.7|zero point seven}, and {0.1|zero point one}.', code: 'ds' },
+        { id: 'chain', say: 'Scores, s, go through softmax to give probabilities, p. The loss is minus the log of the correct option\'s probability. Here the correct option is option one, so the loss is minus log {0.3|zero point three}, about {1.2|one point two}.', code: ['s', 'p', 'L'] },
+        { id: 'ask', say: 'Now ask how the loss changes as each score moves. One derivative per score, stacked into a vector: the gradient.', code: 'ds' },
+        { id: 'answer', say: 'It comes out remarkably simple: p, minus the one-hot vector for y, a one at the correct option and zeros elsewhere. Here, {0.6|zero point six}, minus {0.7|zero point seven}, and {0.1|zero point one}.', code: 'ds' },
       ],
     },
     {
@@ -38,8 +38,8 @@ export const script: LectureScript = {
       beats: [
         { id: 'expand', say: 'Write the loss out. Minus the log of a fraction is minus the log of the top, plus the log of the bottom: minus s y, plus the log of the sum.', code: 'expand' },
         { id: 'log', say: 'Now take the derivative with respect to any one score, s j. By the chain rule, the log of the sum gives one over the sum, times e to the s j. That is exactly p j.', code: 'log' },
-        { id: 'minus', say: 'Minus s y depends only on the correct score: its derivative is minus one when j is y, and zero for every other class.', code: 'minus' },
-        { id: 'together', say: 'Add the two: p j, with one taken away at the correct class.', code: 'together' },
+        { id: 'minus', say: 'Minus s y depends only on the correct score: its derivative is minus one when j is y, and zero for every other option.', code: 'minus' },
+        { id: 'together', say: 'Add the two: p j, with one taken away at the correct option.', code: 'together' },
       ],
     },
     {
@@ -51,15 +51,15 @@ export const script: LectureScript = {
         ds = p - np.eye(3)[1]             #@sub
         # [0.6, -0.7, 0.1]                #@sub
         sum(ds)    # 0.0                  #@sum
-        # a step moves s by -lr * ds:     #@step
+        # moving s against ds lowers L:   #@step
         # s[1] up, s[0] and s[2] down     #@step
       `,
       beats: [
-        { id: 'p', say: 'Back to our numbers. The probabilities are {0.6|zero point six}, {0.3|zero point three} and {0.1|zero point one}, and the correct class is class one.', code: 'p' },
-        { id: 'sub', say: 'Take one away at class one: {0.3|zero point three} minus one is minus {0.7|zero point seven}. The other classes keep their probabilities.', code: 'sub' },
-        { id: 'sum', say: 'The entries always add up to zero: p adds up to one, and the label takes exactly one away.', code: 'sum' },
-        { id: 'step', say: 'A step against the gradient raises the correct score and lowers the others, the most confident wrong class the most.', code: 'step' },
-        { id: 'done', say: 'And once the model gives the correct class nearly all the probability, the gradient is nearly zero: there is little left to learn.' },
+        { id: 'p', say: 'Back to our numbers. The probabilities are {0.6|zero point six}, {0.3|zero point three} and {0.1|zero point one}, and the correct option is option one.', code: 'p' },
+        { id: 'sub', say: 'Take one away at option one: {0.3|zero point three} minus one is minus {0.7|zero point seven}. The other options keep their probabilities.', code: 'sub' },
+        { id: 'sum', say: 'The entries always add up to zero: p adds up to one, and the one-hot vector takes exactly one away.', code: 'sum' },
+        { id: 'step', say: 'So to lower the loss, move each score against its entry: the correct score goes up, and the others go down, the most confident wrong option the most.', code: 'step' },
+        { id: 'done', say: 'And once the correct option gets nearly all the probability, the gradient is nearly zero: there is little loss left to remove.' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

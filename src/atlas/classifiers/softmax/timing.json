@@ -1,27 +1,27 @@
 {
- "duration": 107.467,
+ "duration": 107.166,
  "scenes": {
-  "scores": [0.0, 22.237],
-  "exp": [22.237, 48.462],
-  "divide": [48.462, 78.957],
-  "gaps": [78.957, 107.467]
+  "scores": [0.0, 21.725],
+  "exp": [21.725, 47.951],
+  "divide": [47.951, 78.891],
+  "gaps": [78.891, 107.166]
  },
  "beats": {
-  "scores/scores": [0.7, 7.777, "A classifier hands back one score per class. Here there are three: two, one, and minus one.", [[3.66, 4.15], [5.21, 5.62], [5.97, 6.26], [6.64, 6.83]]],
-  "scores/want": [8.157, 14.363, "Often we want probabilities instead. Every one positive, and all of them adding up to one.", [[10.507, 11.087], [12.277, 12.497]]],
-  "scores/fail": [14.743, 21.137, "These scores fail both tests. Minus one is negative, and together they add up to two.", [[16.863, 17.353], [18.913, 19.273]]],
-  "exp/two": [22.937, 25.623, "Softmax fixes both in two moves.", []],
-  "exp/exp": [26.003, 31.798, "First, raise e, about two point seven one eight, to the power of each score.", [[26.553, 26.813], [27.703, 27.993], [29.823, 30.133]]],
-  "exp/pos": [32.178, 38.083, "e to any power is positive, so minus one becomes zero point three seven.", [[34.188, 34.638]]],
-  "exp/grow": [38.463, 47.362, "And each extra point of score multiplies by about two point seven, so the top score pulls ahead: two becomes seven point three nine.", [[42.473, 42.833], [44.523, 44.993]]],
-  "divide/total": [49.162, 53.493, "Second, add them up. The total is ten point four eight.", [[49.722, 50.092], [50.682, 51.222]]],
-  "divide/divide": [53.873, 56.559, "Then divide each one by that total.", [[54.293, 54.473]]],
-  "divide/result": [56.939, 65.712, "Class zero gets zero point seven one, class one zero point two six, and class two zero point zero four.", [[59.649, 60.189], [60.879, 61.179], [62.609, 62.989], [63.879, 64.169]]],
-  "divide/check": [66.092, 68.834, "All positive, and they add up to one.", [[67.082, 67.422]]],
-  "divide/formula": [69.214, 77.857, "In symbols: p k is e to the s k, divided by the sum of e to the s j, over every class j.", [[70.074, 70.664], [72.954, 73.234], [75.984, 76.244]]],
-  "gaps/shift": [79.657, 89.487, "Add five to every score. Every exponential gets multiplied by the same factor, and that factor cancels when we divide. Nothing changes.", [[81.487, 82.087], [85.287, 85.707], [87.917, 88.427]]],
-  "gaps/scale": [89.867, 97.115, "Double every score instead, and the gaps between them double. The top class grows to zero point eight eight.", [[91.707, 92.007], [93.767, 94.337]]],
-  "gaps/soft": [97.495, 105.246, "That is the name: a soft maximum. The top score gets most of the probability, but every class keeps a little.", [[98.555, 98.995], [100.185, 100.715], [103.045, 103.385]]],
-  "gaps/turn": [105.626, 106.367, "Your turn.", []]
+  "scores/scores": [0.7, 7.266, "Here are three scores, one for each of three options: two, one, and minus one.", [[2.08, 2.49], [4.3, 4.76], [5.14, 5.53], [5.95, 6.24]]],
+  "scores/want": [7.646, 13.851, "Often we want probabilities instead. Every one positive, and all of them adding up to one.", [[9.996, 10.576], [11.766, 11.986]]],
+  "scores/fail": [14.231, 20.625, "These scores fail both tests. Minus one is negative, and together they add up to two.", [[16.351, 16.841], [18.401, 18.761]]],
+  "exp/two": [22.425, 25.111, "Softmax fixes both in two moves.", []],
+  "exp/exp": [25.491, 31.286, "First, raise e, about two point seven one eight, to the power of each score.", [[26.041, 26.301], [27.191, 27.481], [29.311, 29.621]]],
+  "exp/pos": [31.666, 37.572, "e to any power is positive, so minus one becomes zero point three seven.", [[33.676, 34.126]]],
+  "exp/grow": [37.952, 46.851, "And each extra point of score multiplies by about two point seven, so the top score pulls ahead: two becomes seven point three nine.", [[41.962, 42.322], [44.012, 44.482]]],
+  "divide/total": [48.651, 52.982, "Second, add them up. The total is ten point four eight.", [[49.211, 49.581], [50.171, 50.711]]],
+  "divide/divide": [53.362, 56.048, "Then divide each one by that total.", [[53.782, 53.962]]],
+  "divide/result": [56.428, 65.79, "Option zero gets zero point seven one, option one zero point two six, and option two zero point zero four.", [[59.268, 59.868], [60.638, 60.928], [62.398, 62.828], [63.968, 64.238]]],
+  "divide/check": [66.17, 68.912, "All positive, and they add up to one.", [[67.16, 67.5]]],
+  "divide/formula": [69.292, 77.791, "In symbols: p k is e to the s k, divided by the sum of e to the s j, over every option j.", [[70.132, 70.632], [72.872, 73.122], [75.852, 76.132]]],
+  "gaps/shift": [79.591, 89.421, "Add five to every score. Every exponential gets multiplied by the same factor, and that factor cancels when we divide. Nothing changes.", [[81.421, 82.021], [85.221, 85.641], [87.851, 88.361]]],
+  "gaps/scale": [89.801, 96.968, "Double every score instead, and the gaps between them double. The top option grows to zero point eight eight.", [[91.661, 91.961], [93.671, 94.241]]],
+  "gaps/soft": [97.348, 104.946, "That is the name: a soft maximum. The top score gets most of the probability, but every option keeps a little.", [[98.358, 98.798], [99.908, 100.518], [102.798, 103.158]]],
+  "gaps/turn": [105.326, 106.066, "Your turn.", []]
  }
 }

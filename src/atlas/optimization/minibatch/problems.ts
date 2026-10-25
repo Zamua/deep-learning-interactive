@@ -3,7 +3,7 @@ import type { Rng } from '../../../core/rand';
 import { int, num, pick } from '../../kit';
 import { big, clean, traps } from '../kit';
 
-/** A training set size and a batch size that divides it. */
+/** A dataset size and a batch size that divides it. */
 function sizes(rng: Rng, d: number): { N: number; B: number } {
   const Ns = d < 0.4 ? [100, 200, 500, 600, 1000, 2000, 6000] : [1200, 10000, 25600, 50000, 51200, 60000, 128000];
   const Bs = d < 0.4 ? [10, 20, 25, 50, 100] : [25, 32, 64, 100, 128, 200, 250, 256, 500];
@@ -23,7 +23,7 @@ export const generators: Generator[] = [
       const per = N / B;
       const v = e * per;
       return {
-        prompt: `A training set has $\\symN = ${big(N)}$ examples and the batch size is $\\symB = ${big(B)}$. How many gradient steps make ${e === 1 ? 'one epoch' : `${e} epochs`}?`,
+        prompt: `A dataset has $\\symN = ${big(N)}$ examples and the batch size is $\\symB = ${big(B)}$. How many gradient steps make ${e === 1 ? 'one epoch' : `${e} epochs`}?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: N * e, why: 'That is one step per example. Each step uses a whole batch of $\\symB$ examples.' },
@@ -47,11 +47,11 @@ export const generators: Generator[] = [
       const sum = clean(gs.reduce((a, b) => a + b, 0));
       const v = clean(sum / B);
       return {
-        prompt: `A minibatch of $\\symB = ${B}$ examples, drawn from $\\symN = ${big(N)}$, gives these gradients for one weight, one per example: $${gs.map((g) => num(g)).join(',\\ ')}$. What is the minibatch gradient for that weight?`,
+        prompt: `A minibatch of $\\symB = ${B}$ examples, drawn from $\\symN = ${big(N)}$, gives these gradients for one entry of $\\symw$, one per example: $${gs.map((g) => num(g)).join(',\\ ')}$. What is the minibatch gradient for that entry?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: sum, why: 'That is the sum. The minibatch gradient is the average: divide by $\\symB$.' },
-          { value: sum / N, why: 'That divides by $\\symN$, the whole training set. The batch average divides by $\\symB$, the examples actually used.' },
+          { value: sum / N, why: 'That divides by $\\symN$, the whole dataset. The batch average divides by $\\symB$, the examples actually used.' },
         ]),
         solution: [
           'The minibatch gradient is the mean of the per-example gradients in the batch.',
@@ -69,7 +69,7 @@ export const generators: Generator[] = [
       const hi = lo * pick(rng, [4, 8, 16]);
       const [from, to] = up ? [lo, hi] : [hi, lo];
       const N = pick(rng, [10000, 50000, 60000]);
-      const cost = 'Each step costs work in proportion to $\\symB$: every example in the batch needs its own forward and backward pass.';
+      const cost = 'Each step costs work in proportion to $\\symB$: every example in the batch needs its own gradient.';
       const noise = 'Averaging more examples cancels more of their disagreement, so a bigger batch gives a steadier gradient and a smaller one a noisier gradient.';
       // Options: [cost up, noise down], [cost down, noise down], [cost up, noise up], [cost down, noise up].
       const correct = up ? 0 : 3;
@@ -77,7 +77,7 @@ export const generators: Generator[] = [
       const noiseWrong = (i: number) => (i === 0 || i === 1) !== up;
       const why = [0, 1, 2, 3].map((i) => (i === correct ? null : [costWrong(i) ? cost : '', noiseWrong(i) ? noise : ''].filter(Boolean).join(' ')));
       return {
-        prompt: `Training on $\\symN = ${big(N)}$ examples, you change the batch size from $\\symB = ${from}$ to $\\symB = ${to}$. What happens to each gradient step?`,
+        prompt: `Taking gradient steps on a dataset of $\\symN = ${big(N)}$ examples, you change the batch size from $\\symB = ${from}$ to $\\symB = ${to}$. What happens to each step?`,
         answer: {
           kind: 'choice',
           options: ['It costs more, and its gradient is less noisy', 'It costs less, and its gradient is less noisy', 'It costs more, and its gradient is noisier', 'It costs less, and its gradient is noisier'],
@@ -100,7 +100,7 @@ export const generators: Generator[] = [
         const k = pick(rng, [10, 20, 50, 100, 200, 500, 1000]);
         const v = k * B;
         return {
-          prompt: `Training runs $${big(k)}$ gradient steps with batch size $\\symB = ${B}$. How many examples has it processed?`,
+          prompt: `A run takes $${big(k)}$ gradient steps with batch size $\\symB = ${B}$. How many examples do those steps process?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: k, why: 'That counts one example per step. Each step processes a whole batch of $\\symB$.' },
@@ -119,7 +119,7 @@ export const generators: Generator[] = [
       }
       const v = e;
       return {
-        prompt: `A training set has $\\symN = ${big(N)}$ examples. After $${big(k)}$ steps with batch size $\\symB = ${B}$, how many epochs has training run?`,
+        prompt: `A dataset has $\\symN = ${big(N)}$ examples. After $${big(k)}$ steps with batch size $\\symB = ${B}$, how many epochs have gone by?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: k * B, why: 'That counts examples, not epochs. Divide by $\\symN$, the examples in one epoch.' },

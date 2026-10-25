@@ -51,11 +51,11 @@ const full: SceneDef = {
     };
     s.alpha(s.ease('full', 0.6, 2), () => mean(ALL, s.w / 2 - (s.tall ? 22 : 26) * s.u, 'red', 'all N: exact'));
     s.alpha(s.win('cost', 'batch'), () => {
-      s.text('50,000 passes per step', s.w / 2 + (s.tall ? 22 : 26) * s.u, oy, { size: 3.4, font: 'mono', color: s.c('--ink-2') });
+      s.text('50,000 gradients per step', s.w / 2 + (s.tall ? 22 : 26) * s.u, oy, { size: 3.4, font: 'mono', color: s.c('--ink-2') });
     });
     s.alpha(s.ease('batch', 0.6, 1.5), () => {
       mean(EST, s.w / 2 + (s.tall ? 22 : 26) * s.u, 'gold', 'B = 8: close');
-      s.text('8 passes', s.w / 2 + (s.tall ? 22 : 26) * s.u, oy + 14 * s.u, { size: 3.2, font: 'mono', color: s.c('--ink-2') });
+      s.text('8 gradients', s.w / 2 + (s.tall ? 22 : 26) * s.u, oy + 14 * s.u, { size: 3.2, font: 'mono', color: s.c('--ink-2') });
     });
   },
 };

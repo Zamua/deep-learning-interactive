@@ -125,15 +125,15 @@ const shape: SceneDef = {
     });
     s.alpha(s.ease('loss', 0.6, 2.5), () => {
       const [lx, ly] = s.tall ? [s.w / 2, s.h * 0.49] : [s.w / 2, s.h * 0.17];
-      s.text('L: one number', lx, ly, { size: 4, font: 'mono', weight: 650, color: s.c('red') });
+      s.text('f: one number', lx, ly, { size: 4, font: 'mono', weight: 650, color: s.c('purple') });
     });
     s.alpha(s.ease('g', 0.6), () => {
       grid(s, gx, gy, GV, 'red', hi, (v) => v.toFixed(2));
-      label('g  (3, 4)', gx, gy, 'red');
+      label('∇f  (3, 4)', gx, gy, 'red');
     });
     s.alpha(hi, () => {
       const [tx, ty] = s.tall ? [s.w / 2, s.h * 0.94] : [s.w / 2, s.h * 0.86];
-      s.text('g[1, 2] = ∂L/∂W[1, 2]', tx, ty, { size: 3.8, font: 'mono', weight: 600, color: s.c('--ink-2') });
+      s.text('∇f[1, 2] = ∂f/∂W[1, 2]', tx, ty, { size: 3.8, font: 'mono', weight: 600, color: s.c('--ink-2') });
     });
   },
 };

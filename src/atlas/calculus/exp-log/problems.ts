@@ -8,7 +8,7 @@ const r2 = (x: number) => Math.round(x * 100) / 100;
 const ln2 = (k: number) => num(LN[k]!, 2);
 
 interface LogCase {
-  form: 'prod' | 'quot' | 'pow' | 'loss' | 'triple';
+  form: 'prod' | 'quot' | 'pow' | 'recip' | 'triple';
   /** TeX for the argument of ln. */
   arg: string;
   /** The given logs used, by prime. */
@@ -46,10 +46,10 @@ const CASES: LogCase[] = (() => {
         }
         const pv = sumOf([a, b]);
         keep({
-          form: 'loss', arg: `\\tfrac{1}{${a * b}}`, uses: [a, b], value: pv,
-          steps: [`$\\ln \\tfrac{1}{${a * b}} = -\\ln ${a * b}$: a reciprocal flips the sign of the log.`, `So $-\\ln \\symp = \\ln ${a * b} = \\ln ${a} + \\ln ${b}$.`, `$\\approx ${ln2(a)} + ${ln2(b)} = ${num(pv, 2)}$.`],
+          form: 'recip', arg: `\\tfrac{1}{${a * b}}`, uses: [a, b], value: pv,
+          steps: [`$\\ln \\tfrac{1}{${a * b}} = -\\ln ${a * b}$: a reciprocal flips the sign of the log.`, `So $-\\ln p = \\ln ${a * b} = \\ln ${a} + \\ln ${b}$.`, `$\\approx ${ln2(a)} + ${ln2(b)} = ${num(pv, 2)}$.`],
           traps: [
-            { value: -pv, why: `That is $\\ln \\symp$ itself. A probability below 1 has a negative log, and the minus sign in front makes $-\\ln \\symp$ positive.` },
+            { value: -pv, why: `That is $\\ln p$ itself. A number below 1 has a negative log, and the minus sign in front makes $-\\ln p$ positive.` },
             { value: LN[a]! * LN[b]!, why: 'That multiplies the logs. The log of a product is the sum of the logs.' },
           ],
         }, Math.log(a * b));
@@ -78,7 +78,7 @@ const CASES: LogCase[] = (() => {
   return out;
 })();
 
-const ORD = (d: number): LogCase['form'][] => (d < 0.3 ? ['prod'] : d < 0.6 ? ['prod', 'quot', 'pow'] : ['quot', 'pow', 'loss', 'triple']);
+const ORD = (d: number): LogCase['form'][] => (d < 0.3 ? ['prod'] : d < 0.6 ? ['prod', 'quot', 'pow'] : ['quot', 'pow', 'recip', 'triple']);
 
 export const generators: Generator[] = [
   {
@@ -88,8 +88,8 @@ export const generators: Generator[] = [
       const c = pick(rng, pool);
       const logs = [...new Set(c.uses)].map((k) => `$\\ln ${k} \\approx ${ln2(k)}$`);
       const given = logs.length > 2 ? `${logs.slice(0, -1).join(', ')} and ${logs[logs.length - 1]}` : logs.join(' and ');
-      const ask = c.form === 'loss'
-        ? `A model gives the right class probability $\\symp = ${c.arg}$. What is $-\\ln \\symp$?`
+      const ask = c.form === 'recip'
+        ? `Let $p = ${c.arg}$. What is $-\\ln p$?`
         : `What is $\\ln ${c.arg}$?`;
       return {
         prompt: `Use ${given}. ${ask} Round to two decimals.`,
@@ -151,10 +151,10 @@ export const generators: Generator[] = [
       if (form === 'neglog') {
         const k = Math.abs(a);
         return {
-          prompt: `A model gives the right class probability $\\symp = e^{-${num(k)}}$. What is $-\\ln \\symp$?`,
+          prompt: `Let $p = e^{-${num(k)}}$. What is $-\\ln p$?`,
           answer: { kind: 'number', value: k },
-          traps: [{ value: -k, why: `That is $\\ln \\symp$. The minus sign in front flips it: $-(-${num(k)}) = ${num(k)}$.` }],
-          solution: [`$\\ln \\symp = \\ln(e^{-${num(k)}}) = -${num(k)}$.`, `So $-\\ln \\symp = ${num(k)}$.`],
+          traps: [{ value: -k, why: `That is $\\ln p$. The minus sign in front flips it: $-(-${num(k)}) = ${num(k)}$.` }],
+          solution: [`$\\ln p = \\ln(e^{-${num(k)}}) = -${num(k)}$.`, `So $-\\ln p = ${num(k)}$.`],
         };
       }
       if (form === 'lnprod') {
@@ -261,7 +261,7 @@ export const generators: Generator[] = [
       const lnp = Math.log(p);
       const v = neg ? -lnp : lnp;
       const correct = v < 0 ? 0 : v === 0 ? 2 : 1;
-      const q = neg ? `-\\ln \\symp` : `\\ln \\symp`;
+      const q = neg ? `-\\ln p` : `\\ln p`;
       const why = (i: number): string | null => {
         if (i === correct) return null;
         if (i === 3) return '$\\ln$ is defined for every positive number; only 0 and below have no log.';
@@ -271,11 +271,11 @@ export const generators: Generator[] = [
           : `$${num(p)}$ is below 1, and only a negative power of $e$ gives a number below 1, so its log is negative.`;
       };
       return {
-        prompt: `A model gives the right class probability $\\symp = ${num(p)}$. Is $${q}$ positive, negative or zero?`,
+        prompt: `Let $p = ${num(p)}$. Is $${q}$ positive, negative or zero?`,
         answer: { kind: 'choice', options: ['Negative', 'Positive', 'Zero', 'Undefined'], correct, why: [0, 1, 2, 3].map(why) },
         solution: [
           p === 1 ? '$e^{0} = 1$, so $\\ln 1 = 0$.' : `$${num(p)}$ is below 1, and $e$ to a negative power is below 1, so $\\ln ${num(p)} \\approx ${num(round(lnp, 2), 2)}$ is negative.`,
-          neg ? `The minus sign flips it: $-\\ln \\symp ${p === 1 ? '= 0' : `\\approx ${num(round(-lnp, 2), 2)}`}$. This is the loss: zero for a sure right answer, larger the less sure.` : 'Every probability is at most 1, so its log is never positive.',
+          neg ? `The minus sign flips it: $-\\ln p ${p === 1 ? '= 0' : `\\approx ${num(round(-lnp, 2), 2)}`}$. So $-\\ln p$ is 0 at $p = 1$ and grows as $p$ shrinks toward 0.` : 'Any number above 0 and at most 1 has a log that is never positive.',
         ],
       };
     },

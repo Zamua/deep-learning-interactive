@@ -18,10 +18,10 @@ export const script: LectureScript = {
         W.size + b.size        # 12 + 3    #@count
       `,
       beats: [
-        { id: 'dims', say: 'How many numbers does a linear classifier learn? Say each input has four features, so D is four, and there are three classes, so C is three.', code: 'dims' },
+        { id: 'dims', say: 'How many numbers make up a linear classifier? Say each input has four features, so D is four, and there are three classes, so C is three.', code: 'dims' },
         { id: 'rows', say: 'W holds one row per class, and each row holds one weight per feature. Three rows of four make twelve weights.', code: 'W' },
         { id: 'bias', say: 'Then each class has one bias: three more.', code: 'b' },
-        { id: 'total', say: 'Fifteen parameters in all. In general, it is C times D, plus C.', code: 'count' },
+        { id: 'total', say: 'Fifteen numbers in all: these are its parameters. In general, it is C times D, plus C.', code: 'count' },
         { id: 'shape', say: 'As shapes: W is C by D, three by four, and b is a vector of C numbers.', code: ['W', 'b'] },
       ],
     },
@@ -38,13 +38,13 @@ export const script: LectureScript = {
       beats: [
         { id: 'class', say: 'Add a class, and W gains a whole row, plus one more bias.', code: ['base', 'class'] },
         { id: 'side', say: 'Feed it bigger images, and every row grows longer. Twice the width and twice the height is four times the pixels, so four times the weights.', code: 'side' },
-        { id: 'data', say: 'One thing never enters the count: the number of training images. Ten or a million, W keeps the same shape.', code: 'data' },
+        { id: 'data', say: 'One thing never enters the count: how many images it scores. Ten or a million, W keeps the same shape.', code: 'data' },
       ],
     },
     {
       id: 'layers',
-      title: 'Two layers',
-      codeTitle: 'two_layer.py',
+      title: 'Two in a row',
+      codeTitle: 'chain.py',
       code: `
         W1 = np.zeros((H, D))   # (5, 4)   #@l1
         b1 = np.zeros(H)        # (5,)     #@l1
@@ -53,10 +53,10 @@ export const script: LectureScript = {
         # (20 + 5) + (15 + 3) = 43         #@sum
       `,
       beats: [
-        { id: 'two', say: 'A two-layer network is two of these in a row. Four inputs go to five hidden units, H, and those go to the three classes.' },
-        { id: 'l1', say: 'The first layer has D times H weights, one per line, plus H biases: twenty plus five, twenty five.', code: 'l1' },
+        { id: 'two', say: 'Now chain two of these, so the outputs of the first are the inputs of the second. Four inputs go to H, five numbers in the middle, and those go to the three classes.' },
+        { id: 'l1', say: 'The first has D times H weights, one per line, plus H biases: twenty plus five, twenty five.', code: 'l1' },
         { id: 'l2', say: 'The second has H times C weights, plus C biases: fifteen plus three, eighteen.', code: 'l2' },
-        { id: 'sum', say: 'Add the layers: forty three. Every layer is inputs times outputs, plus one bias per output.', code: 'sum' },
+        { id: 'sum', say: 'Add the two: forty three. Each one is inputs times outputs, plus one bias per output.', code: 'sum' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

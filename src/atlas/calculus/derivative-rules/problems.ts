@@ -30,7 +30,7 @@ export const generators: Generator[] = [
       const ts = poly(rng, d);
       const dts = dPoly(ts);
       return {
-        prompt: `What is the derivative of $\\symf(\\symx) = ${polyTex(ts)}$? Type $\\symf'(\\symx)$ using \`x\`, like \`6x^2 + 1\`.`,
+        prompt: `What is the derivative of $\\symf(\\symx) = ${polyTex(ts)}$?`,
         answer: { kind: 'expr', value: polyExpr(dts), vars: ['x'] },
         solution: [...ts.map(termStep), `${ts.length > 1 ? 'Add the pieces: ' : 'So '}$\\symf'(\\symx) = ${polyTex(dts)}$.`],
       };
@@ -79,7 +79,7 @@ export const generators: Generator[] = [
       const dTex = joinSigned(parts.map((p) => ({ neg: p.neg !== p.sub, body: p.dTex })));
       const dExpr = joinSigned(parts.map((p) => ({ neg: p.neg !== p.sub, body: p.dExpr })));
       return {
-        prompt: `What is the derivative of $\\symf(\\symx) = ${tex}$? Type $\\symf'(\\symx)$ using \`x\`, like \`2e^(2x) + 1/x\`.`,
+        prompt: `What is the derivative of $\\symf(\\symx) = ${tex}$?`,
         answer: { kind: 'expr', value: dExpr, vars: ['x'] },
         solution: [...parts.map((p) => p.step + (p.sub ? ' It is subtracted, so its derivative is too.' : '')), `Together: $\\symf'(\\symx) = ${dTex}$.`],
       };
@@ -130,7 +130,7 @@ export const generators: Generator[] = [
         opts.push(
           [`$${c * n}\\symx^{${n - 1}}$`, null],
           [`$${c * n}\\symx^{${n}}$`, 'That brings the power down but keeps it. The power drops by one.'],
-          [c === 1 ? `$\\dfrac{\\symx^{${n + 1}}}{${n + 1}}$` : `$${n}\\symx^{${n - 1}}$`, c === 1 ? 'That raises the power and divides: the reverse of a derivative, an integral.' : `That drops the constant ${c}. A constant factor comes along: $${c} \\times ${n}\\symx^{${n - 1}}$.`],
+          [c === 1 ? `$\\dfrac{\\symx^{${n + 1}}}{${n + 1}}$` : `$${n}\\symx^{${n - 1}}$`, c === 1 ? 'That raises the power and divides: the power rule run backwards.' : `That drops the constant ${c}. A constant factor comes along: $${c} \\times ${n}\\symx^{${n - 1}}$.`],
           [`$${C(c)}\\symx^{${n - 1}}$`, `That lowers the power but forgets to bring the ${n} down in front.`],
         );
       } else if (kind === 'exp') {
@@ -140,7 +140,7 @@ export const generators: Generator[] = [
           [`$${a}e^{${a}\\symx}$`, null],
           [`$e^{${a}\\symx}$`, `$e^{\\symx}$ is its own derivative, but here the ${a} in the power comes out in front.`],
           [`$${a}\\symx\\, e^{${a}\\symx - 1}$`, 'That treats the exponential like a power of $\\symx$. The power rule needs $\\symx$ in the base, not in the exponent.'],
-          [`$\\dfrac{e^{${a}\\symx}}{${a}}$`, `That divides by ${a}: the reverse of a derivative, an integral.`],
+          [`$\\dfrac{e^{${a}\\symx}}{${a}}$`, `That divides by ${a}, which runs the rule backwards. The number in the power comes out in front as a factor.`],
         );
       } else if (kind === 'ln') {
         const c = int(rng, 2, 9);

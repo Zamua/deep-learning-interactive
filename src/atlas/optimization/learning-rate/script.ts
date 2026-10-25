@@ -19,8 +19,8 @@ export const script: LectureScript = {
         # same as x = (1 - 2*a*lr) * x     #@factor
       `,
       beats: [
-        { id: 'bowl', say: 'Take the simplest loss there is, a bowl: f of x equals a x squared, with its minimum at zero. Here a is one, and x starts at one.', code: 'x' },
-        { id: 'grad', say: 'Its gradient is two a x. So one step takes x to x, minus {η|eta} times two a x.', code: ['g', 'step'] },
+        { id: 'bowl', say: 'Take the simplest function to walk down, a bowl: f of x equals a x squared, with its minimum at zero. Here a is one, and x starts at one.', code: 'x' },
+        { id: 'grad', say: 'Its gradient is two a x. So one step takes x to x, minus {η|eta} times two a x. That step size, {η|eta}, is called the learning rate.', code: ['g', 'step'] },
         { id: 'factor', say: 'Pull out the x, and every step just multiplies x by the same factor: one minus two a {η|eta}. With {η|eta} at {0.3|zero point three}, that is {0.4|zero point four}.', code: 'factor' },
       ],
     },
@@ -38,7 +38,7 @@ export const script: LectureScript = {
         { id: 'small', say: 'With a learning rate of {0.05|zero point zero five}, the factor is {0.9|zero point nine}. Each step keeps ninety percent of x, and the ball creeps.', code: 'r' },
         { id: 'good', say: 'With {0.3|zero point three}, the factor is {0.4|zero point four}. x shrinks fast and slides straight in.', code: 'r' },
         { id: 'zig', say: 'With {0.8|zero point eight}, the factor is minus {0.6|zero point six}. Each step overshoots to the other side, but lands closer: it zigzags in.', code: ['r', 'step'] },
-        { id: 'big', say: 'With {1.1|one point one}, the factor is minus {1.2|one point two}. Every overshoot lands farther out, and training blows up.', code: ['r', 'step'] },
+        { id: 'big', say: 'With {1.1|one point one}, the factor is minus {1.2|one point two}. Every overshoot lands farther out, and the steps blow up.', code: ['r', 'step'] },
       ],
     },
     {

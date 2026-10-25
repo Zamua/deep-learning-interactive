@@ -57,7 +57,7 @@ export const generators: Generator[] = [
         const rest = n - 1 === 1 ? `(${ins.tex})` : `(${ins.tex})^{${n - 1}}`;
         const restExpr = n - 1 === 1 ? `(${ins.expr})` : `(${ins.expr})^${n - 1}`;
         return {
-          prompt: `What is the derivative of $(${ins.tex})^{${n}}$ with respect to $\\symx$? Type it using \`x\`, like \`6(2x + 1)^2\`.`,
+          prompt: `What is the derivative of $(${ins.tex})^{${n}}$ with respect to $\\symx$?`,
           answer: { kind: 'expr', value: `${k}${restExpr}`, vars: ['x'] },
           solution: steps(ins.tex, `${n}u${n - 1 === 1 ? '' : `^{${n - 1}}`}`, String(a), `${n}${rest} \\cdot ${paren(a)} = ${k}${rest}`),
         };
@@ -68,7 +68,7 @@ export const generators: Generator[] = [
         const pwE = polyExpr([{ c, n: 2 }]);
         const k = 2 * c;
         return {
-          prompt: `What is the derivative of $e^{${pw}}$ with respect to $\\symx$? Type it using \`x\`, like \`2x e^(x^2)\`.`,
+          prompt: `What is the derivative of $e^{${pw}}$ with respect to $\\symx$?`,
           answer: { kind: 'expr', value: `${k}x e^(${pwE})`, vars: ['x'] },
           solution: [
             `The inside is $u = ${pw}$, with $${D('u', '\\symx')} = ${polyTex([{ c: k, n: 1 }])}$.`,
@@ -78,7 +78,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `What is the derivative of $\\ln(${ins.tex})$ with respect to $\\symx$? Type it using \`x\`, like \`2/(2x + 1)\`.`,
+        prompt: `What is the derivative of $\\ln(${ins.tex})$ with respect to $\\symx$?`,
         answer: { kind: 'expr', value: `${a}/(${ins.expr})`, vars: ['x'] },
         solution: steps(ins.tex, '\\dfrac{1}{u}', String(a), `\\dfrac{1}{${ins.tex}} \\cdot ${paren(a)} = \\dfrac{${a}}{${ins.tex}}`),
       };

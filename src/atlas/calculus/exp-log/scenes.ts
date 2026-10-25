@@ -119,7 +119,7 @@ const rules: SceneDef = {
     });
     s.show('rule', s.ease('why', 0.6) * top);
     s.show('flip', s.ease('flip', 0.6, 0.3));
-    // -ln p for three probabilities: the loss in miniature.
+    // -ln p for three numbers below 1: the smaller p, the taller the bar.
     const xs = columns(s, 3, s.tall ? 26 : 28);
     const base = s.h * 0.84;
     const vis = [s.ease('small', 0.6, 0.3), s.ease('flip', 0.6, 0.6), s.ease('small', 0.6, 1.2)];

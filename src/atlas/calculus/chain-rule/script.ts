@@ -50,9 +50,9 @@ export const script: LectureScript = {
         dL_dx = dL_du * 3         # -3.0         #@x
       `,
       beats: [
-        { id: 'longer', say: 'A chain can be as long as you like. Here x feeds u, u feeds v, and v feeds a loss, L. Each link has a local slope.', code: 'fwd' },
+        { id: 'longer', say: 'A chain can be as long as you like. Here x feeds u, u feeds v, and v feeds a last function, L. Each link has a local slope.', code: 'fwd' },
         { id: 'back', say: 'Start at the end and walk backwards, multiplying as you go: a half, times minus two is minus one, times three is minus three.', code: ['v', 'u', 'x'] },
-        { id: 'backprop', say: 'So a nudge to x moves the loss minus three times as much. This backward walk, multiplying local slopes, is backpropagation: how neural networks learn.', code: 'x' },
+        { id: 'backprop', say: 'So a nudge to x moves L minus three times as much. And the walk finds more on the way: the slope of L with respect to v and to u as well.', code: 'x' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

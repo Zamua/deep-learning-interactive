@@ -38,14 +38,14 @@ export const generators: Generator[] = [
         { value: LN(p[y]!), why: `That is $\\ln \\symp_{${y}}$ itself. The loss has a minus sign in front, so it is never negative.` },
         { value: p[y]!, why: 'That is the probability itself. The loss is minus its log.' },
       ];
-      if (top >= 0 && top !== y) traps.push({ value: -LN(p[top]!), why: `That uses class ${top}'s probability, the largest. The loss looks only at the right class, $\\symy = ${y}$.` });
+      if (top >= 0 && top !== y) traps.push({ value: -LN(p[top]!), why: `That uses option ${top}'s probability, the largest. The loss looks only at the right option, $\\symy = ${y}$.` });
       const lns = [...new Set(p)].sort((a, b) => b - a);
       return {
-        prompt: `Softmax gives the probabilities $\\symp = ${vec(p)}$, and the right class is $\\symy = ${y}$, counting from 0. What is the cross-entropy loss $\\symL$? Round to two decimals.\n\nUse ${lns.map((q) => `$\\ln ${num(q)} \\approx ${num(LN(q), 2)}$`).join(', ')}.`,
+        prompt: `Softmax gives the probabilities $\\symp = ${vec(p)}$, and the right answer is option $\\symy = ${y}$, counting from 0. What is the cross-entropy loss $\\symL$? Round to two decimals.\n\nUse ${lns.map((q) => `$\\ln ${num(q)} \\approx ${num(LN(q), 2)}$`).join(', ')}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps.filter((t, i) => Math.abs(t.value - v) >= 0.01 && traps.findIndex((u) => u.value === t.value) === i),
         solution: [
-          `The loss looks only at the right class: $\\symp_{\\symy} = \\symp_{${y}} = ${num(p[y]!)}$.`,
+          `The loss looks only at the right option: $\\symp_{\\symy} = \\symp_{${y}} = ${num(p[y]!)}$.`,
           `$\\symL = -\\ln ${num(p[y]!)} \\approx -(${num(LN(p[y]!), 2)}) = ${num(v, 2)}$.`,
         ],
       };
@@ -67,9 +67,9 @@ export const generators: Generator[] = [
         { value: round(s[y]! - lnT, 2), why: 'That has the sign flipped. The loss is $\\ln T - \\syms_{\\symy}$, never negative.' },
         { value: round(e[y]! / T, 2), why: `That is $\\symp_{${y}}$, the probability. The loss is minus its log.` },
       ];
-      if (top >= 0 && top !== y) traps.push({ value: round(lnT - s[top]!, 2), why: `That uses class ${top}'s score, the top one. The loss uses the right class, $\\symy = ${y}$.` });
+      if (top >= 0 && top !== y) traps.push({ value: round(lnT - s[top]!, 2), why: `That uses option ${top}'s score, the top one. The loss uses the right option, $\\symy = ${y}$.` });
       return {
-        prompt: `The scores are $\\syms = ${vec(s)}$ and the right class is $\\symy = ${y}$, counting from 0. Softmax turns the scores into probabilities. What is the cross-entropy loss? Round to two decimals.\n\nUse ${distinct.map((x) => `$e^{${x}} \\approx ${num(E(x), 2)}$`).join(', ')}, and $\\ln ${num(T, 2)} \\approx ${num(lnT, 2)}$.`,
+        prompt: `The scores are $\\syms = ${vec(s)}$ and the right answer is option $\\symy = ${y}$, counting from 0. Softmax turns the scores into probabilities. What is the cross-entropy loss? Round to two decimals.\n\nUse ${distinct.map((x) => `$e^{${x}} \\approx ${num(E(x), 2)}$`).join(', ')}, and $\\ln ${num(T, 2)} \\approx ${num(lnT, 2)}$.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps.filter((t, i) => Math.abs(t.value - v) >= 0.01 && traps.findIndex((u) => u.value === t.value) === i),
         solution: [
@@ -87,20 +87,20 @@ export const generators: Generator[] = [
       const C = easy ? pick(rng, [2, 5, 10, 100]) : pick(rng, [4, 8, 16, 20, 25, 50, 200, 1000]);
       const v = Math.log(C);
       const table = easy ? '$\\ln 2 \\approx 0.69$, $\\ln 5 \\approx 1.61$, $\\ln 10 \\approx 2.30$, $\\ln 100 \\approx 4.61$' : '$\\ln 2 \\approx 0.693$, $\\ln 5 \\approx 1.609$, $\\ln 10 \\approx 2.303$';
-      const why = pick(rng, ['starts with tiny random weights, so its scores are all about equal', 'gives every class the same score']);
+      const how = pick(rng, ['are all equal', 'are all the same number']);
       const parts = LN_PARTS[C];
       return {
-        prompt: `A classifier for $\\symC = ${C}$ classes ${why}. What is its cross-entropy loss on any one example? Round to two decimals.\n\nUse ${table}.`,
+        prompt: `There are $C = ${C}$ options, and their scores ${how}. Softmax turns the scores into probabilities. Whichever option is right, what is the cross-entropy loss? Round to two decimals.\n\nUse ${table}.`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: [
-          { value: -v, why: 'That is $\\ln(1/\\symC)$, without the minus sign. The loss is never negative.' },
-          { value: 1 / C, why: 'That is the probability each class gets. The loss is minus its log.' },
+          { value: -v, why: 'That is $\\ln(1/C)$, without the minus sign. The loss is never negative.' },
+          { value: 1 / C, why: 'That is the probability each option gets. The loss is minus its log.' },
         ],
         solution: [
-          `Equal scores give every class the same probability: $\\symp_{\\symy} = 1/${C}$.`,
-          `$\\symL = -\\ln(1/\\symC) = \\ln \\symC = \\ln ${C}$.`,
+          `Equal scores give every option the same probability: $\\symp_{\\symy} = 1/${C}$.`,
+          `$\\symL = -\\ln(1/C) = \\ln C = \\ln ${C}$.`,
           parts ? `$\\ln ${C} = ${parts[0]} \\approx ${num(round(parts[1], 3), 3)} \\approx ${num(v, 2)}$.` : `$\\ln ${C} \\approx ${num(v, 2)}$.`,
-          'A first loss far from $\\ln \\symC$ is a sign that something is off before training even starts.',
+          'The more options share the probability, the less the right one gets, and the larger the loss.',
         ],
       };
     },
@@ -112,7 +112,7 @@ export const generators: Generator[] = [
       const up = rng.int(2) === 0;
       const never = 'A probability is at most 1, so its log is at most 0, and the minus sign makes the loss 0 or more.';
       return {
-        prompt: `The probability a classifier gives the right class is $\\symp_{\\symy} = ${p0}$, so its loss is $\\symL = -\\ln ${p0} \\approx ${num(-LN(p0), 2)}$. As $\\symp_{\\symy}$ moves toward ${up ? '1, a confident right answer' : '0, a confident wrong answer'}, what happens to $\\symL$?`,
+        prompt: `The probability given to the right answer is $\\symp_{\\symy} = ${p0}$, so its loss is $\\symL = -\\ln ${p0} \\approx ${num(-LN(p0), 2)}$. As $\\symp_{\\symy}$ moves toward ${up ? '1, a confident right answer' : '0, a confident wrong answer'}, what happens to $\\symL$?`,
         answer: {
           kind: 'choice',
           options: ['It shrinks toward 0', 'It grows without limit', 'It turns negative', 'It levels off at 1'],

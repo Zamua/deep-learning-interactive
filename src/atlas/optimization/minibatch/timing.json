@@ -1,21 +1,21 @@
 {
- "duration": 81.691,
+ "duration": 84.618,
  "scenes": {
-  "full": [0.0, 25.92],
-  "average": [25.92, 56.816],
-  "epoch": [56.816, 81.691]
+  "full": [0.0, 28.623],
+  "average": [28.623, 60.057],
+  "epoch": [60.057, 84.618]
  },
  "beats": {
-  "full/full": [0.7, 8.411, "The training loss is an average over all N examples, so its gradient is the average of N per-example gradients.", [[4.19, 4.63]]],
-  "full/cost": [8.791, 15.569, "With fifty thousand images, one exact step would take fifty thousand forward and backward passes.", [[10.611, 10.961]]],
-  "full/batch": [15.949, 24.82, "So draw a small random batch of B examples, and average only theirs. It estimates the same gradient, at a fraction of the cost.", [[19.059, 19.289], [20.809, 21.359], [23.129, 23.389]]],
-  "average/per": [26.62, 34.985, "Say B is four, and for one weight the four examples give gradients of two, minus one, three and zero.", [[28.15, 28.54], [29.62, 29.84], [32.25, 32.59], [33.35, 33.61], [34.08, 34.29]]],
-  "average/mean": [35.365, 41.315, "The minibatch gradient is their mean: they add up to four, and four over four is one.", [[37.435, 37.925], [38.995, 39.285]]],
-  "average/noise": [41.695, 47.834, "Another batch gives another estimate. Batch after batch, they scatter around the true gradient.", [[43.605, 44.115], [45.475, 45.655]]],
-  "average/size": [48.214, 55.716, "Bigger batches scatter less, but each step costs more. Small batches buy many cheap, noisy steps.", [[49.974, 50.284], [51.974, 52.594], [54.514, 54.694]]],
-  "epoch/epoch": [57.516, 61.206, "One pass through all N examples is called an epoch.", []],
-  "epoch/count": [61.586, 71.402, "Each step uses one batch of B, so an epoch takes N over B steps. Twelve hundred examples in batches of a hundred: twelve steps.", [[63.766, 64.186], [67.136, 67.666], [70.116, 70.536]]],
-  "epoch/seen": [71.782, 79.471, "And after k steps, the model has seen k times B examples. Five steps of a hundred: five hundred.", [[73.192, 73.452], [76.282, 76.912], [78.292, 78.702]]],
-  "epoch/turn": [79.851, 80.591, "Your turn.", []]
+  "full/full": [0.7, 11.328, "Often the function to minimize is an average over N examples, each adding its own term. Then its gradient is the average of N per-example gradients.", [[4.8, 5.12], [6.65, 7.22]]],
+  "full/cost": [11.708, 18.273, "With fifty thousand examples, one exact step means computing fifty thousand gradients first.", [[13.638, 13.978]]],
+  "full/batch": [18.653, 27.523, "So draw a small random batch of B examples, and average only theirs. It estimates the same gradient, at a fraction of the cost.", [[21.763, 21.993], [23.513, 24.063], [25.833, 26.093]]],
+  "average/per": [29.323, 38.226, "Say B is four, and for one entry of w the four examples give gradients of two, minus one, three and zero.", [[30.843, 31.233], [32.843, 33.143], [35.543, 35.853], [36.613, 36.843], [37.313, 37.503]]],
+  "average/mean": [38.606, 44.555, "The minibatch gradient is their mean: they add up to four, and four over four is one.", [[40.676, 41.166], [42.236, 42.526]]],
+  "average/noise": [44.935, 51.075, "Another batch gives another estimate. Batch after batch, they scatter around the true gradient.", [[46.845, 47.355], [48.715, 48.895]]],
+  "average/size": [51.455, 58.957, "Bigger batches scatter less, but each step costs more. Small batches buy many cheap, noisy steps.", [[53.215, 53.525], [55.215, 55.835], [57.755, 57.935]]],
+  "epoch/epoch": [60.757, 64.446, "One pass through all N examples is called an epoch.", []],
+  "epoch/count": [64.826, 74.642, "Each step uses one batch of B, so an epoch takes N over B steps. Twelve hundred examples in batches of a hundred: twelve steps.", [[67.006, 67.426], [70.376, 70.906], [73.356, 73.776]]],
+  "epoch/seen": [75.022, 82.397, "And after k steps, k times B examples have been used. Five steps of a hundred: five hundred.", [[76.472, 76.852], [79.192, 79.732], [81.132, 81.592]]],
+  "epoch/turn": [82.777, 83.518, "Your turn.", []]
  }
 }

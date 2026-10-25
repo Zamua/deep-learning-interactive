@@ -1,9 +1,9 @@
 {
- "duration": 97.018,
+ "duration": 96.682,
  "scenes": {
   "chain": [0.0, 23.26],
   "local": [23.26, 61.451],
-  "back": [61.451, 97.018]
+  "back": [61.451, 96.682]
  },
  "beats": {
   "chain/chain": [0.7, 8.742, "Often one function feeds another. Here x goes in and u comes out, where u is three x plus one.", [[1.19, 1.34], [2.94, 3.5], [3.88, 4.06], [4.95, 5.1], [6.28, 6.59]]],
@@ -13,9 +13,9 @@
   "local/dz": [32.65, 39.221, "z is u squared, whose slope is two u. At u equals four, that is eight.", [[34.31, 34.63], [36.03, 36.64], [38.01, 38.25]]],
   "local/nudge": [39.601, 50.773, "Now nudge x by zero point zero one. u moves three times that, zero point zero three. And z moves eight times that, zero point two four.", [[42.491, 43.041], [44.661, 45.011], [46.531, 47.061], [48.971, 49.331]]],
   "local/mult": [51.153, 60.351, "So z moves three times eight, twenty four times as fast as x. That is the chain rule: multiply the local slopes.", [[53.443, 53.793], [56.233, 56.813], [58.093, 58.523]]],
-  "back/longer": [62.151, 72.71, "A chain can be as long as you like. Here x feeds u, u feeds v, and v feeds a loss, L. Each link has a local slope.", [[64.041, 64.651], [65.031, 65.211], [66.301, 66.671], [67.791, 68.111], [69.721, 69.931], [70.301, 70.881]]],
-  "back/back": [73.09, 82.845, "Start at the end and walk backwards, multiplying as you go: a half, times minus two is minus one, times three is minus three.", [[75.26, 75.57], [76.9, 77.46], [78.04, 78.25], [80.44, 80.85], [81.62, 81.82]]],
-  "back/backprop": [83.225, 94.798, "So a nudge to x moves the loss minus three times as much. This backward walk, multiplying local slopes, is backpropagation: how neural networks learn.", [[87.485, 88.025], [89.295, 89.575], [91.115, 91.385], [92.655, 93.085]]],
-  "back/turn": [95.178, 95.918, "Your turn.", []]
+  "back/longer": [62.151, 73.089, "A chain can be as long as you like. Here x feeds u, u feeds v, and v feeds a last function, L. Each link has a local slope.", [[64.021, 64.661], [65.041, 65.211], [66.321, 66.691], [67.821, 68.141], [70.051, 70.251], [70.601, 71.221]]],
+  "back/back": [73.469, 83.223, "Start at the end and walk backwards, multiplying as you go: a half, times minus two is minus one, times three is minus three.", [[75.639, 75.949], [77.279, 77.839], [78.419, 78.629], [80.819, 81.229], [81.999, 82.199]]],
+  "back/backprop": [83.603, 94.462, "So a nudge to x moves L minus three times as much. And the walk finds more on the way: the slope of L with respect to v and to u as well.", [[87.813, 88.453], [90.363, 90.853], [92.953, 93.163]]],
+  "back/turn": [94.842, 95.582, "Your turn.", []]
  }
 }

@@ -19,7 +19,7 @@ function scoresWithBars(s: Scene, vals: number[], o: { hiMax?: number; hiArg?: n
     const hi = i === k ? o.hiArg ?? 0 : 0;
     if (hi > 0.01) s.circle(x, ny, 4 * s.u * Math.min(1, hi * 1.5), { stroke: s.tint('gold', hi), lw: 0.45 });
     s.text(String(i), x, ny, { size: 3.8, font: 'mono', weight: 500 + 200 * hi, color: hi > 0.5 ? s.c('gold') : s.c('--ink-3') });
-    s.alpha(o.names ?? 0, () => s.text('class', x, ny + 7 * s.u, { size: 2.8, font: 'mono', color: s.c('--ink-3') }));
+    s.alpha(o.names ?? 0, () => s.text('answer', x, ny + 7 * s.u, { size: 2.8, font: 'mono', color: s.c('--ink-3') }));
   });
   return { xs, top, base, ny, k };
 }
@@ -32,7 +32,7 @@ const position: SceneDef = {
     s.alpha(s.ease('max', 0.6, 0.6) * (1 - pr), () => s.text('max = 7', s.w * 0.3, by, { size: 3.8, font: 'mono', weight: 650, color: s.c('purple') }));
     s.alpha(s.ease('arg', 0.6, 2.2) * (1 - pr), () => s.text('argmax = 1', s.w * 0.7, by, { size: 3.8, font: 'mono', weight: 650, color: s.c('gold') }));
     s.alpha(s.ease('scores', 0.6) * (1 - s.ease('arg', 0.5)), () => s.text('position', s.w / 2, L.ny + 7 * s.u, { size: 3, font: 'mono', color: s.c('--ink-3') }));
-    s.alpha(pr, () => s.text('prediction: class 1', s.w / 2, by, { size: 3.8, font: 'mono', weight: 650, color: s.c('gold') }));
+    s.alpha(pr, () => s.text('top pick: answer 1', s.w / 2, by, { size: 3.8, font: 'mono', weight: 650, color: s.c('gold') }));
   },
 };
 

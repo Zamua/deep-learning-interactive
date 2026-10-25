@@ -2,8 +2,8 @@ import type { Generator } from '../../../mastery/domain/types';
 import { int, ints, pick, vec } from '../../kit';
 import { dot, mat, matrix, ORD, prodTex, shapeTex, sumTex } from '../kit';
 
-const CLASSES = [10, 100, 1000];
-const INPUTS = [48, 784, 3072, 12288];
+const ROWS = [10, 100, 1000];
+const COLS = [48, 784, 3072, 12288];
 
 export const generators: Generator[] = [
   {
@@ -63,8 +63,8 @@ export const generators: Generator[] = [
         n = int(rng, 2, 8);
         if (n >= m) n++;
       } else {
-        m = pick(rng, CLASSES);
-        n = pick(rng, INPUTS);
+        m = pick(rng, ROWS);
+        n = pick(rng, COLS);
       }
       if (rng.int(2) === 0) {
         return {

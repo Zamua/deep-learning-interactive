@@ -115,13 +115,13 @@ const grows: SceneDef = {
         const cy = s.h * 0.8 + Math.floor(i / per) * 3.2 * s.u;
         s.rrect(cx, cy, sz, sz, 0.4, { fill: s.tint('orange', 0.45), stroke: s.tint('orange', 0.8), lw: 0.12 });
       }
-      s.text('training images', s.w / 2, s.h * 0.8 - 3.4 * s.u, { size: 3.2, color: s.c('--ink-3') });
+      s.text('images scored', s.w / 2, s.h * 0.8 - 3.4 * s.u, { size: 3.2, color: s.c('--ink-3') });
       s.alpha(s.ease('data', 0.6, 2.4), () => s.text('×1,000 images: still 51 parameters', s.w / 2, s.h * 0.94, { size: 3.4, font: 'mono', weight: 600, color: s.c('green') }));
     });
   },
 };
 
-/** Node positions of the 4 -> 5 -> 3 network. */
+/** Node positions of the 4 -> 5 -> 3 chain. */
 function net(s: Scene) {
   const xs = [0.22, 0.5, 0.78].map((f) => s.w * f);
   const sizes = [4, 5, 3];

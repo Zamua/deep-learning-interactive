@@ -78,14 +78,14 @@ const GRADS = ['−3', '−1', '0.5', '1'];
 
 const back: SceneDef = {
   marks: {
-    total: { tex: String.raw`\frac{d\symL}{d\symx} = 0.5 \times (-2) \times 3 = -3`, x: 0.5, y: 0.84, size: 4.8 },
+    total: { tex: String.raw`\frac{dL}{d\symx} = 0.5 \times (-2) \times 3 = -3`, x: 0.5, y: 0.84, size: 4.8 },
   },
   draw(s) {
     const y = s.h * 0.24;
     const a = [0, 1, 2, 3].map((i) => s.ease('longer', 0.6, 0.5 * i));
     chain(s, X4, y, BACK, BINKS, a);
     SLOPES.forEach((t, i) => s.alpha(s.ease('longer', 0.6, 2.4), () => mono(s, t, between(s, X4, i), y - 5 * s.u, 'gold', 3.3)));
-    // Backward: one gradient cell per node, filled from the loss back to x.
+    // Backward: one slope cell per node, filled from L back to x.
     const yg = s.h * 0.5;
     const g = [after(s, 'back', 0.8), after(s, 'back', 0.55), after(s, 'back', 0.3), after(s, 'back', 0)];
     X4.forEach((f, i) => {

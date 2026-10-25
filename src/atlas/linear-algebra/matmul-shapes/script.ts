@@ -30,18 +30,17 @@ export const script: LectureScript = {
       title: 'Order matters',
       codeTitle: 'order.py',
       code: `
-        B @ A            # error: 4 vs 2          #@swap
-        X.shape          # (N, D)                 #@batch
-        W.shape          # (C, D)                 #@batch
-        X @ W            # error: D vs C          #@fix
-        (X @ W.T).shape  # (N, C)                 #@fix
-        (W @ X.T).shape  # (C, N)                 #@flip
+        B @ A              # error: 4 vs 2     #@swap
+        M = np.ones((2, 4))                    #@pair
+        A @ M              # error: 3 vs 2     #@pair
+        (A.T @ M).shape    # (3, 4)            #@fix
+        (M.T @ A).shape    # (4, 3)            #@flip
       `,
       beats: [
         { id: 'swap', say: 'Order matters. B times A is three by four, times two by three: the inner dimensions are four and two, so there is no product.', code: 'swap' },
-        { id: 'batch', say: 'A common case: a batch X of N examples with D numbers each, and weights W with one row of D for each of C classes.', code: 'batch' },
-        { id: 'fix', say: 'X times W fails: its inner dimensions are D and C. Transpose W first: N by D, times D by C, gives N by C, a score for every example and class.', code: 'fix' },
-        { id: 'flip', say: 'W times X transpose works too, but lays the same scores out the other way: C by N.', code: 'flip' },
+        { id: 'pair', say: 'Now take A, two by three, and a new matrix M, two by four. A times M fails too: its inner dimensions are three and two.', code: 'pair' },
+        { id: 'fix', say: 'Transposing A swaps its shape to three by two. Three by two, times two by four, gives three by four.', code: 'fix' },
+        { id: 'flip', say: 'M transpose times A works as well, and lays the same numbers out the other way: four by three.', code: 'flip' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

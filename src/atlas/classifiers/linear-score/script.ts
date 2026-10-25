@@ -34,7 +34,7 @@ export const script: LectureScript = {
       code: `
         b = np.array([1, 0, -2])            #@b
         s = W @ x + b    # [5, 1, 3]        #@s
-        s.argmax()       # 0, cat           #@pred
+        s.max()          # 5: cat           #@pred
         W @ x            # [4, 1, 5]: ship  #@nob
         W @ np.zeros(2) + b   # [1, 0, -2]  #@zero
       `,

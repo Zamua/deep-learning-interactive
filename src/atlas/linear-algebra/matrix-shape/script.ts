@@ -16,7 +16,7 @@ export const script: LectureScript = {
                       [0, 3, 5]])    #@W
         W.shape   # (2, 3): rows, columns   #@shape
         W.size    # 6 numbers               #@size
-        # 10 classes, 3072 inputs: (10, 3072)   #@big
+        # 10 photos, 3072 numbers each: (10, 3072)   #@big
       `,
       beats: [
         { id: 'grid', say: 'A matrix is a grid of numbers: rows that run across, and columns that run down.', code: 'W' },
@@ -24,7 +24,7 @@ export const script: LectureScript = {
         { id: 'cols', say: 'and three columns.', code: 'W' },
         { id: 'shape', say: 'Its shape is the rows, then the columns: two by three. Rows always come first.', code: 'shape' },
         { id: 'count', say: 'It holds two times three: six numbers.', code: 'size' },
-        { id: 'big', say: 'Real ones are bigger. A classifier with ten classes, for images of {3,072|three thousand and seventy two} numbers, has one row per class and one column per input number: ten by {3,072|three thousand and seventy two}.', code: 'big' },
+        { id: 'big', say: 'Real ones are bigger. Stack ten flattened {32 by 32|thirty two by thirty two} photos, one per row. Each row holds {3,072|three thousand and seventy two} numbers, so the shape is ten by {3,072|three thousand and seventy two}.', code: 'big' },
       ],
     },
     {

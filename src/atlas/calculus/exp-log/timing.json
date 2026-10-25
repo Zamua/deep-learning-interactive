@@ -1,9 +1,9 @@
 {
- "duration": 130.642,
+ "duration": 129.332,
  "scenes": {
   "exp": [0.0, 42.912],
-  "log": [42.912, 85.001],
-  "rules": [85.001, 130.642]
+  "log": [42.912, 84.233],
+  "rules": [84.233, 129.332]
  },
  "beats": {
   "exp/e": [0.7, 9.258, "The number e is about two point seven one eight. e to the x means e multiplied by itself, x times.", [[3.94, 4.52], [8.01, 8.33]]],
@@ -13,12 +13,12 @@
   "log/ask": [43.612, 51.511, "The natural log, ln, runs this backwards. ln of a number asks: e to what power gives it?", [[44.612, 44.872], [45.522, 45.762], [46.982, 47.522], [49.282, 49.732]]],
   "log/two": [51.891, 58.023, "e squared is seven point three nine, so ln of seven point three nine is two.", [[54.251, 54.701]]],
   "log/one": [58.403, 62.783, "e to the zero is one, so ln of one is zero.", [[60.013, 60.413]]],
-  "log/neg": [63.163, 74.564, "Below one, the log is negative: ln of zero point three seven is minus one. A probability is at most one, so its log is never positive.", [[63.953, 64.293], [65.583, 66.213], [69.703, 70.363], [72.293, 72.623]]],
-  "log/undo": [74.944, 83.901, "ln and e to the x undo each other: ln of e to the a is a, and e to the ln of a is a.", [[77.874, 78.534], [80.904, 81.294]]],
-  "rules/why": [85.701, 96.51, "Because powers add when exponentials multiply, ln turns a product into a sum: ln of a times b is ln a plus ln b.", [[88.871, 89.301], [91.661, 92.211], [94.001, 94.261]]],
-  "rules/nums": [96.89, 106.817, "ln two is about zero point six nine and ln three about one point one, so ln six is their sum, one point seven nine.", [[99.72, 100.1], [102.51, 102.99], [105.08, 105.49]]],
-  "rules/flip": [107.197, 120.621, "One over a number flips the sign of its log: ln of a half is minus ln two, about minus zero point six nine. So minus ln of a half is plus zero point six nine.", [[110.017, 110.727], [113.527, 113.867], [115.947, 116.487], [118.437, 118.627]]],
-  "rules/small": [121.001, 128.422, "The smaller the probability, the bigger minus its log: minus ln of a tenth is about two point three.", [[122.461, 122.751], [124.321, 124.951], [126.781, 126.981]]],
-  "rules/turn": [128.802, 129.542, "Your turn.", []]
+  "log/neg": [63.163, 73.796, "Below one, the log is negative: ln of zero point three seven is minus one. Any number between zero and one has a negative log.", [[64.033, 64.473], [65.733, 66.353], [68.543, 68.733], [69.703, 70.343], [72.423, 72.573]]],
+  "log/undo": [74.176, 83.133, "ln and e to the x undo each other: ln of e to the a is a, and e to the ln of a is a.", [[77.106, 77.766], [80.136, 80.526]]],
+  "rules/why": [84.933, 95.742, "Because powers add when exponentials multiply, ln turns a product into a sum: ln of a times b is ln a plus ln b.", [[88.103, 88.533], [90.893, 91.443], [93.233, 93.493]]],
+  "rules/nums": [96.122, 106.049, "ln two is about zero point six nine and ln three about one point one, so ln six is their sum, one point seven nine.", [[98.952, 99.332], [101.742, 102.222], [104.312, 104.722]]],
+  "rules/flip": [106.429, 119.852, "One over a number flips the sign of its log: ln of a half is minus ln two, about minus zero point six nine. So minus ln of a half is plus zero point six nine.", [[109.249, 109.959], [112.759, 113.099], [115.179, 115.719], [117.669, 117.859]]],
+  "rules/small": [120.232, 127.111, "The smaller the number, the bigger minus its log: minus ln of a tenth is about two point three.", [[121.362, 121.632], [123.172, 123.742]]],
+  "rules/turn": [127.491, 128.232, "Your turn.", []]
  }
 }

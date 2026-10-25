@@ -42,8 +42,8 @@ export const generators: Generator[] = [
       if (img && img[2] === 3) traps.push({ value: C * img[0] * img[1] + C, why: 'That leaves out the color channels: each pixel is 3 numbers, so $\\symD$ is 3 times the pixel count.' });
       return {
         prompt: img
-          ? `A linear classifier takes ${image(img)}, flattened into one vector, and scores $\\symC = ${C}$ classes. How many parameters does it learn, weights and biases together?`
-          : `A linear classifier takes $\\symD = ${big(D)}$ input features and scores $\\symC = ${C}$ classes. How many parameters does it learn, weights and biases together?`,
+          ? `A linear classifier takes ${image(img)}, flattened into one vector, and scores $\\symC = ${C}$ classes. How many parameters does it have, weights and biases together?`
+          : `A linear classifier takes $\\symD = ${big(D)}$ input features and scores $\\symC = ${C}$ classes. How many parameters does it have, weights and biases together?`,
         answer: { kind: 'number', value: v },
         traps: traps.filter((t) => t.value !== v),
         solution: [
@@ -68,18 +68,18 @@ export const generators: Generator[] = [
       const l2 = H * C + C;
       const v = l1 + l2;
       const traps = [
-        { value: D * H + H * C, why: 'That counts the weights only. Each layer also has one bias per output: $H$ in the first, $\\symC$ in the second.' },
-        { value: D * C + C, why: 'That is a single linear layer from the inputs straight to the classes. This network has a hidden layer in between, with its own weights.' },
-        { value: D * H * C, why: 'That multiplies all three sizes. Count each layer on its own, inputs times outputs plus biases, then add the layers.' },
+        { value: D * H + H * C, why: 'That counts the weights only. Each map also has one bias per output: $H$ in the first, $\\symC$ in the second.' },
+        { value: D * C + C, why: 'That is a single map from the inputs straight to the classes. Here the $H$ numbers in the middle come from a first map, with its own weights.' },
+        { value: D * H * C, why: 'That multiplies all three sizes. Count each map on its own, inputs times outputs plus biases, then add the two.' },
       ];
       return {
-        prompt: `A two-layer network maps $\\symD = ${big(D)}$ inputs to $H = ${H}$ hidden units, then those to $\\symC = ${C}$ class scores. Each layer has its own weights and biases. How many parameters does it have in all?`,
+        prompt: `Two linear maps run in a row: the first turns $\\symD = ${big(D)}$ inputs into $H = ${H}$ numbers, and the second turns those into $\\symC = ${C}$ class scores. Each has its own weights and biases. How many parameters do they have in all?`,
         answer: { kind: 'number', value: v },
         traps: traps.filter((t, i) => t.value !== v && traps.findIndex((u) => u.value === t.value) === i),
         solution: [
-          `Layer 1, $\\symD \\to H$: $${big(D)} \\times ${H} = ${big(D * H)}$ weights plus $${H}$ biases, $${big(l1)}$.`,
-          `Layer 2, $H \\to \\symC$: $${H} \\times ${C} = ${big(H * C)}$ weights plus $${C}$ biases, $${big(l2)}$.`,
-          `Add the layers: $${big(l1)} + ${big(l2)} = ${big(v)}$.`,
+          `The first map, $\\symD \\to H$: $${big(D)} \\times ${H} = ${big(D * H)}$ weights plus $${H}$ biases, $${big(l1)}$.`,
+          `The second map, $H \\to \\symC$: $${H} \\times ${C} = ${big(H * C)}$ weights plus $${C}$ biases, $${big(l2)}$.`,
+          `Add the two: $${big(l1)} + ${big(l2)} = ${big(v)}$.`,
         ],
       };
     },
@@ -95,10 +95,10 @@ export const generators: Generator[] = [
         const name = ['\\symW_1', '\\symb_1', '\\symW_2', '\\symb_2'][which]!;
         const value = [[H, D], [H], [C, H], [C]][which]!;
         return {
-          prompt: `A two-layer network computes $h = \\symW_1\\symx + \\symb_1$ with $H = ${H}$ hidden units, then scores $\\syms = \\symW_2 h + \\symb_2$, from $\\symD = ${big(D)}$ inputs to $\\symC = ${C}$ classes. What is the shape of $${name}$?${which % 2 ? ' A vector\'s shape is one number.' : ''}`,
+          prompt: `Two linear maps run in a row: $h = \\symW_1\\symx + \\symb_1$ gives $H = ${H}$ numbers, then $\\syms = \\symW_2 h + \\symb_2$ scores them, from $\\symD = ${big(D)}$ inputs to $\\symC = ${C}$ classes. What is the shape of $${name}$?${which % 2 ? ' A vector\'s shape is one number.' : ''}`,
           answer: { kind: 'shape', value },
           solution: [
-            which < 2 ? `The first layer turns $\\symD = ${big(D)}$ inputs into $H = ${H}$ outputs.` : `The second layer turns $H = ${H}$ hidden values into $\\symC = ${C}$ scores.`,
+            which < 2 ? `The first map turns $\\symD = ${big(D)}$ inputs into $H = ${H}$ outputs.` : `The second map turns the $H = ${H}$ numbers of $h$ into $\\symC = ${C}$ scores.`,
             which % 2 === 0
               ? `Its weights have one row per output and one column per input: $(${value.join(', ')})$.`
               : `Its biases are one per output: $(${value[0]},)$, which NumPy prints as \`(${value[0]},)\`.`,
@@ -140,17 +140,17 @@ export const generators: Generator[] = [
       const count = (c: number, dd: number) => `$${c} \\times ${big(dd)} + ${c} = ${big(c * dd + c)}$`;
       const cases: Record<string, { change: string; correct: number; why: (string | null)[]; solution: string[] }> = {
         data: {
-          change: 'it trains on twice as many images',
+          change: 'it scores twice as many images',
           correct: 0,
           why: [
             null,
-            'Twice the data is not twice the parameters: $\\symW$ is still $\\symC \\times \\symD$ however many images it learns from.',
+            'Twice the images is not twice the parameters: $\\symW$ is still $\\symC \\times \\symD$ however many images it scores.',
             'The count is set by the input size and the number of classes, and neither changed.',
-            'Training images are not parameters: $\\symW$ and $\\symb$ keep their shapes whatever the data.',
+            'The images are inputs, not parameters: $\\symW$ and $\\symb$ keep their shapes however many there are.',
           ],
           solution: [
             'The count is $\\symC\\symD + \\symC$: it depends on the input size and the number of classes only.',
-            `More images change the values $\\symW$ and $\\symb$ learn, not how many there are: still $${big(n)}$.`,
+            `More images mean more scores to compute, not more numbers in $\\symW$ and $\\symb$: still $${big(n)}$.`,
           ],
         },
         classes: {

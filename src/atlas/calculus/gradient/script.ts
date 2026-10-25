@@ -44,19 +44,19 @@ export const script: LectureScript = {
     },
     {
       id: 'shape',
-      title: 'One entry per weight',
+      title: 'One entry per input',
       codeTitle: 'shape.py',
       code: `
-        W = np.random.randn(3, 4)   # 12 weights  #@W
-        # L: one number, from all of W           #@L
-        g = np.zeros_like(W)        # dL/dW      #@g
-        g.shape                     # (3, 4)     #@g
-        g[1, 2]   # how L moves with W[1, 2]     #@entry
+        W = np.random.randn(3, 4)   # 12 numbers  #@W
+        # f: one number, from all of W           #@L
+        df = np.zeros_like(W)       # df/dW      #@g
+        df.shape                    # (3, 4)     #@g
+        df[1, 2]  # how f moves with W[1, 2]     #@entry
       `,
       beats: [
-        { id: 'loss', say: 'In training, the function is the loss, L, and its inputs are the weights. A weight matrix W with three rows and four columns is twelve inputs.', code: ['W', 'L'] },
-        { id: 'g', say: 'So the gradient g has twelve partials, one per weight, laid out exactly like W: three by four.', code: 'g' },
-        { id: 'entry', say: 'Each entry says how the loss moves when that one weight is nudged: g at row one, column two belongs to W at row one, column two.', code: 'entry' },
+        { id: 'loss', say: 'A function can take a whole grid of numbers as its input. Here W has three rows and four columns, twelve numbers in all, and f turns them into a single number.', code: ['W', 'L'] },
+        { id: 'g', say: 'So the gradient has twelve partials, one per entry, laid out exactly like W: three by four.', code: 'g' },
+        { id: 'entry', say: 'Each entry says how f moves when that one number in W is nudged: the gradient at row one, column two belongs to W at row one, column two.', code: 'entry' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

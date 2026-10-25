@@ -19,9 +19,9 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'p', say: 'Softmax hands back probabilities: {0.7|zero point seven}, {0.2|zero point two} and {0.1|zero point one}.', code: 'p' },
-        { id: 'y', say: 'The image really is class zero, so y is zero. For the loss, only that class\'s probability matters.', code: 'y' },
+        { id: 'y', say: 'Say option zero turns out to be right, so y is zero. The loss is one number that says how bad the guess was, and it looks only at that option\'s probability.', code: 'y' },
         { id: 'L', say: 'The loss is minus the log of it. Minus the log of {0.7|zero point seven} is about {0.36|zero point three six}.', code: 'L' },
-        { id: 'wrong', say: 'Had the right class been class two, it would be minus the log of {0.1|zero point one}: {2.30|two point three zero}. Less probability on the truth, more loss.', code: 'L2' },
+        { id: 'wrong', say: 'Had option two been the right one, it would be minus the log of {0.1|zero point one}: {2.30|two point three zero}. Less probability on the truth, more loss.', code: 'L2' },
       ],
     },
     {
@@ -47,14 +47,14 @@ export const script: LectureScript = {
       code: `
         s = np.array([2, 1, -1])               #@s
         y = 0                                  #@s
-        T = np.exp(s).sum()     # 10.48        #@T
-        L = np.log(T) - s[y]    # 2.35 - 2     #@L
+        total = np.exp(s).sum()    # T = 10.48  #@T
+        L = np.log(total) - s[y]   # 2.35 - 2   #@L
         np.log(10)   # 2.30: ten equal scores  #@init
       `,
       beats: [
         { id: 's', say: 'From scores, softmax makes p of y equal to e to the right score, over the total, T.', code: ['s', 'T'] },
-        { id: 'rule', say: 'Take minus the log, and the loss is the log of the total, minus the right class\'s score. For scores two, one and minus one, with y equal to zero, that is {2.35|two point three five} minus two: {0.35|zero point three five}.', code: 'L' },
-        { id: 'init', say: 'Before training, the scores are about equal, so each of C classes gets one over C, and the loss is log C. With ten classes, {2.30|two point three zero}.', code: 'init' },
+        { id: 'rule', say: 'Take minus the log, and the loss is the log of the total, minus the right option\'s score. For scores two, one and minus one, with y equal to zero, that is {2.35|two point three five} minus two: {0.35|zero point three five}.', code: 'L' },
+        { id: 'init', say: 'When all the scores are equal, each of C options gets one over C, and the loss is log C. With ten options, {2.30|two point three zero}.', code: 'init' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

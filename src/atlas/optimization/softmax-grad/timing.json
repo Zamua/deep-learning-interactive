@@ -1,23 +1,23 @@
 {
- "duration": 121.417,
+ "duration": 131.626,
  "scenes": {
-  "setup": [0.0, 35.921],
-  "derive": [35.921, 76.493],
-  "bars": [76.493, 121.417]
+  "setup": [0.0, 42.329],
+  "derive": [42.329, 83.109],
+  "bars": [83.109, 131.626]
  },
  "beats": {
-  "setup/chain": [0.7, 18.179, "A classifier's scores, s, go through softmax to give probabilities, p. The loss is minus the log of the correct class's probability. Here the correct class is class one, so the loss is minus log zero point three, about one point two.", [[2.19, 2.46], [2.88, 3.15], [5.74, 5.99], [6.29, 6.97], [10.63, 11.16], [13.41, 13.74], [16.62, 17.0]]],
-  "setup/ask": [18.559, 24.066, "To train, we need the gradient: how the loss changes as each score moves.", [[19.239, 19.459], [20.689, 21.109], [23.839, 24.039]]],
-  "setup/answer": [24.446, 34.821, "It comes out remarkably simple: p, minus the one-hot label. Here, zero point six, minus zero point seven, and zero point one.", [[26.326, 26.876], [27.216, 27.566], [29.156, 29.716], [30.066, 30.386], [31.496, 31.706], [33.096, 33.396]]],
-  "derive/expand": [36.621, 47.047, "Write the loss out. Minus the log of a fraction is minus the log of the top, plus the log of the bottom: minus s y, plus the log of the sum.", [[37.861, 38.521], [40.111, 40.321], [41.881, 42.191], [43.491, 44.061], [45.331, 45.621]]],
-  "derive/log": [47.427, 60.45, "Now take the derivative with respect to any one score, s j. By the chain rule, the log of the sum gives one over the sum, times e to the s j. That is exactly p j.", [[50.667, 50.927], [51.627, 52.247], [53.127, 53.387], [56.077, 56.277], [57.967, 58.517]]],
-  "derive/minus": [60.83, 70.287, "Minus s y depends only on the correct score: its derivative is minus one when j is y, and zero for every other class.", [[64.17, 64.72], [67.9, 68.28]]],
-  "derive/together": [70.667, 75.393, "Add the two: p j, with one taken away at the correct class.", [[71.477, 71.947], [72.637, 72.937]]],
-  "bars/p": [77.193, 86.324, "Back to our numbers. The probabilities are zero point six, zero point three and zero point one, and the correct class is class one.", [[78.243, 78.753], [81.023, 81.253], [82.303, 82.523], [83.713, 84.133]]],
-  "bars/sub": [86.704, 96.081, "Take one away at class one: zero point three minus one is minus zero point seven. The other classes keep their probabilities.", [[88.564, 89.164], [91.054, 91.264], [93.114, 93.734]]],
-  "bars/sum": [96.461, 103.566, "The entries always add up to zero: p adds up to one, and the label takes exactly one away.", [[98.731, 99.261], [100.591, 100.971]]],
-  "bars/step": [103.946, 111.237, "A step against the gradient raises the correct score and lowers the others, the most confident wrong class the most.", [[106.996, 107.156], [108.306, 108.806], [110.496, 110.646]]],
-  "bars/done": [111.617, 119.196, "And once the model gives the correct class nearly all the probability, the gradient is nearly zero: there is little left to learn.", [[115.227, 115.547], [117.247, 117.767]]],
-  "bars/turn": [119.576, 120.317, "Your turn.", []]
+  "setup/chain": [0.7, 17.769, "Scores, s, go through softmax to give probabilities, p. The loss is minus the log of the correct option's probability. Here the correct option is option one, so the loss is minus log zero point three, about one point two.", [[1.41, 1.78], [2.21, 2.67], [5.18, 5.5], [5.81, 6.54], [10.04, 10.61], [12.88, 13.26], [16.13, 16.51]]],
+  "setup/ask": [18.149, 26.703, "Now ask how the loss changes as each score moves. One derivative per score, stacked into a vector: the gradient.", [[21.549, 22.129], [23.789, 24.049], [25.419, 25.929]]],
+  "setup/answer": [27.083, 41.229, "It comes out remarkably simple: p, minus the one-hot vector for y, a one at the correct option and zeros elsewhere. Here, zero point six, minus zero point seven, and zero point one.", [[28.963, 29.553], [29.933, 30.223], [32.303, 32.733], [34.263, 34.493], [35.863, 36.393], [36.733, 37.063], [38.143, 38.373], [39.793, 40.033]]],
+  "derive/expand": [43.029, 53.454, "Write the loss out. Minus the log of a fraction is minus the log of the top, plus the log of the bottom: minus s y, plus the log of the sum.", [[44.269, 44.929], [46.519, 46.729], [48.289, 48.599], [49.899, 50.469], [51.739, 52.029]]],
+  "derive/log": [53.834, 66.858, "Now take the derivative with respect to any one score, s j. By the chain rule, the log of the sum gives one over the sum, times e to the s j. That is exactly p j.", [[57.074, 57.334], [58.034, 58.654], [59.534, 59.794], [62.484, 62.684], [64.374, 64.924]]],
+  "derive/minus": [67.238, 76.754, "Minus s y depends only on the correct score: its derivative is minus one when j is y, and zero for every other option.", [[68.528, 68.698], [70.678, 71.248], [74.408, 74.768]]],
+  "derive/together": [77.134, 82.009, "Add the two: p j, with one taken away at the correct option.", [[77.994, 78.554], [79.264, 79.564]]],
+  "bars/p": [83.809, 93.275, "Back to our numbers. The probabilities are zero point six, zero point three and zero point one, and the correct option is option one.", [[84.849, 85.399], [87.799, 88.069], [89.109, 89.349], [90.569, 90.999], [91.999, 92.199]]],
+  "bars/sub": [93.655, 103.064, "Take one away at option one: zero point three minus one is minus zero point seven. The other options keep their probabilities.", [[95.605, 96.215], [98.055, 98.295], [100.115, 100.745]]],
+  "bars/sum": [103.444, 110.959, "The entries always add up to zero: p adds up to one, and the one-hot vector takes exactly one away.", [[105.644, 106.224], [107.584, 107.954]]],
+  "bars/step": [111.339, 121.272, "So to lower the loss, move each score against its entry: the correct score goes up, and the others go down, the most confident wrong option the most.", [[112.759, 112.989], [115.059, 115.569], [116.939, 117.229], [118.459, 118.939]]],
+  "bars/done": [121.652, 129.406, "And once the correct option gets nearly all the probability, the gradient is nearly zero: there is little loss left to remove.", [[124.782, 125.142], [126.902, 127.442]]],
+  "bars/turn": [129.786, 130.526, "Your turn.", []]
  }
 }

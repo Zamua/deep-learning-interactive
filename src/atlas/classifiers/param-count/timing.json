@@ -1,23 +1,23 @@
 {
- "duration": 99.169,
+ "duration": 102.56,
  "scenes": {
-  "grid": [0.0, 39.423],
-  "grows": [39.423, 63.646],
-  "layers": [63.646, 99.169]
+  "grid": [0.0, 40.503],
+  "grows": [40.503, 64.7],
+  "layers": [64.7, 102.56]
  },
  "beats": {
-  "grid/dims": [0.7, 11.888, "How many numbers does a linear classifier learn? Say each input has four features, so D is four, and there are three classes, so C is three.", [[3.5, 4.19], [6.41, 6.74], [8.19, 8.6], [10.09, 10.41]]],
-  "grid/rows": [12.268, 20.521, "W holds one row per class, and each row holds one weight per feature. Three rows of four make twelve weights.", [[14.658, 14.958], [17.468, 18.018]]],
-  "grid/bias": [20.901, 24.358, "Then each class has one bias: three more.", [[21.331, 21.521], [23.231, 23.681]]],
-  "grid/total": [24.738, 30.338, "Fifteen parameters in all. In general, it is C times D, plus C.", [[26.448, 26.978], [27.658, 27.918], [29.418, 29.608]]],
-  "grid/shape": [30.718, 38.323, "As shapes: W is C by D, three by four, and b is a vector of C numbers.", [[31.518, 32.048], [34.008, 34.468], [35.468, 35.918]]],
-  "grows/class": [40.123, 44.696, "Add a class, and W gains a whole row, plus one more bias.", [[42.903, 43.273]]],
-  "grows/side": [45.076, 54.434, "Feed it bigger images, and every row grows longer. Twice the width and twice the height is four times the pixels, so four times the weights.", [[46.456, 46.636], [48.336, 48.856], [52.436, 52.766]]],
-  "grows/data": [54.814, 62.546, "One thing never enters the count: the number of training images. Ten or a million, W keeps the same shape.", [[56.724, 57.214], [58.774, 59.264], [60.454, 60.864]]],
-  "layers/two": [64.346, 73.041, "A two-layer network is two of these in a row. Four inputs go to five hidden units, H, and those go to the three classes.", [[66.996, 67.546], [70.056, 70.296], [70.696, 71.066]]],
-  "layers/l1": [73.421, 81.913, "The first layer has D times H weights, one per line, plus H biases: twenty plus five, twenty five.", [[76.141, 76.431], [77.341, 77.671], [79.161, 79.601], [80.791, 81.131]]],
-  "layers/l2": [82.293, 89.116, "The second has H times C weights, plus C biases: fifteen plus three, eighteen.", [[84.803, 84.963], [86.443, 86.903], [88.183, 88.533]]],
-  "layers/sum": [89.496, 96.949, "Add the layers: forty three. Every layer is inputs times outputs, plus one bias per output.", [[90.466, 90.936], [91.706, 92.226], [94.826, 95.066]]],
-  "layers/turn": [97.329, 98.069, "Your turn.", []]
+  "grid/dims": [0.7, 11.392, "How many numbers make up a linear classifier? Say each input has four features, so D is four, and there are three classes, so C is three.", [[3.31, 3.94], [6.18, 6.42], [7.81, 8.23], [9.71, 9.95]]],
+  "grid/rows": [11.772, 20.025, "W holds one row per class, and each row holds one weight per feature. Three rows of four make twelve weights.", [[14.162, 14.462], [16.972, 17.522]]],
+  "grid/bias": [20.405, 23.862, "Then each class has one bias: three more.", [[20.835, 21.025], [22.735, 23.185]]],
+  "grid/total": [24.242, 31.418, "Fifteen numbers in all: these are its parameters. In general, it is C times D, plus C.", [[25.662, 26.212], [27.652, 28.182], [28.812, 29.032], [30.542, 30.722]]],
+  "grid/shape": [31.798, 39.403, "As shapes: W is C by D, three by four, and b is a vector of C numbers.", [[32.598, 33.128], [35.088, 35.548], [36.548, 36.998]]],
+  "grows/class": [41.203, 45.776, "Add a class, and W gains a whole row, plus one more bias.", [[43.983, 44.353]]],
+  "grows/side": [46.156, 55.514, "Feed it bigger images, and every row grows longer. Twice the width and twice the height is four times the pixels, so four times the weights.", [[47.536, 47.716], [49.416, 49.936], [53.516, 53.846]]],
+  "grows/data": [55.894, 63.6, "One thing never enters the count: how many images it scores. Ten or a million, W keeps the same shape.", [[57.844, 58.314], [59.974, 60.354], [61.504, 61.854]]],
+  "layers/two": [65.4, 76.547, "Now chain two of these, so the outputs of the first are the inputs of the second. Four inputs go to H, five numbers in the middle, and those go to the three classes.", [[66.95, 67.31], [70.42, 71.05], [72.64, 73.05], [74.25, 74.57]]],
+  "layers/l1": [76.927, 85.396, "The first has D times H weights, one per line, plus H biases: twenty plus five, twenty five.", [[79.507, 79.827], [80.727, 81.097], [82.587, 83.007], [84.197, 84.587]]],
+  "layers/l2": [85.776, 92.599, "The second has H times C weights, plus C biases: fifteen plus three, eighteen.", [[88.286, 88.446], [89.926, 90.386], [91.666, 92.016]]],
+  "layers/sum": [92.979, 100.34, "Add the two: forty three. Each one is inputs times outputs, plus one bias per output.", [[93.749, 94.249], [94.989, 95.629], [98.159, 98.429]]],
+  "layers/turn": [100.72, 101.46, "Your turn.", []]
  }
 }

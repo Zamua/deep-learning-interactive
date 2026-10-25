@@ -10,17 +10,6 @@ function sizes(rng: Rng, d: number): [number, number, number] {
   return [pick(rng, [32, 64, 128, 256]), pick(rng, [48, 512, 784, 3072]), pick(rng, [3, 10, 100, 1000])];
 }
 
-/** Batch, features and classes for the X and W problems. */
-function ndc(rng: Rng, d: number): [number, number, number] {
-  if (d < 0.35) {
-    const [N, D, C] = distinct(rng, 3, 2, 8);
-    return [N!, D!, C!];
-  }
-  return [pick(rng, [8, 16, 32, 64, 128, 256]), pick(rng, [48, 784, 3072, 512]), pick(rng, [3, 5, 10, 100])];
-}
-
-const X = '\\sym{x}{X}';
-
 export const generators: Generator[] = [
   {
     id: 'result',
@@ -72,23 +61,23 @@ export const generators: Generator[] = [
           ],
         };
       }
-      const [N, D, C] = ndc(rng, d);
+      const [m, n, k] = sizes(rng, d);
       return {
-        prompt: `A batch $${X}$ holds $\\symN = ${N}$ examples of $\\symD = ${D}$ numbers each: shape $${shapeTex([N, D])}$. The weights $\\symW$ have one row per class, $\\symC = ${C}$ classes: shape $${shapeTex([C, D])}$. Which gives every example's class scores, shape $${shapeTex([N, C])}$?`,
+        prompt: `$A$ has shape $${shapeTex([m, n])}$ and $B$ has shape $${shapeTex([k, n])}$. Which product has shape $${shapeTex([m, k])}$?`,
         answer: {
           kind: 'choice',
-          options: ['`X @ W.T`', '`X @ W`', '`W @ X.T`', '`W.T @ X`'],
+          options: ['`A @ B.T`', '`A @ B`', '`B @ A.T`', '`B.T @ A`'],
           correct: 0,
           why: [
             null,
-            `The inner dimensions are ${D} and ${C}: $${X}$'s columns must equal $\\symW$'s rows, and they do not. Transposing $\\symW$ fixes that.`,
-            `That works, but gives shape $${shapeTex([C, N])}$: the same scores with classes as rows. The outer dimensions come out in the order the matrices go in.`,
-            `$\\symW^{\\top}$ is $${shapeTex([D, C])}$ and $${X}$ is $${shapeTex([N, D])}$: the inner pair ${C} and ${N} does not match.`,
+            `The inner dimensions are ${n} and ${k}: $A$'s columns must equal $B$'s rows, and they do not. Transposing $B$ fixes that.`,
+            `That works, but gives shape $${shapeTex([k, m])}$: the same numbers laid out the other way. The outer dimensions come out in the order the matrices go in.`,
+            `$B^{\\top}$ is $${shapeTex([n, k])}$ and $A$ is $${shapeTex([m, n])}$: the inner pair ${k} and ${m} does not match.`,
           ],
         },
         solution: [
-          `$\\symW^{\\top}$ has shape $${shapeTex([D, C])}$.`,
-          `$${X}\\symW^{\\top}$ is $${shapeTex([N, D])}$ times $${shapeTex([D, C])}$: the inner ${D}s match and the result is $${shapeTex([N, C])}$.`,
+          `$B^{\\top}$ has shape $${shapeTex([n, k])}$.`,
+          `$AB^{\\top}$ is $${shapeTex([m, n])}$ times $${shapeTex([n, k])}$: the inner ${n}s match and the result is $${shapeTex([m, k])}$.`,
         ],
       };
     },
@@ -132,32 +121,32 @@ export const generators: Generator[] = [
     },
   },
   {
-    id: 'batch',
+    id: 'transpose',
     make(rng, d) {
-      const [N, D, C] = ndc(rng, d);
+      const [m, n, k] = sizes(rng, d);
       const kind = d < 0.35 ? 0 : rng.int(3);
-      const given = `$${X}$ has shape $${shapeTex([N, D])}$: $\\symN = ${N}$ examples with $\\symD = ${D}$ numbers each. $\\symW$ has shape $${shapeTex([C, D])}$: one row of ${D} weights for each of $\\symC = ${C}$ classes.`;
+      const given = `$A$ has shape $${shapeTex([m, n])}$ and $B$ has shape $${shapeTex([k, n])}$.`;
       if (kind === 1) {
         return {
-          prompt: `${given} What is the shape of \`W @ X.T\`?`,
-          answer: { kind: 'shape', value: [C, N] },
-          solution: [`$${X}^{\\top}$ has shape $${shapeTex([D, N])}$.`, `$\\symW${X}^{\\top}$ is $${shapeTex([C, D])}$ times $${shapeTex([D, N])}$: the ${D}s match, and the result is $${shapeTex([C, N])}$, one column per example.`],
+          prompt: `${given} What is the shape of \`B @ A.T\`?`,
+          answer: { kind: 'shape', value: [k, m] },
+          traps: [{ value: [m, k], why: 'That is the shape of `A @ B.T`. The outer dimensions come out in the order the matrices go in: rows of $B$, then columns of $A^{\\top}$.' }],
+          solution: [`$A^{\\top}$ has shape $${shapeTex([n, m])}$.`, `$BA^{\\top}$ is $${shapeTex([k, n])}$ times $${shapeTex([n, m])}$: the ${n}s match, and the result is $${shapeTex([k, m])}$.`],
         };
       }
       if (kind === 2) {
         return {
-          prompt: `${given} One example on its own, \`x = X[0]\`, has shape $${shapeTex([D])}$. What is the shape of \`W @ x\`?`,
-          answer: { kind: 'shape', value: [C] },
-          solution: [`$\\symW\\symx$ is $${shapeTex([C, D])}$ times a vector of ${D}: the ${D}s match.`, `One dot product per row of $\\symW$: the result has shape $${shapeTex([C])}$, one score per class.`],
+          prompt: `${given} The vector \`v\` has ${n} entries, shape $${shapeTex([n])}$. What is the shape of \`B @ v\`?`,
+          answer: { kind: 'shape', value: [k] },
+          traps: [{ value: [n], why: 'That is the length of `v`. Each row of $B$ dotted with `v` gives one number, so the result has one entry per row of $B$.' }],
+          solution: [`$Bv$ is $${shapeTex([k, n])}$ times a vector of ${n}: the ${n}s match.`, `One dot product per row of $B$: the result has shape $${shapeTex([k])}$.`],
         };
       }
       return {
-        prompt: `${given} What is the shape of \`X @ W.T\`?`,
-        answer: { kind: 'shape', value: [N, C] },
-        solution: [
-          `$\\symW^{\\top}$ has shape $${shapeTex([D, C])}$.`,
-          `$${X}\\symW^{\\top}$ is $${shapeTex([N, D])}$ times $${shapeTex([D, C])}$: the inner ${D}s match, and the result is $${shapeTex([N, C])}$, one score per example per class.`,
-        ],
+        prompt: `${given} What is the shape of \`A @ B.T\`?`,
+        answer: { kind: 'shape', value: [m, k] },
+        traps: [{ value: [k, m], why: 'That is the shape of `B @ A.T`. The result keeps the outer dimensions in order: rows of $A$, then columns of $B^{\\top}$.' }],
+        solution: [`$B^{\\top}$ has shape $${shapeTex([n, k])}$.`, `$AB^{\\top}$ is $${shapeTex([m, n])}$ times $${shapeTex([n, k])}$: the inner ${n}s match, and the result is $${shapeTex([m, k])}$.`],
       };
     },
   },

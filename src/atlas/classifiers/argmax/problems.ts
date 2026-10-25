@@ -32,13 +32,13 @@ export const generators: Generator[] = [
       return {
         prompt: asCode
           ? `$\\syms = ${vec(s)}$. What is \`np.argmax(s)\`? Positions count from 0.`
-          : `A classifier gives the scores $\\syms = ${vec(s)}$, one per class. Which class does it predict? Give its index, counting from 0.`,
+          : `The scores $\\syms = ${vec(s)}$ belong to ${n} possible answers, one each. Which answer is the top pick? Give its position, counting from 0.`,
         answer: { kind: 'number', value: k },
         traps: traps.filter((t, i) => t.value !== k && traps.findIndex((u) => u.value === t.value) === i),
         solution: [
           `The largest entry is $${num(v)}$.`,
           `Count positions from 0: ${s.map((x, i) => `$${num(x)}$ is at ${i}`).join(', ')}.`,
-          `So the argmax is $${k}$${asCode ? '' : `: the prediction is class ${k}`}.`,
+          `So the argmax is $${k}$${asCode ? '' : `: the top pick is answer ${k}`}.`,
         ],
       };
     },
@@ -58,17 +58,17 @@ export const generators: Generator[] = [
       const acc = right / R;
       const oneBased = rows.filter((r) => r.k + 1 === r.y).length / R;
       const traps = [
-        { value: right, why: `That is how many it gets right. Accuracy is the share: divide by the ${R} images.` },
-        { value: 1 - acc, why: 'That is the share it gets wrong, the error rate.' },
-        { value: oneBased, why: 'That matches labels against positions counted from 1. Classes count from 0: the first score is class 0.' },
+        { value: right, why: `That is how many picks are right. Accuracy is the share: divide by the ${R} questions.` },
+        { value: 1 - acc, why: 'That is the share of picks that are wrong, the error rate.' },
+        { value: oneBased, why: 'That matches the right answers against positions counted from 1. Answers count from 0: the first score is answer 0.' },
       ];
       const table = `\\begin{array}{ccc|c} \\syms_0 & \\syms_1 & \\syms_2 & \\symy \\\\ \\hline ${rows.map((r) => `${r.s.map((x) => num(x)).join(' & ')} & ${r.y}`).join(' \\\\ ')} \\end{array}`;
       return {
-        prompt: `A classifier scores 3 classes for each of ${R} images. Each row holds one image's scores and its label $\\symy$, the right class.\n\n$$${table}$$\n\nWhat is its accuracy: the share of images whose top score is at the label? Enter a fraction or a decimal.`,
+        prompt: `Each of ${R} questions has 3 possible answers. Each row holds one question's three scores and $\\symy$, its right answer.\n\n$$${table}$$\n\nWhat is the accuracy of picking the top score: the share of questions whose top score is at the right answer? Enter a fraction or a decimal.`,
         answer: { kind: 'number', value: acc, places: 2 },
         traps: traps.filter((t, i) => t.value > 0 && Math.abs(t.value - acc) >= 0.01 && traps.findIndex((u) => u.value === t.value) === i),
         solution: [
-          ...rows.map((r, i) => `${CAP[i]} image: the top score $${num(r.s[r.k]!)}$ is class ${r.k}, the label is ${r.y}: ${r.k === r.y ? 'right' : 'wrong'}.`),
+          ...rows.map((r, i) => `${CAP[i]} question: the top score $${num(r.s[r.k]!)}$ is answer ${r.k}, the right answer is ${r.y}: ${r.k === r.y ? 'right' : 'wrong'}.`),
           `${right} of ${R} right: accuracy $= ${right}/${R} = ${num(round(acc, 2))}$.`,
         ],
       };

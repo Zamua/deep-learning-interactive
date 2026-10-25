@@ -23,7 +23,7 @@ const gridScene: SceneDef = {
     s.alpha(s.ease('shape', 0.6), () => rich(s, [['W.shape = ', '--ink-2'], ...shapeRuns(2, 3)], s.w / 2, s.h * 0.6, { size: 4.6, weight: 650 }));
     s.alpha(s.ease('count', 0.6), () => s.text('2 × 3 = 6 numbers', s.w / 2, s.h * 0.71, { size: 3.8, font: 'mono', color: s.c('--ink-2') }));
     s.alpha(s.ease('big', 0.6), () => {
-      s.text('10 classes, 3,072 inputs', s.w / 2, s.h * 0.83, { size: 3.6, font: 'mono', color: s.c('--ink-3') });
+      s.text('10 photos, 3,072 numbers each', s.w / 2, s.h * 0.83, { size: 3.6, font: 'mono', color: s.c('--ink-3') });
       rich(s, [['W.shape = ', '--ink-2'], ...shapeRuns(10, 3072)], s.w / 2, s.h * 0.91, { size: 3.8, weight: 600 });
     });
   },
