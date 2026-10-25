@@ -238,7 +238,7 @@
   align-items: center;
   justify-content: center;
   gap: 3px;
-  height: 54px;
+  height: 66px;
   padding: 5px 4px 4px;
   border: 1.5px solid var(--rule);
   border-radius: 12px;
@@ -259,6 +259,12 @@
   height: 3px;
   border-radius: 0 0 3px 3px;
   background: var(--dom);
+}
+.at-node-t {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 .at-node-s {
   display: inline-flex;

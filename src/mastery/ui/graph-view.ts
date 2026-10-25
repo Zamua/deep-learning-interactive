@@ -6,7 +6,7 @@ import type { ConceptGraph } from '../domain/graph';
 import { streak } from '../domain/model';
 import type { Learner } from '../learner';
 
-const NODE_H = 54;
+const NODE_H = 66;
 const ROW_GAP = 46;
 
 export function graphView(learner: Learner): HTMLElement {
