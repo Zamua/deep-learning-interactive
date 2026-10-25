@@ -16,56 +16,18 @@ import { progressMark, renderCourse, renderIndex } from './home';
 import { hasLecture, loadLecture } from './lectures/index';
 import { ATLAS_COURSE, DOMAINS, GRAPH } from './atlas/index';
 import { Learner } from './mastery/learner';
-
-const store = {
-  get(k: string): string | null {
-    try {
-      return localStorage.getItem(k);
-    } catch {
-      return null;
-    }
-  },
-  set(k: string, v: string): void {
-    try {
-      localStorage.setItem(k, v);
-    } catch {
-      /* private mode: preference just isn't kept */
-    }
-  },
-};
+import { applyTheme, settingsButton } from './settings';
 
 const mmss = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
 
-function applyTheme(t: string | null): void {
-  if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
-  else delete document.documentElement.dataset.theme;
-}
-applyTheme(store.get('cs231n.theme'));
-
-function currentTheme(): 'light' | 'dark' {
-  const t = document.documentElement.dataset.theme;
-  if (t === 'light' || t === 'dark') return t;
-  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
+applyTheme();
 
 const app = document.getElementById('app')!;
 const main = h('main', { class: 'main', id: 'main' });
 const nav = h('nav', { class: 'side', 'aria-label': 'Chapters' });
 const scrim = h('div', { class: 'scrim' });
-const themeBtn = h('button', { class: 'icon-btn', type: 'button', 'aria-label': 'Toggle dark mode' });
 const menuBtn = h('button', { class: 'icon-btn menu-btn', type: 'button', 'aria-label': 'Chapters', html: icon('menu') });
 const progress = h('div', { class: 'read-progress' });
-
-function syncThemeBtn(): void {
-  themeBtn.innerHTML = icon(currentTheme() === 'dark' ? 'sun' : 'moon');
-}
-themeBtn.addEventListener('click', () => {
-  const next = currentTheme() === 'dark' ? 'light' : 'dark';
-  store.set('cs231n.theme', next);
-  applyTheme(next);
-  syncThemeBtn();
-});
-syncThemeBtn();
 
 const setNav = (open: boolean) => document.body.classList.toggle('nav-open', open);
 menuBtn.addEventListener('click', () => setNav(!document.body.classList.contains('nav-open')));
@@ -94,7 +56,7 @@ const top = h('header', { class: 'topbar' },
   menuBtn,
   brand,
   h('div', { class: 'topbar-spacer' }),
-  themeBtn,
+  settingsButton(),
   progress);
 
 app.append(top, nav, scrim, main);
