@@ -1,0 +1,26 @@
+{
+ "duration": 162.565,
+ "scenes": {
+  "loop": [0.0, 46.502],
+  "outer": [46.502, 77.792],
+  "toward": [77.792, 113.255],
+  "example": [113.255, 162.565]
+ },
+ "beats": {
+  "loop/x": [0.7, 12.228, "Here is one full training step for a tiny linear classifier, with two features and two classes. The input x is two, one, and the correct class is class zero.", [[4.52, 4.78], [6.79, 7.39], [9.1, 9.29], [9.69, 10.03]]],
+  "loop/scores": [12.608, 20.646, "Forward: the scores are W x plus b, one per class: one, and one point eight five.", [[13.098, 13.558], [14.448, 14.698], [16.228, 16.728], [17.688, 18.238], [18.598, 18.898]]],
+  "loop/probs": [21.026, 28.651, "Softmax turns them into probabilities, zero point three and zero point seven. The model leans the wrong way.", [[23.346, 23.806], [24.956, 25.106], [26.386, 26.906]]],
+  "loop/grad": [29.031, 37.86, "Backward: the gradient on the scores is p minus the one-hot label, minus zero point seven and plus zero point seven.", [[29.621, 30.221], [33.881, 34.241], [35.871, 36.081]]],
+  "loop/update": [38.24, 45.402, "Then every weight and bias steps against its own gradient. What is left is to find those gradients.", [[42.22, 42.8]]],
+  "outer/chain": [47.202, 58.984, "Score i is row i of W dotted with x, plus b i. So nudging the weight W i j moves score i by x j times as much.", [[48.162, 48.312], [49.982, 50.132], [51.042, 51.262], [52.262, 52.842], [55.372, 55.662], [58.742, 58.952]]],
+  "outer/outer": [59.364, 70.934, "By the chain rule, the gradient on W i j is ds i times x j. Every entry of ds times every entry of x: an outer product.", [[60.434, 60.704], [62.674, 62.834], [65.264, 65.874], [67.464, 67.614], [69.394, 69.864]]],
+  "outer/db": [71.314, 76.692, "Each bias adds straight into its own score, so its gradient is just ds.", [[73.994, 74.344]]],
+  "toward/step": [78.492, 92.32, "Now step, here with eta one half. Row zero belongs to the correct class, and its ds is minus zero point seven, so it gains zero point three five times x: it moves toward x.", [[79.162, 79.512], [81.152, 81.652], [84.062, 84.332], [86.892, 87.262], [90.282, 90.722]]],
+  "toward/away": [92.7, 102.116, "Row one, the wrong class, has ds plus zero point seven. It loses zero point three five times x, and moves away.", [[93.43, 93.89], [94.93, 95.25], [97.51, 98.04], [100.96, 101.19]]],
+  "toward/scores": [102.496, 112.155, "Measured along x, the correct row climbs from one to two point seven five, and the wrong one falls from one point eight five to zero point one.", [[103.826, 104.126], [107.636, 108.036], [110.666, 110.886]]],
+  "example/ask": [113.955, 134.072, "Your turn to follow along. The weight in row one, column zero is one. The input is three, minus one; the correct class is class one; softmax gives zero point four and zero point six; and eta is zero point one. What is that weight after one step?", [[115.395, 116.045], [117.475, 117.665], [118.505, 118.715], [119.325, 119.985], [122.205, 122.805], [124.725, 125.255], [128.895, 129.355], [131.285, 131.925]]],
+  "example/ds": [134.452, 142.777, "The score gradient, p minus one-hot, is zero point four, and zero point six minus one: minus zero point four.", [[135.512, 135.782], [137.002, 137.212], [138.462, 138.862], [140.822, 141.242]]],
+  "example/dW": [143.157, 150.875, "The weight's gradient is ds one times x zero: minus zero point four times three, minus one point two.", [[146.637, 147.177], [149.477, 149.637]]],
+  "example/step": [151.255, 161.465, "Step against it: one, minus zero point one times minus one point two, is one point one two. The correct class's weight grew.", [[152.245, 152.875], [153.225, 153.785], [157.135, 157.435], [158.865, 159.465]]]
+ }
+}

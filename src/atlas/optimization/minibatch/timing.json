@@ -1,0 +1,24 @@
+{
+ "duration": 101.184,
+ "scenes": {
+  "full": [0.0, 25.92],
+  "average": [25.92, 56.816],
+  "epoch": [56.816, 80.571],
+  "example": [80.571, 101.184]
+ },
+ "beats": {
+  "full/full": [0.7, 8.411, "The training loss is an average over all N examples, so its gradient is the average of N per-example gradients.", [[4.19, 4.63]]],
+  "full/cost": [8.791, 15.569, "With fifty thousand images, one exact step would take fifty thousand forward and backward passes.", [[10.611, 10.961]]],
+  "full/batch": [15.949, 24.82, "So draw a small random batch of B examples, and average only theirs. It estimates the same gradient, at a fraction of the cost.", [[19.059, 19.289], [20.809, 21.359], [23.129, 23.389]]],
+  "average/per": [26.62, 34.985, "Say B is four, and for one weight the four examples give gradients of two, minus one, three and zero.", [[28.15, 28.54], [29.62, 29.84], [32.25, 32.59], [33.35, 33.61], [34.08, 34.29]]],
+  "average/mean": [35.365, 41.315, "The minibatch gradient is their mean: they add up to four, and four over four is one.", [[37.435, 37.925], [38.995, 39.285]]],
+  "average/noise": [41.695, 47.834, "Another batch gives another estimate. Batch after batch, they scatter around the true gradient.", [[43.605, 44.115], [45.475, 45.655]]],
+  "average/size": [48.214, 55.716, "Bigger batches scatter less, but each step costs more. Small batches buy many cheap, noisy steps.", [[49.974, 50.284], [51.974, 52.594], [54.514, 54.694]]],
+  "epoch/epoch": [57.516, 61.206, "One pass through all N examples is called an epoch.", []],
+  "epoch/count": [61.586, 71.402, "Each step uses one batch of B, so an epoch takes N over B steps. Twelve hundred examples in batches of a hundred: twelve steps.", [[63.766, 64.186], [67.136, 67.666], [70.116, 70.536]]],
+  "epoch/seen": [71.782, 79.471, "And after k steps, the model has seen k times B examples. Five steps of a hundred: five hundred.", [[73.192, 73.452], [76.282, 76.912], [78.292, 78.702]]],
+  "example/ask": [81.271, 91.092, "Your turn to follow along. A training set has fifty thousand examples, and the batch size is a hundred. How many steps make one epoch?", [[82.731, 83.621], [86.391, 86.711], [88.421, 88.991]]],
+  "example/divide": [91.472, 97.641, "Each step uses a hundred examples, so divide: fifty thousand over a hundred.", [[93.772, 94.092], [95.022, 95.562], [96.542, 96.712]]],
+  "example/answer": [98.021, 100.084, "Five hundred steps per epoch.", []]
+ }
+}
