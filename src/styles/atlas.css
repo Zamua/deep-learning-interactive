@@ -1224,7 +1224,7 @@ body.at-on .side {
 @keyframes at-cm-pulse { to { box-shadow: 0 0 0 14px transparent; } }
 .at-cm-cap { padding: 10px 16px 0; text-align: center; font-size: 0.9rem; color: var(--ink-2); }
 .at-cm-go {
-  margin: 14px 16px calc(18px + env(safe-area-inset-bottom));
+  margin: 14px 16px 0;
   padding: 15px;
   border: 0;
   border-radius: 14px;
@@ -1256,6 +1256,15 @@ body.at-on .side {
 .at-edges path.cm-edge { stroke-dasharray: 400; stroke-dashoffset: 400; }
 .at-edges path.cm-edge.cm-draw { stroke: var(--accent); stroke-width: 2.4; animation: at-cm-draw 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 @keyframes at-cm-draw { to { stroke-dashoffset: 0; } }
+.at-cm-go:last-child { margin-bottom: calc(18px + env(safe-area-inset-bottom)); }
+.at-cm-stay {
+  margin: 4px auto calc(10px + env(safe-area-inset-bottom));
+  padding: 10px 14px;
+  border: 0;
+  background: none;
+  color: var(--ink-3);
+  font: 500 0.9rem var(--font-ui);
+}
 .at-node.cm-next { border-color: var(--accent); animation: at-cm-pop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1), at-cm-glow 1.6s 0.4s ease-out 3; }
 @keyframes at-cm-glow { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); } 100% { box-shadow: 0 0 0 16px transparent; } }
 .at-cm-next {

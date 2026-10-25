@@ -7,7 +7,9 @@ import { graphView } from './graph-view';
 
 /** Laid out wide, so the zoomed-out map is a page of rows rather than a thin column. */
 const MAP_W = 900;
-const STEPS = { zoom: 450, zoomFor: 1100, master: 1600, unlock: 2000, stagger: 160, next: 2500 };
+const STEPS = { zoom: 450, zoomFor: 1100, master: 1600, unlock: 2000, stagger: 160, next: 2500, panFor: 900 };
+/** Close up, a node is drawn near its real size; never smaller than this, so the zoom always reads. */
+const NEAR = 0.8;
 
 /** One light tap where the device can: Android vibrates; iOS 18+ ticks when a switch is toggled. */
 export function haptic(): void {
@@ -29,7 +31,8 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
   const view = h('div', { class: 'at-cm-view' }, stage);
   const here = h('div', { class: 'at-cm-here' });
   const done = [...learner.statuses().values()].filter((s) => s === 'mastered' || s === 'due').length;
-  const go = h('button', { type: 'button', class: 'at-cm-go' }, 'Continue');
+  const go = h('button', { type: 'button', class: 'at-cm-go' }, next ? `Next: ${graph.get(next)!.title}` : 'Continue');
+  const stay = next ? h('button', { type: 'button', class: 'at-cm-stay' }, 'Back to this session') : '';
   const el = h('div', { class: 'at-cm', role: 'dialog', 'aria-label': `${c.title} mastered` },
     h('div', { class: 'at-cm-title', html: `${icon('sparkle')} ${c.title} mastered` }),
     view,
@@ -37,7 +40,8 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
     h('div', { class: 'at-cm-cap' },
       `${done} of ${graph.order.length} concepts mastered`,
       unlocked.length ? ` · ${unlocked.length} unlocked` : ''),
-    go);
+    go,
+    stay);
   host.append(el);
   haptic();
 
@@ -57,7 +61,11 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
     window.setTimeout(() => el.remove(), 200);
     finish();
   };
-  go.addEventListener('click', close);
+  go.addEventListener('click', () => {
+    close();
+    if (next) location.hash = `#/atlas/learn/${next}`;
+  });
+  if (stay) stay.addEventListener('click', close);
   onDispose(close);
 
   // Positions only exist once the map has laid itself out, a frame after it is in the page.
@@ -73,13 +81,18 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
     const mh = map.offsetHeight;
     const fit = Math.min(vw / mw, vh / mh);
     const whole = `translate(${(vw - mw * fit) / 2}px, ${(vh - mh * fit) / 2}px) scale(${fit})`;
-    const parts = [id, ...unlocked, ...(next && !unlocked.includes(next) ? [next] : [])].map(box);
+    // Frame the concept and what it unlocks; a far-off "up next" gets its own pan afterwards.
+    const parts = [id, ...unlocked].map(box);
     const x0 = Math.min(...parts.map((b) => b.x)) - 24;
     const x1 = Math.max(...parts.map((b) => b.x + b.w)) + 24;
     const y0 = Math.min(...parts.map((b) => b.y)) - 40;
     const y1 = Math.max(...parts.map((b) => b.y + b.h)) + 40;
-    const z = Math.min(1.25, vw / (x1 - x0), vh / (y1 - y0));
-    const close_ = `translate(${vw / 2 - ((x0 + x1) / 2) * z}px, ${vh / 2 - ((y0 + y1) / 2) * z}px) scale(${z})`;
+    const z = Math.max(NEAR, Math.min(1.1, vw / (x1 - x0), vh / (y1 - y0)));
+    const me0 = box(id);
+    const cx = z * (x1 - x0) <= vw ? (x0 + x1) / 2 : me0.x + me0.w / 2;
+    const cy = z * (y1 - y0) <= vh ? (y0 + y1) / 2 : me0.y + me0.h / 2;
+    const at_ = (x: number, y: number) => `translate(${vw / 2 - x * z}px, ${vh / 2 - y * z}px) scale(${z})`;
+    const close_ = at_(cx, cy);
     const me = box(id);
     const place = (m: DOMMatrix) => {
       const vr = view.getBoundingClientRect();
@@ -108,11 +121,19 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
         node(u)?.classList.add('cm-pop');
       }));
     });
-    if (next) at(reduced ? 0 : STEPS.next, () => {
+    if (next) {
       const b = box(next);
-      node(next)?.classList.add('cm-next');
-      stage.append(h('div', { class: 'at-cm-next', style: `left:${b.x + b.w / 2}px;top:${b.y + b.h + 8}px` }, 'Up next'));
-    });
+      const seen = Math.abs((b.x + b.w / 2 - cx) * z) < vw / 2 - 16 && Math.abs((b.y + b.h / 2 - cy) * z) < vh / 2 - 24;
+      const show = () => {
+        node(next)?.classList.add('cm-next');
+        stage.append(h('div', { class: 'at-cm-next', style: `left:${b.x + b.w / 2}px;top:${b.y + b.h + 8}px` }, 'Up next'));
+      };
+      if (seen) at(reduced ? 0 : STEPS.next, show);
+      else at(reduced ? 0 : STEPS.next, () => {
+        stage.animate([{ transform: close_ }, { transform: at_(b.x + b.w / 2, b.y + b.h / 2) }], { duration: reduced ? 1 : STEPS.panFor, easing: 'cubic-bezier(.5,0,.2,1)', fill: 'forwards' });
+        at(reduced ? 0 : STEPS.panFor - 150, show);
+      });
+    }
   }));
   return out;
 }
