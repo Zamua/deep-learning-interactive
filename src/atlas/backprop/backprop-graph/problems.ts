@@ -351,7 +351,7 @@ export const generators: Generator[] = [
         const who = t.who;
         const vars = t.tex.includes('z') ? at(v) : `$x = ${n(v.x)}$ and $y = ${n(v.y)}$`;
         return {
-          prompt: `In $f = ${t.tex}$, the input $${who}$ feeds two nodes. At ${vars}, what is $${D(who)}$?`,
+          prompt: `Backprop through $f = ${t.tex}$ at ${vars}. What is $${D(who)}$?`,
           answer: {
             kind: 'choice',
             options: opts.map((o) => `$${n(o)}$`),
