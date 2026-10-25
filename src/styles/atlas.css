@@ -1028,3 +1028,9 @@ body.at-on .side {
   border-color: var(--bad);
   background: linear-gradient(color-mix(in srgb, var(--bad) 9%, transparent), color-mix(in srgb, var(--bad) 9%, transparent)), var(--card);
 }
+.at-file {
+  margin-top: 40px;
+}
+.at-file p {
+  margin: 0 0 10px;
+}

@@ -250,7 +250,8 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       const pick = (results.length === 0 ? firstPick() : null) ?? learner.next(last);
       if (!pick) return caughtUp();
       const c = learner.graph.get(pick.concept)!;
-      if (pick.reason === 'new' && !introduced.has(c.id)) {
+      // A watched explainer is the introduction; otherwise offer it first.
+      if (pick.reason === 'new' && !introduced.has(c.id) && (lectureState(explainerId(c.id))?.heard ?? 0) < 0.5) {
         introduced.add(c.id);
         await intro(c, pick);
       }
@@ -286,8 +287,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
     new Promise((resolve) => {
       frame.body.innerHTML = '';
       frame.dock.innerHTML = '';
-      const heard = (lectureState(explainerId(c.id))?.heard ?? 0) >= 0.5;
-      const start = h('button', { type: 'button', class: heard || !hasExplainer(c.id) ? 'at-check' : 'at-ghost' }, 'Start practicing');
+      const start = h('button', { type: 'button', class: hasExplainer(c.id) ? 'at-ghost' : 'at-check' }, 'Start practicing');
       start.addEventListener('click', () => resolve());
       const example = h('button', { type: 'button', class: 'at-stuck' }, 'Show a worked example first');
       example.addEventListener('click', async () => {
@@ -304,7 +304,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         h('p', { class: 'at-lede' }, c.blurb),
         h('p', { class: 'at-small' }, `Mastered after ${c.mastery.streak} right in a row, about ${c.mastery.seconds} s each.`),
         example));
-      if (hasExplainer(c.id) && !heard) frame.dock.append(h('a', { class: 'at-check', href: `#/atlas/${c.id}/watch`, html: `${icon('playFill')} Watch the explainer` }));
+      if (hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-check', href: `#/atlas/${c.id}/watch`, html: `${icon('playFill')} Watch the explainer` }));
       frame.dock.append(start);
     });
 

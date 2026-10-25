@@ -5,6 +5,7 @@ import { h } from '../../core/dom';
 import { MAX_LEARNING } from '../domain/scheduler';
 import { streak, type Status } from '../domain/model';
 import type { Learner } from '../learner';
+import { exportSnapshot, importSnapshot } from '../store';
 import { atlasRoot, dots, plural, whenDue } from './common';
 import { graphView } from './graph-view';
 
@@ -39,6 +40,7 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
   if (view === 'graph') {
     root.append(h('div', { class: 'at-legend' }, ...DOMAINS.map((d) => h('span', {}, h('i', { style: `background:var(--c-${d.color})` }), d.title))));
     root.append(graphView(learner));
+    root.append(progressFile());
     return;
   }
 
@@ -62,6 +64,36 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
     ...section('Locked', ids('locked').map((id) => row(id, icon('lock'), 'lock', `needs ${needs(id).join(', ')}`))),
     ...section(`Mastered · ${count('mastered')}`, ids('mastered').map((id) => row(id, icon('check'), 'done', `review ${whenDue(rec(id).review!.due)}`))),
   );
+  root.append(progressFile());
+}
+
+/** Progress lives in this browser; a file carries it to another one. */
+function progressFile(): HTMLElement {
+  const save = h('button', { type: 'button', class: 'btn' }, 'Save progress to a file');
+  save.addEventListener('click', () => {
+    const url = URL.createObjectURL(new Blob([JSON.stringify(exportSnapshot())], { type: 'application/json' }));
+    const a = h('a', { href: url, download: `atlas-progress-${new Date().toISOString().slice(0, 10)}.json` });
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+  const input = h('input', { type: 'file', accept: 'application/json,.json', hidden: true });
+  const load = h('button', { type: 'button', class: 'btn' }, 'Load progress from a file');
+  const msg = h('span', { class: 'at-small' });
+  load.addEventListener('click', () => input.click());
+  input.addEventListener('change', async () => {
+    const f = input.files?.[0];
+    if (!f) return;
+    try {
+      importSnapshot(await f.text());
+      location.reload();
+    } catch (e) {
+      msg.textContent = (e as Error).message;
+    }
+  });
+  return h('div', { class: 'at-file' },
+    h('h2', { class: 'at-h2' }, 'Your progress'),
+    h('p', { class: 'at-small' }, 'Kept in this browser only. Save it to a file to move it to another device; loading a file replaces what is here.'),
+    h('div', { class: 'at-actions' }, save, load, input), msg);
 }
 
 function sessionCard(learner: Learner, count: (...s: Status[]) => number): HTMLElement {
