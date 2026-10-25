@@ -1,5 +1,5 @@
-// The course front page: today's session, overall mastery, and the concepts as a list or a graph.
-import { domainOf, DOMAINS } from '../../atlas/index';
+// The Atlas front page, and the whole map as a graph or a list.
+import { domainOf, DOMAINS, hasExplainer } from '../../atlas/index';
 import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
 import { streak, type Status } from '../domain/model';
@@ -8,6 +8,49 @@ import { exportSnapshot, importSnapshot } from '../store';
 import { atlasRoot, dots, plural, whenDue } from './common';
 import { graphView } from './graph-view';
 
+/** The Atlas front page: today's concept, the short path around it, and a way into the whole map. */
+export function renderHome(main: HTMLElement, learner: Learner): void {
+  const root = atlasRoot('at-map');
+  main.append(root);
+  const graph = learner.graph;
+  const d = learner.today();
+  const title = (id: string) => graph.get(id)!.title;
+  root.append(h('div', { class: 'home-kicker at-kicker-teal' }, 'Atlas'), h('h1', { class: 'home-title', html: 'AI by <em>mastery</em>.' }));
+
+  const c = d.concept ? graph.get(d.concept) : undefined;
+  const lead = (kicker: string, t: string, sub: string, go: HTMLElement, alt?: HTMLElement) =>
+    h('div', { class: 'lead at-lead' }, h('div', { class: 'lead-k' }, kicker), h('div', { class: 'lead-t' }, t), h('div', { class: 'lead-s' }, sub), h('div', { class: 'lead-actions' }, go, alt ?? ''));
+  const goBtn = (label: string, href = '#/atlas/learn') => h('a', { class: 'lead-go', href, html: `${icon('playFill')} ${label}` });
+  const altBtn = (label: string, href: string, ic: string) => h('a', { class: 'lead-alt', href, html: `${icon(ic)} ${label}` });
+  const opens = d.opens?.length ? ` · then ${d.opens.map(title).join(', ')} opens` : '';
+  if (d.kind === 'start') root.append(lead('Start here', c!.title, 'The first concept: a short explainer, then practice.', goBtn('Start'), altBtn('Placement test', '#/atlas/place', 'compass')));
+  else if (d.kind === 'learning') root.append(lead('In progress', c!.title, `${d.streak} of ${d.need} right in a row${opens}`, goBtn('Practice')));
+  else if (d.kind === 'new') root.append(lead('Up next', c!.title, `${c!.blurb}`, goBtn('Start'), hasExplainerLink(c!.id)));
+  else if (d.kind === 'review') root.append(lead('Review', `${plural(d.due, 'concept')} due`, 'Mastered concepts come back before they fade.', goBtn('Review')));
+  else root.append(lead('All caught up', 'Nothing is due', d.nextReview ? `Next review ${whenDue(d.nextReview)}.` : 'Everything here is mastered.', altBtn('See the map', '#/atlas/graph', 'graph')));
+  if (d.due && d.kind !== 'review') root.append(h('p', { class: 'at-small at-due' }, `${plural(d.due, 'review')} due, mixed into your practice.`));
+
+  // The path: the last two mastered, where you are, and what opens next.
+  const done = graph.order.filter((x) => learner.record(x.id).mastered).map((x) => x.id).sort((p, q) => learner.record(p).last - learner.record(q).last).slice(-2);
+  const now = d.kind === 'learning' || d.kind === 'new' || d.kind === 'start' ? d.concept : undefined;
+  const next = now ? [...(d.opens ?? []), ...graph.dependents.get(now)!.filter((x) => !(d.opens ?? []).includes(x))].slice(0, 2) : [];
+  if (done.length || now) {
+    const step = (id: string, cls: string, sub: string) => h('a', { class: `at-step-p ${cls}`, href: `#/atlas/${id}` }, h('span', { class: 'at-step-t' }, title(id)), h('small', {}, sub));
+    root.append(h('div', { class: 'home-lbl' }, 'Your path'), h('div', { class: 'at-path' },
+      ...done.map((id) => step(id, 'done', learner.record(id).review ? `mastered · review ${whenDue(learner.record(id).review!.due)}` : 'mastered')),
+      ...(now ? [step(now, 'now', d.kind === 'learning' ? `in progress · ${d.streak} of ${d.need}` : 'next to learn')] : []),
+      ...next.map((id, i) => step(id, 'lock', i === 0 ? `opens after ${title(now!)}` : 'then this'))));
+  }
+  const st = [...learner.statuses().values()];
+  const mastered = st.filter((x) => x === 'mastered' || x === 'due' || x === 'slipping').length;
+  root.append(h('a', { class: 'at-maplink', href: '#/atlas/graph', html: `${icon('graph')} <span>The whole map</span><small>${mastered} of ${st.length} mastered</small>${icon('arrowRight')}` }));
+}
+
+function hasExplainerLink(id: string): HTMLElement | undefined {
+  return hasExplainer(id) ? h('a', { class: 'lead-alt', href: `#/atlas/${id}/watch`, html: `${icon('playFill')} Explainer` }) : undefined;
+}
+
+/** Every concept, as a graph or as a list grouped by what to do with it. */
 export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'graph'): void {
   const root = atlasRoot('at-map');
   main.append(root);
@@ -16,30 +59,17 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
   const ids = (...want: Status[]) => graph.order.filter((c) => want.includes(st.get(c.id)!)).map((c) => c.id);
   const count = (...want: Status[]) => ids(...want).length;
 
-  root.append(h('header', { class: 'at-hero' },
-    h('div', { class: 'at-kicker' }, 'Atlas · AI by mastery'),
-    h('h1', { class: 'at-title', html: 'Learn AI one <em>concept</em> at a time.' }),
-    h('p', { class: 'at-lede' }, 'Short voiced explainers, then generated problems until each idea is yours. Mastering a concept unlocks the ones that build on it, and it comes back for review before you forget it.')));
-
-  root.append(sessionCard(learner, count));
-
-  const mastered = count('mastered', 'due', 'slipping');
-  const total = graph.order.length;
-  const learning = count('learning');
-  const fresh = count('new');
-  const seg = (n: number, cls: string) => h('i', { class: cls, style: `width:${(n / total) * 100}%` });
-  root.append(h('div', { class: 'at-stat' },
-    h('div', { class: 'at-stat-row' }, h('span', { html: `<b>${mastered}</b> of ${total} mastered` }), h('span', {}, [learning ? `${learning} learning` : '', fresh ? `${fresh} new` : ''].filter(Boolean).join(' · '))),
-    h('div', { class: 'at-bar' }, seg(mastered, 'm'), seg(learning, 'l'), seg(fresh, 'n'))));
-
+  root.append(
+    h('a', { class: 'at-back', href: '#/atlas', html: `${icon('arrowLeft')} Atlas` }),
+    h('h1', { class: 'home-title' }, 'The map'),
+    h('p', { class: 'at-small' }, `${count('mastered', 'due', 'slipping')} of ${graph.order.length} mastered`));
   root.append(h('nav', { class: 'at-tabs', 'aria-label': 'View' },
-    h('a', { href: '#/atlas', class: view === 'list' ? 'on' : '', html: `${icon('rows')} Next up` }),
-    h('a', { href: '#/atlas/graph', class: view === 'graph' ? 'on' : '', html: `${icon('graph')} The map` })));
+    h('a', { href: '#/atlas/graph', class: view === 'graph' ? 'on' : '', html: `${icon('graph')} Graph` }),
+    h('a', { href: '#/atlas/list', class: view === 'list' ? 'on' : '', html: `${icon('rows')} List` })));
 
   if (view === 'graph') {
     root.append(h('div', { class: 'at-legend' }, ...DOMAINS.map((d) => h('span', {}, h('i', { style: `background:var(--c-${d.color})` }), d.title))));
     root.append(graphView(learner));
-    root.append(progressFile());
     return;
   }
 
@@ -93,33 +123,4 @@ function progressFile(): HTMLElement {
     h('h2', { class: 'at-h2' }, 'Your progress'),
     h('p', { class: 'at-small' }, 'Kept in this browser only. Save it to a file to move it to another device; loading a file replaces what is here.'),
     h('div', { class: 'at-actions' }, save, load, input), msg);
-}
-
-function sessionCard(learner: Learner, count: (...s: Status[]) => number): HTMLElement {
-  const anyProgress = Object.keys(learner.records).length > 0;
-  if (!anyProgress) {
-    return h('div', { class: 'at-session at-session-first' },
-      h('div', { class: 'at-session-k' }, 'Start here'),
-      h('p', {}, 'Begin with the first concepts, or take a short placement test that skips what you already know.'),
-      h('div', { class: 'at-actions' },
-        h('a', { class: 'btn btn-primary', href: '#/atlas/learn', html: `${icon('playFill')} Start from the beginning` }),
-        h('a', { class: 'btn', href: '#/atlas/place', html: `${icon('compass')} Placement test` })));
-  }
-  const reviews = count('due', 'slipping');
-  const learning = count('learning');
-  // One concept is learned at a time: a new one starts only once nothing is in progress.
-  const fresh = learning || count('slipping') ? 0 : Math.min(1, count('new'));
-  if (!reviews && !learning && !fresh) {
-    const next = Object.values(learner.records).map((r) => r.review?.due ?? Infinity).reduce((a, b) => Math.min(a, b), Infinity);
-    return h('div', { class: 'at-session' },
-      h('span', { class: 'at-session-go done', html: icon('check') }),
-      h('div', {}, h('div', { class: 'at-session-k' }, 'All caught up'), h('span', {}, Number.isFinite(next) ? `Next review ${whenDue(next)}.` : 'Everything here is mastered.')));
-  }
-  const chip = (n: number, label: string, cls: string) => (n ? h('span', { class: `at-chip ${cls}` }, plural(n, label, label)) : '');
-  return h('a', { class: 'at-session', href: '#/atlas/learn' },
-    h('span', { class: 'at-session-go', html: icon('playFill') }),
-    h('div', {},
-      h('div', { class: 'at-session-k' }, 'Today\'s session · 15 min'),
-      h('span', {}, 'Picks up where you left off'),
-      h('div', { class: 'at-chips' }, chip(reviews, reviews === 1 ? 'review' : 'reviews', 'due'), chip(learning, 'learning', 'learn'), chip(fresh, 'new', 'new'))));
 }

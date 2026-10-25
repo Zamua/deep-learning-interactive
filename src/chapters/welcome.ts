@@ -2,6 +2,7 @@ import type { ChapterDef } from './index';
 import { CHAPTERS, COURSES } from './index';
 import { color, withAlpha } from '../core/plot';
 import { WELCOME_SYMBOLS } from '../lib/welcome-symbols';
+import { pixelArt } from '../lib/course-art';
 
 const MONO = "'JetBrains Mono Variable', ui-monospace, monospace";
 const UI = 'system-ui, sans-serif';
@@ -32,6 +33,8 @@ const chapter: ChapterDef = {
   render(p) {
     p.prose(`
 Stanford's **CS231n**, as it was taught in the winter of 2016, is one of the most influential courses in modern machine learning. This page says what the course is, retells the short history of computer vision that it opens with, and maps what follows.`);
+
+    p.append(pixelArt(p));
 
     p.h2('What CS231n is', 'cs231n');
     p.prose(`

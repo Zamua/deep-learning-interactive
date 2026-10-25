@@ -12,6 +12,10 @@ export interface CourseMeta {
   /** Short course code shown in the top bar and on cards, e.g. "CS231n". */
   code: string;
   title: string;
+  /** The front page's heading, HTML with one `<em>` accent. */
+  headline: string;
+  /** A few words for the course's tile on the index. */
+  tagline: string;
   /** When and where, e.g. "Stanford · Winter 2016". */
   era: string;
   blurb: string;
@@ -23,6 +27,8 @@ export const COURSES: CourseMeta[] = [
     id: 'cs231n',
     code: 'CS231n',
     title: 'Convolutional Neural Networks for Visual Recognition',
+    headline: 'Teaching machines <em>to see</em>.',
+    tagline: 'Teaching machines to see',
     era: 'Stanford · Winter 2016',
     blurb: 'The classic: images as numbers, linear classifiers, backpropagation, neural networks and ConvNets, built from scratch in NumPy, with the course Karpathy, Johnson and Fei-Fei Li taught at Stanford.',
     parts: ['Start here', 'Neural networks', 'Convolutional networks', 'Beyond still images', 'Assignments'],
@@ -31,6 +37,8 @@ export const COURSES: CourseMeta[] = [
     id: 'dl26',
     code: 'DL26',
     title: 'A Decade Later: Transformers, Scale and Learning from Feedback',
+    headline: 'Transformers, <em>scale</em> and feedback.',
+    tagline: 'Transformers and scale',
     era: 'The continuation · 2017 to 2026',
     blurb: 'Everything that changed after CS231n: attention and transformers, tokens and pretraining, scaling laws, AdamW to Muon, mixture of experts, ViT, CLIP and diffusion, then post-training with RLHF, PPO, DPO, RLVR and GRPO, reasoning models and fast inference.',
     parts: ['Start here', 'Attention and transformers', 'Scale', 'Seeing and generating', 'Post-training', 'Serving and understanding'],

@@ -85,59 +85,6 @@
   background: var(--accent);
 }
 
-/* ---- map */
-
-.at-session {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  border: 1px solid var(--rule);
-  border-radius: 18px;
-  background: linear-gradient(160deg, var(--accent-soft), var(--card) 62%);
-  color: inherit;
-  text-decoration: none;
-  font-family: var(--font-ui);
-  box-shadow: var(--shadow);
-}
-.at-session > div > span {
-  color: var(--ink-2);
-}
-.at-session-first {
-  display: block;
-}
-.at-session-first p {
-  margin: 8px 0 14px;
-  font-family: var(--font-body);
-  font-size: 1.02rem;
-  color: var(--ink-2);
-}
-.at-session-k {
-  margin-bottom: 4px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-.at-session-go {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--paper);
-}
-.at-session-go .ico {
-  width: 26px;
-  height: 26px;
-}
-.at-session-go.done {
-  background: color-mix(in srgb, var(--ok) 18%, transparent);
-  color: var(--ok);
-}
 .at-actions {
   display: flex;
   flex-wrap: wrap;
@@ -147,65 +94,6 @@
   padding: 10px 16px;
   font-size: 0.98rem;
   text-decoration: none;
-}
-
-.at-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
-}
-.at-chip {
-  padding: 3px 10px;
-  border: 1px solid var(--rule);
-  border-radius: 99px;
-  font-size: 0.82rem;
-  color: var(--ink-2);
-}
-.at-chip.due {
-  border-color: color-mix(in srgb, var(--warn) 50%, transparent);
-  color: var(--warn);
-}
-.at-chip.learn {
-  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  color: var(--accent);
-}
-.at-chip.new {
-  color: var(--ink);
-}
-
-.at-stat {
-  margin: 18px 0 4px;
-  font-family: var(--font-ui);
-  font-size: 0.88rem;
-  color: var(--ink-2);
-}
-.at-stat-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 6px;
-}
-.at-stat b {
-  color: var(--ink);
-}
-.at-bar {
-  display: flex;
-  height: 8px;
-  overflow: hidden;
-  border-radius: 99px;
-  background: var(--paper-3);
-}
-.at-bar i {
-  display: block;
-}
-.at-bar .m {
-  background: var(--ok);
-}
-.at-bar .l {
-  background: var(--accent);
-}
-.at-bar .n {
-  background: var(--axis);
 }
 
 .at-tabs {
@@ -1052,4 +940,83 @@ body.at-on .side {
 }
 .at-intro .at-why {
   margin: 0 0 8px;
+}
+
+/* ---- the Atlas home */
+.at-kicker-teal {
+  color: var(--c-teal);
+}
+.at-lead .lead-k {
+  color: var(--c-teal);
+}
+.at-due {
+  margin: 10px 2px 0;
+}
+.at-path {
+  position: relative;
+  margin: 4px 0 0 7px;
+  padding-left: 24px;
+  border-left: 2px solid var(--paper-3);
+}
+.at-step-p {
+  position: relative;
+  display: block;
+  padding: 6px 0 16px;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  text-decoration: none;
+}
+.at-step-p::before {
+  content: '';
+  position: absolute;
+  left: -32px;
+  top: 9px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--axis);
+  border-radius: 50%;
+  background: var(--paper);
+}
+.at-step-p.done::before {
+  border-color: var(--c-green);
+  background: var(--c-green);
+}
+.at-step-p.now::before {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-soft);
+}
+.at-step-p.now .at-step-t {
+  color: var(--accent);
+}
+.at-step-p.lock {
+  color: var(--ink-3);
+}
+.at-step-t {
+  font-size: 1.02rem;
+}
+.at-step-p small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.8rem;
+  color: var(--ink-3);
+}
+.at-maplink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 14px 4px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  text-decoration: none;
+}
+.at-maplink span {
+  flex: 1;
+}
+.at-maplink small {
+  color: var(--ink-3);
+  font-size: 0.84rem;
 }

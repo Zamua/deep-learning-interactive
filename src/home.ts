@@ -1,16 +1,11 @@
 import { CHAPTERS, COURSES, type ChapterMeta, type CourseMeta, hasChapter } from './chapters/index';
-import { CodePanel } from './core/code';
 import { icon } from './core/controls';
-import { CIFAR_CLASSES, cifarImage, loadCifar } from './core/data';
-import { h, onDispose } from './core/dom';
-import { Page } from './core/page';
-import { color, withAlpha } from './core/plot';
+import { h } from './core/dom';
+import { md } from './core/math';
 import { DONE, last, lectureState, readState } from './core/progress';
-import { hasLecture } from './lectures/index';
+import { hasLecture, loadLecture } from './lectures/index';
 import { ATLAS_COURSE, GRAPH } from './atlas/index';
-import { Learner } from './mastery/learner';
-
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+import { Learner, type Today } from './mastery/learner';
 
 const pct = (f: number) => `${Math.round(f * 100)}%`;
 const mmss = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
@@ -41,326 +36,173 @@ export function progressMark(c: ChapterMeta, cls: string): HTMLElement | '' {
   });
 }
 
-/** Where the viewer left off, or what comes next once that is finished. */
-function continueCard(course: CourseMeta | null): HTMLElement | null {
+/** A small progress ring, filled to `f`. */
+function ring(f: number): string {
+  const r = 12;
+  const len = 2 * Math.PI * r;
+  return `<svg class="ring" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="${r}"/><circle class="arc" cx="15" cy="15" r="${r}" stroke-dasharray="${(Math.min(1, f) * len).toFixed(2)} ${len.toFixed(2)}"/></svg>`;
+}
+
+interface Lead {
+  kicker: string;
+  title: string;
+  sub: string;
+  href: string;
+  action: string;
+  icon: string;
+  second?: { href: string; action: string; icon: string };
+  /** Epoch ms of the activity it continues; 0 for a suggestion. */
+  t: number;
+}
+
+const chapterLabel = (c: ChapterMeta) => (c.num.startsWith('A') ? c.title : `${c.num}. ${c.title}`);
+const courseCode = (c: ChapterMeta) => COURSES.find((k) => k.id === c.course)!.code;
+
+/** The chapter to do next in a course: the first one not yet done, in course order. */
+function nextChapter(course: CourseMeta): ChapterMeta | undefined {
+  return CHAPTERS.filter((c) => c.course === course.id && hasChapter(c.id)).find((c) => !chapterProgress(c).done);
+}
+
+/** Picks up the latest chapter or lecture, or offers what comes after it. */
+function chapterLead(course: CourseMeta | null): Lead | null {
   const l = last();
   const c = l && CHAPTERS.find((x) => x.id === l.id);
   if (!l || !c || (course && c.course !== course.id)) return null;
-  const card = (href: string, kicker: string, m: ChapterMeta, sub: string) =>
-    h('a', { class: 'continue', href },
-      h('span', { class: 'continue-body' },
-        h('span', { class: 'continue-k' }, kicker),
-        h('span', { class: 'continue-t' }, `${m.num}. ${m.title}`),
-        h('span', { class: 'continue-s' }, sub)),
-      h('span', { class: 'continue-go', html: icon(kicker.includes('lecture') ? 'playFill' : 'arrowRight') }));
   const lec = lectureState(c.id);
-  if (l.kind === 'lecture' && lec && lec.pos > 0) return card(`#/watch/${c.id}`, 'Continue the lecture', c, `Resume at ${mmss(lec.pos)} · ${pct(lec.heard)} heard`);
+  if (l.kind === 'lecture' && lec && lec.pos > 0) {
+    return { kicker: 'Pick up where you left off', title: chapterLabel(c), sub: `${courseCode(c)} · lecture at ${mmss(lec.pos)}`, href: `#/watch/${c.id}`, action: 'Resume', icon: 'playFill', t: l.t };
+  }
   const read = readState(c.id);
   if (read.max < DONE && (l.kind === 'chapter' || hasChapter(c.id))) {
-    return card(`#/${c.id}${read.at ? `/${read.at}` : ''}`, 'Continue reading', c, read.max >= STARTED ? `${pct(read.max)} read` : 'Explore the chapter');
+    return { kicker: 'Pick up where you left off', title: chapterLabel(c), sub: `${courseCode(c)} · ${read.max >= STARTED ? `${pct(read.max)} read` : 'the chapter'}`, href: `#/${c.id}${read.at ? `/${read.at}` : ''}`, action: 'Continue reading', icon: 'book', t: l.t };
   }
-  const list = CHAPTERS.filter((x) => x.course === c.course && hasChapter(x.id));
-  const next = list[list.indexOf(c) + 1];
-  if (!next) return null;
-  return hasLecture(next.id) ? card(`#/watch/${next.id}`, 'Up next: the lecture', next, next.blurb) : card(`#/${next.id}`, 'Up next', next, next.blurb);
+  const next = nextChapter(COURSES.find((k) => k.id === c.course)!);
+  return next ? watchOrRead(next, 'Up next', l.t) : null;
 }
 
-/** The hero: one real CIFAR-10 image as a pixel grid, with the code that reads the pixel under the pointer. */
-function heroArt(page: Page): HTMLElement {
-  const canvas = h('canvas', { width: 32, height: 32, 'aria-label': 'A CIFAR-10 image drawn as a grid of pixels' });
-  const code = new CodePanel(
-    `
-    img = X_train[{{i:0}}]          # one image: shape (32, 32, 3)
-    img[{{y:16}}, {{x:16}}]                 # row y, column x
-    # -> array([{{r:0}}, {{g:0}}, {{b:0}}])   red, green, blue (0-255)
-    `,
-    { bare: true, symIdx: page.symIdx },
-  );
-  const cap = h('div', { class: 'hero-art-cap' }, 'Point at any pixel. It is just three numbers.');
-  const wrap = h('div', { class: 'hero-art' }, canvas, h('div', { class: 'listing', style: 'margin:10px 0 0' }, code.el), cap);
-  const ctx = canvas.getContext('2d')!;
-  ctx.fillStyle = '#ccc';
-  ctx.fillRect(0, 0, 32, 32);
-  loadCifar()
-    .then(({ train }) => {
-      const picks = [7, 104, 213, 371, 489, 506, 640, 777, 812, 960];
-      let pick = picks[Math.floor(Math.random() * picks.length)]!;
-      const show = () => {
-        const img = cifarImage(train, pick);
-        ctx.putImageData(img, 0, 0);
-        code.set('i', pick);
-        cap.textContent = `A real CIFAR-10 training image (class: ${CIFAR_CLASSES[train.labels[pick]!]}). Point at any pixel: it is just three numbers. Tap to load another.`;
-        read(16, 16);
-      };
-      const read = (x: number, y: number) => {
-        const o = pick * 3072 + y * 32 + x;
-        code.setMany({ x, y, r: train.pixels[o]!, g: train.pixels[o + 1024]!, b: train.pixels[o + 2048]! });
-        ctx.putImageData(cifarImage(train, pick), 0, 0);
-        ctx.strokeStyle = 'rgba(255,255,255,0.95)';
-        ctx.lineWidth = 0.35;
-        ctx.strokeRect(x + 0.18, y + 0.18, 0.64, 0.64);
-      };
-      canvas.addEventListener('pointermove', (e) => {
-        const r = canvas.getBoundingClientRect();
-        const x = Math.min(31, Math.max(0, Math.floor(((e.clientX - r.left) / r.width) * 32)));
-        const y = Math.min(31, Math.max(0, Math.floor(((e.clientY - r.top) / r.height) * 32)));
-        read(x, y);
-      });
-      canvas.addEventListener('click', () => {
-        pick = (pick + 97) % train.n;
-        show();
-      });
-      show();
-    })
-    .catch(() => {
-      cap.textContent = 'An image is a grid of numbers: 32 x 32 pixels, three color values each.';
-    });
-  return wrap;
+/** A chapter to start: its lecture first when it has one. */
+function watchOrRead(c: ChapterMeta, kicker: string, t: number): Lead {
+  return hasLecture(c.id)
+    ? { kicker, title: chapterLabel(c), sub: `${courseCode(c)} · lecture, then the chapter`, href: `#/watch/${c.id}`, action: 'Watch', icon: 'playFill', second: { href: `#/${c.id}`, action: 'Read', icon: 'book' }, t }
+    : { kicker, title: chapterLabel(c), sub: courseCode(c), href: `#/${c.id}`, action: 'Read', icon: 'book', t };
 }
 
-/** Six words and how much each one attends to the words before it (rows sum to 1). */
-const ATT_WORDS = ['The', 'cat', 'sat', 'on', 'the', 'mat'];
-const ATT = [
-  [1, 0, 0, 0, 0, 0],
-  [0.38, 0.62, 0, 0, 0, 0],
-  [0.06, 0.71, 0.23, 0, 0, 0],
-  [0.05, 0.18, 0.52, 0.25, 0, 0],
-  [0.22, 0.04, 0.08, 0.41, 0.25, 0],
-  [0.04, 0.33, 0.12, 0.21, 0.16, 0.14],
-];
-
-/** The DL26 hero: a causal attention pattern, with the four lines of NumPy that compute one. */
-function attentionArt(page: Page): HTMLElement {
-  const canvas = h('canvas', { class: 'hero-att', 'aria-label': 'An attention pattern: each word, as a row, spreading its attention over the words before it' });
-  const code = new CodePanel(
-    `
-    scores = Q @ K.T / np.sqrt(d)            #@score
-    scores[np.triu_indices(6, k=1)] = -np.inf  #@mask
-    A = softmax(scores, axis=1)              #@soft
-    A[{{i:2}}]   # "{{w:sat}}" -> {{row:...}}  #@row
-    out = A @ V                              #@out
-    `,
-    { bare: true, symIdx: page.symIdx },
-  );
-  const cap = h('div', { class: 'hero-art-cap' }, 'Each row is a word deciding where to look. Tap a row.');
-  const wrap = h('div', { class: 'hero-art' }, canvas, h('div', { class: 'listing', style: 'margin:10px 0 0' }, code.el), cap);
-  let row = 2;
-  const draw = () => {
-    const css = canvas.clientWidth || 320;
-    const dpr = Math.min(2, devicePixelRatio || 1);
-    if (canvas.width !== Math.round(css * dpr)) {
-      canvas.width = Math.round(css * dpr);
-      canvas.height = Math.round(css * dpr);
-    }
-    const ctx = canvas.getContext('2d')!;
-    ctx.setTransform(canvas.width / 320, 0, 0, canvas.height / 320, 0, 0);
-    ctx.clearRect(0, 0, 320, 320);
-    const x0 = 62, y0 = 50, c = 40;
-    ctx.font = `500 13px ${getComputedStyle(document.body).getPropertyValue('--font-mono') || 'monospace'}`;
-    ctx.textBaseline = 'middle';
-    for (let j = 0; j < 6; j++) {
-      ctx.fillStyle = color('--ink-3');
-      ctx.textAlign = 'center';
-      ctx.save();
-      ctx.translate(x0 + j * c + c / 2, y0 - 12);
-      ctx.fillText(ATT_WORDS[j]!, 0, 0);
-      ctx.restore();
-    }
-    for (let i = 0; i < 6; i++) {
-      ctx.textAlign = 'right';
-      ctx.fillStyle = i === row ? color('--accent') : color('--ink-2');
-      ctx.fillText(ATT_WORDS[i]!, x0 - 10, y0 + i * c + c / 2);
-      for (let j = 0; j < 6; j++) {
-        const a = ATT[i]![j]!;
-        const x = x0 + j * c, y = y0 + i * c;
-        ctx.fillStyle = j > i ? withAlpha(color('--ink-3'), 0.07) : withAlpha(color('purple'), 0.08 + 0.9 * a);
-        ctx.beginPath();
-        ctx.roundRect(x + 2, y + 2, c - 4, c - 4, 6);
-        ctx.fill();
-        if (j <= i && i === row) {
-          ctx.textAlign = 'center';
-          ctx.fillStyle = a > 0.45 ? '#fff' : color('--ink');
-          ctx.font = `600 11px ${getComputedStyle(document.body).getPropertyValue('--font-mono') || 'monospace'}`;
-          ctx.fillText(a.toFixed(2).replace(/^0/, ''), x + c / 2, y + c / 2);
-          ctx.font = `500 13px ${getComputedStyle(document.body).getPropertyValue('--font-mono') || 'monospace'}`;
-        }
-      }
-    }
-    ctx.strokeStyle = color('--accent');
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(x0, y0 + row * c, 6 * c, c, 8);
-    ctx.stroke();
-    code.setMany({ i: row, w: ATT_WORDS[row]!, row: `[${ATT[row]!.slice(0, row + 1).map((v) => v.toFixed(2)).join(', ')}${row < 5 ? ', 0, ...' : ''}]` });
-    code.highlight('row');
-  };
-  canvas.addEventListener('click', (e) => {
-    const r = canvas.getBoundingClientRect();
-    const y = ((e.clientY - r.top) / r.height) * 320;
-    const i = Math.floor((y - 50) / 40);
-    if (i >= 0 && i < 6) {
-      row = i;
-      draw();
-    }
-  });
-  const ro = new ResizeObserver(() => draw());
-  ro.observe(canvas);
-  onDispose(() => ro.disconnect());
-  return wrap;
+/** Atlas's next step, as a lead. */
+export function atlasLead(d: Today): Lead | null {
+  const title = (id: string) => GRAPH.get(id)!.title;
+  switch (d.kind) {
+    case 'start':
+      return null;
+    case 'learning':
+      return { kicker: 'Atlas · in progress', title: title(d.concept!), sub: `${d.streak} of ${d.need} right in a row${d.opens?.length ? ` · then ${d.opens.map(title).join(', ')} opens` : ''}`, href: '#/atlas/learn', action: 'Practice', icon: 'playFill', t: d.t };
+    case 'new':
+      return { kicker: 'Atlas · up next', title: title(d.concept!), sub: 'A new concept: explainer, then practice', href: '#/atlas/learn', action: 'Start', icon: 'playFill', t: d.t };
+    case 'review':
+      return { kicker: 'Atlas · review', title: `${d.due} ${d.due === 1 ? 'review' : 'reviews'} due`, sub: 'Mastered concepts coming back before they fade', href: '#/atlas/learn', action: 'Review', icon: 'playFill', t: d.t };
+    case 'done':
+      return null;
+  }
 }
 
-function partsGrid(root: HTMLElement, course: CourseMeta): void {
-  course.parts.forEach((part, pi) => {
-    const sec = h('section', { class: 'part' },
-      h('div', { class: 'part-head' }, h('span', { class: 'part-num' }, ROMAN[pi]!), h('h2', { class: 'part-title' }, part)));
-    const grid = h('div', { class: 'cards' });
-    for (const c of CHAPTERS.filter((x) => x.course === course.id && x.part === part)) {
-      const top = h('div', { class: 'card-top' }, h('span', { class: 'card-num' }, c.num.startsWith('A') ? c.num : `Chapter ${c.num}`), h('span', {}, c.lectures ?? ''));
-      const p = chapterProgress(c);
-      if (p.heard !== null) {
-        const html = p.heard >= DONE ? `${icon('check')} watched` : p.heard >= 0.02 ? `${icon('playFill')} ${pct(p.heard)}` : `${icon('playFill')} lecture`;
-        top.append(h('span', { class: `card-lec${p.heard >= DONE ? ' done' : ''}`, html }));
-      }
-      if (p.read >= DONE) top.append(h('span', { class: 'card-seen', html: `${icon('check')} read` }));
-      else if (p.read >= STARTED) top.append(h('span', { class: 'card-seen card-part' }, `read ${pct(p.read)}`));
-      grid.append(h('a', { class: `card${hasChapter(c.id) ? '' : ' soon'}`, href: `#/${c.id}` }, top,
-        h('div', { class: 'card-title' }, c.title.replace(/^Assignment \d: /, '')),
-        h('div', { class: 'card-blurb' }, c.blurb)));
-    }
-    sec.append(grid);
-    root.append(sec);
-  });
+function leadCard(l: Lead): HTMLElement {
+  return h('div', { class: 'lead' },
+    h('div', { class: 'lead-k' }, l.kicker),
+    h('div', { class: 'lead-t' }, l.title),
+    h('div', { class: 'lead-s' }, l.sub),
+    h('div', { class: 'lead-actions' },
+      h('a', { class: 'lead-go', href: l.href, html: `${icon(l.icon)} ${l.action}` }),
+      l.second ? h('a', { class: 'lead-alt', href: l.second.href, html: `${icon(l.second.icon)} ${l.second.action}` }) : ''));
 }
 
-function cs231nIntro(root: HTMLElement): Page {
-  const page = new Page(root, 'home', '0', {
-    W: { color: 'blue', name: 'W: the weights, one row per class' },
-    x: { color: 'orange', name: 'x: the image, stretched into one long column of numbers' },
-    b: { color: 'green', name: 'b: the biases, one number per class' },
-    s: { color: 'purple', name: 's: the scores, one per class', code: ['scores'] },
-  });
-  const first = CHAPTERS.find((c) => c.id === 'image-classification')!;
+/** The index: whatever was last in progress, then the courses as tiles. */
+export function renderIndex(main: HTMLElement): void {
+  const root = h('div', { class: 'home home-b', 'data-page': 'index' });
+  main.append(root);
+  const learner = new Learner(GRAPH);
+  const leads = [chapterLead(null), atlasLead(learner.today())].filter((x): x is Lead => !!x).sort((a, b) => b.t - a.t);
+  root.append(leadCard(leads[0] ?? {
+    kicker: 'New here?',
+    title: 'Start with CS231n',
+    sub: 'Images as numbers, all the way to ConvNets. Or learn concept by concept in Atlas.',
+    href: '#/welcome',
+    action: 'Start the course',
+    icon: 'arrowRight',
+    second: { href: '#/atlas', action: 'Atlas', icon: 'graph' },
+    t: 0,
+  }));
+
+  root.append(h('div', { class: 'home-lbl' }, 'Courses'));
+  const tiles = h('div', { class: 'tiles' });
+  for (const k of COURSES) {
+    const list = CHAPTERS.filter((c) => c.course === k.id && !c.num.startsWith('A'));
+    const done = list.filter((c) => chapterProgress(c).done).length;
+    const frac = list.reduce((a, c) => a + chapterProgress(c).frac, 0) / list.length;
+    tiles.append(tile(k.id, k.code, k.tagline, frac, `${done} of ${list.length}`));
+  }
+  const st = [...learner.statuses().values()];
+  const mastered = st.filter((s) => s === 'mastered' || s === 'due' || s === 'slipping').length;
+  tiles.append(tile(ATLAS_COURSE.id, ATLAS_COURSE.code, ATLAS_COURSE.title, mastered / st.length, `${mastered} of ${st.length}`, 'atlas'));
+  root.append(tiles);
+  root.append(h('footer', { class: 'home-foot', html: md('An independent study companion. CS231n was created at Stanford by Fei-Fei Li, Andrej Karpathy and Justin Johnson; DL26 and Atlas are this site\'s own.') }));
+}
+
+function tile(id: string, code: string, tagline: string, frac: number, count: string, kind = ''): HTMLElement {
+  return h('a', { class: `tile${kind ? ` tile-${kind}` : ''}`, href: `#/${id}` },
+    h('span', { class: 'tile-code' }, code),
+    h('span', { class: 'tile-t' }, tagline),
+    h('span', { class: 'tile-p', html: `${ring(frac)}<span>${count}</span>` }));
+}
+
+/** A course's front page: what to do next, then the chapters, with only the current part open. */
+export function renderCourse(main: HTMLElement, course: CourseMeta): void {
+  const root = h('div', { class: 'home home-b', 'data-page': `course-${course.id}` });
+  main.append(root);
   root.append(
-    h('section', { class: 'hero' },
-      h('div', {},
-        h('div', { class: 'hero-kicker' }, 'CS231n · Stanford · Winter 2016'),
-        h('h1', { class: 'hero-title', html: 'Teaching machines <em>to see</em>, one line of code at a time.' }),
-        h('p', { class: 'hero-lede' }, 'Convolutional Neural Networks for Visual Recognition, the course Andrej Karpathy, Justin Johnson and Fei-Fei Li taught at Stanford: images as numbers, linear classifiers, backpropagation, neural networks and ConvNets, built from scratch in NumPy.'),
-        h('div', { class: 'hero-actions' },
-          h('a', { class: 'btn btn-primary', href: '#/welcome', html: `Start the course ${icon('arrowRight')}` }),
-          h('a', { class: 'btn', href: '#/math-kit', html: `${icon('math')} Math survival kit` }),
-          h('a', { class: 'btn', href: `#/${first.id}`, html: `${icon('image')} Jump to images` }))),
-      heroArt(page)),
-  );
-  page.prose('The first real equation of the course: how a linear classifier scores an image. Try hovering $\\symW$, $\\symx$ or $\\symb$.');
-  page.math({
-    label: 'Scoring an image',
-    tex: String.raw`\syms = \symW \symx + \symb`,
-    code: `
-      x = img.reshape(3072)    # the image as one long column of 3072 numbers
-      scores = W.dot(x) + b    # W: (10, 3072), b: (10,)  ->  scores: (10,)
-      scores.argmax()          # the class with the highest score wins
-    `,
-    codeTitle: 'score.py',
-    terms: [
-      [String.raw`\symx`, 'the image, every pixel value lined up in one column (3072 of them)'],
-      [String.raw`\symW`, 'a grid of numbers with one row per class (10 rows); learning means finding good values here'],
-      [String.raw`\symW\symx`, 'each row of `W` multiplied with the image and summed: one number per class'],
-      [String.raw`\symb`, 'a per-class nudge, added at the end'],
-      [String.raw`\syms`, 'ten scores, one per class; the biggest one is the guess'],
-    ],
-    explain: 'Multiply the image by a grid of learned numbers, add a little offset, and read off ten numbers. A high number means "this looks like my class." Chapter 4 builds this from scratch and trains it on real images while you watch.',
-  });
-  return page;
-}
+    h('div', { class: 'home-kicker' }, `${course.code} · ${course.era}`),
+    h('h1', { class: 'home-title', html: course.headline }));
 
-function dl26Intro(root: HTMLElement): Page {
-  const page = new Page(root, 'home', '0', {
-    Q: { color: 'blue', name: 'Q: the queries, what each word is looking for' },
-    K: { color: 'orange', name: 'K: the keys, what each word offers to be found by' },
-    V: { color: 'green', name: 'V: the values, what each word hands over when found' },
-    A: { color: 'purple', name: 'A: the attention weights, one row per word, each row summing to 1' },
-  });
-  root.append(
-    h('section', { class: 'hero' },
-      h('div', {},
-        h('div', { class: 'hero-kicker' }, 'DL26 · The continuation · 2017 to 2026'),
-        h('h1', { class: 'hero-title', html: 'A decade later: <em>attention</em>, scale and feedback.' }),
-        h('p', { class: 'hero-lede' }, 'CS231n ended in 2016, just before deep learning changed shape. This course picks up there: transformers, tokens and pretraining, scaling laws, modern optimizers like Muon, diffusion, and the post-training methods (RLHF, PPO, DPO, RLVR, GRPO) that turn a text predictor into a reasoning model.'),
-        h('div', { class: 'hero-actions' },
-          h('a', { class: 'btn btn-primary', href: '#/decade', html: `Start the course ${icon('arrowRight')}` }),
-          h('a', { class: 'btn', href: '#/transformer', html: `${icon('brain')} The Transformer` }),
-          h('a', { class: 'btn', href: '#/cs231n', html: `${icon('book')} Need the basics? CS231n` }))),
-      attentionArt(page)),
-  );
-  page.prose('The whole decade turns on one equation. Every word of a sentence asks a question ($\\symQ$), every word advertises what it is about ($\\symK$), and every word gets back a blend of the others ($\\symV$), weighted by how well question and advertisement match ($\\symA$).');
-  page.math({
-    label: 'Attention',
-    tex: String.raw`\symA = \operatorname{softmax}\!\left(\frac{\symQ \symK^{\top}}{\sqrt{d}}\right), \qquad \text{out} = \symA \symV`,
-    code: `
-      scores = Q @ K.T / np.sqrt(d)   # how well each query matches each key
-      A = softmax(scores, axis=1)     # each row: positive weights summing to 1
-      out = A @ V                     # each word: a weighted blend of values
-    `,
-    codeTitle: 'attention.py',
-    terms: [
-      [String.raw`\symQ \symK^{\top}`, 'every query dotted with every key: a table of match scores, one row per word'],
-      [String.raw`\sqrt{d}`, 'a fixed divisor that keeps the scores from growing with the vector length d'],
-      [String.raw`\operatorname{softmax}`, 'turns each row of scores into positive weights that add up to 1'],
-      [String.raw`\symA \symV`, 'each word collects the values of the words it attends to, in those proportions'],
-    ],
-    explain: 'A soft dictionary lookup. Instead of fetching exactly one entry, every word fetches a little of everything, mostly from the entries whose keys match its query. Chapter 2 builds this up from scratch; the rest of the course is about making it big, fast, and useful.',
-  });
-  return page;
+  const next = nextChapter(course);
+  const lead = chapterLead(course) ?? (next ? watchOrRead(next, CHAPTERS.indexOf(next) === CHAPTERS.findIndex((c) => c.course === course.id) ? 'Start here' : 'Up next', 0) : null);
+  if (lead) {
+    const card = leadCard(lead);
+    const ch = CHAPTERS.find((c) => lead.href.endsWith(`/${c.id}`) || lead.href.includes(`/${c.id}/`));
+    // Starting a chapter, its blurb says what it is; resuming, the line says where.
+    if (ch && lead.t === 0) card.querySelector('.lead-s')!.replaceWith(h('p', { class: 'lead-blurb' }, ch.blurb));
+    const go = card.querySelector('.lead-go')!;
+    if (ch && go.textContent?.includes('Watch')) {
+      void loadLecture(ch.id)?.then((d) => {
+        if (d.timing) go.innerHTML = `${icon('playFill')} Watch · ${Math.round(d.timing.duration / 60)} min`;
+      });
+    }
+    root.append(card);
+  }
+
+  // The chapter the lead card is about is the current one; its part is the one left open.
+  const leadCh = lead ? CHAPTERS.find((c) => c.course === course.id && (lead.href.endsWith(`/${c.id}`) || lead.href.includes(`/${c.id}/`))) : undefined;
+  const current = leadCh ?? next;
+  const openPart = (current ?? CHAPTERS.find((c) => c.course === course.id))!.part;
+  for (const part of course.parts) {
+    const list = CHAPTERS.filter((c) => c.course === course.id && c.part === part);
+    const done = list.filter((c) => chapterProgress(c).done).length;
+    const det = h('details', { class: 'part-b' });
+    det.open = part === openPart;
+    det.append(h('summary', {},
+      h('span', { class: 'part-chev', html: icon('caret-right') }),
+      h('span', { class: 'part-name' }, part),
+      h('span', { class: 'part-count', html: done === list.length ? `${done} of ${list.length} ${icon('check')}` : `${done} of ${list.length}` })));
+    for (const c of list) {
+      const cur = c === current;
+      det.append(h('a', { class: `ch-row${cur ? ' cur' : ''}${hasChapter(c.id) ? '' : ' soon'}`, href: `#/${c.id}` },
+        h('span', { class: 'ch-row-n' }, c.num),
+        h('span', { class: 'ch-row-t' }, c.title.replace(/^Assignment \d: /, '')),
+        progressMark(c, 'ch-row-m')));
+    }
+    root.append(det);
+  }
+  root.append(h('footer', { class: 'home-foot', html: md(FOOT[course.id] ?? '') }));
 }
 
 const FOOT: Record<string, string> = {
   cs231n: 'An unofficial, independent study companion. CS231n was created at Stanford by Fei-Fei Li, Andrej Karpathy and Justin Johnson; the [original course notes](https://cs231n.github.io/) remain the canonical reference. Figures here are original re-implementations, and the images are a small sample of [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) (Krizhevsky, 2009).',
   dl26: 'An independent course that continues CS231n. Each chapter links the papers it follows; the figures are original re-implementations at toy scale, small enough to run in your browser.',
 };
-
-/** A course's front page: its introduction, then every chapter grouped by part. */
-export function renderCourse(main: HTMLElement, course: CourseMeta): void {
-  const root = h('div', { class: 'home', 'data-page': `course-${course.id}` });
-  main.append(root);
-  const page = course.id === 'cs231n' ? cs231nIntro(root) : dl26Intro(root);
-  const cont = continueCard(course);
-  if (cont) root.prepend(cont);
-  partsGrid(root, course);
-  root.append(h('footer', { class: 'home-foot', html: page.md(FOOT[course.id] ?? '') }));
-}
-
-/** The site's front page: the courses. */
-export function renderIndex(main: HTMLElement): void {
-  const root = h('div', { class: 'home', 'data-page': 'index' });
-  main.append(root);
-  const page = new Page(root, 'index', '0', {});
-  root.append(h('section', { class: 'hero hero-index' },
-    h('div', {},
-      h('div', { class: 'hero-kicker' }, 'Interactive courses'),
-      h('h1', { class: 'hero-title', html: 'Deep learning, <em>one line of code</em> at a time.' }),
-      h('p', { class: 'hero-lede' }, 'Two courses, ten years apart, and a third built differently. The first is Stanford\'s CS231n as taught in 2016: how machines learned to see. The second picks up where it ends: transformers, scale, and models trained by feedback. The third is a map of concepts you master one at a time, with problems until each one sticks.'))));
-  const cont = continueCard(null);
-  if (cont) root.prepend(cont);
-  const grid = h('div', { class: 'courses' });
-  for (const k of COURSES) {
-    const chapters = CHAPTERS.filter((c) => c.course === k.id && !c.num.startsWith('A'));
-    const lectures = chapters.filter((c) => hasLecture(c.id)).length;
-    const done = chapters.filter((c) => chapterProgress(c).done).length;
-    const stats = [`${chapters.length} chapters`, lectures ? `${lectures} lectures` : '', done ? `${done} done` : ''].filter(Boolean).join(' · ');
-    grid.append(h('a', { class: 'course-card', href: `#/${k.id}` },
-      h('div', { class: 'course-top' }, h('span', { class: 'course-code' }, k.code), h('span', { class: 'course-era' }, k.era)),
-      h('div', { class: 'course-title' }, k.title),
-      h('div', { class: 'course-blurb' }, k.blurb),
-      h('div', { class: 'course-foot' }, h('span', {}, stats), h('span', { class: 'course-go', html: `Open ${icon('arrowRight')}` }))));
-  }
-  const st = [...new Learner(GRAPH).statuses().values()];
-  const mastered = st.filter((s) => s === 'mastered' || s === 'due' || s === 'slipping').length;
-  grid.append(h('a', { class: 'course-card course-card-atlas', href: `#/${ATLAS_COURSE.id}` },
-    h('div', { class: 'course-top' }, h('span', { class: 'course-code' }, ATLAS_COURSE.code), h('span', { class: 'course-era' }, ATLAS_COURSE.era)),
-    h('div', { class: 'course-title' }, ATLAS_COURSE.title),
-    h('div', { class: 'course-blurb' }, ATLAS_COURSE.blurb),
-    h('div', { class: 'course-foot' }, h('span', {}, [`${st.length} concepts`, mastered ? `${mastered} mastered` : ''].filter(Boolean).join(' · ')), h('span', { class: 'course-go', html: `Open ${icon('arrowRight')}` }))));
-  root.append(grid);
-  root.append(h('footer', { class: 'home-foot', html: page.md('An independent study companion. CS231n was created at Stanford by Fei-Fei Li, Andrej Karpathy and Justin Johnson; DL26 is this site\'s own continuation.') }));
-}

@@ -2,6 +2,7 @@ import type { ChapterDef } from './index';
 import { CHAPTERS, COURSES } from './index';
 import { DECADE_SYMBOLS } from '../lib/decade-symbols';
 import { figCarried, figFeedback, figScale, figSoftmax, figTimeline } from '../lib/decade-figs';
+import { attentionArt } from '../lib/course-art';
 
 const PART_INTRO: Record<string, string> = {
   'Start here': 'This chapter: the decade at a glance, and how the course fits together.',
@@ -38,6 +39,8 @@ This chapter is the map. It walks the decade year by year, names the three shift
     );
 
     /* ---------------------------------------------------------------- timeline */
+    p.append(attentionArt(p));
+
     p.h2('The decade, year by year', 'timeline');
     p.prose(`
 Start with the whole picture. Each dot below is one milestone: a paper, a model or a release that changed how the field works. They fall into five threads, and the threads are the five parts of this course. Three of them carry the big shifts this chapter is about: **attention** (one architecture for everything), **scale** (size as a research direction) and **feedback** (learning from preferences and checkers). The other two, images and serving, are where those shifts spread.`);

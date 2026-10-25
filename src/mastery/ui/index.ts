@@ -4,15 +4,15 @@ import { domainOf, GRAPH, loadExplainer } from '../../atlas/index';
 import { h } from '../../core/dom';
 import { Learner } from '../learner';
 import { renderConcept } from './concept';
-import { renderMap } from './map';
+import { renderHome, renderMap } from './map';
 import { renderPlacement } from './placement';
 import { renderSession } from './session';
 
 export async function renderAtlas(main: HTMLElement, parts: string[], current: () => boolean): Promise<void> {
   const learner = new Learner(GRAPH);
   const [a = '', b = ''] = parts;
-  if (!a) return renderMap(main, learner, 'list');
-  if (a === 'graph') return renderMap(main, learner, 'graph');
+  if (!a) return renderHome(main, learner);
+  if (a === 'graph' || a === 'list') return renderMap(main, learner, a);
   if (a === 'learn') return renderSession(main, learner, b || undefined);
   if (a === 'place') return renderPlacement(main, learner);
   const c = GRAPH.get(a);
