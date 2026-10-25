@@ -193,6 +193,8 @@ let renderToken = 0;
 
 async function route(): Promise<void> {
   const [, id = '', section = ''] = location.hash.replace(/^#\/?/, '#').split(/[#/]/);
+  // The reading bar is for chapters, the only long pages; elsewhere it would track nothing.
+  progress.hidden = !CHAPTERS.some((c) => c.id === id);
   if (id === 'atlas') {
     await routeAtlas();
     return;
