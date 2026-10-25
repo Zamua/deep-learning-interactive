@@ -56,7 +56,11 @@ panel and lookup notes: 2 to 3 scenes, 8 to 20 beats, 1 to 3 minutes. It explain
 working examples of the kind the practice will ask inside its scenes, so the first problem
 never comes as a surprise. Its last beat is `{ id: 'turn', say: 'Your turn.' }`, and the player
 then goes straight into practice: no worked example at the end, no recap. `docs/LECTURES.md`
-applies, except the shape: no intro or recap scenes, one idea, straight to it. Narration and review use the lecture tools
+applies, except the shape: no intro or recap scenes, one idea, straight to it.
+
+**Nothing from later.** A concept's explainer and problems use only the concept and its
+prerequisite chain: no previews of what comes after ("later, in training...") and no examples
+built on concepts the learner has not met. Motivation comes from what is already known. Narration and review use the lecture tools
 with the id `atlas-<concept>`:
 
     node tools/lecture/build.mjs atlas-<concept> --check

@@ -5,7 +5,7 @@ export const ATLAS_SYMBOLS: SymbolMap = {
   x: {
     color: 'orange',
     name: 'x: the input',
-    about: 'What goes in: a vector of numbers, such as an image flattened into one column, or the variable of a function. In a classifier it is given; only the parameters change.',
+    about: 'What goes in: a vector of numbers, or the variable of a function.',
   },
   X: {
     color: 'orange',
@@ -15,13 +15,13 @@ export const ATLAS_SYMBOLS: SymbolMap = {
   },
   w: {
     color: 'blue',
-    name: 'w: a weight vector',
-    about: 'One weight per input entry. Its dot product with x weighs each piece of evidence and adds them up; a classifier stacks one w per class as the rows of W.',
+    name: 'w: a vector of weights',
+    about: 'One weight per entry of x. Its dot product with x multiplies each entry by its weight and adds them up.',
   },
   W: {
     color: 'blue',
-    name: 'W: the weights, one row per class',
-    about: 'A matrix with one row per class and one column per input entry. W times x gives every class its score at once. Learning means choosing W.',
+    name: 'W: a matrix of weights',
+    about: 'A grid of numbers in rows and columns. W times x takes one dot product per row, so it has one column per entry of x.',
   },
   b: {
     color: 'green',
@@ -87,6 +87,99 @@ export const ATLAS_SYMBOLS: SymbolMap = {
     name: 'B: the batch size',
     code: ['B', 'batch_size'],
     about: 'How many examples go into one gradient estimate. Smaller batches are cheaper and noisier; larger ones are smoother and cost more per step.',
+  },
+  h: {
+    color: 'gold',
+    name: 'h: the hidden layer\'s activations',
+    code: ['h', 'hidden'],
+    about: 'What the first layer hands to the second: h = ReLU(W1 x + b1). Each entry is one hidden unit, and the second layer scores h exactly as a linear classifier scores an image.',
+  },
+  W1: {
+    color: 'blue',
+    name: 'W1: the first layer\'s weights',
+    tex: 'W_1',
+    about: 'Shape (H, D): one row per hidden unit, each a template over the input. Its output, through the activation, is h.',
+  },
+  W2: {
+    color: 'blue',
+    name: 'W2: the second layer\'s weights',
+    tex: 'W_2',
+    about: 'Shape (C, H): one row per class, scoring the hidden activations h instead of the raw input.',
+  },
+  b1: {
+    color: 'green',
+    name: 'b1: the first layer\'s biases',
+    tex: 'b_1',
+    about: 'One per hidden unit, added before the activation, so a unit can fire even when its weighted sum is small.',
+  },
+  b2: {
+    color: 'green',
+    name: 'b2: the second layer\'s biases',
+    tex: 'b_2',
+    about: 'One per class, added to the scores, as in a linear classifier.',
+  },
+  lam: {
+    color: 'slate',
+    name: 'λ: the regularization strength',
+    tex: '\\lambda',
+    code: ['lam', 'reg'],
+    about: 'How much the penalty on large weights counts against fitting the data. A hyperparameter: chosen on validation data, never learned.',
+  },
+  v: {
+    color: 'orange',
+    name: 'v: the velocity',
+    about: 'A running blend of past gradients. Momentum steps along v instead of the latest gradient, so consistent directions build speed and noise cancels out.',
+  },
+  gamma: {
+    color: 'purple',
+    name: 'γ: the learned scale',
+    tex: '\\gamma',
+    about: 'Batch norm multiplies each normalized feature by γ, learned like any weight, so the network can undo the normalization where it helps.',
+  },
+  beta: {
+    color: 'green',
+    name: 'β: the learned shift',
+    tex: '\\beta',
+    about: 'Batch norm adds β after scaling by γ: a learned offset per feature, playing the role a bias would.',
+  },
+  F: {
+    color: 'slate',
+    name: 'F: the filter size',
+    about: 'A filter covers F × F positions of the input, through every channel. 3 is the usual choice; stacking small filters sees as far as one big one.',
+  },
+  S: {
+    color: 'slate',
+    name: 'S: the stride',
+    about: 'How far the filter moves between positions. Stride 2 halves the output\'s width and height.',
+  },
+  P: {
+    color: 'slate',
+    name: 'P: the padding',
+    about: 'Zeros added around the border. With stride 1, P = (F − 1) / 2 keeps the output the same size as the input.',
+  },
+  K: {
+    color: 'slate',
+    name: 'K: the number of filters',
+    about: 'Each filter makes one output channel, so a layer with K filters outputs K channels.',
+  },
+  Whh: {
+    color: 'blue',
+    name: 'W_hh: the hidden-to-hidden weights',
+    tex: 'W_{hh}',
+    code: ['Whh', 'W_hh'],
+    about: 'Carries the memory from one step to the next. The same matrix is used at every step, so backprop through time multiplies by it again and again.',
+  },
+  Wxh: {
+    color: 'blue',
+    name: 'W_xh: the input-to-hidden weights',
+    tex: 'W_{xh}',
+    code: ['Wxh', 'W_xh'],
+    about: 'Mixes the current input into the hidden state. Shared across every step of the sequence.',
+  },
+  T: {
+    color: 'slate',
+    name: 'T: the temperature',
+    about: 'Scores are divided by T before the softmax. Below 1 sharpens the choice toward the top token; above 1 flattens it toward random.',
   },
   eta: {
     color: 'slate',

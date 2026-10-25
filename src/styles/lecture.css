@@ -924,32 +924,3 @@ canvas.lec-canvas {
   width: 16px;
   height: 16px;
 }
-
-/* The end card's countdown into what comes next. */
-.lec-end-bar {
-  display: none;
-  width: min(240px, 60%);
-  height: 3px;
-  margin: 2px auto 14px;
-  border-radius: 99px;
-  background: color-mix(in srgb, var(--ink) 15%, transparent);
-  overflow: hidden;
-}
-.lec-end.counting .lec-end-bar {
-  display: block;
-}
-.lec-end.counting .lec-end-bar::after {
-  content: '';
-  display: block;
-  height: 100%;
-  background: var(--accent);
-  animation: lec-count 4s linear forwards;
-}
-@keyframes lec-count {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}

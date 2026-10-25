@@ -34,8 +34,6 @@ export interface LectureFrame {
   /** What to call it in messages: "lecture" or "explainer". */
   noun: string;
   end: { kicker: string; title: string; action: string; href: string };
-  /** Go straight to `end.href` when playback finishes, instead of waiting on the end card. */
-  autoAdvance?: boolean;
 }
 
 interface TBeat {
@@ -193,8 +191,6 @@ class Clock {
 const SPEEDS = [0.75, 1, 1.25, 1.5, 1.75, 2];
 /** Holding the picture plays at BOOST×; sliding LOCK_PX down while holding keeps it there. */
 const BOOST = 2;
-/** Seconds the end card counts down before following its link, when the frame asks for that. */
-const ADVANCE_SECONDS = 4;
 const HOLD_MS = 350;
 const LOCK_PX = 56;
 /** Double tapping the left or right side skips SKIP_S; taps within RUN_MS of a skip keep skipping. */
@@ -560,33 +556,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
     void wake(false);
     log.save(duration);
     sync();
-    if (frame.autoAdvance) countdown();
   }
-
-  /** Counts down on the end card, then follows its link; Watch again, a seek or play stops it. */
-  let countTimer = 0;
-  function countdown(): void {
-    const at = location.hash;
-    let left = ADVANCE_SECONDS;
-    endTitle.textContent = `${frame.end.title} in ${left}`;
-    endcard.classList.add('counting');
-    window.clearInterval(countTimer);
-    countTimer = window.setInterval(() => {
-      left--;
-      if (!ended || location.hash !== at) return stopCountdown();
-      if (left > 0) endTitle.textContent = `${frame.end.title} in ${left}`;
-      else {
-        stopCountdown();
-        location.hash = frame.end.href;
-      }
-    }, 1000);
-  }
-  function stopCountdown(): void {
-    window.clearInterval(countTimer);
-    endcard.classList.remove('counting');
-    endTitle.textContent = frame.end.title;
-  }
-  onDispose(() => window.clearInterval(countTimer));
 
   function toggle(): void {
     if (clock.paused) void play();
@@ -599,7 +569,6 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
     if (ended) {
       ended = false;
       root.classList.remove('ended');
-      stopCountdown();
     }
     clock.seek(t);
     sync();
@@ -993,14 +962,11 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
   const replay = h('button', { class: 'btn', type: 'button', html: `${icon('reset')} Watch again` });
   replay.addEventListener('click', (e) => {
     e.stopPropagation();
-    stopCountdown();
     void play();
   });
-  const endTitle = h('h2', { class: 'lec-end-title' }, frame.end.title);
   const endcard = h('div', { class: 'lec-end' },
     h('div', { class: 'lec-poster-kicker' }, frame.end.kicker),
-    endTitle,
-    h('div', { class: 'lec-end-bar' }),
+    h('h2', { class: 'lec-end-title' }, frame.end.title),
     h('div', { class: 'lec-poster-actions' },
       h('a', { class: 'btn btn-primary', href: frame.end.href, html: `${frame.end.action} ${icon('arrowRight')}` }),
       replay));
