@@ -1,0 +1,27 @@
+{
+ "duration": 155.173,
+ "scenes": {
+  "exp": [0.0, 42.912],
+  "log": [42.912, 85.001],
+  "rules": [85.001, 129.522],
+  "example": [129.522, 155.173]
+ },
+ "beats": {
+  "exp/e": [0.7, 9.258, "The number e is about two point seven one eight. e to the x means e multiplied by itself, x times.", [[3.94, 4.52], [8.01, 8.33]]],
+  "exp/zero": [9.638, 20.067, "e to the zero is one. Each step of one in x multiplies by e again: two point seven two, seven point three nine, then about twenty.", [[11.308, 11.868], [15.198, 15.708], [16.828, 17.138], [18.448, 18.818]]],
+  "exp/neg": [20.447, 31.957, "A step down divides by e instead: e to the minus one is zero point three seven. Smaller, but never negative. e to any power is positive.", [[23.287, 23.947], [26.947, 27.427], [27.997, 28.207], [29.257, 29.877]]],
+  "exp/add": [32.337, 41.812, "So adding powers multiplies results. e squared times e to the one is e cubed: the powers add, two plus one.", [[32.697, 32.847], [35.187, 35.787], [37.807, 37.957], [38.917, 39.377], [40.347, 40.787]]],
+  "log/ask": [43.612, 51.511, "The natural log, ln, runs this backwards. ln of a number asks: e to what power gives it?", [[44.612, 44.872], [45.522, 45.762], [46.982, 47.522], [49.282, 49.732]]],
+  "log/two": [51.891, 58.023, "e squared is seven point three nine, so ln of seven point three nine is two.", [[54.251, 54.701]]],
+  "log/one": [58.403, 62.783, "e to the zero is one, so ln of one is zero.", [[60.013, 60.413]]],
+  "log/neg": [63.163, 74.564, "Below one, the log is negative: ln of zero point three seven is minus one. A probability is at most one, so its log is never positive.", [[63.953, 64.293], [65.583, 66.213], [69.703, 70.363], [72.293, 72.623]]],
+  "log/undo": [74.944, 83.901, "ln and e to the x undo each other: ln of e to the a is a, and e to the ln of a is a.", [[77.874, 78.534], [80.904, 81.294]]],
+  "rules/why": [85.701, 96.51, "Because powers add when exponentials multiply, ln turns a product into a sum: ln of a times b is ln a plus ln b.", [[88.871, 89.301], [91.661, 92.211], [94.001, 94.261]]],
+  "rules/nums": [96.89, 106.817, "ln two is about zero point six nine and ln three about one point one, so ln six is their sum, one point seven nine.", [[99.72, 100.1], [102.51, 102.99], [105.08, 105.49]]],
+  "rules/flip": [107.197, 120.621, "One over a number flips the sign of its log: ln of a half is minus ln two, about minus zero point six nine. So minus ln of a half is plus zero point six nine.", [[110.017, 110.727], [113.527, 113.867], [115.947, 116.487], [118.437, 118.627]]],
+  "rules/small": [121.001, 128.422, "The smaller the probability, the bigger minus its log: minus ln of a tenth is about two point three.", [[122.461, 122.751], [124.321, 124.951], [126.781, 126.981]]],
+  "example/ask": [130.222, 141.61, "Your turn to follow along. Use ln two is about zero point six nine, and ln five is about one point six one. What is ln ten?", [[131.672, 132.212], [135.832, 136.312], [137.582, 137.782], [139.542, 140.172]]],
+  "example/split": [141.99, 148.512, "Ten is two times five, so ln ten is ln two plus ln five.", [[143.89, 144.23], [145.73, 145.89], [146.99, 147.16]]],
+  "example/sum": [148.892, 154.073, "Zero point six nine plus one point six one is two point three zero.", [[152.092, 152.342]]]
+ }
+}

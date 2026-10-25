@@ -17,7 +17,7 @@ export const script: LectureScript = {
         z = u**2        # 16   #@z
       `,
       beats: [
-        { id: 'chain', say: 'Often one function feeds another. Here x goes in, and u, three x plus one, comes out.', code: ['x', 'u'] },
+        { id: 'chain', say: 'Often one function feeds another. Here x goes in and u comes out, where u is three x plus one.', code: ['x', 'u'] },
         { id: 'feed', say: 'Then u feeds a second function: z is u squared.', code: 'z' },
         { id: 'vals', say: 'At x equals one, u is four, and z is sixteen. How fast does z change when x is nudged?', code: ['x', 'u', 'z'] },
       ],

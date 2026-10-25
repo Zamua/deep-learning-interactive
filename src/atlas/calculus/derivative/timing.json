@@ -1,0 +1,27 @@
+{
+ "duration": 124.904,
+ "scenes": {
+  "slope": [0.0, 33.594],
+  "shrink": [33.594, 68.172],
+  "sign": [68.172, 92.894],
+  "example": [92.894, 124.904]
+ },
+ "beats": {
+  "slope/line": [0.7, 9.83, "A straight line climbs at the same rate everywhere. Two x plus one rises two for every step of one, so its slope is two.", [[3.63, 4.24], [7.98, 8.37]]],
+  "slope/curve": [10.21, 18.696, "A curve is steeper in some places than others. Take f of x equals x squared. How steep is it at x equals one?", [[13.01, 13.53], [15.85, 16.41]]],
+  "slope/two": [19.076, 26.502, "Pick a second point a step h to the right, at x equals two. Between them, f goes from one to four.", [[21.726, 21.986], [23.316, 23.886], [24.466, 24.716]]],
+  "slope/rise": [26.882, 32.494, "Rise over run is three over one. The slope between the two points is three.", [[29.552, 30.112]]],
+  "shrink/shrink": [34.294, 42.592, "Now shrink the step. With h equal to a half, the slope is two point five. With a tenth, it is two point one.", [[35.644, 36.204], [37.854, 38.154], [39.894, 40.414], [41.124, 41.384]]],
+  "shrink/limit": [42.972, 51.733, "As h shrinks toward zero, the slope settles on two. That limit is the derivative: f prime of one equals two.", [[44.982, 45.242], [46.872, 47.492], [49.142, 49.692]]],
+  "shrink/tangent": [52.113, 57.853, "The line with that slope just grazes the curve at x equals one. It is the tangent.", [[56.263, 56.773]]],
+  "shrink/nudge": [58.233, 67.072, "Read it as a rate. Nudge x by zero point zero one, and f moves by about twice as much: zero point zero two.", [[59.433, 60.043], [62.563, 62.873], [65.123, 65.523]]],
+  "sign/slide": [68.872, 74.048, "The derivative changes from point to point. Slide the tangent along the curve.", [[71.292, 71.912]]],
+  "sign/neg": [74.428, 82.498, "On the left, f falls as x grows, and the slope is negative: minus three, at minus one point five.", [[75.188, 75.448], [77.528, 77.858], [79.218, 79.728], [80.628, 80.788]]],
+  "sign/zero": [82.878, 86.763, "At the bottom the tangent is level, and the slope is zero.", [[83.668, 83.828], [85.058, 85.348]]],
+  "sign/pos": [87.143, 91.794, "On the right, f rises, and the slope is positive: three.", [[87.853, 88.083], [89.173, 89.453], [90.853, 91.333]]],
+  "example/ask": [93.594, 105.031, "Your turn to follow along. f of three is nine, and f of three and a half is twelve point two five. With h equal to a half, what is the slope between them?", [[95.044, 95.684], [97.144, 97.464], [100.734, 101.334], [103.064, 103.394]]],
+  "example/rise": [105.411, 110.36, "The rise is twelve point two five minus nine: three point two five.", [[108.521, 109.021]]],
+  "example/run": [110.74, 117.05, "Divide by the run, a half: three point two five over a half is six point five.", [[111.96, 112.35], [112.91, 113.52], [115.65, 115.86]]],
+  "example/close": [117.43, 123.804, "That is close to the slope right at three, which is six. A smaller step would land closer still.", [[119.84, 120.04], [120.83, 121.38]]]
+ }
+}

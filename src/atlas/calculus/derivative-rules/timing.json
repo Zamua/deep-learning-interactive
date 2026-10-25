@@ -1,0 +1,26 @@
+{
+ "duration": 120.229,
+ "scenes": {
+  "power": [0.0, 30.808],
+  "sums": [30.808, 61.43],
+  "explog": [61.43, 90.502],
+  "example": [90.502, 120.229]
+ },
+ "beats": {
+  "power/sq": [0.7, 10.626, "Derivatives follow rules, so the limit is rarely needed. For x squared, bring the two down in front and lower the power by one: two x.", [[2.36, 2.67], [4.38, 4.95], [5.93, 6.25], [7.69, 7.87], [9.42, 9.95]]],
+  "power/cube": [11.006, 13.857, "x cubed becomes three x squared.", []],
+  "power/rule": [14.237, 21.221, "In general, x to the n becomes n times x to the n minus one. That is the power rule.", [[14.967, 15.267], [19.197, 19.757]]],
+  "power/check": [21.601, 29.708, "Check it at x equals two. The measured slope of x cubed is twelve, and three times two squared is twelve.", [[23.511, 24.101], [26.721, 27.141]]],
+  "sums/factor": [31.508, 40.053, "A number in front comes along for the ride. Five x cubed becomes five times three x squared: fifteen x squared.", [[33.808, 34.368], [38.128, 38.598]]],
+  "sums/sum": [40.433, 46.8, "A sum is differentiated one term at a time. Two x is a line with slope two.", [[43.563, 44.183]]],
+  "sums/zero": [47.18, 53.152, "A constant on its own is flat, so its derivative is zero. The seven drops out.", [[49.22, 49.57], [51.39, 51.88]]],
+  "sums/whole": [53.532, 60.33, "So five x cubed plus two x plus seven has derivative fifteen x squared plus two.", [[56.842, 57.092], [57.942, 58.182]]],
+  "explog/ex": [62.13, 69.312, "e to the x is special: it is its own derivative. At every point, its slope equals its height.", [[63.84, 64.34], [65.86, 66.35], [67.29, 67.56]]],
+  "explog/eax": [69.692, 78.845, "With a number multiplying x in the power, that number comes out in front: e to the three x has derivative three e to the three x.", [[72.162, 72.502], [74.182, 74.762], [76.912, 77.072]]],
+  "explog/ln": [79.225, 89.402, "And ln x has derivative one over x: steep near zero, flatter as x grows. At x equals two, its slope is a half.", [[82.395, 82.925], [84.075, 84.345], [85.985, 86.535], [87.795, 88.045]]],
+  "example/ask": [91.202, 98.518, "Your turn to follow along. What is the derivative of four x cubed minus three x squared plus five?", [[92.652, 93.342], [95.902, 96.052], [97.502, 97.692]]],
+  "example/t1": [98.898, 107.928, "Term by term. In four x cubed, the three comes down: four times three is twelve, so twelve x squared.", [[100.018, 100.708], [102.098, 102.298], [103.568, 104.118], [105.808, 106.108], [106.488, 106.658]]],
+  "example/t2": [108.308, 112.034, "Minus three x squared becomes minus six x.", [[109.948, 110.118]]],
+  "example/t3": [112.414, 119.129, "The five is a constant, so it drops out. The derivative is twelve x squared minus six x.", [[113.934, 114.214], [115.154, 115.694], [117.754, 117.904]]]
+ }
+}

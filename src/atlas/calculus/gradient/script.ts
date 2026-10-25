@@ -22,7 +22,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'two', say: 'Many functions take more than one input. Here {f(u, v) = u² + 2v²|f of u and v is u squared plus two v squared}: a bowl, seen from above as rings of equal height.', code: 'f' },
         { id: 'du', say: 'Hold v fixed and move only u. Along that line f is an ordinary curve, and its slope is the partial derivative in u: two u, which is two at the point one, one.', code: 'du' },
-        { id: 'dv', say: 'Hold u fixed instead, and the slope in v is four v: four.', code: 'dv' },
+        { id: 'dv', say: 'Hold u fixed instead, and the slope in v is four v, which is four here.', code: 'dv' },
         { id: 'grad', say: 'Stack the partials into a vector, and you have the gradient: {∇f = [2, 4]|the gradient of f is two, four}.', code: 'grad' },
       ],
     },
