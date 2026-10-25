@@ -81,6 +81,7 @@ export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { pro
         h('div', { class: 'at-prompt at-prompt-sm', html: render(w.prompt) }),
         solutionList(w.solution));
       stuck.remove();
+      fitMath(workedBox);
     });
     if (opts.note) frame.body.append(h('div', { class: 'at-transition' }, opts.note));
     frame.body.append(opts.tag, h('div', { class: 'at-prompt', html: render(p.prompt) }));
@@ -88,6 +89,7 @@ export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { pro
     frame.body.append(pad.display, msg, hint, workedBox);
     if (stuck) frame.body.append(stuck);
     frame.dock.append(pad.keys, check);
+    fitMath(frame.body);
     pad.onInput(() => {
       check.disabled = pad.value() === null;
       msg.textContent = '';
@@ -135,6 +137,19 @@ function formatHint(a: Answer): string {
     default:
       return '';
   }
+}
+
+/** Shrinks display math wider than the screen to fit, down to a floor; past that it scrolls. */
+export function fitMath(root: HTMLElement): void {
+  requestAnimationFrame(() => {
+    for (const d of root.querySelectorAll<HTMLElement>('.katex-display')) {
+      const k = d.querySelector<HTMLElement>(':scope > .katex');
+      if (!k || k.dataset.fit) continue;
+      k.dataset.fit = '1';
+      const over = k.scrollWidth / Math.max(1, d.clientWidth);
+      if (over > 1) k.style.fontSize = `${Math.max(0.62, 0.98 / over).toFixed(3)}em`;
+    }
+  });
 }
 
 export function solutionList(steps: string[]): HTMLElement {
@@ -197,6 +212,7 @@ function feedback(frame: { body: HTMLElement; dock: HTMLElement }, c: Concept, p
   }
   frame.dock.innerHTML = '';
   frame.body.append(box, ...news, solution);
+  fitMath(frame.body);
   box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   return new Promise((resolve) => {
     const next = h('button', { type: 'button', class: 'at-check' }, 'Next');
@@ -331,7 +347,9 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         const g = list[0];
         if (!g) return;
         const w = g.make(new Rng(rng.int(2 ** 31)), pick.difficulty);
-        example.replaceWith(h('div', { class: 'at-worked' }, h('div', { class: 'at-prompt at-prompt-sm', html: render(w.prompt) }), solutionList(w.solution)));
+        const box = h('div', { class: 'at-worked' }, h('div', { class: 'at-prompt at-prompt-sm', html: render(w.prompt) }), solutionList(w.solution));
+        example.replaceWith(box);
+        fitMath(box);
       });
       frame.body.append(h('div', { class: 'at-intro', style: `--dom:var(--c-${domainOf(c).color})` },
         h('div', { class: 'at-kicker at-kicker-dom' }, `New concept · ${domainOf(c).title}`),

@@ -17,7 +17,7 @@ export const generators: Generator[] = [
       const x = ints(rng, n, d < 0.3 ? 1 : lo, hi);
       const out = W.map((r) => dot(r, x));
       return {
-        prompt: `$$\\symW = ${mat(W)}, \\qquad \\symx = ${vec(x)}$$\n\nWhat is $\\symW\\symx$?`,
+        prompt: `$$\\symW = ${mat(W)}$$\n\n$$\\symx = ${vec(x)}$$\n\nWhat is $\\symW\\symx$?`,
         answer: { kind: 'vector', value: out },
         solution: [
           ...W.map((r, i) => `Row ${i} dotted with $\\symx$: $${prodTex(r, x)} = ${out[i]}$.`),
@@ -43,7 +43,7 @@ export const generators: Generator[] = [
       if (i > 0) traps.push({ value: dot(W[i - 1]!, x), why: `That is row ${i - 1}, the ${ORD[i - 1]} row. Rows count from 0, so entry ${i} comes from the ${ORD[i]} row.` });
       traps.push({ value: W[i]!.reduce((a, b) => a + b, 0), why: `That adds up row ${i} without multiplying by $\\symx$. Multiply each entry of the row by the matching entry of $\\symx$ first.` });
       return {
-        prompt: `$$\\symW = ${mat(W)}, \\qquad \\symx = ${vec(x)}$$\n\nWhat is entry ${i} of $\\symW\\symx$, counting from 0?`,
+        prompt: `$$\\symW = ${mat(W)}$$\n\n$$\\symx = ${vec(x)}$$\n\nWhat is entry ${i} of $\\symW\\symx$, counting from 0?`,
         answer: { kind: 'number', value: v },
         traps: traps.filter((t) => t.value !== v),
         solution: [

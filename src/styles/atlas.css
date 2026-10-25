@@ -1066,3 +1066,8 @@ body.at-on .side {
   margin: 4px 0 0;
   padding: 4px 2px;
 }
+.atlas .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 0;
+}

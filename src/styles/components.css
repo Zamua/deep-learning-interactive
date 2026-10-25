@@ -1335,3 +1335,6 @@ a.layer:not(.layer-watch):hover .layer-t {
 .ch-row-m.done {
   color: var(--c-green);
 }
+a.btn {
+  text-decoration: none;
+}

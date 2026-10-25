@@ -42,7 +42,7 @@ export async function renderAtlas(main: HTMLElement, parts: string[], current: (
     // A locked concept cannot be practiced yet, so its explainer ends on what to master first.
     end: locked
       ? { kicker: 'Not yet', title: `Master ${missing} first`, action: 'See the map', href: '#/atlas' }
-      : { kicker: 'Your turn', title: 'Now try it yourself', action: `Practice ${c.title.toLowerCase()}`, href: `#/atlas/learn/${a}` },
+      : { kicker: 'Your turn', title: 'Practice starts', action: 'Start now', href: `#/atlas/learn/${a}` },
     autoAdvance: !locked,
   });
 }
