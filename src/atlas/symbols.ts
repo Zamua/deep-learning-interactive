@@ -185,6 +185,37 @@ export const ATLAS_SYMBOLS: SymbolMap = {
     name: 'T: the temperature',
     about: 'Scores are divided by T before the softmax. Below 1 sharpens the choice toward the top token; above 1 flattens it toward random.',
   },
+  Nparams: {
+    color: 'blue',
+    name: 'N: the number of parameters',
+    tex: 'N',
+    about: 'Every weight and bias in the model. Training compute and training memory both grow in step with it.',
+  },
+  Dtokens: {
+    color: 'orange',
+    name: 'D: the number of training tokens',
+    tex: 'D',
+    about: 'How many tokens the model trains on, counting repeats.',
+  },
+  Cflops: {
+    color: 'purple',
+    name: 'C: the training compute',
+    tex: 'C',
+    about: 'The total arithmetic a training run does, counted in FLOPs: about 6ND.',
+  },
+  alpha: {
+    color: 'teal',
+    name: 'α: the scaling exponent',
+    tex: '\\alpha',
+    about: 'How fast the loss falls with compute: L = aC^(−α), a straight line of slope −α on log-log axes.',
+  },
+  WU: {
+    color: 'purple',
+    name: 'W_U: the unembedding',
+    tex: 'W_U',
+    code: ['W_U', 'WU'],
+    about: 'One row per token in the vocabulary. W_U times a vector scores every token.',
+  },
   eta: {
     color: 'slate',
     name: 'η: the learning rate',
@@ -200,6 +231,63 @@ const answer: SymbolDef = { color: 'gold', name: 'y: the right answer', about: '
 const probs: SymbolDef = { color: 'teal', name: 'p: the probabilities', code: ['p', 'probs'], about: 'One per option, each positive, together summing to 1.' };
 const loss: SymbolDef = { color: 'red', name: 'L: the loss', code: ['L', 'loss'], about: 'One number that says how wrong the scores are: 0 is perfect, bigger is worse.' };
 const grad: SymbolDef = { ...ATLAS_SYMBOLS.g!, name: 'g: the gradient', about: 'One partial derivative per input, in the input\'s shape. It points uphill, so a step against it goes down.' };
+
+/** Attention's symbols, shared by the concepts that use them. */
+const att: SymbolMap = {
+  q: { color: 'teal', name: 'q: a query', about: 'What a token is looking for: q = W_Q x. Its dot product with every key scores how well each token matches.' },
+  k: { color: 'purple', name: 'k: a key', about: 'What a token offers to a query that comes looking: k = W_K x. A query dotted with it gives one score.' },
+  v: { color: 'gold', name: 'v: a value', about: 'What a token hands over when it is attended to: v = W_V x. The output is a weighted sum of values.' },
+  Q: { color: 'teal', name: 'Q: the queries, one row per token', about: 'Every token\'s query stacked as a row: shape (T, d_k).' },
+  K: { color: 'purple', name: 'K: the keys, one row per token', about: 'Every token\'s key stacked as a row: shape (T, d_k). Q times K transposed scores every query against every key.' },
+  V: { color: 'gold', name: 'V: the values, one row per token', about: 'Every token\'s value stacked as a row: shape (T, d_v). The weights A times V mixes them.' },
+  Wq: { color: 'blue', name: 'W_Q: the query weights', tex: 'W_Q', code: ['Wq', 'W_Q'], about: 'A learned (d_k, d) matrix, the same for every token: it turns a token x into its query.' },
+  Wk: { color: 'blue', name: 'W_K: the key weights', tex: 'W_K', code: ['Wk', 'W_K'], about: 'A learned (d_k, d) matrix, the same for every token: it turns a token x into its key.' },
+  Wv: { color: 'blue', name: 'W_V: the value weights', tex: 'W_V', code: ['Wv', 'W_V'], about: 'A learned (d_v, d) matrix, the same for every token: it turns a token x into its value.' },
+  Wo: { color: 'blue', name: 'W_O: the output weights', tex: 'W_O', code: ['Wo', 'W_O'], about: 'A learned (d, d) matrix that mixes the heads\' joined outputs into one vector per token.' },
+  d: { color: 'slate', name: 'd: the model width', about: 'How many numbers describe each token: the length of every token vector between blocks.' },
+  dk: { color: 'slate', name: 'd_k: the query and key length', tex: 'd_k', code: ['d_k', 'dk'], about: 'How many entries a query and a key have. Scores are divided by its square root.' },
+  dv: { color: 'slate', name: 'd_v: the value length', tex: 'd_v', code: ['d_v', 'dv'], about: 'How many entries each value has, and so each row of attention\'s output.' },
+  T: { color: 'slate', name: 'T: the number of tokens', about: 'How many tokens attention reads at once. The score matrix is T by T.' },
+  A: { color: 'green', name: 'A: the attention weights', about: 'softmax(QKᵀ/√d_k), shape (T, T). Row i is how token i splits its attention; every row adds up to 1.' },
+  heads: { color: 'slate', name: 'h: the number of heads', tex: 'h', code: ['n_heads'], about: 'How many attentions run side by side. Each works in d / h dimensions.' },
+  dhead: { color: 'slate', name: 'd_head: one head\'s width', tex: 'd_{\\text{head}}', code: ['d_head'], about: 'd / h: the length of each head\'s queries, keys and values.' },
+  X: { color: 'orange', name: 'X: the tokens, one per row', about: 'T token vectors stacked as rows: shape (T, d).' },
+  x: { color: 'orange', name: 'x: one token', about: 'A token\'s vector of d numbers. Attention reads it through W_Q, W_K and W_V.' },
+};
+const adamMoments: SymbolMap = {
+  m: { color: 'orange', name: 'm: the first moment', about: 'A running average of the gradient, as momentum keeps: it points where the gradients have been pointing lately.' },
+  v: { color: 'teal', name: 'v: the second moment', about: 'A running average of the squared gradient: how large this parameter\'s gradients usually are.' },
+};
+const adamAll: SymbolMap = {
+  ...adamMoments,
+  beta1: { color: 'slate', name: 'β₁: the first moment\'s decay', tex: '\\beta_1', about: 'The share of m kept each step, usually 0.9.' },
+  beta2: { color: 'slate', name: 'β₂: the second moment\'s decay', tex: '\\beta_2', about: 'The share of v kept each step, usually 0.999: a longer memory than m\'s.' },
+};
+const pick = (m: SymbolMap, keys: string): SymbolMap => Object.fromEntries(keys.split(' ').map((k) => [k, m[k]!]));
+const mlpW: SymbolMap = {
+  W1: { color: 'blue', name: 'W1: the MLP\'s first weights', tex: 'W_1', about: 'Shape (4d, d): widens each token to 4d numbers.' },
+  W2: { color: 'blue', name: 'W2: the MLP\'s second weights', tex: 'W_2', about: 'Shape (d, 4d): brings each token back to d numbers.' },
+};
+
+/** Reinforcement learning's symbols, shared across post-training. */
+const rl: SymbolMap = {
+  pi: { color: 'teal', name: 'π: the model\'s probability', tex: '\\pi', code: ['pi'], about: 'How likely the model is to write a given answer, or a given token.' },
+  R: { color: 'gold', name: 'R: the reward', about: 'One number for a whole answer: how good it was judged to be.' },
+  theta: { color: 'blue', name: 'θ: the parameters', tex: '\\theta', code: ['theta'], about: 'Every weight of the model. The gradient says how to change them.' },
+  piref: { color: 'slate', name: 'π_ref: the reference model', tex: '\\pi_{\\text{ref}}', code: ['pi_ref'], about: 'A frozen copy of the model as it was before this training started.' },
+  piold: { color: 'slate', name: 'π_old: the sampling model', tex: '\\pi_{\\text{old}}', code: ['pi_old'], about: 'The model as it was when it sampled this batch of answers.' },
+  beta: { color: 'slate', name: 'β: the KL strength', tex: '\\beta', code: ['beta'], about: 'How much drifting away from π_ref costs.' },
+  A: { color: 'green', name: 'A: the advantage', code: ['A', 'adv'], about: 'How much better an answer did than expected. Positive pushes it up, negative pushes it down.' },
+};
+
+/** Diffusion's symbols. */
+const dif: SymbolMap = {
+  x0: { color: 'orange', name: 'x₀: the clean image', tex: 'x_0', code: ['x0'], about: 'The image before any noise is added.' },
+  xt: { color: 'purple', name: 'x_t: the noised image', tex: 'x_t', code: ['xt', 'x_t'], about: 'The clean image blended with noise at step t.' },
+  eps: { color: 'slate', name: 'ε: the noise', tex: '\\epsilon', code: ['eps', 'noise'], about: 'Standard normal noise: mean 0, variance 1, one number per pixel.' },
+  ab: { color: 'teal', name: 'ᾱ: the share of signal left', tex: '\\bar\\alpha', code: ['ab', 'alpha_bar'], about: 'The share of x_t\'s variance that is still image. It falls from near 1 to near 0 across the schedule.' },
+  epshat: { color: 'red', name: 'ε̂: the network\'s noise guess', tex: '\\hat\\epsilon', code: ['eps_hat'], about: 'What the network predicts was added to the image.' },
+};
 
 /**
  * Where a concept needs a symbol to mean something else, or to say only what its prerequisites
@@ -231,17 +319,118 @@ export const SCOPED: Record<string, SymbolMap> = {
     W2: { color: 'blue', name: 'W2: the second map\'s weights', tex: 'W_2', about: 'Shape (C, H): one row per class.' },
     b2: { color: 'green', name: 'b2: the second map\'s biases', tex: 'b_2', about: 'One per class.' },
   },
+  qkv: pick(att, 'q k v Wq Wk Wv d dk x'),
+  'scaled-attention': pick(att, 'q k dk'),
+  'self-attention': pick(att, 'q k v Q K V Wq Wk Wv d dk dv T A X x'),
+  'causal-mask': pick(att, 'Q K dk T'),
+  'multi-head': pick(att, 'q Q K V Wq Wk Wv Wo d T A X x heads dhead'),
+  positions: {
+    d: att.d!,
+    P: { color: 'slate', name: 'P: the position table', about: 'One learned vector per position, T_max rows of d numbers. Row i is added to the token at position i.' },
+    Tmax: { color: 'slate', name: 'T_max: the longest input', tex: 'T_{\\max}', about: 'How many positions the table has rows for: the most tokens the model can read at once.' },
+  },
+  'layer-norm': {
+    d: { color: 'slate', name: 'd: the number of features', about: 'How many numbers make up one example; layer norm averages over them.' },
+    gamma: { color: 'purple', name: 'γ: the learned scale', tex: '\\gamma', about: 'Layer norm multiplies each normalized feature by its own γ: one entry per feature.' },
+    beta: { color: 'green', name: 'β: the learned shift', tex: '\\beta', about: 'Layer norm adds β after scaling: one entry per feature.' },
+  },
+  'transformer-block': { ...pick(att, 'd T x'), ...mlpW },
+  'transformer-params': {
+    ...pick(att, 'd Wq Wk Wv Wo'),
+    W1: { ...mlpW.W1!, about: 'Shape (4d, d): 4d² weights.' },
+    W2: { ...mlpW.W2!, about: 'Shape (d, 4d): 4d² weights.' },
+    nblocks: { color: 'slate', name: 'N: the number of blocks', tex: 'N', code: ['n_blocks'], about: 'How many transformer blocks are stacked. The blocks hold about 12Nd² weights.' },
+    vocab: { color: 'slate', name: 'V: the vocabulary size', tex: 'V', code: ['vocab'], about: 'How many tokens the embedding table has rows for: V × d numbers.' },
+  },
+  'attention-cost': pick(att, 'Q K Wq Wk Wv T heads'),
+  'training-memory': adamMoments,
+  zero: { ...adamMoments, G: { color: 'slate', name: 'G: the number of GPUs', about: 'How many GPUs share the work. Sharding splits the memory G ways.' } },
+  'data-parallel': { G: { color: 'slate', name: 'G: the number of GPUs', about: 'How many copies of the model train side by side, each on its own slice of the batch.' } },
+  'model-parallel': {
+    W1: { color: 'blue', name: 'W1: the first weights', tex: 'W_1', about: 'Shape (d, 4d), applied as x @ W1: one column per output, so a column split gives each GPU some of the outputs.' },
+    W2: { color: 'blue', name: 'W2: the second weights', tex: 'W_2', about: 'Shape (4d, d), applied as h @ W2: a row split gives each GPU a part of every output, to be added up.' },
+  },
+  adam: adamAll,
+  adamw: adamAll,
+  moe: {
+    E: { color: 'slate', name: 'E: the number of experts', about: 'How many MLPs the layer holds. Each token uses only a few of them.' },
+    topk: { color: 'slate', name: 'k: experts per token', tex: 'k', code: ['k'], about: 'How many experts the router picks for each token.' },
+    p: { color: 'teal', name: 'p: the router\'s probabilities', code: ['p', 'probs'], about: 'A softmax over the experts: how strongly the router favors each one for this token.' },
+  },
+  rmsnorm: { d: { color: 'slate', name: 'd: the number of features', about: 'How many numbers each vector has; the mean square is taken over them.' }, gamma: { color: 'purple', name: 'γ: the learned gain', tex: '\\gamma', about: 'One entry per feature, multiplied in after normalizing.' }, beta: { color: 'green', name: 'β: the learned shift', tex: '\\beta', about: 'Layer norm adds it after scaling; RMSNorm leaves it out.' } },
+  swiglu: { d: att.d!, h: { color: 'slate', name: 'h: the hidden width', code: ['h'], about: 'How wide the MLP is inside: each of its three matrices has d × h weights.' } },
+  gqa: { ...pick(att, 'q k v d heads dhead'), kvheads: { color: 'slate', name: 'g: the number of key-value heads', tex: 'g', code: ['n_kv'], about: 'How many key and value heads the query heads share. The cache shrinks by h / g.' } },
+  'residual-stream': { x: { color: 'orange', name: 'x: the residual stream', about: 'One running vector per token: the embedding x₀ plus everything each block has added.' }, d: att.d! },
+  'logit-lens': { x: { color: 'orange', name: 'x: the residual stream', about: 'One running vector per token: the embedding x₀ plus everything each block has added.' }, s: { color: 'purple', name: 's: the scores', code: ['s', 'scores'], about: 'One per token in the vocabulary: W_U times the stream.' } },
+  'linear-probe': {
+    h: { color: 'gold', name: 'h: the activations probed', code: ['h'], about: 'The hidden vector the probe reads, taken from partway through the model.' },
+    w: { color: 'blue', name: 'w: the probe\'s weights', about: 'One weight per entry of h, fitted on labeled examples.' },
+    b: { color: 'green', name: 'b: the probe\'s bias', about: 'Added to the score before reading off the class.' },
+    s: { color: 'purple', name: 's: the probe\'s score', about: 's = w·h + b; its sign, or its largest entry, gives the class.' },
+  },
+  superposition: {
+    f: { color: 'purple', name: 'f: the feature values', about: 'How strongly each feature is present. Most are zero for any one token.' },
+    W: { color: 'blue', name: 'W: the feature directions', about: 'One row per feature: the direction in the stream that stores it.' },
+    x: { color: 'orange', name: 'x: the residual stream', about: 'One running vector per token: the embedding x₀ plus everything each block has added.' }, d: att.d!,
+  },
+  sae: {
+    f: { color: 'purple', name: 'f: the feature activations', about: 'The wide, mostly zero code the encoder makes from x.' },
+    lam: { color: 'slate', name: 'λ: the sparsity strength', tex: '\\lambda', code: ['lam'], about: 'How much the L1 penalty on f counts against reconstructing x.' },
+    v: { color: 'gold', name: 'v_j: a feature\'s direction', about: 'Row j of the decoder: what feature j adds back to the reconstruction.' },
+    x: { color: 'orange', name: 'x: the residual stream', about: 'One running vector per token: the embedding x₀ plus everything each block has added.' }, d: att.d!,
+  },
+  sft: { m: { color: 'slate', name: 'm: the loss mask', code: ['mask'], about: '1 on the tokens the assistant wrote, its end token included; 0 everywhere else.' } },
+  lora: {
+    B: { color: 'blue', name: 'B: the up-projection', about: 'Shape (d, r). It starts at zero, so BA adds nothing at first.' },
+    A: { color: 'blue', name: 'A: the down-projection', about: 'Shape (r, k), starting random.' },
+    r: { color: 'slate', name: 'r: the rank', about: 'How narrow the change BA is: it has r(d + k) parameters instead of dk.' },
+  },
+  'policy-gradient': pick(rl, 'pi R theta'),
+  advantage: { ...pick(rl, 'pi R theta A'), b: { color: 'gold', name: 'b: the baseline', code: ['baseline'], about: 'The reward expected before seeing the answer. A = R − b.' } },
+  'reward-model': { r: { color: 'gold', name: 'r: the reward model\'s score', about: 'One number per answer. Only differences between two answers\' scores matter.' } },
+  'kl-penalty': pick(rl, 'pi R theta piref beta'),
+  ppo: { ...pick(rl, 'pi piold A'), rho: { color: 'purple', name: 'ρ: the probability ratio', tex: '\\rho', code: ['rho', 'ratio'], about: 'π / π_old: how much more likely the answer has become since it was sampled.' }, eps: { color: 'slate', name: 'ε: the clip range', tex: '\\epsilon', code: ['eps'], about: 'How far ρ may move from 1 before the objective stops rewarding it, often 0.2.' } },
+  dpo: { ...pick(rl, 'pi piref beta'), yw: { color: 'green', name: 'y_w: the chosen answer', tex: 'y_w', about: 'The answer people preferred.' }, yl: { color: 'red', name: 'y_l: the rejected answer', tex: 'y_l', about: 'The answer people passed over.' } },
+  grpo: { A: rl.A!, G: { color: 'slate', name: 'G: the group size', about: 'How many answers are sampled for one prompt.' }, r: { color: 'gold', name: 'r: an answer\'s reward', about: '1 when the answer checks out, 0 when it does not.' } },
+  unembedding: {
+    h: { color: 'gold', name: 'h: the last vector at one position', code: ['h'], about: 'What the model has computed for this position: d numbers, about to be scored against every token.' },
+    s: { color: 'purple', name: 's: the scores', code: ['s', 'scores', 'logits'], about: 'One per token in the vocabulary, the logits: softmax turns them into next-token probabilities.' },
+  },
+  gpt: {
+    ...pick(att, 'd T'),
+    x: { color: 'orange', name: 'x: the vectors between blocks', about: 'One row per position, shape (T, d).' },
+    h: { color: 'gold', name: 'h: the last vector at one position', code: ['h'], about: 'What the blocks hand to the unembedding: d numbers per position.' },
+    s: { color: 'purple', name: 's: the scores', code: ['s', 'scores', 'logits'], about: 'One per token in the vocabulary, at every position.' },
+  },
+  'kv-cache': pick(att, 'q k v d T'),
+  perplexity: { L: { color: 'red', name: 'L: the average next-token loss', code: ['L', 'loss'], about: 'The mean of −ln p over the tokens; perplexity is e to this.' } },
+  autoencoder: { z: { color: 'purple', name: 'z: the code', about: 'The narrow middle: what the encoder keeps of x for the decoder to rebuild it from.' } },
+  vae: {
+    mu: { color: 'orange', name: 'μ: the code\'s mean', tex: '\\mu', about: 'Where the encoder centers one dimension of the code.' },
+    sigma: { color: 'teal', name: 'σ: the code\'s spread', tex: '\\sigma', about: 'How far the sampled code may land from μ in that dimension.' },
+    eps: { ...dif.eps!, about: 'Standard normal noise: mean 0, spread 1.' },
+    z: { color: 'purple', name: 'z: the sampled code', about: 'z = μ + σε: a code drawn near μ, which the decoder turns back into an input.' },
+  },
+  contrastive: {
+    tau: { color: 'slate', name: 'τ: the temperature', tex: '\\tau', code: ['tau'], about: 'Similarities are divided by τ before the softmax. Small τ sharpens the contest.' },
+    s: { color: 'purple', name: 's: the row\'s scores', code: ['s', 'scores'], about: 'Each similarity divided by τ: one per candidate in the row.' },
+  },
+  clip: { N: { color: 'slate', name: 'N: the pairs in the batch', about: 'N images and their N captions. Each row has 1 right caption and N − 1 wrong ones.' } },
+  'diffusion-noise': pick(dif, 'x0 xt eps ab'),
+  'diffusion-loss': pick(dif, 'x0 xt eps ab epshat'),
+  guidance: {
+    epshat: dif.epshat!,
+    epsu: { color: 'slate', name: 'ε_u: the guess without the prompt', tex: '\\epsilon_u', code: ['eps_u'], about: 'The network\'s noise guess when it is shown no prompt.' },
+    epsc: { color: 'orange', name: 'ε_c: the guess with the prompt', tex: '\\epsilon_c', code: ['eps_c'], about: 'The network\'s noise guess when it is shown the prompt.' },
+    wg: { color: 'gold', name: 'w: the guidance scale', tex: 'w', code: ['scale'], about: 'How far to step along ε_c − ε_u. 1 is the plain prompted guess; larger follows the prompt harder.' },
+  },
+  quantization: { w: { color: 'blue', name: 'w: the weights to store', about: 'Each one is kept as an integer q times the scale s.' } },
   'weight-init': { v: { color: 'orange', name: 'v: the variance of one term', about: 'How spread out each product w x is. A sum of n such terms has variance n v.' } },
   momentum: {
     v: { color: 'orange', name: 'v: the velocity', about: 'A running blend of past gradients. Momentum steps along v instead of the latest gradient, so steady directions build speed and noise cancels out.' },
     mu: { color: 'orange', name: 'μ: the momentum coefficient', tex: '\\mu', about: 'The share of the velocity that survives each step, often 0.9: one minus friction.' },
   },
-  adam: {
-    m: { color: 'orange', name: 'm: the first moment', about: 'A running average of the gradient, as momentum keeps: it points where the gradients have been pointing lately.' },
-    v: { color: 'teal', name: 'v: the second moment', about: 'A running average of the squared gradient: how large this parameter\'s gradients usually are.' },
-    beta1: { color: 'slate', name: 'β₁: the first moment\'s decay', tex: '\\beta_1', about: 'The share of m kept each step, usually 0.9.' },
-    beta2: { color: 'slate', name: 'β₂: the second moment\'s decay', tex: '\\beta_2', about: 'The share of v kept each step, usually 0.999: a longer memory than m\'s.' },
-  },
+
 };
 
 /** Library notes that would name later topics, said only in general terms. */
@@ -253,6 +442,7 @@ export const ATLAS_GLOSSARY: Glossary = {
   'np.outer': { is: 'every product a[i] * b[j], as a matrix', more: 'The result has shape (len(a), len(b)).', eg: 'np.outer([1, 2], [3, 4])   # [[3 4] [6 8]]' },
   'np.random.choice': { is: 'random picks from a range or an array', more: 'np.random.choice(N, B) picks B integers below N, with replacement unless replace=False. p gives each option\'s probability.', eg: 'np.random.choice(3, p=[0, 0, 1])   # 2' },
   'np.random.randn': { is: 'samples from the standard normal distribution', more: 'Mean 0, standard deviation 1, with the arguments giving the shape. The n stands for normal.', eg: 'np.random.randn(10, 3072).shape  # (10, 3072)' },
+  'np.var': { is: 'the variance: the mean squared distance from the mean', eg: 'np.var([1, 3])   # 1.0' },
   'np.zeros_like': { is: 'zeros with the same shape and dtype as x', eg: 'np.zeros_like(np.ones(3))   # [0. 0. 0.]' },
   'np.random.permutation': { is: 'the numbers 0 to n - 1 in a random order', more: 'Slicing the result splits a dataset at random with no example in two parts.', eg: 'np.random.permutation(4)   # e.g. [2 0 3 1]' },
 
@@ -289,10 +479,100 @@ export const ATLAS_GLOSSARY: Glossary = {
   run: { is: 'one training run with the given settings' },
 };
 
+/** Notes on calls whose names mean something only inside one concept's listings. */
+export const SCOPED_GLOSSARY: Record<string, Glossary> = {
+  vit: { block: { is: 'one transformer block: (N + 1, d) in, (N + 1, d) out' } },
+  autoencoder: { decode: { is: 'the decoder: turns a code back into an input-sized output' } },
+  vae: {
+    encode: { is: 'the encoder: a mean and a spread for each code dimension' },
+    decode: { is: 'the decoder: turns a code back into an input-sized output' },
+  },
+  gan: {
+    gen: { is: 'the generator: turns random noise into a fake image' },
+    disc: { is: 'the discriminator: the probability that an image is real' },
+  },
+  contrastive: {
+    crop: { is: 'a random crop of the image, recolored: one view' },
+    unit: { is: 'scales a vector to length 1, so dot products are cosines' },
+    enc: { is: 'the encoder: one vector per image' },
+  },
+  clip: {
+    unit: { is: 'scales each row to length 1, so dot products are cosines' },
+    img_enc: { is: 'the image encoder: one vector per image' },
+    txt_enc: { is: 'the text encoder: one vector per caption' },
+    cross_entropy: { is: 'the average of −ln softmax(row)[right column] over the rows' },
+  },
+  'diffusion-loss': { model: { is: 'the denoising network: from x_t and t, its guess of the noise' } },
+  guidance: {
+    model: { is: 'the denoising network: its noise guess, with or without the prompt' },
+    sample: { is: 'generates an image by removing the predicted noise step by step' },
+  },
+  bpe: {
+    count_pairs: { is: 'how often each neighboring pair of ids occurs' },
+    merge: { is: 'replaces every (a, b) side by side, left to right, with one new id' },
+  },
+  gpt: { block: { is: 'one causal transformer block: (T, d) in, (T, d) out' } },
+  'in-context': { complete: { is: 'runs the model on a prompt and returns its continuation' } },
+  'kv-cache': {
+    model: { is: 'one row of next-token probabilities per position' },
+    pick: { is: 'chooses the next token from a row of probabilities' },
+    qkv: { is: 'one token\'s query, key and value' },
+    attend: { is: 'one query over every cached key and value' },
+  },
+  sft: { model: { is: 'runs the model and returns each token\'s probability' } },
+  'policy-gradient': { grad_logp: { is: 'the gradient of ln π for a sampled answer, with respect to θ' } },
+  advantage: { grad_logp: { is: 'the gradient of ln π for a sampled answer, with respect to θ' } },
+  'reward-model': { rm: { is: 'the reward model: one score for an answer' } },
+  'kl-penalty': { frozen_copy: { is: 'a copy of the model that never trains' } },
+  ppo: {
+    sample: { is: 'draws answers from a model' },
+    pi: { is: 'a token\'s probability under the model being trained' },
+    pi_old: { is: 'a token\'s probability under the model that sampled the batch' },
+  },
+  grpo: { sample: { is: 'draws answers from a model' } },
+  rmsnorm: { rms_norm: { is: 'divides x by its root mean square, then multiplies by the gains' } },
+  swiglu: { swish: { is: 'z times sigmoid(z): near 0 for very negative z, near z for large z' } },
+  'residual-stream': {
+    '.attn': { is: 'the block\'s attention: reads the stream and returns what to add' },
+    '.mlp': { is: 'the block\'s MLP: reads the stream and returns what to add' },
+    ln: { is: 'a layer norm on the stream before each branch reads it' },
+  },
+  'induction-heads': { '.index': { is: 'the position of the first item equal to the one given', eg: "['K', 'D', 'K'].index('K')   # 0" } },
+  positions: { attend: { is: 'self-attention over these tokens, with no position information' } },
+  'transformer-block': {
+    attention: { is: 'the block\'s multi-head attention: every token attends to every token' },
+    ln1: { is: 'the block\'s first layer norm, before attention' },
+    ln2: { is: 'the block\'s second layer norm, before the MLP' },
+    mlp: { is: 'the block\'s MLP, applied to each token on its own' },
+  },
+  'attention-cost': { score_bytes: { is: 'the bytes one score matrix takes for n tokens, at 2 bytes per score' } },
+  'chain-of-thought': {
+    generate: { is: 'writes a reply to the prompt, one token per pass' },
+  },
+  'self-consistency': {
+    solve: { is: 'samples one chain of thought and returns its final answer' },
+    Counter: { is: 'counts each distinct item', more: '.most_common(1) gives the top item and its count.', eg: 'Counter([3, 5, 3]).most_common(1)   # [(3, 2)]' },
+  },
+  'best-of-n': {
+    solve: { is: 'samples one answer to the problem' },
+    passes: { is: 'runs the checker: True when the answer passes its tests' },
+  },
+  'prefill-decode': {
+    tokens: { is: 'splits text into token ids' },
+    model: { is: 'one forward pass: next-token scores at every position, and the updated KV cache' },
+    sample: { is: 'draws a token from the probabilities' },
+  },
+  speculative: {
+    draft: { is: 'the small model\'s next k tokens, one at a time' },
+    large: { is: 'one pass of the large model over the text plus the guesses: its own pick at each guess, and one more' },
+  },
+};
+
 /** Every key any concept uses, for page-wide `\sym` macros and colors. */
 export const ALL_SYMBOLS: SymbolMap = Object.assign({}, ...Object.values(SCOPED), ATLAS_SYMBOLS);
 
 /** The symbols and library notes an explainer shows, from its script id, atlas-<concept>. */
 export function lookupFor(scriptId: string): { symbols: SymbolMap; glossary: Glossary } {
-  return { symbols: { ...ATLAS_SYMBOLS, ...SCOPED[scriptId.replace(/^atlas-/, '')] }, glossary: ATLAS_GLOSSARY };
+  const id = scriptId.replace(/^atlas-/, '');
+  return { symbols: { ...ATLAS_SYMBOLS, ...SCOPED[id] }, glossary: { ...ATLAS_GLOSSARY, ...SCOPED_GLOSSARY[id] } };
 }
