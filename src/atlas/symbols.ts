@@ -429,6 +429,38 @@ export const SCOPED: Record<string, SymbolMap> = {
   clip: { N: { color: 'slate', name: 'N: the pairs in the batch', about: 'N images and their N captions. Each row has 1 right caption and N − 1 wrong ones.' } },
   'diffusion-noise': pick(dif, 'x0 xt eps ab'),
   'diffusion-loss': pick(dif, 'x0 xt eps ab epshat'),
+  rope: {
+    ...pick(att, 'q k dk'),
+    theta: { color: 'orange', name: 'θ: the turn per position', tex: '\\theta', code: ['theta'], about: 'The angle a pair turns for each step of position: at position m it turns by mθ. Each pair has its own θ.' },
+    R: { color: 'blue', name: 'R: the rotation', about: 'The 2 by 2 matrix [[cos, −sin], [sin, cos]] for one angle. R times a pair turns it by that angle.' },
+  },
+  'online-softmax': {
+    ...pick(att, 'q T dv'),
+    s: { ...scores, name: 's: a score', about: 'One query against one key, read one at a time.' },
+    m: { color: 'orange', name: 'm: the running max', code: ['m'], about: 'The largest score read so far. Every e^(s − m) is taken against it, so none overflows.' },
+    l: { color: 'green', name: 'ℓ: the running sum', tex: '\\ell', code: ['l'], about: 'The sum of e^(s − m) over the scores read so far. When m grows, ℓ is multiplied by e^(old m − new m).' },
+    o: { color: 'gold', name: 'o: the running output', code: ['o'], about: 'The values weighted by e^(s − m) so far, rescaled like ℓ. At the end, o / ℓ is attention\'s output.' },
+    c: { color: 'slate', name: 'c: the rescale factor', code: ['c'], about: 'e^(old m − new m): what ℓ and o are multiplied by when a bigger score arrives.' },
+  },
+  saliency: { g: { ...grad, name: 'g: the gradient of one class score', about: 'One partial derivative per pixel: how fast s_c moves when that pixel is nudged. Its absolute value is the saliency map.' } },
+  upsampling: { w: { color: 'blue', name: 'w: the filter\'s weights', about: 'F weights. Each input value stamps a copy of them, scaled by that value, into the output.' } },
+  'ddpm-sampling': {
+    ...pick(dif, 'xt eps epshat'),
+    x0: { ...dif.x0!, name: 'x̂₀: the clean-image estimate', tex: '\\hat x_0', code: ['x0_hat', 'x0'], about: 'What the image would be if the noise guess were exactly right: (x_t − √(1 − ᾱ_t) ε̂) / √ᾱ_t.' },
+    ab: { ...dif.ab!, code: ['ab', 'ab_prev', 'alpha_bar'] },
+    sigma: { color: 'slate', name: 'σ: the fresh-noise scale', tex: '\\sigma', code: ['sigma', 's2'], about: 'How much new noise each step adds back; σ² is the share of variance set aside for it. It is 0 at the last step.' },
+    z: { color: 'slate', name: 'z: fresh noise', code: ['z'], about: 'A new standard normal draw at each step, scaled by σ.' },
+  },
+  'flow-matching': {
+    ...pick(dif, 'x0 xt eps'),
+    v: { color: 'green', name: 'v: the velocity', code: ['v'], about: 'ε − x₀: the direction and speed along the straight line from the image to the noise. It is the same at every t.' },
+    vhat: { color: 'red', name: 'v̂: the network\'s velocity guess', tex: '\\hat v', code: ['v_hat'], about: 'What the network predicts the velocity is, from x_t and t. Training makes it match ε − x₀.' },
+  },
+  'latent-diffusion': {
+    ...pick(dif, 'eps epshat ab'),
+    z: { color: 'green', name: 'z: the latent', code: ['z'], about: 'The encoder\'s small version of the image. Diffusion runs on it instead of on the pixels.' },
+    zt: { color: 'purple', name: 'z_t: the noised latent', tex: 'z_t', code: ['zt', 'z_t'], about: 'The latent blended with noise at step t, as x_t was for an image.' },
+  },
   guidance: {
     epshat: dif.epshat!,
     epsu: { color: 'slate', name: 'ε_u: the guess without the prompt', tex: '\\epsilon_u', code: ['eps_u'], about: 'The network\'s noise guess when it is shown no prompt.' },
@@ -447,6 +479,7 @@ export const SCOPED: Record<string, SymbolMap> = {
 /** Library notes that would name later topics, said only in general terms. */
 export const ATLAS_GLOSSARY: Glossary = {
   'np.argmax': { is: 'the index of the largest value', more: 'With no axis it searches the flattened array; with axis=1 it returns one index per row. Ties go to the first.', eg: 'np.argmax([2.1, -0.4, 5.7])   # 2' },
+  'np.radians': { is: 'converts degrees to radians', more: 'A full turn of 360 degrees is 2π radians.', eg: 'np.radians(180)   # 3.14159...' },
   'np.exp': { is: 'e to the power of every element', more: 'Every result is positive. It overflows to inf past about 709.', eg: 'np.exp(0.0)   # 1.0' },
   'np.log': { is: 'the natural logarithm of every element', more: 'Base e, the inverse of np.exp. np.log(0) is -inf.', eg: 'np.log(np.e)   # 1.0' },
   'np.ones': { is: 'an array of ones of a given shape', more: 'The shape is one number or a tuple; the default dtype is float64.', eg: 'np.ones((2, 3)).shape   # (2, 3)' },
@@ -514,6 +547,18 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
     cross_entropy: { is: 'the average of −ln softmax(row)[right column] over the rows' },
   },
   'diffusion-loss': { model: { is: 'the denoising network: from x_t and t, its guess of the noise' } },
+  iou: {
+    area: { is: 'the area of a box: width times height' },
+    iou: { is: 'intersection over union of two boxes' },
+  },
+  upsampling: { up_size: { is: 'the output width of a transposed convolution: S(W − 1) + F − 2P' } },
+  'ddpm-sampling': { model: { is: 'the denoising network: from x_t and t, its guess of the noise' } },
+  'flow-matching': { model: { is: 'the network: from x_t and t, its guess of the velocity' } },
+  'latent-diffusion': {
+    model: { is: 'the denoising network, run on latents: from z_t and t, its guess of the noise' },
+    encode: { is: 'the encoder: turns an image into its small latent' },
+    decode: { is: 'the decoder: turns a latent back into an image' },
+  },
   guidance: {
     model: { is: 'the denoising network: its noise guess, with or without the prompt' },
     sample: { is: 'generates an image by removing the predicted noise step by step' },
@@ -524,6 +569,11 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
   },
   gpt: { block: { is: 'one causal transformer block: (T, d) in, (T, d) out' } },
   'in-context': { complete: { is: 'runs the model on a prompt and returns its continuation' } },
+  rope: { rotate: { is: 'turns a pair by an angle in degrees: the rotation matrix times the pair' } },
+  retrieval: {
+    embed: { is: 'turns a text into a vector of size 1' },
+    complete: { is: 'runs the model on a prompt and returns its continuation' },
+  },
   'kv-cache': {
     model: { is: 'one row of next-token probabilities per position' },
     pick: { is: 'chooses the next token from a row of probabilities' },
