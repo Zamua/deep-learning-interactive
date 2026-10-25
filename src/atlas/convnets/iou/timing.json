@@ -1,0 +1,26 @@
+{
+ "duration": 144.516,
+ "scenes": {
+  "boxes": [0.0, 37.725],
+  "overlap": [37.725, 96.083],
+  "nms": [96.083, 144.516]
+ },
+ "beats": {
+  "boxes/box": [0.7, 5.629, "To say where an object is, not just what it is, draw a box around it.", [[2.45, 2.64], [3.84, 4.17]]],
+  "boxes/corners": [6.009, 18.144, "Four numbers pin it down: the top-left corner, x one and y one, and the bottom-right corner, x two and y two. As in an image, y counts down from the top.", [[7.619, 8.119], [9.209, 9.619], [10.999, 11.419], [12.729, 13.129], [14.539, 15.189], [16.139, 16.399]]],
+  "boxes/area": [18.524, 27.66, "Its width is x two minus x one, four, and its height y two minus y one, three: an area of twelve.", [[21.234, 21.574], [22.004, 22.454], [23.154, 23.424], [25.024, 25.314], [25.734, 26.254]]],
+  "boxes/guess": [28.04, 36.625, "A network guesses a box of its own, from two, two to six, five. Also twelve. How well do they agree?", [[30.18, 30.53], [31.21, 31.54], [32.38, 32.58], [33.12, 33.59], [34.76, 35.27]]],
+  "overlap/inter": [38.425, 48.935, "First, their overlap, the intersection. Its left edge is the larger left, two, and its right edge the smaller right, five: three wide.", [[38.965, 39.205], [40.015, 40.405], [41.355, 41.865], [43.815, 44.095], [44.435, 44.915], [46.865, 47.155], [47.665, 48.095]]],
+  "overlap/tall": [49.315, 59.713, "Its top is the larger top, two, and its bottom the smaller bottom, four: two tall. The intersection is three times two, six.", [[51.085, 51.425], [51.725, 52.185], [54.055, 54.375], [54.785, 55.265], [55.935, 56.475], [58.785, 59.115]]],
+  "overlap/apart": [60.093, 67.743, "If the boxes miss each other, right minus left comes out negative: no overlap, so the intersection is zero.", [[61.663, 62.023], [64.283, 64.743], [65.573, 65.973]]],
+  "overlap/union": [68.123, 78.262, "The union is everything either box covers: twelve plus twelve, minus the six they share, so the overlap is not counted twice. Eighteen.", [[70.833, 71.313], [72.533, 72.843], [74.423, 74.833], [77.033, 77.673]]],
+  "overlap/iou": [78.642, 85.885, "Intersection over union, IoU: six over eighteen, about zero point three three.", [[80.302, 80.692], [81.682, 82.302], [83.622, 84.042]]],
+  "overlap/range": [86.265, 94.983, "Identical boxes score one, and boxes that do not touch score zero. A guess often counts as a hit at a half or more.", [[88.195, 88.565], [91.155, 91.805]]],
+  "nms/many": [96.783, 105.601, "A detector, a network that finds and boxes objects, often fires several boxes on one object, each with a confidence score.", [[97.593, 98.103], [100.703, 101.113], [103.663, 104.033]]],
+  "nms/sort": [105.981, 112.397, "Non-max suppression keeps one box per object. First, sort the boxes by confidence.", [[109.101, 109.711], [110.181, 110.461]]],
+  "nms/keep": [112.777, 125.401, "Keep the top box, A, and drop every box whose IoU with it is above a threshold, here a half. B overlaps A at zero point five eight: a duplicate, gone.", [[113.967, 114.227], [114.567, 114.867], [118.657, 119.017], [120.027, 120.627], [123.517, 123.977], [124.647, 125.007]]],
+  "nms/stay": [125.781, 137.833, "C does not touch A, so it stays. Repeat with what is left: C is now the best, so it is kept, and D, at zero point six three with C, is dropped.", [[127.481, 127.731], [128.651, 129.331], [130.671, 131.271], [132.671, 132.871], [133.751, 134.111], [134.721, 134.931], [136.971, 137.181]]],
+  "nms/done": [138.213, 142.296, "Nothing is left: two boxes, one per object.", [[139.403, 139.953], [140.743, 141.073]]],
+  "nms/turn": [142.676, 143.416, "Your turn.", []]
+ }
+}

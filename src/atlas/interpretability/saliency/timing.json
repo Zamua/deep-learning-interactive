@@ -1,0 +1,24 @@
+{
+ "duration": 141.517,
+ "scenes": {
+  "linear": [0.0, 50.039],
+  "map": [50.039, 89.677],
+  "deeper": [89.677, 141.517]
+ },
+ "beats": {
+  "linear/setup": [0.7, 9.91, "A linear classifier scores an image of four pixels, x, with one row of W per class: s is W times x.", [[3.98, 4.23], [4.66, 4.95], [7.23, 7.75]]],
+  "linear/ask": [10.29, 20.555, "Which pixels does class zero's score depend on most? Ask its gradient with respect to the pixels: how fast s zero moves as each pixel is nudged.", [[13.65, 14.23], [16.75, 17.14]]],
+  "linear/nudge": [20.935, 34.633, "s zero is row zero of W dotted with x: each pixel times its weight, added up. Nudge pixel one, and only its term moves: by its weight, minus three, times the nudge.", [[24.655, 25.085], [26.705, 26.985], [27.525, 28.185], [29.355, 29.555], [31.275, 31.735], [32.435, 32.655], [33.455, 33.685]]],
+  "linear/row": [35.013, 48.939, "So the gradient is row zero itself: one, minus three, zero, two. In backprop terms, the add copies and each multiply swaps. The pixel values drop out, and so would a bias.", [[37.593, 38.073], [38.453, 38.693], [39.493, 39.683], [40.213, 40.413], [40.763, 41.343], [42.473, 42.763], [45.463, 45.983], [47.493, 47.773]]],
+  "map/sign": [50.739, 59.751, "The sign says which way the score moves; the size says how fast. Minus three moves it as fast as plus three would, just downward.", [[53.069, 53.459], [55.189, 55.699], [58.609, 58.939]]],
+  "map/abs": [60.131, 66.984, "So a saliency map takes the absolute value of the gradient: one, three, zero, two.", [[64.001, 64.481], [64.851, 65.131], [65.561, 65.831], [66.351, 66.591]]],
+  "map/show": [67.364, 77.363, "Painted onto the image, pixel one lights up most: class zero is most sensitive to it. Pixel two, with weight zero, does not matter at all.", [[68.684, 68.984], [70.714, 71.234], [73.504, 74.034], [74.864, 75.014], [75.914, 76.174]]],
+  "map/other": [77.743, 88.577, "Each class has its own map. Class two's row is minus one, zero, four, minus two, so for class two, pixel two lights up instead.", [[79.493, 80.053], [81.433, 81.593], [82.403, 82.643], [83.813, 83.963], [84.783, 85.193], [86.413, 86.703]]],
+  "deeper/graph": [90.377, 100.471, "A deeper model is a bigger graph, but the question is the same. Here the score is three times the max of zero and two x zero minus x one.", [[92.387, 92.777], [94.207, 94.777], [97.777, 98.037]]],
+  "deeper/fwd": [100.851, 108.369, "Run it forward on the image two, one: q is three, the max keeps three, and s is nine.", [[102.701, 103.201], [103.531, 104.041], [105.051, 105.501], [106.721, 107.051]]],
+  "deeper/back": [108.749, 117.427, "Then backprop from s, starting at one. The multiply hands back three, and the max routes it on, since q beat zero.", [[110.459, 110.689], [111.629, 112.229], [114.109, 114.359], [115.769, 115.979]]],
+  "deeper/pixels": [117.807, 129.384, "The add copies it to both terms, and the multiplies hand pixel zero two times three, six, and pixel one minus three. Saliency: six and three.", [[119.927, 120.197], [123.497, 123.677], [124.197, 124.497], [126.467, 127.037], [127.827, 128.207]]],
+  "deeper/depends": [129.764, 139.297, "Unlike the linear case, this depends on the image. Make q negative, and the max routes nothing back: every pixel's saliency is zero.", [[131.194, 131.404], [132.824, 133.364], [134.544, 134.774], [136.504, 137.024]]],
+  "deeper/turn": [139.677, 140.417, "Your turn.", []]
+ }
+}
