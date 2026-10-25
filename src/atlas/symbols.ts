@@ -309,6 +309,11 @@ export const SCOPED: Record<string, SymbolMap> = {
   'softmax-grad': { s: scores, y: answer, p: probs, L: loss, g: { ...grad, about: 'One partial derivative per score: how fast L changes as that score is nudged.' } },
   'hinge-loss': { L: loss },
   'gd-step': { g: grad, eta: { ...ATLAS_SYMBOLS.eta!, name: 'η: the step size', about: 'How far each step goes, as a multiple of the gradient.' } },
+  'grad-clipping': {
+    g: grad,
+    eta: { ...ATLAS_SYMBOLS.eta!, name: 'η: the step size', code: ['eta'], about: 'How far each step goes, as a multiple of the gradient.' },
+    c: { color: 'slate', name: 'c: the clipping threshold', code: ['c'], about: 'The longest gradient allowed. A longer one is scaled down to length c, keeping its direction.' },
+  },
   'learning-rate': { g: grad, eta: { ...ATLAS_SYMBOLS.eta!, about: 'The step size: each step moves η times the gradient. Too small crawls; too large overshoots.' } },
   minibatch: { g: grad, N: { color: 'slate', name: 'N: the number of examples', about: 'How many examples the function averages over. One pass through all N is an epoch.' } },
   'param-count': {
@@ -389,6 +394,12 @@ export const SCOPED: Record<string, SymbolMap> = {
   advantage: { ...pick(rl, 'pi R theta A'), b: { color: 'gold', name: 'b: the baseline', code: ['baseline'], about: 'The reward expected before seeing the answer. A = R − b.' } },
   'reward-model': { r: { color: 'gold', name: 'r: the reward model\'s score', about: 'One number per answer. Only differences between two answers\' scores matter.' } },
   'kl-penalty': pick(rl, 'pi R theta piref beta'),
+  distillation: {
+    s: { ...scores, name: 's: the teacher\'s scores', about: 'The large network\'s scores for one input, one per class.' },
+    q: { color: 'green', name: 'q: the soft targets', code: ['q'], about: 'The teacher\'s probabilities at temperature T: softmax(s / T). The student is trained to match them.' },
+    p: { ...probs, name: 'p: the student\'s probabilities', about: 'The small network\'s softmax at the same temperature T.' },
+    L: { ...loss, name: 'L: the distillation loss', about: 'Cross-entropy against the soft targets: −Σ q ln p.' },
+  },
   ppo: { ...pick(rl, 'pi piold A'), rho: { color: 'purple', name: 'ρ: the probability ratio', tex: '\\rho', code: ['rho', 'ratio'], about: 'π / π_old: how much more likely the answer has become since it was sampled.' }, eps: { color: 'slate', name: 'ε: the clip range', tex: '\\epsilon', code: ['eps'], about: 'How far ρ may move from 1 before the objective stops rewarding it, often 0.2.' } },
   dpo: { ...pick(rl, 'pi piref beta'), yw: { color: 'green', name: 'y_w: the chosen answer', tex: 'y_w', about: 'The answer people preferred.' }, yl: { color: 'red', name: 'y_l: the rejected answer', tex: 'y_l', about: 'The answer people passed over.' } },
   grpo: { A: rl.A!, G: { color: 'slate', name: 'G: the group size', about: 'How many answers are sampled for one prompt.' }, r: { color: 'gold', name: 'r: an answer\'s reward', about: '1 when the answer checks out, 0 when it does not.' } },
@@ -524,6 +535,10 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
   advantage: { grad_logp: { is: 'the gradient of ln π for a sampled answer, with respect to θ' } },
   'reward-model': { rm: { is: 'the reward model: one score for an answer' } },
   'kl-penalty': { frozen_copy: { is: 'a copy of the model that never trains' } },
+  distillation: {
+    teacher: { is: 'the large trained network: its scores for an input' },
+    student: { is: 'the small network being trained: its scores for an input' },
+  },
   ppo: {
     sample: { is: 'draws answers from a model' },
     pi: { is: 'a token\'s probability under the model being trained' },

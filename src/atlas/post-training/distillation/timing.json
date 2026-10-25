@@ -1,0 +1,24 @@
+{
+ "duration": 155.655,
+ "scenes": {
+  "teacher": [0.0, 39.07],
+  "soften": [39.07, 89.673],
+  "loss": [89.673, 155.655]
+ },
+ "beats": {
+  "teacher/teacher": [0.7, 12.707, "Distillation trains a small network, the student, to copy a large one, the teacher. Shown this cat, the teacher scores cat, dog and car four, two and zero.", [[2.92, 3.15], [3.77, 4.05], [5.3, 5.59], [6.18, 6.85], [7.87, 8.17], [9.47, 9.7], [10.74, 10.94], [11.38, 11.57]]],
+  "teacher/probs": [13.087, 21.894, "Softmax turns that into zero point eight seven for cat, zero point one two for dog, and zero point zero two for car.", [[16.707, 17.157], [19.087, 19.447]]],
+  "teacher/label": [22.274, 30.206, "The label says only cat. The teacher says more: this cat looks a little like a dog, and nothing like a car.", [[24.124, 24.774], [25.954, 26.554], [28.604, 28.824]]],
+  "teacher/student": [30.586, 37.97, "So the student learns from the teacher's probabilities, not just the label, and picks up which wrong classes are close.", [[33.596, 33.866], [34.996, 35.386]]],
+  "soften/tiny": [39.77, 46.958, "But the teacher is confident, so those hints are faint. Car's zero point zero two barely registers.", [[41.3, 41.63], [43.0, 43.56]]],
+  "soften/temp": [47.338, 58.835, "So soften them with a temperature, as in sampling: divide every score by T before the softmax. With T at two, the scores become two, one and zero.", [[49.238, 49.598], [50.668, 51.238], [54.358, 54.908], [55.978, 56.228], [57.548, 57.738]]],
+  "soften/soft": [59.215, 78.031, "Exponentiate, about seven point three nine, two point seven two and one, and divide by their total, eleven point one one. The teacher's probabilities flatten to zero point six seven, zero point two four and zero point zero nine: the soft targets, q.", [[60.255, 60.665], [62.345, 62.695], [64.485, 64.945], [66.555, 66.945], [68.325, 68.945], [72.315, 72.585], [73.865, 74.095], [75.725, 76.245], [77.275, 77.645]]],
+  "soften/higher": [78.411, 88.573, "Cat still leads, but now dog and car count. Raise T to four, and they flatten further: the higher T, the more the wrong classes count.", [[79.621, 79.921], [81.851, 82.491], [83.741, 83.901], [85.101, 85.621], [86.481, 86.711]]],
+  "loss/p": [90.373, 101.115, "The student's scores are softened with the same T. Say its probabilities, p, are zero point six for cat, and zero point two each for dog and car.", [[93.183, 93.773], [95.093, 95.303], [95.673, 95.893], [97.823, 98.103]]],
+  "loss/hard": [101.495, 117.381, "Cross-entropy with the label is minus the log of cat's probability. Write the label as targets, one, zero, zero: weight each minus log p by its target and add, and only cat counts, zero point five one.", [[103.125, 103.285], [105.695, 106.375], [108.015, 108.315], [109.685, 110.265], [112.995, 113.215], [113.745, 114.215], [115.605, 115.965]]],
+  "loss/soft": [117.761, 127.512, "Distillation puts the teacher's soft targets, q, in place of the label. The loss is the sum over classes of q times minus log p.", [[120.481, 120.681], [121.101, 121.351], [122.461, 123.141]]],
+  "loss/sum": [127.892, 140.079, "Weighted by q, the classes add zero point three four, zero point three nine and zero point one four: a loss of zero point eight seven. Now dog and car count too.", [[129.082, 129.302], [131.652, 131.952], [133.262, 133.482], [134.992, 135.372], [137.322, 137.902]]],
+  "loss/best": [140.459, 153.435, "The loss is lowest when p matches q exactly: zero point eight three here. A student sure it saw a cat would pay minus log zero for dog and car, a loss without limit.", [[143.899, 144.409], [146.079, 146.689], [148.639, 148.819], [151.769, 152.139]]],
+  "loss/turn": [153.815, 154.555, "Your turn.", []]
+ }
+}
