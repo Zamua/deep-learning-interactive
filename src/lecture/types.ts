@@ -11,6 +11,8 @@ export interface Beat {
   code?: string | number | (string | number)[];
   /** Extra silence after the beat, in seconds. */
   pause?: number;
+  /** A question for the viewer: playback stops after it until they choose to see it solved. */
+  think?: boolean;
 }
 
 export interface SceneScript {

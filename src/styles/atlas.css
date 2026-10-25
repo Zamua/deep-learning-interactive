@@ -1040,3 +1040,16 @@ body.at-on .side {
 .at-why code {
   white-space: nowrap;
 }
+.at-transition {
+  margin: 14px 0 0;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: var(--paper-2);
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.at-intro .at-why {
+  margin: 0 0 8px;
+}

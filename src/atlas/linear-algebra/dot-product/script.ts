@@ -58,7 +58,7 @@ export const script: LectureScript = {
         w @ x     # 13          #@dot
       `,
       beats: [
-        { id: 'ask', say: 'Your turn. w is two, three, one, and x is four, one, two. What is {w · x|w dot x}?' },
+        { id: 'ask', think: true, say: 'Your turn. w is two, three, one, and x is four, one, two. What is {w · x|w dot x}?' },
         { id: 'mult', say: 'Multiply matching entries: two times four is eight, three times one is three, one times two is two.', code: 'mul' },
         { id: 'add', say: 'Add the products: eight plus three plus two is thirteen.', code: 'dot' },
       ],

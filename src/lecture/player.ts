@@ -44,6 +44,7 @@ interface TBeat {
   caps: { at: number; text: string }[];
   /** Silences inside the line, [from, to]: where its phrases break. */
   pauses: [number, number][];
+  think?: boolean;
 }
 
 interface TScene {
@@ -96,7 +97,7 @@ function layout(script: LectureScript, timing: Timing | null): { scenes: TScene[
         return { at, text };
       });
       const pauses = exact ? (timing!.beats[`${s.id}/${b.id}`]![3] ?? []) : [];
-      return { id: b.id, start: bs, end: be, code: b.code, caps, pauses };
+      return { id: b.id, start: bs, end: be, code: b.code, caps, pauses, think: b.think };
     });
     const end = exact ? timing!.scenes[s.id]![1] : t;
     t = end;
@@ -310,7 +311,16 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
 
   const notice = h('div', { class: 'lec-notice' });
   root.append(top, main, bar, list, notice);
-  stage.append(marksEl, chip, spinner, centerBtn, boostEl, ...skipEls.map((k) => k.el));
+  const thinkGo = h('button', { class: 'btn btn-primary', type: 'button', html: `${icon('playFill')} Show the solution` });
+  const thinkEl = h('div', { class: 'lec-think' },
+    h('div', { class: 'lec-poster-kicker' }, 'Your turn'),
+    h('p', {}, 'Work it out, then see it solved.'),
+    thinkGo);
+  stage.append(marksEl, chip, spinner, centerBtn, boostEl, thinkEl, ...skipEls.map((k) => k.el));
+  thinkGo.addEventListener('click', (e) => {
+    e.stopPropagation();
+    void play();
+  });
 
   for (const s of scenes) {
     const t = h('div', { class: 'lec-tick' });
@@ -320,6 +330,15 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
 
   // ---- per-scene code panels and marks
   const panels = def.script.scenes.map((s) => new CodePanel(s.code, { title: s.codeTitle, symIdx }));
+  // In a scene that asks the viewer a question, a line its beats light stays hidden until the
+  // first of those beats, so the listing never shows the answer early.
+  const pendingFrom = scenes.map((s, i) =>
+    s.beats.some((b) => b.think)
+      ? panels[i]!.lines.map((_, li) => {
+          const lit = s.beats.filter((b) => panels[i]!.resolve(b.code ?? null).includes(li + 1));
+          return lit.length ? Math.min(...lit.map((b) => b.start)) : -Infinity;
+        })
+      : null);
   const markEls = def.script.scenes.map((s) => {
     const m = new Map<string, HTMLElement>();
     for (const [k, mk] of Object.entries(def.scenes[s.id]?.marks ?? {})) {
@@ -410,8 +429,17 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
   }
   plot.draw = draw;
 
+  // A think beat stops playback when it is crossed in play, never when a seek lands past it.
+  const thinkStops = scenes.flatMap((s) => s.beats.filter((b) => b.think).map((b) => b.end + 0.15));
+  let lastT = 0;
   function sync(): void {
     const T = clock.time();
+    const prev = lastT;
+    lastT = T;
+    if (!clock.paused && T - prev < 1 && thinkStops.some((t) => prev < t && T >= t)) {
+      root.classList.add('thinking');
+      pause();
+    }
     const i = sceneIndexAt(T);
     if (i !== cur) enterScene(i);
     const s = scenes[cur]!;
@@ -422,6 +450,8 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
       curBeat = b;
       panels[cur]!.highlight(b?.code ?? null);
     }
+    const pend = pendingFrom[cur];
+    if (pend) panels[cur]!.lines.forEach((el, li) => el.parentElement!.classList.toggle('ln-pending', T < pend[li]! - 0.05));
     let capText = '';
     if (b) for (const c of b.caps) if (T >= c.at - 0.05) capText = c.text;
     if (T < (s.beats[0]?.start ?? 0) - 0.05 && cur > 0) capText = '';
@@ -528,6 +558,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
   }
 
   function onPlaying(): void {
+    root.classList.remove('thinking');
     setPlayingUi(true);
     void wake(true);
     cancelAnimationFrame(raf);

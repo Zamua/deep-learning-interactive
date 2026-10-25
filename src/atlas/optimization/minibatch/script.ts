@@ -65,7 +65,7 @@ export const script: LectureScript = {
         N // B    # 500        #@divide
       `,
       beats: [
-        { id: 'ask', say: 'Your turn to follow along. A training set has fifty thousand examples, and the batch size is a hundred. How many steps make one epoch?', code: 'given' },
+        { id: 'ask', think: true, say: 'Your turn. A training set has fifty thousand examples, and the batch size is a hundred. How many steps make one epoch?', code: 'given' },
         { id: 'divide', say: 'Each step uses a hundred examples, so divide: fifty thousand over a hundred.', code: 'divide' },
         { id: 'answer', say: 'Five hundred steps per epoch.', code: 'divide' },
       ],

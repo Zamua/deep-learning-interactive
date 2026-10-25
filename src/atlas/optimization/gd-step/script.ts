@@ -69,7 +69,7 @@ export const script: LectureScript = {
         w = w - step     # 1.7     #@sub
       `,
       beats: [
-        { id: 'ask', say: 'Your turn to follow along. A weight sits at two, its gradient is three, and the learning rate is {0.1|zero point one}. Where does one step take it?', code: 'given' },
+        { id: 'ask', think: true, say: 'Your turn. A weight sits at two, its gradient is three, and the learning rate is {0.1|zero point one}. Where does one step take it?', code: 'given' },
         { id: 'step', say: 'The step is {η|eta} times g: {0.1|zero point one} times three is {0.3|zero point three}.', code: 'step' },
         { id: 'sub', say: 'Subtract it from w: two minus {0.3|zero point three} is {1.7|one point seven}.', code: 'sub' },
         { id: 'result', say: 'The gradient was positive, so the weight went down.', code: 'sub' },

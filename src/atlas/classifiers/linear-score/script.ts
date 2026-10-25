@@ -59,7 +59,7 @@ export const script: LectureScript = {
         W @ x + b         # [4, -3]        #@s
       `,
       beats: [
-        { id: 'ask', say: 'Your turn. W has two rows of three. x is two, one, and minus one, and b is one and minus two. What are the scores?' },
+        { id: 'ask', think: true, say: 'Your turn. W has two rows of three. x is two, one, and minus one, and b is one and minus two. What are the scores?' },
         { id: 'r0', say: 'Class zero: two times two, plus zero times one, plus one times minus one, is three. Add its bias, one, and it scores four.', code: 'r0' },
         { id: 'r1', say: 'Class one: minus two, plus three, plus two times minus one, is minus one. Add its bias, minus two, and it scores minus three.', code: 'r1' },
         { id: 's', say: 'So the scores are four and minus three, one per class, in order.', code: 's' },

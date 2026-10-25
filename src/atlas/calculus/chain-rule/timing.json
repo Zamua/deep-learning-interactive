@@ -1,10 +1,10 @@
 {
- "duration": 124.871,
+ "duration": 123.793,
  "scenes": {
   "chain": [0.0, 23.26],
   "local": [23.26, 61.451],
   "back": [61.451, 95.898],
-  "example": [95.898, 124.871]
+  "example": [95.898, 123.793]
  },
  "beats": {
   "chain/chain": [0.7, 8.742, "Often one function feeds another. Here x goes in and u comes out, where u is three x plus one.", [[1.19, 1.34], [2.94, 3.5], [3.88, 4.06], [4.95, 5.1], [6.28, 6.59]]],
@@ -17,8 +17,8 @@
   "back/longer": [62.151, 72.71, "A chain can be as long as you like. Here x feeds u, u feeds v, and v feeds a loss, L. Each link has a local slope.", [[64.041, 64.651], [65.031, 65.211], [66.301, 66.671], [67.791, 68.111], [69.721, 69.931], [70.301, 70.881]]],
   "back/back": [73.09, 82.845, "Start at the end and walk backwards, multiplying as you go: a half, times minus two is minus one, times three is minus three.", [[75.26, 75.57], [76.9, 77.46], [78.04, 78.25], [80.44, 80.85], [81.62, 81.82]]],
   "back/backprop": [83.225, 94.798, "So a nudge to x moves the loss minus three times as much. This backward walk, multiplying local slopes, is backpropagation: how neural networks learn.", [[87.485, 88.025], [89.295, 89.575], [91.115, 91.385], [92.655, 93.085]]],
-  "example/ask": [96.598, 109.124, "Your turn to follow along. Along a chain from x to u to z, d u d x is four and d z d u is three. What is d z d x?", [[98.058, 98.908], [101.678, 102.208], [104.068, 104.378], [106.688, 107.318]]],
-  "example/mult": [109.504, 113.642, "Multiply the local slopes: three times four is twelve.", [[111.274, 111.694]]],
-  "example/check": [114.022, 123.771, "A nudge of zero point zero one in x moves u by zero point zero four, and z by zero point one two: twelve times as much.", [[119.252, 119.632], [121.782, 122.252]]]
+  "example/ask": [96.598, 108.046, "Your turn. Along a chain from x to u to z, d u d x is four and d z d u is three. What is d z d x?", [[97.238, 97.918], [100.638, 101.178], [102.988, 103.278], [105.618, 106.238]]],
+  "example/mult": [108.426, 112.564, "Multiply the local slopes: three times four is twelve.", [[110.196, 110.616]]],
+  "example/check": [112.944, 122.693, "A nudge of zero point zero one in x moves u by zero point zero four, and z by zero point one two: twelve times as much.", [[118.174, 118.554], [120.704, 121.174]]]
  }
 }

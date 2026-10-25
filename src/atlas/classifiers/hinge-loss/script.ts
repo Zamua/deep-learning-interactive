@@ -64,7 +64,7 @@ export const script: LectureScript = {
         # L = 2 + 0 = 2           #@L
       `,
       beats: [
-        { id: 'ask', say: 'Your turn. The scores are four, one and three, and the right class is two. What is the hinge loss?', code: 's' },
+        { id: 'ask', think: true, say: 'Your turn. The scores are four, one and three, and the right class is two. What is the hinge loss?', code: 's' },
         { id: 't0', say: 'Class zero: four, minus three, plus one, is two.', code: 't0' },
         { id: 't1', say: 'Class one: one, minus three, plus one, is minus one, and the hinge makes it zero.', code: 't1' },
         { id: 'L', say: 'Skip class two itself, and add them: the loss is two.', code: 'L' },

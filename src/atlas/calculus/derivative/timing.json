@@ -1,10 +1,10 @@
 {
- "duration": 124.904,
+ "duration": 124.29,
  "scenes": {
   "slope": [0.0, 33.594],
   "shrink": [33.594, 68.172],
   "sign": [68.172, 92.894],
-  "example": [92.894, 124.904]
+  "example": [92.894, 124.29]
  },
  "beats": {
   "slope/line": [0.7, 9.83, "A straight line climbs at the same rate everywhere. Two x plus one rises two for every step of one, so its slope is two.", [[3.63, 4.24], [7.98, 8.37]]],
@@ -19,9 +19,9 @@
   "sign/neg": [74.428, 82.498, "On the left, f falls as x grows, and the slope is negative: minus three, at minus one point five.", [[75.188, 75.448], [77.528, 77.858], [79.218, 79.728], [80.628, 80.788]]],
   "sign/zero": [82.878, 86.763, "At the bottom the tangent is level, and the slope is zero.", [[83.668, 83.828], [85.058, 85.348]]],
   "sign/pos": [87.143, 91.794, "On the right, f rises, and the slope is positive: three.", [[87.853, 88.083], [89.173, 89.453], [90.853, 91.333]]],
-  "example/ask": [93.594, 105.031, "Your turn to follow along. f of three is nine, and f of three and a half is twelve point two five. With h equal to a half, what is the slope between them?", [[95.044, 95.684], [97.144, 97.464], [100.734, 101.334], [103.064, 103.394]]],
-  "example/rise": [105.411, 110.36, "The rise is twelve point two five minus nine: three point two five.", [[108.521, 109.021]]],
-  "example/run": [110.74, 117.05, "Divide by the run, a half: three point two five over a half is six point five.", [[111.96, 112.35], [112.91, 113.52], [115.65, 115.86]]],
-  "example/close": [117.43, 123.804, "That is close to the slope right at three, which is six. A smaller step would land closer still.", [[119.84, 120.04], [120.83, 121.38]]]
+  "example/ask": [93.594, 104.416, "Your turn. f of three is nine, and f of three and a half is twelve point two five. With h equal to a half, what is the slope between them?", [[94.234, 94.884], [96.394, 96.794], [100.174, 100.764], [102.464, 102.784]]],
+  "example/rise": [104.796, 109.746, "The rise is twelve point two five minus nine: three point two five.", [[107.906, 108.406]]],
+  "example/run": [110.126, 116.436, "Divide by the run, a half: three point two five over a half is six point five.", [[111.346, 111.736], [112.296, 112.906], [115.036, 115.246]]],
+  "example/close": [116.816, 123.19, "That is close to the slope right at three, which is six. A smaller step would land closer still.", [[119.226, 119.426], [120.216, 120.766]]]
  }
 }

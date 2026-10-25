@@ -69,7 +69,7 @@ export const script: LectureScript = {
         rise / 0.5          # 6.5        #@run
       `,
       beats: [
-        { id: 'ask', say: 'Your turn to follow along. f of three is nine, and f of three and a half is {12.25|twelve point two five}. With h equal to a half, what is the slope between them?', code: 'ask' },
+        { id: 'ask', think: true, say: 'Your turn. f of three is nine, and f of three and a half is {12.25|twelve point two five}. With h equal to a half, what is the slope between them?', code: 'ask' },
         { id: 'rise', say: 'The rise is {12.25|twelve point two five} minus nine: {3.25|three point two five}.', code: 'rise' },
         { id: 'run', say: 'Divide by the run, a half: {3.25 / 0.5 = 6.5|three point two five over a half is six point five}.', code: 'run' },
         { id: 'close', say: 'That is close to the slope right at three, which is six. A smaller step would land closer still.', code: 'run' },

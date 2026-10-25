@@ -66,7 +66,7 @@ export const script: LectureScript = {
         # 12                     #@mult
       `,
       beats: [
-        { id: 'ask', say: 'Your turn to follow along. Along a chain from x to u to z, {du/dx = 4|d u d x is four} and {dz/du = 3|d z d u is three}. What is {dz/dx|d z d x}?', code: 'ask' },
+        { id: 'ask', think: true, say: 'Your turn. Along a chain from x to u to z, {du/dx = 4|d u d x is four} and {dz/du = 3|d z d u is three}. What is {dz/dx|d z d x}?', code: 'ask' },
         { id: 'mult', say: 'Multiply the local slopes: three times four is twelve.', code: 'mult' },
         { id: 'check', say: 'A nudge of {0.01|zero point zero one} in x moves u by {0.04|zero point zero four}, and z by {0.12|zero point one two}: twelve times as much.', code: 'mult' },
       ],

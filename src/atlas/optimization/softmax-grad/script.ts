@@ -74,7 +74,7 @@ export const script: LectureScript = {
         sum(ds)   # 0.0                             #@check
       `,
       beats: [
-        { id: 'ask', say: 'Your turn to follow along. Softmax gives {0.5, 0.2 and 0.3|zero point five, zero point two and zero point three}, and the correct class is class zero. What is the gradient?' },
+        { id: 'ask', think: true, say: 'Your turn. Softmax gives {0.5, 0.2 and 0.3|zero point five, zero point two and zero point three}, and the correct class is class zero. What is the gradient?' },
         { id: 'onehot', say: 'The one-hot label for class zero is one, zero, zero.', code: 'onehot' },
         { id: 'sub', say: 'Subtract it: minus {0.5|zero point five}, then {0.2|zero point two} and {0.3|zero point three}.', code: 'sub' },
         { id: 'check', say: 'Check: the entries add up to zero.', code: 'check' },

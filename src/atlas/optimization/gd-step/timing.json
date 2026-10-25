@@ -1,10 +1,10 @@
 {
- "duration": 134.194,
+ "duration": 133.497,
  "scenes": {
   "uphill": [0.0, 36.627],
   "rule": [36.627, 71.995],
   "drop": [71.995, 106.853],
-  "example": [106.853, 134.194]
+  "example": [106.853, 133.497]
  },
  "beats": {
   "uphill/curve": [0.7, 9.43, "Training has one goal: make the loss smaller. Here is the loss as a function of a single weight, w, which sits at three.", [[2.22, 2.73], [4.19, 4.82], [7.39, 7.56], [8.05, 8.31]]],
@@ -18,9 +18,9 @@
   "drop/tangent": [72.695, 82.272, "How much does one step lower the loss? Close up, the curve is almost its tangent line, so the loss changes by about the slope times the move.", [[75.025, 75.585], [76.155, 76.405], [78.595, 78.965]]],
   "drop/formula": [82.652, 95.165, "The move is minus eta g. Times the slope g, that is minus eta g squared. Here, minus zero point four, and the true change is minus zero point three eight.", [[84.692, 85.212], [86.482, 86.872], [89.172, 89.602], [89.972, 90.182], [91.732, 92.102]]],
   "drop/always": [95.545, 105.753, "g squared is never negative, so a small enough step never makes the loss worse. With many weights, each one adds its own minus eta g squared.", [[97.475, 97.835], [100.845, 101.445], [102.335, 102.525]]],
-  "example/ask": [107.553, 117.552, "Your turn to follow along. A weight sits at two, its gradient is three, and the learning rate is zero point one. Where does one step take it?", [[109.013, 109.663], [111.043, 111.453], [112.933, 113.303], [115.423, 115.913]]],
-  "example/step": [117.932, 123.831, "The step is eta times g: zero point one times three is zero point three.", [[120.052, 120.622], [122.402, 122.622]]],
-  "example/sub": [124.211, 129.498, "Subtract it from w: two minus zero point three is one point seven.", [[125.681, 126.271], [128.111, 128.271]]],
-  "example/result": [129.878, 133.094, "The gradient was positive, so the weight went down.", [[131.418, 131.708]]]
+  "example/ask": [107.553, 116.855, "Your turn. A weight sits at two, its gradient is three, and the learning rate is zero point one. Where does one step take it?", [[108.173, 108.843], [110.273, 110.733], [112.193, 112.513], [114.683, 115.203]]],
+  "example/step": [117.235, 123.135, "The step is eta times g: zero point one times three is zero point three.", [[119.355, 119.925], [121.705, 121.925]]],
+  "example/sub": [123.515, 128.802, "Subtract it from w: two minus zero point three is one point seven.", [[124.985, 125.575], [127.415, 127.575]]],
+  "example/result": [129.182, 132.397, "The gradient was positive, so the weight went down.", [[130.722, 131.012]]]
  }
 }

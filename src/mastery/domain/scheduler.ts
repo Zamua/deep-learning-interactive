@@ -5,25 +5,31 @@ export type Records = Readonly<Record<string, ConceptRecord>>;
 
 export interface Pick {
   concept: string;
-  /** `new` means the concept's explainer comes first. */
-  reason: 'slipping' | 'review' | 'learning' | 'new';
+  /**
+   * `new`: a concept not yet started (its explainer comes first). `learning`: the concept in
+   * progress. `review` and `slipping`: mastered ones coming back. `refresh`: a prerequisite of a
+   * concept the learner is stuck on.
+   */
+  reason: 'new' | 'learning' | 'review' | 'slipping' | 'refresh';
   difficulty: number;
+  /** For `refresh`, the concept that needs it. */
+  for?: string;
 }
 
 export interface SessionState {
   graph: ConceptGraph;
   records: Records;
   now: number;
-  /** The concept of the previous problem, which should not come straight back. */
+  /** The concept of the previous problem. */
   last?: string;
   rand: () => number;
 }
 
-/** Concepts in learning at once; more spread practice too thin. */
-export const MAX_LEARNING = 3;
-/** Share of picks that go to due reviews while new material is waiting. */
+/** Share of picks that go to due reviews, between problems on the concept in progress. */
 export const REVIEW_SHARE = 0.3;
-const DIFFICULTY = { slipping: 0.4, review: 0.7 };
+/** Misses among a concept's last few answers that send the learner back to a prerequisite. */
+const STUCK = { misses: 3, of: 4 };
+const DIFFICULTY = { slipping: 0.4, review: 0.7, refresh: 0.5 };
 
 /** Unlocked for good once every prerequisite has been mastered at least once. */
 export function isUnlocked(graph: ConceptGraph, records: Records, id: string): boolean {
@@ -34,38 +40,51 @@ export function statuses(graph: ConceptGraph, records: Records, now: number): Ma
   return new Map(graph.order.map((c) => [c.id, status(records[c.id], isUnlocked(graph, records, c.id), now)]));
 }
 
-/** The next problem's concept, or null when nothing is due and nothing is left to learn. */
+/**
+ * The next problem's concept, or null when nothing is due and nothing is left to learn.
+ * One concept is learned at a time, until mastered; reviews of mastered concepts are mixed in.
+ */
 export function pickNext(s: SessionState): Pick | null {
-  return choose(s, s.last) ?? choose(s, undefined);
-}
-
-function choose(s: SessionState, avoid: string | undefined): Pick | null {
   const { graph, records, now } = s;
   const st = statuses(graph, records, now);
-  const ids = (want: Status) => graph.order.filter((c) => st.get(c.id) === want && c.id !== avoid).map((c) => c.id);
-  const depth = (id: string) => graph.depth.get(id)!;
-
-  const slipping = ids('slipping').sort((a, b) => depth(a) - depth(b));
-  if (slipping.length) return { concept: slipping[0]!, reason: 'slipping', difficulty: DIFFICULTY.slipping };
-
+  const ids = (want: Status) => graph.order.filter((c) => st.get(c.id) === want).map((c) => c.id);
+  const recent = (a: string, b: string) => (records[b]?.last ?? 0) - (records[a]?.last ?? 0);
   const overdue = (id: string) => {
     const r = records[id]!.review!;
     return (now - r.due) / (r.interval * DAY);
   };
-  const due = ids('due').sort((a, b) => overdue(b) - overdue(a));
+  const due = ids('due').sort((a, b) => overdue(b) - overdue(a)).filter((id) => id !== s.last);
+  const review = (): Pick | null => (due.length ? { concept: due[0]!, reason: 'review', difficulty: DIFFICULTY.review } : null);
 
-  // The frontier: everything in learning, topped up with new concepts to MAX_LEARNING.
-  const learning = graph.order.filter((c) => st.get(c.id) === 'learning').map((c) => c.id);
-  const fresh = ids('new').sort((a, b) => depth(a) - depth(b) || graph.dependents.get(b)!.length - graph.dependents.get(a)!.length);
-  const frontier = [...learning.filter((id) => id !== avoid), ...fresh.slice(0, Math.max(0, MAX_LEARNING - learning.length))];
-
-  if (due.length && (!frontier.length || s.rand() < REVIEW_SHARE)) return { concept: due[0]!, reason: 'review', difficulty: DIFFICULTY.review };
-  if (frontier.length) {
-    // Least recently practiced first, so a few concepts interleave.
-    const id = frontier.reduce((a, b) => ((records[b]?.last ?? 0) < (records[a]?.last ?? 0) ? b : a));
-    const rec = records[id];
-    if (!rec || rec.attempts === 0) return { concept: id, reason: 'new', difficulty: 0 };
-    return { concept: id, reason: 'learning', difficulty: Math.min(1, streak(rec) / graph.get(id)!.mastery.streak) };
+  // The concept in progress: a slipping or learning one, the most recently practiced first.
+  const slipping = ids('slipping').sort(recent);
+  if (slipping.length) return { concept: slipping[0]!, reason: 'slipping', difficulty: DIFFICULTY.slipping };
+  const focus = ids('learning').sort(recent)[0];
+  if (focus) {
+    const rec = records[focus]!;
+    const lastFew = rec.recent.slice(-STUCK.of);
+    if (s.last === focus && lastFew.length === STUCK.of && lastFew.filter((a) => !a.ok).length >= STUCK.misses) {
+      const pre = graph.get(focus)!.prereqs.filter((p) => p !== s.last).sort((a, b) => streak(records[a]!) - streak(records[b]!))[0];
+      if (pre) return { concept: pre, reason: 'refresh', difficulty: DIFFICULTY.refresh, for: focus };
+    }
+    if (due.length && s.rand() < REVIEW_SHARE) return review();
+    return { concept: focus, reason: 'learning', difficulty: Math.min(1, streak(rec) / graph.get(focus)!.mastery.streak) };
   }
-  return null;
+
+  // Nothing in progress: start a new concept, preferring what the latest mastery unlocked, then its domain.
+  const fresh = ids('new');
+  if (!fresh.length || (due.length && s.rand() < REVIEW_SHARE)) return review() ?? (fresh.length ? start(fresh) : null);
+  return start(fresh);
+
+  function start(cands: string[]): Pick {
+    const latest = graph.order.filter((c) => records[c.id]?.attempts).map((c) => c.id).sort(recent)[0];
+    const latestMastered = graph.order.filter((c) => records[c.id]?.mastered).map((c) => c.id).sort(recent)[0];
+    const domain = latest ? graph.get(latest)!.domain : undefined;
+    const unlockedBy = (id: string) => (latestMastered && graph.get(id)!.prereqs.includes(latestMastered) ? 0 : 1);
+    const sameDomain = (id: string) => (graph.get(id)!.domain === domain ? 0 : 1);
+    const depth = (id: string) => graph.depth.get(id)!;
+    const reach = (id: string) => graph.dependents.get(id)!.length;
+    const best = [...cands].sort((a, b) => unlockedBy(a) - unlockedBy(b) || sameDomain(a) - sameDomain(b) || depth(a) - depth(b) || reach(b) - reach(a))[0]!;
+    return { concept: best, reason: 'new', difficulty: 0 };
+  }
 }

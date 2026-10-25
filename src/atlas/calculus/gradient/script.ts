@@ -70,7 +70,7 @@ export const script: LectureScript = {
         np.array([df_du, df_dv])   # [6, 5]     #@grad
       `,
       beats: [
-        { id: 'ask', say: 'Your turn to follow along. {f(u, v) = u² + 2uv + 3v|f of u and v is u squared plus two u v plus three v}. What is the gradient at u equals one, v equals two?', code: 'ask' },
+        { id: 'ask', think: true, say: 'Your turn. {f(u, v) = u² + 2uv + 3v|f of u and v is u squared plus two u v plus three v}. What is the gradient at u equals one, v equals two?', code: 'ask' },
         { id: 'du', say: 'In u, hold v fixed. The partial is {2u + 2v|two u plus two v}, which is two plus four: six.', code: 'du' },
         { id: 'dv', say: 'In v, hold u fixed: {2u + 3|two u plus three}, which is five.', code: 'dv' },
         { id: 'grad', say: 'So the gradient is six, five.', code: 'grad' },

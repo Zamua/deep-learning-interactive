@@ -1,10 +1,10 @@
 {
- "duration": 155.173,
+ "duration": 154.011,
  "scenes": {
   "exp": [0.0, 42.912],
   "log": [42.912, 85.001],
   "rules": [85.001, 129.522],
-  "example": [129.522, 155.173]
+  "example": [129.522, 154.011]
  },
  "beats": {
   "exp/e": [0.7, 9.258, "The number e is about two point seven one eight. e to the x means e multiplied by itself, x times.", [[3.94, 4.52], [8.01, 8.33]]],
@@ -20,8 +20,8 @@
   "rules/nums": [96.89, 106.817, "ln two is about zero point six nine and ln three about one point one, so ln six is their sum, one point seven nine.", [[99.72, 100.1], [102.51, 102.99], [105.08, 105.49]]],
   "rules/flip": [107.197, 120.621, "One over a number flips the sign of its log: ln of a half is minus ln two, about minus zero point six nine. So minus ln of a half is plus zero point six nine.", [[110.017, 110.727], [113.527, 113.867], [115.947, 116.487], [118.437, 118.627]]],
   "rules/small": [121.001, 128.422, "The smaller the probability, the bigger minus its log: minus ln of a tenth is about two point three.", [[122.461, 122.751], [124.321, 124.951], [126.781, 126.981]]],
-  "example/ask": [130.222, 141.61, "Your turn to follow along. Use ln two is about zero point six nine, and ln five is about one point six one. What is ln ten?", [[131.672, 132.212], [135.832, 136.312], [137.582, 137.782], [139.542, 140.172]]],
-  "example/split": [141.99, 148.512, "Ten is two times five, so ln ten is ln two plus ln five.", [[143.89, 144.23], [145.73, 145.89], [146.99, 147.16]]],
-  "example/sum": [148.892, 154.073, "Zero point six nine plus one point six one is two point three zero.", [[152.092, 152.342]]]
+  "example/ask": [130.222, 140.448, "Your turn. Use ln two is about zero point six nine, and ln five is about one point six one. What is ln ten?", [[130.852, 131.532], [134.962, 135.332], [138.462, 139.102]]],
+  "example/split": [140.828, 147.35, "Ten is two times five, so ln ten is ln two plus ln five.", [[142.728, 143.068], [144.568, 144.728], [145.828, 145.998]]],
+  "example/sum": [147.73, 152.911, "Zero point six nine plus one point six one is two point three zero.", [[150.93, 151.18]]]
  }
 }

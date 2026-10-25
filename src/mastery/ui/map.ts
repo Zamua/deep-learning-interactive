@@ -2,7 +2,6 @@
 import { domainOf, DOMAINS } from '../../atlas/index';
 import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
-import { MAX_LEARNING } from '../domain/scheduler';
 import { streak, type Status } from '../domain/model';
 import type { Learner } from '../learner';
 import { exportSnapshot, importSnapshot } from '../store';
@@ -108,7 +107,8 @@ function sessionCard(learner: Learner, count: (...s: Status[]) => number): HTMLE
   }
   const reviews = count('due', 'slipping');
   const learning = count('learning');
-  const fresh = Math.min(count('new'), Math.max(0, MAX_LEARNING - learning));
+  // One concept is learned at a time: a new one starts only once nothing is in progress.
+  const fresh = learning || count('slipping') ? 0 : Math.min(1, count('new'));
   if (!reviews && !learning && !fresh) {
     const next = Object.values(learner.records).map((r) => r.review?.due ?? Infinity).reduce((a, b) => Math.min(a, b), Infinity);
     return h('div', { class: 'at-session' },

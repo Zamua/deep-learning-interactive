@@ -72,7 +72,7 @@ export const script: LectureScript = {
         u + v      # [3, 4, 5]   #@sum
       `,
       beats: [
-        { id: 'ask', say: 'Your turn. u is two, zero, three, and v is one, four, two. What is u plus v?' },
+        { id: 'ask', think: true, say: 'Your turn. u is two, zero, three, and v is one, four, two. What is u plus v?' },
         { id: 'pairs', say: 'Pair up matching entries: two plus one, zero plus four, three plus two.', code: 'sum' },
         { id: 'sum', say: 'So u plus v is three, four, five. Still three entries long.', code: 'sum' },
       ],

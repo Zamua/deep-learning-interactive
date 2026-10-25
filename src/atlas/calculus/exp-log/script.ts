@@ -76,7 +76,7 @@ export const script: LectureScript = {
         # 0.69 + 1.61 = 2.30          #@sum
       `,
       beats: [
-        { id: 'ask', say: 'Your turn to follow along. Use ln two is about {0.69|zero point six nine}, and ln five is about {1.61|one point six one}. What is ln ten?', code: 'ask' },
+        { id: 'ask', think: true, say: 'Your turn. Use ln two is about {0.69|zero point six nine}, and ln five is about {1.61|one point six one}. What is ln ten?', code: 'ask' },
         { id: 'split', say: 'Ten is two times five, so ln ten is ln two plus ln five.', code: 'split' },
         { id: 'sum', say: '{0.69 + 1.61 = 2.30|Zero point six nine plus one point six one is two point three zero}.', code: 'sum' },
       ],

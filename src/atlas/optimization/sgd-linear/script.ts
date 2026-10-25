@@ -73,7 +73,7 @@ export const script: LectureScript = {
         W[1, 0] -= lr * dW10      # 1 -> 1.12     #@step
       `,
       beats: [
-        { id: 'ask', say: 'Your turn to follow along. The weight in row one, column zero is one. The input is three, minus one; the correct class is class one; softmax gives {0.4|zero point four} and {0.6|zero point six}; and {η|eta} is {0.1|zero point one}. What is that weight after one step?', code: 'given' },
+        { id: 'ask', think: true, say: 'Your turn. The weight in row one, column zero is one. The input is three, minus one; the correct class is class one; softmax gives {0.4|zero point four} and {0.6|zero point six}; and {η|eta} is {0.1|zero point one}. What is that weight after one step?', code: 'given' },
         { id: 'ds', say: 'The score gradient, p minus one-hot, is {0.4|zero point four}, and {0.6|zero point six} minus one: minus {0.4|zero point four}.', code: 'ds' },
         { id: 'dW', say: 'The weight\'s gradient is ds one times x zero: minus {0.4|zero point four} times three, minus {1.2|one point two}.', code: 'dW' },
         { id: 'step', say: 'Step against it: one, minus {0.1|zero point one} times minus {1.2|one point two}, is {1.12|one point one two}. The correct class\'s weight grew.', code: 'step' },

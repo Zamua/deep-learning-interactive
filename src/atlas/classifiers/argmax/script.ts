@@ -52,7 +52,7 @@ export const script: LectureScript = {
         s.argmax()    # 2             #@arg
       `,
       beats: [
-        { id: 'ask', say: 'Your turn. The scores are four, minus one, six and three. What is the argmax?', code: 's' },
+        { id: 'ask', think: true, say: 'Your turn. The scores are four, minus one, six and three. What is the argmax?', code: 's' },
         { id: 'max', say: 'The largest score is six.' },
         { id: 'arg', say: 'Count from zero: four is at zero, minus one at one, and six at two. The argmax is two.', code: 'arg' },
       ],

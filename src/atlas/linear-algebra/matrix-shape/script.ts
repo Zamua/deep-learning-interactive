@@ -71,7 +71,7 @@ export const script: LectureScript = {
         W.shape   # (3, 2)   #@ans
       `,
       beats: [
-        { id: 'ask', say: 'Your turn. What is the shape of this matrix?' },
+        { id: 'ask', think: true, say: 'Your turn. What is the shape of this matrix?' },
         { id: 'rows', say: 'Count the rows, top to bottom: one, two, three.' },
         { id: 'cols', say: 'Count the columns, left to right: one, two.' },
         { id: 'ans', say: 'Rows first: the shape is three by two.', code: 'ans' },

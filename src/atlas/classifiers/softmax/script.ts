@@ -90,7 +90,7 @@ export const script: LectureScript = {
         p = e / e.sum()  # p[2] = 0.67        #@p
       `,
       beats: [
-        { id: 'ask', say: 'Your turn to follow along. The scores are one, zero and two. What probability does class two get?' },
+        { id: 'ask', think: true, say: 'Your turn. The scores are one, zero and two. What probability does class two get?' },
         { id: 'e', say: 'Exponentiate: {2.72|two point seven two}, one, and {7.39|seven point three nine}.', code: 'exp' },
         { id: 'sum', say: 'Add them: {11.11|eleven point one one}.', code: 'sum' },
         { id: 'p', say: 'Divide class two\'s by the total: {7.39|seven point three nine} over {11.11|eleven point one one} is about {0.67|zero point six seven}.', code: 'p' },

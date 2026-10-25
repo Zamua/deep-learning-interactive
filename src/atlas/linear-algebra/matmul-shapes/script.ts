@@ -55,7 +55,7 @@ export const script: LectureScript = {
         (A @ B).shape   # (4, 5)       #@outer
       `,
       beats: [
-        { id: 'ask', say: 'Your turn. A is four by two, and B is two by five. What shape is A times B?' },
+        { id: 'ask', think: true, say: 'Your turn. A is four by two, and B is two by five. What shape is A times B?' },
         { id: 'inner', say: 'The inner dimensions are two and two. They match, so the product works.', code: 'inner' },
         { id: 'outer', say: 'The outer ones give the shape: four by five.', code: 'outer' },
       ],

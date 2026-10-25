@@ -1,11 +1,11 @@
 {
- "duration": 133.984,
+ "duration": 133.264,
  "scenes": {
   "scores": [0.0, 22.237],
   "exp": [22.237, 48.462],
   "divide": [48.462, 78.957],
   "gaps": [78.957, 106.346],
-  "example": [106.346, 133.984]
+  "example": [106.346, 133.264]
  },
  "beats": {
   "scores/scores": [0.7, 7.777, "A classifier hands back one score per class. Here there are three: two, one, and minus one.", [[3.66, 4.15], [5.21, 5.62], [5.97, 6.26], [6.64, 6.83]]],
@@ -23,9 +23,9 @@
   "gaps/shift": [79.657, 89.487, "Add five to every score. Every exponential gets multiplied by the same factor, and that factor cancels when we divide. Nothing changes.", [[81.487, 82.087], [85.287, 85.707], [87.917, 88.427]]],
   "gaps/scale": [89.867, 97.115, "Double every score instead, and the gaps between them double. The top class grows to zero point eight eight.", [[91.707, 92.007], [93.767, 94.337]]],
   "gaps/soft": [97.495, 105.246, "That is the name: a soft maximum. The top score gets most of the probability, but every class keeps a little.", [[98.555, 98.995], [100.185, 100.715], [103.045, 103.385]]],
-  "example/ask": [107.046, 114.973, "Your turn to follow along. The scores are one, zero and two. What probability does class two get?", [[108.486, 109.046], [109.966, 110.176], [110.566, 110.826], [112.116, 112.686]]],
-  "example/e": [115.353, 120.969, "Exponentiate: two point seven two, one, and seven point three nine.", [[116.403, 117.023], [118.213, 118.513], [118.953, 119.223]]],
-  "example/sum": [121.349, 124.016, "Add them: eleven point one one.", [[121.889, 122.429]]],
-  "example/p": [124.396, 132.884, "Divide class two's by the total: seven point three nine over eleven point one one is about zero point six seven.", [[126.496, 127.126], [130.406, 130.706]]]
+  "example/ask": [107.046, 114.254, "Your turn. The scores are one, zero and two. What probability does class two get?", [[107.676, 108.256], [109.086, 109.446], [109.856, 110.096], [110.626, 110.796], [111.376, 111.966]]],
+  "example/e": [114.634, 120.249, "Exponentiate: two point seven two, one, and seven point three nine.", [[115.684, 116.304], [117.494, 117.794], [118.234, 118.504]]],
+  "example/sum": [120.629, 123.297, "Add them: eleven point one one.", [[121.169, 121.709]]],
+  "example/p": [123.677, 132.164, "Divide class two's by the total: seven point three nine over eleven point one one is about zero point six seven.", [[125.777, 126.407], [129.687, 129.987]]]
  }
 }

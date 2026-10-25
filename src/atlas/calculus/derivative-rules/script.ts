@@ -75,7 +75,7 @@ export const script: LectureScript = {
         df = lambda x: 12*x**2 - 6*x         #@ans
       `,
       beats: [
-        { id: 'ask', say: 'Your turn to follow along. What is the derivative of {4x³ − 3x² + 5|four x cubed minus three x squared plus five}?', code: 'ask' },
+        { id: 'ask', think: true, say: 'Your turn. What is the derivative of {4x³ − 3x² + 5|four x cubed minus three x squared plus five}?', code: 'ask' },
         { id: 't1', say: 'Term by term. In four x cubed, the three comes down: four times three is twelve, so {12x²|twelve x squared}.', code: 't1' },
         { id: 't2', say: 'Minus three x squared becomes minus six x.', code: 't2' },
         { id: 't3', say: 'The five is a constant, so it drops out. The derivative is {12x² − 6x|twelve x squared minus six x}.', code: ['t3', 'ans'] },

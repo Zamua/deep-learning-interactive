@@ -69,7 +69,7 @@ export const script: LectureScript = {
         # factor 1 - 2*a*lr = 0.6    #@check
       `,
       beats: [
-        { id: 'ask', say: 'Your turn to follow along. The loss is two x squared, x is three, and {η|eta} is {0.1|zero point one}. Where is x after one step?', code: 'given' },
+        { id: 'ask', think: true, say: 'Your turn. The loss is two x squared, x is three, and {η|eta} is {0.1|zero point one}. Where is x after one step?', code: 'given' },
         { id: 'grad', say: 'The gradient is two a x: two times two times three, twelve.', code: 'g' },
         { id: 'step', say: 'The step is {0.1|zero point one} times twelve, {1.2|one point two}. So x goes to three minus {1.2|one point two}: {1.8|one point eight}.', code: 'step' },
         { id: 'check', say: 'Check with the factor: one minus two times two times {0.1|zero point one} is {0.6|zero point six}, and {0.6|zero point six} times three is {1.8|one point eight}.', code: 'check' },

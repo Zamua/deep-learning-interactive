@@ -57,7 +57,7 @@ export const script: LectureScript = {
         W @ x      # [4, 6]          #@ans
       `,
       beats: [
-        { id: 'ask', say: 'Your turn. W has rows two, one and zero, three, and x is one, two. What is W x?' },
+        { id: 'ask', think: true, say: 'Your turn. W has rows two, one and zero, three, and x is one, two. What is W x?' },
         { id: 'r0', say: 'Row zero dotted with x: two times one, plus one times two, is four.', code: 'r0' },
         { id: 'r1', say: 'Row one: zero times one, plus three times two, is six.', code: 'r1' },
         { id: 'ans', say: 'So W x is four, six.', code: 'ans' },

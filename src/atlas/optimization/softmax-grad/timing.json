@@ -1,10 +1,10 @@
 {
- "duration": 148.153,
+ "duration": 147.381,
  "scenes": {
   "setup": [0.0, 35.921],
   "derive": [35.921, 76.493],
   "bars": [76.493, 120.296],
-  "example": [120.296, 148.153]
+  "example": [120.296, 147.381]
  },
  "beats": {
   "setup/chain": [0.7, 18.179, "A classifier's scores, s, go through softmax to give probabilities, p. The loss is minus the log of the correct class's probability. Here the correct class is class one, so the loss is minus log zero point three, about one point two.", [[2.19, 2.46], [2.88, 3.15], [5.74, 5.99], [6.29, 6.97], [10.63, 11.16], [13.41, 13.74], [16.62, 17.0]]],
@@ -19,9 +19,9 @@
   "bars/sum": [96.461, 103.566, "The entries always add up to zero: p adds up to one, and the label takes exactly one away.", [[98.731, 99.261], [100.591, 100.971]]],
   "bars/step": [103.946, 111.237, "A step against the gradient raises the correct score and lowers the others, the most confident wrong class the most.", [[106.996, 107.156], [108.306, 108.806], [110.496, 110.646]]],
   "bars/done": [111.617, 119.196, "And once the model gives the correct class nearly all the probability, the gradient is nearly zero: there is little left to learn.", [[115.227, 115.547], [117.247, 117.767]]],
-  "example/ask": [120.996, 132.477, "Your turn to follow along. Softmax gives zero point five, zero point two and zero point three, and the correct class is class zero. What is the gradient?", [[122.416, 123.136], [125.396, 125.716], [126.776, 127.006], [128.296, 128.676], [130.826, 131.366]]],
-  "example/onehot": [132.857, 137.11, "The one-hot label for class zero is one, zero, zero.", [[135.767, 135.937]]],
-  "example/sub": [137.49, 143.957, "Subtract it: minus zero point five, then zero point two and zero point three.", [[138.31, 138.89], [140.57, 140.86], [142.31, 142.6]]],
-  "example/check": [144.337, 147.053, "Check: the entries add up to zero.", [[144.737, 145.217]]]
+  "example/ask": [120.996, 131.705, "Your turn. Softmax gives zero point five, zero point two and zero point three, and the correct class is class zero. What is the gradient?", [[121.636, 122.336], [124.596, 124.886], [125.976, 126.186], [127.506, 127.946], [130.086, 130.616]]],
+  "example/onehot": [132.085, 136.338, "The one-hot label for class zero is one, zero, zero.", [[134.995, 135.165]]],
+  "example/sub": [136.718, 143.185, "Subtract it: minus zero point five, then zero point two and zero point three.", [[137.538, 138.118], [139.798, 140.088], [141.538, 141.828]]],
+  "example/check": [143.565, 146.281, "Check: the entries add up to zero.", [[143.965, 144.445]]]
  }
 }

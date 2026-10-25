@@ -67,7 +67,7 @@ export const script: LectureScript = {
         -np.log(p[y])    # 1.20         #@L
       `,
       beats: [
-        { id: 'ask', say: 'Your turn. The probabilities are {0.1|zero point one}, {0.6|zero point six} and {0.3|zero point three}, and the right class is two. The log of {0.3|zero point three} is about minus {1.20|one point two zero}.', code: 'p' },
+        { id: 'ask', think: true, say: 'Your turn. The probabilities are {0.1|zero point one}, {0.6|zero point six} and {0.3|zero point three}, and the right class is two. The log of {0.3|zero point three} is about minus {1.20|one point two zero}.', code: 'p' },
         { id: 'pick', say: 'The loss looks only at class two, with {0.3|zero point three}. Not {0.6|zero point six}, even though that is the largest.' },
         { id: 'L', say: 'Minus its log, minus minus {1.20|one point two zero}, gives a loss of {1.20|one point two zero}.', code: 'L' },
       ],

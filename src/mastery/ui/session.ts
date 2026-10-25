@@ -56,7 +56,7 @@ export interface Asked {
  * Shows a problem and resolves with the learner's checked answer. Unreadable input is
  * explained in place and never resolves. Time spent with the page hidden does not count.
  */
-export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { problem: Problem; tag: HTMLElement; rng: Rng; worked?: () => Problem; target?: number }): Promise<Asked> {
+export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { problem: Problem; tag: HTMLElement; rng: Rng; worked?: () => Problem; target?: number; note?: string }): Promise<Asked> {
   const { problem: p, rng } = opts;
   frame.body.innerHTML = '';
   frame.dock.innerHTML = '';
@@ -81,6 +81,7 @@ export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { pro
         solutionList(w.solution));
       stuck.remove();
     });
+    if (opts.note) frame.body.append(h('div', { class: 'at-transition' }, opts.note));
     frame.body.append(opts.tag, h('div', { class: 'at-prompt', html: render(p.prompt) }));
     if (p.code) frame.body.append(new CodePanel(p.code, { bare: true }).el);
     frame.body.append(pad.display, msg, hint, workedBox);
@@ -223,6 +224,7 @@ function problemTag(c: Concept, pick: Pick, rec: ConceptRecord): HTMLElement {
   const n = pick.reason === 'slipping' ? recoveryStreak(c.mastery) : c.mastery.streak;
   const right =
     pick.reason === 'review' ? h('span', { html: `${icon('clock')} review` })
+    : pick.reason === 'refresh' ? h('span', { html: `${icon('reset')} refresher` })
     : h('span', {}, dots(Math.min(streak(rec), n), n), ` ${Math.min(streak(rec), n)} of ${n} in a row`);
   return h('div', { class: 'at-tag', style: `--dom:var(--c-${domainOf(c).color})` }, h('b', {}, c.title), right);
 }
@@ -251,7 +253,8 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       if (!pick) return caughtUp();
       const c = learner.graph.get(pick.concept)!;
       // A watched explainer is the introduction; otherwise offer it first.
-      if (pick.reason === 'new' && !introduced.has(c.id) && (lectureState(explainerId(c.id))?.heard ?? 0) < 0.5) {
+      const fresh = pick.reason === 'new' && !introduced.has(c.id);
+      if (fresh && (lectureState(explainerId(c.id))?.heard ?? 0) < 0.5) {
         introduced.add(c.id);
         await intro(c, pick);
       }
@@ -270,6 +273,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         problem,
         rng,
         tag,
+        note: fresh && introduced.has(c.id) ? undefined : transition(pick, last),
         target: c.mastery.seconds,
         worked: () => gen.make(new Rng(rng.int(2 ** 31)), pick.difficulty),
       });
@@ -281,6 +285,34 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       frame.setProgress(results.length, SESSION_LENGTH, `${results.length} of ${SESSION_LENGTH}`);
       await feedback(frame, c, problem, got, before, after, learner.graph);
     }
+  };
+
+  const title = (id: string) => learner.graph.get(id)!.title;
+  const names = (ids: string[]) => ids.map(title).join(ids.length > 2 ? ', ' : ' and ');
+
+  /** Why this problem's concept follows the previous one, when it changes. */
+  const transition = (pick: Pick, prev?: string): string | undefined => {
+    if (pick.concept === prev) return undefined;
+    const t = title(pick.concept);
+    switch (pick.reason) {
+      case 'review':
+        return `A quick review of ${t}, mastered earlier, so it stays fresh.`;
+      case 'slipping':
+        return `${t} slipped on a review. A few right in a row bring it back.`;
+      case 'refresh':
+        return `${title(pick.for!)} builds on ${t}. One on ${t} first, then back to ${title(pick.for!)}.`;
+      case 'learning':
+        return prev ? `Back to ${t}.` : undefined;
+      case 'new':
+        return `New concept: ${t}. ${whyNew(pick.concept, prev)}`;
+    }
+  };
+
+  /** Where a new concept sits: what it builds on, or that it is a starting point. */
+  const whyNew = (id: string, prev?: string): string => {
+    const pre = learner.graph.get(id)!.prereqs;
+    if (!pre.length) return 'It is a starting point: nothing comes before it.';
+    return `It builds on ${names(pre)}${prev && pre.includes(prev) && learner.record(prev).mastered ? `, which you just mastered` : ''}.`;
   };
 
   const intro = (c: Concept, pick: Pick): Promise<void> =>
@@ -302,7 +334,8 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         h('div', { class: 'at-kicker at-kicker-dom' }, `New concept · ${domainOf(c).title}`),
         h('h1', { class: 'at-title at-title-c' }, c.title),
         h('p', { class: 'at-lede' }, c.blurb),
-        h('p', { class: 'at-small' }, `Mastered after ${c.mastery.streak} right in a row, about ${c.mastery.seconds} s each.`),
+        h('p', { class: 'at-why' }, whyNew(c.id, last)),
+        h('p', { class: 'at-small' }, `You will practice it until ${c.mastery.streak} in a row are right, about ${c.mastery.seconds} s each. Then the next concept opens.`),
         example));
       if (hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-check', href: `#/atlas/${c.id}/watch`, html: `${icon('playFill')} Watch the explainer` }));
       frame.dock.append(start);
