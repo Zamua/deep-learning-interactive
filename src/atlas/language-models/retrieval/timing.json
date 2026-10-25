@@ -1,0 +1,23 @@
+{
+ "duration": 115.385,
+ "scenes": {
+  "stale": [0.0, 27.705],
+  "score": [27.705, 85.838],
+  "prompt": [85.838, 115.385]
+ },
+ "beats": {
+  "stale/ask": [0.7, 9.894, "A model knows what it read in training. Ask about something that has changed since, like the library's Sunday hours, and it answers from that old text.", [[2.84, 3.35], [5.63, 5.89], [7.51, 7.83]]],
+  "stale/context": [10.274, 17.679, "In-context learning showed a fix: put the facts in the prompt. The model reads them there, and no weight changes.", [[12.424, 12.914], [14.404, 14.944]]],
+  "stale/which": [18.059, 26.605, "But the library's pages may hold thousands of passages, far too many for one prompt. Retrieval picks the few that match the question.", [[21.269, 21.599], [23.369, 23.949]]],
+  "score/embed": [28.405, 39.197, "An embedding model turns any text into a vector, so that texts about the same thing point the same way. Embed the question, and every passage once, ahead of time.", [[31.445, 31.785], [33.655, 33.815], [34.925, 35.545], [36.545, 36.735], [38.215, 38.385]]],
+  "score/size": [39.577, 55.055, "Each vector is scaled to size one: its squared entries add up to one. Then a dot product sees only direction: one when two vectors point the same way, zero at a right angle. It is called cosine similarity.", [[41.917, 42.417], [44.477, 45.007], [47.647, 48.157], [50.607, 51.077], [52.477, 52.947]]],
+  "score/score": [55.435, 69.408, "The question is zero point six, zero point eight. Passage zero, zero point eight, zero point six, scores zero point four eight plus zero point four eight: zero point nine six.", [[56.445, 56.635], [57.855, 58.035], [59.145, 59.815], [60.755, 61.105], [62.115, 62.285], [63.435, 63.725], [64.205, 64.365], [65.605, 65.755], [67.395, 67.795]]],
+  "score/rest": [69.788, 78.709, "Passage one, one and zero, scores zero point six. Passage two, at a right angle, scores zero.", [[70.638, 71.088], [72.158, 72.548], [74.298, 74.888], [75.728, 76.188], [77.148, 77.538], [78.038, 78.188]]],
+  "score/top": [79.089, 84.738, "Keep the top k. With k of two, that is passages zero and one.", [[79.839, 80.049], [80.369, 80.939], [82.169, 82.509]]],
+  "prompt/build": [86.538, 90.025, "Put the top passages into the prompt, before the question.", [[88.668, 88.988]]],
+  "prompt/answer": [90.405, 97.488, "The model reads the current hours in its context and answers from them: noon. Its weights never changed.", [[94.175, 94.785], [95.245, 95.795]]],
+  "prompt/update": [97.868, 104.503, "When the hours change again, embed the new page and swap it into the collection. No model is retrained.", [[99.338, 99.638], [102.438, 102.928]]],
+  "prompt/cost": [104.883, 113.164, "The passages do take room in the context: two of two hundred tokens before a question of ten make four hundred ten tokens.", [[107.353, 107.883], [111.003, 111.193]]],
+  "prompt/turn": [113.544, 114.285, "Your turn.", []]
+ }
+}
