@@ -1,0 +1,21 @@
+{
+ "duration": 110.963,
+ "scenes": {
+  "gate": [0.0, 37.889],
+  "example": [37.889, 72.586],
+  "width": [72.586, 110.963]
+ },
+ "beats": {
+  "gate/old": [0.7, 8.768, "The block's MLP widens each token from d numbers to four d, applies a ReLU, and projects back down to d.", [[5.13, 5.51], [6.53, 6.8]]],
+  "gate/two": [9.148, 17.472, "A gated MLP makes two projections of the token instead, each h numbers wide: a gate, and an up projection.", [[12.928, 13.368], [14.908, 15.408], [15.878, 16.178]]],
+  "gate/swish": [17.852, 30.256, "The gate goes through swish: z times the sigmoid of z. It is a smooth ReLU, near zero for large negative z, and near z itself for large positive z.", [[19.042, 19.462], [20.112, 20.622], [22.592, 23.122], [24.492, 24.852], [27.032, 27.342]]],
+  "gate/mul": [30.636, 36.789, "Then the two are multiplied, entry by entry, and the result is projected back down to d.", [[32.376, 32.676], [33.826, 34.226]]],
+  "example/in": [38.589, 45.855, "Say the gate is two, minus one and zero, and the up projection is one, three and minus two.", [[39.929, 40.209], [41.739, 42.159], [43.999, 44.229], [44.709, 44.859]]],
+  "example/sw": [46.235, 60.073, "Swish the gate. The sigmoid of two is about zero point eight eight, so two becomes one point seven six. Minus one becomes minus zero point two seven, and zero stays zero.", [[47.255, 47.945], [50.995, 51.365], [54.085, 54.675], [57.895, 58.265]]],
+  "example/mul": [60.453, 71.486, "Multiply by the up projection: one point seven six, minus zero point eight one, and zero. A unit is large only when both of its projections are.", [[62.323, 62.923], [64.303, 64.593], [66.443, 66.733], [67.393, 68.063]]],
+  "width/count": [73.286, 80.639, "Count the weights. The ReLU MLP has two matrices of d by four d: eight d squared.", [[74.306, 74.816], [78.926, 79.456]]],
+  "width/three": [81.019, 93.31, "The gated MLP has three, gate, up and down, each d by h: three d h. At h equal to four d, that is half again as many.", [[83.149, 83.739], [84.079, 84.439], [85.329, 85.779], [87.379, 87.819], [89.049, 89.559], [91.259, 91.629], [92.009, 92.159]]],
+  "width/match": [93.69, 108.743, "To keep the same size, set three d h equal to eight d squared: h is eight thirds of d. With d at seven hundred sixty eight, that is two thousand and forty eight units instead of three thousand and seventy two.", [[95.12, 95.38], [98.52, 99.1], [100.96, 101.68], [103.75, 104.09]]],
+  "width/turn": [109.123, 109.863, "Your turn.", []]
+ }
+}

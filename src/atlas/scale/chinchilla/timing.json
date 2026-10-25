@@ -1,0 +1,24 @@
+{
+ "duration": 122.815,
+ "scenes": {
+  "valley": [0.0, 39.396],
+  "solve": [39.396, 78.687],
+  "ratio": [78.687, 122.815]
+ },
+ "beats": {
+  "valley/budget": [0.7, 11.218, "Fix a budget of one point two times ten to the twenty two FLOPs. Compute is six N D, so the bigger the model, the fewer tokens it can afford to read.", [[4.8, 5.39], [7.13, 7.52], [8.8, 9.06]]],
+  "valley/sizes": [11.598, 17.933, "Train models of many sizes on that same budget, and plot each one's final loss against its size.", [[14.568, 14.848]]],
+  "valley/small": [18.313, 23.283, "Too small, and the model lacks the room to learn, however many tokens it reads.", [[19.163, 19.353], [21.223, 21.503]]],
+  "valley/big": [23.663, 29.915, "Too big, and it reads too few tokens to train all those parameters: it is under-trained.", [[24.363, 24.613], [28.213, 28.703]]],
+  "valley/best": [30.295, 38.296, "The bottom of the valley is the compute-optimal size. Measured across many budgets, it sits at about twenty tokens per parameter.", [[33.275, 33.825], [35.365, 35.635]]],
+  "solve/sub": [40.096, 49.922, "Put D equals twenty N into C equals six N D. Six N times twenty N: C is a hundred and twenty N squared.", [[44.356, 44.966], [46.806, 47.356]]],
+  "solve/root": [50.302, 54.403, "So N is the square root of C over a hundred and twenty.", []],
+  "solve/ex": [54.783, 68.056, "For our budget, C over a hundred and twenty is ten to the twenty, and its square root is ten to the ten: ten billion parameters, trained on twenty times that, two hundred billion tokens.", [[55.693, 55.923], [59.103, 59.513], [61.713, 62.183], [63.703, 64.023], [65.683, 66.103]]],
+  "solve/grow": [68.436, 77.587, "N grows as the square root of C. So four times the budget buys twice the parameters and twice the tokens: they grow together.", [[70.736, 71.246], [74.526, 74.706], [76.016, 76.456]]],
+  "ratio/ratio": [79.387, 85.008, "To judge a trained model, divide its tokens by its parameters, and compare with twenty.", [[80.777, 81.127], [83.277, 83.537]]],
+  "ratio/under": [85.388, 99.036, "A hundred and seventy five billion parameters on three hundred billion tokens is under two per parameter: badly under-trained. A smaller model, on more tokens, would have reached a lower loss for the same compute.", [[89.928, 90.208], [91.828, 92.348], [93.698, 94.268], [95.158, 95.328], [96.258, 96.478]]],
+  "ratio/opt": [99.416, 106.57, "Seventy billion parameters on one point four trillion tokens is twenty per parameter: compute-optimal.", [[103.276, 103.436], [105.006, 105.456]]],
+  "ratio/over": [106.95, 120.595, "Eight billion on fifteen trillion is nearly two thousand per parameter, far past compute-optimal. That costs extra training, but every forward pass afterwards is cheaper, at two N FLOPs per token.", [[111.42, 111.75], [113.42, 113.99], [115.53, 115.93], [118.46, 118.74]]],
+  "ratio/turn": [120.975, 121.715, "Your turn.", []]
+ }
+}

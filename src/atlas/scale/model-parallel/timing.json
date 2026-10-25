@@ -1,0 +1,23 @@
+{
+ "duration": 143.785,
+ "scenes": {
+  "columns": [0.0, 58.443],
+  "rows": [58.443, 98.995],
+  "pipeline": [98.995, 143.785]
+ },
+ "beats": {
+  "columns/layer": [0.7, 13.738, "Here is one layer, written the way code often writes it: the input x is a row of d numbers, and the weight matrix W one has d rows and four d columns, one column per output.", [[1.78, 2.08], [3.99, 4.62], [7.08, 7.43], [9.28, 9.45], [11.85, 12.26]]],
+  "columns/cols": [14.118, 22.666, "Each output is x dotted with one column. Output zero: one times one, plus two times one: three.", [[17.038, 17.628], [18.558, 19.098], [20.168, 20.478], [21.748, 22.198]]],
+  "columns/split": [23.046, 32.102, "So split the columns: GPU zero keeps columns zero and one, and GPU one keeps columns two and three.", [[24.406, 24.946], [28.206, 28.626], [30.116, 30.286]]],
+  "columns/own": [32.482, 47.413, "Each GPU computes its own outputs: three and two on GPU zero, two and one on GPU one, neither waiting for the other. The ReLU works entry by entry, so each applies it to its own part.", [[35.212, 35.602], [37.922, 38.332], [40.252, 40.712], [42.192, 42.852], [44.992, 45.302]]],
+  "columns/shape": [47.793, 57.343, "With k GPUs, each piece is d by four d over k: on four GPUs, every GPU holds a quarter of the columns.", [[49.193, 49.503], [52.273, 52.893], [54.193, 54.523]]],
+  "rows/w2": [59.143, 71.464, "The next matrix, W two, takes the four d outputs back down to d. Split it by rows to match: GPU zero gets the rows that read its own two outputs.", [[60.243, 60.423], [61.273, 61.633], [64.403, 65.033], [66.663, 67.253]]],
+  "rows/part": [71.844, 82.645, "Now each GPU's product is only part of the answer. GPU zero gets three and two, GPU one gets one and two: partial sums.", [[75.254, 75.854], [78.334, 78.864], [81.124, 81.654]]],
+  "rows/sum": [83.025, 97.895, "Adding them across the GPUs gives the real output, four and four. That exchange happens inside every layer, every step, so this split, tensor parallelism, needs very fast links between its GPUs.", [[86.025, 86.415], [87.485, 88.125], [90.745, 91.015], [91.825, 92.255], [93.205, 93.485], [94.645, 94.925]]],
+  "pipeline/layers": [99.695, 109.207, "Or cut the network the other way, between layers. Twenty four layers on four GPUs: six consecutive layers each, called a stage.", [[101.545, 101.805], [102.735, 103.325], [105.755, 106.175], [108.055, 108.255]]],
+  "pipeline/which": [109.587, 120.436, "Counting from zero, stage zero holds layers zero to five, so layer thirteen lands on stage two: thirteen over six, rounded down.", [[110.777, 111.237], [114.057, 114.487], [117.287, 117.767], [119.167, 119.377]]],
+  "pipeline/send": [120.816, 133.411, "Each stage runs its layers, then hands its output to the next stage, and the gradient on that output comes back. Nothing else crosses: once per cut, not inside every layer.", [[122.676, 123.006], [125.326, 125.656], [128.006, 128.596], [129.966, 130.386], [131.366, 131.726]]],
+  "pipeline/compare": [133.791, 141.565, "That is pipeline parallelism. The column split talks inside every layer; the layer split only at its cuts.", [[135.751, 136.281], [138.841, 139.361], [140.111, 140.271]]],
+  "pipeline/turn": [141.945, 142.685, "Your turn.", []]
+ }
+}

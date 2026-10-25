@@ -1,0 +1,121 @@
+import type { Generator } from '../../../mastery/domain/types';
+import { num, pick } from '../../kit';
+import { C, D, N, big, clean, sci, sciOf, traps, whys, words } from '../kit';
+
+/** Model sizes in billions whose compute-optimal budget, 120 N², has a clean square root. */
+const SIZES = [[1, 10, 100], [2, 3, 5, 20, 30, 50], [4, 6, 7, 8, 40, 60, 70]];
+const sizes = (d: number) => SIZES[d < 0.35 ? 0 : d < 0.7 ? 1 : 2]!;
+
+/** The budget for an m-billion-parameter model trained on 20 tokens per parameter. */
+const budget = (m: number): number => 120 * (m * 1e9) ** 2;
+
+const steps = (m: number): string[] => {
+  const c = budget(m);
+  const pure = m === 1 || m === 10 || m === 100;
+  return [
+    `Compute-optimal means $${D} = 20${N}$, so $${C} = 6${N}${D} = 120${N}^2$.`,
+    `So $${N} = \\sqrt{${C} / 120}$: $${sciOf(c)} / 120 = ${pure ? sciOf(c / 120) : `${big(m * m)} \\times 10^{18}`}$.`,
+    `Its square root is $${pure ? sciOf(m * 1e9) : `${m} \\times 10^{9}`}$: ${words(m * 1e9)} parameters.`,
+  ];
+};
+
+export const generators: Generator[] = [
+  {
+    id: 'size',
+    make(rng, d) {
+      const m = pick(rng, sizes(d));
+      return {
+        prompt: `A training budget is $${C} = ${sciOf(budget(m))}$ FLOPs. Training compute-optimally, with about $${D} = 20${N}$ tokens, how many billion parameters should the model have?`,
+        answer: { kind: 'number', value: m },
+        traps: traps(m, [{ value: 20 * m, why: `That is $${D}$, the tokens: $20${N}$. The model itself has a twentieth of that.` }]),
+        solution: steps(m),
+      };
+    },
+  },
+  {
+    id: 'tokens',
+    make(rng, d) {
+      const m = pick(rng, sizes(d));
+      const v = 20 * m;
+      if (d < 0.35) {
+        return {
+          prompt: `A model with ${words(m * 1e9)} parameters is trained compute-optimally. How many billion tokens should it see?`,
+          answer: { kind: 'number', value: v },
+          traps: traps(v, [{ value: 6 * m, why: 'The 6 belongs to the compute, $6ND$ FLOPs. The compute-optimal ratio is about 20 tokens per parameter.' }]),
+          solution: [`Compute-optimal training uses about 20 tokens per parameter: $${D} = 20${N}$.`, `$20 \\times ${m} = ${big(v)}$ billion tokens.`],
+        };
+      }
+      return {
+        prompt: `A training budget is $${C} = ${sciOf(budget(m))}$ FLOPs. Training compute-optimally, how many billion tokens should the model see?`,
+        answer: { kind: 'number', value: v },
+        traps: traps(v, [{ value: m, why: `That is $${N}$, the parameters. The tokens are about 20 times as many: $${D} = 20${N}$.` }]),
+        solution: [...steps(m), `Then $${D} = 20${N} = 20 \\times ${sci(m, 9)} = ${sciOf(v * 1e9)}$: ${v.toLocaleString('en-US')} billion tokens.`],
+      };
+    },
+  },
+  {
+    id: 'scale-up',
+    make(rng, d) {
+      const k = pick(rng, d < 0.35 ? [4, 9, 16, 25, 100] : [4, 9, 16, 25, 100, 400, 10000]);
+      const r = Math.sqrt(k);
+      const what = rng.int(d < 0.35 ? 2 : 3);
+      const ask = ['the number of parameters', 'the number of training tokens', 'the number of tokens per parameter'][what]!;
+      const v = what === 2 ? 1 : r;
+      const kText = k.toLocaleString('en-US');
+      const kTex = big(k);
+      return {
+        prompt: `A compute-optimal model is trained, and then the budget grows ${kText} times. For the new compute-optimal model, by what factor should ${ask} grow?`,
+        answer: { kind: 'number', value: v },
+        traps: traps(
+          v,
+          what === 2
+            ? [
+                { value: r, why: `$${N}$ and $${D}$ each grow by $\\sqrt{${kTex}} = ${num(r)}$, so their ratio does not change: it stays at about 20.` },
+                { value: k, why: `That would put all the new compute into tokens, with the model unchanged. $${N}$ and $${D}$ grow together, so their ratio stays at about 20.` },
+              ]
+            : [{ value: k, why: `That puts all ${kText} times the compute into one of them. Compute is $6${N}${D}$, so $${N}$ and $${D}$ share it: each grows by $\\sqrt{${kTex}}$.` }],
+        ),
+        solution: [
+          `Compute-optimal means $${D} = 20${N}$, so $${C} = 120${N}^2$ and $${N} = \\sqrt{${C}/120}$: $${N}$ grows as the square root of $${C}$.`,
+          `${kText} times the compute: $${N}$ grows by $\\sqrt{${kTex}} = ${num(r)}$, and $${D} = 20${N}$ grows by the same ${num(r)}.`,
+          what === 2 ? 'Both grow together, so the ratio stays at about 20 tokens per parameter: a factor of 1.' : `So ${ask} grows ${num(r)} times.`,
+        ],
+      };
+    },
+  },
+  {
+    id: 'trained',
+    make(rng) {
+      const cat = rng.int(3);
+      const n = pick(rng, [1, 2, 3, 7, 8, 13, 30, 65, 70, 175, 280]) * 1e9;
+      const ratio = pick(rng, [[0.5, 1, 1.5, 2, 4, 5], [16, 20, 24], [100, 140, 200, 500, 1000, 2000]][cat]!);
+      const t = clean(n * ratio);
+      const options = ['Under-trained: too few tokens for its size', 'About compute-optimal', 'Trained well past compute-optimal: many more tokens per parameter'];
+      const bn = (x: number) => `${big(clean(x / 1e9))}\\text{ billion}`;
+      const said = `$${bn(t)} / ${bn(n)} = ${num(ratio)}$ tokens per parameter`;
+      return {
+        prompt: `A model with ${words(n)} parameters was trained on ${words(t)} tokens. Next to the compute-optimal rule of about 20 tokens per parameter, how was it trained?`,
+        answer: {
+          kind: 'choice',
+          options,
+          correct: cat,
+          why: whys(3, cat, (i) =>
+            i === 0
+              ? `It saw ${said}, not fewer than 20.`
+              : i === 1
+                ? `It saw ${said}: ${cat === 0 ? 'far below' : 'far above'} 20.`
+                : `It saw ${said}, not more than 20.`,
+          ),
+        },
+        solution: [
+          `Tokens per parameter: ${said}.`,
+          cat === 0
+            ? 'Far below 20: the same compute would have bought a lower loss with a smaller model trained on more tokens.'
+            : cat === 1
+              ? 'Close to 20: about the split that gives the lowest loss for its compute.'
+              : 'Far above 20: a smaller model than this budget would choose, trained much longer. It costs extra training, and every forward pass afterwards is cheaper.',
+        ],
+      };
+    },
+  },
+];

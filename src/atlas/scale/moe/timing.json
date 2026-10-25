@@ -1,0 +1,24 @@
+{
+ "duration": 124.236,
+ "scenes": {
+  "router": [0.0, 52.08],
+  "params": [52.08, 87.495],
+  "balance": [87.495, 124.236]
+ },
+ "beats": {
+  "router/swap": [0.7, 11.672, "In a transformer block, every token runs through the same MLP. A mixture of experts keeps several MLPs instead, called experts. Here, four.", [[1.96, 2.22], [4.86, 5.41], [8.64, 8.96], [10.09, 10.57], [10.94, 11.17]]],
+  "router/router": [12.052, 25.441, "A router, one small linear layer and a softmax, gives each expert a probability for the current token: zero point one, zero point five, zero point one five and zero point two five.", [[12.762, 13.092], [14.572, 14.742], [15.882, 16.182], [19.232, 19.782], [20.742, 21.052], [22.092, 22.402], [23.662, 23.932]]],
+  "router/top": [25.821, 34.396, "Only the top k run. With k at two, that is experts one and three. The other two do no work for this token.", [[27.341, 27.861], [29.031, 29.311], [31.481, 32.011]]],
+  "router/gates": [34.776, 44.457, "Their probabilities add up to zero point seven five. Divide each by that total, and the gates become two thirds and one third, adding up to one again.", [[37.916, 38.516], [40.156, 40.406], [42.876, 43.206]]],
+  "router/sum": [44.837, 50.98, "The layer's output is two thirds of expert one's output, plus one third of expert three's.", [[48.447, 48.727]]],
+  "params/count": [52.78, 60.333, "Now count parameters. Say a layer has eight experts of a hundred million parameters each, and k is two.", [[54.25, 54.82], [58.8, 59.07]]],
+  "params/total": [60.713, 68.294, "All eight must be stored, since the next token might need any of them: eight hundred million. That is the total.", [[62.323, 62.603], [64.903, 65.373], [66.573, 67.033]]],
+  "params/active": [68.674, 76.822, "But one token runs only two of them: two hundred million. That is the active count, and it sets the compute per token.", [[70.964, 71.404], [72.564, 73.114], [74.574, 74.864]]],
+  "params/grow": [77.202, 86.395, "Double the experts to sixteen, and the total doubles while the active count stays put. The model can store more, at the same work per token.", [[79.162, 79.412], [82.492, 83.072], [84.422, 84.702]]],
+  "balance/favor": [88.195, 93.679, "One danger. Early in training, the router may happen to favor one expert.", [[89.095, 89.775], [90.785, 91.075]]],
+  "balance/feed": [94.059, 101.765, "That expert gets more tokens, so more gradient, so it improves fastest, and the router favors it even more.", [[96.019, 96.249], [97.469, 97.769], [99.469, 99.729]]],
+  "balance/collapse": [102.145, 113.258, "Soon one expert does most of the work. The others sit idle: parameters stored and paid for, barely trained. And the busy one makes the whole layer wait.", [[102.695, 102.905], [104.805, 105.295], [106.545, 107.005], [108.905, 109.265], [110.175, 110.685]]],
+  "balance/fix": [113.638, 122.016, "The fix is a small extra loss that is lowest when every expert gets an equal share of the tokens: one over E each.", [[119.938, 120.398]]],
+  "balance/turn": [122.396, 123.136, "Your turn.", []]
+ }
+}

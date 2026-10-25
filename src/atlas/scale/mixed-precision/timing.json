@@ -1,0 +1,24 @@
+{
+ "duration": 160.51,
+ "scenes": {
+  "formats": [0.0, 57.555],
+  "master": [57.555, 103.262],
+  "scaling": [103.262, 160.51]
+ },
+ "beats": {
+  "formats/fp32": [0.7, 10.961, "A 32-bit float, fp32, spends one bit on the sign, eight on the exponent, and twenty three on the mantissa: four bytes in all.", [[2.18, 2.47], [3.68, 4.0], [5.69, 6.05], [7.25, 7.54], [9.35, 9.77]]],
+  "formats/parts": [11.341, 23.214, "The exponent sets the range: how huge or how tiny a number can be. The mantissa sets the precision: how many digits it keeps, about seven for fp32.", [[13.201, 13.611], [16.341, 16.911], [18.821, 19.201], [20.651, 20.981]]],
+  "formats/bf16": [23.594, 34.912, "bf16 keeps all eight exponent bits and cuts the mantissa to seven. Half the bytes and the same range as fp32, but only about three significant digits.", [[26.654, 26.834], [28.604, 29.124], [32.294, 32.624]]],
+  "formats/fp16": [35.292, 52.372, "fp16 splits its sixteen bits differently: five for the exponent and ten for the mantissa. More precise than bf16, but its range ends near sixty five thousand, and below about six times ten to the minus eight, numbers become zero.", [[38.512, 39.112], [40.402, 40.592], [41.992, 42.632], [44.562, 44.902], [47.452, 47.922], [50.702, 51.042]]],
+  "formats/fp8": [52.752, 56.455, "And fp8 squeezes a number into a single byte.", []],
+  "master/math": [58.255, 72.183, "Mixed precision does the heavy arithmetic in 16 bits. A 7 billion parameter model's weights take 14 gigabytes in bf16, against 28 in fp32, and the math runs faster.", [[61.845, 62.365], [67.385, 67.705], [70.085, 70.455]]],
+  "master/grid": [72.563, 83.25, "But near one, bf16 can only step in jumps of about zero point zero zero eight: the next number after one is one point zero zero seven eight.", [[73.403, 73.693], [78.713, 79.283], [80.693, 80.873]]],
+  "master/lost": [83.63, 92.403, "So adding an update of zero point zero zero zero one to a weight of one rounds straight back to one. The update is lost.", [[88.71, 88.94], [90.66, 91.07]]],
+  "master/copy": [92.783, 102.162, "That is why the step goes to a 32-bit master copy, which keeps about seven digits, and a fresh 16-bit copy is made from it for the next step.", [[96.193, 96.543], [98.243, 98.663]]],
+  "scaling/tiny": [103.962, 116.268, "Gradients are often tiny. One of two times ten to the minus eight is below fp16's range: stored in fp16, it becomes zero, and its weight stops learning.", [[105.762, 106.322], [108.642, 108.832], [111.062, 111.532], [113.182, 113.392], [114.412, 114.672]]],
+  "scaling/scale": [116.648, 132.331, "The fix is loss scaling: multiply the loss by a large number S, say one thousand and twenty four, before computing the gradients. A constant factor carries through every derivative, so every gradient comes out S times larger.", [[118.288, 118.868], [121.448, 121.778], [123.698, 123.998], [125.618, 126.188], [129.008, 129.328], [130.978, 131.128]]],
+  "scaling/safe": [132.711, 143.052, "That gradient becomes about two times ten to the minus five, safely inside the range. Before the step, divide by S again, in 32 bits.", [[136.361, 136.711], [138.391, 138.971], [139.761, 140.061], [141.511, 141.801]]],
+  "scaling/bf16": [143.432, 158.29, "bf16 has fp32's exponent bits, so its range reaches down to about ten to the minus thirty eight, and the same gradient survives with no scaling at all. That is why bf16 became the usual choice.", [[147.202, 147.612], [151.102, 151.572], [154.482, 155.042]]],
+  "scaling/turn": [158.67, 159.41, "Your turn.", []]
+ }
+}

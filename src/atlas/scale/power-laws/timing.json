@@ -1,0 +1,24 @@
+{
+ "duration": 128.317,
+ "scenes": {
+  "runs": [0.0, 31.864],
+  "why": [31.864, 86.624],
+  "tenfold": [86.624, 128.317]
+ },
+ "beats": {
+  "runs/runs": [0.7, 12.351, "Train the same kind of model with more and more compute: the total arithmetic of training, counted in floating point operations, or FLOPs. Each dot is one run's final loss.", [[3.88, 4.32], [6.06, 6.34], [8.39, 8.56], [9.35, 9.86]]],
+  "runs/flat": [12.731, 19.311, "On ordinary axes the loss plunges, then flattens, and most of the runs crowd into one corner.", [[15.321, 15.561], [16.451, 16.761]]],
+  "runs/log": [19.691, 26.222, "Now space both axes by powers of ten, so that every step to the right is ten times the compute.", [[22.521, 22.831]]],
+  "runs/line": [26.602, 30.764, "The runs fall on a straight line. That is a scaling law.", [[28.682, 29.172]]],
+  "why/law": [32.564, 42.407, "The law says L equals a times C to the minus alpha. C is the compute, and a and alpha are fixed numbers, fit to the runs.", [[33.464, 33.624], [36.724, 37.214], [38.464, 38.784], [41.074, 41.384]]],
+  "why/logs": [42.787, 49.478, "Take logs to base ten. They count powers of ten: the log of ten to the twenty is twenty.", [[44.407, 44.897], [46.377, 46.957], [48.607, 48.797]]],
+  "why/power": [49.858, 59.619, "A log turns a product into a sum, and a power into a multiple: the log of C to the minus alpha is minus alpha times the log of C.", [[52.128, 52.428], [54.128, 54.778], [56.878, 57.068]]],
+  "why/line": [59.999, 68.126, "So log L is log a, minus alpha times log C: a straight line, with slope minus alpha.", [[62.359, 62.669], [64.759, 65.309], [66.179, 66.479]]],
+  "why/slope": [68.506, 85.524, "Read the slope off two runs. From ten to the eighteen to ten to the twenty FLOPs, two powers of ten, log L falls from zero point six to zero point four. Minus zero point two over two: a slope of minus zero point one.", [[70.416, 70.986], [72.406, 72.596], [74.326, 74.616], [75.726, 76.046], [78.496, 78.666], [79.796, 80.616], [82.826, 83.286]]],
+  "tenfold/step": [87.324, 96.397, "Each power of ten in compute moves log L down by alpha. In plain numbers, that multiplies the loss by ten to the minus alpha.", [[89.204, 89.364], [91.454, 92.044], [92.934, 93.174]]],
+  "tenfold/ex": [96.777, 107.222, "With alpha at zero point one, the factor is zero point seven nine. Ten times the compute takes a loss of three point one six down to two point five one.", [[98.677, 98.967], [101.137, 101.737], [102.997, 103.197], [105.267, 105.527]]],
+  "tenfold/hundred": [107.602, 117.292, "A hundred times the compute is two such steps: zero point seven nine twice is about zero point six three, and the loss reaches two point zero.", [[110.502, 111.032], [114.802, 115.192]]],
+  "tenfold/cost": [117.672, 126.097, "Each cut by that same fraction costs another ten times the compute, so every gain asks for a far bigger run than the last.", [[119.672, 119.852], [122.102, 122.552]]],
+  "tenfold/turn": [126.477, 127.217, "Your turn.", []]
+ }
+}
