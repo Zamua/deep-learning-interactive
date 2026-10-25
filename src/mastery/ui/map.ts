@@ -75,16 +75,23 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
     return;
   }
 
-  const row = (id: string, box: string, boxCls: string, right: HTMLElement | string) => {
+  const row = (id: string, box: string, boxCls: string, right: HTMLElement | string, showDomain = true) => {
     const c = graph.get(id)!;
     return h('a', { class: 'at-row', href: `#/atlas/${id}` },
       h('span', { class: `at-row-box ${boxCls}`, html: box }),
-      h('span', { class: 'at-row-t' }, c.title, h('small', { style: `--dom:var(--c-${domainOf(c).color})` }, domainOf(c).title)),
+      h('span', { class: 'at-row-t' }, c.title, showDomain ? h('small', { style: `--dom:var(--c-${domainOf(c).color})` }, domainOf(c).title) : null),
       h('span', { class: 'at-row-r' }, right));
   };
   const section = (title: string, rows: HTMLElement[]) => (rows.length ? [h('h2', { class: 'at-h2' }, title), ...rows] : []);
+  /** A long section, folded into one row per domain. */
+  const folded = (key: string, title: string, list: string[], mk: (id: string) => HTMLElement) => (list.length ? [h('h2', { class: 'at-h2' }, title),
+    ...DOMAINS.flatMap((d) => {
+      const mine = list.filter((id) => graph.get(id)!.domain === d.id);
+      return mine.length ? [fold(`${key}:${d.id}`, d.title, d.color, mine.length, mine.map(mk))] : [];
+    })] : []);
   const rec = (id: string) => learner.record(id);
   const bar = (id: string) => graph.get(id)!.mastery.streak;
+  const mastered = (id: string, showDomain: boolean) => row(id, icon('check'), 'done', `review ${whenDue(rec(id).review!.due)}`, showDomain);
   const needs = (id: string) => graph.get(id)!.prereqs.filter((p) => !rec(p).mastered).map((p) => graph.get(p)!.title);
 
   root.append(
@@ -92,10 +99,49 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
       st.get(id) === 'slipping' ? row(id, icon('reset'), 'slip', `${streak(rec(id))} of ${Math.ceil(bar(id) / 2)} to recover`) : row(id, icon('clock'), 'due', 'due today'))),
     ...section('Learning', ids('learning').map((id) => row(id, icon('bolt'), 'learn', h('span', {}, dots(streak(rec(id)), bar(id)), h('br'), `${streak(rec(id))} of ${bar(id)} in a row`)))),
     ...section('Ready to learn', ids('new').map((id) => row(id, icon('playFill'), 'new', 'explainer, then practice'))),
-    ...section('Locked', ids('locked').map((id) => row(id, icon('lock'), 'lock', `needs ${needs(id).join(', ')}`))),
-    ...section(`Mastered · ${count('mastered')}`, ids('mastered').map((id) => row(id, icon('check'), 'done', `review ${whenDue(rec(id).review!.due)}`))),
+    ...folded('locked', `Locked · ${count('locked')}`, ids('locked'), (id) => row(id, icon('lock'), 'lock', `needs ${needs(id).join(', ')}`, false)),
+    ...(count('mastered') > FOLD_OVER
+      ? folded('mastered', `Mastered · ${count('mastered')}`, ids('mastered'), (id) => mastered(id, false))
+      : section(`Mastered · ${count('mastered')}`, ids('mastered').map((id) => mastered(id, true)))),
   );
   root.append(progressFile());
+}
+
+/** A section longer than this is folded by domain. */
+const FOLD_OVER = 8;
+const OPEN_KEY = 'atlas.listOpen';
+
+function openFolds(): Set<string> {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(OPEN_KEY) ?? '[]') as string[]);
+  } catch {
+    return new Set();
+  }
+}
+
+/** One domain's rows behind a header that opens and closes them; which are open is kept per browser. */
+function fold(key: string, title: string, color: string, n: number, rows: HTMLElement[]): HTMLElement {
+  const body = h('div', { class: 'at-fold-body' }, ...rows);
+  const head = h('button', { type: 'button', class: 'at-fold', style: `--dom:var(--c-${color})` },
+    h('i'), h('span', {}, title), h('small', {}, String(n)), h('span', { class: 'at-fold-c', html: icon('caret-right') }));
+  const set = (open: boolean) => {
+    head.setAttribute('aria-expanded', String(open));
+    body.hidden = !open;
+  };
+  set(openFolds().has(key));
+  head.addEventListener('click', () => {
+    const open = head.getAttribute('aria-expanded') !== 'true';
+    set(open);
+    const all = openFolds();
+    if (open) all.add(key);
+    else all.delete(key);
+    try {
+      localStorage.setItem(OPEN_KEY, JSON.stringify([...all]));
+    } catch {
+      /* private mode: the fold just isn't remembered */
+    }
+  });
+  return h('div', {}, head, body);
 }
 
 /** Progress lives in this browser; a file carries it to another one. */

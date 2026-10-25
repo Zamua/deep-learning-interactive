@@ -192,6 +192,50 @@
   color: var(--ink-3);
 }
 
+.at-fold {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 2px;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  background: none;
+  color: var(--ink);
+  font: 500 1rem var(--font-ui);
+  text-align: left;
+  cursor: pointer;
+}
+.at-fold i {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--dom);
+}
+.at-fold span:first-of-type {
+  flex: 1;
+}
+.at-fold small {
+  color: var(--ink-3);
+  font-size: 0.85rem;
+}
+.at-fold-c {
+  display: grid;
+  color: var(--ink-3);
+  transition: transform 0.15s ease;
+}
+.at-fold-c .ico {
+  width: 16px;
+  height: 16px;
+}
+.at-fold[aria-expanded='true'] .at-fold-c {
+  transform: rotate(90deg);
+}
+.at-fold-body {
+  padding-left: 20px;
+}
+
 .at-legend {
   display: flex;
   flex-wrap: wrap;
