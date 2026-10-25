@@ -1,0 +1,20 @@
+{
+ "duration": 112.607,
+ "scenes": {
+  "squeeze": [0.0, 44.648],
+  "train": [44.648, 79.48],
+  "make": [79.48, 112.607]
+ },
+ "beats": {
+  "squeeze/px": [0.7, 12.897, "A five twelve by five twelve color image holds seven hundred and eighty six thousand, four hundred and thirty two numbers. Diffusion on pixels runs its network over every one of them, at every step.", [[3.22, 3.38], [7.61, 8.14], [11.65, 11.87]]],
+  "squeeze/enc": [13.277, 25.874, "Latent diffusion squeezes the image first, with an autoencoder. Its encoder turns x into a latent, z: a sixty four by sixty four grid, with four numbers at each spot.", [[16.167, 16.377], [17.537, 18.117], [20.537, 20.867], [21.287, 21.717], [23.767, 24.067]]],
+  "squeeze/count": [26.254, 43.548, "That is sixteen thousand, three hundred and eighty four numbers. Each side is eight times shorter, so there are sixty four times fewer spots, with four numbers each instead of three. Sixty four times three over four: forty eight times fewer numbers.", [[30.274, 30.824], [32.844, 33.144], [35.584, 35.914], [38.014, 38.584], [40.774, 41.254]]],
+  "train/ae": [45.348, 56.816, "Two networks are trained, one after the other. First the autoencoder, on images alone: encode, decode, and match the input. Then it is frozen.", [[46.798, 47.138], [48.308, 48.908], [50.498, 50.738], [51.788, 52.278], [52.818, 53.108], [53.628, 53.868], [54.938, 55.548]]],
+  "train/dn": [57.196, 64.922, "Then the denoiser. Each training image is encoded, and its latent, z, takes the place of the clean image.", [[58.526, 59.206], [61.006, 61.306], [62.156, 62.366], [62.776, 63.096]]],
+  "train/loss": [65.302, 78.38, "Noise z to a random step, and train the network to find that noise, with the same squared error as before. It never sees a pixel: only z t and t, and its guess has the latent's shape.", [[67.252, 67.532], [69.652, 69.922], [72.032, 72.642], [74.002, 74.372], [76.002, 76.382]]],
+  "make/start": [80.18, 89.366, "To make an image, start from pure noise in the latent's shape, sixty four by sixty four by four. The encoder is not needed at all.", [[81.15, 81.4], [84.0, 84.34], [86.67, 87.27]]],
+  "make/loop": [89.746, 102.32, "Take the guessed noise away a little at a time, step after step. Each step runs the denoiser on just sixteen thousand, three hundred and eighty four numbers: fifty steps, fifty calls.", [[92.406, 92.716], [93.996, 94.586], [99.656, 100.166], [101.016, 101.346]]],
+  "make/decode": [102.7, 110.387, "Only at the very end does the decoder run, once, turning the finished latent into a five twelve by five twelve image.", [[105.23, 105.62], [106.1, 106.42]]],
+  "make/turn": [110.767, 111.507, "Your turn.", []]
+ }
+}
