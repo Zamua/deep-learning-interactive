@@ -1,0 +1,19 @@
+{
+ "duration": 87.051,
+ "scenes": {
+  "probe": [0.0, 41.654],
+  "test": [41.654, 58.259],
+  "meaning": [58.259, 87.051]
+ },
+ "beats": {
+  "probe/freeze": [0.7, 11.641, "Does the residual stream at some layer know whether a word is a noun? Freeze the model, and collect its stream, h, for many words, each labeled noun or not.", [[4.73, 5.39], [7.64, 7.85], [8.24, 8.41], [9.36, 9.69], [10.4, 10.59]]],
+  "probe/fit": [12.021, 23.449, "Then fit a linear classifier on them: a score, w dot h plus b, positive for a noun. Only w and b are trained. The model never changes.", [[14.341, 14.781], [15.381, 15.771], [17.431, 17.781], [18.991, 19.541], [21.511, 21.941]]],
+  "probe/example": [23.829, 40.554, "Say h is two, minus one and a half, w is one, two and minus two, and b is a half. The score is two, minus two, minus one, plus a half: minus a half. The probe says: not a noun.", [[25.439, 25.619], [26.859, 27.299], [28.519, 28.709], [30.019, 30.359], [31.739, 32.359], [33.569, 33.779], [34.559, 34.719], [35.469, 35.729], [36.479, 36.889], [37.749, 38.409], [39.249, 39.649]]],
+  "test/held": [42.354, 48.125, "Now test the probe on words it was not fit on. A score above zero predicts noun.", [[45.204, 45.704]]],
+  "test/count": [48.505, 57.159, "It matches the true label on six of eight: an accuracy of zero point seven five, where a coin flip would get zero point five.", [[51.165, 51.655], [54.195, 54.565]]],
+  "meaning/there": [58.959, 65.403, "High accuracy shows the information is in the stream, written so that one linear map can read it.", [[62.309, 62.819]]],
+  "meaning/use": [65.783, 74.709, "It does not show that the model uses it. Present is not the same as used, and testing use takes an experiment on the model itself.", [[68.033, 68.683], [70.813, 71.213]]],
+  "meaning/linear": [75.089, 84.831, "And the probe is kept linear on purpose. A large network could work out the answer by itself, and then its success would describe the probe, not the stream.", [[77.509, 78.059], [80.809, 81.159], [83.709, 83.969]]],
+  "meaning/turn": [85.211, 85.951, "Your turn.", []]
+ }
+}

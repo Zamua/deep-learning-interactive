@@ -1,0 +1,17 @@
+{
+ "duration": 81.802,
+ "scenes": {
+  "idea": [0.0, 28.121],
+  "example": [28.121, 81.802]
+ },
+ "beats": {
+  "idea/top": [0.7, 9.893, "At the top, the model scores every token by multiplying the final stream by the unembedding: one row per token, one dot product each.", [[1.4, 1.65], [6.21, 6.72], [7.99, 8.42]]],
+  "idea/sum": [10.273, 17.627, "But the final stream is just x zero plus every block's write, and a partial sum is the same kind of vector.", [[14.473, 14.913]]],
+  "idea/lens": [18.007, 27.021, "So multiply the stream partway up by the same unembedding. That is the logit lens: what the model would predict if it stopped there.", [[21.867, 22.447], [24.017, 24.457]]],
+  "example/setup": [28.821, 42.376, "A tiny model reads \"the capital of Italy is\". Its stream is two numbers wide, and three tokens matter: Paris, Rome, and \"the\". Here is each token's row of the unembedding.", [[30.201, 30.481], [32.271, 32.821], [34.811, 35.091], [36.511, 36.971], [37.471, 37.711], [38.171, 38.381], [39.101, 39.691]]],
+  "example/x0": [42.756, 54.048, "The stream starts at one, zero. Dot it with each row: Paris scores two, Rome zero, \"the\" one. The lens says Paris.", [[44.416, 44.776], [45.246, 45.776], [47.106, 47.626], [48.946, 49.346], [49.776, 49.926], [50.436, 50.906], [51.336, 51.556], [51.926, 52.516]]],
+  "example/x1": [54.428, 67.719, "Block zero writes minus one, two, so the stream becomes zero, two. Now Paris scores zero, Rome four, and \"the\" two. After block zero, the lens says Rome.", [[56.458, 56.638], [57.038, 57.438], [59.598, 60.168], [61.838, 62.098], [62.968, 63.208], [63.888, 64.058], [64.408, 65.058], [66.158, 66.388]]],
+  "example/story": [68.099, 79.582, "Read block by block, the lens shows the answer forming. Early blocks also write notes for later ones that the unembedding cannot read, so early guesses are often noisy.", [[69.499, 69.829], [71.799, 72.449], [75.109, 75.289], [77.019, 77.429]]],
+  "example/turn": [79.962, 80.702, "Your turn.", []]
+ }
+}

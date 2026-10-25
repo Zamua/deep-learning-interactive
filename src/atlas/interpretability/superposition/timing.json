@@ -1,0 +1,20 @@
+{
+ "duration": 92.544,
+ "scenes": {
+  "room": [0.0, 26.348],
+  "read": [26.348, 58.669],
+  "sparse": [58.669, 92.544]
+ },
+ "beats": {
+  "room/perp": [0.7, 9.563, "A stream of d numbers has room for only d directions at exact right angles. In two dimensions, two features fit perfectly.", [[5.85, 6.4], [7.44, 7.78], [8.66, 8.81]]],
+  "room/three": [9.943, 16.18, "Three features? Give up exact right angles, and spread them a hundred and twenty degrees apart.", [[10.923, 11.453], [13.273, 13.533]]],
+  "room/cos": [16.56, 25.248, "Now every pair overlaps: the dot product of any two directions is the cosine of a hundred and twenty degrees, minus a half.", [[18.65, 19.21], [21.41, 21.58], [24.01, 24.2]]],
+  "read/store": [27.048, 33.923, "Store a value: feature zero at one. The stream is its direction, one, zero.", [[28.158, 28.648], [30.218, 30.748], [32.368, 32.828], [33.178, 33.398]]],
+  "read/read": [34.303, 46.52, "Read each feature back with a dot product. Feature zero reads one, exactly right. Feature one reads minus a half: a leak, called interference.", [[36.783, 37.423], [38.823, 39.063], [39.463, 39.823], [40.853, 41.493], [42.733, 42.973], [44.013, 44.443], [44.933, 45.233]]],
+  "read/both": [46.9, 57.569, "Now turn on features zero and one together. Reading feature zero gives one, minus a half: only a half. The leak has eaten half the signal.", [[49.69, 50.25], [52.28, 52.68], [53.69, 54.12], [55.04, 55.54]]],
+  "sparse/rare": [59.369, 69.893, "Interference only happens between features that are on at the same time. If each feature is rare, on for one token in a hundred, two at once are rarer still.", [[63.529, 64.089], [65.539, 65.869], [67.589, 68.039]]],
+  "sparse/clip": [70.273, 78.017, "Most of the time one feature is on alone. Its neighbors read small negative leaks, and a ReLU clips them to zero.", [[72.973, 73.463], [75.813, 76.053]]],
+  "sparse/more": [78.397, 90.324, "In many dimensions, far more than d directions can be nearly perpendicular. So a model can store many more sparse features than it has dimensions. That is superposition.", [[79.617, 79.917], [83.317, 83.837], [88.217, 88.737]]],
+  "sparse/turn": [90.704, 91.444, "Your turn.", []]
+ }
+}

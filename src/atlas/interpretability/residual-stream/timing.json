@@ -1,0 +1,19 @@
+{
+ "duration": 88.892,
+ "scenes": {
+  "sum": [0.0, 45.745],
+  "width": [45.745, 67.691],
+  "read": [67.691, 88.892]
+ },
+ "beats": {
+  "sum/block": [0.7, 11.111, "Inside a transformer block, attention and the MLP each add their output to their input: x, plus attention of x, then plus the MLP.", [[2.3, 2.66], [6.59, 7.19], [7.59, 7.78], [9.07, 9.37]]],
+  "sum/stream": [11.491, 20.751, "Read it the other way round. Each token has one running vector, the residual stream. It starts as the token's embedding, x zero.", [[12.921, 13.501], [15.621, 15.921], [17.131, 17.711], [19.671, 19.921]]],
+  "sum/writes": [21.131, 35.82, "Every attention and every MLP reads the stream and adds a write to it. Say x zero is one, zero, two. Attention writes zero, one, minus one, and the MLP writes two, zero, one.", [[25.921, 26.381], [29.161, 29.651], [32.561, 32.941], [34.381, 34.551]]],
+  "sum/total": [36.2, 44.645, "The stream is now their sum: three, one, two. After the last block, it is x zero plus every write.", [[38.01, 38.52], [38.99, 39.28], [39.62, 39.86], [40.22, 40.81], [41.99, 42.18]]],
+  "width/same": [46.445, 58.34, "Because writes are added, every write has the stream's width, d. The MLP may widen a token to four d inside, but it projects back down to d before adding.", [[47.905, 48.285], [50.275, 50.535], [50.925, 51.645], [55.185, 55.555]]],
+  "width/never": [58.72, 66.591, "So the stream never grows: d numbers per token at the bottom, d at the top, and d after every block.", [[60.62, 61.18], [63.12, 63.48], [64.43, 64.75]]],
+  "read/keep": [68.391, 76.094, "A write is never replaced, only added to. What block one writes is still in the stream when block nine reads it.", [[70.141, 70.411], [71.371, 71.981]]],
+  "read/direct": [76.474, 86.671, "So a late block can read an early block's write directly, with no block in between passing it along. Each block reads the whole stream, and writes back into it.", [[80.084, 80.424], [82.784, 83.334], [85.224, 85.414]]],
+  "read/turn": [87.051, 87.792, "Your turn.", []]
+ }
+}

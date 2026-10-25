@@ -1,0 +1,19 @@
+{
+ "duration": 76.849,
+ "scenes": {
+  "rule": [0.0, 28.724],
+  "prev": [28.724, 45.555],
+  "match": [45.555, 76.849]
+ },
+ "beats": {
+  "rule/seq": [0.7, 8.473, "A model reads the letters K, D, R, A, M, and then K again. What comes next?", [[2.13, 2.35], [2.77, 3.02], [3.47, 3.77], [4.17, 4.46], [4.84, 5.1], [5.46, 5.82], [6.95, 7.52]]],
+  "rule/guess": [8.853, 19.8, "Text repeats, so a good guess is D: the last time K appeared, D came right after it. Seen K D before, now K: predict D.", [[9.863, 10.193], [11.843, 12.343], [13.793, 14.063], [15.543, 16.083], [17.453, 17.803], [18.523, 18.913]]],
+  "rule/two": [20.18, 27.624, "Trained models learn this rule with two attention heads working one after the other. The second is called an induction head.", [[24.75, 25.31]]],
+  "prev/back": [29.424, 35.274, "In an earlier layer, a previous-token head attends one position back, at every position.", [[30.554, 30.834], [33.804, 34.104]]],
+  "prev/write": [35.654, 44.455, "It writes what it finds into the stream. So position one, the D, now carries a note: my previous token was K.", [[37.914, 38.524], [39.854, 40.074], [40.604, 40.844], [41.994, 42.554]]],
+  "match/query": [46.255, 53.945, "In a later layer, at the second K, the induction head's query looks for a key that says: my previous token was K.", [[47.225, 47.395], [48.485, 48.765], [51.585, 51.975]]],
+  "match/hit": [54.325, 62.753, "Only position one matches, so the head attends there, to the D. The causal mask allows it: the D is in the past.", [[56.165, 56.455], [57.915, 58.125], [58.695, 59.235], [60.855, 61.295]]],
+  "match/copy": [63.133, 74.629, "It copies D into the current stream, raising the score of D as the next token. Neither head helps alone, but together they continue any pattern the text has already shown.", [[65.503, 65.803], [68.343, 68.923], [70.423, 70.713], [71.373, 71.563]]],
+  "match/turn": [75.009, 75.749, "Your turn.", []]
+ }
+}
