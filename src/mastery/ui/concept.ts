@@ -17,6 +17,7 @@ export function renderConcept(main: HTMLElement, learner: Learner, id: string): 
   const s = learner.status(id);
   const rec = learner.record(id);
   const root = atlasRoot('at-concept');
+  root.dataset.concept = id;
   root.style.setProperty('--dom', `var(--c-${d.color})`);
   main.append(root);
 

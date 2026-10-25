@@ -1,17 +1,23 @@
-import { ATLAS_SYMBOLS } from '../../atlas/symbols';
+import { ALL_SYMBOLS, SCOPED } from '../../atlas/symbols';
 import { h } from '../../core/dom';
 import { md, setMacros } from '../../core/math';
 import { codeIndex, linkSymbols, symbolMacros } from '../../core/symbols';
 import { DAY, type Status } from '../domain/model';
 
-const symIdx = codeIndex(ATLAS_SYMBOLS);
+const symIdx = codeIndex(ALL_SYMBOLS);
+
+/** Colors for symbols a concept redefines, inside an element marked with its `data-concept`. */
+const scopedCss = Object.entries(SCOPED)
+  .flatMap(([id, syms]) => Object.entries(syms).map(([k, d]) => `[data-concept="${id}"] .sym.sym-${k}{--sym:var(--c-${d.color});color:var(--sym)}`))
+  .join('\n');
 
 /** A page root with the course's symbols wired up: colors, `\sym` macros and tap-to-name. */
 export function atlasRoot(cls: string, page = 'atlas'): HTMLElement {
-  setMacros(symbolMacros(ATLAS_SYMBOLS));
-  const root = h('div', { class: `atlas ${cls}`, 'data-page': page });
+  setMacros(symbolMacros(ALL_SYMBOLS));
+  const root = h('div', { class: `atlas ${cls}`, 'data-page': page }, h('style', {}, scopedCss));
   // linkSymbols needs the root in the page for its tip; the caller appends it right away.
-  queueMicrotask(() => linkSymbols(root, ATLAS_SYMBOLS));
+  queueMicrotask(() =>
+    linkSymbols(root, ALL_SYMBOLS, (k, el) => SCOPED[(el.closest('[data-concept]') as HTMLElement | null)?.dataset.concept ?? '']?.[k]));
   return root;
 }
 

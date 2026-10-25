@@ -53,7 +53,8 @@ for DL26 chapters.
 - `Plot` draws first on the next frame (ResizeObserver), never in its constructor, so draw
   callbacks may reference state declared after the plot.
 - Symbol keys are `[A-Za-z][A-Za-z0-9]*`; they become CSS classes `sym-<key>` and TeX macros
-  `\sym<key>`.
+  `\sym<key>`. TeX command names are letters only, so a key with a digit (`W1`) has no shorthand:
+  write `\sym{W1}{W_1}`.
 - Theme colors are CSS variables read at draw time (`color('blue')`), so canvases follow dark
   mode; palette tokens must stay 6-digit hex for `withAlpha`/`rgbOf`.
 - Animation loops go through `f.loop` / `visibleLoop`, which pause off screen; the router

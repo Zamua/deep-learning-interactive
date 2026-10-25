@@ -57,8 +57,9 @@ export interface Asked {
  * Shows a problem and resolves with the learner's checked answer. Unreadable input is
  * explained in place and never resolves. Time spent with the page hidden does not count.
  */
-export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { problem: Problem; tag: HTMLElement; rng: Rng; worked?: () => Problem; target?: number; note?: string }): Promise<Asked> {
+export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { concept: string; problem: Problem; tag: HTMLElement; rng: Rng; worked?: () => Problem; target?: number; note?: string }): Promise<Asked> {
   const { problem: p, rng } = opts;
+  frame.body.dataset.concept = opts.concept;
   frame.body.innerHTML = '';
   frame.dock.innerHTML = '';
   frame.body.scrollTop = 0;
@@ -67,8 +68,7 @@ export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { pro
     const pad = makePad(p.answer, rng, render, () => submit());
     const msg = h('div', { class: 'at-msg', role: 'status' });
     const hint = h('div', { class: 'at-hint' },
-      opts.target ? h('span', { html: `${icon('clock')} target ${opts.target} s` }) : h('span', {}),
-      h('span', {}, formatHint(p.answer)));
+      opts.target ? h('span', { html: `${icon('clock')} target ${opts.target} s` }) : h('span', {}));
     let help = false;
     const stuck = opts.worked ? h('button', { type: 'button', class: 'at-stuck' }, 'Stuck? Show a worked example') : null;
     const workedBox = h('div', { class: 'at-worked' });
@@ -124,21 +124,6 @@ export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { pro
   });
 }
 
-function formatHint(a: Answer): string {
-  switch (a.kind) {
-    case 'number':
-      return 'fractions like 3/4 work too';
-    case 'shape':
-      return 'one number per dimension';
-    case 'vector':
-      return 'entries separated by commas';
-    case 'expr':
-      return 'write 2x for 2 times x';
-    default:
-      return '';
-  }
-}
-
 /** Shrinks display math wider than the screen to fit, down to a floor; past that it scrolls. */
 export function fitMath(root: HTMLElement): void {
   requestAnimationFrame(() => {
@@ -158,7 +143,8 @@ export function solutionList(steps: string[]): HTMLElement {
 
 /** The right answer, written the way the learner would have entered it. */
 export function answerText(a: Answer): string {
-  const num = (x: number, places?: number) => (places === undefined ? String(x) : x.toFixed(places));
+  // A whole-number answer reads as one, even where the problem allows decimals.
+  const num = (x: number, places?: number) => (places === undefined || Number.isInteger(x) ? String(x) : x.toFixed(places));
   switch (a.kind) {
     case 'number':
       return num(a.value, a.places);
@@ -288,6 +274,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       const before = learner.record(c.id);
       const tag = problemTag(c, pick, before);
       const got = await ask(frame, {
+        concept: c.id,
         problem,
         rng,
         tag,
@@ -336,6 +323,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
 
   const intro = (c: Concept, pick: Pick): Promise<void> =>
     new Promise((resolve) => {
+      frame.body.dataset.concept = c.id;
       frame.body.innerHTML = '';
       frame.dock.innerHTML = '';
       const start = h('button', { type: 'button', class: hasExplainer(c.id) ? 'at-ghost' : 'at-check' }, 'Start practicing');

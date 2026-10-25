@@ -47,7 +47,7 @@ export function renderPlacement(main: HTMLElement, learner: Learner): void {
       const gen = gens[rng.int(gens.length)]!;
       const problem = gen.make(rng, DIFFICULTY);
       const tag = h('div', { class: 'at-tag', style: `--dom:var(--c-${domainOf(c).color})` }, h('b', {}, c.title), h('span', {}, `question ${asked + 1}`));
-      const got = await ask(frame, { problem, rng, tag });
+      const got = await ask(frame, { concept: id, problem, rng, tag });
       asked++;
       const pass = got.verdict.ok && got.seconds <= 2 * c.mastery.seconds;
       for (const x of pass ? ancestors(g, id) : descendants(g, id)) if (!known.has(x)) known.set(x, pass);

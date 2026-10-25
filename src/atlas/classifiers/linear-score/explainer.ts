@@ -1,6 +1,6 @@
 import type { LectureDef } from '../../../lecture/player';
 import type { Timing } from '../../../lecture/types';
-import { ATLAS_SYMBOLS } from '../../symbols';
+import { lookupFor } from '../../symbols';
 import { scenes } from './scenes';
 import { script } from './script';
 
@@ -8,5 +8,5 @@ import { script } from './script';
 const audio = Object.values(import.meta.glob<string>('./narration.m4a', { query: '?url', import: 'default', eager: true }))[0] ?? '';
 const timing = (Object.values(import.meta.glob('./timing.json', { import: 'default', eager: true }))[0] ?? null) as Timing | null;
 
-const explainer: LectureDef = { script, timing, scenes, symbols: ATLAS_SYMBOLS, audio };
+const explainer: LectureDef = { script, timing, scenes, ...lookupFor(script.id), audio };
 export default explainer;

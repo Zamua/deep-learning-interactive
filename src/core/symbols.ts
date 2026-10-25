@@ -45,9 +45,10 @@ export type SymListener = (key: string | null) => void;
 
 /**
  * Wires symbol linking inside `root`: hovering (or tapping) any `.sym-K` element lights up
- * every other `.sym-K` in the page and shows the symbol's name.
+ * every other `.sym-K` in the page and shows the symbol's name. `scoped` may name a different
+ * definition for the element hovered, where one part of the page gives a key its own meaning.
  */
-export function linkSymbols(root: HTMLElement, syms: SymbolMap): { on(fn: SymListener): void } {
+export function linkSymbols(root: HTMLElement, syms: SymbolMap, scoped?: (key: string, el: Element) => SymbolDef | undefined): { on(fn: SymListener): void } {
   for (const k of Object.keys(syms)) if (!KEY.test(k)) throw new Error(`bad symbol key ${k}`);
   const style = document.createElement('style');
   style.textContent = symbolCss(`[data-page="${root.dataset.page}"]`, syms);
@@ -72,7 +73,7 @@ export function linkSymbols(root: HTMLElement, syms: SymbolMap): { on(fn: SymLis
     lit = key && syms[key] ? key : null;
     if (lit) {
       root.querySelectorAll(`.sym-${lit}`).forEach((e) => e.classList.add('sym-lit'));
-      const d = syms[lit]!;
+      const d = scoped?.(lit, anchor!) ?? syms[lit]!;
       tip.innerHTML = `<span class="sym-tip-dot" style="background:var(--c-${d.color})"></span>${d.name}`;
       const r = anchor!.getBoundingClientRect();
       tip.style.left = `${Math.max(8, Math.min(window.innerWidth - 220, r.left))}px`;

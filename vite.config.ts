@@ -3,6 +3,6 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   base: './',
   build: { target: 'es2022', chunkSizeWarningLimit: 900 },
-  // No fsModuleCache: it reuses a module's transform across runs, so an import.meta.glob would miss newly added files.
-  test: { include: ['src/**/*.test.ts', 'push/src/**/*.test.ts'] },
+  // Vitest 5 caches module transforms across runs by default, and a cached import.meta.glob misses newly added files.
+  test: { include: ['src/**/*.test.ts', 'push/src/**/*.test.ts'], fsModuleCache: false },
 });
