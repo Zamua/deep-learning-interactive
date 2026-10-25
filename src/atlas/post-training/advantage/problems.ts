@@ -1,0 +1,130 @@
+import type { Rng } from '../../../core/rand';
+import type { Generator } from '../../../mastery/domain/types';
+import { int, num, pick, round, vec } from '../../kit';
+import { ADV, BASE, choose, clean, minus, paren, PI, R, sumTex, TH, traps, vtraps } from '../kit';
+
+const GLP = `\\nabla_{${TH}} \\ln ${PI}(y)`;
+
+/** Rewards for `n` sampled answers: tenths in [0, 1], harder with negatives and more of them. */
+function rewards(rng: Rng, n: number, d: number): number[] {
+  for (;;) {
+    const r = Array.from({ length: n }, () => (d < 0.7 ? int(rng, 0, 10) / 10 : int(rng, -10, 10) / 10));
+    if (new Set(r).size > 1) return r;
+  }
+}
+
+export const generators: Generator[] = [
+  {
+    id: 'compute',
+    make(rng, d) {
+      const n = d < 0.35 ? 3 : d < 0.7 ? 4 : 5;
+      const own = d >= 0.35;
+      let r = rewards(rng, n, d);
+      // Keep the mean a clean decimal so the advantages print exactly.
+      while (own && Math.abs(round((r.reduce((a, b) => a + b, 0) / n) * 100, 6) % 1) > 1e-6) r = rewards(rng, n, d);
+      const mean = clean(r.reduce((a, b) => a + b, 0) / n);
+      const b = own ? mean : pick(rng, [0.5, 0.4, 0.6, 0.3, 0.7]);
+      const v = r.map((x) => clean(x - b));
+      return {
+        prompt: own
+          ? `A model samples ${n} answers to one question and they get rewards $${R} = ${vec(r)}$. Using their mean as the baseline $${BASE}$, what are the advantages $${ADV} = ${R} - ${BASE}$?`
+          : `A model samples ${n} answers to one question and they get rewards $${R} = ${vec(r)}$. The baseline is $${BASE} = ${num(b)}$. What are the advantages $${ADV} = ${R} - ${BASE}$?`,
+        answer: { kind: 'vector', value: v },
+        traps: vtraps(v, [
+          { value: r, why: 'Those are the rewards themselves. Subtract the baseline from each.' },
+          { value: v.map((x) => clean(-x)), why: `That is $${BASE} - ${R}$, the wrong way round. A reward above the baseline gives a positive advantage.` },
+        ]),
+        solution: [
+          ...(own ? [`The baseline is the mean reward: $(${sumTex(r)}) / ${n} = ${num(mean)}$.`] : []),
+          `Subtract it from each reward: ${r.map((x, i) => `$${minus(x, b)} = ${num(v[i]!)}$`).join(', ')}.`,
+          `So $${ADV} = ${vec(v)}$: positive for answers better than expected, negative for worse.`,
+        ],
+      };
+    },
+  },
+  {
+    id: 'estimate',
+    make(rng, d) {
+      const Rv = d < 0.35 ? pick(rng, [1, 0, 0.5]) : d < 0.7 ? int(rng, 0, 10) / 10 : int(rng, -10, 10) / 10;
+      let b = pick(rng, [0.2, 0.4, 0.5, 0.6, 0.8]);
+      if (b === Rv) b = clean(b - 0.1);
+      const g = d < 0.35 ? pick(rng, [0.5, 1, 2]) : pick(rng, [0.5, -0.5, 0.8, -0.6, 0.4, 2, -1]);
+      const a = clean(Rv - b);
+      const v = clean(a * g);
+      const DL = `\\dfrac{\\partial \\ln ${PI}(y)}{\\partial ${TH}_0}`;
+      return {
+        prompt: `A sampled answer $y$ gets reward $${R} = ${num(Rv)}$, the baseline is $${BASE} = ${num(b)}$, and $${DL} = ${num(g)}$. What is entry 0 of the policy-gradient estimate with this baseline?`,
+        answer: { kind: 'number', value: v },
+        traps: traps(v, [
+          { value: clean(Rv * g), why: `That leaves out the baseline: it uses $${R}$, not the advantage $${R} - ${BASE}$.` },
+          { value: clean(-v), why: `That uses $${BASE} - ${R}$, the wrong way round. The advantage is $${R} - ${BASE}$.` },
+          { value: a, why: `That is the advantage alone. Multiply it by the gradient of the log-probability.` },
+        ]),
+        solution: [
+          `The advantage: $${ADV} = ${R} - ${BASE} = ${minus(Rv, b)} = ${num(a)}$.`,
+          `The estimate is $${ADV}\\,${GLP}$, so entry 0 is $${num(a)} \\times ${paren(g)} = ${num(v)}$.`,
+          a > 0 ? 'The answer beat the baseline, so this pushes it up.' : 'The answer fell short of the baseline, so this pushes it down.',
+        ],
+      };
+    },
+  },
+  {
+    id: 'push',
+    make(rng, d) {
+      const b = pick(rng, d < 0.5 ? [0.5, 0.6, 0.7, 0.8] : [0.3, 0.45, 0.55, 0.65, 0.75, 0.9]);
+      const kind = rng.int(5);
+      // Mostly a positive reward below the baseline: the case a baseline changes.
+      const Rv = kind < 2 ? clean(b - pick(rng, [0.1, 0.2, 0.3])) : kind < 4 ? clean(b + pick(rng, [0.1, 0.2])) : b;
+      const a = clean(Rv - b);
+      const correct = a > 0 ? 0 : a < 0 ? 1 : 2;
+      const why: (string | null)[] = [
+        a < 0 ? `The answer scored below the baseline: $${ADV} = ${minus(Rv, b)} = ${num(a)} < 0$, so it is pushed down${Rv > 0 ? ', even though its reward is positive' : ''}.` : `$${ADV} = 0$: the estimate is zero, so it is not pushed.`,
+        a > 0 ? `The reward beats the baseline: $${ADV} = ${minus(Rv, b)} = ${num(a)} > 0$, so it is pushed up.` : `$${ADV} = 0$: the estimate is zero, so it is not pushed.`,
+        `Only an advantage of zero leaves it alone. Here $${ADV} = ${minus(Rv, b)} = ${num(a)}$.`,
+      ];
+      why[correct] = null;
+      return {
+        prompt: `For a question, the baseline is $${BASE} = ${num(b)}$, the reward the model usually gets. It samples an answer that scores $${R} = ${num(Rv)}$. After a small step along $(${R} - ${BASE})\\,${GLP}$, how does that answer's probability change?`,
+        answer: { kind: 'choice', options: ['It goes up: the answer is pushed up', 'It goes down: the answer is pushed down', 'It stays the same: the answer is not pushed'], correct, why },
+        solution: [
+          `The advantage is $${ADV} = ${R} - ${BASE} = ${minus(Rv, b)} = ${num(a)}$.`,
+          a > 0 ? 'Better than usual, so the step raises its probability.' : a < 0 ? `Worse than usual, so the step lowers its probability${Rv > 0 ? ', even though the reward itself is above zero' : ''}.` : 'Exactly as expected, so the estimate is zero and nothing moves.',
+        ],
+      };
+    },
+  },
+  {
+    id: 'noise',
+    make(rng) {
+      const b = pick(rng, [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.25, 0.75]);
+      if (rng.int(2) === 0) {
+        return {
+          prompt: `Rewards on a question are usually around $${num(b)}$, so every reward is replaced by the advantage $${R} - ${BASE}$, with $${BASE} = ${num(b)}$. What does that do to the policy-gradient estimates?`,
+          answer: choose('Each one is less noisy, and their average is unchanged', [
+            ['Their average now points somewhere else', `The average of $${BASE}\\,${GLP}$ over the model's answers is zero, so the average direction is unchanged.`],
+            ['Their average becomes zero, so nothing is learned', `Only the $${BASE}$ part averages to zero. $${R}\\,${GLP}$ keeps its average.`],
+            ['Nothing at all: each estimate is exactly the same', 'Single estimates do change: an answer below the baseline is now pushed down instead of up.'],
+          ]),
+          solution: [
+            `Subtracting $${BASE}$ removes $${BASE}\\,${GLP}$ from each estimate.`,
+            `Averaged over the model's answers that term is zero, since $\\sum_y ${PI}(y)\\,\\nabla\\ln ${PI}(y) = \\nabla \\sum_y ${PI}(y) = \\nabla 1 = 0$.`,
+            'So the expected direction stays the same, while each estimate swings less: good answers up, poor ones down.',
+          ],
+        };
+      }
+      return {
+        prompt: `A baseline of $${BASE} = ${num(b)}$ is subtracted from every reward. Its share of the estimate, $${BASE}\\,${GLP}$, averages to zero over the model's answers, because $\\sum_y ${PI}(y)\\,${GLP} = 0$. Why is that sum zero?`,
+        answer: choose(`It equals $\\nabla \\sum_y ${PI}(y) = \\nabla 1$, and 1 does not change with $${TH}$`, [
+          [`Every single $${GLP}$ is zero`, 'They are not: each one points where its own answer gets more likely. They cancel only when weighted by $\\pi$ and added up.'],
+          ['The rewards average to zero', 'No reward appears in this sum: it is over the probabilities alone.'],
+          [`Every $\\ln ${PI}(y)$ is negative, so the terms cancel`, `The sign of $\\ln ${PI}$ is not what cancels: $${PI}(y)\\,\\nabla \\ln ${PI}(y) = \\nabla ${PI}(y)$, and those add up to the gradient of 1.`],
+        ]),
+        solution: [
+          `Each term is $${PI}(y)\\,\\nabla\\ln ${PI}(y) = \\nabla ${PI}(y)$, the log trick backwards.`,
+          `So the sum is $\\nabla \\sum_y ${PI}(y) = \\nabla 1 = 0$: the probabilities always add up to 1, so they cannot all rise together.`,
+          `Hence $${BASE}\\,${GLP}$ averages to zero for any $${BASE}$ that does not depend on the answer.`,
+        ],
+      };
+    },
+  },
+];

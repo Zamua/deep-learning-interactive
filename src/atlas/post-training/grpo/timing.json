@@ -1,0 +1,20 @@
+{
+ "duration": 102.351,
+ "scenes": {
+  "group": [0.0, 52.024],
+  "agree": [52.024, 102.351]
+ },
+ "beats": {
+  "group/value": [0.7, 12.404, "A good baseline is the reward you expect for this very question. One way to get it is to train a second model to predict it: a value model, a whole second network to train.", [[4.53, 5.16], [8.45, 8.96], [9.85, 10.23]]],
+  "group/group": [12.784, 25.222, "GRPO does without it. For each question, sample a group of answers, here eight, and check each one: a reward of one if it is right, zero if it is wrong.", [[15.074, 15.704], [16.664, 16.884], [18.364, 18.704], [19.494, 19.884], [20.994, 21.564], [23.374, 23.814]]],
+  "group/mean": [25.602, 32.673, "The group's mean reward is the baseline. Three of the eight are right, so it is zero point three seven five.", [[27.922, 28.442], [29.842, 30.112]]],
+  "group/std": [33.053, 44.688, "Then divide by the group's standard deviation, how spread out its rewards are: here about zero point four eight. That puts every question's advantages on a similar scale.", [[33.503, 33.713], [36.123, 36.493], [38.313, 38.803], [40.823, 41.353]]],
+  "group/adv": [45.068, 50.924, "Right answers get one point two nine, and wrong ones minus zero point seven seven.", [[47.458, 47.838], [48.648, 48.818]]],
+  "agree/hard": [52.724, 66.393, "A right answer to a hard question, where only one of eight succeeds, earns a big push: two point six five. On an easy one, where seven of eight do, each right answer gets only zero point three eight.", [[54.864, 55.094], [57.064, 57.314], [58.544, 58.914], [60.194, 60.764], [61.734, 61.894], [63.074, 63.374]]],
+  "agree/easy": [66.773, 73.208, "If every answer in the group is right, each reward equals the mean, and every advantage is zero.", [[68.833, 69.183], [70.933, 71.273]]],
+  "agree/none": [73.588, 86.4, "Such a group teaches nothing, and the same goes when every answer is wrong. The standard deviation is zero then, so code adds a tiny number to it, and zero divided by that stays zero.", [[75.358, 75.738], [78.098, 78.748], [80.918, 81.248], [83.408, 83.768], [85.298, 85.448]]],
+  "agree/sum": [86.78, 93.819, "Within any group, the advantages add up to zero: probability moves from the worse answers to the better ones.", [[87.82, 88.07], [89.95, 90.52]]],
+  "agree/cost": [94.199, 100.13, "There is no value model to train. The price is sampling several answers for every question.", [[96.199, 96.719]]],
+  "agree/turn": [100.51, 101.251, "Your turn.", []]
+ }
+}

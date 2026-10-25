@@ -1,0 +1,22 @@
+{
+ "duration": 113.185,
+ "scenes": {
+  "allup": [0.0, 30.941],
+  "baseline": [30.941, 71.835],
+  "same": [71.835, 113.185]
+ },
+ "beats": {
+  "allup/rewards": [0.7, 11.874, "A grader scores four answers a model sampled for one question, from zero to one: zero point nine, zero point six, zero point five and zero point two.", [[4.64, 4.99], [6.16, 6.74], [7.73, 8.07], [9.09, 9.41], [10.41, 10.68]]],
+  "allup/allup": [12.254, 21.661, "Every reward is positive, so the policy gradient pushes every one of these answers up, even the worst. Only the size of the push differs.", [[13.964, 14.414], [17.814, 18.194], [19.114, 19.644]]],
+  "allup/noise": [22.041, 29.841, "On average the good answers still win, but each estimate is noisy: whatever happens to be sampled gets pushed up.", [[24.391, 24.861], [26.631, 27.171], [28.721, 28.881]]],
+  "baseline/b": [31.641, 40.154, "So subtract a baseline, b: the reward you expected. Here, the average of the four, zero point five five.", [[33.301, 33.681], [34.061, 34.511], [35.911, 36.461], [38.141, 38.581]]],
+  "baseline/A": [40.534, 53.479, "What is left is the advantage, A, equal to R minus b: zero point three five, zero point zero five, minus zero point zero five and minus zero point three five.", [[42.434, 42.904], [43.254, 43.614], [45.304, 45.724], [47.134, 47.454], [48.904, 49.224], [51.134, 51.424]]],
+  "baseline/signs": [53.859, 61.559, "Use A in place of R. Now the answers that beat expectations are pushed up, and the rest are pushed down.", [[55.859, 56.499], [57.499, 57.669], [59.599, 59.929]]],
+  "baseline/third": [61.939, 70.735, "Look at the third answer. Its reward, zero point five, is positive, but below what was expected, so now it gets pushed down.", [[63.209, 63.749], [64.519, 64.739], [65.759, 65.979], [66.779, 67.029], [68.609, 68.949]]],
+  "same/sum": [72.535, 82.227, "Why is this allowed? Average the gradient of log pi over the model's answers. pi times the gradient of its log is just the gradient of pi.", [[73.765, 74.305], [77.855, 78.365], [80.325, 80.575]]],
+  "same/one": [82.607, 89.919, "And the probabilities always add up to one, so their gradients add up to zero: they cannot all rise at once.", [[85.127, 85.497], [87.507, 87.977]]],
+  "same/zero": [90.299, 101.275, "So the baseline's share of the estimate, b times the gradient of log pi, averages to zero. The expected direction stays the same; only the noise drops.", [[92.699, 93.009], [95.369, 95.669], [96.859, 97.429], [99.549, 99.949]]],
+  "same/best": [101.655, 110.965, "The best baseline is the reward you expect for that very question: a running average of past rewards works, or a second model trained to predict it.", [[105.495, 106.035], [108.395, 108.705]]],
+  "same/turn": [111.345, 112.085, "Your turn.", []]
+ }
+}

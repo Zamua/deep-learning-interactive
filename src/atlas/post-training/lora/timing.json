@@ -1,0 +1,23 @@
+{
+ "duration": 102.616,
+ "scenes": {
+  "full": [0.0, 35.969],
+  "count": [35.969, 68.001],
+  "merge": [68.001, 102.616]
+ },
+ "beats": {
+  "full/W": [0.7, 11.306, "Fine-tuning a pretrained network changes its weight matrices. Take one, W, with d rows and k columns: here, a thousand by a thousand.", [[4.5, 5.03], [5.62, 5.95], [6.43, 6.69], [8.67, 9.17], [9.49, 9.71]]],
+  "full/size": [11.686, 17.928, "Training all of it means a million numbers to learn, and a million more to store for every task.", [[14.836, 15.096]]],
+  "full/idea": [18.308, 26.458, "LoRA freezes W, and learns only a change to it, written as a product of two thin matrices: B times A.", [[19.858, 20.188], [21.888, 22.238], [24.768, 25.158]]],
+  "full/rank": [26.838, 34.869, "B is d by r, and A is r by k. The rank, r, is small: here, four.", [[28.658, 29.078], [30.978, 31.538], [32.068, 32.238], [32.618, 32.788], [33.408, 33.878], [34.208, 34.398]]],
+  "count/shape": [36.669, 47.218, "B times A is d by r, times r by k. The inner r's match, and the product comes out d by k: exactly W's shape.", [[39.239, 39.439], [40.719, 41.329], [42.599, 42.879], [44.079, 44.249], [45.109, 45.589]]],
+  "count/count": [47.598, 54.639, "Yet it is built from only r times d plus k numbers: four times two thousand, eight thousand.", [[51.498, 52.038], [53.528, 53.848]]],
+  "count/frac": [55.019, 58.604, "That is zero point eight percent of the million in W.", []],
+  "count/out": [58.984, 66.901, "The layer now computes W x plus B A x. W gets no updates; only B and A learn.", [[62.654, 63.204], [64.804, 65.184]]],
+  "merge/zero": [68.701, 78.202, "B starts at zero, and A at random. So at the start, B A is zero, and the layer gives exactly what the pretrained one did.", [[70.171, 70.421], [71.761, 72.311], [73.421, 73.661], [75.001, 75.361]]],
+  "merge/start": [78.582, 83.747, "Training begins from the original model, and moves away from it only as B learns.", [[80.752, 81.022]]],
+  "merge/merge": [84.127, 93.52, "When training is done, add B A into W. The merged matrix has W's shape, so the layer runs exactly as fast as before.", [[85.347, 85.687], [87.577, 88.227], [90.337, 90.687]]],
+  "merge/tasks": [93.9, 100.395, "And each task keeps only its own B and A: eight thousand numbers instead of a million.", [[97.17, 97.75], [99.09, 99.27]]],
+  "merge/turn": [100.775, 101.516, "Your turn.", []]
+ }
+}
