@@ -14,8 +14,8 @@ interface Template {
   ok?: (v: V) => boolean;
   /** The gradient of f with respect to x, y and z. */
   grad: (v: V) => [number, number, number];
-  /** Intermediate nodes whose gradient a problem can ask for. */
-  inner: { name: string; value: (v: V) => number; grad: (v: V) => number; traps: (v: V) => { value: number; why: string }[] }[];
+  /** Intermediate nodes whose gradient a problem can ask for, each defined from the inputs. */
+  inner: { name: string; def: string; value: (v: V) => number; grad: (v: V) => number; traps: (v: V) => { value: number; why: string }[] }[];
   /** Whole wrong gradients from the usual mistakes. */
   wrong: (v: V) => { value: [number, number, number]; why: string }[];
   /** The forward and backward pass, one solution line each. */
@@ -35,6 +35,7 @@ const T: Template[] = [
     inner: [
       {
         name: 'q',
+        def: 'q = x + y',
         value: ({ x, y }) => x + y,
         grad: ({ z }) => z,
         traps: ({ x, y }) => [{ value: x + y, why: 'That is $q$\'s value from the forward pass. Its gradient is what the multiply sends it: $z$ times the upstream 1.' }],
@@ -76,6 +77,7 @@ const T: Template[] = [
     inner: [
       {
         name: 'q',
+        def: 'q = y + z',
         value: ({ y, z }) => y + z,
         grad: ({ x }) => x,
         traps: ({ y, z }) => [{ value: y + z, why: 'That is $q$\'s value from the forward pass. Its gradient is what the multiply sends it: $x$ times the upstream 1.' }],
@@ -99,6 +101,7 @@ const T: Template[] = [
     inner: [
       {
         name: 'q',
+        def: 'q = x \\cdot y',
         value: ({ x, y }) => x * y,
         grad: ({ z }) => z,
         traps: ({ x, y }) => [{ value: x * y, why: 'That is $q$\'s value from the forward pass. Its gradient is what the multiply sends it: $z$ times the upstream 1.' }],
@@ -123,6 +126,7 @@ const T: Template[] = [
     inner: [
       {
         name: 'm',
+        def: 'm = \\max(x, y)',
         value: ({ x, y }) => Math.max(x, y),
         grad: ({ z }) => z,
         traps: ({ x, y }) => [{ value: Math.max(x, y), why: 'That is $m$\'s value from the forward pass. Its gradient is what the multiply sends it: $z$ times the upstream 1.' }],
@@ -151,27 +155,29 @@ const T: Template[] = [
     inner: [
       {
         name: 'r',
+        def: 'r = x \\cdot y + z',
         value: ({ x, y, z }) => x * y + z,
         grad: ({ x, y, z }) => 2 * (x * y + z),
         traps: ({ x, y, z }) => [{ value: x * y + z, why: 'That is $r$ itself. The square\'s local slope is $2r$.' }],
       },
       {
         name: 'q',
+        def: 'q = x \\cdot y',
         value: ({ x, y }) => x * y,
         grad: ({ x, y, z }) => 2 * (x * y + z),
         traps: ({ x, y, z }) => [
-          { value: 1, why: 'That is the add\'s local slope alone. Multiply it by the gradient arriving from the square, $2r$.' },
+          { value: 1, why: 'That is the add\'s local slope alone. Multiply it by the gradient arriving from the square, $2(q + z)$.' },
           { value: x * y, why: 'That is $q$\'s value from the forward pass, not its gradient.' },
-          { value: x * y + z, why: 'That uses $r$ as the square\'s local slope. The slope of $r^{2}$ is $2r$.' },
+          { value: x * y + z, why: 'That drops the 2 from the square\'s local slope: the slope of $(q + z)^{2}$ is $2(q + z)$.' },
         ],
       },
     ],
     wrong: ({ x, y, z }) => {
       const r = x * y + z;
       return [
-        { value: [r * y, r * x, r], why: 'That uses $r$ as the square\'s local slope. The slope of $r^{2}$ is $2r$.' },
+        { value: [r * y, r * x, r], why: 'That drops the 2 from the square\'s local slope: the slope of $(x \\cdot y + z)^{2}$ is $2(x \\cdot y + z)$.' },
         { value: [2 * r * x, 2 * r * y, 2 * r], why: UNSWAP },
-        { value: [y, x, 1], why: 'That leaves out the square. Everything below it is scaled by its local slope, $2r$.' },
+        { value: [y, x, 1], why: 'That leaves out the square. Everything below it is scaled by its local slope, $2(x \\cdot y + z)$.' },
       ];
     },
     steps: ({ x, y, z }) => {
@@ -196,12 +202,14 @@ const T: Template[] = [
     inner: [
       {
         name: 'r',
+        def: 'r = (x + y)^{2}',
         value: ({ x, y }) => (x + y) ** 2,
         grad: ({ z }) => z,
         traps: ({ x, y }) => [{ value: (x + y) ** 2, why: 'That is $r$\'s value from the forward pass. Its gradient is what the multiply sends it: $z$ times the upstream 1.' }],
       },
       {
         name: 'q',
+        def: 'q = x + y',
         value: ({ x, y }) => x + y,
         grad: ({ x, y, z }) => 2 * (x + y) * z,
         traps: ({ x, y, z }) => [
@@ -213,7 +221,7 @@ const T: Template[] = [
     wrong: ({ x, y, z }) => {
       const q = x + y;
       return [
-        { value: [q * z, q * z, q * q], why: 'That uses $q$ as the square\'s local slope. The slope of $q^{2}$ is $2q$.' },
+        { value: [q * z, q * z, q * q], why: 'That drops the 2 from the square\'s local slope: the slope of $(x + y)^{2}$ is $2(x + y)$.' },
         { value: [2 * q * q * q, 2 * q * q * q, z], why: UNSWAP },
         { value: [2 * q, 2 * q, q * q], why: 'That leaves out the multiply\'s factor $z$ on the way back to the square.' },
       ];
@@ -241,16 +249,11 @@ function draw(rng: Rng, d: number, ok?: (v: V) => boolean): V {
 
 const usable = (d: number) => T.filter((t) => (d < 0.35 ? t.level === 0 : d < 0.7 ? t.level <= 1 : t.level >= 1));
 const at = (v: V) => `$x = ${n(v.x)}$, $y = ${n(v.y)}$ and $z = ${n(v.z)}$`;
-const nodes = (t: Template) => {
-  const xs = t.nodes.map((s) => `$${s}$`);
-  return `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`;
-};
 
 /** Graphs where one input feeds two nodes, with the gradient each use sends back. */
-const TWICE: { tex: string; nodes: string; who: 'x' | 'y'; uses: [string, string]; ok?: (v: V) => boolean; branch: (v: V) => [number, number]; check: string }[] = [
+const TWICE: { tex: string; who: 'x' | 'y'; uses: [string, string]; ok?: (v: V) => boolean; branch: (v: V) => [number, number]; check: string }[] = [
   {
     tex: 'x \\cdot y + x',
-    nodes: '$q = x \\cdot y$ and $f = q + x$',
     who: 'x',
     uses: ['the multiply', 'the add'],
     branch: ({ y }) => [y, 1],
@@ -258,7 +261,6 @@ const TWICE: { tex: string; nodes: string; who: 'x' | 'y'; uses: [string, string
   },
   {
     tex: '(x + y) \\cdot x',
-    nodes: '$q = x + y$ and $f = q \\cdot x$',
     who: 'x',
     uses: ['the add', 'the multiply'],
     branch: ({ x }) => [x, 0],
@@ -266,7 +268,6 @@ const TWICE: { tex: string; nodes: string; who: 'x' | 'y'; uses: [string, string
   },
   {
     tex: '(x + y) \\cdot (y + z)',
-    nodes: '$q = x + y$, $r = y + z$ and $f = q \\cdot r$',
     who: 'y',
     uses: ['the first add', 'the second add'],
     branch: () => [0, 0],
@@ -274,7 +275,6 @@ const TWICE: { tex: string; nodes: string; who: 'x' | 'y'; uses: [string, string
   },
   {
     tex: 'x \\cdot y + x \\cdot z',
-    nodes: '$q = x \\cdot y$, $r = x \\cdot z$ and $f = q + r$',
     who: 'x',
     uses: ['the first multiply', 'the second multiply'],
     branch: ({ y, z }) => [y, z],
@@ -297,7 +297,7 @@ export const generators: Generator[] = [
       const node = pick(rng, t.inner);
       const ans = clean(node.grad(v));
       return {
-        prompt: `The graph of $f = ${t.tex}$ has the nodes ${nodes(t)}. At ${at(v)}, what is $${D(node.name)}$?`,
+        prompt: `In $f = ${t.tex}$, let $${node.def}$. At ${at(v)}, what is $${D(node.name)}$?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, node.traps(v)),
         solution: t.steps(v).slice(0, node.name === 'q' && t.nodes.length === 3 ? 3 : 2).concat(`So $${D(node.name)} = ${n(ans)}$.`),
@@ -313,7 +313,7 @@ export const generators: Generator[] = [
       const name = 'xyz'[k]!;
       const ans = t.grad(v)[k]!;
       return {
-        prompt: `Backprop through $f = ${t.tex}$, with nodes ${nodes(t)}, at ${at(v)}. What is $${D(name)}$?`,
+        prompt: `Backprop through $f = ${t.tex}$ at ${at(v)}. What is $${D(name)}$?`,
         answer: { kind: 'number', value: ans },
         traps: traps(ans, t.wrong(v).map((w) => ({ value: w.value[k]!, why: w.why }))),
         solution: t.steps(v).concat(`So $${D(name)} = ${n(ans)}$.`),
@@ -327,7 +327,7 @@ export const generators: Generator[] = [
       const v = draw(rng, d, t.ok);
       const ans = t.grad(v).map(clean);
       return {
-        prompt: `Backprop through $f = ${t.tex}$, with nodes ${nodes(t)}, at ${at(v)}. What is the gradient $\\left[${D('x')},\\ ${D('y')},\\ ${D('z')}\\right]$?`,
+        prompt: `Backprop through $f = ${t.tex}$ at ${at(v)}. What is the gradient $\\left[${D('x')},\\ ${D('y')},\\ ${D('z')}\\right]$?`,
         answer: { kind: 'vector', value: ans },
         traps: vtraps(ans, t.wrong(v)),
         solution: t.steps(v).concat(`So the gradient is $[${ans.map((x) => n(x)).join(',\\ ')}]$.`),
@@ -351,7 +351,7 @@ export const generators: Generator[] = [
         const who = t.who;
         const vars = t.tex.includes('z') ? at(v) : `$x = ${n(v.x)}$ and $y = ${n(v.y)}$`;
         return {
-          prompt: `In $f = ${t.tex}$, with nodes ${t.nodes}, the input $${who}$ feeds two nodes. At ${vars}, what is $${D(who)}$?`,
+          prompt: `In $f = ${t.tex}$, the input $${who}$ feeds two nodes. At ${vars}, what is $${D(who)}$?`,
           answer: {
             kind: 'choice',
             options: opts.map((o) => `$${n(o)}$`),
