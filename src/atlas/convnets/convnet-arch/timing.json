@@ -1,0 +1,19 @@
+{
+ "duration": 78.613,
+ "scenes": {
+  "stages": [0.0, 40.742],
+  "head": [40.742, 78.613]
+ },
+ "beats": {
+  "stages/input": [0.7, 7.542, "A small ConvNet for color images, thirty two by thirty two. Follow the shape from layer to layer.", [[2.92, 3.28], [4.81, 5.39]]],
+  "stages/conv": [7.922, 17.552, "A three by three conv with sixteen filters and padding one keeps the size and makes sixteen channels: sixteen by thirty two by thirty two.", [[11.662, 11.902], [14.372, 14.842]]],
+  "stages/relu": [17.932, 22.2, "A ReLU works entry by entry, so the shape does not change.", [[20.122, 20.442]]],
+  "stages/pool": [22.58, 30.064, "Max pooling halves the height and the width: sixteen by sixteen by sixteen. That is one stage.", [[25.19, 25.66], [28.16, 28.71]]],
+  "stages/repeat": [30.444, 39.642, "Repeat it with thirty two filters: thirty two channels, then pooled to eight by eight. The image gets smaller and deeper as it goes.", [[32.584, 33.144], [36.174, 36.734]]],
+  "head/flatten": [41.442, 49.258, "Flatten lays all of it out in one vector: thirty two times eight times eight, two thousand and forty eight numbers.", [[43.972, 44.552], [45.932, 46.082], [46.752, 47.252]]],
+  "head/fc": [49.638, 56.064, "A fully connected layer then turns those into ten class scores, exactly like a linear classifier.", [[53.628, 53.998]]],
+  "head/params": [56.444, 68.191, "Count the parameters. The first convolution has four hundred and forty eight, the second four thousand, six hundred and forty, and the linear layer twenty thousand, four hundred and ninety.", [[57.704, 58.354], [61.124, 61.624], [62.204, 62.394], [64.364, 64.804], [65.804, 66.024]]],
+  "head/most": [68.571, 76.393, "Pooling and ReLU have none. Most of the parameters sit in that last fully connected layer, even in this tiny network.", [[70.391, 70.981], [74.421, 74.771]]],
+  "head/turn": [76.773, 77.513, "Your turn.", []]
+ }
+}

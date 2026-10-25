@@ -1,0 +1,19 @@
+{
+ "duration": 110.859,
+ "scenes": {
+  "shapes": [0.0, 49.826],
+  "entries": [49.826, 110.859]
+ },
+ "beats": {
+  "shapes/fwd": [0.7, 11.626, "Take a node that computes z equals W times x. Here W has two rows and three columns, x has three entries, and z has two.", [[4.58, 5.11], [5.47, 5.74], [8.24, 8.77], [10.12, 10.41]]],
+  "shapes/dz": [12.006, 20.271, "Backprop hands this node the gradient on z: one number per entry of z, so two of them. Call it d z.", [[14.846, 15.396], [17.196, 17.486], [18.436, 18.936]]],
+  "shapes/dwshape": [20.651, 28.029, "The gradient on W must have the shape of W, two by three: one number for every entry of W.", [[23.771, 24.161], [25.071, 25.641]]],
+  "shapes/outer": [28.409, 37.878, "From a column of two and a row of three, only one product makes a two by three grid: the outer product, d z times x transpose.", [[30.839, 31.209], [33.799, 34.329], [35.269, 35.619]]],
+  "shapes/dxshape": [38.258, 48.726, "The gradient on x must have the shape of x: three numbers. W transpose is three by two, and times d z it gives exactly three.", [[41.138, 41.478], [42.308, 42.938], [45.178, 45.508], [46.748, 46.958], [48.478, 48.698]]],
+  "entries/zi": [50.526, 64.047, "Why the outer product? Each entry z i adds up W i j times x j over j. So nudging W i j moves z i by x j times the nudge.", [[52.006, 52.516], [54.306, 54.616], [58.226, 58.796], [60.876, 61.056]]],
+  "entries/ij": [64.427, 78.045, "Its gradient is d z i times x j: the gradient on its row's entry of z, times its column's entry of x. Row one, column two: minus two times two, minus four.", [[67.707, 68.267], [70.477, 70.757], [72.727, 73.327], [73.957, 74.127], [74.827, 75.357], [77.017, 77.257]]],
+  "entries/grid": [78.425, 92.578, "Fill the grid. In row zero, d z is one, so the row is x itself: three, zero, and two. In row one it is minus two: minus six, zero, and minus four.", [[79.315, 79.965], [80.935, 81.175], [82.505, 82.905], [84.665, 85.135], [85.555, 85.755], [86.825, 87.475], [89.415, 89.885], [90.705, 90.955], [91.445, 91.595]]],
+  "entries/dx": [92.958, 108.638, "And each x j feeds every entry of z, so its gradients add up over the rows: column j of W, weighted by d z. For x zero, one times one plus minus one times minus two: three.", [[96.178, 96.578], [98.958, 99.458], [100.808, 101.138], [102.428, 103.068], [104.098, 104.368], [107.708, 108.208]]],
+  "entries/turn": [109.018, 109.759, "Your turn.", []]
+ }
+}

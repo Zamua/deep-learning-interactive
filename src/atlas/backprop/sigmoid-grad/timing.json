@@ -1,0 +1,22 @@
+{
+ "duration": 99.694,
+ "scenes": {
+  "curve": [0.0, 35.509],
+  "slope": [35.509, 70.394],
+  "flat": [70.394, 99.694]
+ },
+ "beats": {
+  "curve/def": [0.7, 9.336, "The sigmoid squashes any number into the range zero to one. Sigma of x is one over one plus e to the minus x.", [[4.61, 5.16]]],
+  "curve/zero": [9.716, 15.665, "At zero, e to the zero is one, so sigma is one over two: a half.", [[10.516, 10.886], [12.376, 12.796], [14.596, 15.026]]],
+  "curve/two": [16.045, 24.924, "At two, e to the minus two is about zero point one four. One over one point one four is about zero point eight eight.", [[16.705, 17.145], [20.345, 20.905], [22.815, 22.985]]],
+  "curve/tails": [25.304, 34.409, "Far to the right it creeps up toward one, and far to the left down toward zero. At minus two, it is zero point one two.", [[27.934, 28.324], [30.804, 31.354], [32.424, 32.644]]],
+  "slope/rule": [36.209, 44.263, "Its slope has a neat form: sigma times one minus sigma. Backprop can build it from the output it already has.", [[37.939, 38.419], [40.609, 41.189]]],
+  "slope/two": [44.643, 52.983, "At x equals two, that is zero point eight eight times zero point one two: about zero point one zero five.", [[46.153, 46.433], [50.083, 50.583]]],
+  "slope/peak": [53.363, 60.103, "The slope is steepest at zero: a half times a half, a quarter. It is never more than that.", [[55.393, 55.843], [57.223, 57.543], [58.143, 58.643]]],
+  "slope/chain": [60.483, 69.294, "In a graph, the sigmoid node multiplies the gradient from above by this local slope, so it shrinks the gradient at least four times.", [[61.243, 61.533], [65.973, 66.433]]],
+  "flat/six": [71.094, 78.249, "Far from zero the curve goes flat. At six, sigma is zero point nine nine seven five.", [[72.244, 72.444], [73.714, 74.254], [74.914, 75.204]]],
+  "flat/tiny": [78.629, 88.097, "So its slope is zero point nine nine seven five times zero point zero zero two five: about zero point zero zero two five.", [[82.059, 82.269], [84.909, 85.399]]],
+  "flat/dead": [88.477, 97.473, "Almost no gradient gets through. A saturated sigmoid, stuck near zero or one, passes almost nothing back to the nodes before it.", [[90.517, 91.017], [92.417, 92.617], [94.277, 94.567]]],
+  "flat/turn": [97.853, 98.594, "Your turn.", []]
+ }
+}

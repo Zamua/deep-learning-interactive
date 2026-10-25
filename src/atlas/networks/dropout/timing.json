@@ -1,0 +1,18 @@
+{
+ "duration": 81.293,
+ "scenes": {
+  "drop": [0.0, 50.202],
+  "test": [50.202, 81.293]
+ },
+ "beats": {
+  "drop/layer": [0.7, 8.022, "Here is a hidden layer's output, h: four units, with values two, one, three and two.", [[2.47, 2.85], [3.29, 3.67], [4.56, 4.89], [5.94, 6.2], [6.61, 6.83]]],
+  "drop/mask": [8.402, 19.744, "During training, dropout keeps each unit with probability p, here a half, and zeroes the rest. This time the random mask keeps units zero and two.", [[9.322, 9.662], [12.482, 12.882], [13.842, 14.202], [15.512, 16.052], [16.632, 16.842]]],
+  "drop/zeroed": [20.124, 24.261, "So the layer's output becomes two, zero, three, zero.", [[21.924, 22.144], [23.174, 23.374]]],
+  "drop/scale": [24.641, 34.941, "Then the kept units are divided by p. With p a half, that doubles them: four, zero, six, zero. This is inverted dropout.", [[27.181, 27.711], [28.721, 28.941], [29.791, 30.271], [30.691, 30.891], [31.421, 31.571], [32.041, 32.211], [32.681, 33.191]]],
+  "drop/why": [35.321, 49.102, "Why divide? A unit is kept only a fraction p of the time. Dividing by p makes up for it: on average, p times h over p is h, exactly what the unit gives without dropout.", [[36.231, 36.801], [39.791, 40.351], [42.331, 42.851], [43.471, 43.801], [46.151, 46.491]]],
+  "test/test": [50.902, 60.504, "At test time, every unit is kept and nothing is scaled. The layer passes h straight through: two, one, three, two.", [[51.792, 52.102], [53.342, 53.502], [54.772, 55.322], [57.542, 58.002], [58.372, 58.622], [59.052, 59.312], [59.782, 60.092]]],
+  "test/match": [60.884, 69.768, "Because training already divided by p, the next layer sees at test time what it saw on average in training. No correction is needed.", [[63.384, 63.824], [67.824, 68.334]]],
+  "test/lean": [70.148, 79.073, "And in training, any unit might vanish at any moment, so no unit can count on another being there. Each has to be useful on its own.", [[71.028, 71.308], [73.568, 73.948], [76.518, 77.018]]],
+  "test/turn": [79.453, 80.193, "Your turn.", []]
+ }
+}

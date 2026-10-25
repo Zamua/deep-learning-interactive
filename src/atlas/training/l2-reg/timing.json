@@ -1,0 +1,23 @@
+{
+ "duration": 120.411,
+ "scenes": {
+  "penalty": [0.0, 34.459],
+  "decay": [34.459, 86.219],
+  "spread": [86.219, 120.411]
+ },
+ "beats": {
+  "penalty/add": [0.7, 7.412, "L2 regularization adds a second term to the loss: lambda times the sum of the squared weights.", [[4.25, 4.77]]],
+  "penalty/example": [7.792, 16.871, "Say the weights are two, minus one and zero, and lambda is zero point one. Squared, they are four, one and zero.", [[9.222, 9.582], [11.062, 11.392], [13.302, 13.802], [14.372, 14.582], [15.352, 15.652], [16.062, 16.212]]],
+  "penalty/sum": [17.251, 24.263, "They add up to five, and lambda times five is a penalty of zero point five, added to the data loss.", [[18.541, 18.891], [22.581, 22.891]]],
+  "penalty/lam": [24.643, 33.359, "Lambda sets the trade. At zero the penalty vanishes; large, and keeping the weights small matters more than fitting the data.", [[26.143, 26.683], [28.713, 29.193], [29.743, 29.903]]],
+  "decay/grad": [35.159, 41.645, "The penalty's gradient is two lambda w. Each weight's slope is proportional to the weight itself.", [[37.919, 38.499]]],
+  "decay/example": [42.025, 51.389, "For two, minus one and zero, with lambda at zero point one, that is zero point four, minus zero point two, and zero.", [[42.645, 43.125], [44.625, 44.945], [46.815, 47.105], [48.645, 48.945], [50.435, 50.685]]],
+  "decay/step": [51.769, 60.454, "The gradient step adds it to the data gradient: w becomes w, minus eta times g plus two lambda w.", [[54.459, 54.989], [55.929, 56.079], [56.549, 56.979]]],
+  "decay/shrink": [60.834, 74.879, "Where the data gradient is zero, each step just multiplies the weight by one minus two eta lambda. With eta at a half, that is zero point nine: two becomes one point eight, then one point six two.", [[62.724, 63.074], [67.354, 67.884], [69.174, 69.424], [70.764, 71.214], [72.944, 73.274]]],
+  "decay/pull": [75.259, 85.119, "So every step pulls every weight a little toward zero, and only the data can pull back. That is why L2 is also called weight decay.", [[78.939, 79.309], [81.209, 81.789]]],
+  "spread/same": [86.919, 96.981, "Take the input one, one, one, one. The weights one, zero, zero, zero, and a quarter in every entry, both give it a score of one.", [[87.789, 87.969], [89.839, 90.379], [93.069, 93.279], [95.009, 95.259]]],
+  "spread/pen": [97.361, 106.399, "But their penalties differ. The first costs one squared: one. The second, four times a quarter squared: a quarter.", [[98.841, 99.421], [101.451, 101.861], [102.211, 102.841], [103.431, 103.691], [105.311, 105.731]]],
+  "spread/prefer": [106.779, 118.191, "Squaring makes big weights expensive, so L2 prefers the second: weight spread over every input, using all of the evidence a little rather than one input a lot.", [[109.089, 109.479], [111.529, 112.059], [113.999, 114.359], [116.179, 116.429]]],
+  "spread/turn": [118.571, 119.311, "Your turn.", []]
+ }
+}

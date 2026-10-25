@@ -1,0 +1,19 @@
+{
+ "duration": 67.875,
+ "scenes": {
+  "rates": [0.0, 32.613],
+  "more": [32.613, 67.875]
+ },
+ "beats": {
+  "rates/axes": [0.7, 6.653, "A loss curve plots the training loss as training goes on. Its shape says what is wrong.", [[4.07, 4.63]]],
+  "rates/low": [7.033, 13.297, "A learning rate too low: the loss falls, but slowly, in an almost straight line.", [[8.663, 9.293], [10.313, 10.553], [11.263, 11.593]]],
+  "rates/high": [13.677, 21.334, "Too high: it drops fast at first, then stalls at a high level, its steps too big to settle into the valley.", [[14.357, 14.907], [16.467, 16.757], [18.367, 18.797]]],
+  "rates/huge": [21.714, 27.237, "Far too high: the loss shoots up, and soon prints nan, not a number.", [[22.954, 23.424], [24.544, 24.804], [26.164, 26.404]]],
+  "rates/good": [27.617, 31.513, "A good rate drops quickly, then keeps creeping lower.", [[29.347, 29.697]]],
+  "more/noisy": [33.313, 43.045, "A curve that jumps up and down but still trends lower means each gradient is noisy, usually because the batch is small. A bigger batch smooths it.", [[35.173, 35.323], [36.583, 36.873], [38.703, 39.043], [40.903, 41.433]]],
+  "more/val": [43.425, 51.749, "Now add the validation loss. If the training loss keeps falling while validation turns and climbs, the model is overfitting.", [[45.305, 45.835], [49.845, 50.215]]],
+  "more/gap": [52.129, 58.488, "A small, steady gap between the two is normal. A gap that keeps widening is the warning sign.", [[55.179, 55.749]]],
+  "more/bottom": [58.868, 65.655, "The best weights are where validation bottomed out, here at epoch twelve. Keep those, and stop there.", [[61.508, 61.858], [63.388, 63.858], [64.528, 64.778]]],
+  "more/turn": [66.035, 66.775, "Your turn.", []]
+ }
+}

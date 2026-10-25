@@ -1,0 +1,20 @@
+{
+ "duration": 84.791,
+ "scenes": {
+  "grow": [0.0, 31.401],
+  "stride": [31.401, 55.342],
+  "why": [55.342, 84.791]
+ },
+ "beats": {
+  "grow/one": [0.7, 9.623, "One unit after a three by three conv sees a three by three patch of the input. That patch is its receptive field: three wide.", [[5.7, 6.27], [8.44, 8.83]]],
+  "grow/two": [10.003, 19.967, "Stack a second three by three layer. Its unit sees three units below it, and together those see five input pixels. The layer added two.", [[12.233, 12.723], [14.923, 15.243], [15.903, 16.053], [18.143, 18.623]]],
+  "grow/three": [20.347, 30.301, "A third layer reaches seven. Each stride one layer adds F minus one, so L layers of three by three see one plus two L.", [[22.097, 22.637], [23.387, 23.587], [25.737, 26.157], [28.357, 28.517]]],
+  "stride/jump": [32.101, 39.185, "A stride speeds this up. After a stride two layer, neighboring units sit two input pixels apart.", [[33.751, 34.341], [35.831, 36.151], [37.301, 37.461]]],
+  "stride/adds": [39.565, 47.508, "So the next three by three layer spans twice as much: it adds two times two, four. Three becomes seven.", [[42.805, 43.235], [44.835, 45.125], [45.565, 46.115]]],
+  "stride/deep": [47.888, 54.242, "This is how a deep network's last layers come to see the whole image, while every filter stays small.", [[51.898, 52.228]]],
+  "why/same": [56.042, 62.886, "Two stacked three by three layers see five by five, exactly like a single five by five filter.", [[59.782, 60.092]]],
+  "why/fewer": [63.266, 68.897, "But they need fewer weights: nine plus nine, eighteen, against twenty five.", [[64.836, 65.276], [66.366, 66.646], [67.226, 67.476]]],
+  "why/more": [69.277, 82.57, "The saving grows with depth. Three layers of three by three see seven by seven with twenty seven weights; one seven by seven filter needs forty nine. Same view, fewer weights.", [[71.157, 71.867], [73.757, 73.907], [76.737, 77.177], [79.967, 80.567], [81.297, 81.617]]],
+  "why/turn": [82.95, 83.691, "Your turn.", []]
+ }
+}

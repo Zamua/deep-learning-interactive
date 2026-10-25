@@ -1,0 +1,19 @@
+{
+ "duration": 93.991,
+ "scenes": {
+  "pick": [0.0, 41.45],
+  "temp": [41.45, 93.991]
+ },
+ "beats": {
+  "pick/scores": [0.7, 11.145, "To generate text, the model scores every possible next token. Here there are three: cat, dog and fish, with scores two, one and zero.", [[1.85, 2.08], [4.74, 5.34], [6.41, 6.87], [7.22, 7.48], [7.78, 7.94], [8.53, 8.8], [9.79, 9.99]]],
+  "pick/probs": [11.525, 19.941, "Softmax turns the scores into probabilities: zero point six seven, zero point two four, and zero point zero nine.", [[14.315, 14.835], [16.155, 16.515], [17.795, 18.055]]],
+  "pick/greedy": [20.321, 30.262, "Greedy decoding always takes the most likely token: cat, every single time. That is safe, but the text comes out dull and repetitive.", [[21.271, 21.421], [23.581, 23.961], [24.331, 24.721], [26.011, 26.571], [27.431, 27.841]]],
+  "pick/sample": [30.642, 40.35, "Sampling draws at random with those probabilities instead: cat two times in three, dog about one in four, and now and then, fish.", [[33.932, 34.472], [36.122, 36.562], [38.132, 38.522], [39.592, 39.872]]],
+  "temp/formula": [42.15, 50.048, "A temperature, T, tunes how adventurous sampling is: divide every score by T before the softmax.", [[42.96, 43.21], [43.57, 43.93], [46.09, 46.62], [49.82, 50.02]]],
+  "temp/low": [50.428, 61.595, "With T at one half, the scores double to four, two and zero. The gaps grow, and cat takes zero point eight seven: sharper, closer to greedy.", [[51.768, 52.028], [52.998, 53.228], [53.798, 54.018], [55.078, 55.698], [56.598, 56.878], [59.158, 59.568], [60.198, 60.488]]],
+  "temp/high": [61.975, 73.467, "With T at two, the scores halve. The gaps shrink, and the probabilities flatten: zero point five one, zero point three one, and zero point one nine.", [[62.715, 62.865], [63.285, 63.555], [64.665, 65.175], [66.105, 66.315], [67.795, 68.425], [69.755, 70.085], [71.365, 71.665]]],
+  "temp/order": [73.847, 81.717, "Either way, the order never changes: cat stays on top. Temperature only changes how often the others get picked.", [[74.507, 74.827], [76.307, 76.757], [77.927, 78.477]]],
+  "temp/limits": [82.097, 91.771, "Push T toward zero and cat takes everything: that is greedy decoding. Push it ever higher, and every token gets the same share.", [[83.657, 83.817], [85.407, 85.927], [87.627, 88.177], [89.297, 89.517]]],
+  "temp/turn": [92.151, 92.891, "Your turn.", []]
+ }
+}

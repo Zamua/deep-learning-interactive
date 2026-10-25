@@ -25,6 +25,11 @@ export const DOMAINS: Domain[] = [
   { id: 'calculus', title: 'Calculus', color: 'purple' },
   { id: 'classifiers', title: 'Classifiers', color: 'teal' },
   { id: 'optimization', title: 'Optimization', color: 'gold' },
+  { id: 'backprop', title: 'Backpropagation', color: 'red' },
+  { id: 'networks', title: 'Neural networks', color: 'green' },
+  { id: 'training', title: 'Training', color: 'orange' },
+  { id: 'convnets', title: 'ConvNets', color: 'slate' },
+  { id: 'sequences', title: 'Sequence models', color: 'teal' },
 ];
 
 const metas = import.meta.glob<ConceptMeta>('./*/*/meta.ts', { eager: true, import: 'meta' });

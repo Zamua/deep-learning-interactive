@@ -1,0 +1,18 @@
+{
+ "duration": 82.24,
+ "scenes": {
+  "look": [0.0, 51.177],
+  "every": [51.177, 82.24]
+ },
+ "beats": {
+  "look/keep": [0.7, 12.153, "A plain decoder only sees the encoder's final state. Attention keeps all of them: one state per input word, here for je, suis, and \u00e9tudiant.", [[4.21, 4.73], [6.28, 6.82], [8.51, 8.89], [9.5, 9.65], [10.03, 10.37], [10.81, 11.1]]],
+  "look/score": [12.533, 22.778, "At each step, the decoder scores every encoder state against its own state, q. A simple score is the dot product: two, zero, and one.", [[13.403, 13.673], [17.413, 17.573], [17.943, 18.543], [20.553, 20.953], [21.313, 21.513]]],
+  "look/weights": [23.158, 33.435, "Softmax turns the scores into weights that are positive and add up to one: zero point six seven, zero point zero nine, and zero point two four.", [[26.398, 26.568], [27.648, 28.218], [29.538, 29.918], [31.358, 31.638]]],
+  "look/context": [33.815, 43.603, "The context vector is the weighted sum of the states: mostly je, a little of the rest. Here, one point five eight and zero point zero nine.", [[36.875, 37.305], [38.135, 38.465], [39.525, 40.015], [40.335, 40.615], [41.695, 41.905]]],
+  "look/use": [43.983, 50.077, "The decoder reads this context along with its own state to predict the next word: I.", [[47.393, 47.613], [49.023, 49.603]]],
+  "every/again": [51.877, 63.275, "At the next step the decoder's state has moved on, so the scores change, and it looks somewhere else: for am and a, at suis; for student, at \u00e9tudiant.", [[52.777, 52.977], [54.727, 55.097], [56.337, 56.587], [57.827, 58.327], [59.727, 60.007], [60.727, 61.207], [61.897, 62.197]]],
+  "every/grid": [63.655, 70.551, "Stack the weights, one row per output word, and they show which input words each output word drew on.", [[64.715, 65.025], [66.645, 67.045]]],
+  "every/free": [70.931, 80.02, "Nothing has to squeeze through one fixed-size vector any more: every step can read every input state directly. That is attention.", [[74.541, 75.081], [78.141, 78.681], [79.081, 79.231]]],
+  "every/turn": [80.4, 81.14, "Your turn.", []]
+ }
+}

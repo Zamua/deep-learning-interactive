@@ -1,0 +1,18 @@
+{
+ "duration": 91.169,
+ "scenes": {
+  "numeric": [0.0, 45.658],
+  "compare": [45.658, 91.169]
+ },
+ "beats": {
+  "numeric/why": [0.7, 12.08, "Backprop code is easy to get subtly wrong. So check it against a slope measured directly, from f itself. Here f is x squared, at x equals three.", [[3.54, 3.99], [6.76, 6.99], [8.14, 8.56], [8.93, 9.11], [10.45, 10.75]]],
+  "numeric/sides": [12.46, 21.859, "Step a small h to each side, here a tenth, and evaluate f at both points: eight point four one and nine point six one.", [[14.62, 15.02], [15.85, 16.32], [18.42, 18.87], [19.98, 20.23]]],
+  "numeric/divide": [22.239, 32.176, "Rise over run: their difference, one point two, over the distance between them, two h. That gives six: the centered difference.", [[23.479, 24.079], [24.919, 25.239], [25.989, 26.369], [27.849, 28.179], [28.879, 29.419], [30.439, 30.939]]],
+  "numeric/one": [32.556, 44.558, "A one-sided step, from three to three point one, gives six point one. Its error shrinks like h, but the centered error shrinks like h squared, so it is far closer.", [[33.866, 34.196], [35.866, 36.146], [37.386, 38.006], [39.836, 40.266], [42.866, 43.196]]],
+  "compare/diff": [46.358, 59.978, "Now compare backprop's answer, a, with the measured one, n. Their raw difference is not enough: off by one ten-thousandth is nothing next to a thousand, but huge next to two ten-thousandths.", [[48.298, 48.508], [48.878, 49.178], [50.118, 50.438], [50.798, 51.418], [53.268, 53.788], [57.198, 57.578]]],
+  "compare/rel": [60.358, 65.798, "So divide the difference by the larger of the two sizes. That is the relative error.", [[63.758, 64.188]]],
+  "compare/bands": [66.178, 79.038, "Around ten to the minus seven or smaller, the two agree, and the gradient is right. Around ten to the minus four, be suspicious. Around ten to the minus two or more, there is a bug.", [[68.798, 69.028], [69.868, 70.158], [71.498, 72.088], [73.818, 74.178], [75.148, 75.658], [77.908, 78.198]]],
+  "compare/bug": [79.418, 88.949, "Say backprop used x where it should have used two x. It gives three where the slope is six: a relative error of a half. Clearly a bug.", [[82.898, 83.368], [85.618, 85.988], [87.578, 87.958]]],
+  "compare/turn": [89.329, 90.069, "Your turn.", []]
+ }
+}

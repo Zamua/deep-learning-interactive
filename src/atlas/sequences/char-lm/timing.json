@@ -1,0 +1,18 @@
+{
+ "duration": 86.784,
+ "scenes": {
+  "shift": [0.0, 51.067],
+  "loss": [51.067, 86.784]
+ },
+ "beats": {
+  "shift/task": [0.7, 9.968, "A language model reads text and, at every step, predicts what comes next. Here the tokens are characters, and the text is hello.", [[2.57, 2.73], [3.08, 3.25], [4.1, 4.34], [5.77, 6.29], [8.2, 8.53]]],
+  "shift/shift": [10.348, 19.614, "So the inputs are h, e, l, l, and the targets are the same text shifted by one: e, l, l, o.", [[12.218, 12.458], [12.818, 13.068], [13.398, 13.578], [13.898, 14.358], [17.288, 17.798], [18.108, 18.268], [18.588, 18.748]]],
+  "shift/scores": [19.994, 30.376, "At each step, a linear layer turns the hidden state into one score for every token in the vocabulary: four here, h, e, l and o.", [[20.914, 21.194], [26.284, 26.774], [27.514, 27.924], [28.324, 28.634], [28.974, 29.244], [29.594, 29.764]]],
+  "shift/softmax": [30.756, 39.51, "Softmax turns the scores into probabilities for the next character. After reading h, this model gives e zero point five.", [[34.646, 35.256], [36.446, 36.706], [38.036, 38.276]]],
+  "shift/memory": [39.89, 49.967, "Look at steps two and three. Both read an l, but one must predict l and the other o. Only the memory, h, can tell them apart.", [[41.69, 42.18], [43.4, 43.72], [45.26, 45.45], [46.49, 47.04], [48.0, 48.29], [48.72, 48.93]]],
+  "loss/step": [51.767, 65.817, "Each step is a classification over the vocabulary, so its loss is cross-entropy. At step zero the target, e, got zero point five: the loss is minus its log, zero point six nine.", [[54.767, 55.117], [57.007, 57.657], [58.697, 58.917], [59.567, 59.767], [60.097, 60.367], [61.787, 62.237], [63.997, 64.357]]],
+  "loss/all": [66.197, 74.694, "Every step does the same against its own target: zero point nine two, zero point five one, and zero point two two.", [[69.057, 69.527], [70.857, 71.227], [72.527, 72.857]]],
+  "loss/total": [75.074, 84.563, "The loss for the whole text adds them up: two point three four. Divided by the four steps, that is about zero point five nine per step.", [[77.334, 77.854], [79.064, 79.634], [81.244, 81.534]]],
+  "loss/turn": [84.943, 85.684, "Your turn.", []]
+ }
+}

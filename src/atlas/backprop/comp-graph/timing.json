@@ -1,0 +1,24 @@
+{
+ "duration": 104.752,
+ "scenes": {
+  "graph": [0.0, 39.829],
+  "forward": [39.829, 77.593],
+  "more": [77.593, 104.752]
+ },
+ "beats": {
+  "graph/formula": [0.7, 10.277, "Take a formula: x times z, plus c, all squared. A computational graph breaks it into simple operations, one node each.", [[1.58, 2.0], [3.08, 3.27], [3.94, 4.11], [4.88, 5.49], [8.82, 9.15]]],
+  "graph/mul": [10.657, 17.383, "First, a multiply node. It takes x and z, and sends out their product. Call it q.", [[11.177, 11.427], [12.447, 12.947], [14.457, 14.677], [16.067, 16.477]]],
+  "graph/add": [17.763, 23.049, "A wire carries q into an add node, which adds c. Call that r.", [[20.293, 20.523], [21.523, 22.023]]],
+  "graph/sq": [23.429, 30.076, "Then a square node turns r into f, the output. Three operations, three nodes.", [[26.339, 26.659], [27.259, 27.799], [28.879, 29.159]]],
+  "graph/pieces": [30.456, 38.729, "Any formula breaks down into a handful of such pieces: add, multiply, max, e to the x, and square.", [[33.706, 34.176], [34.516, 34.876], [35.576, 35.926], [36.456, 36.816], [37.756, 38.016]]],
+  "forward/inputs": [40.529, 48.733, "To evaluate the graph, give the inputs values: x is two, z is three, and c is minus four.", [[41.819, 42.059], [43.559, 44.079], [45.089, 45.519], [46.639, 47.009]]],
+  "forward/mul": [49.113, 56.927, "Values flow forward, from the inputs toward the output. The multiply gives two times three: six.", [[50.563, 50.973], [53.143, 53.703], [55.913, 56.333]]],
+  "forward/add": [57.307, 60.864, "The add gives six plus minus four: two.", [[59.927, 60.457]]],
+  "forward/sq": [61.244, 65.837, "And the square gives two squared, four. So f is four.", [[63.144, 63.384], [63.804, 64.244], [64.594, 64.754]]],
+  "forward/ready": [66.217, 76.493, "The order is forced. A node can run only once every value it needs has arrived, so the add waits for the multiply, and the square waits for the add.", [[67.647, 68.217], [71.907, 72.347], [74.377, 74.657]]],
+  "more/max": [78.293, 86.893, "The other pieces work the same way. A max node passes on the larger of its inputs: the max of one and minus two is one.", [[80.293, 80.883], [83.713, 84.163], [86.123, 86.283]]],
+  "more/exp": [87.273, 93.335, "An exp node raises e to its input. e to the one is about two point seven two.", [[90.003, 90.553]]],
+  "more/mul": [93.715, 102.532, "And z feeds a second node too: the multiply. Two point seven two times minus two is about minus five point four four.", [[95.845, 96.255], [97.065, 97.675], [99.905, 100.135]]],
+  "more/turn": [102.912, 103.652, "Your turn.", []]
+ }
+}

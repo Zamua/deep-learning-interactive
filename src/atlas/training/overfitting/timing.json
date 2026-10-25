@@ -1,0 +1,25 @@
+{
+ "duration": 107.161,
+ "scenes": {
+  "splits": [0.0, 34.698],
+  "curves": [34.698, 68.792],
+  "stop": [68.792, 107.161]
+ },
+ "beats": {
+  "splits/data": [0.7, 7.204, "Before training, shuffle the data and split it three ways. Here are fifty thousand examples.", [[1.58, 1.94], [4.43, 4.95]]],
+  "splits/train": [7.584, 14.948, "Most of them, say eighty percent, or forty thousand, are the training split. Every gradient comes from these.", [[8.354, 8.584], [9.904, 10.054], [11.154, 11.444], [12.554, 13.054]]],
+  "splits/val": [15.328, 24.189, "Ten percent, five thousand, are the validation split. They make the choices: when to stop, which learning rate, which batch size.", [[16.078, 16.358], [17.268, 17.508], [18.818, 19.378], [20.528, 20.948], [21.658, 21.968], [22.888, 23.148]]],
+  "splits/test": [24.569, 33.598, "The last ten percent is the test split. It is used once, at the very end, to report how the model does on data it has never seen.", [[27.189, 27.709], [28.809, 28.999], [29.979, 30.259]]],
+  "curves/both": [35.398, 39.94, "Train, and after every epoch measure the loss on both splits.", [[35.898, 36.238], [37.698, 37.908]]],
+  "curves/early": [40.32, 45.876, "At first they fall together. The model is learning patterns that hold for every example.", [[42.05, 42.6]]],
+  "curves/gap": [46.256, 52.724, "Then they part. The training loss keeps falling, but the validation loss turns and climbs.", [[47.366, 47.966], [49.616, 50.046]]],
+  "curves/memo": [53.104, 61.354, "That is overfitting. The model is memorizing its training examples, quirks and all, and getting worse on everything else.", [[54.574, 55.204], [57.804, 58.064], [58.974, 59.274]]],
+  "curves/blind": [61.734, 67.692, "The training loss alone can never show it, because it only measures examples the model has already fit.", [[64.074, 64.384]]],
+  "stop/table": [69.492, 72.313, "Here are the numbers, every two epochs.", [[70.572, 70.932]]],
+  "stop/min": [72.693, 79.457, "The validation loss bottoms out at epoch eight, at one point oh seven, while the training loss keeps falling.", [[75.593, 75.823], [77.173, 77.563]]],
+  "stop/keep": [79.837, 88.794, "So keep the weights from epoch eight. Past it, more training only makes the model worse on new data. This is early stopping.", [[81.847, 82.397], [82.917, 83.227], [86.447, 86.957]]],
+  "stop/under": [89.174, 97.604, "The opposite failure is underfitting: both losses stay high, and close together, because the model has not even fit its training data.", [[91.424, 91.894], [94.554, 94.834]]],
+  "stop/fine": [97.984, 104.941, "Low and close together is the goal: the model does about as well on new examples as on the ones it trained on.", [[100.244, 100.814], [103.284, 103.484]]],
+  "stop/turn": [105.321, 106.061, "Your turn.", []]
+ }
+}

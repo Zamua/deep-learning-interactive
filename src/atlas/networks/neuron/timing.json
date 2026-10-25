@@ -1,0 +1,19 @@
+{
+ "duration": 98.457,
+ "scenes": {
+  "sum": [0.0, 52.81],
+  "bend": [52.81, 98.457]
+ },
+ "beats": {
+  "sum/inputs": [0.7, 6.601, "A neuron takes in a vector, x. This one has two entries: two and one.", [[2.99, 3.52], [5.07, 5.45], [5.82, 5.99]]],
+  "sum/weights": [6.981, 15.025, "It keeps one weight per entry, w, here one and minus three, and multiplies each input by its weight.", [[8.851, 9.271], [9.731, 10.211], [12.111, 12.541]]],
+  "sum/sum": [15.405, 28.005, "Then it adds up the products, plus a bias, b, of two. Two, minus three, plus two: one. That sum, w dot x plus b, is the pre-activation.", [[17.075, 17.295], [18.185, 18.415], [18.735, 18.925], [19.485, 20.125], [20.495, 20.735], [21.535, 21.735], [22.335, 22.785], [23.155, 23.755], [24.445, 24.715], [26.375, 26.685]]],
+  "sum/relu": [28.385, 40.675, "Last comes the bend, the activation. Here it is a ReLU: it keeps a positive number and turns a negative one into zero. One is positive, so the neuron outputs one.", [[29.775, 30.125], [31.105, 31.585], [32.915, 33.355], [34.745, 34.935], [37.005, 37.545], [38.595, 38.885]]],
+  "sum/neg": [41.055, 51.71, "Feed it one and two instead. One, minus six, plus two is minus three, and the ReLU turns that into zero. The neuron stays silent.", [[43.145, 43.805], [44.205, 44.455], [47.115, 47.455], [49.485, 49.965]]],
+  "bend/linear": [53.51, 65.273, "Before the bend, w dot x plus b is exactly a class score from a linear classifier. Across the inputs, it rises steadily in one direction and falls in the other.", [[54.51, 54.85], [56.56, 56.71], [59.68, 60.24], [61.37, 61.6], [63.77, 64.04]]],
+  "bend/line": [65.653, 73.932, "It is zero along a straight line. Every input on one side scores above zero, and every input on the other side below.", [[67.773, 68.323], [71.153, 71.513]]],
+  "bend/half": [74.312, 87.338, "The ReLU flattens the negative side to zero. So a neuron splits its inputs with a line: silent on one side, and growing with the distance on the other. A linear classifier with a bend.", [[77.212, 77.792], [80.612, 81.092], [82.412, 82.712], [84.692, 85.302]]],
+  "bend/bias": [87.718, 96.237, "The weights set which way the line faces, and the bias slides it. With a bias of zero, the line would have to pass through the origin.", [[90.188, 90.508], [91.948, 92.538], [93.808, 94.058]]],
+  "bend/turn": [96.617, 97.357, "Your turn.", []]
+ }
+}

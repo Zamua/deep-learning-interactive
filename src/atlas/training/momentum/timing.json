@@ -1,0 +1,21 @@
+{
+ "duration": 111.724,
+ "scenes": {
+  "ravine": [0.0, 34.777],
+  "rule": [34.777, 81.303],
+  "build": [81.303, 111.724]
+ },
+ "beats": {
+  "ravine/valley": [0.7, 8.618, "Here is a loss shaped like a long, narrow valley, seen from above: steep across, and nearly flat along its length.", [[3.91, 4.09], [5.04, 5.59], [6.5, 6.69]]],
+  "ravine/zig": [8.998, 23.205, "Plain gradient descent zigzags. Across the valley the slope is steep, so each step overshoots to the other side and the gradient flips sign. Along it the slope is gentle, so progress crawls.", [[11.338, 11.978], [14.068, 14.468], [17.038, 17.288], [18.868, 19.488], [21.268, 21.618]]],
+  "ravine/idea": [23.585, 33.677, "Momentum gives the weights a velocity, v: a running blend of past gradients. Stepping along it, the zigzag calms down and the run speeds up.", [[25.695, 25.995], [26.385, 26.855], [28.995, 29.525], [30.395, 30.655], [32.145, 32.345]]],
+  "rule/rule": [35.477, 45.474, "Each step, the velocity keeps a share, mu, of itself, and adds minus eta times the gradient. Then the weights move by the velocity.", [[36.147, 36.487], [38.107, 38.297], [38.697, 38.877], [39.607, 39.897], [42.547, 43.027]]],
+  "rule/mu": [45.854, 53.127, "Mu, often zero point nine, is how much velocity survives a step: think of one minus friction.", [[46.354, 46.664], [48.084, 48.454], [50.724, 51.284]]],
+  "rule/first": [53.507, 65.622, "From rest, with eta at zero point one and a gradient of two, the first velocity is minus zero point two: just a plain step. w goes from one to zero point eight.", [[54.317, 54.517], [57.687, 58.057], [60.777, 61.237], [62.307, 62.897], [64.267, 64.437]]],
+  "rule/second": [66.002, 80.203, "If the gradient is two again, the velocity becomes zero point nine times minus zero point two, minus another zero point two: minus zero point three eight. So w moves to zero point four two.", [[67.652, 67.932], [72.312, 72.552], [74.452, 74.912], [76.752, 77.252]]],
+  "build/steady": [82.003, 88.223, "When the gradient keeps pointing the same way, the pushes pile up in v, step after step.", [[84.393, 84.693], [86.483, 86.823], [87.243, 87.403]]],
+  "build/limit": [88.603, 100.186, "The velocity levels off where the decay balances the push: at minus eta g over one minus mu. With mu at zero point nine, that is ten times a plain step.", [[92.173, 92.633], [95.423, 95.973], [97.733, 98.073]]],
+  "build/flip": [100.566, 109.504, "When the gradient flips sign every step, each push undoes the last one inside v, and the steps shrink. The zigzag is damped.", [[102.956, 103.346], [106.176, 106.406], [107.506, 108.036]]],
+  "build/turn": [109.884, 110.624, "Your turn.", []]
+ }
+}

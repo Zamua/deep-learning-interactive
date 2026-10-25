@@ -1,0 +1,19 @@
+{
+ "duration": 85.009,
+ "scenes": {
+  "walk": [0.0, 55.591],
+  "twice": [55.591, 85.009]
+ },
+ "beats": {
+  "walk/fwd": [0.7, 13.376, "To backprop through a graph, first run it forward and keep every value. With x two, z three and c minus four: q is six, r is two, and f is four.", [[2.22, 2.54], [5.14, 5.81], [6.71, 6.92], [7.71, 7.86], [9.12, 9.59], [10.63, 10.93], [11.87, 12.17]]],
+  "walk/seed": [13.756, 18.91, "Then start at the output, where the gradient of f with respect to itself is one.", [[15.326, 15.616]]],
+  "walk/sq": [19.29, 33.233, "Walk back one node at a time. At each, multiply the gradient from above by the node's local slope. The square's slope is two r, which is four, so r gets one times four: four.", [[21.48, 22.03], [22.59, 22.9], [26.39, 26.98], [28.87, 29.1], [29.8, 30.23], [32.34, 32.78]]],
+  "walk/add": [33.613, 38.014, "The add passes that four, unchanged, to both q and c.", [[35.293, 35.523], [36.333, 36.513]]],
+  "walk/mul": [38.394, 46.142, "The multiply swaps: x gets z times four, twelve, and z gets x times four, eight.", [[39.674, 40.224], [42.064, 42.414], [42.864, 43.314], [45.324, 45.724]]],
+  "walk/all": [46.522, 54.491, "So the gradient is twelve for x, eight for z, and four for c. One backward walk gives every one of them.", [[48.882, 49.152], [49.952, 50.242], [51.412, 52.002]]],
+  "twice/fork": [56.291, 63.862, "Sometimes one value feeds two nodes. Here x goes into the multiply, and also straight into the add.", [[59.021, 59.561], [61.651, 61.891]]],
+  "twice/paths": [64.242, 73.104, "Walking back, x receives a gradient along each wire: one from the add, and from the multiply, z times one, which is two.", [[65.022, 65.302], [67.722, 68.162], [69.172, 69.482], [70.692, 70.942], [72.062, 72.362]]],
+  "twice/sum": [73.484, 82.788, "The two add up: x's total gradient is three. Nudge x, and f moves through both paths at once, so their effects add.", [[74.564, 75.134], [77.154, 77.814], [78.664, 78.834], [81.214, 81.474]]],
+  "twice/turn": [83.168, 83.909, "Your turn.", []]
+ }
+}

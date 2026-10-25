@@ -1,0 +1,22 @@
+{
+ "duration": 99.24,
+ "scenes": {
+  "unroll": [0.0, 34.411],
+  "products": [34.411, 63.539],
+  "clip": [63.539, 99.24]
+ },
+ "beats": {
+  "unroll/graph": [0.7, 9.591, "Unroll the loop, and an RNN is just a deep graph: one copy of the step for every token, all sharing the same weights.", [[1.72, 2.22], [4.81, 5.32], [7.58, 7.92]]],
+  "unroll/back": [9.971, 17.749, "Backprop runs through it as through any graph, from the loss back to the first step. That is backprop through time.", [[12.681, 13.091], [15.081, 15.611], [17.481, 17.721]]],
+  "unroll/factor": [18.129, 26.157, "Each step back multiplies the gradient by that step's local derivative: W h h, times the slope of the tanh.", [[18.679, 18.829], [22.449, 22.879], [24.059, 24.419]]],
+  "unroll/sum": [26.537, 33.311, "And since W h h is used at every step, its gradient adds up one contribution from each of them.", [[29.697, 30.077]]],
+  "products/scalar": [35.111, 45.998, "Picture a single hidden unit, where each step back multiplies the gradient by the same number, a. Ten steps back, it has been multiplied by a to the tenth.", [[37.051, 37.421], [38.141, 38.291], [41.121, 41.391], [41.731, 42.391], [43.311, 43.551]]],
+  "products/vanish": [46.378, 54.398, "If a is one half, that is about one thousandth. The gradient vanishes: the early steps get almost none of it.", [[47.968, 48.258], [49.938, 50.478], [51.818, 52.278]]],
+  "products/explode": [54.778, 62.439, "If a is two, it is over a thousand. The gradient explodes, and the numbers soon grow too large to use.", [[56.088, 56.368], [57.738, 58.258], [59.748, 59.918]]],
+  "clip/clip": [64.239, 70.906, "Exploding gradients have a blunt fix: clip them. Pick a threshold, c, say one.", [[66.629, 67.099], [67.669, 68.229], [69.099, 69.429], [69.819, 70.169]]],
+  "clip/check": [71.286, 80.209, "Whenever the gradient's norm is over c, shrink the whole vector to length c. Here g is three, four, with norm five.", [[73.706, 74.086], [76.286, 76.856], [77.226, 77.406], [78.866, 79.096]]],
+  "clip/scale": [80.589, 89.331, "Multiply it by c over the norm, one fifth: zero point six and zero point eight. Same direction, shorter length.", [[82.979, 83.269], [83.889, 84.469], [86.719, 87.249], [88.129, 88.399]]],
+  "clip/limit": [89.711, 97.02, "Clipping only ever shrinks: it tames a gradient that explodes, but it cannot bring back one that has vanished.", [[91.591, 92.081], [94.271, 94.641]]],
+  "clip/turn": [97.4, 98.14, "Your turn.", []]
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "duration": 81.531,
+ "scenes": {
+  "reuse": [0.0, 41.716],
+  "howmuch": [41.716, 81.531]
+ },
+ "beats": {
+  "reuse/pretrained": [0.7, 11.813, "Training a ConvNet from scratch takes a lot of labeled data. But networks already trained on ImageNet, over a million photos in a thousand classes, are free to download.", [[4.4, 4.98], [7.4, 7.69], [10.38, 10.66]]],
+  "reuse/layers": [12.193, 22.125, "Their first layers hold filters for edges and colors. Later layers combine those into textures and parts, and the last layer scores the thousand classes.", [[15.323, 15.893], [18.953, 19.313]]],
+  "reuse/swap": [22.505, 30.719, "To reuse one, keep its layers fixed and replace only the last layer with a new one for your own classes. Here, ten.", [[23.535, 23.895], [29.095, 29.565], [29.915, 30.285]]],
+  "reuse/count": [31.099, 40.616, "With five hundred and twelve features in and ten classes out, the new layer has five thousand one hundred and thirty parameters. Only those are trained.", [[34.799, 35.239], [38.739, 39.219]]],
+  "howmuch/small": [42.416, 51.808, "With a few hundred images, train just that last layer. Changing millions of weights on so few images would memorize them: overfitting.", [[43.906, 44.176], [46.046, 46.546], [50.466, 50.996]]],
+  "howmuch/more": [52.188, 59.701, "With tens of thousands of images, you can afford more: start from the pretrained weights and fine-tune every layer.", [[54.278, 54.468], [55.598, 56.118]]],
+  "howmuch/lr": [60.081, 68.07, "Fine-tune with a small learning rate, often ten times smaller than from scratch, so the good pretrained weights move only a little.", [[62.191, 62.531], [64.891, 65.231]]],
+  "howmuch/different": [68.45, 79.31, "And when your images look nothing like photos, say X-rays, the early layers carry over best: edges are everywhere, while the last layers belong to the old classes.", [[71.06, 71.27], [72.25, 72.65], [74.63, 75.1], [76.42, 76.73]]],
+  "howmuch/turn": [79.69, 80.431, "Your turn.", []]
+ }
+}

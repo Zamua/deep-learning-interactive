@@ -1,0 +1,18 @@
+{
+ "duration": 81.769,
+ "scenes": {
+  "depth": [0.0, 41.732],
+  "many": [41.732, 81.769]
+ },
+ "beats": {
+  "depth/image": [0.7, 13.03, "A color image has three channels, red, green and blue, each a grid of pixels. Channels first, as PyTorch writes it, its shape is three by thirty two by thirty two.", [[2.69, 3.1], [3.44, 3.7], [4.69, 5.1], [6.53, 7.12], [8.09, 8.37], [9.56, 9.92]]],
+  "depth/filter": [13.41, 23.815, "A filter always has the full depth of its input. Here it is three by three by three: a three by three patch in every channel, twenty seven weights.", [[16.48, 17.03], [19.4, 19.91], [22.14, 22.56]]],
+  "depth/one": [24.195, 32.709, "At each position it multiplies all twenty seven pairs and adds them up, giving one number. Not one per color: one.", [[28.665, 28.925], [29.985, 30.485], [31.705, 32.175]]],
+  "depth/map": [33.089, 40.632, "Slid over every position where it fits, those numbers fill one thirty by thirty map: a single output channel.", [[35.569, 35.869], [38.629, 39.119]]],
+  "many/k": [42.432, 50.676, "A layer has many filters, K of them, each with its own weights, each looking for its own pattern. Here, eight.", [[44.172, 44.492], [45.092, 45.512], [46.982, 47.332], [49.102, 49.582], [49.932, 50.282]]],
+  "many/stack": [51.056, 60.668, "Each filter makes its own map, and the maps stack up as the output's channels. Eight filters, eight channels: eight by thirty by thirty.", [[52.896, 53.276], [55.916, 56.426], [57.206, 57.496], [58.286, 58.716], [59.006, 59.156]]],
+  "many/shape": [61.048, 71.305, "So the output's depth is the number of filters. Its height and width are how many places the filter fits, as before: thirty two minus three plus one.", [[63.968, 64.458], [67.678, 67.898], [68.538, 68.938], [70.498, 70.648]]],
+  "many/next": [71.685, 79.549, "The next layer sees an input eight channels deep, so each of its filters is eight deep: three by three by eight.", [[73.355, 73.505], [74.535, 74.925], [77.125, 77.555], [77.975, 78.135], [78.725, 78.935]]],
+  "many/turn": [79.929, 80.669, "Your turn.", []]
+ }
+}

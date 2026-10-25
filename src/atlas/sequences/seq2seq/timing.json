@@ -1,0 +1,19 @@
+{
+ "duration": 80.839,
+ "scenes": {
+  "readwrite": [0.0, 42.812],
+  "train": [42.812, 80.839]
+ },
+ "beats": {
+  "readwrite/task": [0.7, 10.001, "Some tasks turn one sequence into another of a different length. Translation, say: je suis \u00e9tudiant becomes I am a student.", [[4.45, 5.01], [5.72, 5.92], [6.33, 6.75], [7.88, 8.17], [8.7, 9.01]]],
+  "readwrite/enc": [10.381, 19.457, "An encoder RNN reads the input, one token per step. Its final state sums up the whole sentence in a single vector.", [[12.211, 12.361], [13.371, 13.721], [15.091, 15.691]]],
+  "readwrite/dec": [19.837, 28.24, "A second RNN, the decoder, starts from that vector. It reads a start token and predicts the first word: I.", [[21.147, 21.407], [22.057, 22.277], [23.637, 24.187], [27.227, 27.757]]],
+  "readwrite/feed": [28.62, 35.088, "Each predicted word is fed back in to predict the next one: am, a, student.", [[32.12, 32.66], [33.1, 33.6], [33.89, 34.38]]],
+  "readwrite/end": [35.468, 41.712, "Until it predicts the end token. Four words, plus the end: five decoder steps.", [[37.478, 37.978], [38.788, 39.038], [39.808, 40.288]]],
+  "train/tf": [43.512, 54.47, "In training, the decoder reads the true previous word, not its own guess. That is teacher forcing: one early mistake cannot derail the rest of the sentence.", [[44.252, 44.522], [46.832, 47.142], [48.392, 48.842], [50.512, 50.972]]],
+  "train/loss": [54.85, 62.307, "Every step has a right answer, the next word of the target, so one sentence pair gives five predictions to score.", [[56.74, 57.13], [58.58, 58.99]]],
+  "train/test": [62.687, 69.129, "At test time there is no true word to read, so the decoder reads its own last prediction instead.", [[65.567, 65.917]]],
+  "train/bottleneck": [69.509, 78.619, "One weakness remains: everything about the input must squeeze through that one final vector, whether the sentence has three words or fifty.", [[70.959, 71.549], [75.619, 76.049], [77.769, 77.949]]],
+  "train/turn": [78.999, 79.739, "Your turn.", []]
+ }
+}

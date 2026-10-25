@@ -1,0 +1,24 @@
+{
+ "duration": 123.737,
+ "scenes": {
+  "slide": [0.0, 47.458],
+  "edges": [47.458, 81.004],
+  "grid": [81.004, 123.737]
+ },
+ "beats": {
+  "slide/row": [0.7, 9.022, "Here is a row of five numbers, x, and a filter of three weights, w: minus one, zero and one.", [[2.6, 2.99], [3.44, 3.88], [5.62, 5.87], [6.31, 6.82], [7.54, 7.81]]],
+  "slide/first": [9.402, 21.041, "Lay the filter over the first three entries. Multiply each pair and add: minus one, plus zero, plus four. That is three, the first output.", [[12.082, 12.592], [14.642, 15.182], [15.962, 16.282], [17.092, 17.372], [18.092, 18.652], [19.712, 20.042]]],
+  "slide/step": [21.421, 29.349, "Now slide the filter one step to the right and do the same: minus two, plus zero, plus four. Two.", [[23.871, 24.041], [24.901, 25.481], [26.251, 26.581], [27.331, 27.611], [28.311, 28.931]]],
+  "slide/last": [29.729, 38.633, "One more step gives minus four plus one, minus three. Then the filter runs out of room: five inputs, three outputs.", [[32.609, 32.849], [33.609, 34.199], [35.929, 36.449], [37.339, 37.579]]],
+  "slide/dot": [39.013, 46.358, "Each output is a dot product between the filter and the window under it, and the same three weights are used at every position.", [[43.023, 43.413]]],
+  "edges/diff": [48.158, 54.961, "This filter takes the last entry of each window minus the first: how much the input changes across it.", [[52.268, 52.768]]],
+  "edges/step": [55.341, 63.215, "Slide it along a row of pixel brightnesses that jumps from one up to six. Where the row climbs, the output is five.", [[59.861, 60.421], [61.591, 61.831]]],
+  "edges/flat": [63.595, 71.678, "Where the row is flat, the minus one and the plus one cancel, giving zero. Where it falls, the output goes negative.", [[64.855, 65.145], [67.425, 67.695], [68.455, 69.035], [69.925, 70.185]]],
+  "edges/detect": [72.058, 79.904, "So this filter is an edge detector. Any filter answers most strongly where the input looks like the filter itself.", [[74.448, 75.028]]],
+  "grid/image": [81.704, 90.419, "An image is a grid, so its filter is a grid too: here three by three, with ones on the diagonal and zeros elsewhere.", [[83.054, 83.404], [85.264, 85.774], [87.134, 87.434], [88.804, 89.024]]],
+  "grid/patch": [90.799, 101.949, "Lay it on the top left three by three patch, multiply all nine pairs, and add. Only the diagonal counts: one, plus one, plus zero. Two.", [[93.319, 93.679], [95.389, 95.559], [96.089, 96.669], [98.149, 98.669], [99.029, 99.319], [99.949, 100.229], [100.939, 101.559]]],
+  "grid/slide": [102.329, 113.59, "Then slide it, across and down, one step at a time. A four by four image gives a two by two output: two, seven, two and four.", [[103.369, 103.739], [104.989, 105.379], [106.599, 107.339], [110.499, 111.029], [111.399, 111.689], [112.169, 112.459]]],
+  "grid/map": [113.97, 121.517, "The output is a map of how well each patch matches the filter. Seven marks the brightest diagonal line in the image.", [[117.77, 118.33]]],
+  "grid/turn": [121.897, 122.637, "Your turn.", []]
+ }
+}

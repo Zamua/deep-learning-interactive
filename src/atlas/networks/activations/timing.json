@@ -1,0 +1,22 @@
+{
+ "duration": 138.86,
+ "scenes": {
+  "shapes": [0.0, 50.337],
+  "slopes": [50.337, 100.473],
+  "why": [100.473, 138.86]
+ },
+ "beats": {
+  "shapes/relu": [0.7, 11.547, "Three activations do most of the work. The ReLU keeps positive numbers and zeroes the rest: ReLU of two is two, and ReLU of minus two is zero.", [[2.97, 3.57], [6.71, 7.28], [8.87, 9.27]]],
+  "shapes/sigmoid": [11.927, 25.992, "The sigmoid squashes any number into the range from zero to one. Sigmoid of zero is a half, and of two, about zero point eight eight. Of minus two, it is one minus that: zero point one two.", [[15.987, 16.587], [18.457, 18.767], [21.217, 21.707], [22.667, 22.897], [24.177, 24.567]]],
+  "shapes/tanh": [26.372, 38.749, "Tanh squashes into the range from minus one to one, centered on zero. Tanh of one is about zero point seven six, and tanh of minus one is minus zero point seven six.", [[29.592, 29.882], [31.002, 31.672], [34.642, 34.982], [36.432, 36.582]]],
+  "shapes/ranges": [39.129, 49.237, "So the ReLU's outputs run from zero up, with no limit. The sigmoid's stay between zero and one, and tanh's between minus one and one.", [[42.189, 42.469], [43.239, 43.809], [46.299, 46.659]]],
+  "slopes/d-relu": [51.037, 59.432, "Backprop needs each one's slope. The ReLU's is the simplest: one where its input is positive, and zero where it is negative.", [[53.037, 53.587], [55.147, 55.597], [57.397, 57.657]]],
+  "slopes/d-sig": [59.812, 75.679, "The sigmoid's slope is sigma times one minus sigma. At zero that is a half times a half: a quarter, the most it ever gets. At two, zero point eight eight times zero point one two: about zero point one.", [[63.272, 63.892], [64.602, 64.802], [66.592, 67.012], [67.602, 67.942], [69.192, 69.782], [70.442, 70.722], [73.842, 74.262]]],
+  "slopes/d-tanh": [76.059, 87.94, "Tanh's slope is one minus tanh squared. That is one at zero, and at one, it is one minus zero point seven six squared: about zero point four two.", [[78.979, 79.449], [79.919, 80.129], [81.209, 81.639], [82.369, 82.559], [85.759, 86.159]]],
+  "slopes/flat": [88.32, 99.373, "Far from zero, both squashing curves go flat, and their slopes sink toward zero. A unit stuck out there is saturated: almost no gradient gets through it.", [[89.45, 89.81], [91.69, 91.96], [94.06, 94.65], [96.95, 97.34]]],
+  "why/chain": [101.173, 114.524, "Chain several units one after another, and backprop multiplies the gradient by one slope per link. Through five sigmoids, that is at most a quarter, five times over: about one thousandth.", [[103.533, 103.873], [107.553, 108.163], [109.503, 109.713], [111.303, 111.583], [112.683, 113.163]]],
+  "why/whole": [114.904, 124.057, "Through five ReLUs that are on, it is one, five times: the gradient arrives whole. That is the main reason ReLU became the default.", [[116.664, 116.924], [117.604, 117.844], [118.724, 119.154], [120.674, 121.234]]],
+  "why/dead": [124.437, 136.64, "The catch is the dead ReLU. A unit whose pre-activation is negative for every input it sees has a slope of zero every time, so no gradient ever reaches the weights feeding it.", [[126.337, 126.877], [130.917, 131.167], [133.287, 133.707]]],
+  "why/turn": [137.02, 137.76, "Your turn.", []]
+ }
+}

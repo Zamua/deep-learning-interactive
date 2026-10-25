@@ -1,0 +1,21 @@
+{
+ "duration": 116.087,
+ "scenes": {
+  "symmetry": [0.0, 31.057],
+  "grow": [31.057, 70.75],
+  "scale": [70.75, 116.087]
+ },
+ "beats": {
+  "symmetry/zero": [0.7, 9.592, "Before any weight is adjusted by its gradient, every weight needs a starting value. The obvious choice, all zeros, does not work.", [[3.44, 3.81], [5.77, 6.36], [7.37, 7.61], [8.46, 8.74]]],
+  "symmetry/same": [9.972, 23.582, "If every hidden unit starts with the same weights, every unit computes the same output and backprop hands every unit the same gradient. Adjusted by the same gradient, they stay copies of one unit, forever.", [[12.752, 13.092], [15.242, 15.592], [18.442, 19.052], [20.682, 20.952], [22.722, 23.012]]],
+  "symmetry/random": [23.962, 29.957, "So the weights start random, which breaks the tie. The question is how big to make them.", [[25.782, 26.022], [27.112, 27.682], [28.492, 28.652]]],
+  "grow/sum": [31.757, 43.47, "A unit adds up n inputs times weights. When you add independent terms, their variances add: n terms of variance v give a sum of variance n times v.", [[34.767, 35.337], [37.117, 37.387], [38.657, 39.227], [40.937, 41.197]]],
+  "grow/big": [43.85, 53.047, "With a hundred inputs of variance one, and weights of standard deviation one, the sum has variance a hundred: a standard deviation of ten.", [[46.11, 46.37], [48.42, 48.82], [50.72, 51.21]]],
+  "grow/flat": [53.427, 61.611, "Through a tanh, a value like ten sits far out on the flat end. The slope there is nearly zero, and so is the gradient.", [[54.367, 54.667], [57.777, 58.297], [60.117, 60.377]]],
+  "grow/small": [61.991, 69.65, "Too small is just as bad. Each layer shrinks the signal, and after a few layers almost nothing is left.", [[63.891, 64.401], [66.111, 66.451], [67.921, 68.171]]],
+  "scale/xavier": [71.45, 89.41, "The fix: give each weight a variance of one over n, the fan-in, which is the number of inputs a unit adds up. Then the n terms add up to a variance of one. The standard deviation is one over root n: for a hundred inputs, zero point one.", [[72.09, 72.67], [75.52, 75.9], [76.61, 76.95], [79.43, 80.0], [83.02, 83.63], [86.44, 86.92], [88.07, 88.37]]],
+  "scale/he": [89.79, 104.996, "A ReLU zeroes about half of its inputs, which halves the variance. So for ReLU, double it: a variance of two over n. For fifty inputs, the standard deviation is the root of two over fifty: zero point two.", [[92.44, 92.73], [94.08, 94.55], [95.63, 95.92], [96.38, 96.81], [98.59, 99.14], [100.22, 100.42], [103.53, 103.95]]],
+  "scale/names": [105.376, 113.866, "The first is Xavier initialization, used with tanh. The second is Kaiming He initialization, used with ReLU.", [[107.806, 108.126], [109.236, 109.806], [112.476, 112.776]]],
+  "scale/turn": [114.246, 114.987, "Your turn.", []]
+ }
+}

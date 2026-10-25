@@ -1,0 +1,20 @@
+{
+ "duration": 104.969,
+ "scenes": {
+  "table": [0.0, 55.695],
+  "onehot": [55.695, 104.969]
+ },
+ "beats": {
+  "table/ids": [0.7, 13.158, "Arithmetic works on numbers, not letters. So every token in the vocabulary gets an id: h is zero, e is one, l is two, and o is three.", [[2.51, 2.71], [3.5, 3.98], [5.93, 6.11], [7.14, 7.74], [8.85, 9.23], [10.2, 10.59], [11.58, 11.9]]],
+  "table/table": [13.538, 24.825, "An embedding is a table, E, with one row per token. Each row is a vector of d numbers. Here d is three, so E is four by three.", [[15.118, 15.418], [15.738, 16.068], [17.628, 18.208], [20.518, 21.008], [22.528, 22.888]]],
+  "table/lookup": [25.205, 34.764, "To embed the letter l, take its id, two, and read row two of E: zero point five, minus one, two.", [[26.725, 27.075], [28.235, 28.575], [28.945, 29.275], [31.185, 31.755], [32.945, 33.295], [34.065, 34.365]]],
+  "table/learned": [35.144, 43.476, "The rows are free numbers: nothing in them comes from how a token is spelled, so tokens that are used alike can have rows that are alike.", [[36.734, 37.234], [39.764, 40.184], [41.834, 42.034]]],
+  "table/count": [43.856, 54.595, "The table holds V times d numbers: twelve here. With fifty thousand tokens and d of seven hundred sixty-eight, that is over thirty-eight million.", [[46.486, 46.906], [47.636, 48.206], [49.886, 50.036], [52.076, 52.416]]],
+  "onehot/onehot": [56.395, 65.771, "There is another way to see the lookup. Write id two as a one-hot vector: four entries, all zero except a one in place two.", [[58.235, 58.775], [61.455, 61.955], [62.835, 63.085]]],
+  "onehot/product": [66.151, 73.488, "Multiply it into E. The result is a sum of the rows of E, each weighted by its entry of the one-hot.", [[67.681, 68.261], [70.561, 70.931]]],
+  "onehot/picks": [73.868, 81.267, "Every row is weighted by zero except row two, weighted by one. So the product is exactly row two.", [[75.868, 76.028], [77.228, 77.448], [78.358, 78.928]]],
+  "onehot/layer": [81.647, 91.574, "So a lookup is a matrix product with a one-hot vector. Reading the row directly gives the same answer and skips every multiplication by zero.", [[85.387, 86.017], [88.717, 88.887], [91.407, 91.557]]],
+  "onehot/batch": [91.954, 102.748, "Stack m sequences of n ids into an array of shape m by n, and the lookup gives m by n by d: every id is swapped for its row.", [[96.784, 97.244], [99.834, 100.434]]],
+  "onehot/turn": [103.128, 103.869, "Your turn.", []]
+ }
+}
