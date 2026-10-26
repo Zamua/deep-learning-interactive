@@ -1,18 +1,20 @@
 {
- "duration": 80.982,
+ "duration": 114.616,
  "scenes": {
-  "max": [0.0, 32.822],
-  "shape": [32.822, 80.982]
+  "max": [0.0, 51.333],
+  "shape": [51.333, 114.616]
  },
  "beats": {
   "max/grid": [0.7, 9.222, "Pooling shrinks a channel. Split this four by four grid into two by two windows that do not overlap: a stride of two.", [[2.28, 2.82], [7.62, 8.13]]],
   "max/max": [9.602, 15.773, "Max pooling keeps the largest value in each window: five, four, three and six.", [[12.782, 13.242], [13.702, 13.892], [14.322, 14.502]]],
   "max/out": [16.153, 22.235, "The output is two by two: half as tall, half as wide, a quarter of the values.", [[17.943, 18.423], [19.233, 19.533], [20.383, 20.783]]],
-  "max/avg": [22.615, 31.722, "Average pooling takes each window's mean instead: two point seven five, one point seven five, one point five and two point five.", [[25.695, 26.295], [27.445, 27.745], [29.015, 29.345], [30.325, 30.555]]],
-  "shape/channels": [33.522, 49.136, "Inputs often come as a stack of grids called channels, like the red, green and blue of a color image. Pooling runs on each channel on its own: sixteen channels of thirty two by thirty two become sixteen of sixteen by sixteen.", [[36.962, 37.312], [37.982, 38.162], [40.032, 40.622], [42.922, 43.392], [46.202, 46.462]]],
-  "shape/formula": [49.516, 59.242, "The size follows the output size formula, with F and S both two: thirty two minus two, over two, plus one, is sixteen.", [[52.076, 52.396], [54.336, 54.916], [56.426, 56.666], [58.136, 58.376]]],
-  "shape/none": [59.622, 66.296, "And there is nothing to learn: unlike a filter, pooling has no weights at all. Zero parameters.", [[61.082, 61.632], [62.602, 62.902], [64.592, 65.032]]],
-  "shape/shift": [66.676, 78.762, "When the grid is a filter's output, max pooling keeps how well the filter matched in each window, not exactly where. Move the five inside its window, and the output does not change.", [[68.696, 69.066], [72.626, 73.026], [74.256, 74.886], [76.846, 77.056]]],
-  "shape/turn": [79.142, 79.882, "Your turn.", []]
+  "max/map": [22.615, 40.746, "Count rows and columns from zero. The three is output row one, column zero, and its window is input rows two and three, columns zero and one. Output row i reads input rows two i and two i plus one, and columns work the same way.", [[24.835, 25.495], [27.515, 27.695], [28.535, 28.865], [31.635, 31.875], [33.425, 34.075], [37.235, 37.455], [38.725, 39.105]]],
+  "max/avg": [41.126, 50.233, "Average pooling takes each window's mean instead: two point seven five, one point seven five, one point five and two point five.", [[44.206, 44.806], [45.956, 46.256], [47.526, 47.856], [48.836, 49.066]]],
+  "shape/channels": [52.033, 67.647, "Inputs often come as a stack of grids called channels, like the red, green and blue of a color image. Pooling runs on each channel on its own: sixteen channels of thirty two by thirty two become sixteen of sixteen by sixteen.", [[55.473, 55.823], [56.493, 56.673], [58.543, 59.133], [61.433, 61.903], [64.713, 64.973]]],
+  "shape/formula": [68.027, 77.752, "The size follows the output size formula, with F and S both two: thirty two minus two, over two, plus one, is sixteen.", [[70.587, 70.907], [72.847, 73.427], [74.937, 75.177], [76.647, 76.887]]],
+  "shape/overlap": [78.132, 92.876, "Windows can also overlap. Three by three windows with a stride of two share an edge column with the next. On twenty seven by twenty seven, that is twenty seven minus three, over two, plus one: thirteen.", [[79.982, 80.562], [83.182, 83.362], [85.242, 85.812], [87.762, 88.022], [90.072, 90.282], [90.962, 91.192], [91.842, 92.182]]],
+  "shape/none": [93.256, 99.93, "And there is nothing to learn: unlike a filter, pooling has no weights at all. Zero parameters.", [[94.716, 95.266], [96.236, 96.536], [98.226, 98.666]]],
+  "shape/shift": [100.31, 112.396, "When the grid is a filter's output, max pooling keeps how well the filter matched in each window, not exactly where. Move the five inside its window, and the output does not change.", [[102.33, 102.7], [106.26, 106.66], [107.89, 108.52], [110.48, 110.69]]],
+  "shape/turn": [112.776, 113.516, "Your turn.", []]
  }
 }

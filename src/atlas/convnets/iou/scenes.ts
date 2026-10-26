@@ -59,6 +59,9 @@ function rect(s: Scene, P: Plane, b: Box, k: Ink, o: { fill?: number; lw?: numbe
 const TRUTH: Box = [1, 1, 5, 4];
 const GUESS: Box = [2, 2, 6, 5];
 const AWAY: Box = [6, 2, 10, 5];
+/** A pair that misses on both sides: right − left = −2, bottom − top = −1. */
+const MISS_A: Box = [1, 1, 4, 3];
+const MISS_B: Box = [6, 4, 9, 6];
 
 /** One line of working in the text column, `row` lines down. */
 function work(s: Scene, P: Plane, row: number, runs: [string, Ink][], a: number, size = 3.3): void {
@@ -108,11 +111,15 @@ const overlap: SceneDef = {
     const xLit = after(s, 'inter', 0.35);
     const yLit = after(s, 'tall', 0.15);
     const tallOn = s.since('tall') >= 0;
-    gridLines(s, P, 10, 6, { x: tallOn ? [] : [2, 5], y: [2, 4], a: tallOn ? yLit * (1 - s.ease('union', 0.5)) : xLit });
-    const away = after(s, 'apart', 0.1, 0.9) * (1 - s.ease('union', 0.9));
-    const g = GUESS.map((v, i) => lerp(v, AWAY[i]!, away)) as Box;
+    const back = 1 - s.ease('union', 0.9);
+    const away = after(s, 'apart', 0.1, 0.9) * back;
+    const both = after(s, 'both', 0.1, 0.9) * back;
+    if (s.since('both') >= 0) gridLines(s, P, 10, 6, { x: [4, 6], y: [3, 4], a: after(s, 'both', 0.5) * back });
+    else gridLines(s, P, 10, 6, { x: tallOn ? [] : [2, 5], y: [2, 4], a: tallOn ? yLit : xLit });
+    const tB = TRUTH.map((v, i) => lerp(v, MISS_A[i]!, both)) as Box;
+    const g = GUESS.map((v, i) => lerp(lerp(v, AWAY[i]!, away), MISS_B[i]!, both)) as Box;
     const uA = s.ease('union', 0.6) * (1 - s.ease('range', 0.6));
-    rect(s, P, TRUTH, 'green', { fill: 0.08 });
+    rect(s, P, tB, 'green', { fill: 0.08 });
     rect(s, P, g, 'blue', { fill: 0.08 });
     s.alpha(uA, () => {
       const c = s.ctx;
@@ -134,15 +141,38 @@ const overlap: SceneDef = {
       for (const y of [2, 4]) s.line(P.l, P.Y(y), P.r, P.Y(y), s.c('gold'), 0.45, [1.2, 0.9]);
     });
     s.alpha(after(s, 'tall', 0.7) * (1 - away), () => rect(s, P, [2, 2, 5, 4], 'gold', { fill: 0.45, lw: 0.6 }));
-    s.alpha(away, () => {
+    s.alpha(away * (1 - both), () => {
       const y = P.Y(3.5);
       s.line(P.X(5), y, P.X(g[0]), y, s.c('red'), 0.6);
       s.text('5 − 6 = −1', (P.X(5) + P.X(g[0])) / 2, P.Y(5) + 3.4 * s.u, { size: 3.2, font: 'mono', weight: 650, color: s.c('red'), halo: true });
     });
+    s.alpha(after(s, 'both', 0.5) * back, () => {
+      for (const x of [4, 6]) s.line(P.X(x), P.t, P.X(x), P.b, s.c('gold'), 0.4, [1.2, 0.9]);
+    });
+    s.alpha(after(s, 'both', 0.75) * back, () => {
+      for (const y of [3, 4]) s.line(P.l, P.Y(y), P.r, P.Y(y), s.c('gold'), 0.4, [1.2, 0.9]);
+    });
+    // Both gaps of the pair that misses on both sides, each beside its own red bar.
+    const gapText = { size: 3.2, font: 'mono', weight: 650, color: s.c('red'), halo: true } as const;
+    s.alpha(after(s, 'both', 0.55) * back, () => {
+      s.line(P.X(4), P.Y(2), P.X(6), P.Y(2), s.c('red'), 0.6);
+      s.text('4 − 6 = −2', P.X(6) + 1.4 * s.u, P.Y(2), { ...gapText, align: 'left' });
+    });
+    s.alpha(after(s, 'both', 0.8) * back, () => {
+      s.line(P.X(7.5), P.Y(3), P.X(7.5), P.Y(4), s.c('red'), 0.6);
+      s.text('3 − 4 = −1', P.X(7.5) + 1.4 * s.u, P.Y(3.5), { ...gapText, align: 'left' });
+    });
     const done = 1 - s.ease('range', 0.6);
     s.alpha((1 - away) * done, () => work(s, P, 0, [['width = min(5, 6) − max(1, 2) = ', '--ink-2'], ['3', 'gold']], after(s, 'inter', 0.8)));
-    s.alpha(away, () => work(s, P, 0, [['width = max(0, 5 − 6) = ', '--ink-2'], ['0', 'red']], 1));
-    s.alpha((1 - 0.75 * away) * done, () => {
+    s.alpha(away * (1 - both), () => work(s, P, 0, [['width = max(0, 5 − 6) = ', '--ink-2'], ['0', 'red']], 1));
+    const raw = 1 - after(s, 'clamp', 0.45);
+    work(s, P, 0, [['right − left = 4 − 6 = ', '--ink-2'], ['−2', 'red']], after(s, 'both', 0.55) * back * raw);
+    work(s, P, 1, [['bottom − top = 3 − 4 = ', '--ink-2'], ['−1', 'red']], after(s, 'both', 0.8) * back * raw);
+    work(s, P, 2, [['(−2) × (−1) = 2', '--ink-3'], ['   ✗ no overlap', 'red']], after(s, 'clamp', 0.1) * back * (1 - after(s, 'clamp', 0.75)));
+    work(s, P, 0, [['width = max(0, −2) = ', '--ink-2'], ['0', 'gold']], after(s, 'clamp', 0.45) * back);
+    work(s, P, 1, [['height = max(0, −1) = ', '--ink-2'], ['0', 'gold']], after(s, 'clamp', 0.6) * back);
+    work(s, P, 2, [['inter = 0 × 0 = ', '--ink-2'], ['0', 'gold']], after(s, 'clamp', 0.8) * back);
+    s.alpha((1 - 0.75 * away) * (1 - both) * done, () => {
       work(s, P, 1, [['height = min(4, 5) − max(1, 2) = ', '--ink-2'], ['2', 'gold']], after(s, 'tall', 0.45));
       work(s, P, 2, [['inter = 3 × 2 = ', '--ink-2'], ['6', 'gold']], after(s, 'tall', 0.75));
     });
@@ -221,4 +251,85 @@ const nms: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { boxes, overlap, nms };
+// Worked from a table, as the practice gives it. D overlaps C above the threshold, but D is
+// dropped first, so C is judged only against the kept B.
+const TB = [
+  { name: 'A', conf: 0.6, k: 'blue' },
+  { name: 'B', conf: 0.9, k: 'teal' },
+  { name: 'C', conf: 0.7, k: 'purple' },
+  { name: 'D', conf: 0.8, k: 'orange' },
+] as const;
+const TIOU = [
+  [0, 0.18, 0.69, 0.37],
+  [0.18, 0, 0.32, 0.61],
+  [0.69, 0.32, 0, 0.56],
+  [0.37, 0.61, 0.56, 0],
+];
+const SORTED = [1, 3, 2, 0];
+
+const table: SceneDef = {
+  draw(s) {
+    // 1 kept, -1 dropped, as the walk reaches each box.
+    const fate = [-after(s, 'last', 0.5), after(s, 'first', 0.1), after(s, 'chain', 0.8), -after(s, 'first', 0.6)];
+    const sorted = after(s, 'order', 0.1, 0.9);
+    const step = 17 * s.u;
+    const yC = s.h * 0.11;
+    TB.forEach((b, i) => {
+      const x = s.w / 2 + (lerp(i, SORTED.indexOf(i), sorted) - 1.5) * step;
+      const f = fate[i]!;
+      s.alpha(s.ease('grid', 0.5, 0.3 + 0.3 * i), () => {
+        s.cell(x - 7 * s.u, yC - 3.3 * s.u, 14 * s.u, 6.6 * s.u, `${b.name} ${b.conf}`, b.k, { on: Math.max(0, f), size: 3 });
+        s.alpha(Math.abs(f), () => s.text(f > 0 ? '✓' : '✗', x, yC + 6.8 * s.u, { size: 4, font: 'ui', weight: 700, color: s.c(f > 0 ? 'green' : 'red') }));
+      });
+    });
+
+    // The IoU table: rows and columns in letter order, the diagonal left blank.
+    const cw = 13 * s.u;
+    const ch = 7.6 * s.u;
+    const x0 = s.w / 2 - 2.5 * cw;
+    const y0 = s.h * 0.25;
+    const cx = (j: number) => x0 + (j + 1) * cw;
+    const cy = (i: number) => y0 + (i + 1) * ch;
+    // Which cells each beat reads, and how: 1 above the threshold, 0 at or below it, -1 ignored.
+    const lit = (i: number, j: number): [number, Ink] | null => {
+      const first = s.win('first', 'chain');
+      const chain = s.win('chain', 'last');
+      const last = s.ease('last', 0.6);
+      if (i === 0 && j === 2 && s.since('order') < 0) return [after(s, 'grid', 0.7), 'gold'];
+      if (i === 1 && j !== 1 && s.since('chain') < 0) return [first * after(s, 'first', j === 3 ? 0.35 : 0.65), j === 3 ? 'red' : 'green'];
+      if (i === 2 && j === 3 && s.since('last') < 0) return [chain * after(s, 'chain', 0.1), '--ink-3'];
+      if (i === 2 && j === 1 && s.since('last') < 0) return [chain * after(s, 'chain', 0.6), 'green'];
+      if (i === 0 && j === 2) return [last * after(s, 'last', 0.3), 'red'];
+      return null;
+    };
+    s.alpha(s.ease('grid', 0.6, 0.8), () => {
+      const head = { size: 3.4, font: 'mono', weight: 700 } as const;
+      TB.forEach((b, i) => {
+        const gone = fate[i]! < 0 ? 0.45 * -fate[i]! : 0;
+        s.alpha(1 - gone, () => {
+          s.text(b.name, cx(i) + cw / 2, y0 + ch / 2, { ...head, color: s.c(b.k) });
+          s.text(b.name, x0 + cw / 2, cy(i) + ch / 2, { ...head, color: s.c(b.k) });
+        });
+      });
+      s.line(x0 + cw, y0 + 0.6 * s.u, x0 + cw, cy(4) - 0.4 * s.u, s.c('--ink-3'), 0.3);
+      s.line(x0 + 0.6 * s.u, y0 + ch, cx(4) - 0.4 * s.u, y0 + ch, s.c('--ink-3'), 0.3);
+      for (let i = 0; i < 4; i++)
+        for (let j = 0; j < 4; j++) {
+          if (i === j) continue;
+          const l = lit(i, j);
+          const k: Ink = l && l[0] > 0.01 ? l[1] : '--ink-3';
+          s.cell(cx(j) + 0.6 * s.u, cy(i) + 0.6 * s.u, cw - 1.2 * s.u, ch - 1.2 * s.u, TIOU[i]![j]!.toFixed(2), k, { on: l ? l[0] : 0, size: 3.1 });
+        }
+    });
+
+    const line = (row: number, runs: [string, Ink][], a: number) => s.alpha(a, () => rich(s, runs, s.w / 2, s.h * 0.78 + row * 7 * s.u, { size: 3.3, weight: 600 }));
+    line(0, [['row A, column C: IoU(A, C) = ', '--ink-2'], ['0.69', 'gold']], after(s, 'grid', 0.7) * (1 - s.ease('order', 0.4)));
+    line(0, [['IoU(B, D) = 0.61 > 0.5: ', '--ink-2'], ['drop D', 'red']], after(s, 'first', 0.45) * (1 - s.ease('chain', 0.4)));
+    line(0, [['IoU(C, D) = 0.56, but D is ', '--ink-2'], ['dropped', '--ink-3']], after(s, 'chain', 0.15) * (1 - s.ease('last', 0.4)));
+    line(1, [['IoU(C, B) = 0.32 < 0.5: ', '--ink-2'], ['keep C', 'green']], after(s, 'chain', 0.7) * (1 - s.ease('last', 0.4)));
+    line(0, [['IoU(A, C) = 0.69 > 0.5: ', '--ink-2'], ['drop A', 'red']], after(s, 'last', 0.35));
+    line(1, [['kept: ', '--ink-2'], ['B', 'teal'], [' and ', '--ink-2'], ['C', 'purple']], after(s, 'last', 0.8));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { boxes, overlap, nms, table };

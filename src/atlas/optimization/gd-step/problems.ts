@@ -30,7 +30,7 @@ export const generators: Generator[] = [
         solution: [
           'The update is $\\symw \\leftarrow \\symw - \\symeta\\,\\symg$.',
           `The step: $\\symeta\\,\\symg = ${num(eta)} \\times ${paren(g)} = ${num(step)}$.`,
-          `Subtract it: $${minus(w, step)} = ${num(v)}$.`,
+          step < 0 ? `Subtract it: $${num(w)} - ${paren(step)} = ${minus(w, step)} = ${num(v)}$. Subtracting a negative adds.` : `Subtract it: $${minus(w, step)} = ${num(v)}$.`,
           signNote(g),
         ],
       };
@@ -121,8 +121,8 @@ export const generators: Generator[] = [
             ]
           : [
               'Each entry of $\\symw$ moves by $-\\symeta\\symg_i$ and adds about $\\symg_i \\times (-\\symeta\\symg_i) = -\\symeta\\symg_i^2$ to the change in $\\symf$.',
-              `Add them up: $\\Delta\\symf \\approx -\\symeta\\,(${g.map((x) => `${paren(x)}^2`).join(' + ')}) = -${num(eta)} \\times ${sq}$.`,
-              `That is $${num(v)}$: negative, because every $\\symg_i^2$ is positive.`,
+              `Square each entry and add: $${g.map((x) => `${paren(x)}^2`).join(' + ')} = ${g.map((x) => num(x * x)).join(' + ')} = ${sq}$.`,
+              `Times $-\\symeta$: $\\Delta\\symf \\approx -${num(eta)} \\times ${sq} = ${num(v)}$, negative because every $\\symg_i^2$ is positive.`,
             ],
       };
     },

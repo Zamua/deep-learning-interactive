@@ -30,6 +30,7 @@ export const script: LectureScript = {
       title: 'Long products',
       codeTitle: 'products.py',
       code: `
+        a = 2.0 * 0.25             # Whh * tanh' = 0.5 #@slope
         grad = 1.0
         for _ in range(10):        # ten steps back   #@loop
             grad = grad * a                            #@loop
@@ -38,7 +39,8 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'scalar', say: 'Picture a single hidden unit, where each step back multiplies the gradient by the same number, a. Ten steps back, it has been multiplied by a to the tenth.', code: 'loop' },
-        { id: 'vanish', say: 'If a is one half, that is about one thousandth. The gradient vanishes: the early steps get almost none of it.', code: 'vanish' },
+        { id: 'slope', say: 'For one unit, a is {W_hh|W h h} times the slope of the tanh. Say {W_hh|W h h} is two, and the slope is a quarter. Then a is two times a quarter: one half.', code: 'slope' },
+        { id: 'vanish', say: 'Ten steps back, that is one half to the tenth: about one thousandth. The gradient vanishes: the early steps get almost none of it.', code: 'vanish' },
         { id: 'explode', say: 'If a is two, it is over a thousand. The gradient explodes, and the numbers soon grow too large to use.', code: 'explode' },
       ],
     },

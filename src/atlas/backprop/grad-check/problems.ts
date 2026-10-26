@@ -98,23 +98,32 @@ export const generators: Generator[] = [
       const rel = pick(rng, cls === 0 ? [1e-8, 3e-8, 2e-9, 5e-8, 1e-7] : cls === 1 ? [1e-4, 3e-4, 5e-5, 2e-4, 6e-4] : [0.02, 0.05, 0.3, 0.01, 0.1, 0.5]);
       const shown = d >= 0.5 && rng.int(2) === 0;
       let given = `gives a relative error of $${sci(rel)}$`;
+      let work = [`The relative error is $${sci(rel)}$.`];
       if (shown) {
         const a = int(rng, 200, 3000) / 1000;
         const dp = Math.max(2, Math.ceil(-Math.log10(rel * a)) + 1);
         const b = round(a * (1 + rel * pick(rng, [1, -1])), dp);
         given = `has backprop give $${num(a)}$ for one input, and the centered difference give $${num(b)}$`;
+        const diff = round(Math.abs(a - b), Math.max(dp, 3));
+        const dTex = diff >= 1e-3 ? num(diff) : sci(diff);
+        const big = Math.max(a, b);
+        work = [
+          `The difference: $|a - n| = |${num(a)} - ${num(b)}| = ${dTex}$.`,
+          `The larger size: $\\max(|a|, |n|) = ${num(big)}$.`,
+          `The relative error: $${dTex} / ${num(big)} \\approx ${sci(Number((diff / big).toPrecision(1)))}$.`,
+        ];
       }
       const why: (string | null)[] =
         cls === 0
           ? [null, 'Agreement near $10^{-7}$ or better is about as close as the arithmetic gets. Suspicion starts near $10^{-4}$.', 'A bug shows up as errors near $10^{-2}$ or more, not this small.']
           : cls === 1
-            ? ['For a smooth function the two should agree to about $10^{-7}$. This is a thousand times worse: worth a look.', null, 'A clear bug gives errors near $10^{-2}$ or more. This is much smaller: suspicious, not certainly wrong.']
+            ? ['Correct gradients agree to about $10^{-7}$. This is a thousand times worse: worth a look.', null, 'A clear bug gives errors near $10^{-2}$ or more. This is much smaller: suspicious, not certainly wrong.']
             : ['The two disagree in the second digit or sooner. Correct gradients agree to about $10^{-7}$.', 'Errors of $10^{-2}$ and more mean the formula is wrong, not just imprecise.', null];
       return {
-        prompt: `A gradient check on a graph with no max nodes ${given}. What does that say about backprop's gradient?`,
+        prompt: `A gradient check ${given}. What does that say about backprop's gradient?`,
         answer: { kind: 'choice', options: [...VERDICTS], correct: cls, why },
         solution: [
-          shown ? `The relative error is $|a - n| / \\max(|a|, |n|)$, about $${sci(rel)}$.` : `The relative error is $${sci(rel)}$.`,
+          ...work,
           'Around $10^{-7}$ or less, the gradients agree. Around $10^{-4}$, be suspicious. Around $10^{-2}$ or more, there is a bug.',
           cls === 0 ? 'So backprop is almost certainly right.' : cls === 1 ? 'So it is suspicious: worth checking for a small mistake.' : 'So there is almost certainly a bug in the backward pass.',
         ],
@@ -131,6 +140,8 @@ export const generators: Generator[] = [
       const slope = 3 * c * x * x + b;
       const one = round(slope + 3 * c * x * h + c * h * h, 6);
       const mid = round(slope + c * h * h, 6);
+      const err1 = (t: number) => round(3 * c * x * t + c * t * t, 6);
+      const err2 = (t: number) => round(c * t * t, 6);
       const fTex = `${c === 1 ? '' : c}x^{3}${b === 0 ? '' : b > 0 ? ` + ${b === 1 ? '' : b}x` : ` - ${-b}x`}`;
       return {
         prompt: `For $f(x) = ${fTex}$ at $x = ${x}$, the true slope is $${slope}$. With $h = ${num(h)}$, the one-sided difference gives $${num(one)}$ and the centered difference gives $${num(mid)}$. Why is the centered one so much closer?`,
@@ -151,10 +162,11 @@ export const generators: Generator[] = [
           ],
         },
         solution: [
-          'The one-sided difference is $\\frac{f(x + h) - f(x)}{h}$, and the centered one is $\\frac{f(x + h) - f(x - h)}{2h}$.',
-          `The one-sided error is $${num(round(one - slope, 6))}$, about $3 \\cdot ${c === 1 ? '' : `${c} \\cdot `}${x} \\cdot h$: it shrinks in proportion to $h$.`,
-          `The centered error is $${num(round(mid - slope, 6))}$, which is $${c === 1 ? '' : `${c}`}h^{2}$: the first-order error on the right cancels the one on the left.`,
-          'So the centered difference is the one to trust in a gradient check.',
+          `The one-sided difference is off by $${num(one)} - ${slope} = ${num(round(one - slope, 6))}$.`,
+          `The centered difference is off by $${num(mid)} - ${slope} = ${num(round(mid - slope, 6))}$: far less.`,
+          `At $h = 0.1$ the two errors are $${num(err1(0.1))}$ and $${num(err2(0.1))}$; at $h = 0.01$, $${num(err1(0.01))}$ and $${num(err2(0.01))}$.`,
+          'A tenth of the step cuts the one-sided error about ten times, like $h$, but the centered error a hundred times, like $h^{2}$.',
+          'The centered difference is the average of a step to the right, which overshoots the slope, and a step to the left, which undershoots it by about as much. Their errors cancel.',
         ],
       };
     },

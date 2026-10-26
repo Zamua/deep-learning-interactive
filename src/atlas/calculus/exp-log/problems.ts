@@ -47,7 +47,12 @@ const CASES: LogCase[] = (() => {
         const pv = sumOf([a, b]);
         keep({
           form: 'recip', arg: `\\tfrac{1}{${a * b}}`, uses: [a, b], value: pv,
-          steps: [`$\\ln \\tfrac{1}{${a * b}} = -\\ln ${a * b}$: a reciprocal flips the sign of the log.`, `So $-\\ln p = \\ln ${a * b} = \\ln ${a} + \\ln ${b}$.`, `$\\approx ${ln2(a)} + ${ln2(b)} = ${num(pv, 2)}$.`],
+          steps: [
+            `One over a number flips the sign of its log: $\\ln \\tfrac{1}{${a * b}} = -\\ln ${a * b}$.`,
+            `So $-\\ln p = -(-\\ln ${a * b}) = \\ln ${a * b}$.`,
+            `Split $${a * b} = ${a} \\times ${b}$: $\\ln ${a * b} = \\ln ${a} + \\ln ${b}$.`,
+            `$\\approx ${ln2(a)} + ${ln2(b)} = ${num(pv, 2)}$.`,
+          ],
           traps: [
             { value: -pv, why: `That is $\\ln p$ itself. A number below 1 has a negative log, and the minus sign in front makes $-\\ln p$ positive.` },
             { value: LN[a]! * LN[b]!, why: 'That multiplies the logs. The log of a product is the sum of the logs.' },
@@ -58,7 +63,12 @@ const CASES: LogCase[] = (() => {
         const v = r2(LN[a]! - LN[b]!);
         keep({
           form: 'quot', arg: `\\tfrac{${a}}{${b}}`, uses: [a, b], value: v,
-          steps: [`The log of a quotient is the difference of the logs: $\\ln \\tfrac{${a}}{${b}} = \\ln ${a} - \\ln ${b}$.`, `$\\approx ${ln2(a)} - ${ln2(b)} = ${num(v, 2)}$.`],
+          steps: [
+            `Dividing by ${b} is multiplying by $\\tfrac{1}{${b}}$: $\\ln \\tfrac{${a}}{${b}} = \\ln ${a} + \\ln \\tfrac{1}{${b}}$.`,
+            `One over a number flips the sign of its log: $\\ln \\tfrac{1}{${b}} = -\\ln ${b}$.`,
+            `So $\\ln \\tfrac{${a}}{${b}} = \\ln ${a} - \\ln ${b}$.`,
+            `$\\approx ${ln2(a)} - ${ln2(b)} = ${num(v, 2)}$.`,
+          ],
           traps: [
             { value: LN[a]! / LN[b]!, why: 'That divides the logs. The log of a quotient is the difference of the logs.' },
             { value: -v, why: `That subtracts the wrong way round: $\\ln \\tfrac{a}{b} = \\ln a - \\ln b$.` },
@@ -70,7 +80,11 @@ const CASES: LogCase[] = (() => {
       const v = r2(k * LN[a]!);
       keep({
         form: 'pow', arg: String(a ** k), uses: [a], value: v,
-        steps: [`$${a ** k} = ${a}^{${k}}$, and a power comes out in front: $\\ln ${a}^{${k}} = ${k} \\ln ${a}$.`, `$\\approx ${k} \\times ${ln2(a)} = ${num(v, 2)}$.`],
+        steps: [
+          `Split $${a ** k}$ into ${k} equal factors: $${a ** k} = ${Array(k).fill(a).join(' \\times ')} = ${a}^{${k}}$.`,
+          `So $\\ln ${a ** k} = ${Array(k).fill(`\\ln ${a}`).join(' + ')} = ${k} \\ln ${a}$: the power comes out in front.`,
+          `$\\approx ${k} \\times ${ln2(a)} = ${num(v, 2)}$.`,
+        ],
         traps: [{ value: LN[a]! ** k, why: `That raises the log to the power. A power inside the log comes out as a factor: $\\ln a^{${k}} = ${k} \\ln a$.` }],
       }, Math.log(a ** k));
     }
@@ -191,14 +205,15 @@ export const generators: Generator[] = [
         const c = form === 'triple' ? n(-3, 4) || 1 : 0;
         const v = round(a + b + c, 1);
         const shown = form === 'triple' ? `${E(a)} \\cdot ${E(b)} \\cdot ${E(c)}` : `${E(a)} \\cdot ${E(b)}`;
+        const sum = (form === 'triple' ? [a, b, c] : [a, b]).map((x, i) => (i ? paren(num(x)) : num(x))).join(' + ');
         const traps = [{ value: round(form === 'triple' ? a * b * c : a * b, 2), why: 'That multiplies the powers. Multiplying exponentials adds their powers.' }];
         return {
           prompt: `What number goes in the box: $${shown} = e^{\\square}$?`,
           answer: { kind: 'number', value: v },
           traps: cleanTraps(traps, v),
           solution: [
-            'Each factor of $e$ multiplies in as many copies of $e$ as its power says, so the powers add.',
-            `$${form === 'triple' ? `${num(a)} + ${num(b)} + ${num(c)}` : `${num(a)} + ${num(b)}`} = ${num(v)}$`.replace(/\+ -/g, '- '),
+            `Multiplying exponentials adds their powers: $${shown} = e^{${sum}}$.`,
+            `$${sum} = ${num(v)}$.`,
           ],
         };
       }
@@ -210,7 +225,10 @@ export const generators: Generator[] = [
           prompt: `What number goes in the box: $\\dfrac{${E(a)}}{${E(b)}} = e^{\\square}$?`,
           answer: { kind: 'number', value: v },
           traps: cleanTraps(traps, v),
-          solution: ['Dividing by $e^{b}$ takes away $b$ copies of $e$, so the powers subtract.', `$${num(a)} - ${paren(num(b))} = ${num(v)}$.`],
+          solution: [
+            `Dividing exponentials subtracts the bottom power from the top one: $\\dfrac{${E(a)}}{${E(b)}} = e^{${num(a)} - ${paren(num(b))}}$.`,
+            `$${num(a)} - ${paren(num(b))} = ${num(v)}$.`,
+          ],
         };
       }
       const k = int(rng, 2, 4);
@@ -219,7 +237,11 @@ export const generators: Generator[] = [
         prompt: `What number goes in the box: $(${E(a)})^{${k}} = e^{\\square}$?`,
         answer: { kind: 'number', value: v },
         traps: [{ value: round(a + k, 1), why: `That adds ${k} to the power. Raising to the power ${k} multiplies ${k} copies together, so the power is multiplied by ${k}.` }].filter((t) => t.value !== v),
-        solution: [`$(${E(a)})^{${k}}$ is ${k} copies of $${E(a)}$ multiplied together, so the power ${num(a)} is added ${k} times.`, `$${k} \\times ${paren(num(a))} = ${num(v)}$.`],
+        solution: [
+          `$(${E(a)})^{${k}}$ is ${k} copies of $${E(a)}$ multiplied together: $${Array(k).fill(E(a)).join(' \\cdot ')}$.`,
+          `Multiplying adds the powers: $e^{${Array(k).fill(paren(num(a))).join(' + ')}}$.`,
+          `Adding the same power ${k} times is multiplying it by ${k}: $${k} \\times ${paren(num(a))} = ${num(v)}$.`,
+        ],
       };
     },
   },

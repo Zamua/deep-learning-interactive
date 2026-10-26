@@ -54,11 +54,21 @@ export const generators: Generator[] = [
         },
         solution: [
           `Training: ${a}. Validation: ${b}. A good model: about $${num(good)}$.`,
-          kind === 0
-            ? 'Both are high and close together: the model has not fit even its training data. That is underfitting.'
-            : kind === 1
-              ? 'Training is nearly perfect while validation lags far behind: the model has memorized its training examples. That is overfitting.'
-              : 'Training is low and validation is close behind: the model does about as well on new data. The small gap is normal.',
+          [
+            `Training against a good model: ${a} is far above $${num(good)}$, so the model has not fit its training data.`,
+            `Training against a good model: ${a} is below even $${num(good)}$, so the model fits its training examples almost perfectly.`,
+            `Training against a good model: ${a} is near $${num(good)}$, so the model fits its training data.`,
+          ][kind]!,
+          [
+            `Validation against training: ${b} is close to ${a}, a small gap.`,
+            `Validation against training: ${b} is far above ${a}, a large gap.`,
+            `Validation against training: ${b} is close behind ${a}, a small gap, which is normal.`,
+          ][kind]!,
+          [
+            'High and close together: underfitting.',
+            'Fits its training data but not new data: overfitting.',
+            'Near a good model and close together: neither. It does about as well on new data.',
+          ][kind]!,
         ],
       };
     },

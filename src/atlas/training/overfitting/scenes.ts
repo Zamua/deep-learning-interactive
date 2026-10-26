@@ -66,6 +66,15 @@ const curves: SceneDef = {
       s.line(F.X(7.3), F.t + 6 * s.u, F.X(7.3), F.b, s.tint('red', 0.6), 0.3, [1.2, 1]);
       s.text('overfitting', F.X(12.3), F.Y(0.85), { size: 3.6, weight: 600, color: s.c('red'), halo: true });
     });
+    // What the loss is: per-example numbers and their average, before any curve.
+    s.alpha(s.win('loss', 'both'), () => {
+      const cx = (F.l + F.r) / 2;
+      const y = s.h * 0.36;
+      const xs = [-1, 0, 1].map((k) => cx + k * 16 * s.u);
+      s.text('how wrong, per example', cx, y - 8 * s.u, { size: 3.2, color: s.c('--ink-3') });
+      cells(s, xs, y, ['0.2', '1.5', '0.4'], 'red', { w: 13, h: 8, size: 3.4, on: [0, 1, 2].map((k) => s.ease('loss', 0.5, 2 + 0.5 * k) * (1 - s.ease('avg', 0.5))) });
+      s.alpha(s.ease('avg', 0.6, 0.6), () => s.text('L = (0.2 + 1.5 + 0.4) / 3 = 0.7', cx, y + 12 * s.u, { size: 3.6, font: 'mono', weight: 650, color: s.c('red') }));
+    });
     const blind = s.ease('blind', 0.6);
     series(s, F, TRAIN, 'blue', { upto: e / 16, width: 0.6 + 0.4 * blind });
     series(s, F, VAL, 'gold', { upto: e / 16 });
@@ -81,7 +90,7 @@ const curves: SceneDef = {
 
 const stop: SceneDef = {
   draw(s) {
-    const tableA = 1 - s.ease('under', 0.6);
+    const tableA = 1 - s.ease('good', 0.6);
     const xs = [s.w / 2 - 22 * s.u, s.w / 2, s.w / 2 + 22 * s.u];
     const top = s.h * 0.1;
     const rh = 9.5 * s.u;
@@ -105,23 +114,31 @@ const stop: SceneDef = {
     });
     const cases = [
       { name: 'underfitting', tr: 1.9, va: 2.0, k: 'red', at: 'under' },
-      { name: 'overfitting', tr: 0.1, va: 1.3, k: 'red', at: 'under' },
+      { name: 'overfitting', tr: 0.1, va: 1.3, k: 'red', at: 'over' },
       { name: 'fits well', tr: 0.4, va: 0.5, k: 'green', at: 'fine' },
     ] as const;
     const nx = s.w / 2 - (s.tall ? 20 : 26) * s.u;
     const len = (v: number) => (v / 2) * (s.tall ? 46 : 56) * s.u;
-    s.alpha(s.ease('under', 0.6, 0.4), () => {
+    s.alpha(s.ease('good', 0.6, 0.4), () => {
       let kx = nx + 2 * s.u;
       kx = key(s, kx, s.h * 0.12, 'blue', 'train');
       key(s, kx, s.h * 0.12, 'gold', 'val');
     });
+    s.alpha(s.ease('good', 0.6, 1.5), () => s.text('start: 2.3', s.w - 6 * s.u, s.h * 0.19, { size: 3.2, font: 'mono', align: 'right', color: s.c('--ink-2') }));
+    const gx = nx + len(0.4);
+    s.alpha(s.ease('good', 0.6, 3), () => {
+      s.line(gx, s.h * 0.22, gx, s.h * 0.86, s.tint('green', 0.8), 0.35, [1.2, 1]);
+      s.text('good model: 0.4', gx, s.h * 0.19, { size: 3.2, font: 'mono', weight: 600, color: s.c('green') });
+    });
     cases.forEach((c, i) => {
       const y = s.h * (0.3 + 0.24 * i);
-      s.alpha(s.ease(c.at, 0.6, 0.4 + (i === 1 ? 0.8 : 0)), () => {
+      s.alpha(s.ease(c.at, 0.6, 0.4), () => {
         s.text(c.name, nx - 2 * s.u, y, { size: 3.6, weight: 600, align: 'right', color: s.c(c.k) });
         ([[c.tr, 'blue', -2.4], [c.va, 'gold', 2.4]] as const).forEach(([v, k, dy]) => {
           s.rrect(nx, y + dy * s.u - 1.8 * s.u, len(v), 3.6 * s.u, 0.6, { fill: s.tint(k, 0.55), stroke: s.c(k), lw: 0.25 });
-          s.text(v.toFixed(1), nx + len(v) + 1.5 * s.u, y + dy * s.u, { size: 3, font: 'mono', align: 'left', color: s.c(k) });
+          // A label that would sit on the good-model line moves past it.
+          const lx = nx + len(v) < gx ? Math.max(nx + len(v) + 1.5 * s.u, gx + 1.5 * s.u) : nx + len(v) + 1.5 * s.u;
+          s.text(v.toFixed(1), lx, y + dy * s.u, { size: 3, font: 'mono', align: 'left', color: s.c(k) });
         });
       });
     });

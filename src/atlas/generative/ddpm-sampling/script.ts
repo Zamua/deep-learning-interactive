@@ -32,8 +32,8 @@ export const script: LectureScript = {
         ab, xt, eps_hat = 0.64, 0.5, -0.5          #@guess
         noise = np.sqrt(1 - ab) * eps_hat  # -0.3  #@est
         x0_hat = (xt - noise) / np.sqrt(ab) # 1.0  #@est
-        ab_prev, s2 = 0.81, 0.03                   #@back
-        img = np.sqrt(ab_prev) * x0_hat    # 0.9   #@back
+        ab_prev, s2 = 0.81, 0.03                   #@level
+        img = np.sqrt(ab_prev) * x0_hat    # 0.9   #@img
         keep = np.sqrt(1 - ab_prev - s2)   # 0.4   #@split
         mean = img + keep * eps_hat        # 0.7   #@mean
         z = np.random.randn()              # 1.0   #@fresh
@@ -42,8 +42,10 @@ export const script: LectureScript = {
       beats: [
         { id: 'guess', say: 'Here is one step, from t down to t minus one. Say {ᾱₜ|alpha bar t}, the {ᾱ|alpha bar} of step t, is {0.64|zero point six four}, a pixel reads {0.5|zero point five}, and the network guesses its noise is minus a half.', code: 'guess' },
         { id: 'est', say: 'First, estimate the clean image, as before: take away {0.6|zero point six} times the guess, and divide by {0.8|zero point eight}. {x̂₀|x zero hat} is one.', code: 'est' },
-        { id: 'back', say: 'Then rebuild the image at step t minus one from three parts: the estimate, part of the guess, and fresh noise z, scaled by {σ|sigma}, here a plain number, not the sigmoid. At that step, {ᾱₜ₋₁|alpha bar t minus one} is {0.81|zero point eight one}, and its root, {0.9|zero point nine}, scales {x̂₀|x zero hat}.', code: 'back' },
-        { id: 'split', say: 'That leaves {0.19|zero point one nine} for noise. Set {σ²|sigma squared} of it aside for the fresh noise, here {0.03|zero point zero three}. The other {0.16|zero point one six} goes to the guess, scaled by its root, {0.4|zero point four}.', code: 'split' },
+        { id: 'level', say: 'Then build the image at step t minus one. Like any noised image, it must be a blend: the root of {ᾱₜ₋₁|alpha bar t minus one} times an image, plus the root of one minus {ᾱₜ₋₁|alpha bar t minus one} times noise. Here {ᾱₜ₋₁|alpha bar t minus one} is {0.81|zero point eight one}: {0.81|zero point eight one} of the variance is image, and {0.19|zero point one nine} is noise.', code: 'level' },
+        { id: 'img', say: 'For the image, use the estimate {x̂₀|x zero hat}, scaled by the root of {0.81|zero point eight one}: {0.9|zero point nine}.', code: 'img' },
+        { id: 'fill', say: 'For the noise, reuse the guess: it is the noise this pixel holds, so keeping it carries the same noise down a level, only less of it. But the guess fills only part of the noise share. The rest goes to fresh noise z, scaled by {σ|sigma}, here a plain number, not the sigmoid.', code: ['mean', 'fresh'] },
+        { id: 'split', say: 'Of the {0.19|zero point one nine}, set {σ²|sigma squared} aside for the fresh noise, here {0.03|zero point zero three}. The other {0.16|zero point one six} goes to the guess, scaled by its root, {0.4|zero point four}.', code: 'split' },
         { id: 'mean', say: 'So the step\'s mean is {0.9|zero point nine} times one, plus {0.4|zero point four} times minus a half: {0.7|zero point seven}.', code: 'mean' },
         { id: 'fresh', say: 'Last, add {σ|sigma} times z, a fresh draw from a standard normal. With z equal to one, {xₜ₋₁|x t minus one} is {0.7|zero point seven} plus {0.17|zero point one seven}: {0.87|zero point eight seven}.', code: 'fresh' },
       ],

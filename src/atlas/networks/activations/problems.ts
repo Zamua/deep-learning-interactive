@@ -77,7 +77,7 @@ function atZero(rng: Rng): Problem {
     prompt: f ? `What is $${sig}(0)$?` : 'What is $\\tanh(0)$?',
     answer: { kind: 'number', value: v, places: placesFor(v) },
     traps: traps(v, f ? [{ value: 0, why: 'That is tanh at 0. The sigmoid at 0 is $1 / (1 + e^{0}) = 1/2$: halfway between its limits 0 and 1.' }, { value: 1, why: '$e^{0} = 1$, so $\\sigma(0) = 1 / (1 + 1)$.' }] : [{ value: 0.5, why: 'That is the sigmoid at 0. tanh is centered on 0: halfway between $-1$ and 1.' }], P),
-    solution: f ? ['$\\sigma(0) = 1 / (1 + e^{0}) = 1 / 2 = 0.5$: halfway between 0 and 1.'] : ['$\\tanh(0) = (e^{0} - e^{0}) / (e^{0} + e^{0}) = 0$: halfway between $-1$ and 1.'],
+    solution: f ? ['$\\sigma(0) = 1 / (1 + e^{0}) = 1 / 2 = 0.5$: halfway between 0 and 1.'] : ['tanh is centered on 0, halfway between $-1$ and 1: $\\tanh(0) = 0$.'],
   };
 }
 
@@ -108,7 +108,12 @@ function sigmoidSlope(rng: Rng, d: number): Problem {
       { value: 1 - v, why: 'That is $1 - \\sigma$ alone. Multiply it by $\\sigma$.' },
       { value: 1 - v * v, why: 'That is tanh\'s slope rule, $1 - \\tanh(z)^2$. The sigmoid\'s is $\\sigma(1 - \\sigma)$.' },
     ], P),
-    solution: [`The sigmoid's slope is $${sig}(1 - ${sig})$.`, `$${num(v)} \\times ${num(clean(1 - v))} ${approx(want)}$.`, v === 0.5 ? 'That is its largest possible slope: a quarter, at $z = 0$.' : 'Never more than 0.25, the slope at $z = 0$.'],
+    solution: [
+      `The sigmoid's slope is $${sig}(1 - ${sig})$.`,
+      `$1 - ${sig} = 1 - ${num(v)} = ${num(clean(1 - v))}$.`,
+      `Multiply by $${sig}$: $${num(v)} \\times ${num(clean(1 - v))} ${approx(want)}$.`,
+      v === 0.5 ? 'That is its largest possible slope: a quarter, at $z = 0$.' : 'Never more than 0.25, the slope at $z = 0$.',
+    ],
   };
 }
 
@@ -123,7 +128,12 @@ function tanhSlope(rng: Rng, d: number): Problem {
       { value: v * (1 - v), why: 'That is the sigmoid\'s slope rule, $\\sigma(1 - \\sigma)$. tanh\'s is $1 - \\tanh(z)^2$.' },
       { value: v * v, why: 'That is $\\tanh(z)^2$ itself. The slope is 1 minus it.' },
     ], P),
-    solution: ['tanh\'s slope is $1 - \\tanh(z)^2$.', `$1 - ${v < 0 ? `(${num(v)})` : num(v)}^2 = 1 - ${num(clean(v * v))} ${approx(want)}$.`, v === 0 ? 'At 0 the slope is 1, its largest.' : 'Squaring makes the sign of tanh irrelevant: the slope only depends on how far it is from 0.'],
+    solution: [
+      'tanh\'s slope is $1 - \\tanh(z)^2$.',
+      `Square the value: $${v < 0 ? `(${num(v)})` : num(v)}^2 = ${num(clean(v * v))}$.`,
+      `Take it from 1: $1 - ${num(clean(v * v))} ${approx(want)}$.`,
+      v === 0 ? 'At 0 the slope is 1, its largest.' : 'Squaring makes the sign of tanh irrelevant: the slope only depends on how far it is from 0.',
+    ],
   };
 }
 

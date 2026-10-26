@@ -14,17 +14,31 @@ const CLASSES = [
 
 const photo = (nm: string) => `a photo of ${/^[aeiou]/.test(nm) ? 'an' : 'a'} ${nm}`;
 
-/** An image embedding and one caption embedding per class, with a clear winner. */
+/** Unit vectors of `dim` entries with one-decimal coordinates: an axis, or 0.6 and 0.8 on two axes. */
+function units(dim: number): number[][] {
+  const out: number[][] = [];
+  for (let i = 0; i < dim; i++) for (const s of [1, -1]) out.push(Array.from({ length: dim }, (_, k) => (k === i ? s : 0)));
+  for (let i = 0; i < dim; i++)
+    for (let j = 0; j < dim; j++)
+      if (i !== j) for (const a of [0.6, -0.6]) for (const b of [0.8, -0.8]) out.push(Array.from({ length: dim }, (_, k) => (k === i ? a : k === j ? b : 0)));
+  return out;
+}
+const U2 = units(2);
+const U3 = units(3);
+
+/** A unit image embedding and one unit caption embedding per class, with a clear winner. */
 function scene(rng: Rng, d: number): { z: number[]; t: number[][]; names: string[]; sc: number[] } {
   const names = rng.shuffle([...pick(rng, CLASSES)]).concat(d >= 0.6 ? [pick(rng, ['flower', 'house', 'kite'])] : []);
-  const dim = d < 0.4 ? 2 : 3;
-  const draw = () => (d < 0.4 ? int(rng, -2, 2) : int(rng, -9, 9) / 10);
+  const pool = d < 0.4 ? U2 : U3;
   for (;;) {
-    const z = Array.from({ length: dim }, draw);
-    const t = names.map(() => Array.from({ length: dim }, draw));
+    const z = pick(rng, d < 0.2 ? pool.filter((v) => v.every((x) => x === 0 || Math.abs(x) === 1)) : pool);
+    const t = names.map(() => pick(rng, pool));
+    if (new Set(t.map((r) => r.join())).size < t.length) continue;
+    // Past the easiest level, no caption simply repeats the image's vector.
+    if (d >= 0.2 && t.some((r) => r.join() === z.join())) continue;
     const sc = t.map((r) => dot(r, z));
     const sorted = [...sc].sort((a, b) => b - a);
-    if (z.some((x) => x !== 0) && sorted[0]! - sorted[1]! >= (d < 0.4 ? 1 : 0.1)) return { z, t, names, sc };
+    if (sorted[0]! - sorted[1]! >= (d < 0.4 ? 0.2 : 0.1)) return { z, t, names, sc };
   }
 }
 

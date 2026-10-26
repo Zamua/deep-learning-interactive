@@ -41,39 +41,70 @@ const loop: SceneDef = {
   },
 };
 
+const fm = (v: number) => (v < 0 ? `−${f(-v)}` : f(v));
+const par = (v: number) => (v < 0 ? `(${fm(v)})` : fm(v));
+const mono = (s: Scene, t: string, x: number, y: number, k: Ink | 'orange' | 'gold' | 'green' | '--ink-2' | '--ink-3', size = 3.6, align: CanvasTextAlign = 'center', weight = 600) =>
+  s.text(t, x, y, { size, font: 'mono', weight, align, color: s.c(k), halo: true });
+/** Eased in `frac` of the way through beat `id`, so a value lands as the voice says it. */
+const lateIn = (s: Scene, id: string, frac: number) => s.ease(id, 0.6, frac * (s.end(id) - s.at(id)));
+
+/** x across the top, ds down the side, the dW grid between them and db at the right. */
+function table(s: Scene) {
+  const xs = columns(s, 2, s.tall ? 22 : 20).map((x) => x + (s.tall ? 3 : 0) * s.u);
+  return { xs, left: xs[0]! - (s.tall ? 24 : 22) * s.u, right: xs[1]! + (s.tall ? 24 : 22) * s.u, top: s.h * 0.13, ry: [s.h * 0.37, s.h * 0.56] };
+}
+
 const outer: SceneDef = {
   marks: {
-    s: { tex: String.raw`\syms_i = \symW_{i0}\,\symx_0 + \symW_{i1}\,\symx_1 + \symb_i`, x: 0.5, y: 0.88, size: 4.6 },
-    g: { tex: String.raw`\dfrac{\partial \symL}{\partial \symW_{ij}} = ds_i\,\symx_j`, x: 0.5, y: 0.88, size: 5 },
+    one: { tex: String.raw`\syms_0 = \symW_{0,0}\,\symx_0 + \symW_{0,1}\,\symx_1 + \symb_0`, x: 0.5, y: 0.8, size: 4.6 },
+    slope: { tex: String.raw`\dfrac{\partial \syms_0}{\partial \symW_{0,0}} = \symx_0 = 2`, x: 0.5, y: 0.8, size: 4.8 },
+    entry: { tex: String.raw`\dfrac{\partial \symL}{\partial \symW_{0,0}} = d\syms_0\,\symx_0 = -0.7 \times 2 = -1.4`, x: 0.5, y: 0.8, size: 4.6 },
+    row0: { tex: String.raw`\dfrac{\partial \symL}{\partial \symW_{0,1}} = d\syms_0\,\symx_1 = -0.7 \times 1 = -0.7`, x: 0.5, y: 0.8, size: 4.6 },
+    row1: { tex: String.raw`d\syms_1\,\symx_0 = 0.7 \times 2 = 1.4, \quad d\syms_1\,\symx_1 = 0.7 \times 1 = 0.7`, x: 0.5, y: 0.8, size: 4.4 },
+    rule: { tex: String.raw`\dfrac{\partial \symL}{\partial \symW_{i,j}} = d\syms_i\,\symx_j`, x: 0.5, y: 0.8, size: 5 },
   },
   draw(s) {
-    const xs = columns(s, 2, s.tall ? 22 : 20);
-    const left = xs[0]! - (s.tall ? 24 : 22) * s.u;
-    const right = xs[1]! + (s.tall ? 24 : 22) * s.u;
-    const top = s.h * 0.14;
-    const ry = [s.h * 0.38, s.h * 0.6];
-    s.text('x', left, top, { size: 4, font: 'mono', weight: 650, color: s.c('orange') });
-    cells(s, xs, top, X.map(String), 'orange');
-    s.text('ds', left, ry[0]! - 9 * s.u, { size: 3.6, font: 'mono', weight: 650, color: s.c('red') });
-    ry.forEach((y, i) => cells(s, [left], y, [f(DS[i]!)], 'red', { w: 13 }));
-    s.show('s', s.win('chain', 'outer'));
-    s.show('g', s.ease('outer', 0.6));
-    s.alpha(s.win('chain', 'outer'), () => {
-      s.text('row i of W', (xs[0]! + xs[1]!) / 2, ry[0]! - 9 * s.u, { size: 3.2, color: s.c('blue') });
-      cells(s, xs, ry[0]!, W[0]!.map(String), 'blue', { on: [0.4, 0.4] });
+    const T = table(s);
+    const { xs, left, right, top, ry } = T;
+    // When each dW entry fills, in the beat that computes it.
+    const fill = [
+      [lateIn(s, 'entry', 0.8), lateIn(s, 'row0', 0.75)],
+      [lateIn(s, 'row1', 0.5), lateIn(s, 'row1', 0.8)],
+    ];
+    // Which entry the voice is on: its row's ds and its column's x light with it.
+    const cur = (i: number, j: number) => {
+      if (i === 0 && j === 0) return s.win('one', 'row0');
+      if (i === 0 && j === 1) return s.win('row0', 'row1');
+      return s.win('row1', 'rule') * (j === 0 ? 1 - lateIn(s, 'row1', 0.68) : lateIn(s, 'row1', 0.68));
+    };
+    const xOn = (j: number) => (j === 0 ? Math.max(s.win('slope', 'row0'), cur(1, 0)) : Math.max(cur(0, 1), cur(1, 1)));
+    const dsOn = (i: number) => (i === 0 ? s.win('entry', 'row1') : s.win('row1', 'rule'));
+    mono(s, 'x', left, top, 'orange', 4, 'center', 650);
+    cells(s, xs, top, X.map(String), 'orange', { on: xs.map((_, j) => xOn(j)) });
+    xs.forEach((x, j) => s.text(`col ${j}`, x, top - 6.4 * s.u, { size: 2.8, font: 'mono', color: s.c('--ink-3') }));
+    mono(s, 'ds', left, ry[0]! - 9 * s.u, 'red', 3.6, 'center', 650);
+    ry.forEach((y, i) => {
+      cells(s, [left], y, [fm(DS[i]!)], 'red', { w: 13, on: [dsOn(i)] });
+      s.text(`row ${i}`, left - 8.5 * s.u, y, { size: 2.8, font: 'mono', align: 'right', color: s.c('--ink-3') });
     });
-    s.alpha(s.ease('outer', 0.4), () => {
-      s.text('dW', (xs[0]! + xs[1]!) / 2, ry[0]! - 9 * s.u, { size: 3.6, font: 'mono', weight: 650, color: s.c('red') });
-      ry.forEach((y, i) =>
-        xs.forEach((x, j) => {
-          const a = s.ease('outer', 0.5, 1.2 + (i * 2 + j) * 0.7);
-          cells(s, [x], y, [a > 0.3 ? f(DS[i]! * X[j]!) : ''], 'red', { on: [a] });
-        }),
-      );
-    });
+    mono(s, '∂L/∂W', (xs[0]! + xs[1]!) / 2, ry[0]! - 9 * s.u, 'red', 3.4, 'center', 650);
+    ry.forEach((y, i) =>
+      xs.forEach((x, j) => {
+        const a = fill[i]![j]!;
+        const asked = i === 0 && j === 0 ? s.ease('one', 0.6, 0.6) : 0;
+        cells(s, [x], y, [a > 0.4 ? fm(DS[i]! * X[j]!) : asked > 0.4 ? '?' : ''], 'red', { on: [Math.max(cur(i, j), 0.3 * a)] });
+      }),
+    );
+    s.show('one', s.win('one', 'slope'));
+    s.show('slope', s.win('slope', 'entry'));
+    s.show('entry', s.win('entry', 'row0'));
+    s.show('row0', s.win('row0', 'row1'));
+    s.show('row1', s.win('row1', 'rule'));
+    s.show('rule', s.ease('rule', 0.6));
+    s.alpha(s.ease('rule', 0.6, 0.4) * lateIn(s, 'rule', 0.7), () => mono(s, 'np.outer(ds, x)', s.w / 2, s.h * 0.92, '--ink-2', 3.4));
     s.alpha(s.ease('db', 0.6), () => {
-      s.text('db', right, ry[0]! - 9 * s.u, { size: 3.6, font: 'mono', weight: 650, color: s.c('red') });
-      ry.forEach((y, i) => cells(s, [right], y, [f(DS[i]!)], 'red', { w: 13, on: [1] }));
+      mono(s, 'db', right, ry[0]! - 9 * s.u, 'red', 3.6, 'center', 650);
+      ry.forEach((y, i) => cells(s, [right], y, [fm(DS[i]!)], 'red', { w: 13, on: [1] }));
     });
   },
 };
@@ -127,4 +158,75 @@ const toward: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { loop, outer, toward };
+// The worked problems: the givens of the practice's update and bias questions.
+const TW = [
+  [1, 2],
+  [2, -1],
+];
+const TX = [3, 1];
+const TP = [0.4, 0.6];
+const TY = 1;
+const TDS = TP.map((p, i) => Math.round((p - (i === TY ? 1 : 0)) * 100) / 100);
+const TB = [-0.2, 0.2];
+const TB2 = TB.map((b, i) => Math.round((b - LR * TDS[i]!) * 100) / 100);
+const TV = TW[1]![0]! - LR * TDS[1]! * TX[0]!;
+
+const tryIt: SceneDef = {
+  marks: {
+    g1: { tex: String.raw`\symW = \begin{bmatrix} 1 & 2 \\ 2 & -1 \end{bmatrix},\quad \symx = [3,\ 1],\quad \symy = 1`, x: 0.5, y: 0.1, size: 4.4 },
+    g2: { tex: String.raw`\symp = [0.4,\ 0.6],\quad \symeta = 0.5`, x: 0.5, y: 0.22, size: 4.4 },
+    q1: { tex: String.raw`\symW_{1,0} \text{ after one SGD step?}`, x: 0.5, y: 0.31, size: 4.4 },
+    q2: { tex: String.raw`\symb = [-0.2,\ 0.2] \text{ after the same step?}`, x: 0.5, y: 0.31, size: 4.4 },
+    ds: { tex: String.raw`d\syms = \symp - \mathrm{onehot}(\symy) = [0.4,\ 0.6] - [0,\ 1] = [0.4,\ -0.4]`, x: 0.5, y: 0.76, size: 4 },
+    dw: { tex: String.raw`d\symW_{1,0} = d\syms_1\,\symx_0 = (-0.4) \times 3 = -1.2`, x: 0.5, y: 0.87, size: 4.2 },
+    step: { tex: String.raw`\symW_{1,0} - \symeta\, d\symW_{1,0} = 2 - 0.5 \times (-1.2) = 2 + 0.6 = 2.6`, x: 0.5, y: 0.87, size: 4 },
+    a2: { tex: String.raw`\symb - \symeta\, d\syms = [-0.2,\ 0.2] - 0.5 \times [0.4,\ -0.4] = [-0.4,\ 0.4]`, x: 0.5, y: 0.87, size: 4 },
+  },
+  draw(s) {
+    const one = 1 - s.ease('p2', 0.6);
+    const two = s.ease('p2', 0.6, 0.3);
+    s.show('g1', s.ease('p1', 0.6));
+    s.show('g2', s.ease('p1', 0.6, 0.3));
+    s.show('q1', lateIn(s, 'p1', 0.8) * one);
+    s.show('q2', two);
+    s.show('ds', lateIn(s, 'ds', 0.6));
+    s.show('dw', lateIn(s, 'dw', 0.75) * (1 - s.ease('step', 0.5)));
+    s.show('step', lateIn(s, 'step', 0.6) * one);
+    s.show('a2', lateIn(s, 'a2', 0.5));
+    const xs = columns(s, 2, s.tall ? 20 : 18).map((x) => x + (s.tall ? 4 : 0) * s.u);
+    const left = xs[0]! - (s.tall ? 22 : 20) * s.u;
+    const ry = [s.h * 0.53, s.h * 0.64];
+    const top = s.h * 0.42;
+    // ds down the side, filled once the score gradient is worked.
+    const dsA = lateIn(s, 'ds', 0.7);
+    s.alpha(s.ease('ds', 0.6), () => {
+      ry.forEach((y, i) => cells(s, [left], y, [dsA > 0.4 ? fm(TDS[i]!) : '?'], 'red', { w: 13, h: 8, on: [i === 1 ? s.win('dw', 'step') : 0] }));
+      mono(s, 'ds', left - 10 * s.u, (ry[0]! + ry[1]!) / 2, 'red', 3.6, 'right', 650);
+    });
+    // Problem one: W with x across the top; W[1,0] steps from 2 to 2.6.
+    s.alpha(lateIn(s, 'p1', 0.8) * one, () => {
+      const hit = s.win('dw', 'p2');
+      const moved = lateIn(s, 'step', 0.7);
+      cells(s, xs, top, TX.map(String), 'orange', { w: 12, h: 7, on: [hit, 0] });
+      mono(s, 'x', xs[1]! + 9 * s.u, top, 'orange', 3.8, 'left', 650);
+      ry.forEach((y, i) =>
+        xs.forEach((x, j) => {
+          const it = i === 1 && j === 0;
+          cells(s, [x], y, [it && moved > 0.5 ? f(TV) : fm(TW[i]![j]!)], it && moved > 0.5 ? 'green' : 'blue', { w: 12, h: 8, on: [it ? 0.4 + 0.6 * Math.max(hit, moved) : 0] });
+        }),
+      );
+      mono(s, 'W', xs[1]! + 9 * s.u, (ry[0]! + ry[1]!) / 2, 'blue', 3.8, 'left', 650);
+    });
+    // Problem two: b beside ds, each entry stepping against its own.
+    s.alpha(two, () => {
+      const moved = lateIn(s, 'a2', 0.8);
+      ry.forEach((y, i) => {
+        cells(s, [xs[0]!], y, [moved > 0.5 ? fm(TB2[i]!) : fm(TB[i]!)], 'green', { w: 12, h: 8, on: [moved] });
+        s.alpha(lateIn(s, 'a2', 0.45), () => mono(s, `${fm(TB[i]!)} − 0.5 × ${par(TDS[i]!)} = ${fm(TB2[i]!)}`, xs[0]! + 9 * s.u, y, '--ink-2', 3.2, 'left'));
+      });
+      mono(s, 'b', xs[0]!, top, 'green', 3.8, 'center', 650);
+    });
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { loop, outer, toward, try: tryIt };

@@ -36,6 +36,7 @@ export const generators: Generator[] = [
       const v = dot(w, x);
       const rest = v - w[k]! * x[k]!;
       const shown = x.map((xi, i) => (i === k ? 'a' : String(xi)));
+      const known = w.flatMap((wi, i) => (i === k ? [] : [`${par(wi)} \\times ${par(x[i]!)} = ${wi * x[i]!}`]));
       const traps = w[k]! !== 1 ? [{ value: v - rest, why: `That is $${w[k]}a$, the missing product. Divide it by $${w[k]}$ to get $a$.` }] : [];
       return {
         prompt: `$\\symw = ${vec(w)}$ and $\\symx = [${shown.join(',\\ ')}]$, and $\\symw \\cdot \\symx = ${v}$. What is $a$?`,
@@ -43,8 +44,11 @@ export const generators: Generator[] = [
         traps: traps.filter((t) => t.value !== x[k]),
         solution: [
           `Write out the dot product: $${terms(w, shown)} = ${v}$.`,
-          `The known products add up to $${rest}$, so $${w[k] === 1 ? '' : w[k]}a = ${v} - ${par(rest)} = ${v - rest}$.`,
-          ...(w[k] === 1 ? [] : [`Divide by $${w[k]}$: $a = ${x[k]}$.`]),
+          n === 2
+            ? `Multiply the known pair: $${known[0]}$.`
+            : `Multiply the known pairs: $${known.join(',\\ ')}$. They add up to $${rest}$.`,
+          `The unknown pair makes up the rest: $${w[k] === 1 ? '' : w[k]}a = ${v} - ${par(rest)} = ${v - rest}$.`,
+          ...(w[k] === 1 ? [`So $a = ${x[k]}$.`] : [`Divide by its weight, $${w[k]}$: $a = ${v - rest} / ${w[k]} = ${x[k]}$.`]),
         ],
       };
     },

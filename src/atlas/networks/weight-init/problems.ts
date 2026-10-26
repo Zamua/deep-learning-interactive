@@ -80,7 +80,11 @@ export const generators: Generator[] = [
             { value: n * sd * sd, why: 'That is the variance of the sum. Take its square root.' },
             { value: sd, why: 'That is one term\'s. The sum spreads wider as terms pile up.' },
           ]),
-          solution: [`Each term has variance $${num(sd)}^2 = ${num(clean(sd * sd))}$, and the variances add: $${n} \\times ${num(clean(sd * sd))} = ${num(clean(n * sd * sd))}$.`, `The standard deviation is the square root: $\\sqrt{${num(clean(n * sd * sd))}} = ${num(want)}$, which is $\\sqrt{${n}} = ${Math.sqrt(n)}$ times one term's.`],
+          solution: [
+            `Square the standard deviation: each term has variance $${num(sd)}^2 = ${num(clean(sd * sd))}$.`,
+            `For independent terms the variances add: $${n} \\times ${num(clean(sd * sd))} = ${num(clean(n * sd * sd))}$.`,
+            `The standard deviation is the square root: $\\sqrt{${num(clean(n * sd * sd))}} = ${num(want)}$, which is $\\sqrt{${n}} = ${Math.sqrt(n)}$ times one term's.`,
+          ],
         };
       }
       const n = pick(rng, [25, 100, 400, 2500]);
@@ -95,7 +99,8 @@ export const generators: Generator[] = [
           { value: s, why: 'That is one weight\'s. The sum of $n$ terms spreads $\\sqrt{n}$ times wider.' },
         ]),
         solution: [
-          `Each term $\\symw_i \\symx_i$ has variance $${num(s)}^2 \\times 1 = ${num(clean(s * s))}$: the weight's variance times the input's.`,
+          `Square the weight's standard deviation for its variance: $${num(s)}^2 = ${num(clean(s * s))}$.`,
+          `Each term $\\symw_i \\symx_i$ has the weight's variance times the input's: $${num(clean(s * s))} \\times 1 = ${num(clean(s * s))}$.`,
           `The ${n} variances add: $${n} \\times ${num(clean(s * s))} = ${num(clean(n * s * s))}$.`,
           `So the standard deviation is $\\sqrt{${num(clean(n * s * s))}} = ${num(want)}$.${want === 1 ? ' Exactly 1: this is the scale Xavier initialization picks.' : ''}`,
         ],

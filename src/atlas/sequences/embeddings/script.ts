@@ -34,6 +34,9 @@ export const script: LectureScript = {
       title: 'A lookup is a product',
       codeTitle: 'embed.py',
       code: `
+        v = np.array([1, 2, 0, 0])                 #@v
+        v @ E     # 1*E[0] + 2*E[1]                #@v
+                  # [-1.8, 1.8, 1.1]               #@sum
         onehot = np.array([0, 0, 1, 0])   # id 2   #@oh
         onehot @ E       # [0.5, -1.0, 2.0]        #@prod
         E[2]             # the same row, no math   #@same
@@ -41,8 +44,10 @@ export const script: LectureScript = {
         E[ids].shape     # (m, n, d)               #@batch
       `,
       beats: [
-        { id: 'onehot', say: 'There is another way to see the lookup. Write id two as a one-hot vector: four entries, all zero except a one in place two.', code: 'oh' },
-        { id: 'product', say: 'Multiply it into E. The result is a sum of the rows of E, each weighted by its entry of the one-hot.', code: 'prod' },
+        { id: 'mix', say: 'There is another way to see the lookup. Put a vector v on the left of E, with one entry per row: one, two, zero, zero. The product, {v @ E|v times E}, weighs each row of E by its entry and adds them up: one times row zero, plus two times row one.', code: 'v' },
+        { id: 'entries', say: 'Entry by entry: {0.2|zero point two} plus minus two is minus {1.8|one point eight}. One plus {0.8|zero point eight} is {1.8|one point eight}. And minus {0.5|zero point five} plus {1.6|one point six} is {1.1|one point one}.', code: 'sum' },
+        { id: 'onehot', say: 'Now write id two as a one-hot vector: four entries, all zero except a one in place two.', code: 'oh' },
+        { id: 'product', say: 'Multiply it into E the same way: a sum of the rows of E, each weighted by its entry of the one-hot.', code: 'prod' },
         { id: 'picks', say: 'Every row is weighted by zero except row two, weighted by one. So the product is exactly row two.', code: 'prod' },
         { id: 'layer', say: 'So a lookup is a matrix product with a one-hot vector. Reading the row directly gives the same answer and skips every multiplication by zero.', code: 'same' },
         { id: 'batch', say: 'Stack m sequences of n ids into an array of shape m by n, and the lookup gives m by n by d: every id is swapped for its row.', code: 'batch' },

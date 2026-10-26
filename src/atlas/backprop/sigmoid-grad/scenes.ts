@@ -26,6 +26,19 @@ function guides(s: Scene, F: Frame, a = 1): void {
   });
 }
 
+/** One sigmoid node on a row: x in from the left, the output out to the right. */
+function node(s: Scene, y: number, o: { x: string; out: string; up: string; dx: string; ua: number; da: number; run: [string, number] }): void {
+  const x0 = s.w / 2 - 34 * s.u;
+  const g = s.w / 2 + 4 * s.u;
+  const x1 = s.w / 2 + 34 * s.u;
+  name(s, x0, y, 'x', 'orange');
+  wire(s, x0, y, g, y, { r1: 5, val: o.x, grad: o.dx, ga: o.da, size: 3.8 });
+  wire(s, g, y, x1, y, { r0: 5, val: o.out, grad: o.up, ga: o.ua, size: 3.8 });
+  gate(s, g, y, 'σ', '--ink-2', 0.3);
+  pulse(s, x1, y, g, y, runAfter(s, o.run[0], o.run[1], 0.8), 'red');
+  pulse(s, g, y, x0, y, runAfter(s, o.run[0], o.run[1] + 0.15, 0.8), 'red');
+}
+
 const curve: SceneDef = {
   marks: { f: { tex: String.raw`\sigma(x) = \frac{1}{1 + e^{-x}}`, x: 0.5, y: 0.11, size: 5.4 } },
   draw(s) {
@@ -37,42 +50,72 @@ const curve: SceneDef = {
     F.fn(sig, 'teal', 0.8, -6, lerp(-6, 6, grow));
     s.alpha(after(s, 'zero', 0.4), () => mark(s, F, 0, 0.5, 'σ(0) = 0.5', 'teal', 'left', 3));
     s.alpha(after(s, 'two', 0.7), () => mark(s, F, 2, sig(2), 'σ(2) ≈ 0.88', 'teal', 'right', -1));
-    s.alpha(after(s, 'two', 0.3) * (1 - s.ease('tails', 0.5)), () => mono(s, 'e⁻² ≈ 0.14', F.r - 2 * s.u, F.Y(0.3), '--ink-2', 3.6, 'right'));
-    s.alpha(after(s, 'tails', 0.75), () => mark(s, F, -2, sig(-2), 'σ(−2) ≈ 0.12', 'teal', 'right', -3));
+    s.alpha(after(s, 'two', 0.3), () => mono(s, 'e⁻² ≈ 0.14', F.r - 2 * s.u, F.Y(0.32), '--ink-2', 3.6, 'right'));
+    s.alpha(after(s, 'two', 0.6), () => mono(s, '1 / 1.14 ≈ 0.88', F.r - 2 * s.u, F.Y(0.32) + 5 * s.u, '--ink-2', 3.6, 'right'));
+    // The working for x = -2 sits in the empty upper left.
+    s.alpha(after(s, 'neg', 0.3), () => mono(s, 'e² ≈ 7.39', F.l + 2 * s.u, F.Y(0.68), '--ink-2', 3.6, 'left'));
+    s.alpha(after(s, 'neg', 0.55), () => mono(s, '1 / 8.39 ≈ 0.12', F.l + 2 * s.u, F.Y(0.68) + 5 * s.u, '--ink-2', 3.6, 'left'));
+    s.alpha(after(s, 'neg', 0.6), () => mark(s, F, -2, sig(-2), 'σ(−2) ≈ 0.12', 'teal', 'right', -3));
+  },
+};
+
+/** The measurements under the curve: [text, colour, beat, fraction into it]. */
+const READ: [string, 'gold' | 'red' | '--ink-2', string, number][] = [
+  ['σ(0.01) − σ(0) = 0.5025 − 0.5 = 0.0025', '--ink-2', 'nudge', 0.55],
+  ['slope ≈ 0.0025 / 0.01 = 0.25', 'gold', 'measure', 0.15],
+  ['σ(1 − σ) = 0.5 × 0.5 = 0.25', 'red', 'measure', 0.7],
+  ['σ(2.01) − σ(2) ≈ 0.00105', '--ink-2', 'two', 0.3],
+  ['slope ≈ 0.00105 / 0.01 ≈ 0.105', 'gold', 'two', 0.7],
+  ['σ(1 − σ) ≈ 0.881 × 0.119 ≈ 0.105', 'red', 'match', 0.6],
+];
+
+const measure: SceneDef = {
+  marks: {
+    m: { tex: String.raw`\text{slope} \approx \frac{\sigma(x + 0.01) - \sigma(x)}{0.01}`, x: 0.5, y: 0.1, size: 4.6 },
+    f: { tex: String.raw`\frac{d\sigma}{dx} = \sigma\,(1 - \sigma)`, x: 0.5, y: 0.1, size: 5.2 },
+  },
+  draw(s) {
+    const rule = s.ease('rule', 0.6);
+    s.show('m', s.ease('nudge', 0.6) * (1 - rule));
+    s.show('f', rule);
+    const F = sigFrame(s, 0.22, 0.52);
+    guides(s, F);
+    F.fn(sig, 'teal', 0.7);
+    s.alpha(after(s, 'nudge', 0.2), () => mark(s, F, 0, 0.5, 'x = 0', 'teal', 'left', 3));
+    s.alpha(after(s, 'two', 0.1), () => mark(s, F, 2, sig(2), 'x = 2', 'teal', 'left', 3.6));
+    const x0 = s.w / 2 - 40 * s.u;
+    READ.forEach(([text, k, id, f], i) => {
+      const y = s.h * (0.6 + 0.062 * i) + (i >= 3 ? 2.4 * s.u : 0);
+      s.alpha(after(s, id, f), () => mono(s, text, x0, y, k, 3.5, 'left', k === '--ink-2' ? 550 : 650));
+    });
   },
 };
 
 const slopeScene: SceneDef = {
   marks: { f: { tex: String.raw`\frac{d\sigma}{dx} = \sigma\,(1 - \sigma)`, x: 0.5, y: 0.1, size: 5.2 } },
   draw(s) {
-    s.show('f', s.ease('rule', 0.6));
-    const top = sigFrame(s, 0.24, 0.5);
-    const bot = new Frame(s, 10 * s.u, s.h * 0.6, s.w - 8 * s.u, s.h * 0.92, [-6, 6, 0, 0.3]);
-    top.fn(sig, 'teal', 0.7);
-    s.text('σ', top.l - 2.4 * s.u, top.Y(0.5), { size: 4, italic: true, align: 'right', color: s.c('teal') });
-    s.line(top.X(0), top.t, top.X(0), top.b, s.c('--axis'), 0.25);
-    const grow = s.ease('rule', 1.6, 0.8);
-    bot.axes();
-    bot.fn(slope, 'red', 0.8, -6, lerp(-6, 6, grow));
-    s.text('slope', bot.l + 1.5 * s.u, bot.t + 1.5 * s.u, { size: 3.4, font: 'mono', weight: 600, align: 'left', color: s.c('red') });
-    // The point being read, sliding from 2 to 0.
-    const at = lerp(2, 0, s.ease('peak', 1.2, 0.2));
-    const show = after(s, 'two', 0.15);
-    s.alpha(show, () => {
-      s.line(top.X(at), top.Y(sig(at)), bot.X(at), bot.Y(0), s.tint('--ink-3', 0.7), 0.25, [1, 1]);
-      top.dot(at, sig(at), 'teal');
-      bot.dot(at, slope(at), 'red');
+    s.show('f', 1);
+    const F = new Frame(s, 10 * s.u, s.h * 0.24, s.w - 8 * s.u, s.h * 0.58, [-6, 6, 0, 0.3]);
+    F.axes();
+    F.fn(slope, 'red', 0.8, -6, lerp(-6, 6, s.ease('plot', 1.6, 0.3)));
+    s.text('slope', F.l + 1.5 * s.u, F.t + 1.5 * s.u, { size: 3.4, font: 'mono', weight: 600, align: 'left', color: s.c('red') });
+    const peak = after(s, 'plot', 0.55);
+    const most = s.ease('most', 0.5);
+    s.alpha(peak, () => {
+      s.line(F.X(-6), F.Y(0.25), F.X(6), F.Y(0.25), s.tint('red', 0.6 + 0.4 * most), 0.25 + 0.2 * most, [1, 1]);
+      mono(s, 'max 0.25', F.X(0) + 3 * s.u, F.Y(0.25) - 3.4 * s.u, 'red', 3.6, 'left', 650);
     });
-    s.alpha(after(s, 'two', 0.55) * (1 - s.ease('peak', 0.4)), () => {
-      mono(s, 'σ = 0.88', top.X(2) + 2.6 * s.u, top.Y(sig(2)) + 4 * s.u, 'teal', 3.6, 'left', 650);
-      mono(s, '0.88 × 0.12 ≈ 0.105', bot.r, bot.Y(0.275), 'red', 3.6, 'right', 650);
-    });
-    s.alpha(after(s, 'peak', 0.5), () => {
-      s.line(bot.X(-6), bot.Y(0.25), bot.X(6), bot.Y(0.25), s.tint('red', 0.6), 0.25, [1, 1]);
-      mono(s, 'max 0.25', bot.X(0) + 3 * s.u, bot.Y(0.25) - 3.4 * s.u, 'red', 3.6, 'left', 650);
-      mono(s, 'σ = 0.5', top.X(0) + 2.6 * s.u, top.Y(0.5) + 4 * s.u, 'teal', 3.6, 'left', 650);
-    });
-    s.alpha(after(s, 'chain', 0.5), () => mono(s, 'gradient × 0.25 at most', bot.r, s.h * 0.55, 'red', 3.4, 'right', 600));
+    // The point being read, sliding from the peak to x = 2.
+    const at = lerp(0, 2, s.ease('chain', 1.2, 0.2));
+    s.alpha(peak, () => F.dot(at, slope(at), 'red'));
+    s.alpha(after(s, 'chain', 0.25), () => mono(s, '0.105', F.X(2) + 2.6 * s.u, F.Y(slope(2)) - 2 * s.u, 'red', 3.6, 'left', 650));
+    const y = s.h * 0.76;
+    s.alpha(after(s, 'chain', 0.3), () =>
+      node(s, y, { x: '2', out: '0.881', up: '2', dx: '0.21', ua: after(s, 'chain', 0.45), da: after(s, 'chain', 0.7), run: ['chain', 0.5] }),
+    );
+    const out = 1 - s.ease('most', 0.4);
+    s.alpha(after(s, 'chain', 0.72) * out, () => mono(s, '∂f/∂x = 2 × 0.105 ≈ 0.21', s.w / 2, s.h * 0.91, 'red', 3.6, 'center', 650));
+    s.alpha(after(s, 'most', 0.5), () => mono(s, 'at most 0.25 × 2 = 0.5', s.w / 2, s.h * 0.91, 'red', 3.6, 'center', 650));
   },
 };
 
@@ -96,21 +139,18 @@ const flat: SceneDef = {
       s.line(F.X(4.5), F.Y(sig(6) - 1.5 * slope(6)), F.X(7.5), F.Y(sig(6) + 1.5 * slope(6)), s.c('red'), 0.5);
       mono(s, 'slope ≈ 0.0025', F.r - 1 * s.u, F.Y(0.82), 'red', 3.6, 'right', 650);
     });
-    // One sigmoid node: what arrives from above, and what gets through to x.
-    const a = s.ease('dead', 0.6);
-    s.alpha(a, () => {
-      const y = s.h * 0.8;
-      const x0 = s.w / 2 - 34 * s.u;
-      const g = s.w / 2 + 4 * s.u;
-      const x1 = s.w / 2 + 34 * s.u;
-      name(s, x0, y, 'x', 'orange');
-      wire(s, x0, y, g, y, { r1: 5, val: '6', grad: '0.0025', ga: after(s, 'dead', 0.35), size: 3.8 });
-      wire(s, g, y, x1, y, { r0: 5, val: '0.9975', grad: '1', size: 3.8 });
-      gate(s, g, y, 'σ', '--ink-2', 0.3);
-      pulse(s, x1, y, g, y, runAfter(s, 'dead', 0.05, 0.8), 'red');
-      pulse(s, g, y, x0, y, runAfter(s, 'dead', 0.2, 0.8), 'red');
+    // The mirror image at x = -6, its working in the empty upper left.
+    s.alpha(after(s, 'mirror', 0.3), () => {
+      F.dot(-6, sig(-6), 'teal');
+      mono(s, 'σ(−6) ≈ 0.0025', F.l + 1 * s.u, F.Y(0.86), 'teal', 3.6, 'left', 650);
     });
+    s.alpha(after(s, 'mirror', 0.75), () => {
+      s.line(F.X(-7.5), F.Y(sig(-6) - 1.5 * slope(-6)), F.X(-4.5), F.Y(sig(-6) + 1.5 * slope(-6)), s.c('red'), 0.5);
+      mono(s, 'slope ≈ 0.0025', F.l + 1 * s.u, F.Y(0.86) + 5 * s.u, 'red', 3.6, 'left', 650);
+    });
+    // One sigmoid node: what arrives from above, and what gets through to x.
+    s.alpha(s.ease('dead', 0.6), () => node(s, s.h * 0.8, { x: '6', out: '0.9975', up: '1', dx: '0.0025', ua: 1, da: after(s, 'dead', 0.35), run: ['dead', 0.05] }));
   },
 };
 
-export const scenes: Record<string, SceneDef> = { curve, slope: slopeScene, flat };
+export const scenes: Record<string, SceneDef> = { curve, measure, slope: slopeScene, flat };

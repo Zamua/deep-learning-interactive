@@ -1,9 +1,9 @@
 {
- "duration": 161.833,
+ "duration": 190.465,
  "scenes": {
   "walk": [0.0, 26.131],
-  "step": [26.131, 114.567],
-  "end": [114.567, 161.833]
+  "step": [26.131, 143.199],
+  "end": [143.199, 190.465]
  },
  "beats": {
   "walk/start": [0.7, 11.374, "To make a new image, run the noising backwards. Start at the last step, a thousand, where an image is pure noise: just draw x t from a standard normal.", [[1.9, 2.2], [3.7, 4.16], [5.6, 5.86], [6.53, 6.8], [8.55, 8.96]]],
@@ -11,14 +11,16 @@
   "walk/call": [18.324, 25.031, "Each step asks the network once for its noise guess. A thousand steps, a thousand network calls.", [[21.584, 22.094], [23.134, 23.414]]],
   "step/guess": [26.831, 42.198, "Here is one step, from t down to t minus one. Say alpha bar t, the alpha bar of step t, is zero point six four, a pixel reads zero point five, and the network guesses its noise is minus a half.", [[27.901, 28.281], [30.491, 31.041], [32.691, 33.001], [34.541, 34.841], [36.391, 36.831], [38.861, 39.231]]],
   "step/est": [42.578, 53.089, "First, estimate the clean image, as before: take away zero point six times the guess, and divide by zero point eight. x zero hat is one.", [[43.118, 43.428], [45.528, 46.078], [48.598, 48.878], [50.708, 51.218], [52.348, 52.498]]],
-  "step/back": [53.469, 75.394, "Then rebuild the image at step t minus one from three parts: the estimate, part of the guess, and fresh noise z, scaled by sigma, here a plain number, not the sigmoid. At that step, alpha bar t minus one is zero point eight one, and its root, zero point nine, scales x zero hat.", [[57.719, 58.229], [58.879, 59.209], [60.109, 60.439], [61.919, 62.239], [63.389, 63.769], [64.919, 65.149], [66.059, 66.689], [67.429, 67.799], [71.069, 71.499], [72.199, 72.399], [73.449, 73.669]]],
-  "step/split": [75.774, 90.521, "That leaves zero point one nine for noise. Set sigma squared of it aside for the fresh noise, here zero point zero three. The other zero point one six goes to the guess, scaled by its root, zero point four.", [[78.644, 79.194], [82.024, 82.364], [84.224, 84.784], [87.794, 88.044], [89.194, 89.484]]],
-  "step/mean": [90.901, 99.577, "So the step's mean is zero point nine times one, plus zero point four times minus a half: zero point seven.", [[92.671, 92.841], [94.691, 94.991], [97.971, 98.471]]],
-  "step/fresh": [99.957, 113.467, "Last, add sigma times z, a fresh draw from a standard normal. With z equal to one, x t minus one is zero point seven plus zero point one seven: zero point eight seven.", [[100.497, 100.847], [102.407, 102.857], [104.827, 105.447], [106.857, 107.237], [111.577, 112.017]]],
-  "end/why": [115.267, 128.279, "Why add noise while taking it away? The mean is only the center of where the step could land. Fresh noise picks one point around it, and refills the noise share that step t minus one should have.", [[117.567, 118.107], [121.307, 121.857], [124.067, 124.347]]],
-  "end/last": [128.659, 141.679, "On the last step, down to zero, alpha bar is one: no noise share is left. Nothing of the guess is kept, nothing fresh is added, and the image is the estimate x zero hat itself.", [[129.639, 129.899], [130.739, 131.069], [132.339, 132.909], [134.449, 134.929], [136.349, 136.719], [138.069, 138.399]]],
-  "end/count": [142.059, 148.601, "So a thousand steps take a thousand network calls, but only nine hundred and ninety nine fresh draws.", [[145.379, 145.729]]],
-  "end/skip": [148.981, 159.613, "And since the blend can land on any level, a sampler can also skip: a thousand, nine eighty, nine sixty, and so on. Fifty calls instead of a thousand.", [[151.331, 151.591], [153.221, 153.651], [154.341, 154.561], [155.311, 155.461], [156.941, 157.461]]],
-  "end/turn": [159.993, 160.733, "Your turn.", []]
+  "step/level": [53.469, 78.116, "Then build the image at step t minus one. Like any noised image, it must be a blend: the root of alpha bar t minus one times an image, plus the root of one minus alpha bar t minus one times noise. Here alpha bar t minus one is zero point eight one: zero point eight one of the variance is image, and zero point one nine is noise.", [[56.379, 56.929], [58.259, 58.469], [59.649, 60.089], [63.459, 63.749], [66.989, 67.139], [68.009, 68.589], [68.959, 69.149], [70.689, 70.859], [72.299, 72.809], [75.479, 75.839]]],
+  "step/img": [78.496, 86.233, "For the image, use the estimate x zero hat, scaled by the root of zero point eight one: zero point nine.", [[79.296, 79.506], [81.626, 81.866], [84.516, 85.036]]],
+  "step/fill": [86.613, 105.279, "For the noise, reuse the guess: it is the noise this pixel holds, so keeping it carries the same noise down a level, only less of it. But the guess fills only part of the noise share. The rest goes to fresh noise z, scaled by sigma, here a plain number, not the sigmoid.", [[87.433, 87.693], [88.813, 89.313], [91.313, 91.633], [94.523, 94.823], [95.653, 96.203], [98.723, 99.123], [101.153, 101.423], [102.583, 102.923], [104.083, 104.313]]],
+  "step/split": [105.659, 119.153, "Of the zero point one nine, set sigma squared aside for the fresh noise, here zero point zero three. The other zero point one six goes to the guess, scaled by its root, zero point four.", [[107.359, 107.759], [110.379, 110.749], [111.099, 111.259], [112.679, 113.239], [115.189, 115.349], [116.259, 116.519], [117.689, 118.039]]],
+  "step/mean": [119.533, 128.209, "So the step's mean is zero point nine times one, plus zero point four times minus a half: zero point seven.", [[121.303, 121.473], [123.323, 123.623], [126.603, 127.103]]],
+  "step/fresh": [128.589, 142.099, "Last, add sigma times z, a fresh draw from a standard normal. With z equal to one, x t minus one is zero point seven plus zero point one seven: zero point eight seven.", [[129.129, 129.479], [131.039, 131.489], [133.459, 134.079], [135.489, 135.869], [140.209, 140.649]]],
+  "end/why": [143.899, 156.91, "Why add noise while taking it away? The mean is only the center of where the step could land. Fresh noise picks one point around it, and refills the noise share that step t minus one should have.", [[146.199, 146.739], [149.939, 150.489], [152.699, 152.979]]],
+  "end/last": [157.29, 170.31, "On the last step, down to zero, alpha bar is one: no noise share is left. Nothing of the guess is kept, nothing fresh is added, and the image is the estimate x zero hat itself.", [[158.27, 158.53], [159.37, 159.7], [160.97, 161.54], [163.08, 163.56], [164.98, 165.35], [166.7, 167.03]]],
+  "end/count": [170.69, 177.233, "So a thousand steps take a thousand network calls, but only nine hundred and ninety nine fresh draws.", [[174.01, 174.36]]],
+  "end/skip": [177.613, 188.244, "And since the blend can land on any level, a sampler can also skip: a thousand, nine eighty, nine sixty, and so on. Fifty calls instead of a thousand.", [[179.963, 180.223], [181.853, 182.283], [182.973, 183.193], [183.943, 184.093], [185.573, 186.093]]],
+  "end/turn": [188.624, 189.365, "Your turn.", []]
  }
 }

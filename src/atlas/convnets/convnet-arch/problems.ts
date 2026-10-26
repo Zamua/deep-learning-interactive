@@ -113,10 +113,12 @@ export const generators: Generator[] = [
           { value: convP, why: 'That is only the conv layer. The fully connected layer has weights too, usually most of them.' },
         ]),
         solution: [
-          `Conv: $${K} \\times (3 \\cdot 3 \\cdot ${C} + 1) = ${convP}$. ReLU and pooling have none.`,
-          `After the pool: $${shp([K, H / 2, H / 2])}$, which flattens to $${flat}$.`,
-          `Fully connected: $${flat} \\times ${N} + ${N} = ${big(fcP)}$.`,
-          `Total: $${convP} + ${fcP} = ${big(v)}$.`,
+          `One filter: $3 \\cdot 3 \\cdot ${C} = ${9 * C}$ weights, plus 1 bias: $${9 * C + 1}$.`,
+          `Conv: $${K} \\times ${9 * C + 1} = ${convP}$. ReLU and pooling learn nothing.`,
+          `Padding 1 keeps $${H} \\times ${H}$; the pool halves it: $${shp([K, H / 2, H / 2])}$.`,
+          `Flatten: $${K} \\times ${H / 2} \\times ${H / 2} = ${flat}$ inputs.`,
+          `Fully connected: $${flat} \\times ${N}$ weights plus $${N}$ biases: $${big(flat * N)} + ${N} = ${big(fcP)}$.`,
+          `Total: $${convP} + ${big(fcP)} = ${big(v)}$.`,
         ],
       };
     },

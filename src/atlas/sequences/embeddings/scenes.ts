@@ -1,4 +1,5 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
+import { smooth } from '../../../lecture/scene';
 import { cells, rowLabel } from '../../draw';
 import { band, brace, chip, fmt, grid, type Grid, matrix, rich, stack } from '../draw';
 
@@ -93,28 +94,68 @@ function batch(s: Scene, a: number): void {
   });
 }
 
+const V = [1, 2, 0, 0];
+/** Fades in as beat `id`'s narration passes fraction `f` of the way. */
+const at = (s: Scene, id: string, f: number) => smooth((s.prog(id) - f) / 0.06);
+/** The rows `V` weighs, scaled, and their sum: what `mix` and `entries` add up column by column. */
+const SCALED = V.map((v, i) => E[i]!.map((x) => v * x)).filter((_, i) => V[i] !== 0);
+const MIX = E[0]!.map((_, j) => SCALED.reduce((t, r) => t + r[j]!, 0));
+
+/** `v @ E` worked under the table: each weighted row, then their sum, entry by entry. */
+function mixRows(s: Scene, g: Grid, a: number): void {
+  s.alpha(a, () => {
+    const xs = [0, 1, 2].map((j) => g.x(j));
+    const lx = g.l - 4 * s.u;
+    const ys = [g.b + 8 * s.u, g.b + 17 * s.u, g.b + 28 * s.u];
+    const o = { w: 12, h: 7, size: 3.2 };
+    s.alpha(at(s, 'mix', 0.7), () => {
+      rowLabel(s, '1 × E[0]', lx, ys[0]!, '--ink-2', 3.2);
+      cells(s, xs, ys[0]!, SCALED[0]!.map(f1), 'blue', o);
+    });
+    s.alpha(at(s, 'mix', 0.82), () => {
+      rowLabel(s, '2 × E[1]', lx, ys[1]!, '--ink-2', 3.2);
+      cells(s, xs, ys[1]!, SCALED[1]!.map(f1), 'blue', o);
+    });
+    const on = xs.map((_, j) => at(s, 'entries', 0.2 + 0.28 * j));
+    s.alpha(s.ease('entries', 0.5), () => {
+      s.line(g.l, (ys[1]! + ys[2]!) / 2, g.r, (ys[1]! + ys[2]!) / 2, s.c('--ink-3'), 0.3);
+      rowLabel(s, 'v @ E', lx, ys[2]!, 'gold', 3.4);
+    });
+    xs.forEach((x, j) => s.alpha(on[j]!, () => cells(s, [x], ys[2]!, [f1(MIX[j]!)], 'gold', { ...o, on: [1] })));
+  });
+}
+
 const onehotScene: SceneDef = {
   draw(s) {
     const g = table(s);
     const b = s.ease('batch', 0.6);
     const picks = s.ease('picks', 0.8);
+    const oh = s.ease('onehot', 0.6);
+    const mix = at(s, 'mix', 0.45) * (1 - oh);
     s.alpha(1 - b, () => {
       const ohX = g.l - 16 * s.u;
-      const oh = VOCAB.map((_, i) => (i === K ? '1' : '0'));
+      const cy = (g.t + g.b) / 2;
+      const st = { w: 8, h: 8, gap: 10, size: 3.4 };
+      s.alpha(at(s, 'mix', 0.15) * (1 - oh), () => {
+        stack(s, ohX, cy, V.map(String), 'orange', { ...st, on: V.map((v) => (v ? 1 : 0)) });
+        s.text('v', ohX, g.t - 5 * s.u, { size: 3.4, font: 'mono', weight: 650, color: s.c('orange') });
+      });
+      const ohv = VOCAB.map((_, i) => (i === K ? '1' : '0'));
       s.alpha(s.ease('onehot', 0.6, 0.6), () => {
-        stack(s, ohX, (g.t + g.b) / 2, oh, 'orange', { w: 8, h: 8, gap: 10, size: 3.4, on: oh.map((v) => (v === '1' ? 1 : 0)) });
+        stack(s, ohX, cy, ohv, 'orange', { ...st, on: ohv.map((v) => (v === '1' ? 1 : 0)) });
         s.text('one-hot', ohX, g.t - 5 * s.u, { size: 3, font: 'mono', color: s.c('orange') });
-        s.text('@', (ohX + g.l) / 2 + 0.5 * s.u, (g.t + g.b) / 2, { size: 4, font: 'mono', color: s.c('--ink-3') });
       });
-      s.alpha(s.ease('product', 0.6, 0.8), () => {
-        VOCAB.forEach((_, i) => s.text(i === K ? '× 1' : '× 0', g.r + 3 * s.u, g.y(i), { size: 3, font: 'mono', align: 'left', color: s.c(i === K ? 'gold' : '--ink-3') }));
-      });
+      s.alpha(at(s, 'mix', 0.15), () => s.text('@', (ohX + g.l) / 2 + 0.5 * s.u, cy, { size: 4, font: 'mono', color: s.c('--ink-3') }));
+      const tag = (i: number, v: number) => s.text(`× ${v}`, g.r + 3 * s.u, g.y(i), { size: 3, font: 'mono', align: 'left', color: s.c(v ? 'gold' : '--ink-3') });
+      s.alpha(mix, () => V.forEach((v, i) => tag(i, v)));
+      s.alpha(s.ease('product', 0.6, 0.8), () => VOCAB.forEach((_, i) => tag(i, i === K ? 1 : 0)));
       for (let i = 0; i < 4; i++) {
-        if (i !== K) s.alpha(1 - 0.75 * picks, () => matrix(s, { ...g, m: 1, y: () => g.y(i) } as Grid, [E[i]!.map(f1)], 'blue', { w: 12, h: 8, size: 3.2 }));
+        const dim = i === K ? 0.75 * mix : 0.75 * Math.max(picks, V[i] ? 0 : mix);
+        s.alpha(1 - dim, () => matrix(s, { ...g, m: 1, y: () => g.y(i) } as Grid, [E[i]!.map(f1)], 'blue', { w: 12, h: 8, size: 3.2, on: () => (i === K ? picks : V[i] ? 0.5 * mix : 0) }));
       }
-      s.alpha(1, () => matrix(s, { ...g, m: 1, y: () => g.y(K) } as Grid, [E[K]!.map(f1)], 'blue', { w: 12, h: 8, size: 3.2, on: () => picks }));
       s.alpha(1 - s.ease('product', 0.4), () => brace(s, 'top', g.l + 1.5 * s.u, g.r - 1.5 * s.u, g.t - 1.5 * s.u, 'E', 'blue', 3.4));
       band(s, g, 'row', K, 'gold', picks);
+      mixRows(s, g, 1 - oh);
       lookupRow(s, g, 'onehot @ E', s.ease('picks', 0.6, 1));
       s.alpha(s.ease('layer', 0.6), () => {
         rich(s, [['onehot @ E', 'orange'], [' = ', '--ink-3'], ['E[2]', 'gold']], s.w / 2, s.h * 0.84, { size: 3.6, weight: 600 });

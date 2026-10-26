@@ -1,10 +1,10 @@
 {
- "duration": 253.124,
+ "duration": 274.666,
  "scenes": {
   "slope": [0.0, 88.748],
-  "shrink": [88.748, 133.11],
-  "nudge": [133.11, 197.577],
-  "sign": [197.577, 253.124]
+  "shrink": [88.748, 154.652],
+  "nudge": [154.652, 219.12],
+  "sign": [219.12, 274.666]
  },
  "beats": {
   "slope/line": [0.7, 11.075, "A straight line climbs at the same rate everywhere. Each time x steps along by one, two x plus one rises by two, so its slope is two.", [[3.63, 4.2], [6.43, 6.88], [9.17, 9.58]]],
@@ -15,22 +15,23 @@
   "slope/two": [60.394, 67.82, "Pick a second point a step h to the right, at x equals two. Between them, f goes from one to four.", [[63.044, 63.304], [64.634, 65.204], [65.784, 66.034]]],
   "slope/rise": [68.2, 78.545, "The rise is the later value minus the earlier one: four minus one, three. Over a run of one, the slope between the two points is three.", [[71.43, 71.97], [73.17, 73.62], [74.01, 74.62], [75.82, 76.11]]],
   "slope/formula": [78.925, 87.648, "Written out: the slope between x and x plus h is f of x plus h, minus f of x, all over h.", [[79.605, 80.295], [82.985, 83.255], [84.845, 85.135], [86.455, 86.695]]],
-  "shrink/shrink": [89.448, 97.746, "Now shrink the step. With h equal to a half, the slope is two point five. With a tenth, it is two point one.", [[90.798, 91.358], [93.008, 93.308], [95.048, 95.568], [96.278, 96.538]]],
-  "shrink/limit": [98.126, 112.203, "As h shrinks toward zero, the slope settles on two. That limit is the derivative of f at one, written f prime of one, read \u201cf prime of one\u201d: f prime of one equals two.", [[100.076, 100.366], [101.936, 102.586], [105.296, 105.636], [106.006, 106.286], [107.526, 107.916], [108.206, 108.526], [109.636, 110.216]]],
-  "shrink/tangent": [112.583, 118.324, "The line with that slope just grazes the curve at x equals one. It is the tangent.", [[116.733, 117.243]]],
-  "shrink/line": [118.704, 132.01, "A straight line has nothing to shrink: every step gives the same slope. So for f of x equals two x plus one, the derivative is two at every x: f prime of x equals two.", [[120.774, 121.264], [123.224, 123.754], [126.704, 127.024], [129.514, 129.974]]],
-  "nudge/rate": [133.81, 141.123, "Read the derivative as a rate. Near x equals one, f changes about two times as much as x does.", [[135.65, 136.28], [137.68, 138.03]]],
-  "nudge/right": [141.503, 156.565, "Nudge x from one to one point zero one. f changes by about two times zero point zero one: about zero point zero two, where the wavy equals sign, approximately equals, means \u201cis about\u201d.", [[143.073, 143.223], [144.653, 145.283], [148.823, 149.273], [150.993, 151.553], [153.303, 153.553], [154.853, 155.173], [155.573, 155.813]]],
-  "nudge/value": [156.945, 169.079, "So f of one point zero one is about one plus zero point zero two: one point zero two. The true value, one point zero two zero one, is very close.", [[159.265, 159.475], [162.225, 162.815], [164.075, 164.645], [165.555, 165.785], [167.745, 168.025]]],
-  "nudge/left": [169.459, 180.297, "Nudge to the left instead, to zero point nine nine, and the change flips sign: about minus zero point zero two, so f is near zero point nine eight.", [[171.049, 171.279], [172.749, 173.099], [174.519, 174.949], [177.229, 177.579]]],
-  "nudge/rule": [180.677, 196.477, "The same holds for any slope: the change in f is about f prime of x times the change in x. With delta, the Greek capital delta, for \u201cthe change in\u201d: delta f is about f prime of x times delta x.", [[182.427, 182.897], [183.957, 184.117], [185.807, 185.967], [187.387, 187.947], [188.727, 188.957], [190.397, 190.637], [191.857, 192.427], [195.077, 195.227]]],
-  "sign/slide": [198.277, 203.453, "The derivative changes from point to point. Slide the tangent along the curve.", [[200.697, 201.317]]],
-  "sign/neg": [203.833, 211.903, "On the left, f falls as x grows, and the slope is negative: minus three, at minus one point five.", [[204.593, 204.853], [206.933, 207.263], [208.623, 209.133], [210.033, 210.193]]],
-  "sign/zero": [212.283, 216.168, "At the bottom the tangent is level, and the slope is zero.", [[213.073, 213.233], [214.463, 214.753]]],
-  "sign/pos": [216.548, 221.199, "On the right, f rises, and the slope is positive: three.", [[217.258, 217.488], [218.578, 218.858], [220.258, 220.738]]],
-  "sign/height": [221.579, 231.183, "The sign is about direction, not height. At minus one point five, f is two point two five, well above zero, and still falling.", [[223.249, 223.489], [224.189, 224.789], [226.339, 226.619], [228.449, 228.779], [229.879, 230.079]]],
-  "sign/table": [231.563, 243.073, "Nearby values show the sign too. Around one, f goes zero point eight one, one, one point two one: rising, so the slope there is positive.", [[233.723, 234.333], [235.183, 235.523], [237.713, 238.143], [238.523, 238.753], [239.803, 240.323], [240.903, 241.293]]],
-  "sign/dip": [243.453, 250.903, "Around zero, f goes down to zero and back up. That is the bottom of a dip, where the slope is zero.", [[244.483, 244.823], [247.053, 247.593], [249.133, 249.523]]],
-  "sign/turn": [251.283, 252.024, "Your turn.", []]
+  "shrink/shrink": [89.448, 107.511, "Now shrink the step to a half. f of one point five is two point two five, so the rise is two point two five minus one: one point two five. Over a run of zero point five, the slope is one point two five divided by zero point five: two point five.", [[91.438, 92.018], [94.878, 95.218], [98.198, 98.658], [99.748, 100.338], [102.208, 102.488], [106.168, 106.628]]],
+  "shrink/tenth": [107.891, 119.289, "With a step of a tenth, f of one point one is one point two one: a rise of zero point two one over a run of zero point one, a slope of two point one.", [[109.171, 109.621], [111.061, 111.221], [112.531, 113.061], [115.001, 115.221], [117.201, 117.631]]],
+  "shrink/limit": [119.669, 133.746, "As h shrinks toward zero, the slope settles on two. That limit is the derivative of f at one, written f prime of one, read \u201cf prime of one\u201d: f prime of one equals two.", [[121.619, 121.909], [123.479, 124.129], [126.839, 127.179], [127.549, 127.829], [129.069, 129.459], [129.749, 130.069], [131.179, 131.759]]],
+  "shrink/tangent": [134.126, 139.866, "The line with that slope just grazes the curve at x equals one. It is the tangent.", [[138.276, 138.786]]],
+  "shrink/line": [140.246, 153.552, "A straight line has nothing to shrink: every step gives the same slope. So for f of x equals two x plus one, the derivative is two at every x: f prime of x equals two.", [[142.316, 142.806], [144.766, 145.296], [148.246, 148.566], [151.056, 151.516]]],
+  "nudge/rate": [155.352, 162.665, "Read the derivative as a rate. Near x equals one, f changes about two times as much as x does.", [[157.192, 157.822], [159.222, 159.572]]],
+  "nudge/right": [163.045, 178.107, "Nudge x from one to one point zero one. f changes by about two times zero point zero one: about zero point zero two, where the wavy equals sign, approximately equals, means \u201cis about\u201d.", [[164.615, 164.765], [166.195, 166.825], [170.365, 170.815], [172.535, 173.095], [174.845, 175.095], [176.395, 176.715], [177.115, 177.355]]],
+  "nudge/value": [178.487, 190.621, "So f of one point zero one is about one plus zero point zero two: one point zero two. The true value, one point zero two zero one, is very close.", [[180.807, 181.017], [183.767, 184.357], [185.617, 186.187], [187.097, 187.327], [189.287, 189.567]]],
+  "nudge/left": [191.001, 201.839, "Nudge to the left instead, to zero point nine nine, and the change flips sign: about minus zero point zero two, so f is near zero point nine eight.", [[192.591, 192.821], [194.291, 194.641], [196.061, 196.491], [198.771, 199.121]]],
+  "nudge/rule": [202.219, 218.02, "The same holds for any slope: the change in f is about f prime of x times the change in x. With delta, the Greek capital delta, for \u201cthe change in\u201d: delta f is about f prime of x times delta x.", [[203.969, 204.439], [205.499, 205.659], [207.349, 207.509], [208.929, 209.489], [210.269, 210.499], [211.939, 212.179], [213.399, 213.969], [216.619, 216.769]]],
+  "sign/slide": [219.82, 224.995, "The derivative changes from point to point. Slide the tangent along the curve.", [[222.24, 222.86]]],
+  "sign/neg": [225.375, 233.446, "On the left, f falls as x grows, and the slope is negative: minus three, at minus one point five.", [[226.135, 226.395], [228.475, 228.805], [230.165, 230.675], [231.575, 231.735]]],
+  "sign/zero": [233.826, 237.711, "At the bottom the tangent is level, and the slope is zero.", [[234.616, 234.776], [236.006, 236.296]]],
+  "sign/pos": [238.091, 242.742, "On the right, f rises, and the slope is positive: three.", [[238.801, 239.031], [240.121, 240.401], [241.801, 242.281]]],
+  "sign/height": [243.122, 252.725, "The sign is about direction, not height. At minus one point five, f is two point two five, well above zero, and still falling.", [[244.792, 245.032], [245.732, 246.332], [247.882, 248.162], [249.992, 250.322], [251.422, 251.622]]],
+  "sign/table": [253.105, 264.615, "Nearby values show the sign too. Around one, f goes zero point eight one, one, one point two one: rising, so the slope there is positive.", [[255.265, 255.875], [256.725, 257.065], [259.255, 259.685], [260.065, 260.295], [261.345, 261.865], [262.445, 262.835]]],
+  "sign/dip": [264.995, 272.446, "Around zero, f goes down to zero and back up. That is the bottom of a dip, where the slope is zero.", [[266.025, 266.365], [268.595, 269.135], [270.675, 271.065]]],
+  "sign/turn": [272.826, 273.566, "Your turn.", []]
  }
 }

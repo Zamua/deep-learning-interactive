@@ -45,16 +45,39 @@ export const script: LectureScript = {
       title: 'Straight from the scores',
       codeTitle: 'from_scores.py',
       code: `
-        s = np.array([2, 1, -1])               #@s
-        y = 0                                  #@s
-        total = np.exp(s).sum()    # T = 10.48  #@T
-        L = np.log(total) - s[y]   # 2.35 - 2   #@L
-        np.log(10)   # 2.30: ten equal scores  #@init
+        s = np.array([2, 1, -1])            #@s
+        y = 0                               #@s
+        T = np.exp(s).sum()      # 10.48    #@T
+        p_y = np.exp(s[y]) / T   # e**2 / T #@py
+        np.log(p_y)      # 2 - 2.35         #@quot
+        L = -np.log(p_y) # 2.35 - 2 = 0.35  #@flip
+        L = np.log(T) - s[y]     # the same #@L
       `,
       beats: [
-        { id: 's', say: 'From scores, softmax makes p of y, the right option\'s probability, equal to e to its score, over the total, T.', code: ['s', 'T'] },
-        { id: 'rule', say: 'Take minus the log, and the loss is the log of the total, minus the right option\'s score, s of y. For scores two, one and minus one, with y equal to zero, that is {2.35|two point three five} minus two: {0.35|zero point three five}.', code: 'L' },
-        { id: 'init', say: 'When all the scores are equal, each of C options gets one over C, and the loss is log C. With ten options, {2.30|two point three zero}.', code: 'init' },
+        { id: 's', say: 'Now start from scores: two, one and minus one, with option zero right. Softmax raises e to each score and adds them up: the total, T, is {10.48|ten point four eight}.', code: ['s', 'T'] },
+        { id: 'py', say: 'The right option\'s probability, p of y, is e to its score, over the total: e squared, over {10.48|ten point four eight}.', code: 'py' },
+        { id: 'quot', say: 'The log of a quotient is the log of the top, minus the log of the bottom: ln of e squared, minus ln {10.48|ten point four eight}.', code: 'quot' },
+        { id: 'undo', say: 'ln undoes e to a power, so ln of e squared is just two, the score itself. And ln {10.48|ten point four eight} is about {2.35|two point three five}.', code: 'quot' },
+        { id: 'flip', say: 'The loss is minus that log, which flips the subtraction: {2.35|two point three five} minus two, or {0.35|zero point three five}.', code: 'flip' },
+        { id: 'rule', say: 'Any scores go the same way. The loss is the log of the total, minus the right option\'s score, s of y.', code: 'L' },
+      ],
+    },
+    {
+      id: 'uniform',
+      title: 'Equal scores',
+      codeTitle: 'equal.py',
+      code: `
+        C = 10                              #@init
+        p = np.full(C, 1 / C)   # 0.1 each  #@init
+        -np.log(1 / C)    # ln 10 = 2.30    #@recip
+        # any C: L = ln C                   #@logC
+        np.log(8)         # 3 ln 2 = 2.08   #@eight
+      `,
+      beats: [
+        { id: 'init', say: 'When all the scores are equal, every option gets the same share. With C options, that share is one over C: ten options get a tenth each.', code: 'init' },
+        { id: 'recip', say: 'So the loss is minus ln of a tenth. One over a number flips the sign of its log, so that is ln ten: about {2.30|two point three zero}.', code: 'recip' },
+        { id: 'logC', say: 'For any C, equal scores give a loss of ln C, whichever option is right.', code: 'logC' },
+        { id: 'eight', say: 'With eight options, write eight as two cubed, and the power comes out in front: ln eight is three ln two. That is three times {0.693|zero point six nine three}, about {2.08|two point zero eight}.', code: 'eight' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

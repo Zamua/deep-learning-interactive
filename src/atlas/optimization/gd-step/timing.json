@@ -1,9 +1,9 @@
 {
- "duration": 137.906,
+ "duration": 197.838,
  "scenes": {
   "uphill": [0.0, 43.546],
-  "rule": [43.546, 92.663],
-  "drop": [92.663, 137.906]
+  "rule": [43.546, 138.04],
+  "drop": [138.04, 197.838]
  },
  "beats": {
   "uphill/curve": [0.7, 9.103, "The goal is to make a function as small as possible. Here is f as a function of a single number, w, which sits at three.", [[3.66, 4.26], [7.03, 7.24], [7.72, 7.99]]],
@@ -12,11 +12,15 @@
   "uphill/left": [33.749, 42.446, "On the other side of the valley the slope is negative, so stepping against it moves w to the right. Either way, the step goes downhill.", [[36.479, 36.829], [39.619, 40.139], [40.739, 41.009]]],
   "rule/rule": [44.246, 56.599, "That is the whole rule, written w gets w minus eta g. The arrow reads \u201cgets\u201d: the new w is the old w, minus eta times g.", [[45.696, 46.196], [47.606, 47.766], [49.636, 50.236], [51.166, 51.346], [51.906, 52.446], [54.466, 54.816]]],
   "rule/eta": [56.979, 62.971, "Eta is the step size: a small positive number that sets how far each step goes.", [[58.709, 59.139]]],
-  "rule/steep": [63.351, 72.911, "The step is proportional to g, so a steep slope makes a big step. Near the bottom the slope flattens, and the steps shrink on their own.", [[65.421, 65.861], [68.271, 68.911], [70.941, 71.161]]],
-  "rule/vector": [73.291, 91.563, "When w is a vector, every entry steps at once. Entry i, written w sub i with the index set low, moves against g sub i, its own entry of the gradient. One and minus a half become zero point eight and minus zero point four.", [[74.861, 75.201], [77.041, 77.661], [78.501, 78.771], [81.821, 82.201], [83.941, 84.281], [85.901, 86.571], [89.681, 89.881]]],
-  "drop/tangent": [93.363, 102.957, "How much does one step lower f? Close up, the curve is almost its tangent line, so f changes by about the slope times the move.", [[95.593, 96.253], [96.823, 97.133], [99.263, 99.643], [101.853, 102.013]]],
-  "drop/formula": [103.337, 115.85, "The move is minus eta g. Times the slope g, that is minus eta g squared. Here, minus zero point four, and the true change is minus zero point three eight.", [[105.377, 105.897], [107.167, 107.557], [109.857, 110.287], [110.657, 110.867], [112.417, 112.787]]],
-  "drop/always": [116.23, 135.685, "Eta g squared is never negative, written eta g squared is at least zero, where the sign greater than or equal reads \u201cis at least\u201d. So a small enough step never raises f, and when w is a vector, each entry adds its own minus eta g squared.", [[118.5, 118.97], [119.37, 119.77], [122.14, 122.73], [124.75, 124.93], [125.34, 125.55], [126.32, 126.93], [129.79, 130.2], [131.91, 132.25]]],
-  "drop/turn": [136.065, 136.806, "Your turn.", []]
+  "rule/num": [63.351, 75.73, "Try it where w is three and the slope g is two, with eta equal to zero point five. The step, eta times g, is one, and three minus one is two.", [[65.431, 65.691], [67.381, 67.751], [70.081, 70.631], [71.201, 71.551], [72.671, 72.921], [73.481, 73.841]]],
+  "rule/neg": [76.11, 90.179, "At minus one the slope is minus two, so eta times g is minus one. Subtracting a negative adds: minus one, plus one, is zero. w moves right, still downhill.", [[77.16, 77.31], [78.81, 79.1], [81.81, 82.32], [84.13, 84.59], [85.33, 85.58], [86.23, 86.47], [87.09, 87.66], [88.89, 89.16]]],
+  "rule/steep": [90.559, 103.98, "The step is proportional to g, so a steep slope makes a big step. From three, g goes two, one, a half: near the bottom the slope flattens, and the steps shrink on their own.", [[92.619, 93.079], [95.439, 96.039], [96.769, 97.059], [98.189, 98.429], [98.839, 99.009], [99.579, 100.099], [102.019, 102.259]]],
+  "rule/vector": [104.36, 117.037, "When w is a vector, every entry steps at once. Entry i, written w sub i with the index set low, moves against g sub i, its own entry of the gradient.", [[105.86, 106.18], [108.05, 108.6], [109.47, 109.74], [112.81, 113.11], [114.93, 115.29]]],
+  "rule/vnum": [117.417, 136.94, "With w equal to one and minus a half, g equal to two and minus one, and eta zero point one: eta times g is zero point two and minus zero point one. Subtract entry by entry, and w becomes zero point eight and minus zero point four.", [[120.217, 120.697], [122.937, 123.257], [125.107, 125.737], [130.077, 130.747], [132.467, 132.807], [135.007, 135.177]]],
+  "drop/tangent": [138.74, 148.335, "How much does one step lower f? Close up, the curve is almost its tangent line, so f changes by about the slope times the move.", [[140.97, 141.63], [142.2, 142.51], [144.64, 145.02], [147.23, 147.39]]],
+  "drop/formula": [148.715, 161.228, "The move is minus eta g. Times the slope g, that is minus eta g squared. Here, minus zero point four, and the true change is minus zero point three eight.", [[150.755, 151.275], [152.545, 152.935], [155.235, 155.665], [156.035, 156.245], [157.795, 158.165]]],
+  "drop/always": [161.608, 175.028, "Eta g squared is never negative, written eta g squared is at least zero, where the sign greater than or equal reads \u201cis at least\u201d. So a small enough step never raises f.", [[163.878, 164.308], [164.698, 165.098], [167.488, 167.908], [170.558, 170.818], [171.618, 172.068]]],
+  "drop/sum": [175.408, 195.617, "When w is a vector, each entry adds its own minus eta g squared. For g of two and minus one, with eta zero point one: two squared, plus minus one squared, is four plus one, five. Minus zero point one times five is minus zero point five.", [[176.968, 177.318], [180.628, 181.388], [183.398, 183.658], [185.288, 185.918], [186.618, 186.878], [188.398, 188.678], [189.878, 190.168], [190.658, 191.278], [193.528, 193.798]]],
+  "drop/turn": [195.997, 196.738, "Your turn.", []]
  }
 }

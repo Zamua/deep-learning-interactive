@@ -17,12 +17,15 @@ export const script: LectureScript = {
         A @ B[:, 0]    # column 0 of the result   #@many
         # A's columns = B's rows: 3 = 3           #@inner
         (A @ B).shape  # (2, 4)                   #@outer
+        C = np.ones((4, 5))                       #@chain
+        (A @ B @ C).shape  # (2, 4) @ (4, 5) -> (2, 5)   #@chain
       `,
       beats: [
         { id: 'many', say: 'Multiplying two matrices, A and B, is written {AB|A B}, and it is many matrix-vector products at once. A multiplies each column of B, and each answer becomes a column of the result.', code: ['A', 'many'] },
         { id: 'inner', say: 'So each column of B must be as long as a row of A: A\'s columns must equal B\'s rows. These are the inner dimensions, three and three.', code: 'inner' },
         { id: 'outer', say: 'The result keeps the outer ones: A\'s two rows, and B\'s four columns. Two by three, times three by four, gives two by four.', code: 'outer' },
         { id: 'rule', say: 'In general, for any sizes m, n and k, m by n, times n by k, gives m by k. The inner n\'s must match, and they disappear.', code: ['inner', 'outer'] },
+        { id: 'chain', say: 'A chain of three goes two at a time. Take a third matrix, C, four by five. A B is two by four, and two by four, times four by five, gives two by five.', code: 'chain' },
       ],
     },
     {

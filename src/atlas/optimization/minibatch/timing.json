@@ -1,9 +1,9 @@
 {
- "duration": 95.32,
+ "duration": 127.516,
  "scenes": {
   "full": [0.0, 30.494],
-  "average": [30.494, 70.759],
-  "epoch": [70.759, 95.32]
+  "average": [30.494, 84.545],
+  "epoch": [84.545, 127.516]
  },
  "beats": {
   "full/full": [0.7, 11.328, "Often the function to minimize is an average over N examples, each adding its own term. Then its gradient is the average of N per-example gradients.", [[4.8, 5.12], [6.65, 7.22]]],
@@ -12,10 +12,13 @@
   "average/per": [31.194, 40.096, "Say B is four, and for one entry of w the four examples give gradients of two, minus one, three and zero.", [[32.714, 33.104], [34.714, 35.014], [37.414, 37.724], [38.484, 38.714], [39.184, 39.374]]],
   "average/mean": [40.476, 46.426, "The minibatch gradient is their mean: they add up to four, and four over four is one.", [[42.546, 43.036], [44.106, 44.396]]],
   "average/noise": [46.806, 52.945, "Another batch gives another estimate. Batch after batch, they scatter around the true gradient.", [[48.716, 49.226], [50.586, 50.766]]],
-  "average/size": [53.325, 69.659, "Bigger batches scatter less: the scatter shrinks like one over the square root of B, the sign root meaning square root, so four times the batch halves it. But each step costs more, and small batches buy many cheap, noisy steps.", [[55.215, 55.775], [58.935, 59.415], [61.275, 61.695], [63.865, 64.495], [66.165, 66.515], [68.425, 68.575]]],
-  "epoch/epoch": [71.459, 75.148, "One pass through all N examples is called an epoch.", []],
-  "epoch/count": [75.528, 85.344, "Each step uses one batch of B, so an epoch takes N over B steps. Twelve hundred examples in batches of a hundred: twelve steps.", [[77.708, 78.128], [81.078, 81.608], [84.058, 84.478]]],
-  "epoch/seen": [85.724, 93.099, "And after k steps, k times B examples have been used. Five steps of a hundred: five hundred.", [[87.174, 87.554], [89.894, 90.434], [91.834, 92.294]]],
-  "epoch/turn": [93.479, 94.22, "Your turn.", []]
+  "average/size": [53.325, 67.691, "Bigger batches scatter less: the scatter shrinks like one over the square root of B, the sign root meaning square root. So four times the batch halves it, and sixteen times, from four to sixty four, quarters it.", [[55.115, 55.625], [58.685, 59.135], [60.995, 61.535], [63.665, 64.015], [65.175, 65.385], [66.735, 67.035]]],
+  "average/cost": [68.071, 83.445, "But each step costs work in proportion to B, since every example in the batch needs its own gradient. Going from sixty four down to eight does one eighth of the work per step, with a noisier gradient: many cheap, noisy steps.", [[71.051, 71.401], [74.651, 75.231], [77.251, 77.401], [79.501, 79.781], [81.071, 81.501], [82.221, 82.401]]],
+  "epoch/epoch": [85.245, 88.935, "One pass through all N examples is called an epoch.", []],
+  "epoch/count": [89.315, 99.131, "Each step uses one batch of B, so an epoch takes N over B steps. Twelve hundred examples in batches of a hundred: twelve steps.", [[91.495, 91.915], [94.865, 95.395], [97.845, 98.265]]],
+  "epoch/epochs": [99.511, 106.82, "Several epochs take that many times the steps: three epochs are three times twelve, thirty six steps.", [[102.491, 102.971], [105.191, 105.551]]],
+  "epoch/seen": [107.2, 114.575, "And after k steps, k times B examples have been used. Five steps of a hundred: five hundred.", [[108.65, 109.03], [111.37, 111.91], [113.31, 113.77]]],
+  "epoch/back": [114.955, 125.296, "Turn that around to count epochs. Thirty six steps of a hundred is thirty six hundred examples; divide by N, twelve hundred: three epochs.", [[117.045, 117.585], [119.205, 119.355], [121.285, 121.745], [122.735, 123.105], [123.795, 124.245]]],
+  "epoch/turn": [125.676, 126.416, "Your turn.", []]
  }
 }

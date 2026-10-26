@@ -97,8 +97,10 @@ export const generators: Generator[] = [
           { value: clean((winner ? -1 : 1) * s), why: 'That uses $\\sigma$ where the slope has $1 - \\sigma$.' },
         ]),
         solution: [
-          `The loss is $\\symL = -\\ln \\sigma(${wTex} - ${lTex})$. With $z = ${wTex} - ${lTex}$, the slope of $-\\ln \\sigma(z)$ is $-\\dfrac{\\sigma(z)(1 - \\sigma(z))}{\\sigma(z)} = -(1 - \\sigma(z))$.`,
-          winner ? `$z$ rises one for one with $${wTex}$, so $\\dfrac{\\partial \\symL}{\\partial ${wTex}} = \\sigma(z) - 1 = ${num(s, 2)} - 1 = ${num(v)}$.` : `$z$ falls one for one as $${lTex}$ rises, so $\\dfrac{\\partial \\symL}{\\partial ${lTex}} = 1 - \\sigma(z) = 1 - ${num(s, 2)} = ${num(v)}$.`,
+          `Call the gap $z = ${wTex} - ${lTex} = ${num(z)}$. The loss $\\symL = -\\ln \\sigma(z)$ is a chain: $z$ feeds $\\sigma$, and $\\sigma$ feeds $-\\ln$.`,
+          `Walking back, $-\\ln$ has slope $-\\dfrac{1}{\\sigma}$, and $\\sigma$ has slope $\\sigma(1 - \\sigma)$.`,
+          `Multiply them: $-\\dfrac{1}{\\sigma} \\cdot \\sigma(1 - \\sigma) = -(1 - \\sigma) = -(1 - ${num(s, 2)}) = ${num(clean(s - 1))}$. That is the slope on $z$.`,
+          winner ? `$z$ rises one for one with $${wTex}$, so multiply by $1$: $\\dfrac{\\partial \\symL}{\\partial ${wTex}} = ${num(clean(s - 1))} \\cdot 1 = ${num(v)}$.` : `$z$ falls one for one as $${lTex}$ rises, so multiply by $-1$: $\\dfrac{\\partial \\symL}{\\partial ${lTex}} = (${num(clean(s - 1))}) \\cdot (-1) = ${num(v)}$.`,
           `Lowering the loss raises the preferred score and lowers the other by the same amount, ${num(clean(1 - s))} here: ${s >= 0.8 ? 'small, since the model already agrees.' : s <= 0.5 ? 'large, since the model gets this pair wrong or is unsure.' : 'smaller the more the model already agrees.'}`,
         ],
       };

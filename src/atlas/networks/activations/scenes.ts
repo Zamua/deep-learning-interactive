@@ -43,6 +43,7 @@ const shapes: SceneDef = {
       mark(s, F, -2, sig(-2), K.sig, 'σ(−2) ≈ 0.12', 0, 6, 'center');
     });
     s.alpha(s.win('tanh', 'ranges'), () => {
+      mark(s, F, 0, 0, K.tanh, 'tanh(0) = 0', 2, 4.5, 'left');
       mark(s, F, 1, tanh(1), K.tanh, 'tanh(1) ≈ 0.76', 2, 3.5, 'left');
       mark(s, F, -1, tanh(-1), K.tanh, 'tanh(−1) ≈ −0.76', 2, 3.5, 'left');
     });
@@ -89,7 +90,7 @@ const slopes: SceneDef = {
       s.text('slope 0', F.X(-2), F.Y(0) - 4 * s.u, { size: 3.4, font: 'mono', weight: 600, color: s.c(K.relu), halo: true });
     });
     F.fn(dsig, K.sig, 0.7, -4, -4 + 8 * s.ease('d-sig', 1.2));
-    s.alpha(s.win('d-sig', 'd-tanh'), () => {
+    s.alpha(s.win('d-sig', 'nudge'), () => {
       F.dot(0, 0.25, K.sig, 1.3);
       s.text('0.5 × 0.5 = 0.25', F.X(0), F.Y(0.25) - 4.5 * s.u, { size: 3.3, font: 'mono', weight: 600, color: s.c(K.sig), halo: true });
       F.dot(2, dsig(2), K.sig, 1.3);
@@ -99,10 +100,20 @@ const slopes: SceneDef = {
       });
     });
     F.fn(dtanh, K.tanh, 0.7, -4, -4 + 8 * s.ease('d-tanh', 1.2));
-    s.alpha(s.win('d-tanh', 'flat'), () => {
+    const lab = { size: 3.3, font: 'mono', weight: 600, color: s.c(K.tanh), halo: true } as const;
+    // Slopes measured by a nudge of 0.01, before the rule that predicts them.
+    s.alpha(s.win('nudge', 'flat'), () => {
       F.dot(0, 1, K.tanh, 1.3);
       F.dot(1, dtanh(1), K.tanh, 1.3);
-      s.text('1 − 0.76² ≈ 0.42', F.X(1) + 2 * s.u, F.Y(dtanh(1)) - 1 * s.u, { size: 3.3, font: 'mono', weight: 600, align: 'left', color: s.c(K.tanh), halo: true });
+    });
+    s.alpha(s.win('nudge', 'd-tanh'), () => {
+      s.text('0.01 / 0.01 = 1', F.X(0) + 2 * s.u, F.Y(1) - 4 * s.u, { ...lab, align: 'left' });
+      s.alpha(after(s, 'nudge', 0.55), () => s.text('0.0042 / 0.01 = 0.42', F.X(1) - 2.5 * s.u, F.Y(dtanh(1)), { ...lab, align: 'right' }));
+      caption(s, 'slope ≈ Δtanh / Δz, for a nudge Δz = 0.01', s.h * 0.93, K.tanh, 3.4);
+    });
+    s.alpha(s.win('d-tanh', 'flat'), () => {
+      s.text('1 − 0² = 1', F.X(0) + 2 * s.u, F.Y(1) - 4 * s.u, { ...lab, align: 'left' });
+      s.text('1 − 0.76² ≈ 0.42', F.X(1) + 2 * s.u, F.Y(dtanh(1)) - 1 * s.u, { ...lab, align: 'left' });
     });
     const x = F.l + 3 * s.u;
     const o = { size: 3.3, align: 'left' as const, weight: 600 };

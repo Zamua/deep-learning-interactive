@@ -45,6 +45,29 @@ export const script: LectureScript = {
         { id: 'perp', say: 'Turn x to minus one, two, at a right angle to w, and the products cancel: minus two plus two is zero.', code: 'perp' },
         { id: 'opp', say: 'Turn it further, to minus two, minus one, and the dot product goes negative: minus five.', code: 'opp' },
         { id: 'agree', say: 'So the sign says whether two vectors agree: positive when they point the same way, zero at a right angle, negative when they point apart.', code: ['same', 'perp', 'opp'] },
+      ],
+    },
+    {
+      id: 'solve',
+      title: 'Find a missing entry',
+      codeTitle: 'missing.py',
+      code: `
+        w = np.array([2, 1, 3])      #@p1
+        # x = [1, a, 2], w @ x = 10  #@p1
+        # 2*1 + 3*2 = 8              #@known
+        # 1*a = 10 - 8 = 2, a = 2    #@a1
+        w = np.array([3, 2, 1])      #@p2
+        # x = [1, a, 4], w @ x = 13  #@p2
+        # 3*1 + 1*4 = 7              #@k2
+        # 2*a = 13 - 7 = 6, a = 3    #@a2
+      `,
+      beats: [
+        { id: 'p1', say: 'The dot product also runs backwards. w is two, one, three, and x is one, a, two, where a stands for a missing entry. w dot x is ten. What is a?', code: 'p1' },
+        { id: 'known', say: 'Multiply the pairs you know: two times one is two, and three times two is six. Together, eight.', code: 'known' },
+        { id: 'a1', say: 'The middle pair, one times a, makes up the rest: ten minus eight, two. So a is two.', code: 'a1' },
+        { id: 'p2', say: 'Now w is three, two, one, x is one, a, four, and w dot x is thirteen.', code: 'p2' },
+        { id: 'k2', say: 'The known pairs give three and four: seven. So two times a is thirteen minus seven, six.', code: 'k2' },
+        { id: 'a2', say: 'Divide by the weight, two: a is three.', code: 'a2' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

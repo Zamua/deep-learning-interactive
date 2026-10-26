@@ -1,6 +1,7 @@
-import type { SceneDef } from '../../../lecture/scene';
+import { type Scene, type SceneDef, smooth } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { axes, curve, frame, key, series, xTicks } from '../draw';
+import { cells, columns } from '../../draw';
+import { axes, curve, fmt, frame, key, series, xTicks, yTicks } from '../draw';
 
 const RUNS = [
   { beat: 'low', k: 'blue', name: 'low', f: (t: number) => 2.3 - 0.07 * t + 0.001 * t * t, to: 10, end: 1.7 },
@@ -72,4 +73,72 @@ const more: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { rates, more };
+/** Eased 0 -> 1 starting a fraction `f` of the way through beat `id`, so it tracks the voice at any pace. */
+const after = (s: Scene, id: string, f: number, dur = 0.5): number => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
+
+/** Logged losses, one list per shape; null is the reading that printed nan. */
+const LOGS: { beat: string; vals: (number | null)[]; top: number; ticks: number[]; k: 'blue' | 'gold' | 'red' | 'purple'; verdict: string; at: string }[] = [
+  { beat: 'list', vals: [2.3, 2.28, 2.26, 2.24, 2.21, 2.19], top: 2.6, ticks: [1, 2], k: 'blue', verdict: 'same small drop each time: rate too low', at: 'slow' },
+  { beat: 'plateau', vals: [2.3, 1.38, 1.21, 1.19, 1.22, 1.2], top: 2.6, ticks: [1, 2], k: 'gold', verdict: 'fast drop, then flat and high: too high', at: 'plateau' },
+  { beat: 'explode', vals: [2.3, 4.88, 11.21, 27.93, 69.1, null], top: 75, ticks: [25, 50], k: 'red', verdict: 'grows every reading to nan: far too high', at: 'explode' },
+  { beat: 'noisy', vals: [2.3, 2.33, 1.71, 1.95, 1.32, 1.55, 0.92, 1.16], top: 2.6, ticks: [1, 2], k: 'purple', verdict: 'up and down, trending down: batch too small', at: 'noisy' },
+];
+
+const read: SceneDef = {
+  draw(s) {
+    const u = s.u;
+    s.text('training loss, every 100 steps', s.w / 2, s.h * 0.06, { size: 3.3, font: 'mono', color: s.c('--ink-2') });
+    LOGS.forEach((g, n) => {
+      const next = LOGS[n + 1];
+      const a = s.ease(g.beat, 0.5) * (next ? 1 - s.ease(next.beat, 0.4) : 1);
+      if (a <= 0.003) return;
+      s.alpha(a, () => {
+        const m = g.vals.length;
+        const F = frame(14 * u, s.h * 0.15, s.w - 6 * u, s.h * 0.7, [-0.5, m - 0.5], [0, g.top]);
+        axes(s, F, '', 'L', { x: '--ink-3', y: 'red' });
+        yTicks(s, F, g.ticks, (v) => String(v));
+        const reveal = n === 0 ? Math.min(1, Math.max(0, (s.prog('list') - 0.3) / 0.55)) : s.ease(g.beat, 1.6, 0.3);
+        const pts = g.vals.flatMap((v, i) => (v === null ? [] : [[i, v] as [number, number]]));
+        const shown = Math.floor(reveal * (m - 1) + 1e-6);
+        series(s, F, pts, g.k, { upto: Math.min(1, (reveal * (m - 1)) / Math.max(1, pts.length - 1)), width: 0.5, dots: 1.1 });
+        g.vals.forEach((v, i) => {
+          if (i > shown) return;
+          const t = v === null ? 'nan' : fmt(v, 2);
+          s.text(t, F.X(i), F.b + 4 * u, { size: 3, font: 'mono', weight: v === null ? 700 : 500, color: s.c(v === null ? 'red' : '--ink-2') });
+          if (v === null) s.text('nan', F.X(i), F.t + 3 * u, { size: 3.4, font: 'mono', weight: 700, color: s.c('red'), halo: true });
+        });
+        s.alpha(after(s, g.at, n === 0 ? 0.2 : 0.55), () => s.text(g.verdict, s.w / 2, s.h * 0.88, { size: 3.4, font: 'mono', weight: 600, color: s.c(g.k), halo: true }));
+      });
+    });
+  },
+};
+
+/** Three runs of the worked problem, as the log prints them, and the rank each gets. */
+const RUNS3: { name: string; vals: string[]; tag: string; beat: string }[] = [
+  { name: 'A', vals: ['2.30', '1.39', '1.06', '0.83', '0.67'], tag: 'fast, keeps going: in between', beat: 'middle' },
+  { name: 'B', vals: ['2.30', '4.88', '11.21', '27.93', 'nan'], tag: 'blows up: highest rate', beat: 'highest' },
+  { name: 'C', vals: ['2.30', '2.28', '2.26', '2.23', '2.21'], tag: 'same tiny drop: lowest rate', beat: 'lowest' },
+];
+
+/** The answer's beats in order: each row stays lit until the next one is read. */
+const NEXT: Record<string, string | undefined> = { lowest: 'middle', middle: 'highest' };
+
+const tryIt: SceneDef = {
+  draw(s) {
+    const u = s.u;
+    s.text('same model, only the learning rate differs', s.w / 2, s.h * 0.06, { size: 3.3, font: 'mono', color: s.c('--ink-2') });
+    const xs = columns(s, 5, s.tall ? 14 : 15).map((x) => x + 6 * u);
+    RUNS3.forEach((r, i) => {
+      const y = s.h * (0.19 + i * 0.2);
+      const hot = s.ease(r.beat, 0.6);
+      s.text(`Run ${r.name}`, xs[0]! - 9 * u, y, { size: 3.6, font: 'mono', weight: 650, align: 'right', color: s.c(hot > 0.5 ? 'gold' : '--ink') });
+      const next = NEXT[r.beat];
+      const on = hot * (next ? 1 - 0.65 * s.ease(next, 0.6) : 1);
+      cells(s, xs, y, r.vals, 'blue', { w: s.tall ? 12.5 : 13, h: 8, size: 3, on: r.vals.map(() => on) });
+      s.alpha(after(s, r.beat, 0.3), () => s.text(r.tag, s.w / 2 + 6 * u, y + 8 * u, { size: 3.2, font: 'mono', weight: 600, color: s.c('gold'), halo: true }));
+    });
+    s.alpha(after(s, 'highest', 0.6), () => s.text('lowest to highest: C, A, B', s.w / 2, s.h * 0.86, { size: 4, font: 'mono', weight: 650, color: s.c('gold'), halo: true }));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { rates, more, read, try: tryIt };

@@ -130,8 +130,10 @@ export const generators: Generator[] = [
           { value: round(top - 1, 6), why: `That is 1 below class ${j}, so its term would be $\\max(0,\\ 1 + 1) = 2$. The right class must be at least 1 above every other.` },
         ],
         solution: [
-          `The loss is zero when every term $\\max(0,\\ \\syms_j - \\syms_{${y}} + 1)$ is 0, that is, when $\\syms_{${y}}$ is at least $\\syms_j + 1$ for every other class $j$.`,
-          `The strictest is the highest other score, class ${j}'s $${num(top)}$: $\\syms_{${y}}$ must be at least $${par(top)} + 1 = ${num(v)}$.`,
+          `The loss is zero when every term $\\max(0,\\ \\syms_j - \\syms_{${y}} + 1)$ is 0: each class $j$ must sit at or below the line, $\\syms_{${y}} - 1$.`,
+          `The highest other score is class ${j}'s $${num(top)}$. If it is at or below the line, every other class is too.`,
+          `So the line must reach $${num(top)}$: $\\syms_{${y}} - 1 = ${num(top)}$ gives $\\syms_{${y}} = ${par(top)} + 1 = ${num(v)}$.`,
+          `Check: class ${j}'s term is $\\max(0,\\ ${num(top)} - ${par(v)} + 1) = \\max(0,\\ 0) = 0$. Any smaller $\\syms_{${y}}$ leaves it above 0.`,
         ],
       };
     },

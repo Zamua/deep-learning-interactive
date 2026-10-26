@@ -131,8 +131,9 @@ export const generators: Generator[] = [
           ],
         },
         solution: [
-          '`onehot @ E` adds up the rows of $E$, each weighted by the matching one-hot entry.',
-          `Every weight is 0 except entry ${k}, which is 1, so the sum is just row ${k}.`,
+          `The one-hot has ${V} entries, one per row of $E$. A vector on the left of $E$ weighs its rows: \`onehot @ E\` adds up the rows of $E$, each times its one-hot entry.`,
+          `Row ${k} is weighted by 1, and every other row by 0.`,
+          `So the sum is 1 times row ${k}, plus zeros: exactly row ${k}, a vector of ${dim} numbers.`,
           `That is why \`E[${k}]\` gives the same vector: the lookup skips the multiplications by zero.`,
         ],
       };

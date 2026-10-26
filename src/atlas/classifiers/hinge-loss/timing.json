@@ -1,9 +1,9 @@
 {
- "duration": 96.685,
+ "duration": 113.482,
  "scenes": {
   "margin": [0.0, 51.376],
   "sum": [51.376, 78.573],
-  "zero": [78.573, 96.685]
+  "zero": [78.573, 113.482]
  },
  "beats": {
   "margin/s": [0.7, 12.377, "Scores again, s: cat three, dog five, ship minus one. The image is a cat, so the right class, y, is zero.", [[1.78, 2.39], [2.81, 3.42], [4.15, 4.77], [5.73, 6.31], [6.65, 6.82], [7.6, 8.28], [9.51, 9.87], [10.9, 11.06], [11.53, 11.7]]],
@@ -13,8 +13,9 @@
   "sum/formula": [52.076, 63.64, "In symbols: for every wrong class, j not equal to y, take the max of zero and s j, minus s y, plus one. Then add them up.", [[52.916, 53.516], [54.966, 55.226], [56.736, 57.186], [59.586, 59.976], [61.206, 61.406], [62.026, 62.576]]],
   "sum/skip": [64.02, 71.154, "The right class is skipped. Its own term would always be one, a cost no score could ever remove.", [[65.69, 66.21], [68.33, 68.73]]],
   "sum/sum": [71.534, 77.473, "Here that is three for dog, plus zero for ship. The loss is three.", [[71.964, 72.184], [73.924, 74.214], [75.694, 76.234]]],
-  "zero/raise": [79.273, 84.944, "Raise cat's score to seven. The line rises to six, above every other class.", [[81.063, 81.583], [83.143, 83.393]]],
-  "zero/zero": [85.324, 94.464, "Every term is zero, so the loss is zero. That takes beating every other class by at least one. Just winning is not enough.", [[86.784, 87.124], [88.504, 89.024], [92.154, 92.644]]],
-  "zero/turn": [94.844, 95.585, "Your turn.", []]
+  "zero/raise": [79.273, 84.401, "Raise cat's score to six. The line rises to five, level with dog.", [[81.123, 81.623], [83.123, 83.393]]],
+  "zero/zero": [84.781, 96.033, "Dog's term is five, minus six, plus one: zero, and the max of zero and zero is zero. Ship's is zero too, so the loss is zero.", [[86.371, 86.711], [88.331, 88.711], [89.201, 89.621], [92.261, 92.871], [94.341, 94.611]]],
+  "zero/least": [96.413, 111.262, "Six is the smallest score that does it: the highest other score, plus one. At five and a half, dog pokes half a point above the line. Just winning is not enough: the right class must win by at least one.", [[98.843, 99.373], [100.683, 100.883], [101.553, 102.203], [103.293, 103.543], [105.773, 106.383], [108.033, 108.513]]],
+  "zero/turn": [111.642, 112.382, "Your turn.", []]
  }
 }

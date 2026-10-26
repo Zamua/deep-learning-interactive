@@ -1,21 +1,22 @@
 {
- "duration": 110.066,
+ "duration": 137.325,
  "scenes": {
   "copies": [0.0, 35.391],
-  "stages": [35.391, 76.821],
-  "cost": [76.821, 110.066]
+  "stages": [35.391, 104.08],
+  "cost": [104.08, 137.325]
  },
  "beats": {
   "copies/dp": [0.7, 15.969, "In data parallelism, every GPU keeps a full copy of the training state: the 16-bit weights and gradients, and Adam's 32-bit master copy, m and v. Sixteen bytes per parameter, on every GPU.", [[2.05, 2.34], [5.51, 5.92], [8.04, 8.38], [10.9, 11.19], [12.08, 12.57], [14.35, 14.6]]],
   "copies/waste": [16.349, 24.525, "A 7 billion parameter model on four GPUs is 112 gigabytes on each: four identical copies.", [[19.619, 19.889], [22.349, 22.769]]],
   "copies/idea": [24.905, 34.291, "Sharding keeps just one copy, spread out: each GPU holds a quarter of it. That is the idea of ZeRO, for zero redundancy.", [[26.805, 27.035], [27.715, 28.235], [30.355, 30.855], [32.535, 32.855]]],
   "stages/s1": [36.091, 46.419, "Stage one shards the optimizer state, the twelve bytes of master copy, m and v. Each GPU updates only its own quarter of the weights.", [[38.761, 39.111], [40.891, 41.161], [42.121, 42.701]]],
-  "stages/s1n": [46.799, 56.315, "Per GPU, that is four bytes, plus twelve over four, per parameter: forty nine gigabytes instead of 112.", [[48.299, 48.699], [49.899, 50.199], [51.619, 51.869], [52.709, 53.199]]],
-  "stages/s2": [56.695, 66.939, "Stage two shards the gradients too: each GPU only needs the averaged gradient for its own quarter. That makes thirty eight and a half gigabytes.", [[59.045, 59.695], [63.905, 64.505]]],
-  "stages/s3": [67.319, 75.721, "Stage three shards the weights as well. Everything is split: sixteen N over G, twenty eight gigabytes each.", [[69.959, 70.489], [71.569, 72.049], [73.709, 74.119]]],
-  "cost/gather": [77.521, 86.873, "The price is traffic. With the weights sharded, each piece of them is gathered from the other GPUs just before it is used, then dropped again.", [[79.151, 79.851], [80.991, 81.271], [85.551, 85.861]]],
-  "cost/same": [87.253, 96.489, "The training itself does not change: the same averaged gradient, and the same step, as plain data parallelism. Only where the numbers live.", [[89.393, 89.833], [91.363, 91.513], [92.473, 92.743], [94.323, 94.903]]],
-  "cost/more": [96.869, 107.846, "And the memory per GPU keeps falling as GPUs are added: on sixty four of them, the 7 billion parameter model needs one point seven five gigabytes each.", [[100.999, 101.649], [102.889, 103.139], [104.949, 105.129]]],
-  "cost/turn": [108.226, 108.966, "Your turn.", []]
+  "stages/s1n": [46.799, 66.142, "Per GPU, the 16-bit weights and gradients stay whole: two bytes plus two. The twelve bytes of optimizer state are split four ways: three. That is seven bytes per parameter, and seven times 7 billion is forty nine gigabytes, instead of 112.", [[48.289, 48.839], [51.619, 52.069], [53.359, 53.929], [57.219, 57.629], [58.029, 58.619], [60.619, 60.959], [62.639, 62.839], [64.359, 64.589]]],
+  "stages/s2": [66.522, 73.89, "Stage two shards the gradients too: each GPU only needs the averaged gradient for its own quarter.", [[68.922, 69.472], [73.692, 73.872]]],
+  "stages/s2n": [74.27, 90.46, "Now only the two bytes of 16-bit weights stay whole. The gradients' two and the optimizer's twelve, fourteen bytes, are split four ways: three and a half. That is five and a half bytes per parameter: thirty eight and a half gigabytes.", [[77.96, 78.54], [79.65, 79.8], [81.23, 81.46], [82.31, 82.55], [83.83, 84.2], [85.1, 85.54], [88.08, 88.44]]],
+  "stages/s3": [90.84, 102.98, "Stage three shards the weights as well. Everything is split, sixteen N over G: sixteen bytes over four is four per parameter, twenty eight gigabytes each.", [[93.37, 93.88], [94.93, 95.38], [97.09, 97.65], [100.81, 101.32]]],
+  "cost/gather": [104.78, 114.131, "The price is traffic. With the weights sharded, each piece of them is gathered from the other GPUs just before it is used, then dropped again.", [[106.41, 107.11], [108.25, 108.53], [112.81, 113.12]]],
+  "cost/same": [114.511, 123.748, "The training itself does not change: the same averaged gradient, and the same step, as plain data parallelism. Only where the numbers live.", [[116.651, 117.091], [118.621, 118.771], [119.731, 120.001], [121.581, 122.161]]],
+  "cost/more": [124.128, 135.105, "And the memory per GPU keeps falling as GPUs are added: on sixty four of them, the 7 billion parameter model needs one point seven five gigabytes each.", [[128.258, 128.908], [130.148, 130.398], [132.208, 132.388]]],
+  "cost/turn": [135.485, 136.225, "Your turn.", []]
  }
 }

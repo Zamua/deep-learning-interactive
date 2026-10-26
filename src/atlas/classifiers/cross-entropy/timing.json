@@ -1,9 +1,10 @@
 {
- "duration": 111.345,
+ "duration": 178.756,
  "scenes": {
   "loss": [0.0, 38.497],
   "curve": [38.497, 72.789],
-  "scores": [72.789, 111.345]
+  "scores": [72.789, 134.742],
+  "uniform": [134.742, 178.756]
  },
  "beats": {
   "loss/p": [0.7, 7.362, "Softmax hands back probabilities: zero point seven, zero point two and zero point one.", [[2.87, 3.43], [4.46, 4.76], [5.81, 6.01]]],
@@ -13,9 +14,16 @@
   "curve/curve": [39.197, 51.424, "Here is the loss, minus log p, for every p from zero to one. The arrow reads \u201cgoes to\u201d: a p of zero point seven goes to a loss of zero point three six.", [[40.277, 40.557], [41.657, 41.897], [44.077, 44.657], [45.557, 45.727], [46.457, 47.007], [48.697, 48.867]]],
   "curve/one": [51.804, 61.759, "At p equal to one, a confident right answer, the loss is zero. It never dips below zero, because the log of a probability is never positive.", [[53.274, 53.524], [54.974, 55.354], [56.554, 56.964], [58.634, 58.914]]],
   "curve/zero": [62.139, 71.689, "As p falls toward zero, the loss climbs without limit, toward infinity, infinity. A confident wrong answer costs the most.", [[63.989, 64.249], [66.059, 66.329], [67.339, 67.649], [68.499, 69.059]]],
-  "scores/s": [73.489, 82.166, "From scores, softmax makes p of y, the right option's probability, equal to e to its score, over the total, T.", [[74.399, 74.679], [76.579, 76.849], [78.409, 78.729], [80.419, 80.689], [81.539, 81.779]]],
-  "scores/rule": [82.546, 99.134, "Take minus the log, and the loss is the log of the total, minus the right option's score, s of y. For scores two, one and minus one, with y equal to zero, that is two point three five minus two: zero point three five.", [[83.916, 84.216], [86.196, 86.446], [88.186, 88.536], [89.276, 89.906], [90.906, 91.076], [92.416, 92.676], [94.096, 94.436], [94.856, 95.006], [97.036, 97.596]]],
-  "scores/init": [99.514, 109.124, "When all the scores are equal, each of C options gets one over C, and the loss is log C. With ten options, two point three zero.", [[101.104, 101.484], [104.024, 104.334], [105.904, 106.504], [107.444, 107.764]]],
-  "scores/turn": [109.504, 110.245, "Your turn.", []]
+  "scores/s": [73.489, 86.553, "Now start from scores: two, one and minus one, with option zero right. Softmax raises e to each score and adds them up: the total, T, is ten point four eight.", [[75.049, 75.479], [75.879, 76.089], [77.519, 77.849], [79.339, 79.859], [83.119, 83.649], [84.239, 84.429], [84.799, 85.069]]],
+  "scores/py": [86.933, 95.882, "The right option's probability, p of y, is e to its score, over the total: e squared, over ten point four eight.", [[88.673, 89.013], [89.823, 90.193], [91.683, 91.963], [92.823, 93.343], [94.083, 94.313]]],
+  "scores/quot": [96.262, 105.238, "The log of a quotient is the log of the top, minus the log of the bottom: ln of e squared, minus ln ten point four eight.", [[98.662, 98.902], [100.422, 101.032], [102.612, 102.832]]],
+  "scores/undo": [105.618, 116.804, "ln undoes e to a power, so ln of e squared is just two, the score itself. And ln ten point four eight is about two point three five.", [[107.948, 108.338], [111.118, 111.458], [112.408, 112.948]]],
+  "scores/flip": [117.184, 125.682, "The loss is minus that log, which flips the subtraction: two point three five minus two, or zero point three five.", [[119.114, 119.474], [120.924, 121.394], [123.464, 123.794], [124.084, 124.234]]],
+  "scores/rule": [126.062, 133.642, "Any scores go the same way. The loss is the log of the total, minus the right option's score, s of y.", [[127.892, 128.412], [130.272, 130.522], [132.312, 132.632]]],
+  "uniform/init": [135.442, 145.253, "When all the scores are equal, every option gets the same share. With C options, that share is one over C: ten options get a tenth each.", [[137.012, 137.332], [139.352, 139.922], [140.912, 141.182], [142.792, 143.322]]],
+  "uniform/recip": [145.633, 155.927, "So the loss is minus ln of a tenth. One over a number flips the sign of its log, so that is ln ten: about two point three zero.", [[148.573, 149.173], [151.873, 152.183], [153.893, 154.323]]],
+  "uniform/logC": [156.307, 162.088, "For any C, equal scores give a loss of ln C, whichever option is right.", [[157.317, 157.727], [160.197, 160.637]]],
+  "uniform/eight": [162.468, 176.536, "With eight options, write eight as two cubed, and the power comes out in front: ln eight is three ln two. That is three times zero point six nine three, about two point zero eight.", [[163.508, 163.748], [165.518, 165.868], [167.518, 168.118], [169.118, 169.308], [170.908, 171.368], [174.518, 174.888]]],
+  "uniform/turn": [176.916, 177.656, "Your turn.", []]
  }
 }

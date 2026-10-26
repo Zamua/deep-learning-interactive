@@ -1,22 +1,29 @@
 {
- "duration": 104.403,
+ "duration": 193.477,
  "scenes": {
-  "curve": [0.0, 38.28],
-  "slope": [38.28, 75.104],
-  "flat": [75.104, 104.403]
+  "curve": [0.0, 51.242],
+  "measure": [51.242, 113.228],
+  "slope": [113.228, 152.149],
+  "flat": [152.149, 193.477]
  },
  "beats": {
   "curve/def": [0.7, 12.108, "The sigmoid squashes any number into the range zero to one. Written sigma of x, with the Greek letter sigma, it is one over one plus e to the minus x.", [[4.63, 5.25], [6.88, 7.13], [8.47, 8.84]]],
   "curve/zero": [12.488, 18.436, "At zero, e to the zero is one, so sigma is one over two: a half.", [[13.288, 13.658], [15.148, 15.568], [17.368, 17.798]]],
   "curve/two": [18.816, 27.695, "At two, e to the minus two is about zero point one four. One over one point one four is about zero point eight eight.", [[19.476, 19.916], [23.116, 23.676], [25.586, 25.756]]],
-  "curve/tails": [28.075, 37.18, "Far to the right it creeps up toward one, and far to the left down toward zero. At minus two, it is zero point one two.", [[30.705, 31.095], [33.575, 34.125], [35.195, 35.415]]],
-  "slope/rule": [38.98, 48.973, "Its slope, d sigma, d x, has a neat form: sigma times one minus sigma. Backprop can build it from the output it already has.", [[39.69, 39.98], [41.47, 41.71], [42.72, 43.2], [45.34, 45.92]]],
-  "slope/two": [49.353, 57.692, "At x equals two, that is zero point eight eight times zero point one two: about zero point one zero five.", [[50.863, 51.143], [54.793, 55.293]]],
-  "slope/peak": [58.072, 64.813, "The slope is steepest at zero: a half times a half, a quarter. It is never more than that.", [[60.102, 60.552], [61.932, 62.252], [62.852, 63.352]]],
-  "slope/chain": [65.193, 74.004, "In a graph, the sigmoid node multiplies the gradient from above by this local slope, so it shrinks the gradient at least four times.", [[65.953, 66.243], [70.683, 71.143]]],
-  "flat/six": [75.804, 82.959, "Far from zero the curve goes flat. At six, sigma is zero point nine nine seven five.", [[76.954, 77.154], [78.424, 78.964], [79.624, 79.914]]],
-  "flat/tiny": [83.339, 92.806, "So its slope is zero point nine nine seven five times zero point zero zero two five: about zero point zero zero two five.", [[86.769, 86.979], [89.619, 90.109]]],
-  "flat/dead": [93.186, 102.183, "Almost no gradient gets through. A saturated sigmoid, stuck near zero or one, passes almost nothing back to the nodes before it.", [[95.226, 95.726], [97.126, 97.326], [98.986, 99.276]]],
-  "flat/turn": [102.563, 103.303, "Your turn.", []]
+  "curve/tails": [28.075, 33.749, "Far to the right it creeps up toward one, and far to the left down toward zero.", [[30.715, 31.115], [32.245, 32.415]]],
+  "curve/neg": [34.129, 50.142, "At minus two, minus x is two, so e to the minus x is e squared: about seven point three nine. One over eight point three nine is about zero point one two: below a half, as every negative input gives.", [[35.249, 35.729], [37.249, 37.699], [40.399, 40.769], [42.439, 43.069], [46.779, 47.159], [48.009, 48.249]]],
+  "measure/nudge": [51.942, 63.77, "How steep is the sigmoid? Measure it as for any curve. Nudge x from zero to zero point zero one, and sigma goes from a half to zero point five zero two five.", [[53.532, 54.062], [55.692, 56.192], [59.222, 59.592], [61.242, 61.442]]],
+  "measure/measure": [64.15, 77.046, "It rose zero point zero zero two five over a run of zero point zero one: a slope of a quarter. And a quarter is a half times a half, which is sigma times one minus sigma.", [[67.2, 67.38], [69.72, 70.22], [71.46, 71.99], [74.33, 74.64]]],
+  "measure/two": [77.426, 89.845, "At two, the same nudge raises sigma by about zero point zero zero one zero five. Over the run of zero point zero one, that is a slope of about zero point one zero five.", [[78.156, 78.416], [83.516, 84.066], [86.206, 86.546]]],
+  "measure/match": [90.225, 101.349, "Sigma there is about zero point eight eight one, and one minus it is zero point one one nine. Their product is about zero point one zero five: the same again.", [[93.095, 93.475], [94.545, 94.705], [96.465, 97.105], [100.095, 100.535]]],
+  "measure/rule": [101.729, 112.128, "That holds at every x: the slope, d sigma, d x, is sigma times one minus sigma. Backprop can build it from the output it already has.", [[103.369, 103.819], [104.389, 104.649], [105.899, 106.209], [108.399, 108.979]]],
+  "slope/plot": [113.928, 122.658, "Plot that slope at every x. It peaks at zero, where sigma is a half, at a quarter, and falls away on both sides.", [[116.008, 116.478], [117.668, 117.898], [119.278, 119.638], [120.398, 120.698]]],
+  "slope/chain": [123.038, 140.739, "In a graph, the sigmoid node multiplies the gradient from above, partial f, partial sigma, by this local slope. Say two arrives, at x equals two. Then x gets two times zero point one zero five: about zero point two one.", [[123.798, 124.158], [127.248, 127.558], [128.318, 128.478], [129.288, 129.668], [130.978, 131.618], [132.888, 133.038], [134.338, 134.818], [138.578, 138.988]]],
+  "slope/most": [141.119, 151.049, "Wherever x is, the slope is at most a quarter. So x gets at most a quarter of what arrives: with two from above, never more than a half.", [[142.309, 142.539], [144.369, 144.889], [147.829, 148.259], [149.359, 149.669]]],
+  "flat/six": [152.849, 160.003, "Far from zero the curve goes flat. At six, sigma is zero point nine nine seven five.", [[153.999, 154.199], [155.469, 156.009], [156.669, 156.959]]],
+  "flat/tiny": [160.383, 169.851, "So its slope is zero point nine nine seven five times zero point zero zero two five: about zero point zero zero two five.", [[163.813, 164.023], [166.663, 167.153]]],
+  "flat/mirror": [170.231, 181.88, "At minus six, it is the mirror image: sigma is zero point zero zero two five, one minus sigma is zero point nine nine seven five, and the slope is the same.", [[172.671, 173.131], [176.161, 176.571], [177.631, 177.801], [180.061, 180.441]]],
+  "flat/dead": [182.26, 191.256, "Almost no gradient gets through. A saturated sigmoid, stuck near zero or one, passes almost nothing back to the nodes before it.", [[184.3, 184.8], [186.2, 186.4], [188.06, 188.35]]],
+  "flat/turn": [191.636, 192.377, "Your turn.", []]
  }
 }

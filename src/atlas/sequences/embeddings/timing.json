@@ -1,8 +1,8 @@
 {
- "duration": 113.578,
+ "duration": 146.654,
  "scenes": {
   "table": [0.0, 64.304],
-  "onehot": [64.304, 113.578]
+  "onehot": [64.304, 146.654]
  },
  "beats": {
   "table/ids": [0.7, 13.158, "Arithmetic works on numbers, not letters. So every token in the vocabulary gets an id: h is zero, e is one, l is two, and o is three.", [[2.51, 2.71], [3.5, 3.98], [5.93, 6.11], [7.14, 7.74], [8.85, 9.23], [10.2, 10.59], [11.58, 11.9]]],
@@ -10,11 +10,13 @@
   "table/lookup": [33.814, 43.373, "To embed the letter l, take its id, two, and read row two of E: zero point five, minus one, two.", [[35.334, 35.684], [36.844, 37.184], [37.554, 37.884], [39.794, 40.364], [41.554, 41.904], [42.674, 42.974]]],
   "table/learned": [43.753, 52.085, "The rows are free numbers: nothing in them comes from how a token is spelled, so tokens that are used alike can have rows that are alike.", [[45.343, 45.843], [48.373, 48.793], [50.443, 50.643]]],
   "table/count": [52.465, 63.204, "The table holds V times d numbers: twelve here. With fifty thousand tokens and d of seven hundred sixty-eight, that is over thirty-eight million.", [[55.095, 55.515], [56.245, 56.815], [58.495, 58.645], [60.685, 61.025]]],
-  "onehot/onehot": [65.004, 74.38, "There is another way to see the lookup. Write id two as a one-hot vector: four entries, all zero except a one in place two.", [[66.844, 67.384], [70.064, 70.564], [71.444, 71.694]]],
-  "onehot/product": [74.76, 82.097, "Multiply it into E. The result is a sum of the rows of E, each weighted by its entry of the one-hot.", [[76.29, 76.87], [79.17, 79.54]]],
-  "onehot/picks": [82.477, 89.875, "Every row is weighted by zero except row two, weighted by one. So the product is exactly row two.", [[84.477, 84.637], [85.837, 86.057], [86.967, 87.537]]],
-  "onehot/layer": [90.255, 100.183, "So a lookup is a matrix product with a one-hot vector. Reading the row directly gives the same answer and skips every multiplication by zero.", [[93.995, 94.625], [97.325, 97.495], [100.015, 100.165]]],
-  "onehot/batch": [100.563, 111.357, "Stack m sequences of n ids into an array of shape m by n, and the lookup gives m by n by d: every id is swapped for its row.", [[105.393, 105.853], [108.443, 109.043]]],
-  "onehot/turn": [111.737, 112.478, "Your turn.", []]
+  "onehot/mix": [65.004, 84.289, "There is another way to see the lookup. Put a vector v on the left of E, with one entry per row: one, two, zero, zero. The product, v times E, weighs each row of E by its entry and adds them up: one times row zero, plus two times row one.", [[66.894, 67.484], [69.774, 70.084], [71.524, 72.044], [72.404, 72.654], [73.044, 73.254], [74.324, 74.884], [75.514, 75.734], [76.814, 77.114], [79.424, 79.594], [80.404, 80.964], [82.374, 82.644]]],
+  "onehot/entries": [84.669, 99.874, "Entry by entry: zero point two plus minus two is minus one point eight. One plus zero point eight is one point eight. And minus zero point five plus one point six is one point one.", [[85.899, 86.589], [88.869, 89.159], [90.729, 91.389], [93.079, 93.319], [94.369, 95.029], [98.439, 98.759]]],
+  "onehot/onehot": [100.254, 107.593, "Now write id two as a one-hot vector: four entries, all zero except a one in place two.", [[103.334, 103.904], [104.764, 105.034]]],
+  "onehot/product": [107.973, 115.174, "Multiply it into E the same way: a sum of the rows of E, each weighted by its entry of the one-hot.", [[110.213, 110.663], [112.283, 112.623]]],
+  "onehot/picks": [115.554, 122.952, "Every row is weighted by zero except row two, weighted by one. So the product is exactly row two.", [[117.554, 117.714], [118.914, 119.134], [120.044, 120.614]]],
+  "onehot/layer": [123.332, 133.26, "So a lookup is a matrix product with a one-hot vector. Reading the row directly gives the same answer and skips every multiplication by zero.", [[127.072, 127.702], [130.402, 130.572], [133.092, 133.242]]],
+  "onehot/batch": [133.64, 144.434, "Stack m sequences of n ids into an array of shape m by n, and the lookup gives m by n by d: every id is swapped for its row.", [[138.47, 138.93], [141.52, 142.12]]],
+  "onehot/turn": [144.814, 145.554, "Your turn.", []]
  }
 }

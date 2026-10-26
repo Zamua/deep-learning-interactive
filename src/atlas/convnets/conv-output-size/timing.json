@@ -1,20 +1,28 @@
 {
- "duration": 99.554,
+ "duration": 190.007,
  "scenes": {
   "count": [0.0, 30.451],
-  "pad": [30.451, 58.778],
-  "stride": [58.778, 99.554]
+  "pad": [30.451, 82.896],
+  "stride": [82.896, 141.66],
+  "try": [141.66, 190.007]
  },
  "beats": {
   "count/row": [0.7, 9.381, "An input of width W, here seven, and a filter of size F, here three. How many places can the filter sit?", [[2.43, 2.71], [3.58, 3.99], [5.69, 6.02], [6.83, 7.39]]],
   "count/slide": [9.761, 16.25, "It starts at the left edge and steps one entry at a time, until its right end reaches the last entry.", [[11.321, 11.481], [13.441, 13.671]]],
   "count/count": [16.63, 29.351, "That makes five positions, so five outputs: the width, minus the filter size, plus one, W minus F, plus one. The plus one counts the very first position.", [[18.23, 18.48], [19.96, 20.5], [21.0, 21.39], [22.77, 22.96], [23.59, 24.05], [25.34, 25.54], [26.15, 26.74]]],
   "pad/pad": [31.151, 39.093, "Padding, P, adds a border of zeros on each side. With P equal to one, the input becomes nine wide.", [[31.671, 31.891], [32.261, 32.681], [34.981, 35.561], [36.981, 37.301]]],
-  "pad/slide": [39.473, 45.365, "Now the filter fits in seven places, and the output is seven wide, the same as the input.", [[41.833, 42.103], [43.893, 44.183]]],
-  "pad/same": [45.745, 57.678, "That is the usual choice. With stride one, P equal to F minus one, over two, keeps the size: one for a three by three filter, two for a five by five.", [[47.315, 47.865], [48.865, 49.195], [51.915, 52.185], [53.165, 53.685], [55.585, 55.985]]],
-  "stride/jump": [59.478, 68.814, "The stride, S, is how far the filter jumps each time. With a stride of two it lands on every other position: four of them.", [[60.288, 60.558], [60.998, 61.298], [63.788, 64.388], [65.608, 65.768], [67.718, 68.128]]],
-  "stride/formula": [69.194, 85.384, "So divide by the stride before adding the one. W minus F plus two P, over S, plus one. Here, seven minus three plus two is six, over two is three, plus one: four.", [[72.214, 72.934], [74.304, 74.484], [75.444, 75.764], [76.474, 76.714], [77.344, 78.044], [78.424, 78.804], [81.554, 81.964], [83.334, 83.774], [84.384, 84.934]]],
-  "stride/fit": [85.764, 97.334, "The division has to come out whole. Eight wide, with a filter of three and a stride of two, gives three and a half: the last jump hangs over the edge, so that setting does not fit.", [[87.804, 88.384], [89.084, 89.304], [91.684, 91.944], [93.114, 93.604], [95.364, 95.644]]],
-  "stride/turn": [97.714, 98.454, "Your turn.", []]
+  "pad/slide": [39.473, 50.025, "Now the filter fits in seven places: seven, minus three, plus two for the padding, plus one. The output is seven wide, the same as the input.", [[41.883, 42.373], [42.843, 43.113], [43.933, 44.223], [45.503, 45.763], [46.383, 46.983], [48.603, 48.863]]],
+  "pad/lose": [50.405, 62.664, "That is no accident. A filter three wide loses two positions: seven in, five out. Padding adds two P, here two, which gives exactly those two back.", [[51.855, 52.345], [55.185, 55.615], [56.335, 56.585], [57.305, 57.845], [59.335, 59.685], [60.385, 60.675]]],
+  "pad/five": [63.044, 69.634, "A filter five wide loses four, so it needs two P equal to four: P equal to two.", [[65.304, 65.644], [67.814, 68.384]]],
+  "pad/same": [70.014, 81.796, "In general a filter loses F minus one positions, so with stride one, P equal to F minus one, over two, keeps the size. That is the usual choice.", [[70.784, 70.964], [73.734, 74.064], [75.504, 75.754], [77.554, 77.804], [78.464, 78.764], [79.774, 80.204]]],
+  "stride/jump": [83.596, 92.932, "The stride, S, is how far the filter jumps each time. With a stride of two it lands on every other position: four of them.", [[84.406, 84.676], [85.116, 85.416], [87.906, 88.506], [89.726, 89.886], [91.836, 92.246]]],
+  "stride/formula": [93.312, 109.503, "So divide by the stride before adding the one. W minus F plus two P, over S, plus one. Here, seven minus three plus two is six, over two is three, plus one: four.", [[96.332, 97.052], [98.422, 98.602], [99.562, 99.882], [100.592, 100.832], [101.462, 102.162], [102.542, 102.922], [105.672, 106.082], [107.452, 107.892], [108.502, 109.052]]],
+  "stride/fit": [109.883, 123.65, "The division does not always come out whole. Eight wide, with a filter of three and a stride of two: eight minus three is five, over two is two and a half, plus one is three and a half.", [[112.423, 113.143], [113.853, 114.123], [115.343, 115.493], [116.653, 117.273], [119.073, 119.503], [121.313, 121.733], [122.403, 122.593]]],
+  "stride/drop": [124.03, 140.56, "Half a position means the last jump would hang over the edge, where there is no input. So that position is dropped: libraries such as PyTorch round the size down, here to three. A setting fits exactly when the division is whole, and nothing is dropped.", [[127.51, 127.69], [128.92, 129.5], [131.04, 131.52], [134.53, 134.8], [135.72, 136.38], [139.11, 139.36]]],
+  "try/p1": [142.36, 150.366, "Try one: eight wide, a filter of three, stride two and padding one. How wide is the output?", [[142.98, 143.63], [144.34, 144.65], [145.72, 146.11], [148.11, 148.68]]],
+  "try/a1": [150.746, 162.796, "Eight minus three plus two is seven. Over two is three and a half, plus one: four and a half. A fifth position would hang over the edge, so round down: four.", [[153.456, 154.126], [155.976, 156.296], [156.896, 157.266], [158.136, 158.696], [160.736, 160.976], [161.956, 162.356]]],
+  "try/p2": [163.176, 171.206, "Now backwards: ten wide, a filter of five, stride one. What padding makes the output eight wide?", [[164.106, 164.686], [165.416, 165.726], [166.866, 167.136], [168.056, 168.746]]],
+  "try/a2": [171.586, 187.787, "With stride one the output is W minus F, plus two P, plus one. So ten minus five, plus two P, plus one, is eight: six plus two P is eight. Two P is two, and P is one.", [[172.626, 172.836], [173.726, 173.956], [175.306, 175.546], [176.456, 176.646], [177.286, 177.846], [178.226, 178.486], [179.596, 179.826], [181.356, 181.556], [182.116, 182.566], [184.526, 185.046], [186.236, 186.566]]],
+  "try/turn": [188.167, 188.907, "Your turn.", []]
  }
 }

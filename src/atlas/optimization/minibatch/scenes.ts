@@ -95,6 +95,9 @@ const average: SceneDef = {
       s.alpha(s.ease('noise', 0.3, 0.8 + i * 0.35), () => s.circle(X(Math.max(-1.4, Math.min(3, v))), ya + ((i % 3) - 1) * 1.6 * s.u, 1.1 * s.u, { fill: s.tint('red', 0.6) }));
     });
     s.alpha(s.ease('size', 0.6), () => s.text('B = 64', l - 1 * s.u, yb, { size: 3, font: 'mono', align: 'right', color: s.c('--ink-2') }));
+    const ty = s.h * 0.46;
+    s.alpha(s.ease('size', 0.6, 3) * (1 - s.ease('cost', 0.5)), () => s.text('16 × the batch: 1/4 the scatter', s.w / 2, ty, { size: 3.4, font: 'mono', weight: 600, color: s.c('blue') }));
+    s.alpha(s.ease('cost', 0.6, 0.4), () => s.text('64 to 8: 1/8 the work, noisier', s.w / 2, ty, { size: 3.4, font: 'mono', weight: 600, color: s.c('red') }));
     LARGE.forEach((v, i) => {
       s.alpha(s.ease('size', 0.3, 0.6 + i * 0.2), () => s.circle(X(v), yb + ((i % 3) - 1) * 1.6 * s.u, 1.1 * s.u, { fill: s.tint('blue', 0.7) }));
     });
@@ -124,8 +127,11 @@ const epoch: SceneDef = {
       s.line(l, y - h / 2 - 2 * s.u, l + seg, y - h / 2 - 2 * s.u, s.c('slate'), 0.4);
       s.text('B = 100', l, y - h / 2 - 5 * s.u, { size: 3, font: 'mono', align: 'left', color: s.c('slate') });
     });
-    s.alpha(s.ease('count', 0.6, 4), () => s.text('N / B = 1,200 / 100 = 12 steps', s.w / 2, s.h * 0.7, { size: 3.8, font: 'mono', weight: 600, color: s.c('--ink-2') }));
-    s.alpha(s.ease('seen', 0.6, 2.5), () => s.text('k = 5 steps: 5 × 100 = 500 seen', s.w / 2, s.h * 0.84, { size: 3.8, font: 'mono', weight: 600, color: s.c('orange') }));
+    const line = (t: string, y: number, k: 'orange' | '--ink-2') => s.text(t, s.w / 2, s.h * y, { size: 3.6, font: 'mono', weight: 600, color: s.c(k) });
+    s.alpha(s.ease('count', 0.6, 4), () => line('N / B = 1,200 / 100 = 12 steps', 0.62, '--ink-2'));
+    s.alpha(s.ease('epochs', 0.6, 2), () => line('3 epochs: 3 × 12 = 36 steps', 0.71, '--ink-2'));
+    s.alpha(s.ease('seen', 0.6, 2.5), () => line('k = 5 steps: 5 × 100 = 500 seen', 0.8, 'orange'));
+    s.alpha(s.ease('back', 0.6, 2), () => line('k = 36: 3,600 seen / 1,200 = 3 epochs', 0.89, 'orange'));
   },
 };
 

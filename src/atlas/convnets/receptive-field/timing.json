@@ -1,20 +1,26 @@
 {
- "duration": 84.791,
+ "duration": 146.853,
  "scenes": {
   "grow": [0.0, 31.401],
-  "stride": [31.401, 55.342],
-  "why": [55.342, 84.791]
+  "stride": [31.401, 57.215],
+  "why": [57.215, 85.544],
+  "try": [85.544, 146.853]
  },
  "beats": {
   "grow/one": [0.7, 9.623, "One unit after a three by three conv sees a three by three patch of the input. That patch is its receptive field: three wide.", [[5.7, 6.27], [8.44, 8.83]]],
   "grow/two": [10.003, 19.967, "Stack a second three by three layer. Its unit sees three units below it, and together those see five input pixels. The layer added two.", [[12.233, 12.723], [14.923, 15.243], [15.903, 16.053], [18.143, 18.623]]],
   "grow/three": [20.347, 30.301, "A third layer reaches seven. Each stride one layer adds F minus one, so L layers of three by three see one plus two L.", [[22.097, 22.637], [23.387, 23.587], [25.737, 26.157], [28.357, 28.517]]],
-  "stride/jump": [32.101, 39.185, "A stride speeds this up. After a stride two layer, neighboring units sit two input pixels apart.", [[33.751, 34.341], [35.831, 36.151], [37.301, 37.461]]],
-  "stride/adds": [39.565, 47.508, "So the next three by three layer spans twice as much: it adds two times two, four. Three becomes seven.", [[42.805, 43.235], [44.835, 45.125], [45.565, 46.115]]],
-  "stride/deep": [47.888, 54.242, "This is how a deep network's last layers come to see the whole image, while every filter stays small.", [[51.898, 52.228]]],
-  "why/same": [56.042, 62.886, "Two stacked three by three layers see five by five, exactly like a single five by five filter.", [[59.782, 60.092]]],
-  "why/fewer": [63.266, 68.897, "But they need fewer weights: nine plus nine, eighteen, against twenty five.", [[64.836, 65.276], [66.366, 66.646], [67.226, 67.476]]],
-  "why/more": [69.277, 82.57, "The saving grows with depth. Three layers of three by three see seven by seven with twenty seven weights; one seven by seven filter needs forty nine. Same view, fewer weights.", [[71.157, 71.867], [73.757, 73.907], [76.737, 77.177], [79.967, 80.567], [81.297, 81.617]]],
-  "why/turn": [82.95, 83.691, "Your turn.", []]
+  "stride/jump": [32.101, 41.059, "A stride speeds this up. After a stride two layer, neighboring units sit two input pixels apart. Call that gap the jump.", [[33.771, 34.371], [35.881, 36.171], [39.081, 39.581], [40.311, 40.481]]],
+  "stride/adds": [41.439, 49.381, "So the next three by three layer spans twice as much: it adds two times two, four. Three becomes seven.", [[44.679, 45.109], [46.709, 46.999], [47.439, 47.989]]],
+  "stride/deep": [49.761, 56.115, "This is how a deep network's last layers come to see the whole image, while every filter stays small.", [[53.771, 54.101]]],
+  "why/same": [57.915, 64.76, "Two stacked three by three layers see five by five, exactly like a single five by five filter.", [[61.655, 61.965]]],
+  "why/fewer": [65.14, 70.77, "But they need fewer weights: nine plus nine, eighteen, against twenty five.", [[66.71, 67.15], [68.24, 68.52], [69.1, 69.35]]],
+  "why/more": [71.15, 84.444, "The saving grows with depth. Three layers of three by three see seven by seven with twenty seven weights; one seven by seven filter needs forty nine. Same view, fewer weights.", [[73.03, 73.74], [75.63, 75.78], [78.61, 79.05], [81.84, 82.44], [83.17, 83.49]]],
+  "try/p": [86.244, 99.499, "Try one with two strides: a three by three conv with stride two, then a two by two with stride two, then a three by three with stride one. How wide is the last layer's receptive field?", [[87.884, 88.374], [90.784, 91.244], [93.424, 93.834], [96.144, 96.774]]],
+  "try/rj": [99.879, 113.218, "Track two numbers, layer by layer: r, the receptive field so far, and j, the jump. Before any layer, a unit is one pixel, so both start at one.", [[101.089, 101.569], [102.709, 103.329], [103.729, 104.139], [105.919, 106.219], [107.069, 107.389], [107.889, 108.599], [109.649, 109.919], [111.429, 111.759]]],
+  "try/l1": [113.598, 124.798, "Layer one adds F minus one, two, times the jump, one: r is three. Only then does its stride double the jump, to two, for the layers above.", [[115.918, 116.178], [116.558, 116.828], [117.618, 117.828], [118.218, 118.718], [119.728, 120.298], [122.738, 122.998], [123.538, 123.738]]],
+  "try/l2": [125.178, 133.229, "Layer two adds one times the jump, two: r is five. Its stride doubles the jump again, to four.", [[127.578, 127.958], [128.298, 128.788], [129.888, 130.388], [132.408, 132.668]]],
+  "try/l3": [133.609, 144.633, "Layer three adds two times four, eight: r is thirteen. Two strides made the jump four, so the last small filter reaches thirteen pixels across.", [[135.869, 136.239], [136.589, 137.089], [138.369, 138.909], [140.759, 141.089]]],
+  "try/turn": [145.013, 145.753, "Your turn.", []]
  }
 }

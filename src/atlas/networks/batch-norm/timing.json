@@ -1,22 +1,23 @@
 {
- "duration": 132.449,
+ "duration": 142.708,
  "scenes": {
-  "normalize": [0.0, 74.207],
-  "affine": [74.207, 112.181],
-  "test": [112.181, 132.449]
+  "normalize": [0.0, 84.466],
+  "affine": [84.466, 122.439],
+  "test": [122.439, 142.708]
  },
  "beats": {
-  "normalize/batch": [0.7, 12.727, "Batch normalization looks at one feature at a time, across every example in the batch. Here is one feature over a batch of four: nine, three, seventeen and eleven.", [[3.96, 4.19], [6.19, 6.81], [9.16, 9.67], [10.15, 10.38], [10.87, 11.11], [11.86, 12.05]]],
-  "normalize/mean": [13.107, 20.518, "First, the batch mean, written with the Greek letter mu. They add up to forty, so mu is ten.", [[13.637, 13.877], [14.767, 15.127], [16.837, 17.417], [18.597, 18.907]]],
-  "normalize/var": [20.898, 42.125, "Then the variance: the average squared distance from the mean. One, forty nine, forty nine and one average to twenty five. Its square root, the square root of twenty five, is five: the standard deviation. Here sigma means this spread, not the sigmoid, so the variance is sigma squared.", [[22.138, 22.558], [24.908, 25.608], [25.968, 26.268], [26.998, 27.178], [29.838, 30.368], [31.358, 31.578], [33.068, 33.258], [33.948, 34.348], [35.668, 36.308], [38.348, 38.628], [39.618, 40.018]]],
-  "normalize/xhat": [42.505, 58.963, "Subtract the mean, and divide by the standard deviation. The result is x hat, the normalized x: x hat is x minus mu, over sigma. Nine becomes minus zero point two, and three becomes minus one point four.", [[43.625, 43.835], [45.945, 46.465], [47.995, 48.325], [49.585, 50.105], [52.215, 52.385], [53.105, 53.655], [56.125, 56.475]]],
-  "normalize/eps": [59.343, 67.575, "The formula adds a tiny epsilon to the variance, so it never divides by zero. For arithmetic by hand, it can be ignored.", [[62.283, 62.543], [64.343, 64.943], [66.373, 66.603]]],
-  "normalize/unit": [67.955, 73.107, "Now the feature has mean zero and variance one, whatever scale it arrived at.", [[71.175, 71.565]]],
-  "affine/gamma": [74.907, 91.303, "Forcing mean zero and variance one every time could be too rigid. So batch norm adds two learned numbers per feature: a scale, gamma, and a shift, beta. The output is y equals gamma x hat, plus beta.", [[79.667, 80.167], [83.567, 84.027], [84.667, 84.967], [85.357, 85.677], [86.367, 86.667], [87.067, 87.607], [90.397, 90.567]]],
-  "affine/y": [91.683, 100.873, "With gamma two and beta one, minus zero point two becomes two times minus zero point two, plus one: zero point six.", [[93.653, 94.073], [98.313, 98.483], [99.123, 99.653]]],
-  "affine/undo": [101.253, 111.081, "If the network learns gamma equal to the standard deviation and beta equal to the mean, it undoes the normalization entirely. It gets to choose.", [[104.713, 104.893], [106.583, 106.993], [109.483, 109.973]]],
-  "test/running": [112.881, 119.789, "During training, every batch has its own mean and variance, and batch norm keeps running averages of both.", [[113.791, 114.101], [116.691, 117.021]]],
-  "test/test": [120.169, 130.229, "At test time it normalizes with those running averages, not with the test batch. So an example's output never depends on which other examples came with it.", [[123.489, 123.799], [125.139, 125.659]]],
-  "test/turn": [130.609, 131.349, "Your turn.", []]
+  "normalize/batch": [0.7, 10.666, "Batch normalization works on a batch, X: one example per row, one feature per column. Here are four examples with two features each.", [[3.17, 3.61], [4.08, 4.47], [5.83, 6.09], [7.43, 8.0]]],
+  "normalize/column": [11.046, 22.985, "It looks at one feature at a time, across every example in the batch. Feature zero is column zero: nine, three, seventeen and eleven. Call those values x.", [[13.056, 13.256], [15.276, 15.926], [17.866, 18.276], [18.736, 18.906], [19.366, 19.546], [20.926, 21.426]]],
+  "normalize/mean": [23.365, 30.777, "First, the batch mean, written with the Greek letter mu. They add up to forty, so mu is ten.", [[23.895, 24.135], [25.025, 25.385], [27.095, 27.675], [28.855, 29.165]]],
+  "normalize/var": [31.157, 52.383, "Then the variance: the average squared distance from the mean. One, forty nine, forty nine and one average to twenty five. Its square root, the square root of twenty five, is five: the standard deviation. Here sigma means this spread, not the sigmoid, so the variance is sigma squared.", [[32.397, 32.817], [35.167, 35.867], [36.227, 36.527], [37.257, 37.437], [40.097, 40.627], [41.617, 41.837], [43.327, 43.517], [44.207, 44.607], [45.927, 46.567], [48.607, 48.887], [49.877, 50.277]]],
+  "normalize/xhat": [52.763, 69.221, "Subtract the mean, and divide by the standard deviation. The result is x hat, the normalized x: x hat is x minus mu, over sigma. Nine becomes minus zero point two, and three becomes minus one point four.", [[53.883, 54.093], [56.203, 56.723], [58.253, 58.583], [59.843, 60.363], [62.473, 62.643], [63.363, 63.913], [66.383, 66.733]]],
+  "normalize/eps": [69.601, 77.834, "The formula adds a tiny epsilon to the variance, so it never divides by zero. For arithmetic by hand, it can be ignored.", [[72.541, 72.801], [74.601, 75.201], [76.631, 76.861]]],
+  "normalize/unit": [78.214, 83.366, "Now the feature has mean zero and variance one, whatever scale it arrived at.", [[81.434, 81.824]]],
+  "affine/gamma": [85.166, 101.561, "Forcing mean zero and variance one every time could be too rigid. So batch norm adds two learned numbers per feature: a scale, gamma, and a shift, beta. The output is y equals gamma x hat, plus beta.", [[89.926, 90.426], [93.826, 94.286], [94.926, 95.226], [95.616, 95.936], [96.626, 96.926], [97.326, 97.866], [100.656, 100.826]]],
+  "affine/y": [101.941, 111.132, "With gamma two and beta one, minus zero point two becomes two times minus zero point two, plus one: zero point six.", [[103.911, 104.331], [108.571, 108.741], [109.381, 109.911]]],
+  "affine/undo": [111.512, 121.339, "If the network learns gamma equal to the standard deviation and beta equal to the mean, it undoes the normalization entirely. It gets to choose.", [[114.972, 115.152], [116.842, 117.252], [119.742, 120.232]]],
+  "test/running": [123.139, 130.047, "During training, every batch has its own mean and variance, and batch norm keeps running averages of both.", [[124.049, 124.359], [126.949, 127.279]]],
+  "test/test": [130.427, 140.488, "At test time it normalizes with those running averages, not with the test batch. So an example's output never depends on which other examples came with it.", [[133.747, 134.057], [135.397, 135.917]]],
+  "test/turn": [140.868, 141.608, "Your turn.", []]
  }
 }

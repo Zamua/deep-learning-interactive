@@ -1,9 +1,9 @@
 {
- "duration": 123.443,
+ "duration": 138.322,
  "scenes": {
   "unroll": [0.0, 44.702],
-  "products": [44.702, 73.83],
-  "clip": [73.83, 123.443]
+  "products": [44.702, 88.708],
+  "clip": [88.708, 138.322]
  },
  "beats": {
   "unroll/graph": [0.7, 15.149, "Unroll the loop, and an RNN is just a deep graph: one copy of the step for every token, all sharing the same weights. At the end sits a loss, L: one number that says how wrong the outputs are.", [[1.66, 2.11], [4.49, 5.04], [7.28, 7.61], [9.2, 9.83], [11.37, 11.63], [11.96, 12.55]]],
@@ -11,12 +11,13 @@
   "unroll/factor": [23.687, 36.447, "Each step back multiplies the gradient by that step's local derivative, partial h t, partial h t minus one: W h h, times the slope of the tanh, tanh prime.", [[28.027, 28.407], [29.537, 29.797], [31.517, 31.887], [33.137, 33.447], [35.157, 35.487]]],
   "unroll/sum": [36.827, 43.602, "And since W h h is used at every step, its gradient adds up one contribution from each of them.", [[39.987, 40.367]]],
   "products/scalar": [45.402, 56.289, "Picture a single hidden unit, where each step back multiplies the gradient by the same number, a. Ten steps back, it has been multiplied by a to the tenth.", [[47.342, 47.712], [48.432, 48.582], [51.412, 51.682], [52.022, 52.682], [53.602, 53.842]]],
-  "products/vanish": [56.669, 64.688, "If a is one half, that is about one thousandth. The gradient vanishes: the early steps get almost none of it.", [[58.259, 58.549], [60.229, 60.769], [62.109, 62.569]]],
-  "products/explode": [65.068, 72.73, "If a is two, it is over a thousand. The gradient explodes, and the numbers soon grow too large to use.", [[66.378, 66.658], [68.028, 68.548], [70.038, 70.208]]],
-  "clip/clip": [74.53, 84.729, "Exploding gradients have a blunt fix: clip them. Take a gradient, g, of three and four, and pick a threshold, c, say one.", [[76.88, 77.35], [77.94, 78.62], [79.47, 79.65], [80.08, 80.24], [81.44, 81.8], [82.86, 83.04], [83.46, 83.85]]],
-  "clip/check": [85.109, 98.305, "The norm of g, written the norm of g, is its length as an arrow: the square root of its squared entries added up. Here that is the root of three squared plus four squared: five.", [[86.229, 86.529], [86.929, 87.099], [88.169, 88.569], [90.049, 90.549], [93.229, 93.889], [97.199, 97.719]]],
-  "clip/scale": [98.685, 113.534, "Whenever the norm is over c, shrink the whole vector to length c: multiply it by c over the norm, here one fifth. That gives zero point six and zero point eight. Same direction, shorter length.", [[100.555, 100.935], [103.055, 103.645], [105.915, 106.295], [107.355, 107.945], [109.735, 109.885], [111.015, 111.505], [112.425, 112.675]]],
-  "clip/limit": [113.914, 121.223, "Clipping only ever shrinks: it tames a gradient that explodes, but it cannot bring back one that has vanished.", [[115.794, 116.284], [118.474, 118.844]]],
-  "clip/turn": [121.603, 122.343, "Your turn.", []]
+  "products/slope": [56.669, 69.511, "For one unit, a is W h h times the slope of the tanh. Say W h h is two, and the slope is a quarter. Then a is two times a quarter: one half.", [[57.549, 57.869], [59.589, 59.749], [61.459, 61.959], [63.969, 64.229], [65.629, 66.169], [68.319, 68.799]]],
+  "products/vanish": [69.891, 79.566, "Ten steps back, that is one half to the tenth: about one thousandth. The gradient vanishes: the early steps get almost none of it.", [[70.941, 71.401], [73.351, 73.781], [75.101, 75.691], [77.091, 77.481]]],
+  "products/explode": [79.946, 87.608, "If a is two, it is over a thousand. The gradient explodes, and the numbers soon grow too large to use.", [[81.256, 81.536], [82.906, 83.426], [84.916, 85.086]]],
+  "clip/clip": [89.408, 99.608, "Exploding gradients have a blunt fix: clip them. Take a gradient, g, of three and four, and pick a threshold, c, say one.", [[91.758, 92.228], [92.818, 93.498], [94.348, 94.528], [94.958, 95.118], [96.318, 96.678], [97.738, 97.918], [98.338, 98.728]]],
+  "clip/check": [99.988, 113.183, "The norm of g, written the norm of g, is its length as an arrow: the square root of its squared entries added up. Here that is the root of three squared plus four squared: five.", [[101.108, 101.408], [101.808, 101.978], [103.048, 103.448], [104.928, 105.428], [108.108, 108.768], [112.078, 112.598]]],
+  "clip/scale": [113.563, 128.412, "Whenever the norm is over c, shrink the whole vector to length c: multiply it by c over the norm, here one fifth. That gives zero point six and zero point eight. Same direction, shorter length.", [[115.433, 115.813], [117.933, 118.523], [120.793, 121.173], [122.233, 122.823], [124.613, 124.763], [125.893, 126.383], [127.303, 127.553]]],
+  "clip/limit": [128.792, 136.101, "Clipping only ever shrinks: it tames a gradient that explodes, but it cannot bring back one that has vanished.", [[130.672, 131.162], [133.352, 133.722]]],
+  "clip/turn": [136.481, 137.222, "Your turn.", []]
  }
 }

@@ -74,11 +74,15 @@ const count: SceneDef = {
     s.alpha(s.ease('shape', 0.6) * (1 - s.ease('count', 0.6)), () => {
       s.text('(d, r) · (r, k) → (d, k)', s.w / 2, top + S * s.u + 7 * s.u, { size: 3.4, font: 'mono', color: s.c('--ink-2') });
     });
+    // What B and A hold, counted apart.
+    s.alpha(s.ease('count', 0.6), () => {
+      rich(s, [['B: 1,000 × 4 = 4,000', 'green'], ['   ', '--ink-3'], ['A: 4 × 1,000 = 4,000', 'orange']], s.w / 2, top + S * s.u + 6 * s.u, { size: 3.2, weight: 600 });
+    });
     // How many numbers each holds, as bars on one scale.
-    const cnt = s.ease('count', 0.8);
+    const cnt = s.ease('total', 0.8);
     const bl = s.w / 2 - 34 * s.u;
     const len = 68 * s.u;
-    const y1 = top + S * s.u + 9 * s.u;
+    const y1 = top + S * s.u + 16 * s.u;
     const y2 = y1 + 9 * s.u;
     s.alpha(cnt, () => {
       s.rrect(bl, y1 - 2 * s.u, len, 4 * s.u, 0.8, { fill: s.tint('blue', 0.35), stroke: s.tint('blue', 0.8), lw: 0.25 });
@@ -143,4 +147,40 @@ const merge: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { full, count, merge };
+/** The worked count: W of shape (2,000, 500) at rank 4, drawn with d and k to scale. */
+const worked: SceneDef = {
+  draw(s) {
+    const u = s.u;
+    const c = s.w / 2;
+    const top = s.h * 0.32 - 20 * u;
+    const hd = 40 * u;
+    const wk = 10 * u;
+    const rr = 4 * u;
+    const wx = c - 13 * u;
+    const bx = c + 6 * u;
+    const ax = c + 15 * u;
+    block(s, wx, top + hd / 2, wk, hd, 'W', 'slate', { size: 3.6 });
+    brace(s, 'left', top, top + hd, wx - wk / 2 - 2 * u, 'd = 2,000', 'slate', 3);
+    brace(s, 'top', wx - wk / 2, wx + wk / 2, top - 2 * u, 'k = 500', 'slate', 3);
+    s.alpha(s.ease('ask', 0.6, 1.5) * (1 - s.ease('B', 0.5)), () => s.text('r = 4', bx + 5 * u, top + hd / 2, { size: 3.4, font: 'mono', weight: 650, color: s.c('green') }));
+    const b = s.ease('B', 0.6);
+    s.alpha(b, () => {
+      block(s, bx, top + hd / 2, rr, hd, 'B', 'green', { size: 3, on: s.win('B', 'A') });
+      brace(s, 'bottom', bx - rr / 2, bx + rr / 2, top + hd + 2 * u, 'r = 4', 'green', 3);
+      for (const y of [top, top + hd]) s.line(wx + wk / 2 + 1 * u, y, bx - rr / 2 - 1 * u, y, s.tint('green', 0.6), 0.25, [0.8, 0.6]);
+    });
+    const a = s.ease('A', 0.6);
+    s.alpha(a, () => {
+      block(s, ax, top + rr / 2, wk, rr, 'A', 'orange', { size: 2.8, on: s.win('A', 'sum') });
+      brace(s, 'top', ax - wk / 2, ax + wk / 2, top - 2 * u, 'k = 500', 'orange', 3);
+      s.text('r', ax + wk / 2 + 1.5 * u, top + rr / 2, { size: 3, font: 'mono', weight: 600, align: 'left', color: s.c('orange') });
+    });
+    const o = { size: 3.2, weight: 600 } as const;
+    s.alpha(s.ease('B', 0.6, 1), () => rich(s, [['B: (2,000, 4) → 2,000 × 4 = ', '--ink-2'], ['8,000', 'green']], c, s.h * 0.64, o));
+    s.alpha(s.ease('A', 0.6, 1), () => rich(s, [['A: (4, 500) → 4 × 500 = ', '--ink-2'], ['2,000', 'orange']], c, s.h * 0.72, o));
+    s.alpha(s.ease('sum', 0.6), () => rich(s, [['8,000 + 2,000 = ', '--ink-2'], ['10,000', 'teal'], [' = 4 × (2,000 + 500)', '--ink-2']], c, s.h * 0.8, o));
+    s.alpha(s.ease('pct', 0.6, 1), () => rich(s, [['10,000 / (2,000 × 500) = ', '--ink-2'], ['1%', 'teal']], c, s.h * 0.88, o));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { full, count, merge, worked };

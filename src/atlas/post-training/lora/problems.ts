@@ -40,8 +40,9 @@ export const generators: Generator[] = [
           { value: dd + k, why: `That leaves out the rank. Each of $${B}$'s $d$ rows and $${A}$'s $k$ columns holds $${r} = ${rank}$ numbers.` },
         ]),
         solution: [
-          `$${B}$ is $(d, ${r}) = (${big(dd)}, ${rank})$: $${big(dd * rank)}$ numbers. $${A}$ is $(${r}, k) = (${rank}, ${big(k)})$: $${big(rank * k)}$ numbers.`,
-          `Together: $${r}(d + k) = ${rank} \\times ${big(dd + k)} = ${big(v)}$.`,
+          `$${B}$ takes $\\symW$'s rows and $${r}$ columns: $(d, ${r}) = (${big(dd)}, ${rank})$, so $${big(dd)} \\times ${rank} = ${big(dd * rank)}$ numbers.`,
+          `$${A}$ takes $${r}$ rows and $\\symW$'s columns: $(${r}, k) = (${rank}, ${big(k)})$, so $${rank} \\times ${big(k)} = ${big(rank * k)}$ numbers.`,
+          `Together: $${big(dd * rank)} + ${big(rank * k)} = ${big(v)}$, which is $${r}(d + k) = ${rank} \\times ${big(dd + k)}$.`,
           `Full fine-tuning would train all $d \\times k = ${big(dd * k)}$ entries of $\\symW$.`,
         ],
       };
@@ -66,9 +67,11 @@ export const generators: Generator[] = [
           2,
         ),
         solution: [
-          `LoRA trains $${r}(d + k) = ${rank} \\times ${big(dd + k)} = ${big(lora)}$ numbers.`,
-          `$\\symW$ holds $d \\times k = ${big(dd * k)}$.`,
-          `$${big(lora)} / ${big(dd * k)} \\approx ${num(round(lora / (dd * k), 6))}$, which is about $${num(v, 2)}$ percent.`,
+          `$${B}$ is $(${big(dd)}, ${rank})$: $${big(dd * rank)}$ numbers. $${A}$ is $(${rank}, ${big(k)})$: $${big(rank * k)}$ numbers.`,
+          `LoRA trains $${big(dd * rank)} + ${big(rank * k)} = ${big(lora)}$ numbers: $${r}(d + k) = ${rank} \\times ${big(dd + k)}$.`,
+          `$\\symW$ holds $d \\times k = ${big(dd)} \\times ${big(k)} = ${big(dd * k)}$.`,
+          `As a fraction: $${big(lora)} / ${big(dd * k)} \\approx ${num(round(lora / (dd * k), 6))}$.`,
+          `Times 100 for a percent: about $${num(v, 2)}$ percent.`,
         ],
       };
     },

@@ -155,7 +155,7 @@ export const generators: Generator[] = [
         solution: [
           `On a window $[a, b, c]$, with $a$ first and $c$ last ${dir}, the output is $${lin(w, ['a', 'b', 'c'])}$.`,
           lead,
-          kind === 'sum' ? 'So it is largest over the brightest windows: a blur, not an edge detector.' : `So it is largest where the brightness ${kind === 'rise' ? 'rises' : 'falls'} ${dir}: an edge detector. A filter responds most where the input looks like it.`,
+          kind === 'sum' ? 'So it is largest over the brightest windows, not at an edge: it adds up brightness instead of comparing it.' : `So it is largest where the brightness ${kind === 'rise' ? 'rises' : 'falls'} ${dir}: an edge detector. A filter responds most where the input looks like it.`,
         ],
       };
     },

@@ -54,6 +54,57 @@ const numeric: SceneDef = {
   },
 };
 
+/** x³ at 1: [label, colour, value and error per step size]. */
+const ROWS: [string, 'red' | 'gold', [string, string][]][] = [
+  ['one-sided', 'red', [['3.31', 'off 0.31'], ['3.0301', 'off 0.0301']]],
+  ['centered', 'gold', [['3.01', 'off 0.01'], ['3.0001', 'off 0.0001']]],
+];
+
+const error: SceneDef = {
+  marks: { f: { tex: String.raw`f(x) = x^{3}, \quad f'(1) = 3`, x: 0.5, y: 0.1, size: 5 } },
+  draw(s) {
+    s.show('f', s.ease('cube', 0.6));
+    const lx = s.w / 2 - 48 * s.u;
+    const cols = [s.w / 2 - 4 * s.u, s.w / 2 + 32 * s.u];
+    const colA = [after(s, 'ten', 0.1), after(s, 'hund', 0.2)];
+    cols.forEach((x, j) => s.alpha(colA[j]!, () => mono(s, j ? 'h = 0.01' : 'h = 0.1', x, s.h * 0.24, '--ink-3', 3.4, 'center', 600)));
+    ROWS.forEach(([label, k, cells], i) => {
+      const y = s.h * (0.35 + 0.18 * i);
+      s.alpha(after(s, 'ten', 0.1 + 0.45 * i), () => mono(s, label, lx, y, k, 3.6, 'left', 650));
+      cells.forEach(([v, off], j) => {
+        const a = j ? after(s, 'hund', 0.4 + 0.35 * i) : after(s, 'ten', 0.2 + 0.45 * i);
+        s.alpha(a, () => {
+          mono(s, v, cols[j]!, y, k, 3.8, 'center', 650);
+          mono(s, off, cols[j]!, y + 4.8 * s.u, '--ink-2', 3.3, 'center', 550);
+        });
+      });
+      s.alpha(after(s, 'order', 0.15 + 0.35 * i), () => mono(s, i ? 'error ÷ 100' : 'error ÷ 10', (cols[0]! + cols[1]!) / 2, y + 10 * s.u, k, 3.3, 'center', 600));
+    });
+    // Slopes on a number line around the true 3: the left step under, the right step over, their average between.
+    const k = Math.min(125 * s.u, (s.w - 14 * s.u) / 0.8);
+    const X = (v: number) => s.w / 2 + (v - 3) * k;
+    const ya = s.h * 0.8;
+    const tick = (v: number, kk: 'red' | 'teal' | 'blue', top: string, sub: string) => {
+      s.line(X(v), ya - 1.6 * s.u, X(v), ya + 1.6 * s.u, s.c(kk), 0.45);
+      mono(s, top, X(v), ya + 5 * s.u, kk, 3.4, 'center', 650);
+      if (sub) mono(s, sub, X(v), ya + 9.6 * s.u, '--ink-2', 3.2, 'center', 550);
+    };
+    s.alpha(after(s, 'cube', 0.6), () => {
+      s.line(X(2.62), ya, X(3.4), ya, s.c('--axis'), 0.3);
+      tick(3, 'teal', 'true 3', '');
+    });
+    s.alpha(after(s, 'ten', 0.35), () => tick(3.31, 'red', 'right 3.31', '+0.31'));
+    s.alpha(after(s, 'left', 0.45), () => tick(2.71, 'blue', 'left 2.71', '−0.29'));
+    const c = after(s, 'cancel', 0.25);
+    s.alpha(c, () => {
+      s.arrow(X(2.71), ya - 3.4 * s.u, X(2.98), ya - 3.4 * s.u, s.c('blue'), 0.4, 1.6);
+      s.arrow(X(3.31), ya - 3.4 * s.u, X(3.04), ya - 3.4 * s.u, s.c('red'), 0.4, 1.6);
+      s.circle(X(3.01), ya, 1.2 * s.u, { fill: s.c('gold'), stroke: s.c('--card'), lw: 0.3 });
+      mono(s, 'average 3.01', X(3.01), ya - 7 * s.u, 'gold', 3.5, 'center', 650);
+    });
+  },
+};
+
 /** Position on a log axis from 1e-10 to 1, for the relative-error scale. */
 const logX = (s: Scene, v: number) => {
   const l = 12 * s.u;
@@ -71,7 +122,7 @@ const compare: SceneDef = {
   marks: { rel: { tex: String.raw`\text{rel} = \frac{|a - n|}{\max(|a|,\, |n|)}`, x: 0.5, y: 0.11, size: 5 } },
   draw(s) {
     s.show('rel', s.ease('rel', 0.6));
-    // Two pairs off by the same 0.01.
+    // Two pairs off by the same 0.0001.
     const rows: [string, string, string][] = [
       ['a = 1000.0000', 'n = 1000.0001', '1e-7'],
       ['a = 0.0002', 'n = 0.0003', '0.33'],
@@ -119,4 +170,4 @@ const compare: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { numeric, compare };
+export const scenes: Record<string, SceneDef> = { numeric, error, compare };

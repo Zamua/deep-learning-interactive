@@ -38,7 +38,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'target', say: 'How is it trained? There are no labels here. The target is the input itself: the output should come back equal to x.', code: 'x' },
         { id: 'diff', say: 'So compare them entry by entry. Say x is one, zero and two, and {x̂|x hat} is a half, zero and three. The differences are a half, zero, and minus one.', code: 'd' },
-        { id: 'square', say: 'Square them and add: a quarter, plus zero, plus one, which is {1.25|one point two five}. That squared error is the loss, {L = ‖x − x̂‖²|L equals the norm of x minus x hat, squared}: the double bars mean a vector\'s length, and its square is this sum of squares.', code: 'loss' },
+        { id: 'square', say: 'Square them and add: a quarter, plus zero, plus one, which is {1.25|one point two five}. That squared error is the loss, {L = ‖x − x̂‖²|L equals the norm of x minus x hat, squared}. The double bars, read “norm”, give a vector\'s size as an arrow, the square root of its squared entries added up, so its square is just this sum of squares.', code: 'loss' },
         { id: 'train', say: 'A miss in either direction counts. Gradient steps on this loss train the encoder and the decoder together, and any pile of unlabeled images will do.', code: 'loss' },
       ],
     },

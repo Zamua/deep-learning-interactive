@@ -1,6 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
+import { after, band, gate, mono, wire } from '../../backprop/draw';
 import { ball } from '../../optimization/draw';
-import { axes, curve, fmt, frame, rich } from '../draw';
+import { axes, clipped, curve, type Frame, fmt, frame, rich } from '../draw';
 
 const sig = (z: number) => 1 / (1 + Math.exp(-z));
 const nls = (z: number) => -Math.log(sig(z));
@@ -57,18 +58,12 @@ const loss: SceneDef = {
   },
   draw(s) {
     const y = s.h * 0.1;
-    const pu = s.ease('push', 0.8, 2);
-    const ag = s.ease('agree', 1.6, 0.4) * (1 - s.ease('rank', 0.6));
-    const { xa, xb } = cards(s, y, 'r = 2.0', 'r = 1.0', { on: [s.win('pairs', 'flip'), s.win('flip', 'push')] });
+    const { xa, xb } = cards(s, y, 'r = 2.0', 'r = 1.0', { on: [s.win('pairs', 'flip'), s.win('flip')] });
     s.alpha(s.win('pairs', 'flip'), () => s.text('chosen', xa, y + 8.5 * s.u, { size: 2.8, font: 'mono', color: s.c('green') }));
-    s.alpha(s.win('flip', 'push'), () => s.text('chosen, had b won', xb, y + 8.5 * s.u, { size: 2.8, font: 'mono', color: s.c('green') }));
-    s.alpha(pu * (1 - s.ease('rank', 0.6)), () => {
-      s.text('↑ 0.27', xa, y + 8.5 * s.u, { size: 3, font: 'mono', weight: 650, color: s.c('green') });
-      s.text('↓ 0.27', xb, y + 8.5 * s.u, { size: 3, font: 'mono', weight: 650, color: s.c('red') });
-    });
+    s.alpha(s.win('flip'), () => s.text('chosen, had b won', xb, y + 8.5 * s.u, { size: 2.8, font: 'mono', color: s.c('green') }));
     s.show('f', s.ease('loss', 0.6));
     // The loss against the gap: small when the chosen answer scores higher.
-    const F = frame(s.w / 2 - 34 * s.u, s.h * 0.35, s.w / 2 + 34 * s.u, s.h * 0.78, [-3, 3], [0, 3.2]);
+    const F = lossFrame(s, 0.35, 0.78);
     axes(s, F, 'r_w − r_l', 'loss', { x: 'gold', y: 'red' });
     curve(s, F, nls, -3, 3, 'red', { upto: s.ease('loss', 1.2) });
     const dot = (z: number, label: string, a: number) =>
@@ -76,16 +71,71 @@ const loss: SceneDef = {
         ball(s, F.X(z), F.Y(nls(z)), 'red', 1.5);
         s.text(label, F.X(z) + 2.5 * s.u, F.Y(nls(z)) - 3 * s.u, { size: 3, font: 'mono', weight: 650, align: 'left', color: s.c('red'), halo: true });
       });
-    dot(1, 'a won: 0.31', s.ease('loss', 0.6, 2.5) * (1 - ag));
-    dot(-1, 'b won: 1.31', s.ease('flip', 0.6, 0.6) * (1 - ag));
-    // A sliding pair: the push is 1 − σ of the gap, small once the model agrees.
-    s.alpha(ag, () => {
-      const z = -2 + 4.5 * s.ease('agree', 3, 0.8);
-      ball(s, F.X(z), F.Y(nls(z)), 'red', 1.5);
-      rich(s, [['gap ', '--ink-3'], [fmt(z, 1), 'gold'], ['  push ', '--ink-3'], [fmt(1 - sig(z)), 'green']], s.w / 2, s.h * 0.9, { size: 3.2, weight: 600 });
-    });
-    s.alpha(s.ease('rank', 0.6), () => s.text('only gaps between scores matter', s.w / 2, s.h * 0.9, { size: 3.4, color: s.c('--ink-2') }));
+    dot(1, 'a won: 0.31', s.ease('loss', 0.6, 2.5));
+    dot(-1, 'b won: 1.31', s.ease('flip', 0.6, 0.6));
   },
 };
 
-export const scenes: Record<string, SceneDef> = { compare, loss };
+/** The loss against the gap, between `top` and `bottom` (fractions of the stage height). */
+const lossFrame = (s: Scene, top: number, bottom: number): Frame => frame(s.w / 2 - 34 * s.u, s.h * top, s.w / 2 + 34 * s.u, s.h * bottom, [-3, 3], [0, 3.2]);
+
+// The pair a won, walked backward: gap 1, sigma 0.73, loss 0.31.
+const P = sig(1);
+const DP = -1 / P;
+const DZ = -(1 - P);
+const dl = (z: number) => -(1 - sig(z));
+
+const slope: SceneDef = {
+  marks: {
+    cancel: { tex: String.raw`-\frac{1}{\sigma} \cdot \sigma(1 - \sigma) = -(1 - \sigma)`, x: 0.5, y: 0.43, size: 4.2 },
+  },
+  draw(s) {
+    const u = s.u;
+    const R = 4.5;
+    const at = band(s, 100, 10);
+    const [wx, wy] = at([0.06, 0.1]);
+    const [lx, ly] = at([0.06, 0.3]);
+    const [mx, my] = at([0.3, 0.2]);
+    const [gx, gy] = at([0.58, 0.2]);
+    const [nx, ny] = at([0.84, 0.2]);
+    const [ox, oy] = at([1, 0.2]);
+    const fwd = (f: number) => after(s, 'chain', f);
+    const back = s.ease('back', 0.6);
+    const sg = after(s, 'sig', 0.6);
+    const sc = after(s, 'scores', 0.55);
+    mono(s, 'r_w', wx - 1.6 * u, wy, 'gold', 3.6, 'right', 650);
+    mono(s, 'r_l', lx - 1.6 * u, ly, 'gold', 3.6, 'right', 650);
+    wire(s, wx, wy, mx, my, { r1: R, t: 0.45, val: '2', grad: fmt(DZ), ga: sc, hot: sc });
+    wire(s, lx, ly, mx, my, { r1: R, t: 0.45, val: '1', grad: `+${fmt(-DZ)}`, ga: sc, hot: sc });
+    wire(s, mx, my, gx, gy, { r0: R, r1: R, val: 'z = 1', va: fwd(0.3), grad: fmt(DZ), ga: sg, hot: sg });
+    wire(s, gx, gy, nx, ny, { r0: R, r1: R, val: fmt(P), va: fwd(0.65), grad: fmt(DP), ga: after(s, 'back', 0.6), hot: back });
+    wire(s, nx, ny, ox, oy, { r0: R, val: '0.31', va: fwd(0.85), grad: '1', ga: back, hot: back });
+    s.text('L', ox + 1.6 * u, oy, { size: 4.6, italic: true, weight: 550, align: 'left', color: s.c('red') });
+    gate(s, mx, my, '−', '--ink-2', s.win('scores', 'push'), R);
+    gate(s, gx, gy, 'σ', 'teal', s.win('sig', 'cancel'), R);
+    gate(s, nx, ny, '−ln', '--ink-2', s.win('back', 'sig'), R);
+    // Each gate's local slope, under it.
+    const note = (x: number, y: number, text: string, a: number) => s.alpha(a, () => mono(s, text, x, y + (R + 4.6) * u, '--ink-3', 3.1, 'center', 600));
+    note(nx, ny, '−1/σ', after(s, 'back', 0.35));
+    note(gx, gy, 'σ(1 − σ) ≈ 0.20', after(s, 'sig', 0.1));
+    s.show('cancel', s.ease('cancel', 0.6));
+    // The loss against the gap, with its slope there drawn as a tangent.
+    const F = lossFrame(s, 0.52, 0.84);
+    axes(s, F, 'r_w − r_l', 'loss', { x: 'gold', y: 'red' });
+    curve(s, F, nls, -3, 3, 'red');
+    const z = 1 + 1.5 * s.ease('agree', 1.2, 0.3) - 4 * after(s, 'agree', 0.5, 2);
+    const k = dl(z);
+    s.alpha(sg, () => {
+      const d = 0.9;
+      clipped(s, F, () => s.line(F.X(z - d), F.Y(nls(z) - k * d), F.X(z + d), F.Y(nls(z) + k * d), s.c('gold'), 0.45));
+    });
+    ball(s, F.X(z), F.Y(nls(z)), 'red', 1.5);
+    s.alpha(sg * (1 - s.ease('agree', 0.4)), () => mono(s, `slope ${fmt(DZ)}`, F.X(1) + 3 * u, F.Y(nls(1)) - 5 * u, 'red', 3.2, 'left', 650));
+    const ag = s.ease('agree', 0.6) * (1 - s.ease('rank', 0.6));
+    s.alpha(s.win('push', 'agree'), () => rich(s, [['r_w ', 'gold'], [`↑ ${fmt(-DZ)}`, 'green'], ['    r_l ', 'gold'], [`↓ ${fmt(-DZ)}`, 'red']], s.w / 2, s.h * 0.94, { size: 3.4, weight: 650 }));
+    s.alpha(ag, () => rich(s, [['gap ', '--ink-3'], [fmt(z, 1), 'gold'], ['  push ', '--ink-3'], [fmt(-k), 'green']], s.w / 2, s.h * 0.94, { size: 3.2, weight: 600 }));
+    s.alpha(s.ease('rank', 0.6), () => s.text('only gaps between scores matter', s.w / 2, s.h * 0.94, { size: 3.4, color: s.c('--ink-2') }));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { compare, loss, slope };

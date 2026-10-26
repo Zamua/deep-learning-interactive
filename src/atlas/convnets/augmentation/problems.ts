@@ -76,8 +76,9 @@ export const generators: Generator[] = [
             { value: k + 1, why: 'That counts one direction. The crop moves down as well as across: multiply the two.' },
           ]),
           solution: [
-            `Across, the crop's left edge can sit at $0$ to $${S} - ${c} = ${k}$: $${k + 1}$ places.`,
-            `Down, the same: $${k + 1}$. In all, $${k + 1} \\times ${k + 1} = ${v}$.`,
+            `Across, the crop's left edge can sit at $0$ to $${S} - ${c} = ${k}$: $${k + 1}$ places, counting position $0$.`,
+            `Down, its top edge can sit at $0$ to $${k}$ the same way: $${k + 1}$ places.`,
+            `Every place across pairs with every place down: $${k + 1} \\times ${k + 1} = ${v}$ crops.`,
           ],
         };
       }
@@ -98,8 +99,10 @@ export const generators: Generator[] = [
           ...(flip ? [{ value: a * b + 2, why: 'The flip doubles every crop: multiply by 2, do not add 2.' }] : []),
         ]),
         solution: [
-          `Across: $${W} - ${c} + 1 = ${a}$ places. Down: $${H} - ${c} + 1 = ${b}$.`,
-          `Crops: $${a} \\times ${b} = ${a * b}$.${flip ? ` Each also comes flipped or not: $${a * b} \\times 2 = ${v}$.` : ''}`,
+          `Across, the crop's left edge can sit at $0$ to $${W} - ${c} = ${W - c}$: $${a}$ places, counting position $0$.`,
+          `Down, its top edge can sit at $0$ to $${H} - ${c} = ${H - c}$: $${b}$ places.`,
+          `Every place across pairs with every place down: $${a} \\times ${b} = ${a * b}$ crops.`,
+          ...(flip ? [`Each crop also comes flipped or not: $${a * b} \\times 2 = ${v}$ versions.`] : []),
         ],
       };
     },

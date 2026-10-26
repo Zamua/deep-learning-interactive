@@ -1,18 +1,26 @@
 {
- "duration": 82.005,
+ "duration": 153.302,
  "scenes": {
   "variety": [0.0, 44.187],
-  "crops": [44.187, 82.005]
+  "crops": [44.187, 110.01],
+  "try": [110.01, 153.302]
  },
  "beats": {
   "variety/memo": [0.7, 10.128, "A model that overfits has memorized its training images, quirks and all. One fix: never show it exactly the same image twice.", [[4.05, 4.39], [5.39, 6.06], [6.73, 7.24]]],
   "variety/change": [10.508, 21.521, "Each time an image is used, change it a little at random. Shift it, make it brighter or darker, crop it. It still shows the same thing, so its label stays true.", [[12.188, 12.478], [13.948, 14.408], [14.958, 15.308], [16.838, 17.178], [17.658, 18.118], [19.708, 19.958]]],
   "variety/flip": [21.901, 33.322, "But the change must keep the label true. Flip this right arrow left to right and it points left: now its label is wrong. A flipped photo of a cat is still a cat.", [[24.251, 24.831], [26.901, 27.121], [28.101, 28.611], [30.121, 30.681], [32.161, 32.321]]],
   "variety/which": [33.702, 43.087, "So which changes are safe depends on the task. A six turned upside down is a nine, and a red light with its colors shifted can look green.", [[36.672, 37.282], [39.632, 40.042], [42.062, 42.242]]],
-  "crops/count": [44.887, 55.454, "Random crops alone add a lot. A twenty eight pixel crop fits at five places across a thirty two pixel image, and five down: twenty five crops.", [[46.957, 47.497], [52.407, 52.777], [53.697, 54.157]]],
-  "crops/flips": [55.834, 59.822, "Add a random flip, and every image comes in fifty versions.", [[57.014, 57.254]]],
-  "crops/train": [60.202, 70.815, "Do this only while training, with fresh random choices every time. Validation and test images stay untouched, so they still measure the model on real data.", [[61.952, 62.252], [64.662, 65.302], [68.052, 68.312]]],
-  "crops/gap": [71.195, 79.785, "The training loss ends a little higher, because varied images are harder to memorize, and the validation loss ends lower: a smaller gap.", [[73.355, 73.565], [76.115, 76.505], [78.515, 78.895]]],
-  "crops/turn": [80.165, 80.905, "Your turn.", []]
+  "crops/count": [44.887, 52.115, "Random crops alone add a lot. Cut a twenty eight by twenty eight crop from a thirty two by thirty two image.", [[46.917, 47.507], [49.647, 49.797]]],
+  "crops/across": [52.495, 68.382, "Slide it across one pixel at a time. Its left edge can sit at zero, one, two, three or four, where its right edge meets the image's. That is thirty two minus twenty eight, plus one for position zero: five places.", [[55.075, 55.555], [57.375, 57.555], [57.935, 58.155], [58.545, 58.695], [59.775, 60.075], [61.955, 62.455], [64.905, 65.135], [66.975, 67.385]]],
+  "crops/down": [68.762, 80.768, "Down, the same: its top edge sits at zero to four, five places. Every place across pairs with every place down: five times five, twenty five crops.", [[69.282, 69.692], [70.212, 70.862], [73.092, 73.292], [74.202, 74.772], [77.682, 78.152], [79.212, 79.552]]],
+  "crops/flips": [81.148, 88.947, "Add a random flip, and each crop also comes mirrored: twenty five times two, fifty versions of every image.", [[82.318, 82.598], [84.628, 85.068], [86.428, 86.818]]],
+  "crops/train": [89.327, 99.94, "Do this only while training, with fresh random choices every time. Validation and test images stay untouched, so they still measure the model on real data.", [[91.077, 91.377], [93.787, 94.427], [97.177, 97.437]]],
+  "crops/gap": [100.32, 108.91, "The training loss ends a little higher, because varied images are harder to memorize, and the validation loss ends lower: a smaller gap.", [[102.48, 102.69], [105.24, 105.63], [107.64, 108.02]]],
+  "try/p1": [110.71, 125.417, "Try one. A training image is thirty six pixels wide and thirty two high. A random twenty eight by twenty eight crop is cut from it, then flipped left to right half of the time. How many different versions can that give?", [[111.29, 111.87], [114.5, 114.68], [116.0, 116.67], [119.84, 120.18], [122.69, 123.24]]],
+  "try/across": [125.797, 133.661, "Across, the crop's left edge can sit at zero up to thirty six minus twenty eight, which is eight: nine places.", [[126.417, 126.687], [131.147, 131.457], [132.147, 132.547], [133.477, 133.627]]],
+  "try/down": [134.041, 141.023, "Down, the image is only thirty two high, so the top edge sits at zero to four: five places.", [[134.561, 134.951], [137.041, 137.351], [139.691, 140.071]]],
+  "try/total": [141.403, 145.257, "Nine across times five down is forty five crops.", []],
+  "try/flip": [145.637, 151.082, "And each comes flipped or not: forty five times two, ninety versions.", [[147.517, 148.027], [149.467, 149.867]]],
+  "try/turn": [151.462, 152.202, "Your turn.", []]
  }
 }

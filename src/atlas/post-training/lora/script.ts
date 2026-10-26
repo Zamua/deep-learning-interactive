@@ -38,7 +38,8 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 'shape', say: 'B times A is d by r, times r by k. The inner r\'s match, and the product comes out d by k: exactly W\'s shape.', code: ['B', 'A', 'shape'] },
-        { id: 'count', say: 'Yet it is built from only r times d plus k numbers: four times two thousand, eight thousand.', code: 'count' },
+        { id: 'count', say: 'Count what is learned. B is a thousand by four: four thousand numbers. A is four by a thousand: four thousand more.', code: ['B', 'A'] },
+        { id: 'total', say: 'Together, eight thousand. That is r times d, plus r times k: r times d plus k, here four times two thousand.', code: 'count' },
         { id: 'frac', say: 'That is {0.8%|zero point eight percent} of the million in W.', code: 'count' },
         { id: 'out', say: 'The layer now computes W x plus B A x. W gets no updates; only B and A learn.', code: 'out' },
       ],
@@ -57,6 +58,26 @@ export const script: LectureScript = {
         { id: 'start', say: 'Training begins from the original model, and moves away from it only as B learns.', code: 'same' },
         { id: 'merge', say: 'When training is done, add B A into W. The merged matrix has W\'s shape, so the layer runs exactly as fast as before.', code: 'merge' },
         { id: 'tasks', say: 'And each task keeps only its own B and A: eight thousand numbers instead of a million.' },
+      ],
+    },
+    {
+      id: 'worked',
+      title: 'A W that is not square',
+      codeTitle: 'lora.py',
+      code: `
+        W.shape                      # (2000, 500)  #@ask
+        r = 4                                       #@ask
+        B = np.zeros((2000, r))      # 8,000        #@B
+        A = np.random.randn(r, 500)  # 2,000        #@A
+        B.size + A.size              # 10,000       #@sum
+        # 10,000 / 1,000,000 = 1%                   #@pct
+      `,
+      beats: [
+        { id: 'ask', say: 'Now a W that is not square: two thousand rows by five hundred columns, with LoRA at rank four. How many numbers does it train?', code: 'ask' },
+        { id: 'B', say: 'B takes W\'s rows, and r columns: two thousand by four. That is eight thousand numbers.', code: 'B' },
+        { id: 'A', say: 'A takes r rows, and W\'s columns: four by five hundred. That is two thousand more.', code: 'A' },
+        { id: 'sum', say: 'Together, ten thousand: four times two thousand five hundred, r times d plus k.', code: 'sum' },
+        { id: 'pct', say: 'W holds two thousand times five hundred: a million numbers. So LoRA trains one percent of them.', code: 'pct' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

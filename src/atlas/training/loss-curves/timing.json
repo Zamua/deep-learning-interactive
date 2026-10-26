@@ -1,8 +1,10 @@
 {
- "duration": 68.553,
+ "duration": 155.578,
  "scenes": {
   "rates": [0.0, 33.291],
-  "more": [33.291, 68.553]
+  "more": [33.291, 67.433],
+  "read": [67.433, 126.875],
+  "try": [126.875, 155.578]
  },
  "beats": {
   "rates/axes": [0.7, 7.331, "A loss curve plots the training loss, L, as training goes on. Its shape says what is wrong.", [[2.94, 3.12], [3.49, 3.72], [4.89, 5.49]]],
@@ -14,6 +16,15 @@
   "more/val": [44.103, 52.427, "Now add the validation loss. If the training loss keeps falling while validation turns and climbs, the model is overfitting.", [[45.983, 46.513], [50.523, 50.893]]],
   "more/gap": [52.807, 59.166, "A small, steady gap between the two is normal. A gap that keeps widening is the warning sign.", [[55.857, 56.427]]],
   "more/bottom": [59.546, 66.333, "The best weights are where validation bottomed out, here at epoch twelve. Keep those, and stop there.", [[62.186, 62.536], [64.066, 64.536], [65.206, 65.456]]],
-  "more/turn": [66.713, 67.453, "Your turn.", []]
+  "read/list": [68.133, 81.862, "Often the log is just numbers. Read them as a curve, one point per reading. Here, every hundred steps: two point three oh, two point two eight, two point two six, two point two four.", [[70.043, 70.543], [71.753, 72.143], [73.413, 73.963], [74.343, 74.533], [75.763, 76.183], [77.293, 77.683], [78.713, 79.143], [80.323, 80.723]]],
+  "read/slow": [82.242, 92.227, "Each reading is about two hundredths lower than the last: the same small drop every time, an almost straight line. The learning rate is too low.", [[85.472, 85.932], [88.022, 88.412], [89.972, 90.492]]],
+  "read/plateau": [92.607, 104.496, "This one falls from two point three oh to one point three eight, then hovers near one point two: a fast drop, then flat at a high level. The rate is too high to settle.", [[96.517, 96.887], [98.767, 99.277], [100.207, 100.527], [102.087, 102.617]]],
+  "read/explode": [104.876, 114.657, "This one more than doubles every reading, four point eight eight, eleven point two one, until it prints nan. The rate is far too high.", [[107.446, 107.866], [109.056, 109.386], [110.846, 111.206], [112.496, 112.976]]],
+  "read/noisy": [115.037, 125.775, "And this one goes up, down, up, down, but each low is lower than the one before: a noisy curve that still trends down. The batch is too small.", [[116.257, 116.497], [116.947, 117.127], [117.377, 117.597], [118.027, 118.467], [120.927, 121.327], [123.877, 124.367]]],
+  "try/p": [127.575, 135.843, "Try one. Three runs train the same model, differing only in the learning rate. Order them from the lowest rate to the highest.", [[128.155, 128.745], [130.705, 130.995], [132.805, 133.345], [134.865, 135.015]]],
+  "try/lowest": [136.223, 141.07, "Run C drops by the same tiny amount each time: the lowest rate.", [[139.703, 140.143]]],
+  "try/middle": [141.45, 146.576, "Run A drops fast and keeps going lower: a good rate, in between.", [[144.31, 144.84], [145.54, 145.88]]],
+  "try/highest": [146.956, 153.357, "Run B blows up to nan: the highest. So C, then A, then B.", [[148.796, 149.256], [150.006, 150.496], [151.296, 151.566], [152.226, 152.516]]],
+  "try/turn": [153.737, 154.478, "Your turn.", []]
  }
 }

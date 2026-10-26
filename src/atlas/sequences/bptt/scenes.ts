@@ -73,6 +73,12 @@ const products: SceneDef = {
     };
     s.alpha(s.ease('scalar', 0.6), () => s.text('gradient (log scale)', L + 2 * s.u, T - 3 * s.u, { size: 2.8, font: 'mono', align: 'left', color: s.c('--ink-3') }));
     s.alpha(s.ease('scalar', 0.6, 3), () => s.text('a = 1: unchanged', X(10), Y(0) - 3 * s.u, { size: 2.8, font: 'mono', align: 'right', color: s.c('--ink-2'), halo: true }));
+    // The one-step factor, in the corner the exploding curve later takes.
+    s.alpha(s.ease('slope', 0.6) * (1 - s.ease('explode', 0.5)), () => {
+      const o = { size: 3.2, font: 'mono', weight: 650, align: 'left', halo: true } as const;
+      s.text('a = Whh · tanh′', X(1), Y(2.7), { ...o, color: s.c('--ink-2') });
+      s.alpha(s.ease('slope', 0.6, 3), () => s.text('  = 2 × 0.25 = 0.5', X(1), Y(2.7) + 5 * s.u, { ...o, color: s.c('blue') }));
+    });
     s.alpha(s.ease('vanish', 0.4), () => {
       curve(0.5, 'blue', s.ease('vanish', 2.2, 0.4));
       s.alpha(s.ease('vanish', 0.6, 2.4), () => s.text('0.5¹⁰ ≈ 0.001', X(1), Y(-2.5), { size: 3.2, font: 'mono', weight: 650, align: 'left', color: s.c('blue'), halo: true }));

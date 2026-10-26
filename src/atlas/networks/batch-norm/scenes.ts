@@ -1,7 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
 import { cells, columns, rowLabel } from '../../draw';
-import { after, caption, Frame, type Ink } from '../draw';
+import { after, caption, Frame, type Ink, matrix } from '../draw';
 
 const X = [9, 3, 17, 11];
 const MU = 10;
@@ -23,19 +23,51 @@ function axis(s: Scene, y: number, lo: number, hi: number, step: number, k: Ink 
   return X;
 }
 
+/** The x mapping `axis` uses, without drawing it. */
+function axisX(s: Scene, lo: number, hi: number): (v: number) => number {
+  const l = 10 * s.u;
+  const r = s.w - 10 * s.u;
+  return (v: number) => l + ((v - lo) / (hi - lo)) * (r - l);
+}
+
+/** A second feature beside the first, so the batch has a column per feature. */
+const BATCH = X.map((v, i) => [v, [4, 6, 2, 8][i]!]);
+
+/** The batch as a matrix: a row per example, a column per feature, column 0 lit. */
+function batch(s: Scene): void {
+  const u = s.u;
+  const cx = s.w / 2 + 6 * u;
+  const cy = s.h * 0.48;
+  const col = s.ease('column', 0.6);
+  const M = matrix(s, cx, cy, BATCH.map((r) => r.map(str)), 'orange', { pw: 20, ph: 10.5, w: 14, h: 8.5, size: 3.6, on: (_, j) => (j === 0 ? col : 0) });
+  const lab = { size: 3, font: 'mono', color: s.c('--ink-2') } as const;
+  for (let j = 0; j < 2; j++) s.text(`feature ${j}`, M.x(j), M.y(0) - 9 * u, { ...lab, weight: j === 0 && col > 0.5 ? 650 : 500, color: s.c(j === 0 && col > 0.5 ? 'orange' : '--ink-2') });
+  for (let i = 0; i < 4; i++) s.text(`example ${i}`, M.x(0) - 10.5 * u, M.y(i), { ...lab, align: 'right' });
+  s.text('X', M.x(1) + 11 * u, cy, { size: 4.2, font: 'mono', weight: 650, color: s.c('orange') });
+  s.alpha(col, () => s.rrect(M.x(0) - 8.5 * u, M.y(0) - 5.8 * u, 17 * u, M.y(3) - M.y(0) + 11.6 * u, 2, { stroke: s.c('orange'), lw: 0.5 }));
+  s.alpha(after(s, 'column', 0.5), () => caption(s, 'feature 0 = column 0: one value per example', s.h * 0.9, 'orange', 3.4));
+}
+
 const normalize: SceneDef = {
   marks: {
     f: { tex: String.raw`\hat{x} = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}}`, x: 0.5, y: 0.89, size: 6.5 },
   },
   draw(s) {
     const u = s.u;
+    // The batch, one example per row; column 0 is the feature normalized below.
+    s.alpha(1 - s.ease('mean', 0.6), () => batch(s));
     const xs = columns(s, 4, 15);
     const yc = s.h * 0.14;
-    rowLabel(s, 'x', xs[0]! - 10 * u, yc, 'orange', 3.8);
-    cells(s, xs, yc, X.map(str), 'orange', { w: 11, h: 8, on: X.map(() => s.win('mean', 'var')) });
+    s.alpha(after(s, 'column', 0.35), () => {
+      rowLabel(s, 'x', xs[0]! - 10 * u, yc, 'orange', 3.8);
+      cells(s, xs, yc, X.map(str), 'orange', { w: 11, h: 8, on: X.map(() => s.win('mean', 'var')) });
+    });
     const y1 = s.h * 0.4;
-    const A = axis(s, y1, 0, 20, 5);
-    X.forEach((v) => s.circle(A(v), y1, 1.5 * u, { fill: s.c('orange'), stroke: s.c('--card'), lw: 0.35 }));
+    s.alpha(s.ease('mean', 0.6), () => {
+      const A0 = axis(s, y1, 0, 20, 5);
+      X.forEach((v) => s.circle(A0(v), y1, 1.5 * u, { fill: s.c('orange'), stroke: s.c('--card'), lw: 0.35 }));
+    });
+    const A = axisX(s, 0, 20);
     // The mean, then the spread around it.
     s.alpha(s.ease('mean', 0.6), () => {
       s.line(A(MU), y1 - 9 * u, A(MU), y1 + 1.5 * u, s.c('purple'), 0.4, [1, 0.8]);

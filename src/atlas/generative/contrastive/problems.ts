@@ -5,6 +5,9 @@ import { E2, LN2, clean, dot, par, shuffled, terms, traps } from '../kit';
 
 const TAU = '\\sym{tau}{\\tau}';
 
+/** `6^2 + 8^2`, with negative entries in parentheses. */
+const sq = (v: number[]) => v.map((x) => `${par(x)}^2`).join(' + ');
+
 /** Scores (similarity over temperature), the similarities and the temperature behind them. */
 function row(rng: Rng, d: number): { s: number[]; sim: number[] | null; tau: number } {
   const n = d < 0.6 ? 3 : 4;
@@ -75,7 +78,7 @@ export const generators: Generator[] = [
       const v = clean(cos / tau);
       const prompt = raw
         ? `An encoder outputs $${vec(a!)}$ for one view and $${vec(b!)}$ for another, and the temperature is $${TAU} = ${num(tau)}$. What score does the softmax see for this pair?`
-        : `Two views have unit-length embeddings $${vec(ua)}$ and $${vec(ub)}$, and the temperature is $${TAU} = ${num(tau)}$. What score does the softmax see for this pair?`;
+        : `Two views are encoded as the unit vectors $${vec(ua)}$ and $${vec(ub)}$, and the temperature is $${TAU} = ${num(tau)}$. What score does the softmax see for this pair?`;
       return {
         prompt: `${prompt} Round to two decimals.`,
         answer: { kind: 'number', value: v, places: 2 },
@@ -84,14 +87,20 @@ export const generators: Generator[] = [
           [
             { value: cos, why: `That is the similarity before the temperature. Divide it by $${TAU} = ${num(tau)}$.` },
             { value: cos * tau, why: `That multiplies by the temperature. The similarity is divided by $${TAU}$, which stretches it when $${TAU}$ is small.` },
-            ...(raw ? [{ value: dot(a!, b!) / tau, why: 'That skips scaling to length 1. Divide each vector by its length first, so only direction counts.' }] : []),
+            ...(raw ? [{ value: dot(a!, b!) / tau, why: 'That skips scaling to unit vectors. Divide each vector by its length as an arrow first, so only its direction counts.' }] : []),
           ],
           2,
         ),
         solution: [
-          ...(raw ? [`Lengths: $${num(la)}$ and $${num(lb)}$. Unit vectors: $${vec(ua)}$ and $${vec(ub)}$.`] : []),
-          `The score is the similarity, a dot product, divided by $${TAU}$. Dot product: $${ua.map((x, i) => `${par(x)} \\cdot ${par(ub[i]!)}`).join(' + ')} = ${terms(ua.map((x, i) => clean(x * ub[i]!)))} = ${num(cos)}$.`,
-          `Divide by the temperature: $${num(cos)} / ${num(tau)} = ${num(round(v, 2))}$.`,
+          ...(raw
+            ? [
+                `Length of $${vec(a!)}$ as an arrow: $${sq(a!)} = ${num(la * la)}$, whose square root is $${num(la)}$.`,
+                `Length of $${vec(b!)}$: $${sq(b!)} = ${num(lb * lb)}$, whose square root is $${num(lb)}$.`,
+                `Divide each entry by its vector's length to get the unit vectors: $${vec(ua)}$ and $${vec(ub)}$.`,
+              ]
+            : []),
+          `The similarity is their dot product: $${ua.map((x, i) => `${par(x)} \\cdot ${par(ub[i]!)}`).join(' + ')} = ${terms(ua.map((x, i) => clean(x * ub[i]!)))} = ${num(cos)}$.`,
+          `The score divides it by the temperature: $${num(cos)} / ${num(tau)} = ${num(round(v, 2))}$.`,
         ],
       };
     },
@@ -119,8 +128,10 @@ export const generators: Generator[] = [
             { text: 'None of them: only the positive is moved', why: 'The loss moves both: it pulls the positive in and pushes each negative away in proportion to its probability.' },
           ]),
           solution: [
-            `Divided by $${num(lo)}$, the scores are $${vec(sims.map((x) => round(x / lo, 1)))}$: far apart, so softmax gives nearly all the negatives' probability to the closest one.`,
-            'Cross-entropy lowers each negative\'s probability in proportion to how much it has, so the most similar negative, the hardest to tell from the positive, gets the strongest push.',
+            `Divided by $${TAU} = ${num(lo)}$, the scores are $${vec(sims.map((x) => round(x / lo, 1)))}$.`,
+            'The loss pushes each negative\'s score down by that negative\'s probability: its $e^{s}$ over the total.',
+            `The largest score, $${num(round(sims[0]! / lo, 1))}$, has the largest $e^{s}$, so it holds the most probability of the three. The small $${TAU}$ stretched the gaps, which makes its share bigger still.`,
+            `So the negative at $${num(sims[0]!)}$, the most similar to the anchor and the hardest to tell from the positive, gets the strongest push.`,
           ],
         };
       const lower = kind === 'lower';

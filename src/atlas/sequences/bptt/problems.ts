@@ -47,7 +47,7 @@ export const generators: Generator[] = [
             { value: a ** (n - 1), why: `That is ${n - 1} ${n - 1 === 1 ? 'factor' : 'factors'}. From $\\symh_{${n}}$ back to $\\symh_0$ there are ${n} steps.` },
           ]),
           solution: [
-            `One step back: $\\partial \\symh_t / \\partial \\symh_{t-1} = ${num(w)} \\times ${num(slope)} = ${num(a)}$.`,
+            `One step back multiplies by $\\symWhh$ times the tanh's slope: $\\partial \\symh_t / \\partial \\symh_{t-1} = ${num(w)} \\times ${num(slope)} = ${num(a)}$.`,
             `The chain rule multiplies one such factor per step: ${n} of them from $\\symh_{${n}}$ to $\\symh_0$.`,
             `$${num(a)}^{${n}} = ${num(places === undefined ? v : round(v, places))}$.`,
           ],

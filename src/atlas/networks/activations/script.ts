@@ -19,7 +19,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'relu', say: 'Three activations do most of the work. The ReLU keeps positive numbers and zeroes the rest: ReLU of two is two, and ReLU of minus two is zero.', code: 'relu' },
         { id: 'sigmoid', say: 'The sigmoid squashes any number into the range from zero to one. Sigmoid of zero is a half, and of two, about {0.88|zero point eight eight}. Of minus two, it is one minus that: {0.12|zero point one two}.', code: 'sig' },
-        { id: 'tanh', say: 'Tanh squashes into the range from minus one to one, centered on zero. Tanh of one is about {0.76|zero point seven six}, and tanh of minus one is minus {0.76|zero point seven six}.', code: 'tanh' },
+        { id: 'tanh', say: 'Tanh squashes into the range from minus one to one, centered on zero: tanh of zero is zero. Tanh of one is about {0.76|zero point seven six}, and tanh of minus one is minus {0.76|zero point seven six}.', code: 'tanh' },
         { id: 'ranges', say: 'So the ReLU\'s outputs run from zero up with no limit: {[0, ∞)|zero to infinity}, where {∞|infinity} means no end. A square bracket includes its end, and a round one never reaches it. The sigmoid\'s outputs lie in {(0, 1)|zero to one}, and tanh\'s in {(−1, 1)|minus one to one}.', code: ['relu', 'sig', 'tanh'] },
       ],
     },
@@ -35,7 +35,8 @@ export const script: LectureScript = {
       beats: [
         { id: 'd-relu', say: 'Backprop needs each one\'s slope. The ReLU\'s is the simplest: one where its input is positive, and zero where it is negative.', code: 'relu' },
         { id: 'd-sig', say: 'The sigmoid\'s slope is {σ|sigma} times one minus {σ|sigma}. At zero that is a half times a half: a quarter, the most it ever gets. At two, {0.88|zero point eight eight} times {0.12|zero point one two}: about {0.1|zero point one}.', code: 'sig' },
-        { id: 'd-tanh', say: 'Tanh\'s slope is one minus tanh squared. That is one at zero, and at one, it is one minus {0.76|zero point seven six} squared: about {0.42|zero point four two}.', code: 'tanh' },
+        { id: 'nudge', say: 'For tanh, nudge the input and watch the output. From zero to {0.01|zero point zero one}, tanh moves by {0.01|zero point zero one} too: a slope of one. From one to {1.01|one point zero one}, it moves by only about {0.0042|zero point zero zero four two}: a slope of {0.42|zero point four two}.', code: 'tanh' },
+        { id: 'd-tanh', say: 'Both fit one rule: tanh\'s slope is one minus tanh squared. At zero, tanh is zero, so the slope is one minus zero squared: one, its most. At one, it is one minus {0.76|zero point seven six} squared, which is one minus {0.58|zero point five eight}: about {0.42|zero point four two}.', code: 'tanh' },
         { id: 'flat', say: 'Far from zero, both squashing curves go flat, and their slopes sink toward zero. A unit stuck out there is saturated: almost no gradient gets through it.', code: ['sig', 'tanh'] },
       ],
     },

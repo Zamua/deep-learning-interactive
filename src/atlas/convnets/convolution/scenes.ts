@@ -46,6 +46,7 @@ const slide: SceneDef = {
 
 const X2 = [1, 1, 1, 6, 6, 6, 2];
 const OUT2 = X2.slice(0, 5).map((_, i) => X2[i + 2]! - X2[i]!);
+const SUM2 = X2.slice(0, 5).map((_, i) => X2[i]! + X2[i + 1]! + X2[i + 2]!);
 
 const edges: SceneDef = {
   draw(s) {
@@ -54,27 +55,44 @@ const edges: SceneDef = {
     const pitch = gap * s.u;
     const base = s.h * 0.5;
     const top = s.h * 0.2;
-    // The window crosses the climb during `step` and the plateau and fall during `flat`.
-    const p = 2 * s.ease('step', 2.5, 1.5) + 2 * s.ease('flat', 2.5, 0.3);
-    s.text('out = last − first', s.w / 2, s.h * 0.08, { size: 3.8, font: 'mono', weight: 600, color: s.c('blue') });
+    const sum = s.ease('sum', 0.5);
+    // The window crosses the climb during `step` and the plateau and fall during `flat`; for `sum` it goes back and sweeps again.
+    const back = s.ease('sum', 0.6);
+    const dur = s.end('sum') - s.at('sum');
+    const fwd = 4 * smooth(clamp01((s.since('sum') - 0.3 * dur) / (0.35 * dur)));
+    const p = 2 * s.ease('step', 2.5, 1.5) + 2 * s.ease('flat', 2.5, 0.3) - 4 * back + fwd;
+    s.alpha(1 - sum, () => s.text('out = last − first', s.w / 2, s.h * 0.08, { size: 3.8, font: 'mono', weight: 600, color: s.c('blue') }));
+    s.alpha(sum, () => s.text('out = sum of the window', s.w / 2, s.h * 0.08, { size: 3.8, font: 'mono', weight: 600, color: s.c('blue') }));
     bars(s, xs, base, X2, 'orange', { max: 6, height: (base - top) / s.u - 4, w: 8, fmt: (v) => String(v) });
     s.alpha(s.ease('step', 0.6), () => rowLabel(s, 'x', xs[0]! - (gap / 2 + 1) * s.u, base - 4 * s.u, 'orange'));
     const wx = xs[0]! + p * pitch;
     s.rrect(wx - pitch / 2, top - 6 * s.u, 3 * pitch, base - top + 13 * s.u, 1.8, { fill: s.tint('blue', 0.06), stroke: s.c('blue'), lw: 0.5 });
-    W.forEach((w, k) => s.text(fmt(w), wx + k * pitch, base + 3.8 * s.u, { size: 3.4, font: 'mono', weight: 650, color: s.c('blue') }));
+    W.forEach((w, k) => s.alpha(1 - sum, () => s.text(fmt(w), wx + k * pitch, base + 3.8 * s.u, { size: 3.4, font: 'mono', weight: 650, color: s.c('blue') })));
+    W.forEach((_, k) => s.alpha(sum, () => s.text('1', wx + k * pitch, base + 3.8 * s.u, { size: 3.4, font: 'mono', weight: 650, color: s.c('blue') })));
     const yo = s.h * 0.64;
-    OUT2.forEach((v, i) => {
+    s.alpha(1 - sum, () => OUT2.forEach((v, i) => {
       const a = smooth(clamp01((p - i + 0.4) / 0.4)) * s.ease('step', 0.4, 1.2);
       const k = v > 0 ? 'green' : v < 0 ? 'red' : '--ink-3';
       s.alpha(a, () => cells(s, [xs[i + 1]!], yo, [fmt(v)], k, { w: 9.5, h: 8, on: [Math.abs(i - p) < 0.5 ? 1 : 0] }));
-    });
+    }));
+    const peak = s.ease('sum', 0.6, 0.72 * dur);
+    s.alpha(sum, () => SUM2.forEach((v, i) => {
+      const a = smooth(clamp01((fwd - i + 0.4) / 0.4));
+      s.alpha(a, () => cells(s, [xs[i + 1]!], yo, [String(v)], 'gold', { w: 9.5, h: 8, on: [i === 3 ? peak : Math.abs(i - fwd) < 0.5 ? 0.6 : 0] }));
+    }));
     s.alpha(s.ease('step', 0.6, 1.2), () => rowLabel(s, 'out', xs[1]! - (gap / 2 + 1) * s.u, yo, '--ink-2', 3.6));
     const l1 = s.h * 0.75;
     const l2 = s.h * 0.83;
-    s.alpha(s.ease('step', 0.6, 3.5), () => s.text('climbs: +5', (xs[2]! + xs[3]!) / 2, l1, { size: 3.4, font: 'mono', color: s.c('green') }));
-    s.alpha(s.ease('flat', 0.6, 1.2), () => s.text('flat: 0', xs[4]!, l2, { size: 3.4, font: 'mono', color: s.c('--ink-2') }));
-    s.alpha(s.ease('flat', 0.6, 2.6), () => s.text('falls: −4', xs[5]!, l1, { size: 3.4, font: 'mono', color: s.c('red') }));
-    s.alpha(s.ease('detect', 0.6), () => s.text('big where the input looks like the filter', s.w / 2, s.h * 0.93, { size: 3.5, color: s.c('--ink-2') }));
+    s.alpha(1 - sum, () => {
+      s.alpha(s.ease('step', 0.6, 3.5), () => s.text('climbs: +5', (xs[2]! + xs[3]!) / 2, l1, { size: 3.4, font: 'mono', color: s.c('green') }));
+      s.alpha(s.ease('flat', 0.6, 1.2), () => s.text('flat: 0', xs[4]!, l2, { size: 3.4, font: 'mono', color: s.c('--ink-2') }));
+      s.alpha(s.ease('flat', 0.6, 2.6), () => s.text('falls: −4', xs[5]!, l1, { size: 3.4, font: 'mono', color: s.c('red') }));
+      s.alpha(s.ease('detect', 0.6), () => s.text('big where the input looks like the filter', s.w / 2, s.h * 0.93, { size: 3.5, color: s.c('--ink-2') }));
+    });
+    s.alpha(peak, () => {
+      s.text('brightest: 18', xs[4]!, l1, { size: 3.4, font: 'mono', color: s.c('gold') });
+      s.text('peaks on the bright part, not the edge', s.w / 2, s.h * 0.93, { size: 3.5, color: s.c('--ink-2') });
+    });
   },
 };
 
@@ -91,24 +109,24 @@ const W3 = [
 ];
 const OUT3 = [0, 1].map((i) => [0, 1].map((j) => X3[i]![j]! + X3[i + 1]![j + 1]! + X3[i + 2]![j + 2]!));
 
-/** Window stops during `slide`, then back to the strongest match at `map`. */
+/** Where the window stops, and the beat and delay of each move there; back to the strongest match at `map`. */
 const STOPS: [number, number][] = [[0, 0], [0, 1], [1, 0], [1, 1]];
+const MOVES: [string, number][] = [['step', 0.3], ['rest', 0.4], ['rest', 2.4]];
 
 function win2(s: Scene): { i: number; j: number; k: number; settled: number } {
-  const t = s.since('slide');
   let i = 0;
   let j = 0;
   let k = 0;
   let settled = 1;
-  for (let n = 1; n < STOPS.length; n++) {
-    const a = smooth(clamp01((t - 0.4 - (n - 1) * 1.8) / 0.8));
+  MOVES.forEach(([beat, delay], m) => {
+    const a = smooth(clamp01((s.since(beat) - delay) / 0.8));
     if (a > 0) {
-      i = lerp(STOPS[n - 1]![0], STOPS[n]![0], a);
-      j = lerp(STOPS[n - 1]![1], STOPS[n]![1], a);
-      k = a > 0.5 ? n : n - 1;
+      i = lerp(STOPS[m]![0], STOPS[m + 1]![0], a);
+      j = lerp(STOPS[m]![1], STOPS[m + 1]![1], a);
+      k = a > 0.5 ? m + 1 : m;
       settled = Math.abs(a - 0.5) * 2;
     }
-  }
+  });
   const back = s.ease('map', 1);
   if (back > 0) {
     i = lerp(i, 0, back);
@@ -122,9 +140,9 @@ function win2(s: Scene): { i: number; j: number; k: number; settled: number } {
 const gridScene: SceneDef = {
   draw(s) {
     const tall = s.tall;
-    const g = grid(s, tall ? s.w / 2 : s.w * 0.45, tall ? s.h * 0.36 : s.h * 0.46, 4, 4, tall ? 11 : 12);
-    const f = grid(s, tall ? s.w * 0.24 : s.w * 0.14, tall ? s.h * 0.8 : s.h * 0.46, 3, 3, tall ? 7 : 8);
-    const o = grid(s, tall ? s.w * 0.74 : s.w * 0.8, tall ? s.h * 0.8 : s.h * 0.46, 2, 2, tall ? 10 : 12);
+    const g = grid(s, tall ? s.w / 2 : s.w * 0.45, tall ? s.h * 0.35 : s.h * 0.46, 4, 4, tall ? 10 : 12);
+    const f = grid(s, tall ? s.w * 0.24 : s.w * 0.14, tall ? s.h * 0.81 : s.h * 0.46, 3, 3, tall ? 7 : 8);
+    const o = grid(s, tall ? s.w * 0.74 : s.w * 0.8, tall ? s.h * 0.81 : s.h * 0.46, 2, 2, tall ? 10 : 12);
     const w = win2(s);
     const wi = Math.round(w.i);
     const wj = Math.round(w.j);
@@ -132,26 +150,38 @@ const gridScene: SceneDef = {
     const inWin = (i: number, j: number) => i - wi >= 0 && i - wi < 3 && j - wj >= 0 && j - wj < 3;
     const diag = (i: number, j: number) => inWin(i, j) && i - wi === j - wj;
 
-    s.text('x', (g.l + g.r) / 2, g.t - 3.4 * s.u, { size: 4, font: 'mono', weight: 650, color: s.c('orange') });
+    const idxA = s.ease('step', 0.6);
+    s.text('x', (g.l + g.r) / 2, g.t - (3.4 + 4 * idxA) * s.u, { size: 4, font: 'mono', weight: 650, color: s.c('orange') });
+    // Row numbers on the left, column numbers on top, lit inside the window.
+    s.alpha(idxA, () => {
+      for (let n = 0; n < 4; n++) {
+        s.text(String(n), g.l - 2.6 * s.u, g.y(n), { size: 2.8, font: 'mono', weight: 600, color: s.c(n - wi >= 0 && n - wi < 3 ? 'blue' : '--ink-3') });
+        s.text(String(n), g.x(n), g.t - 2.6 * s.u, { size: 2.8, font: 'mono', weight: 600, color: s.c(n - wj >= 0 && n - wj < 3 ? 'blue' : '--ink-3') });
+      }
+    });
     gridCells(s, g, X3, 'orange', { on: (i, j) => (diag(i, j) ? patchA * w.settled : 0) });
     s.text('w', (f.l + f.r) / 2, f.t - 3.4 * s.u, { size: 4, font: 'mono', weight: 650, color: s.c('blue') });
     gridCells(s, f, W3, 'blue', { on: (i, j) => (i === j ? patchA : 0) });
     windowBox(s, g, w.i, w.j, 3, 3, 'blue', patchA);
 
-    const sumA = patchA * w.settled * (1 - s.ease('map', 0.4) + s.ease('map', 0.6, 1));
+    const rule = s.win('rule', 'rest');
+    const sumA = patchA * w.settled * (1 - s.ease('map', 0.4) + s.ease('map', 0.6, 1)) * (1 - rule);
     s.alpha(sumA, () => {
       const d = [0, 1, 2].map((n) => X3[wi + n]![wj + n]!);
       s.text(`${d.join(' + ')} = ${OUT3[wi]![wj]}`, (g.l + g.r) / 2, g.b + 4.6 * s.u, { size: 3.6, font: 'mono', weight: 600, color: s.c('gold'), halo: true });
     });
+    s.alpha(rule, () => s.text('row i, column j: rows i to i+2, columns j to j+2', (g.l + g.r) / 2, g.b + 4.6 * s.u, { size: 3, font: 'mono', weight: 600, color: s.c('blue'), halo: true }));
 
     const shown = (i: number, j: number) => {
       const n = STOPS.findIndex(([a, b]) => a === i && b === j);
-      return n === 0 ? s.ease('patch', 0.6, 3) : s.ease('slide', 0.6, 0.9 + (n - 1) * 1.8);
+      if (n === 0) return s.ease('patch', 0.6, 3);
+      const [beat, delay] = MOVES[n - 1]!;
+      return s.ease(beat, 0.6, delay + 0.5);
     };
     s.alpha(s.ease('patch', 0.6, 3), () => s.text('out', (o.l + o.r) / 2, o.t - 3.4 * s.u, { size: 4, font: 'mono', weight: 650, color: s.c('gold') }));
     for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) {
       s.alpha(shown(i, j), () => {
-        const on = i === 0 && j === 1 ? s.ease('map', 0.6, 0.8) : i === wi && j === wj ? 0.6 * w.settled * (1 - s.ease('map', 0.4)) : 0;
+        const on = i === 0 && j === 1 ? Math.max(s.ease('map', 0.6, 0.8), 0.6 * s.win('step', 'rest') * w.settled) : i === wi && j === wj ? 0.6 * w.settled * (1 - s.ease('map', 0.4)) : 0;
         const cw = (o.pitch - 1) * s.u;
         s.cell(o.x(j) - cw / 2, o.y(i) - cw / 2, cw, cw, String(OUT3[i]![j]), 'gold', { on, size: o.pitch * 0.4 });
       });

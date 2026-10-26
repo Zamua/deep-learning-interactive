@@ -1,5 +1,5 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { clamp01 } from '../../../lecture/scene';
+import { clamp01, smooth } from '../../../lecture/scene';
 import { type Ink, rich } from '../draw';
 
 const INNER = 'green';
@@ -56,8 +56,10 @@ const columns: SceneDef = {
     const inner = s.ease('inner', 0.6) * (1 - 0.6 * s.ease('outer', 0.6));
     const outer = s.ease('outer', 0.6);
     classic(s, 2, 3, 4, { p: 8, top: s.h * 0.12, inner, outer, col: s.since('many') < 0 ? 0 : clamp01((s.t - s.at('many') - 0.8) / Math.max(1, s.end('many') - s.at('many') - 1)) * 4 });
-    s.alpha(s.ease('inner', 0.6), () => rich(s, [["A's columns = B's rows: ", '--ink-2'], ['3 = 3', INNER]], s.w / 2, s.h * 0.68, { size: 3.6 }));
-    s.alpha(s.ease('outer', 0.6), () => rich(s, shapes(2, 3, 3, 4, INNER, '(2, 4)'), s.w / 2, s.h * 0.78, { size: 3.8, weight: 600 }));
+    const chain = s.ease('chain', 0.6);
+    s.alpha(s.ease('inner', 0.6) * (1 - chain), () => rich(s, [["A's columns = B's rows: ", '--ink-2'], ['3 = 3', INNER]], s.w / 2, s.h * 0.68, { size: 3.6 }));
+    s.alpha(s.ease('outer', 0.6), () => rich(s, [[`AB${' '.repeat(5)}`, '--ink-3'], ...shapes(2, 3, 3, 4, INNER, '(2, 4)')], s.w / 2, s.h * 0.78 - 10 * s.u * chain, { size: 3.8, weight: 600 }));
+    s.alpha(smooth((s.prog('chain') - 0.5) / 0.12), () => rich(s, [['(AB)C  ', '--ink-3'], ...shapes(2, 4, 4, 5, INNER, '(2, 5)')], s.w / 2, s.h * 0.78, { size: 3.8, weight: 600 }));
     s.show('rule', s.ease('rule', 0.6));
   },
 };

@@ -62,7 +62,7 @@ function overlapSteps(a: Box, b: Box): string[] {
   const e = edges(a, b);
   const w = e.r - e.l;
   const h = e.bt - e.t;
-  const side = (lo: number, hi: number, name: string) => (hi - lo > 0 ? `$${hi} - ${lo} = ${hi - lo}$ ${name}` : `$${hi} - ${lo} = ${hi - lo}$, so $0$ ${name}`);
+  const side = (lo: number, hi: number, name: string) => (hi - lo > 0 ? `$${hi} - ${lo} = ${hi - lo}$ ${name}` : `$${hi} - ${lo} = ${hi - lo}$, clamped: $\\max(0, ${hi - lo}) = 0$ ${name}`);
   return [
     `The overlap's left edge is the larger left, $\\max(${a[0]}, ${b[0]}) = ${e.l}$, and its right edge the smaller right, $\\min(${a[2]}, ${b[2]}) = ${e.r}$: ${side(e.l, e.r, 'wide')}.`,
     `Its top is the larger top, $\\max(${a[1]}, ${b[1]}) = ${e.t}$, and its bottom the smaller bottom, $\\min(${a[3]}, ${b[3]}) = ${e.bt}$: ${side(e.t, e.bt, 'tall')}.`,
@@ -200,17 +200,22 @@ export const generators: Generator[] = [
         if (picked.length < 3) continue;
         const L = (i: number) => 'ABCDE'[i]!;
         const table = `\\begin{array}{c|${'c'.repeat(n)}} & ${boxes.map((_, i) => L(i)).join(' & ')} \\\\ \\hline ${M.map((r, i) => `${L(i)} & ${r.map((v, j) => (i === j ? '' : num(v))).join(' & ')}`).join(' \\\\ ')} \\end{array}`;
-        const steps: string[] = [];
-        let rest = [...desc];
-        while (rest.length) {
-          const best = rest.shift()!;
-          const gone = rest.filter((o) => over(best, o));
-          steps.push(
-            gone.length
-              ? `Keep ${L(best)}. Drop ${gone.map((o) => `${L(o)} (IoU $${num(M[best]![o]!)}$)`).join(' and ')}: above $${num(thresh)}$.`
-              : `Keep ${L(best)}. No box left overlaps it by more than $${num(thresh)}$.`,
-          );
-          rest = rest.filter((o) => !over(best, o));
+        // One step per box, in confidence order: a box is dropped only by a box already kept.
+        const steps: string[] = [`${L(desc[0]!)} is the most confident: keep it.`];
+        const kept = [desc[0]!];
+        for (const i of desc.slice(1)) {
+          const by = kept.find((k) => over(k, i));
+          const ghost = desc.slice(0, desc.indexOf(i)).find((j) => !kept.includes(j) && over(j, i));
+          if (by !== undefined) {
+            steps.push(`${L(i)}: its IoU with kept ${L(by)} is $${num(M[by]![i]!)}$, above $${num(thresh)}$: drop ${L(i)}.`);
+            continue;
+          }
+          const vs = kept.map((k) => `${L(k)} $${num(M[k]![i]!)}$`);
+          const k0 = kept[0]!;
+          const with_ = kept.length === 1 ? `its IoU with kept ${L(k0)} is $${num(M[k0]![i]!)}$,` : `its IoUs with the kept boxes, ${vs.slice(0, -1).join(', ')} and ${vs[vs.length - 1]}, are`;
+          const note = ghost === undefined ? '' : ` Its $${num(M[ghost]![i]!)}$ with ${L(ghost)} does not count: ${L(ghost)} was dropped, and only kept boxes suppress.`;
+          steps.push(`${L(i)}: ${with_} not above $${num(thresh)}$: keep ${L(i)}.${note}`);
+          kept.push(i);
         }
         return {
           prompt: `A detector proposes ${n} boxes with these confidences: ${boxes.map((_, i) => `${L(i)} $${num(scores[i]!)}$`).join(', ')}. The table gives their IoUs with each other. Which boxes survive non-max suppression with IoU threshold $${num(thresh)}$?\n\n$$${table}$$`,

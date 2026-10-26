@@ -21,8 +21,9 @@ export const generators: Generator[] = [
           prompt: `$A$ has shape $${shapeTex([m, n])}$, $B$ has shape $${shapeTex([n, k])}$ and $C$ has shape $${shapeTex([k, j])}$. What is the shape of $ABC$?`,
           answer: { kind: 'shape', value: [m, j] },
           solution: [
-            `$AB$: inner dimensions ${n} and ${n} match, and the outer ones give $${shapeTex([m, k])}$.`,
-            `$(AB)C$: inner dimensions ${k} and ${k} match, and the outer ones give $${shapeTex([m, j])}$.`,
+            'Multiply two at a time: first $AB$, then that times $C$.',
+            `$AB$ is $${shapeTex([m, n])}$ times $${shapeTex([n, k])}$: the inner ${n}s match, and the outer dimensions give $${shapeTex([m, k])}$.`,
+            `$(AB)C$ is $${shapeTex([m, k])}$ times $${shapeTex([k, j])}$: the inner ${k}s match, and the outer dimensions give $${shapeTex([m, j])}$.`,
           ],
         };
       }

@@ -34,15 +34,35 @@ export const script: LectureScript = {
         loss = -np.log(sigmoid(r_a - r_b))   #@loss
         # -ln 0.73 = 0.31                    #@loss
         # had b won: -ln 0.27 = 1.31         #@flip
-        # d loss / d r_a = 0.73 - 1 = -0.27  #@grad
-        # d loss / d r_b = +0.27             #@grad
       `,
       beats: [
         { id: 'pairs', say: 'The training data is pairs of answers to the same prompt, where a person picked the winner. Call the winner\'s score {r_w|r w} and the loser\'s {r_l|r l}.', code: 'w' },
         { id: 'loss', say: 'The loss, L, is cross-entropy on that choice: minus the log of {σ(r_w − r_l)|sigma of r w minus r l}, the probability the model gave the winner. With a preferred, minus the log of {0.73|zero point seven three}: {0.31|zero point three one}.', code: 'loss' },
         { id: 'flip', say: 'Had the person picked b, the model would have given that only {0.27|zero point two seven}, and the loss would be {1.31|one point three one}.', code: 'flip' },
-        { id: 'push', say: 'The loss\'s slope is {σ|sigma} minus one for the winner\'s score, and one minus {σ|sigma} for the loser\'s. So lowering the loss raises the winner and lowers the loser, by {0.27|zero point two seven} each.', code: 'grad' },
-        { id: 'agree', say: 'A pair the model already ranks right, with {σ|sigma} near one, barely moves it. A pair it gets wrong moves it the most.', code: 'grad' },
+      ],
+    },
+    {
+      id: 'slope',
+      title: 'Which way each score moves',
+      codeTitle: 'backward.py',
+      code: `
+        z = r_w - r_l          # 1.0       #@z
+        p = sigmoid(z)         # 0.73      #@z
+        loss = -np.log(p)      # 0.31      #@z
+        dp = -1 / p            # -1.37     #@dlog
+        dz = dp * p * (1 - p)  # -0.27     #@dsig
+        # = -(1 - p)                       #@cancel
+        dr_w = dz * 1          # -0.27     #@dr
+        dr_l = dz * -1         # +0.27     #@dr
+      `,
+      beats: [
+        { id: 'chain', say: 'How does one choice move the two scores? Call the gap z: {r_w − r_l|r w minus r l}. The loss is a chain: z feeds the sigmoid, and the sigmoid feeds minus ln. With a preferred, z is one, sigma is {0.73|zero point seven three}, and the loss {0.31|zero point three one}.', code: 'z' },
+        { id: 'back', say: 'Walk back from the loss, multiplying local slopes. Minus ln has slope minus one over its input. At {0.73|zero point seven three}, that is about minus {1.37|one point three seven}.', code: 'dlog' },
+        { id: 'sig', say: 'The sigmoid\'s slope is sigma times one minus sigma: {0.73|zero point seven three} times {0.27|zero point two seven}, about {0.20|zero point two}. So the slope on z is minus {1.37|one point three seven} times {0.20|zero point two}: minus {0.27|zero point two seven}.', code: 'dsig' },
+        { id: 'cancel', say: 'In symbols, that is minus one over sigma, times sigma times one minus sigma. The sigmas cancel, leaving {−(1 − σ)|minus, one minus sigma}: one minus {0.73|zero point seven three}, made negative. The same minus {0.27|zero point two seven}.', code: 'cancel' },
+        { id: 'scores', say: 'Last, z rises one for one with the winner\'s score, and falls one for one as the loser\'s rises. So the slope on {r_w|r w} is {σ − 1|sigma minus one}, minus {0.27|zero point two seven}, and on {r_l|r l} it is {1 − σ|one minus sigma}, plus {0.27|zero point two seven}.', code: 'dr' },
+        { id: 'push', say: 'Lowering the loss steps against those slopes: it raises the winner and lowers the loser, by {0.27|zero point two seven} each.', code: 'dr' },
+        { id: 'agree', say: 'A pair the model already ranks right, with {σ|sigma} near one, barely moves it. A pair it gets wrong moves it the most.', code: 'cancel' },
         { id: 'rank', say: 'So the model learns to rank answers the way people do. A score alone means nothing; only its gap to another answer\'s score does.' },
         { id: 'turn', say: 'Your turn.' },
       ],

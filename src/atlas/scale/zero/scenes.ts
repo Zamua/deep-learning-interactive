@@ -1,5 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { bars, columns } from '../../draw';
+import type { Ink } from '../../linear-algebra/draw';
+import { rich } from '../modern-draw';
 import { gpu, mono, stack } from '../draw';
 
 const PARTS = [
@@ -58,9 +60,17 @@ const stages: SceneDef = {
     label('stage 1: optimizer state split 4 ways', 's1', 's2');
     label('stage 2: + the gradients', 's2', 's3');
     label('stage 3: + the weights', 's3');
-    s.alpha(s.win('s1n', 's2'), () => mono(s, '4 + 12 / 4 bytes per parameter', s.w / 2, s.h * 0.88, { size: 3.4, k: '--ink-2' }));
-    s.alpha(s.win('s2', 's3'), () => mono(s, '2 + 14 / 4 bytes per parameter', s.w / 2, s.h * 0.88, { size: 3.4, k: '--ink-2' }));
-    s.alpha(s.ease('s3', 0.6), () => mono(s, '16 / 4 bytes per parameter', s.w / 2, s.h * 0.88, { size: 3.4, k: '--ink-2' }));
+    // Bytes per parameter on each GPU: the whole parts, plus the split ones over 4.
+    const o = { size: s.tall ? 3.2 : 3.4 };
+    const sum = (a: number, runs: [string, Ink][], total: string) =>
+      s.alpha(a, () => {
+        rich(s, runs, s.w / 2, s.h * 0.855, o);
+        mono(s, total, s.w / 2, s.h * 0.925, { ...o, k: '--ink', weight: 650 });
+      });
+    const ink: Ink = '--ink-2';
+    sum(s.win('s1n', 's2'), [['2', 'blue'], [' + ', ink], ['2', 'red'], [' + ', ink], ['12', '--ink'], [' / 4 = 7 bytes per parameter', ink]], '7 bytes × 7 × 10⁹ = 49 GB');
+    sum(s.win('s2n', 's3'), [['2', 'blue'], [' + (', ink], ['2', 'red'], [' + ', ink], ['12', '--ink'], [') / 4 = 5.5 bytes per parameter', ink]], '5.5 bytes × 7 × 10⁹ = 38.5 GB');
+    sum(s.ease('s3', 0.6), [['16', '--ink'], [' / 4 = 4 bytes per parameter', ink]], '4 bytes × 7 × 10⁹ = 28 GB');
   },
 };
 

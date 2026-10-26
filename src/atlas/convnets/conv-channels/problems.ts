@@ -70,7 +70,7 @@ export const generators: Generator[] = [
           ]),
           solution: [
             'A filter always spans the full depth of its input, so its depth is the input\'s number of channels.',
-            `The input has $${C}$ channel${C === 1 ? '' : 's'}: each filter is $${F} \\times ${F} \\times ${C}$.`,
+            `The input has $${C}$ channel${C === 1 ? '' : 's'}: each filter is $${C} \\times ${F} \\times ${F}$, depth first.`,
           ],
         };
       }
@@ -88,7 +88,7 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `\`conv1\` has $${K1}$ filters, so its output has $${K1}$ channels.`,
-          `\`conv2\`'s filters span that full depth: each is $${F} \\times ${F} \\times ${K1}$.`,
+          `\`conv2\`'s filters span that full depth: each is $${K1} \\times ${F} \\times ${F}$, depth first.`,
         ],
       };
     },
@@ -109,8 +109,10 @@ export const generators: Generator[] = [
           { value: [F, F, C, K], why: 'That is the order TensorFlow uses. PyTorch writes out channels, in channels, height, width.' },
         ]),
         solution: [
-          `\`nn.Conv2d(${C}, ${K}, ...)\` takes $${C}$ channel${C === 1 ? '' : 's'} in and makes $\\symK = ${K}$ channels out, with $${F} \\times ${F}$ filters.`,
-          `Each of the $${K}$ filters is $${C} \\times ${F} \\times ${F}$, and they stack along the first axis: $${shp(v)}$.`,
+          `\`nn.Conv2d(${C}, ${K}, kernel_size=${F})\` reads in order: $${C}$ channel${C === 1 ? '' : 's'} in, $${K}$ channels out, filter size $${F}$.`,
+          `$${K}$ channels out means $\\symK = ${K}$ filters.`,
+          `$${C}$ channel${C === 1 ? '' : 's'} in means each filter is $${C}$ deep: $${C} \\times ${F} \\times ${F}$, depth first.`,
+          `PyTorch stacks the $${K}$ filters along the first axis: filters, depth, height, width. That is $${shp(v)}$.`,
         ],
       };
     },

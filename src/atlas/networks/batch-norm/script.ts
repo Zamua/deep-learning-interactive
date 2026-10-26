@@ -12,14 +12,17 @@ export const script: LectureScript = {
       title: 'Normalize over the batch',
       codeTitle: 'batchnorm.py',
       code: `
-        x = np.array([9, 3, 17, 11])   # one feature, 4 examples  #@x
+        X = np.array([[9, 4], [3, 6],  # one example per row      #@batch
+                      [17, 2], [11, 8]])                          #@batch
+        x = X[:, 0]                    # [9, 3, 17, 11]           #@x
         mu = x.mean()                  # 10                       #@mu
         var = x.var()                  # 25                       #@var
         xhat = (x - mu) / np.sqrt(var + eps)                      #@xhat
         # [-0.2, -1.4, 1.4, 0.2]                                  #@xhat
       `,
       beats: [
-        { id: 'batch', say: 'Batch normalization looks at one feature at a time, across every example in the batch. Here is one feature over a batch of four: nine, three, seventeen and eleven.', code: 'x' },
+        { id: 'batch', say: 'Batch normalization works on a batch, X: one example per row, one feature per column. Here are four examples with two features each.', code: 'batch' },
+        { id: 'column', say: 'It looks at one feature at a time, across every example in the batch. Feature zero is column zero: nine, three, seventeen and eleven. Call those values x.', code: 'x' },
         { id: 'mean', say: 'First, the batch mean, written with the Greek letter {μ|mu}. They add up to forty, so {μ|mu} is ten.', code: 'mu' },
         { id: 'var', say: 'Then the variance: the average squared distance from the mean. One, forty nine, forty nine and one average to twenty five. Its square root, {√25|the square root of twenty five}, is five: the standard deviation. Here {σ|sigma} means this spread, not the sigmoid, so the variance is {σ²|sigma squared}.', code: 'var' },
         { id: 'xhat', say: 'Subtract the mean, and divide by the standard deviation. The result is {x̂|x hat}, the normalized x: {x̂ = (x − μ) / σ|x hat is x minus mu, over sigma}. Nine becomes minus {0.2|zero point two}, and three becomes minus {1.4|one point four}.', code: 'xhat' },

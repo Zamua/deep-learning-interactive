@@ -1,8 +1,9 @@
 {
- "duration": 104.425,
+ "duration": 157.595,
  "scenes": {
   "multiply": [0.0, 58.353],
-  "sign": [58.353, 104.425]
+  "sign": [58.353, 103.304],
+  "solve": [103.304, 157.595]
  },
  "beats": {
   "multiply/pair": [0.7, 7.991, "The dot product takes two vectors of the same length, here w and x, and gives back a single number.", [[3.83, 4.2], [4.55, 4.72], [5.83, 6.21]]],
@@ -15,6 +16,12 @@
   "sign/perp": [76.581, 85.209, "Turn x to minus one, two, at a right angle to w, and the products cancel: minus two plus two is zero.", [[78.311, 78.601], [78.991, 79.251], [80.761, 81.071], [82.301, 82.831], [84.321, 84.511]]],
   "sign/opp": [85.589, 92.406, "Turn it further, to minus two, minus one, and the dot product goes negative: minus five.", [[86.519, 86.859], [87.769, 87.989], [88.739, 89.149], [90.939, 91.409]]],
   "sign/agree": [92.786, 102.204, "So the sign says whether two vectors agree: positive when they point the same way, zero at a right angle, negative when they point apart.", [[95.636, 96.196], [98.026, 98.446], [99.916, 100.406]]],
-  "sign/turn": [102.584, 103.325, "Your turn.", []]
+  "solve/p1": [104.004, 117.953, "The dot product also runs backwards. w is two, one, three, and x is one, a, two, where a stands for a missing entry. w dot x is ten. What is a?", [[106.284, 106.804], [109.174, 109.524], [110.764, 110.934], [111.254, 111.404], [111.764, 112.134], [114.204, 114.734], [116.584, 117.104]]],
+  "solve/known": [118.333, 126.113, "Multiply the pairs you know: two times one is two, and three times two is six. Together, eight.", [[119.913, 120.473], [122.083, 122.433], [124.443, 124.873], [125.373, 125.683]]],
+  "solve/a1": [126.493, 134.655, "The middle pair, one times a, makes up the rest: ten minus eight, two. So a is two.", [[127.373, 127.753], [128.963, 129.263], [130.263, 130.773], [131.823, 132.273], [132.593, 133.133]]],
+  "solve/p2": [135.035, 143.254, "Now w is three, two, one, x is one, a, four, and w dot x is thirteen.", [[136.705, 136.935], [137.335, 137.535], [137.935, 138.265], [139.295, 139.625], [140.575, 140.865]]],
+  "solve/k2": [143.634, 151.382, "The known pairs give three and four: seven. So two times a is thirteen minus seven, six.", [[145.814, 146.194], [146.664, 147.154], [150.464, 150.764]]],
+  "solve/a2": [151.762, 155.374, "Divide by the weight, two: a is three.", [[153.002, 153.422], [153.792, 154.292]]],
+  "solve/turn": [155.754, 156.495, "Your turn.", []]
  }
 }

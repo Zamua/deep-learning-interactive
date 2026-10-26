@@ -14,15 +14,15 @@ function probs(rng: Rng, n: number, total: number): number[] {
 }
 
 /** ln C from ln 2, ln 5 and ln 10 at three places: every C here rounds the same either way. */
-const LN_PARTS: Record<number, [string, number]> = {
-  4: ['2\\ln 2', 2 * 0.693],
-  8: ['3\\ln 2', 3 * 0.693],
-  16: ['4\\ln 2', 4 * 0.693],
-  20: ['\\ln 2 + \\ln 10', 0.693 + 2.303],
-  25: ['2\\ln 5', 2 * 1.609],
-  50: ['\\ln 5 + \\ln 10', 1.609 + 2.303],
-  200: ['\\ln 2 + 2\\ln 10', 0.693 + 2 * 2.303],
-  1000: ['3\\ln 10', 3 * 2.303],
+const LN_PARTS: Record<number, { as: string; rule: string; sum: string; v: number }> = {
+  4: { as: '2^{2}', rule: '2\\ln 2', sum: '2 \\times 0.693', v: 2 * 0.693 },
+  8: { as: '2^{3}', rule: '3\\ln 2', sum: '3 \\times 0.693', v: 3 * 0.693 },
+  16: { as: '2^{4}', rule: '4\\ln 2', sum: '4 \\times 0.693', v: 4 * 0.693 },
+  20: { as: '2 \\times 10', rule: '\\ln 2 + \\ln 10', sum: '0.693 + 2.303', v: 0.693 + 2.303 },
+  25: { as: '5^{2}', rule: '2\\ln 5', sum: '2 \\times 1.609', v: 2 * 1.609 },
+  50: { as: '5 \\times 10', rule: '\\ln 5 + \\ln 10', sum: '1.609 + 2.303', v: 1.609 + 2.303 },
+  200: { as: '2 \\times 10^{2}', rule: '\\ln 2 + 2\\ln 10', sum: '0.693 + 2 \\times 2.303', v: 0.693 + 2 * 2.303 },
+  1000: { as: '10^{3}', rule: '3\\ln 10', sum: '3 \\times 2.303', v: 3 * 2.303 },
 };
 
 export const generators: Generator[] = [
@@ -74,8 +74,10 @@ export const generators: Generator[] = [
         traps: traps.filter((t, i) => Math.abs(t.value - v) >= 0.01 && traps.findIndex((u) => u.value === t.value) === i),
         solution: [
           `Exponentiate and add: $T = ${e.map((x) => num(x, 2)).join(' + ')} = ${num(T, 2)}$.`,
-          `Softmax gives $\\symp_{${y}} = e^{${s[y]}} / T$, so $\\symL = -\\ln \\symp_{${y}} = \\ln T - \\syms_{${y}}$.`,
-          `$\\symL = ${num(lnT, 2)} - ${par(s[y]!)} = ${num(v, 2)}$.`,
+          `Softmax gives the right option $\\symp_{${y}} = e^{${s[y]}} / ${num(T, 2)}$.`,
+          `The log of a quotient is the log of the top minus the log of the bottom: $\\ln \\symp_{${y}} = \\ln e^{${s[y]}} - \\ln ${num(T, 2)}$.`,
+          `$\\ln$ undoes $e$, so $\\ln e^{${s[y]}} = ${s[y]}$: $\\ln \\symp_{${y}} \\approx ${s[y]} - ${num(lnT, 2)}$.`,
+          `The loss is minus that: $\\symL \\approx -(${s[y]} - ${num(lnT, 2)}) = ${num(lnT, 2)} - ${par(s[y]!)} = ${num(v, 2)}$.`,
         ],
       };
     },
@@ -98,8 +100,10 @@ export const generators: Generator[] = [
         ],
         solution: [
           `Equal scores give every option the same probability: $\\symp_{\\symy} = 1/${C}$.`,
-          `$\\symL = -\\ln(1/C) = \\ln C = \\ln ${C}$.`,
-          parts ? `$\\ln ${C} = ${parts[0]} \\approx ${num(round(parts[1], 3), 3)} \\approx ${num(v, 2)}$.` : `$\\ln ${C} \\approx ${num(v, 2)}$.`,
+          `One over a number flips the sign of its log: $\\symL = -\\ln(1/${C}) = \\ln ${C}$.`,
+          ...(parts
+            ? [`Write $${C} = ${parts.as}$, so $\\ln ${C} = ${parts.rule}$.`, `$${parts.rule} \\approx ${parts.sum} = ${num(round(parts.v, 3), 3)}$, which rounds to $${num(v, 2)}$.`]
+            : [`$\\ln ${C} \\approx ${num(v, 2)}$.`]),
           'The more options share the probability, the less the right one gets, and the larger the loss.',
         ],
       };

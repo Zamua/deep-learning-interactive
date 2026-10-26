@@ -1,9 +1,9 @@
 {
- "duration": 123.737,
+ "duration": 169.708,
  "scenes": {
   "slide": [0.0, 47.458],
-  "edges": [47.458, 81.004],
-  "grid": [81.004, 123.737]
+  "edges": [47.458, 96.031],
+  "grid": [96.031, 169.708]
  },
  "beats": {
   "slide/row": [0.7, 9.022, "Here is a row of five numbers, x, and a filter of three weights, w: minus one, zero and one.", [[2.6, 2.99], [3.44, 3.88], [5.62, 5.87], [6.31, 6.82], [7.54, 7.81]]],
@@ -15,10 +15,13 @@
   "edges/step": [55.341, 63.215, "Slide it along a row of pixel brightnesses that jumps from one up to six. Where the row climbs, the output is five.", [[59.861, 60.421], [61.591, 61.831]]],
   "edges/flat": [63.595, 71.678, "Where the row is flat, the minus one and the plus one cancel, giving zero. Where it falls, the output goes negative.", [[64.855, 65.145], [67.425, 67.695], [68.455, 69.035], [69.925, 70.185]]],
   "edges/detect": [72.058, 79.904, "So this filter is an edge detector. Any filter answers most strongly where the input looks like the filter itself.", [[74.448, 75.028]]],
-  "grid/image": [81.704, 90.419, "An image is a grid, so its filter is a grid too: here three by three, with ones on the diagonal and zeros elsewhere.", [[83.054, 83.404], [85.264, 85.774], [87.134, 87.434], [88.804, 89.024]]],
-  "grid/patch": [90.799, 101.949, "Lay it on the top left three by three patch, multiply all nine pairs, and add. Only the diagonal counts: one, plus one, plus zero. Two.", [[93.319, 93.679], [95.389, 95.559], [96.089, 96.669], [98.149, 98.669], [99.029, 99.319], [99.949, 100.229], [100.939, 101.559]]],
-  "grid/slide": [102.329, 113.59, "Then slide it, across and down, one step at a time. A four by four image gives a two by two output: two, seven, two and four.", [[103.369, 103.739], [104.989, 105.379], [106.599, 107.339], [110.499, 111.029], [111.399, 111.689], [112.169, 112.459]]],
-  "grid/map": [113.97, 121.517, "The output is a map of how well each patch matches the filter. Seven marks the brightest diagonal line in the image.", [[117.77, 118.33]]],
-  "grid/turn": [121.897, 122.637, "Your turn.", []]
+  "edges/sum": [80.284, 94.931, "A filter of all ones, one, one, one, looks like an even patch, and it just adds up each window: three, eight, thirteen, eighteen and fourteen. It peaks where the row is brightest, not at the edge.", [[81.844, 82.144], [83.564, 83.924], [85.424, 85.754], [87.544, 87.934], [88.394, 88.604], [88.934, 89.134], [89.754, 89.964], [91.284, 91.744], [93.704, 94.004]]],
+  "grid/image": [96.731, 105.446, "An image is a grid, so its filter is a grid too: here three by three, with ones on the diagonal and zeros elsewhere.", [[98.081, 98.431], [100.291, 100.801], [102.161, 102.461], [103.831, 104.051]]],
+  "grid/patch": [105.826, 116.976, "Lay it on the top left three by three patch, multiply all nine pairs, and add. Only the diagonal counts: one, plus one, plus zero. Two.", [[108.346, 108.706], [110.416, 110.586], [111.116, 111.696], [113.176, 113.696], [114.056, 114.346], [114.976, 115.256], [115.966, 116.586]]],
+  "grid/step": [117.356, 132.543, "Now slide it one step to the right. Output row zero, column one uses the patch one column over: rows zero to two, columns one to three. Its diagonal is two, plus three, plus two: seven.", [[119.516, 120.176], [121.496, 121.656], [122.346, 122.506], [124.606, 125.006], [126.376, 126.646], [127.846, 128.406], [129.896, 130.076], [130.736, 130.896], [131.546, 132.016]]],
+  "grid/rule": [132.923, 148.536, "In general, call the output's row number i and its column number j. Output i, j comes from the patch that starts i rows down and j columns across: rows i to i plus two, columns j to j plus two.", [[133.643, 133.873], [135.883, 136.063], [137.633, 138.143], [139.463, 139.613], [142.313, 142.503], [143.943, 144.343], [146.203, 146.533]]],
+  "grid/rest": [148.916, 159.56, "One row down, the last two patches give two and four. So a four by four image gives a two by two output: two, seven, two and four.", [[149.896, 150.186], [152.556, 153.046], [156.596, 157.056], [157.406, 157.636], [158.136, 158.406], [158.766, 158.966]]],
+  "grid/map": [159.94, 167.488, "The output is a map of how well each patch matches the filter. Seven marks the brightest diagonal line in the image.", [[163.74, 164.3]]],
+  "grid/turn": [167.868, 168.608, "Your turn.", []]
  }
 }

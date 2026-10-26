@@ -1,18 +1,19 @@
 {
- "duration": 86.558,
+ "duration": 99.4,
  "scenes": {
-  "columns": [0.0, 47.914],
-  "order": [47.914, 86.558]
+  "columns": [0.0, 60.756],
+  "order": [60.756, 99.4]
  },
  "beats": {
   "columns/many": [0.7, 14.132, "Multiplying two matrices, A and B, is written A B, and it is many matrix-vector products at once. A multiplies each column of B, and each answer becomes a column of the result.", [[2.46, 2.65], [3.58, 3.83], [4.35, 4.54], [5.22, 5.68], [8.5, 9.1], [11.24, 11.56]]],
   "columns/inner": [14.512, 25.207, "So each column of B must be as long as a row of A: A's columns must equal B's rows. These are the inner dimensions, three and three.", [[18.302, 18.912], [21.502, 22.062], [23.772, 24.052], [24.472, 24.622]]],
   "columns/outer": [25.587, 35.053, "The result keeps the outer ones: A's two rows, and B's four columns. Two by three, times three by four, gives two by four.", [[27.497, 28.007], [29.087, 29.277], [30.777, 31.297], [32.147, 32.377], [33.637, 33.917]]],
   "columns/rule": [35.433, 46.814, "In general, for any sizes m, n and k, m by n, times n by k, gives m by k. The inner n's must match, and they disappear.", [[36.183, 36.353], [37.773, 37.933], [38.963, 39.373], [40.263, 40.493], [41.853, 42.153], [43.303, 43.883], [45.633, 45.853]]],
-  "order/swap": [48.614, 58.898, "Order matters. B times A is three by four, times two by three: the inner dimensions are four and two, so there is no product.", [[49.824, 50.414], [51.624, 51.784], [52.924, 53.134], [54.364, 54.924], [57.124, 57.454]]],
-  "order/pair": [59.278, 69.446, "Now take A, two by three, and a new matrix M, two by four. A times M fails too: its inner dimensions are three and two.", [[60.278, 60.598], [61.428, 61.628], [63.108, 63.378], [64.168, 64.768], [66.638, 67.068]]],
-  "order/fix": [69.826, 77.525, "Transposing A swaps its shape to three by two. Three by two, times two by four, gives three by four.", [[71.036, 71.186], [73.276, 73.836], [74.746, 74.906], [76.156, 76.316]]],
-  "order/flip": [77.905, 84.338, "M transpose times A works as well, and lays the same numbers out the other way: four by three.", [[80.455, 80.755], [82.775, 83.205]]],
-  "order/turn": [84.718, 85.458, "Your turn.", []]
+  "columns/chain": [47.194, 59.656, "A chain of three goes two at a time. Take a third matrix, C, four by five. A B is two by four, and two by four, times four by five, gives two by five.", [[49.554, 50.194], [51.464, 51.624], [52.044, 52.324], [53.264, 53.854], [55.544, 55.904], [58.214, 58.484]]],
+  "order/swap": [61.456, 71.739, "Order matters. B times A is three by four, times two by three: the inner dimensions are four and two, so there is no product.", [[62.666, 63.256], [64.466, 64.626], [65.766, 65.976], [67.206, 67.766], [69.966, 70.296]]],
+  "order/pair": [72.119, 82.288, "Now take A, two by three, and a new matrix M, two by four. A times M fails too: its inner dimensions are three and two.", [[73.119, 73.439], [74.269, 74.469], [75.949, 76.219], [77.009, 77.609], [79.479, 79.909]]],
+  "order/fix": [82.668, 90.366, "Transposing A swaps its shape to three by two. Three by two, times two by four, gives three by four.", [[83.878, 84.028], [86.118, 86.678], [87.588, 87.748], [88.998, 89.158]]],
+  "order/flip": [90.746, 97.18, "M transpose times A works as well, and lays the same numbers out the other way: four by three.", [[93.296, 93.596], [95.616, 96.046]]],
+  "order/turn": [97.56, 98.3, "Your turn.", []]
  }
 }

@@ -57,12 +57,16 @@ const walk: SceneDef = {
 const step: SceneDef = {
   marks: {
     est: { tex: String.raw`\sym{x0}{\hat{x}_0} = \dfrac{\sym{xt}{x_t} - \sqrt{1 - \sym{ab}{\bar\alpha_t}}\;\sym{epshat}{\hat\epsilon}}{\sqrt{\sym{ab}{\bar\alpha_t}}}`, x: 0.5, y: 0.12, size: 4.4 },
+    level: { tex: String.raw`\sym{xt}{x_{t-1}} = \sqrt{\sym{ab}{\bar\alpha_{t-1}}}\,\sym{x0}{\text{image}} + \sqrt{1 - \sym{ab}{\bar\alpha_{t-1}}}\;\text{noise}`, x: 0.5, y: 0.11, size: 4.4 },
+    img: { tex: String.raw`\sym{xt}{x_{t-1}} = \sqrt{\sym{ab}{\bar\alpha_{t-1}}}\,\sym{x0}{\hat{x}_0} + \sqrt{1 - \sym{ab}{\bar\alpha_{t-1}}}\;\text{noise}`, x: 0.5, y: 0.11, size: 4.4 },
     step: { tex: String.raw`\sym{xt}{x_{t-1}} = \sqrt{\sym{ab}{\bar\alpha_{t-1}}}\,\sym{x0}{\hat{x}_0} + \sqrt{1 - \sym{ab}{\bar\alpha_{t-1}} - \sym{sigma}{\sigma}^2}\;\sym{epshat}{\hat\epsilon} + \sym{sigma}{\sigma}\,\sym{z}{z}`, x: 0.5, y: 0.11, size: 4 },
   },
   draw(s) {
     const u = s.u;
-    s.show('est', s.win('est', 'back'));
-    s.show('step', s.ease('back', 0.6, 0.4));
+    s.show('est', s.win('est', 'level'));
+    s.show('level', s.win('level', 'img'));
+    s.show('img', s.win('img', 'fill'));
+    s.show('step', s.ease('fill', 0.6));
     const o = { size: 3.4, weight: 650, halo: true } as const;
     runs(s, [['xₜ = 0.5', 'purple'], ['    ᾱ', 'teal'], ['t', 'teal', true], [' = 0.64', 'teal'], ['    ε̂ = −0.5', 'red']], s.w / 2, s.h * 0.27, o);
     s.alpha(s.ease('est', 0.6), () => rich(s, [['x̂₀ = (0.5 − 0.6 · (−0.5)) / 0.8 = ', '--ink-2'], ['1', 'orange']], s.w / 2, s.h * 0.36, o));
@@ -72,12 +76,16 @@ const step: SceneDef = {
     const yb = s.h * 0.52;
     const seg = (x0: number, w: number, k: Ink) => s.rrect(l + x0 * L, yb - 2.6 * u, Math.max(w * L, 0.5 * u), 5.2 * u, 0.6, { fill: s.tint(k, 0.45), stroke: s.c(k), lw: 0.25 });
     const sp = s.ease('split', 0.8);
-    s.alpha(s.ease('back', 0.6), () => {
+    const fl = s.ease('fill', 0.6, 1);
+    s.alpha(s.ease('level', 0.6), () => {
       seg(0, 0.81, 'orange');
       s.alpha(1 - sp, () => seg(0.81, 0.19, '--ink-3'));
       runs(s, [['ᾱ', 'orange'], ['t−1', 'orange', true], [' = 0.81: image', 'orange']], l, yb - 6 * u, { ...o, size: 3.2, align: 'left' });
-      s.alpha(1 - sp, () => s.text('0.19 noise', l + L, yb - 6 * u, { ...o, size: 3.2, font: 'mono', align: 'right', color: s.c('--ink-2') }));
+      const so = { ...o, size: 3.2, font: 'mono', align: 'right', color: s.c('--ink-2') } as const;
+      s.alpha((1 - fl) * (1 - sp), () => s.text('0.19 noise', l + L, yb - 6 * u, so));
+      s.alpha(fl * (1 - sp), () => s.text('0.19: guess + fresh', l + L, yb - 6 * u, so));
     });
+    s.alpha(s.ease('img', 0.6, 0.6), () => s.text('image 0.81 → ×0.9', l, yb + 6.5 * u, { ...o, size: 3.2, font: 'mono', align: 'left', color: s.c('orange') }));
     s.alpha(sp, () => {
       seg(0.81, 0.16, 'red');
       seg(0.97, 0.03, 'slate');

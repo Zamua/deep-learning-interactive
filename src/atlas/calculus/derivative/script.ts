@@ -37,15 +37,18 @@ export const script: LectureScript = {
       title: 'Shrink the step',
       codeTitle: 'shrink.py',
       code: `
-        for h in [1, 0.5, 0.1, 0.01]:      #@loop
-            print((f(1 + h) - f(1)) / h)   #@loop
-        # 3.0  2.5  2.1  2.01              #@out
-        # f'(1) = 2                        #@d
+        (f(1.5) - f(1)) / 0.5   # 1.25 / 0.5 = 2.5   #@half
+        (f(1.1) - f(1)) / 0.1   # 0.21 / 0.1 = 2.1   #@tenth
+        for h in [0.01, 0.001]:              #@loop
+            print((f(1 + h) - f(1)) / h)     #@loop
+        # 2.01  2.001                        #@loop
+        # f'(1) = 2                          #@d
         # 2x + 1: f'(x) = 2 at every x     #@line
       `,
       beats: [
-        { id: 'shrink', say: 'Now shrink the step. With h equal to a half, the slope is {2.5|two point five}. With a tenth, it is {2.1|two point one}.', code: ['loop', 'out'] },
-        { id: 'limit', say: 'As h shrinks toward zero, the slope settles on two. That limit is the derivative of f at one, written {f′(1)|f prime of one}, read “f prime of one”: {f′(1) = 2|f prime of one equals two}.', code: 'd' },
+        { id: 'shrink', say: 'Now shrink the step to a half. f of {1.5|one point five} is {2.25|two point two five}, so the rise is {2.25|two point two five} minus one: {1.25|one point two five}. Over a run of {0.5|zero point five}, the slope is {1.25|one point two five} divided by {0.5|zero point five}: {2.5|two point five}.', code: 'half' },
+        { id: 'tenth', say: 'With a step of a tenth, f of {1.1|one point one} is {1.21|one point two one}: a rise of {0.21|zero point two one} over a run of {0.1|zero point one}, a slope of {2.1|two point one}.', code: 'tenth' },
+        { id: 'limit', say: 'As h shrinks toward zero, the slope settles on two. That limit is the derivative of f at one, written {f′(1)|f prime of one}, read “f prime of one”: {f′(1) = 2|f prime of one equals two}.', code: ['loop', 'd'] },
         { id: 'tangent', say: 'The line with that slope just grazes the curve at x equals one. It is the tangent.', code: 'd' },
         { id: 'line', say: 'A straight line has nothing to shrink: every step gives the same slope. So for {f(x) = 2x + 1|f of x equals two x plus one}, the derivative is two at every x: {f′(x) = 2|f prime of x equals two}.', code: 'line' },
       ],

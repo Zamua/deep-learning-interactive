@@ -1,9 +1,10 @@
 {
- "duration": 102.616,
+ "duration": 157.127,
  "scenes": {
   "full": [0.0, 35.969],
-  "count": [35.969, 68.001],
-  "merge": [68.001, 102.616]
+  "count": [35.969, 81.812],
+  "merge": [81.812, 115.306],
+  "worked": [115.306, 157.127]
  },
  "beats": {
   "full/W": [0.7, 11.306, "Fine-tuning a pretrained network changes its weight matrices. Take one, W, with d rows and k columns: here, a thousand by a thousand.", [[4.5, 5.03], [5.62, 5.95], [6.43, 6.69], [8.67, 9.17], [9.49, 9.71]]],
@@ -11,13 +12,19 @@
   "full/idea": [18.308, 26.458, "LoRA freezes W, and learns only a change to it, written as a product of two thin matrices: B times A.", [[19.858, 20.188], [21.888, 22.238], [24.768, 25.158]]],
   "full/rank": [26.838, 34.869, "B is d by r, and A is r by k. The rank, r, is small: here, four.", [[28.658, 29.078], [30.978, 31.538], [32.068, 32.238], [32.618, 32.788], [33.408, 33.878], [34.208, 34.398]]],
   "count/shape": [36.669, 47.218, "B times A is d by r, times r by k. The inner r's match, and the product comes out d by k: exactly W's shape.", [[39.239, 39.439], [40.719, 41.329], [42.599, 42.879], [44.079, 44.249], [45.109, 45.589]]],
-  "count/count": [47.598, 54.639, "Yet it is built from only r times d plus k numbers: four times two thousand, eight thousand.", [[51.498, 52.038], [53.528, 53.848]]],
-  "count/frac": [55.019, 58.604, "That is zero point eight percent of the million in W.", []],
-  "count/out": [58.984, 66.901, "The layer now computes W x plus B A x. W gets no updates; only B and A learn.", [[62.654, 63.204], [64.804, 65.184]]],
-  "merge/zero": [68.701, 78.202, "B starts at zero, and A at random. So at the start, B A is zero, and the layer gives exactly what the pretrained one did.", [[70.171, 70.421], [71.761, 72.311], [73.421, 73.661], [75.001, 75.361]]],
-  "merge/start": [78.582, 83.747, "Training begins from the original model, and moves away from it only as B learns.", [[80.752, 81.022]]],
-  "merge/merge": [84.127, 93.52, "When training is done, add B A into W. The merged matrix has W's shape, so the layer runs exactly as fast as before.", [[85.347, 85.687], [87.577, 88.227], [90.337, 90.687]]],
-  "merge/tasks": [93.9, 100.395, "And each task keeps only its own B and A: eight thousand numbers instead of a million.", [[97.17, 97.75], [99.09, 99.27]]],
-  "merge/turn": [100.775, 101.516, "Your turn.", []]
+  "count/count": [47.598, 57.699, "Count what is learned. B is a thousand by four: four thousand numbers. A is four by a thousand: four thousand more.", [[48.888, 49.528], [51.528, 52.008], [53.498, 54.058], [55.968, 56.448]]],
+  "count/total": [58.079, 68.449, "Together, eight thousand. That is r times d, plus r times k: r times d plus k, here four times two thousand.", [[58.649, 58.929], [59.849, 60.299], [60.839, 61.009], [62.099, 62.269], [63.799, 64.249], [65.969, 66.369], [66.739, 66.929]]],
+  "count/frac": [68.829, 72.415, "That is zero point eight percent of the million in W.", []],
+  "count/out": [72.795, 80.712, "The layer now computes W x plus B A x. W gets no updates; only B and A learn.", [[76.465, 77.015], [78.615, 78.995]]],
+  "merge/zero": [82.512, 92.013, "B starts at zero, and A at random. So at the start, B A is zero, and the layer gives exactly what the pretrained one did.", [[83.982, 84.232], [85.572, 86.122], [87.232, 87.472], [88.812, 89.172]]],
+  "merge/start": [92.393, 97.558, "Training begins from the original model, and moves away from it only as B learns.", [[94.563, 94.833]]],
+  "merge/merge": [97.938, 107.33, "When training is done, add B A into W. The merged matrix has W's shape, so the layer runs exactly as fast as before.", [[99.158, 99.498], [101.388, 102.038], [104.148, 104.498]]],
+  "merge/tasks": [107.71, 114.206, "And each task keeps only its own B and A: eight thousand numbers instead of a million.", [[110.98, 111.56], [112.9, 113.08]]],
+  "worked/ask": [116.006, 125.295, "Now a W that is not square: two thousand rows by five hundred columns, with LoRA at rank four. How many numbers does it train?", [[118.126, 118.696], [121.246, 121.506], [122.996, 123.626]]],
+  "worked/B": [125.675, 132.908, "B takes W's rows, and r columns: two thousand by four. That is eight thousand numbers.", [[128.675, 129.085], [130.475, 130.935], [131.325, 131.485]]],
+  "worked/A": [133.288, 140.116, "A takes r rows, and W's columns: four by five hundred. That is two thousand more.", [[136.228, 136.608], [138.038, 138.448]]],
+  "worked/sum": [140.496, 147.213, "Together, ten thousand: four times two thousand five hundred, r times d plus k.", [[141.026, 141.346], [142.206, 142.666], [144.866, 145.336]]],
+  "worked/pct": [147.593, 154.907, "W holds two thousand times five hundred: a million numbers. So LoRA trains one percent of them.", [[150.503, 150.913], [152.153, 152.613]]],
+  "worked/turn": [155.287, 156.027, "Your turn.", []]
  }
 }

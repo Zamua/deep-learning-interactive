@@ -1,6 +1,6 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01, lerp, smooth } from '../../../lecture/scene';
-import { type Ink, grid, gridCells, rich, volume } from '../draw';
+import { type Ink, grid, gridCells, rich, volume, windowBox } from '../draw';
 
 const X = [
   [1, 3, 2, 0],
@@ -43,10 +43,30 @@ const maxScene: SceneDef = {
     };
     s.alpha(s.ease('max', 0.4), () => label(s, 'max', (mo.l + mo.r) / 2, mo.t - 3.6 * s.u, '--ink-2'));
     out(mo, MAX, 1, s.win('out', 'avg'), 4);
-    s.alpha(s.ease('out', 0.6, 0.8), () => {
+    s.alpha(s.ease('out', 0.6, 0.8) * (1 - s.win('map', 'avg')), () => {
       const y = tall ? mo.b + 4.5 * s.u : mo.b + 5 * s.u;
       s.text('4 × 4 to 2 × 2', (mo.l + mo.r) / 2, y, { size: 3.2, font: 'mono', color: s.c('--ink-2') });
     });
+    // Output (1, 0) and the input window it reads, with 0-based indices.
+    const map = s.win('map', 'avg');
+    s.alpha(map, () => {
+      const idx = (t: string | number, x: number, y: number) => s.text(String(t), x, y, { size: 2.8, font: 'mono', color: s.c('--ink-3') });
+      for (let k = 0; k < 4; k++) {
+        idx(k, g.l - 2.6 * s.u, g.y(k));
+        idx(k, g.x(k), g.b + 2.8 * s.u);
+      }
+      for (let k = 0; k < 2; k++) {
+        idx(k, mo.l - 2.6 * s.u, mo.y(k));
+        idx(k, mo.x(k), mo.b + 2.8 * s.u);
+      }
+      const ax = (ao.l + ao.r) / 2;
+      const ay = (ao.t + ao.b) / 2;
+      label(s, 'output (1, 0)', ax, ay - 5 * s.u, 'purple', 3.2);
+      label(s, 'input rows 2, 3', ax, ay, '--ink-2', 3.2);
+      label(s, 'columns 0, 1', ax, ay + 5 * s.u, '--ink-2', 3.2);
+    });
+    windowBox(s, g, 2, 0, 2, 2, 'purple', s.ease('map', 0.6, 1.5) * (1 - s.ease('avg', 0.6)));
+    windowBox(s, mo, 1, 0, 1, 1, 'purple', s.ease('map', 0.6, 0.6) * (1 - s.ease('avg', 0.6)));
     s.alpha(s.ease('avg', 0.6), () => {
       label(s, 'average', (ao.l + ao.r) / 2, ao.t - 3.6 * s.u, '--ink-2');
       const cw = (ao.pitch - 1) * s.u;
@@ -78,6 +98,27 @@ const shape: SceneDef = {
     const y1 = s.h * 0.58;
     s.alpha(s.ease('formula', 0.6, 0.4), () => rich(s, [['(32 − 2) / 2 + 1 = ', '--ink-2'], ['16', 'gold']], s.w / 2, y1, { size: 4, weight: 600 }));
     s.alpha(s.ease('none', 0.6), () => rich(s, [['parameters: ', '--ink-2'], ['0', 'gold']], s.w / 2, y1 + 7 * s.u, { size: 4, weight: 650 }));
+
+    // 3 x 3 windows at stride 2: neighbors share a column (cells 2 and 4).
+    s.alpha(s.win('overlap', 'none'), () => {
+      const g = grid(s, s.w / 2, s.h * 0.76, 1, 7, s.tall ? 7 : 6.5);
+      const shared = (j: number) => (j === 2 || j === 4 ? s.ease('overlap', 0.6, 2) : 0);
+      gridCells(s, g, [Array(7).fill('')], 'orange', { on: (_, j) => shared(j) });
+      const p = g.pitch * s.u;
+      const bracket = (j0: number, up: boolean, k: Ink, a: number) => s.alpha(a, () => {
+        const x0 = g.x(j0) - p / 2 + 0.6 * s.u;
+        const x1 = g.x(j0 + 2) + p / 2 - 0.6 * s.u;
+        const y = up ? g.t - 1.8 * s.u : g.b + 1.8 * s.u;
+        const tip = up ? 1.2 * s.u : -1.2 * s.u;
+        s.line(x0, y + tip, x0, y, s.c(k), 0.4);
+        s.line(x0, y, x1, y, s.c(k), 0.4);
+        s.line(x1, y, x1, y + tip, s.c(k), 0.4);
+      });
+      bracket(0, true, 'blue', s.ease('overlap', 0.5, 0.6));
+      bracket(2, false, 'green', s.ease('overlap', 0.5, 1.2));
+      bracket(4, true, 'purple', s.ease('overlap', 0.5, 1.8));
+      s.alpha(s.ease('overlap', 0.6, 3.5), () => rich(s, [['3 × 3, stride 2:  (27 − 3) / 2 + 1 = ', '--ink-2'], ['13', 'gold']], s.w / 2, s.h * 0.88, { size: 3.6, weight: 600 }));
+    });
 
     // A window whose 5 hops to another cell while its max stays 5.
     s.alpha(s.ease('shift', 0.6), () => {

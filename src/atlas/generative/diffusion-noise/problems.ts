@@ -79,7 +79,7 @@ export const generators: Generator[] = [
       const vx = pick(rng, [0.25, 0.5, 2, 4]);
       const v = clean(ab * vx + 1 - ab);
       return {
-        prompt: `The pixels of a clean image $${X0}$ have variance $${num(vx)}$. At a step where $${AB} = ${num(ab)}$, what is the variance of $${XT}$?`,
+        prompt: `The pixels of a clean image $${X0}$ have variance $${num(vx)}$. At a step where $${AB} = ${num(ab)}$, what is the variance of $${XT}$?${Math.abs(round(v, 2) - v) > 1e-9 ? ' Round to two decimals.' : ''}`,
         answer: { kind: 'number', value: v, places: 2 },
         traps: traps(v, [
           { value: 1, why: `The blend keeps the variance at 1 only when the image starts at variance 1. Here it starts at $${num(vx)}$.` },
@@ -87,8 +87,9 @@ export const generators: Generator[] = [
           { value: clean(ab * vx), why: 'That is the image part only. Independent variances add: include the noise part.' },
         ], 2),
         solution: [
-          `$${BLEND}$. Image part: $${AB} \\times ${num(vx)} = ${num(clean(ab * vx))}$.`,
-          `Noise part, with $${EPS}$ of variance 1: $(1 - ${AB}) \\times 1 = ${num(clean(1 - ab))}$.`,
+          `$${BLEND}$, and scaling by $c$ multiplies a variance by $c^2$.`,
+          `Image part, scaled by $\\sqrt{${AB}}$: its variance is $${AB} \\times ${num(vx)} = ${num(ab)} \\times ${num(vx)} = ${num(clean(ab * vx))}$.`,
+          `Noise part, scaled by $\\sqrt{1 - ${AB}}$, with $${EPS}$ of variance 1: $(1 - ${num(ab)}) \\times 1 = ${num(clean(1 - ab))}$.`,
           `They are independent, so the variances add: $${num(clean(ab * vx))} + ${num(clean(1 - ab))} = ${num(v)}$.`,
         ],
       };

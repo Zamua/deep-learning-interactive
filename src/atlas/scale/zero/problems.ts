@@ -25,13 +25,20 @@ const named = (s: number, d: number): string =>
     ? `ZeRO stage ${s}`
     : ['nothing sharded', 'only the optimizer state sharded', 'the optimizer state and the gradients sharded', 'everything sharded'][s]!;
 
-const breakdown = (s: number, n: number, g: number): string =>
-  [
-    `$16 \\times ${num(n)} = ${num(16 * n)}$ GB, a full copy`,
-    `$4 \\times ${num(n)} + 12 \\times ${num(n)} / ${g} = ${num(4 * n)} + ${num(clean((12 * n) / g))}$ GB: the 16-bit weights and gradients whole, the 12 bytes of optimizer state split ${g} ways`,
-    `$2 \\times ${num(n)} + 14 \\times ${num(n)} / ${g} = ${num(2 * n)} + ${num(clean((14 * n) / g))}$ GB: the 16-bit weights whole, the gradients and optimizer state split ${g} ways`,
-    `$16 \\times ${num(n)} / ${g}$ GB: all 16 bytes per parameter split ${g} ways`,
-  ][s]!;
+/** Stage 1 or 2, one step per line: the whole part, the split part, the sum. */
+const breakdown = (s: 1 | 2, n: number, g: number, v: number, full: number): string[] => {
+  const whole = s === 1 ? 4 : 2;
+  const split = clean(((16 - whole) * n) / g);
+  return [
+    s === 1
+      ? `Whole on every GPU: the 16-bit weights and gradients, $2 + 2 = 4$ bytes per parameter: $4 \\times ${num(n)} = ${num(4 * n)}$ GB.`
+      : `Whole on every GPU: the 16-bit weights, 2 bytes per parameter: $2 \\times ${num(n)} = ${num(2 * n)}$ GB.`,
+    s === 1
+      ? `Split ${g} ways: the 12 bytes of optimizer state: $12 \\times ${num(n)} / ${g} = ${num(split)}$ GB.`
+      : `Split ${g} ways: the gradients and optimizer state, $2 + 12 = 14$ bytes: $14 \\times ${num(n)} / ${g} = ${num(split)}$ GB.`,
+    `In all: $${num(whole * n)} + ${num(split)} = ${num(v)}$ GB per GPU, against $${num(full)}$ GB without sharding.`,
+  ];
+};
 
 export const generators: Generator[] = [
   {
@@ -55,7 +62,7 @@ export const generators: Generator[] = [
     id: 'stage',
     make(rng, d) {
       const { n, g, mem } = setup(rng, d);
-      const s = pick(rng, [1, 2]);
+      const s = pick(rng, [1, 2] as const);
       const v = mem[s]!;
       return {
         prompt: `A model with ${words(n * 1e9)} parameters trains with Adam on $${G} = ${g}$ GPUs, with ${named(s, d)}. How many GB does each GPU hold?`,
@@ -65,7 +72,7 @@ export const generators: Generator[] = [
           { value: mem[0]!, why: `That is a full copy with nothing sharded. Stage ${s} splits the ${s === 1 ? 'optimizer state' : 'optimizer state and gradients'} ${g} ways.` },
           { value: mem[3 - s]!, why: `That is stage ${3 - s}. Stage ${s} shards ${s === 1 ? 'only the optimizer state' : 'the gradients as well as the optimizer state'}.` },
         ]),
-        solution: [`Stage ${s}: ${breakdown(s, n, g)}.`, `In all, $${num(v)}$ GB per GPU, against $${num(mem[0]!)}$ without sharding.`],
+        solution: breakdown(s, n, g, v, mem[0]!),
       };
     },
   },

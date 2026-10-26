@@ -1,8 +1,9 @@
 {
- "duration": 86.922,
+ "duration": 150.948,
  "scenes": {
   "depth": [0.0, 46.885],
-  "many": [46.885, 86.922]
+  "many": [46.885, 86.915],
+  "layer": [86.915, 150.948]
  },
  "beats": {
   "depth/image": [0.7, 18.183, "A color image has three channels, red, green and blue, each a grid of pixels. Channels first, as PyTorch writes it, its shape is C by H by W: channels, height and width. Here, three by thirty two by thirty two.", [[2.68, 3.08], [3.41, 3.69], [4.69, 5.01], [6.48, 7.09], [8.04, 8.42], [9.65, 9.99], [12.55, 13.01], [13.53, 13.8], [14.15, 14.3], [14.83, 15.32], [15.67, 15.92]]],
@@ -12,7 +13,11 @@
   "many/k": [47.585, 55.829, "A layer has many filters, K of them, each with its own weights, each looking for its own pattern. Here, eight.", [[49.325, 49.645], [50.245, 50.665], [52.135, 52.485], [54.255, 54.735], [55.085, 55.435]]],
   "many/stack": [56.209, 65.821, "Each filter makes its own map, and the maps stack up as the output's channels. Eight filters, eight channels: eight by thirty by thirty.", [[58.049, 58.429], [61.069, 61.579], [62.359, 62.649], [63.439, 63.869], [64.159, 64.309]]],
   "many/shape": [66.201, 76.458, "So the output's depth is the number of filters. Its height and width are how many places the filter fits, as before: thirty two minus three plus one.", [[69.121, 69.611], [72.831, 73.051], [73.691, 74.091], [75.651, 75.801]]],
-  "many/next": [76.838, 84.702, "The next layer sees an input eight channels deep, so each of its filters is eight deep: three by three by eight.", [[78.508, 78.658], [79.688, 80.078], [82.278, 82.708], [83.128, 83.288], [83.878, 84.088]]],
-  "many/turn": [85.082, 85.822, "Your turn.", []]
+  "many/next": [76.838, 85.815, "The next layer sees an input eight channels deep, so each of its filters is eight deep: eight by three by three, depth first.", [[79.668, 80.028], [82.238, 82.798], [84.538, 84.958]]],
+  "layer/args": [87.615, 104.469, "In PyTorch, n n dot conv two d, of three, eight, kernel size five builds a layer. Its numbers come in order: three channels in, eight channels out, then the kernel size, five. Kernel is another word for filter.", [[88.515, 88.765], [90.685, 90.965], [91.655, 91.925], [92.275, 92.585], [93.845, 94.015], [94.805, 95.375], [96.755, 97.275], [98.295, 98.645], [99.635, 100.005], [101.155, 101.475], [101.945, 102.535]]],
+  "layer/filters": [104.849, 118.351, "Eight channels out means eight filters: K is eight. Three channels in means each filter is three deep: three by five by five, depth first. Seventy five weights each.", [[107.479, 107.939], [108.899, 109.439], [110.639, 110.809], [112.709, 113.169], [114.959, 115.409], [116.219, 116.659]]],
+  "layer/weight": [118.731, 131.807, "PyTorch stacks the eight filters along a new first axis, so the weight has shape eight, three, five, five: filters, depth, height and width. Out comes first, then in.", [[122.451, 122.771], [124.331, 124.551], [124.991, 125.191], [126.261, 126.751], [127.321, 127.601], [127.961, 128.281], [128.651, 128.831], [129.411, 129.921], [130.891, 131.141]]],
+  "layer/out": [132.187, 148.727, "Run it on an image of shape three by thirty two by thirty two. Eight filters make eight channels, and a five wide filter fits thirty two minus five plus one, twenty eight places, down and across: eight by twenty eight by twenty eight.", [[136.117, 136.697], [138.637, 138.997], [143.047, 143.457], [144.547, 144.897], [145.977, 146.507], [147.717, 147.877]]],
+  "layer/turn": [149.107, 149.848, "Your turn.", []]
  }
 }

@@ -29,6 +29,8 @@ export const script: LectureScript = {
       title: 'Train down, validation up',
       codeTitle: 'train.py',
       code: `
+        per_example = [0.2, 1.5, 0.4]       #@loss
+        L = np.mean(per_example)   # 0.7    #@avg
         for epoch in range(16):
             train_one_epoch(model, train)   #@fit
             L_train = loss(model, train)    #@both
@@ -37,7 +39,9 @@ export const script: LectureScript = {
         # L_val bottoms out, then climbs    #@gap
       `,
       beats: [
-        { id: 'both', say: 'Train, and after every epoch measure the loss on both splits.', code: ['fit', 'both'] },
+        { id: 'loss', say: 'Training lowers a function called the loss, L. Each example adds a number for how wrong the model is on it: zero when it is exactly right, bigger the more wrong it is.', code: 'loss' },
+        { id: 'avg', say: 'The loss is the average of those numbers. Three examples at {0.2|zero point two}, {1.5|one point five} and {0.4|zero point four} give a loss of {0.7|zero point seven}. Lower is better.', code: 'avg' },
+        { id: 'both', say: 'Train, and after every epoch measure the loss on both splits: averaged over the training examples, and over the validation examples.', code: ['fit', 'both'] },
         { id: 'early', say: 'At first they fall together. The model is learning patterns that hold for every example.', code: 'both' },
         { id: 'gap', say: 'Then they part. The training loss keeps falling, but the validation loss turns and climbs.', code: 'gap' },
         { id: 'memo', say: 'That is overfitting. The model is memorizing its training examples, quirks and all, and getting worse on everything else.', code: 'gap' },
@@ -52,15 +56,19 @@ export const script: LectureScript = {
         # epoch: 2, 4, 6, 8, 10, 12          #@table
         best = np.argmin(val_losses)   # 8   #@min
         model = checkpoints[best]            #@keep
-        # both high and close: underfitting  #@under
-        # both low and close: fits well      #@fine
+        # start 2.3; a good model: about 0.4 #@good
+        # 1.9 and 2.0: underfitting          #@under
+        # 0.1 and 1.3: overfitting           #@over
+        # 0.4 and 0.5: fits well             #@fine
       `,
       beats: [
         { id: 'table', say: 'Here are the numbers, every two epochs.', code: 'table' },
         { id: 'min', say: 'The validation loss bottoms out at epoch eight, at {1.07|one point oh seven}, while the training loss keeps falling.', code: 'min' },
         { id: 'keep', say: 'So keep the weights from epoch eight. Past it, more training only makes the model worse on new data. This is early stopping.', code: 'keep' },
-        { id: 'under', say: 'The opposite failure is underfitting: both losses stay high, and close together, because the model has not even fit its training data.', code: 'under' },
-        { id: 'fine', say: 'Low and close together is the goal: the model does about as well on new examples as on the ones it trained on.', code: 'fine' },
+        { id: 'good', say: 'Now judge a finished model by its numbers. Say training started at a loss of {2.3|two point three}, and a good model on this data reaches about {0.4|zero point four}.', code: 'good' },
+        { id: 'under', say: 'Training ends at {1.9|one point nine} and validation at two: both far above {0.4|zero point four}, and close together. The model has not even fit its training data. That is underfitting, the opposite failure.', code: 'under' },
+        { id: 'over', say: 'Training at {0.1|zero point one}, but validation at {1.3|one point three}: the model fits its own examples and not new ones. That gap is overfitting.', code: 'over' },
+        { id: 'fine', say: '{0.4|Zero point four} and {0.5|zero point five}: near what a good model reaches, and close together. That is the goal: the model does about as well on new examples as on the ones it trained on.', code: 'fine' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

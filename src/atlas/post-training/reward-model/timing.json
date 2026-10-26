@@ -1,8 +1,9 @@
 {
- "duration": 113.12,
+ "duration": 197.211,
  "scenes": {
   "compare": [0.0, 45.55],
-  "loss": [45.55, 113.12]
+  "loss": [45.55, 81.514],
+  "slope": [81.514, 197.211]
  },
  "beats": {
   "compare/hard": [0.7, 6.984, "Grading an answer on a scale is hard for people. Saying which of two answers is better is easy.", [[3.55, 4.1], [6.18, 6.37]]],
@@ -13,9 +14,14 @@
   "loss/pairs": [46.25, 55.895, "The training data is pairs of answers to the same prompt, where a person picked the winner. Call the winner's score r w and the loser's r l.", [[49.5, 49.8], [51.27, 51.87], [53.93, 54.23], [54.96, 55.15]]],
   "loss/loss": [56.275, 72.559, "The loss, L, is cross-entropy on that choice: minus the log of sigma of r w minus r l, the probability the model gave the winner. With a preferred, minus the log of zero point seven three: zero point three one.", [[56.975, 57.215], [57.565, 57.815], [59.745, 60.215], [63.885, 64.345], [66.385, 67.025], [67.895, 68.235], [70.715, 71.145]]],
   "loss/flip": [72.939, 80.414, "Had the person picked b, the model would have given that only zero point two seven, and the loss would be one point three one.", [[74.459, 74.799], [77.799, 78.109]]],
-  "loss/push": [80.794, 93.461, "The loss's slope is sigma minus one for the winner's score, and one minus sigma for the loser's. So lowering the loss raises the winner and lowers the loser, by zero point two seven each.", [[84.394, 84.684], [86.784, 87.264], [91.144, 91.444]]],
-  "loss/agree": [93.841, 101.634, "A pair the model already ranks right, with sigma near one, barely moves it. A pair it gets wrong moves it the most.", [[96.131, 96.351], [97.531, 97.821], [98.691, 99.201], [100.391, 100.581]]],
-  "loss/rank": [102.014, 110.9, "So the model learns to rank answers the way people do. A score alone means nothing; only its gap to another answer's score does.", [[105.294, 105.824], [107.544, 108.064]]],
-  "loss/turn": [111.28, 112.02, "Your turn.", []]
+  "slope/chain": [82.214, 103.051, "How does one choice move the two scores? Call the gap z: r w minus r l. The loss is a chain: z feeds the sigmoid, and the sigmoid feeds minus ln. With a preferred, z is one, sigma is zero point seven three, and the loss zero point three one.", [[84.774, 85.324], [86.514, 86.904], [88.894, 89.504], [90.814, 91.324], [92.894, 93.184], [95.514, 96.114], [96.954, 97.214], [98.144, 98.474], [100.564, 100.904]]],
+  "slope/back": [103.431, 116.143, "Walk back from the loss, multiplying local slopes. Minus ln has slope minus one over its input. At zero point seven three, that is about minus one point three seven.", [[104.811, 105.191], [106.951, 107.511], [111.161, 111.721], [113.301, 113.601]]],
+  "slope/sig": [116.523, 133.55, "The sigmoid's slope is sigma times one minus sigma: zero point seven three times zero point two seven, about zero point two. So the slope on z is minus one point three seven times zero point two: minus zero point two seven.", [[120.063, 120.633], [123.823, 124.223], [125.523, 126.123], [131.013, 131.463], [133.323, 133.523]]],
+  "slope/cancel": [133.93, 151.085, "In symbols, that is minus one over sigma, times sigma times one minus sigma. The sigmas cancel, leaving minus, one minus sigma: one minus zero point seven three, made negative. The same minus zero point two seven.", [[134.78, 135.01], [137.18, 137.47], [138.31, 138.49], [139.98, 140.62], [141.78, 142.03], [142.97, 143.2], [144.32, 144.77], [147.0, 147.22], [148.03, 148.49], [149.04, 149.2]]],
+  "slope/scores": [151.465, 169.325, "Last, z rises one for one with the winner's score, and falls one for one as the loser's rises. So the slope on r w is sigma minus one, minus zero point two seven, and on r l it is one minus sigma, plus zero point two seven.", [[152.015, 152.315], [155.095, 155.425], [158.145, 158.715], [160.515, 160.765], [162.135, 162.345], [164.155, 164.675], [165.725, 165.965], [167.385, 167.585]]],
+  "slope/push": [169.705, 177.552, "Lowering the loss steps against those slopes: it raises the winner and lowers the loser, by zero point two seven each.", [[172.285, 172.775], [175.215, 175.545]]],
+  "slope/agree": [177.932, 185.725, "A pair the model already ranks right, with sigma near one, barely moves it. A pair it gets wrong moves it the most.", [[180.222, 180.442], [181.622, 181.912], [182.782, 183.292], [184.482, 184.672]]],
+  "slope/rank": [186.105, 194.991, "So the model learns to rank answers the way people do. A score alone means nothing; only its gap to another answer's score does.", [[189.385, 189.915], [191.635, 192.155]]],
+  "slope/turn": [195.371, 196.111, "Your turn.", []]
  }
 }

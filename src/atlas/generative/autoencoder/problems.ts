@@ -96,8 +96,7 @@ export const generators: Generator[] = [
       const D = d < 0.35 ? pick(rng, [64, 100]) : pick(rng, [784, 3072]);
       const H = d < 0.35 ? pick(rng, [16, 20, 32]) : pick(rng, [128, 256, 512]);
       const k = d < 0.35 ? pick(rng, [2, 4, 8]) : pick(rng, [16, 32, 64]);
-      const B = pick(rng, [16, 32, 64, 100, 128]);
-      const ask = pick(rng, ['enc1', 'enc2', 'dec1', 'dec2', ...(d >= 0.35 ? (['codes', 'out'] as const) : [])] as const);
+      const ask = pick(rng, ['enc1', 'enc2', 'dec1', 'dec2'] as const);
       const W: Record<string, { name: string; v: number[]; mirror: number[] }> = {
         enc1: { name: "the encoder's first weight matrix", v: [H, D], mirror: [D, H] },
         enc2: { name: "the encoder's second weight matrix, the one that makes the code", v: [k, H], mirror: [H, k] },
@@ -105,22 +104,6 @@ export const generators: Generator[] = [
         dec2: { name: "the decoder's last weight matrix", v: [D, H], mirror: [H, D] },
       };
       const sizes = `The encoder maps $\\symD = ${big(D)}$ inputs to $\\symH = ${H}$ hidden units, then to a code of $k = ${k}$. The decoder mirrors it, from ${k} back to ${H} and then ${bigText(D)}.`;
-      if (ask === 'codes' || ask === 'out') {
-        const v = ask === 'codes' ? [B, k] : [B, D];
-        return {
-          prompt: `${sizes} A batch of $${B}$ inputs, one per row, goes through it. What is the shape of the ${ask === 'codes' ? 'codes the encoder hands to the decoder' : 'reconstructions that come out'}?`,
-          answer: { kind: 'shape', value: v },
-          traps: straps(v, [
-            { value: ask === 'codes' ? [B, D] : [B, k], why: ask === 'codes' ? 'That is the input\'s width. The code is the narrow middle: $k$ numbers per input.' : 'That is the code. The decoder expands it back to the input\'s size.' },
-            { value: [v[1]!, B], why: 'That is the transpose. Each input in the batch keeps its own row.' },
-            { value: [B, H], why: `That is the hidden layer, $\\symH = ${H}$ wide.` },
-          ]),
-          solution: [
-            `Each input gives one row, so the batch keeps its $${B}$ rows all the way through.`,
-            ask === 'codes' ? `The encoder ends at the code, $k = ${k}$ numbers per input: $${shp(v)}$.` : `The decoder ends where the input started, $\\symD = ${big(D)}$ numbers per input: $${shp(v)}$.`,
-          ],
-        };
-      }
       const w = W[ask]!;
       return {
         prompt: `${sizes} What is the shape of ${w.name}?`,

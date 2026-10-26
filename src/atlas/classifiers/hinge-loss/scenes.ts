@@ -1,5 +1,5 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { lerp } from '../../../lecture/scene';
+import { lerp, smooth } from '../../../lecture/scene';
 import { columns } from '../../draw';
 
 const neg = (t: string) => t.replace(/-/g, '−');
@@ -84,12 +84,17 @@ const sum: SceneDef = {
 
 const zero: SceneDef = {
   draw(s) {
-    const c = lerp(3, 7, s.ease('raise', 2));
-    const vals = [c, 5, -1];
-    hingeBars(s, vals, 0, NAMES, P1, { line: 1, cost: 1 });
+    // `least` dips cat to 5.5 while the voice says so, then settles back on 6.
+    const p = s.prog('least');
+    const dip = smooth((p - 0.4) / 0.1) * (1 - smooth((p - 0.9) / 0.08));
+    const c = lerp(3, 6, s.ease('raise', 2)) - 0.5 * dip;
+    hingeBars(s, [c, 5, -1], 0, NAMES, P1, { line: 1, cost: 1 });
     const L = Math.max(0, 5 - (c - 1)) + Math.max(0, -1 - (c - 1));
-    s.alpha(1 - s.ease('zero', 0.6), () => s.text(`L = ${L.toFixed(1)}`, s.w / 2, s.h * 0.93, { size: 4.2, font: 'mono', weight: 650, color: s.c('red') }));
-    s.alpha(s.ease('zero', 0.6), () => s.text('L = 0: wins by at least 1', s.w / 2, s.h * 0.93, { size: 4.2, font: 'mono', weight: 650, color: s.c('green') }));
+    const ok = L < 0.005;
+    s.text(ok ? 'L = 0' : `L = ${+L.toFixed(2)}`, s.w / 2, s.h * 0.93, { size: 4.2, font: 'mono', weight: 650, color: s.c(ok ? 'green' : 'red') });
+    const top = { size: 3.6, font: 'mono', weight: 600, halo: true } as const;
+    s.alpha(s.win('zero', 'least'), () => s.text(neg('dog: max(0, 5 - 6 + 1) = max(0, 0) = 0'), s.w / 2, s.h * 0.065, { ...top, color: s.c('green') }));
+    s.alpha(s.ease('least', 0.6), () => s.text('smallest s[y] = 5 + 1 = 6', s.w / 2, s.h * 0.065, { ...top, color: s.c('gold') }));
   },
 };
 

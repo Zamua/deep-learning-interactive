@@ -130,4 +130,47 @@ const why: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { grow, stride, why };
+// The walk: each layer's r and jump, the beat that reveals it.
+const WALK = [
+  { name: '3 × 3, S = 2', r: '1 + (3 − 1) × 1 = 3', j: '1 × 2 = 2', at: 'l1' },
+  { name: '2 × 2, S = 2', r: '3 + (2 − 1) × 2 = 5', j: '2 × 2 = 4', at: 'l2' },
+  { name: '3 × 3, S = 1', r: '5 + (3 − 1) × 4 = 13', j: '4', at: 'l3' },
+];
+
+const walk: SceneDef = {
+  draw(s) {
+    const f = { size: 3.4, font: 'mono' as const, weight: 600 };
+    const wn = s.measure(WALK[0]!.name, f);
+    const wr = s.measure(WALK[2]!.r, f);
+    const wj = s.measure(WALK[0]!.j, f);
+    const gap = Math.max(3 * s.u, (s.w - 12 * s.u - wn - wr - wj) / 2);
+    const c1 = (s.w - wn - wr - wj - 2 * gap) / 2 + wn;
+    const c2 = c1 + gap;
+    const c3 = c2 + wr + gap;
+    const ys = [0.14, 0.28, 0.42, 0.56, 0.7].map((v) => s.h * v);
+    const t = (str: string, x: number, y: number, k: Ink, align: CanvasTextAlign = 'left', weight = 600) => s.text(str, x, y, { ...f, weight, align, color: s.c(k) });
+    s.alpha(s.ease('rj', 0.6), () => {
+      t('field r', c2, ys[0]!, 'blue', 'left', 700);
+      t('jump j', c3, ys[0]!, 'slate', 'left', 700);
+      t('start', c1, ys[1]!, '--ink-3', 'right');
+      t('1', c2, ys[1]!, 'blue');
+      t('1', c3, ys[1]!, 'slate');
+    });
+    WALK.forEach((l, i) => {
+      const y = ys[i + 2]!;
+      const on = s.ease(l.at, 0.6) * (1 - 0.45 * (i < 2 ? s.ease(WALK[i + 1]!.at, 0.6) : 0));
+      s.alpha(s.ease('p', 0.5, 0.8 + i * 1.6), () => t(l.name, c1, y, '--ink-2', 'right'));
+      s.alpha(on, () => t(l.r, c2, y, 'blue'));
+      s.alpha(s.ease(l.at, 0.6, 2.5), () => t(l.j, c3, y, 'slate'));
+    });
+    s.alpha(s.ease('l3', 0.6, 3), () => {
+      const y = ys[4]!;
+      const w = s.measure('13', f);
+      const x = c2 + wr - w;
+      s.rrect(x - 0.8 * s.u, y - 3 * s.u, w + 1.6 * s.u, 6 * s.u, 1, { fill: s.tint('blue', 0.18), stroke: s.c('blue'), lw: 0.35 });
+      s.text('one unit sees 13 input pixels', s.w / 2, s.h * 0.86, { size: 3.6, weight: 600, color: s.c('--ink-2') });
+    });
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { grow, stride, why, try: walk };

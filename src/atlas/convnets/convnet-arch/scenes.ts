@@ -63,7 +63,7 @@ const fmtN = (n: number) => n.toLocaleString('en-US');
 
 const head: SceneDef = {
   draw(s) {
-    const y = s.h * 0.14;
+    const y = s.h * 0.3;
     const gx = s.w * 0.12;
     glyph(s, gx, y, 32, 8, 'teal');
     s.text('(32, 8, 8)', gx, y + 7 * s.u, { size: 3.1, font: 'mono', color: s.c('--ink-2') });
@@ -77,7 +77,7 @@ const head: SceneDef = {
       for (let k = 1; k < 32; k++) s.line(bx0 + (w * k) / 32, y - 1.6 * s.u, bx0 + (w * k) / 32, y + 1.6 * s.u, s.tint('teal', 0.5), 0.15);
       s.alpha(s.ease('flatten', 0.6, 1.6), () => rich(s, [['32 × 8 × 8 = ', '--ink-2'], ['2,048', 'teal']], (bx0 + bx1) / 2, y + 7 * s.u, { size: 3.6, weight: 600 }));
     });
-    const sy = s.h * 0.4;
+    const sy = s.h * 0.62;
     s.alpha(s.ease('fc', 0.6), () => {
       s.arrow((bx0 + bx1) / 2, y + 10.5 * s.u, (bx0 + bx1) / 2, sy - 5 * s.u, s.c('--ink-3'), 0.3, 1.8);
       s.text('linear', (bx0 + bx1) / 2 + 2 * s.u, (y + sy) / 2 + 3 * s.u, { size: 3, font: 'mono', align: 'left', color: s.c('purple') });
@@ -85,12 +85,36 @@ const head: SceneDef = {
       for (let k = 0; k < 10; k++) s.cell((bx0 + bx1) / 2 + (k - 5) * p + 0.4 * s.u, sy - 2.6 * s.u, p - 0.8 * s.u, 5.2 * s.u, '', 'purple', { on: 0.4 });
       s.text('10 scores', (bx0 + bx1) / 2, sy + 6 * s.u, { size: 3.2, font: 'mono', color: s.c('purple') });
     });
+  },
+};
+
+const SUMS: [string, string, Ink, string][] = [
+  ['conv 1  ', '16 × (3·3·3 + 1) = 448', 'blue', 'c1'],
+  ['conv 2  ', '32 × (3·3·16 + 1) = 4,640', 'blue', 'c2'],
+  ['linear  ', '2,048 × 10 + 10 = 20,490', 'purple', 'lin'],
+  ['total   ', '448 + 4,640 + 20,490 = 25,578', '--ink', 'most'],
+];
+
+const count: SceneDef = {
+  draw(s) {
+    // One sum per layer, left-aligned as a block so the layer names line up.
+    const o = { size: s.tall ? 3.2 : 3.6, weight: 600 };
+    const wide = Math.max(...SUMS.map(([a, b]) => s.measure(a + b, { ...o, font: 'mono' })));
+    const x0 = s.w / 2 - wide / 2;
+    let cur = 0;
+    SUMS.forEach(([, , , beat], i) => {
+      if (s.ease(beat, 0.4) > 0.5) cur = i;
+    });
+    SUMS.forEach(([name, sum, k, beat], i) => {
+      const y = s.h * (0.1 + i * 0.11);
+      s.alpha(s.ease(beat, 0.6), () => rich(s, [[name, k], [sum, i === cur ? '--ink' : '--ink-2']], x0, y, { ...o, align: 'left' }));
+    });
     const max = PARAMS[2]![1];
     const lx = s.w * 0.22;
     const span = s.w * 0.5;
     PARAMS.forEach(([name, n, k], i) => {
       const by = s.h * (0.6 + i * 0.1);
-      const a = s.ease('params', 0.5, 0.8 + i * 1.6);
+      const a = s.ease(SUMS[i]![3], 0.5, 0.8);
       s.alpha(a, () => {
         const on = i === 2 ? s.ease('most', 0.6) : 0;
         s.text(name, lx - 2.5 * s.u, by, { size: 3.3, font: 'mono', align: 'right', color: s.c(k) });
@@ -98,8 +122,8 @@ const head: SceneDef = {
         s.text(fmtN(n), lx + Math.max(0.6 * s.u, (span * n) / max) + 2 * s.u, by, { size: 3.3, font: 'mono', weight: 600, align: 'left', color: s.c(k), halo: true });
       });
     });
-    s.alpha(s.ease('most', 0.6, 1), () => s.text('total 25,578: 80% in the linear layer', s.w / 2, s.h * 0.92, { size: 3.4, font: 'mono', color: s.c('--ink-2') }));
+    s.alpha(s.ease('most', 0.6, 1.5), () => s.text('20,490 / 25,578 ≈ 80% in the linear layer', s.w / 2, s.h * 0.92, { size: s.tall ? 3.1 : 3.4, font: 'mono', color: s.c('--ink-2') }));
   },
 };
 
-export const scenes: Record<string, SceneDef> = { stages, head };
+export const scenes: Record<string, SceneDef> = { stages, head, count };

@@ -34,9 +34,10 @@ export const script: LectureScript = {
       `,
       beats: [
         { id: 's1', say: 'Stage one shards the optimizer state, the twelve bytes of master copy, m and v. Each GPU updates only its own quarter of the weights.', code: 's1' },
-        { id: 's1n', say: 'Per GPU, that is four bytes, plus twelve over four, per parameter: forty nine gigabytes instead of 112.', code: 's1' },
-        { id: 's2', say: 'Stage two shards the gradients too: each GPU only needs the averaged gradient for its own quarter. That makes {38.5|thirty eight and a half} gigabytes.', code: 's2' },
-        { id: 's3', say: 'Stage three shards the weights as well. Everything is split: sixteen N over G, twenty eight gigabytes each.', code: 's3' },
+        { id: 's1n', say: 'Per GPU, the 16-bit weights and gradients stay whole: two bytes plus two. The twelve bytes of optimizer state are split four ways: three. That is seven bytes per parameter, and seven times 7 billion is forty nine gigabytes, instead of 112.', code: 's1' },
+        { id: 's2', say: 'Stage two shards the gradients too: each GPU only needs the averaged gradient for its own quarter.', code: 's2' },
+        { id: 's2n', say: 'Now only the two bytes of 16-bit weights stay whole. The gradients\' two and the optimizer\'s twelve, fourteen bytes, are split four ways: {3.5|three and a half}. That is {5.5|five and a half} bytes per parameter: {38.5|thirty eight and a half} gigabytes.', code: 's2' },
+        { id: 's3', say: 'Stage three shards the weights as well. Everything is split, sixteen N over G: sixteen bytes over four is four per parameter, twenty eight gigabytes each.', code: 's3' },
       ],
     },
     {

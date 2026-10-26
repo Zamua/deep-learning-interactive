@@ -138,4 +138,54 @@ const sign: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { multiply, sign };
+interface Missing {
+  w: number[];
+  x: number[];
+  /** Index of the unknown entry, shown as `a`. */
+  k: number;
+  /** Beats: the givens, the known products, then each line of the solve. */
+  given: string;
+  known: string;
+  lines: [string, string][];
+}
+
+const M1: Missing = { w: [2, 1, 3], x: [1, 2, 2], k: 1, given: 'p1', known: 'known', lines: [['known', '2 + 6 = 8'], ['a1', 'a = 10 − 8 = 2']] };
+const M2: Missing = { w: [3, 2, 1], x: [1, 3, 4], k: 1, given: 'p2', known: 'k2', lines: [['k2', '3 + 4 = 7'], ['k2', '2a = 13 − 7 = 6'], ['a2', 'a = 6 / 2 = 3']] };
+
+/** A dot product with one entry of x unknown, solved line by line under its rows. */
+function missing(s: Scene, m: Missing, a: number) {
+  s.alpha(a, () => {
+    const xs = columns(s, m.w.length, 17);
+    const lx = xs[0]! - 11 * s.u;
+    const [yw, yx, yp] = [0.12, 0.28, 0.45].map((f) => s.h * f);
+    const v = m.w.reduce((t, wi, i) => t + wi * m.x[i]!, 0);
+    const solved = s.ease(m.lines[m.lines.length - 1]![0], 0.6, 1.4);
+    rowLabel(s, 'w', lx, yw, 'blue');
+    cells(s, xs, yw, m.w.map(fmt), 'blue', { on: m.w.map((_, i) => (i === m.k ? s.ease(m.lines[m.lines.length - 1]![0], 0.6) * (m.w[m.k] === 1 ? 0 : 1) : 0)) });
+    xs.forEach((cx) => s.text('×', cx, (yw + yx) / 2, { size: 3.6, font: 'mono', color: s.c('--ink-3') }));
+    rowLabel(s, 'x', lx, yx, 'orange');
+    cells(s, xs, yx, m.x.map((xi, i) => (i === m.k ? (solved > 0.5 ? fmt(xi) : 'a') : fmt(xi))), 'orange', { on: m.x.map((_, i) => (i === m.k ? 1 : 0)) });
+    s.alpha(s.ease(m.known, 0.6), () => {
+      downArrows(s, xs, yx + 6 * s.u, yp - 6 * s.u);
+      rowLabel(s, 'w * x', lx, yp, '--ink-2', 3.6);
+      const ps = m.w.map((wi, i) => (i === m.k ? (wi === 1 ? 'a' : `${wi}a`) : fmt(wi * m.x[i]!)));
+      cells(s, xs, yp, ps, 'gold', { on: ps.map((_, i) => (i === m.k ? 0 : 1)) });
+    });
+    s.alpha(s.ease(m.given, 0.6, 1), () => rich(s, [['w', 'blue'], [' · ', '--ink-2'], ['x', 'orange'], [` = ${v}`, '--ink-2']], s.w / 2, s.h * 0.6, { size: 4.2, weight: 600 }));
+    m.lines.forEach(([beat, t], i) => {
+      const same = m.lines.slice(0, i).filter(([b]) => b === beat).length;
+      const last = i === m.lines.length - 1;
+      s.alpha(s.ease(beat, 0.6, 0.8 + 2.5 * same), () => s.text(t, s.w / 2, s.h * (0.71 + 0.1 * i), { size: 4, font: 'mono', weight: last ? 650 : 500, color: s.c(last ? 'gold' : '--ink-2') }));
+    });
+  });
+}
+
+const solve: SceneDef = {
+  draw(s) {
+    const swap = s.ease('p2', 0.6);
+    missing(s, M1, 1 - swap);
+    missing(s, M2, swap);
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { multiply, sign, solve };

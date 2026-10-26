@@ -32,12 +32,16 @@ export const script: LectureScript = {
         g.mean()        # 1.0                     #@mean
         # another batch: 0.2, then 1.9, ...       #@noise
         # the scatter shrinks like 1 / sqrt(B)    #@size
+        # B = 4 to 64: 16x B, 1/4 the scatter     #@size
+        # work per step grows like B              #@cost
+        # B = 64 to 8: 1/8 the work, noisier      #@cost
       `,
       beats: [
         { id: 'per', say: 'Say B is four, and for one entry of w the four examples give gradients of two, minus one, three and zero.', code: 'per' },
         { id: 'mean', say: 'The minibatch gradient is their mean: they add up to four, and four over four is one.', code: 'mean' },
         { id: 'noise', say: 'Another batch gives another estimate. Batch after batch, they scatter around the true gradient.', code: 'noise' },
-        { id: 'size', say: 'Bigger batches scatter less: the scatter shrinks like {1/√B|one over the square root of B}, the sign {√|root} meaning square root, so four times the batch halves it. But each step costs more, and small batches buy many cheap, noisy steps.', code: 'size' },
+        { id: 'size', say: 'Bigger batches scatter less: the scatter shrinks like {1/√B|one over the square root of B}, the sign {√|root} meaning square root. So four times the batch halves it, and sixteen times, from four to sixty four, quarters it.', code: 'size' },
+        { id: 'cost', say: 'But each step costs work in proportion to B, since every example in the batch needs its own gradient. Going from sixty four down to eight does one eighth of the work per step, with a noisier gradient: many cheap, noisy steps.', code: 'cost' },
       ],
     },
     {
@@ -47,13 +51,17 @@ export const script: LectureScript = {
       code: `
         N, B = 1200, 100
         steps_per_epoch = N // B   # 12     #@count
+        3 * steps_per_epoch        # 36     #@epochs
         k = 5
         seen = k * B               # 500    #@seen
+        36 * B / N                 # 3.0    #@back
       `,
       beats: [
         { id: 'epoch', say: 'One pass through all N examples is called an epoch.' },
         { id: 'count', say: 'Each step uses one batch of B, so an epoch takes N over B steps. Twelve hundred examples in batches of a hundred: twelve steps.', code: 'count' },
+        { id: 'epochs', say: 'Several epochs take that many times the steps: three epochs are three times twelve, thirty six steps.', code: 'epochs' },
         { id: 'seen', say: 'And after k steps, k times B examples have been used. Five steps of a hundred: five hundred.', code: 'seen' },
+        { id: 'back', say: 'Turn that around to count epochs. Thirty six steps of a hundred is thirty six hundred examples; divide by N, twelve hundred: three epochs.', code: 'back' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

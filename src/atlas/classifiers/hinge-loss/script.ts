@@ -43,13 +43,15 @@ export const script: LectureScript = {
       title: 'When the loss is zero',
       codeTitle: 'hinge.py',
       code: `
-        s = np.array([7, 5, -1])            #@s
-        s - s[y] + 1     # [1, -1, -7]      #@m
-        # every wrong class at or below 0: L = 0   #@zero
+        s = np.array([6, 5, -1])            #@s
+        s - s[y] + 1     # [1, 0, -6]       #@m
+        # max(0, 0) + max(0, -6) = 0        #@zero
+        # smallest s[y]: 5 + 1 = 6          #@least
       `,
       beats: [
-        { id: 'raise', say: 'Raise cat\'s score to seven. The line rises to six, above every other class.', code: 's' },
-        { id: 'zero', say: 'Every term is zero, so the loss is zero. That takes beating every other class by at least one. Just winning is not enough.', code: ['m', 'zero'] },
+        { id: 'raise', say: 'Raise cat\'s score to six. The line rises to five, level with dog.', code: 's' },
+        { id: 'zero', say: 'Dog\'s term is five, minus six, plus one: zero, and the max of zero and zero is zero. Ship\'s is zero too, so the loss is zero.', code: ['m', 'zero'] },
+        { id: 'least', say: 'Six is the smallest score that does it: the highest other score, plus one. At five and a half, dog pokes half a point above the line. Just winning is not enough: the right class must win by at least one.', code: 'least' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

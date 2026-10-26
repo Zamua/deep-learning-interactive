@@ -30,16 +30,22 @@ export const script: LectureScript = {
       title: 'Why the square roots',
       codeTitle: 'variance.py',
       code: `
-        np.var(x0)                  # 1.0   #@one
-        np.var(np.sqrt(a) * x0)     # a     #@scale
+        np.var(x0)                    # 1.0   #@one
+        np.var([1, -1])               # 1.0   #@pair
+        np.var([0.8, -0.8])           # 0.64  #@rule
+        np.var(np.sqrt(a) * x0)       # a     #@scale
         np.var(np.sqrt(1 - a) * eps)  # 1 - a #@scale
-        np.var(xt)                  # 1.0   #@sum
+        np.var(xt)                    # 1.0   #@sum
+        # np.var(x0) = 2: 1.28 + 0.36 = 1.64  #@spread
       `,
       beats: [
         { id: 'one', say: 'Say the clean pixels have a variance of one, like the noise.', code: 'one' },
-        { id: 'scale', say: 'Scaling a number by c multiplies its variance by c squared. So the image part has variance {ᾱ|alpha bar}, and the noise part one minus {ᾱ|alpha bar}.', code: 'scale' },
+        { id: 'pair', say: 'Take two pixels, one and minus one. Their mean is zero, and each sits one away from it, so their variance is one.', code: 'pair' },
+        { id: 'rule', say: 'Scale both by {0.8|zero point eight}. Each now sits {0.8|zero point eight} away, so the variance is {0.8|zero point eight} squared: {0.64|zero point six four}. Scaling by any number, c, multiplies the variance by c squared.', code: 'rule' },
+        { id: 'scale', say: 'The image part is scaled by the square root of {ᾱ|alpha bar}, so its variance is {ᾱ|alpha bar}: here {0.64|zero point six four}. The noise part\'s is one minus {ᾱ|alpha bar}: {0.36|zero point three six}.', code: 'scale' },
         { id: 'sum', say: 'The two are independent, so their variances add: {ᾱ|alpha bar}, plus one minus {ᾱ|alpha bar}, is one. The blend keeps the spread of the pixels the same, and changes only what they are made of.', code: 'sum' },
         { id: 'share', say: 'So {ᾱ|alpha bar} is the share of the variance that is still image. At {0.64|zero point six four}: sixty four percent image, thirty six percent noise.', code: 'scale' },
+        { id: 'spread', say: 'That holds when the image starts at variance one. Start it at two, and the image part is {0.64|zero point six four} times two: {1.28|one point two eight}. The noise part still adds {0.36|zero point three six}, so {xₜ|x t} has a variance of {1.64|one point six four}.', code: 'spread' },
       ],
     },
     {

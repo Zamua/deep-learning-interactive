@@ -81,7 +81,7 @@ export const generators: Generator[] = [
       return {
         prompt: `What is the derivative of $\\symf(\\symx) = ${tex}$?`,
         answer: { kind: 'expr', value: dExpr, vars: ['x'] },
-        solution: [...parts.map((p) => p.step + (p.sub ? ' It is subtracted, so its derivative is too.' : '')), `Together: $\\symf'(\\symx) = ${dTex}$.`],
+        solution: [...parts.map((p) => p.step + (p.sub ? ' It is subtracted, so its derivative is too.' : '')), `${parts.length > 1 ? 'Together' : 'So'}: $\\symf'(\\symx) = ${dTex}$.`],
       };
     },
   },
@@ -109,8 +109,11 @@ export const generators: Generator[] = [
         answer: { kind: 'number', value: v },
         traps: cleanTraps(traps, v),
         solution: [
-          `Differentiate term by term: $\\symf'(\\symx) = ${dTex}$.`,
-          `Put in $\\symx = ${x}$: $\\symf'(${x}) = ${dts.map((t) => `${paren(t.c)}${t.n === 0 ? '' : ` \\cdot ${paren(x)}${t.n === 1 ? '' : `^{${t.n}}`}`}`).join(' + ')}${withLn ? ` + \\dfrac{${lnC}}{${x}}` : ''} = ${num(v)}$.`,
+          ...ts.map(termStep),
+          ...(withLn ? [`$${lnC}\\ln \\symx$: the derivative of $\\ln \\symx$ is $\\dfrac{1}{\\symx}$, so this is $\\dfrac{${lnC}}{\\symx}$.`] : []),
+          `So $\\symf'(\\symx) = ${dTex}$.`,
+          `Put in $\\symx = ${x}$: $\\symf'(${x}) = ${dts.map((t) => `${paren(t.c)}${t.n === 0 ? '' : ` \\cdot ${paren(x)}${t.n === 1 ? '' : `^{${t.n}}`}`}`).join(' + ')}${withLn ? ` + \\dfrac{${lnC}}{${x}}` : ''}$.`,
+          `$= ${[...dts.map((t) => paren(t.c * x ** t.n)), ...(withLn ? [String(lnC / x)] : [])].join(' + ')} = ${num(v)}$.`,
         ],
       };
     },

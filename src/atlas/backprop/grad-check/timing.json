@@ -1,18 +1,25 @@
 {
- "duration": 103.095,
+ "duration": 173.166,
  "scenes": {
-  "numeric": [0.0, 45.658],
-  "compare": [45.658, 103.095]
+  "numeric": [0.0, 43.683],
+  "error": [43.683, 115.73],
+  "compare": [115.73, 173.166]
  },
  "beats": {
   "numeric/why": [0.7, 12.08, "Backprop code is easy to get subtly wrong. So check it against a slope measured directly, from f itself. Here f is x squared, at x equals three.", [[3.54, 3.99], [6.76, 6.99], [8.14, 8.56], [8.93, 9.11], [10.45, 10.75]]],
   "numeric/sides": [12.46, 21.859, "Step a small h to each side, here a tenth, and evaluate f at both points: eight point four one and nine point six one.", [[14.62, 15.02], [15.85, 16.32], [18.42, 18.87], [19.98, 20.23]]],
   "numeric/divide": [22.239, 32.176, "Rise over run: their difference, one point two, over the distance between them, two h. That gives six: the centered difference.", [[23.479, 24.079], [24.919, 25.239], [25.989, 26.369], [27.849, 28.179], [28.879, 29.419], [30.439, 30.939]]],
-  "numeric/one": [32.556, 44.558, "A one-sided step, from three to three point one, gives six point one. Its error shrinks like h, but the centered error shrinks like h squared, so it is far closer.", [[33.866, 34.196], [35.866, 36.146], [37.386, 38.006], [39.836, 40.266], [42.866, 43.196]]],
-  "compare/diff": [46.358, 59.978, "Now compare backprop's answer, a, with the measured one, n. Their raw difference is not enough: off by one ten-thousandth is nothing next to a thousand, but huge next to two ten-thousandths.", [[48.298, 48.508], [48.878, 49.178], [50.118, 50.438], [50.798, 51.418], [53.268, 53.788], [57.198, 57.578]]],
-  "compare/rel": [60.358, 74.493, "So divide the size of the difference, the absolute value of a minus n, by the larger of the two sizes. That is the relative error. The bars mean absolute value: a number's size, with its sign dropped.", [[62.508, 62.768], [65.018, 65.338], [67.208, 67.738], [69.258, 69.858], [71.748, 72.108]]],
-  "compare/bands": [74.873, 90.964, "Around ten to the minus seven or smaller, written one e minus seven in code, the two agree, and the gradient is right. Around ten to the minus four, be suspicious. Around ten to the minus two or more, there is a bug.", [[77.503, 77.843], [80.423, 80.833], [81.643, 81.933], [83.203, 83.853], [85.593, 86.003], [86.943, 87.543], [89.763, 90.103]]],
-  "compare/bug": [91.344, 100.875, "Say backprop used x where it should have used two x. It gives three where the slope is six: a relative error of a half. Clearly a bug.", [[94.824, 95.294], [97.544, 97.914], [99.504, 99.884]]],
-  "compare/turn": [101.255, 101.995, "Your turn.", []]
+  "numeric/one": [32.556, 42.583, "A one-sided step, from three to three point one, gives six point one: a tenth too high. Here the centered difference is exactly right.", [[33.856, 34.196], [35.926, 36.166], [37.486, 38.006], [39.246, 39.886]]],
+  "error/cube": [44.383, 54.346, "That exactness is special to x squared. Take x cubed instead, at x equals one. Its slope there is three x squared: three.", [[47.103, 47.683], [49.273, 49.553], [50.693, 51.183], [53.403, 53.903]]],
+  "error/ten": [54.726, 67.057, "With h a tenth, the one-sided difference gives three point three one, off by zero point three one. The centered one gives three point zero one, off by only zero point zero one.", [[55.836, 56.166], [59.076, 59.456], [61.226, 61.876], [64.316, 64.726]]],
+  "error/hund": [67.437, 82.37, "Now shrink h ten times, to a hundredth. The one-sided error shrinks about ten times, to zero point zero three zero one. The centered error shrinks a hundred times, to zero point zero zero zero one.", [[69.367, 69.587], [70.417, 71.057], [73.767, 74.057], [76.557, 77.127], [79.467, 79.767]]],
+  "error/order": [82.75, 91.424, "So the one-sided error shrinks like h, and the centered error like h squared. A tenth of the step, a hundredth of the error.", [[85.49, 85.88], [88.13, 88.7], [89.71, 90.08]]],
+  "error/left": [91.804, 104.292, "Why? Step to the left instead, from zero point nine to one. That gives two point seven one: too low by zero point two nine, about as much as the right step was too high.", [[92.294, 92.814], [94.314, 94.674], [96.434, 96.904], [98.814, 99.284], [101.514, 101.854]]],
+  "error/cancel": [104.672, 114.63, "The centered difference is the average of the two steps, three point zero one. One overshoots, the other undershoots, and their errors nearly cancel.", [[107.632, 107.942], [109.352, 109.882], [110.982, 111.232], [112.542, 112.872]]],
+  "compare/diff": [116.43, 130.049, "Now compare backprop's answer, a, with the measured one, n. Their raw difference is not enough: off by one ten-thousandth is nothing next to a thousand, but huge next to two ten-thousandths.", [[118.37, 118.58], [118.95, 119.25], [120.19, 120.51], [120.87, 121.49], [123.34, 123.86], [127.27, 127.65]]],
+  "compare/rel": [130.429, 144.564, "So divide the size of the difference, the absolute value of a minus n, by the larger of the two sizes. That is the relative error. The bars mean absolute value: a number's size, with its sign dropped.", [[132.579, 132.839], [135.089, 135.409], [137.279, 137.809], [139.329, 139.929], [141.819, 142.179]]],
+  "compare/bands": [144.944, 161.035, "Around ten to the minus seven or smaller, written one e minus seven in code, the two agree, and the gradient is right. Around ten to the minus four, be suspicious. Around ten to the minus two or more, there is a bug.", [[147.574, 147.914], [150.494, 150.904], [151.714, 152.004], [153.274, 153.924], [155.664, 156.074], [157.014, 157.614], [159.834, 160.174]]],
+  "compare/bug": [161.415, 170.946, "Say backprop used x where it should have used two x. It gives three where the slope is six: a relative error of a half. Clearly a bug.", [[164.895, 165.365], [167.615, 167.985], [169.575, 169.955]]],
+  "compare/turn": [171.326, 172.066, "Your turn.", []]
  }
 }

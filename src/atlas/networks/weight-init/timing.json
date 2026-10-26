@@ -1,21 +1,34 @@
 {
- "duration": 136.585,
+ "duration": 263.674,
  "scenes": {
   "symmetry": [0.0, 31.057],
-  "grow": [31.057, 91.249],
-  "scale": [91.249, 136.585]
+  "grow": [31.057, 155.344],
+  "scale": [155.344, 207.586],
+  "try": [207.586, 263.674]
  },
  "beats": {
   "symmetry/zero": [0.7, 9.592, "Before any weight is adjusted by its gradient, every weight needs a starting value. The obvious choice, all zeros, does not work.", [[3.44, 3.81], [5.77, 6.36], [7.37, 7.61], [8.46, 8.74]]],
   "symmetry/same": [9.972, 23.582, "If every hidden unit starts with the same weights, every unit computes the same output and backprop hands every unit the same gradient. Adjusted by the same gradient, they stay copies of one unit, forever.", [[12.752, 13.092], [15.242, 15.592], [18.442, 19.052], [20.682, 20.952], [22.722, 23.012]]],
   "symmetry/random": [23.962, 29.957, "So the weights start random, which breaks the tie. The question is how big to make them.", [[25.782, 26.022], [27.112, 27.682], [28.492, 28.652]]],
-  "grow/sum": [31.757, 52.072, "A unit adds up n inputs times weights. A term's variance is its average squared distance from its mean. When you add independent terms, their variances add: n terms of variance v give a sum z of variance n times v, written var of z equals n v.", [[34.907, 35.507], [39.337, 39.977], [41.727, 42.027], [43.317, 43.897], [45.597, 45.777], [48.767, 49.137], [49.507, 49.807], [50.727, 50.897]]],
-  "grow/big": [52.452, 73.546, "The standard deviation, S T D for short, is the square root of the variance. Give a hundred inputs, and their weights, a variance of one each. A weight times an input has the product of their variances, one, so the sum has variance a hundred, and a standard deviation of the square root of a hundred: ten.", [[53.852, 54.172], [55.592, 55.962], [57.832, 58.442], [60.622, 60.872], [62.392, 62.992], [66.262, 66.522], [66.892, 67.342], [69.412, 69.772], [72.702, 73.112]]],
-  "grow/flat": [73.926, 82.109, "Through a tanh, a value like ten sits far out on the flat end. The slope there is nearly zero, and so is the gradient.", [[74.866, 75.166], [78.276, 78.796], [80.616, 80.876]]],
-  "grow/small": [82.489, 90.149, "Too small is just as bad. Each layer shrinks the signal, and after a few layers almost nothing is left.", [[84.389, 84.899], [86.609, 86.949], [88.419, 88.669]]],
-  "scale/xavier": [91.949, 109.909, "The fix: give each weight a variance of one over n, the fan-in, which is the number of inputs a unit adds up. Then the n terms add up to a variance of one. The standard deviation is one over root n: for a hundred inputs, zero point one.", [[92.589, 93.169], [96.019, 96.399], [97.109, 97.449], [99.929, 100.499], [103.519, 104.129], [106.939, 107.419], [108.569, 108.869]]],
-  "scale/he": [110.289, 125.495, "A ReLU zeroes about half of its inputs, which halves the variance. So for ReLU, double it: a variance of two over n. For fifty inputs, the standard deviation is the root of two over fifty: zero point two.", [[112.939, 113.229], [114.579, 115.049], [116.129, 116.419], [116.879, 117.309], [119.089, 119.639], [120.719, 120.919], [124.029, 124.449]]],
-  "scale/names": [125.875, 134.365, "The first is Xavier initialization, used with tanh. The second is Kaiming He initialization, used with ReLU.", [[128.305, 128.625], [129.735, 130.305], [132.975, 133.275]]],
-  "scale/turn": [134.745, 135.485, "Your turn.", []]
+  "grow/spread": [31.757, 42.167, "To answer that, first a way to measure spread. Take a value that is minus two or two, equally often. Its mean, the average, is zero.", [[32.537, 32.887], [33.397, 33.587], [34.917, 35.587], [38.197, 38.397], [39.167, 39.687], [40.377, 40.577], [41.207, 41.477]]],
+  "grow/var": [42.547, 51.806, "The variance is the average squared distance from the mean. Each value sits two away, and two squared is four, so the variance is four.", [[45.857, 46.437], [48.127, 48.427], [49.947, 50.297]]],
+  "grow/std": [52.186, 62.964, "Its square root, the square root of four, is two: the standard deviation, S T D for short. Square a standard deviation to get the variance back.", [[53.236, 53.546], [54.766, 54.916], [55.526, 56.046], [57.376, 57.726], [59.126, 59.736]]],
+  "grow/pair": [63.344, 79.847, "Now add two independent values, each minus one or one, with variance one. Independent: one tells nothing about the other, so all four pairs are equally likely. Their sums are minus two, zero, zero and two.", [[65.624, 65.954], [67.744, 68.024], [69.004, 69.674], [70.364, 70.854], [72.694, 72.984], [75.314, 75.844], [77.414, 77.714], [78.254, 78.514], [79.024, 79.224]]],
+  "grow/adds": [80.227, 91.102, "Squared, those are four, zero, zero and four, which average to two: one plus one. When independent values add, their variances add.", [[80.877, 81.357], [82.247, 82.437], [84.247, 84.527], [85.707, 86.147], [87.167, 87.727], [89.467, 89.747]]],
+  "grow/prod": [91.482, 109.174, "Multiply instead: a weight of minus two or two, times an independent input of minus one or one. Every product is minus two or two: variance four, which is four times one. With mean zero, variances multiply.", [[92.822, 93.342], [95.562, 95.862], [98.522, 98.692], [99.242, 100.042], [102.502, 102.982], [104.002, 104.272], [105.712, 106.382], [107.422, 107.682]]],
+  "grow/sum": [109.554, 123.912, "A unit adds up n such terms, inputs times weights. If each has variance v, the sum z has variance n times v, written var of z equals n v, Var for variance.", [[111.844, 112.174], [113.674, 114.264], [115.924, 116.224], [118.954, 119.364], [119.734, 119.964], [122.014, 122.524]]],
+  "grow/big": [124.292, 137.641, "Give a hundred inputs, and their weights, a variance of one. Each term has variance one times one, so the sum has variance a hundred, and a standard deviation of the square root of a hundred: ten.", [[126.562, 126.772], [127.892, 128.552], [131.012, 131.472], [133.522, 133.872], [136.802, 137.202]]],
+  "grow/flat": [138.021, 146.205, "Through a tanh, a value like ten sits far out on the flat end. The slope there is nearly zero, and so is the gradient.", [[138.961, 139.261], [142.371, 142.891], [144.711, 144.971]]],
+  "grow/small": [146.585, 154.244, "Too small is just as bad. Each layer shrinks the signal, and after a few layers almost nothing is left.", [[148.485, 148.995], [150.705, 151.045], [152.515, 152.765]]],
+  "scale/fanin": [156.044, 168.896, "The fix scales the weights by the fan-in, n: the number of inputs each unit adds up. The weight matrix has a row per unit and a column per input, so n is its number of columns.", [[158.554, 159.064], [159.424, 159.904], [162.304, 162.874], [164.994, 165.154], [166.464, 166.794]]],
+  "scale/xavier": [169.276, 182.03, "Give each weight a variance of one over n. Then the n terms add up to a variance of one. The standard deviation is one over root n: for a hundred inputs, zero point one.", [[172.156, 172.706], [175.686, 176.286], [179.016, 179.556], [180.666, 180.946]]],
+  "scale/he": [182.41, 197.617, "A ReLU zeroes about half of its inputs, which halves the variance. So for ReLU, double it: a variance of two over n. For fifty inputs, the standard deviation is the root of two over fifty: zero point two.", [[185.06, 185.35], [186.7, 187.17], [188.25, 188.54], [189.0, 189.43], [191.21, 191.76], [192.84, 193.04], [196.15, 196.57]]],
+  "scale/names": [197.997, 206.486, "The first is Xavier initialization, used with tanh. The second is Kaiming He initialization, used with ReLU.", [[200.427, 200.747], [201.857, 202.427], [205.097, 205.397]]],
+  "try/p1": [208.286, 222.339, "Try one. A unit computes z, w dot x, over four hundred inputs, each of variance one. Each weight has a standard deviation of zero point one. What is the standard deviation of z?", [[208.906, 209.486], [211.096, 211.256], [212.366, 212.546], [214.076, 214.356], [215.736, 216.246], [219.506, 220.116]]],
+  "try/a1": [222.719, 234.355, "Square the weight's standard deviation to get its variance: zero point zero one. Times the input's variance, one, each term has variance zero point zero one.", [[225.959, 226.399], [227.859, 228.449], [230.129, 230.509], [230.879, 231.329]]],
+  "try/b1": [234.735, 241.599, "Four hundred terms add up to a variance of four. Its square root is the standard deviation: two.", [[237.725, 238.265], [240.765, 241.215]]],
+  "try/p2": [241.979, 250.991, "Now a ReLU layer with He initialization has a weight matrix of shape twenty by eight. What standard deviation should its weights have?", [[244.969, 245.189], [247.839, 248.419]]],
+  "try/a2": [251.371, 261.454, "One column per input, so the fan-in is eight, not twenty. He's variance is two over eight, a quarter, and its square root is a half.", [[252.851, 253.231], [254.821, 255.031], [255.771, 256.351], [258.341, 258.621], [259.201, 259.621]]],
+  "try/turn": [261.834, 262.574, "Your turn.", []]
  }
 }

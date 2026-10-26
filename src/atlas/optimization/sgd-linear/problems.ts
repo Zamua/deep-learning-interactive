@@ -48,8 +48,9 @@ export const generators: Generator[] = [
         ]),
         solution: [
           dsStep(o),
-          `$d${Wij(i, j)} = d\\syms_{${i}}\\, \\symx_{${j}} = ${paren(o.ds[i]!)} \\times ${paren(o.x[j]!)} = ${num(dW)}$.`,
-          `Step: $${Wij(i, j)} - \\symeta\\, d${Wij(i, j)} = ${num(w)} - ${num(o.eta)} \\times ${paren(dW)} = ${minus(w, step)} = ${num(v)}$.`,
+          `$${Wij(i, j)}$ sits in row ${i}, so it takes $d\\syms_{${i}} = ${num(o.ds[i]!)}$; column ${j} takes $\\symx_{${j}} = ${num(o.x[j]!)}$.`,
+          `Its gradient: $d${Wij(i, j)} = d\\syms_{${i}}\\, \\symx_{${j}} = ${paren(o.ds[i]!)} \\times ${paren(o.x[j]!)} = ${num(dW)}$.`,
+          `Step against it: $${Wij(i, j)} - \\symeta\\, d${Wij(i, j)} = ${num(w)} - ${num(o.eta)} \\times ${paren(dW)} = ${minus(w, step)} = ${num(v)}$.`,
         ],
       };
     },
@@ -104,7 +105,7 @@ export const generators: Generator[] = [
         solution: [
           'Each bias adds straight into its own score, so its gradient is that score\'s gradient: $\\partial \\symL / \\partial \\symb = \\symp - \\mathrm{onehot}(\\symy)$. Neither $\\symW$ nor $\\symx$ enters.',
           dsStep(o),
-          ...(after ? [`Step: $\\symb - \\symeta\\, d\\symb = ${vec(o.b)} - ${num(o.eta)} \\times ${vec(o.ds)} = ${vec(v)}$.`] : []),
+          ...(after ? o.b.map((b, k) => `Entry ${k} steps against its own gradient: $\\symb_{${k}} - \\symeta\\, d\\syms_{${k}} = ${num(b)} - ${num(o.eta)} \\times ${paren(o.ds[k]!)} = ${minus(b, clean(o.eta * o.ds[k]!))} = ${num(v[k]!)}$.`) : []),
         ],
       };
     },

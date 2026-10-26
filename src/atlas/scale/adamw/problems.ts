@@ -31,10 +31,14 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `AdamW steps $${AW}$.`,
-          `$\\sqrt{${VH}} = \\sqrt{${num(v)}} = ${num(root)}$, so $${MH} / \\sqrt{${VH}} = ${num(m)} / ${num(root)} = ${num(k)}$.`,
+          `$\\sqrt{${VH}} = \\sqrt{${num(v)}} = ${num(root)}$.`,
+          `The Adam part: $${MH} / \\sqrt{${VH}} = ${num(m)} / ${num(root)} = ${num(k)}$.`,
           `The decay: $\\symlam\\symw = ${num(lam)} \\times ${paren(w)} = ${num(decay)}$.`,
-          `Inside the bracket: $${num(k)} + ${paren(decay)} = ${num(inside)}$. Times $\\symeta$: $${num(eta)} \\times ${paren(inside)} = ${num(step)}$.`,
-          `$\\symw \\leftarrow ${minus(w, step)} = ${num(ans)}$.`,
+          `Inside the bracket: $${num(k)} + ${paren(decay)} = ${num(inside)}$.`,
+          `Times $\\symeta$: $${num(eta)} \\times ${paren(inside)} = ${num(step)}$.`,
+          step < 0
+            ? `$\\symw \\leftarrow ${num(w)} - (${num(step)}) = ${minus(w, step)} = ${num(ans)}$: subtracting a negative step raises $\\symw$.`
+            : `$\\symw \\leftarrow ${minus(w, step)} = ${num(ans)}$.`,
         ],
       };
     },
@@ -59,8 +63,9 @@ export const generators: Generator[] = [
           { value: share / root, why: 'That leaves out the step size $\\symeta$.' },
         ]),
         solution: [
-          `L2 adds $\\symlam\\symw$ to the gradient, so it adds about $\\symlam\\symw = ${num(lam)} \\times ${num(w)} = ${num(share)}$ to $${MH}$.`,
-          `Adam divides by $\\sqrt{${VH}} = ${num(root)}$ and multiplies by $\\symeta$: $${num(eta)} \\times ${num(share)} / ${num(root)} = ${num(ans)}$.`,
+          `L2 adds the decay $\\symlam\\symw = ${num(lam)} \\times ${num(w)} = ${num(share)}$ to the gradient.`,
+          `Adam divides it by $\\sqrt{${VH}}$: $${num(share)} / ${num(root)} = ${num(clean(share / root))}$.`,
+          `The step multiplies by $\\symeta$: $${num(eta)} \\times ${num(clean(share / root))} = ${num(ans)}$.`,
           large
             ? `AdamW would move it $\\symeta\\symlam\\symw = ${num(aw)}$: ${num(root)} times more. Large gradients weaken decay that goes through the gradient.`
             : `AdamW would move it $\\symeta\\symlam\\symw = ${num(aw)}$: ${num(clean(1 / root))} times less. Tiny gradients amplify decay that goes through the gradient.`,

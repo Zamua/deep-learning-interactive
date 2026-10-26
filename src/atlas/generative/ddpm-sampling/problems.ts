@@ -109,7 +109,8 @@ export const generators: Generator[] = [
         answer: one ? { kind: 'number', value: v[0]!, places: 2 } : { kind: 'vector', value: v, places: 2 },
         traps: one ? traps(v[0]!, wrong.map((w) => ({ value: w.value[0]!, why: w.why })), 2) : vtraps(v, wrong, 2),
         solution: [
-          `$${STEP}$, and the mean is all of it but $${SIG}\\,${Z}$. The image part is scaled by $\\sqrt{${ABP}} = \\sqrt{${num(ab)}} ${Math.abs(Math.sqrt(ab) - a) < 1e-9 ? '=' : '\\approx'} ${num(a)}$.`,
+          `Step $t - 1$ is again a blend of image and noise: $${STEP}$. The mean is all of it but $${SIG}\\,${Z}$.`,
+          `The image part: $${XHAT}$ scaled by $\\sqrt{${ABP}} = \\sqrt{${num(ab)}} ${Math.abs(Math.sqrt(ab) - a) < 1e-9 ? '=' : '\\approx'} ${num(a)}$.`,
           `The noise share is $1 - ${num(ab)} = ${num(share)}$. With $${num(s2)}$ set aside for fresh noise, the guess keeps $${num(k2)}$, so it is scaled by $\\sqrt{${num(k2)}} = ${num(k)}$.`,
           ...xh.map((x, i) => `${one ? 'Mean' : `Pixel ${i}`}: $${num(a)} \\cdot ${par(x)} + ${num(k)} \\cdot ${par(e[i]!)} = ${num(clean(a * x))} ${k * e[i]! < 0 ? '-' : '+'} ${num(clean(Math.abs(k * e[i]!)))} = ${num(mean[i]!)}$.`),
           ...(full ? [`Add $${SIG}\\,${Z}$ with $${SIG} \\approx ${num(sg)}$: ${mean.map((m, i) => `$${num(m)} + ${num(sg)} \\cdot ${par(z[i]!)} = ${num(v[i]!)}$`).join('; ')}.`] : []),

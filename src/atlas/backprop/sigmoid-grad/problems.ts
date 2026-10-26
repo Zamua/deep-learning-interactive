@@ -31,7 +31,9 @@ export const generators: Generator[] = [
         ),
         solution: [
           '$\\sigma(x) = \\dfrac{1}{1 + e^{-x}}$.',
-          `$e^{-x} = e^{${num(-x)}} ${x === 0 ? '=' : '\\approx'} ${num(e, 2)}$.`,
+          x < 0
+            ? `Here $-x = ${num(-x)}$, so $e^{-x} = e^{${num(-x)}} \\approx ${num(e, 2)}$.`
+            : `$e^{-x} = e^{${num(-x)}} ${x === 0 ? '=' : '\\approx'} ${num(e, 2)}$.`,
           `$1 + e^{-x} ${x === 0 ? '=' : '\\approx'} ${num(round(1 + e, 2))}$.`,
           `$\\sigma(${num(x)}) = 1 / ${num(round(1 + e, 2))} \\approx ${num(v, 2)}$. ${x > 0 ? 'Above a half, as every positive input gives.' : x < 0 ? 'Below a half, as every negative input gives.' : 'Exactly a half, the middle of the curve.'}`,
         ],

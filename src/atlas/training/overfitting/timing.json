@@ -1,25 +1,29 @@
 {
- "duration": 107.161,
+ "duration": 167.563,
  "scenes": {
   "splits": [0.0, 34.698],
-  "curves": [34.698, 68.792],
-  "stop": [68.792, 107.161]
+  "curves": [34.698, 98.017],
+  "stop": [98.017, 167.563]
  },
  "beats": {
   "splits/data": [0.7, 7.204, "Before training, shuffle the data and split it three ways. Here are fifty thousand examples.", [[1.58, 1.94], [4.43, 4.95]]],
   "splits/train": [7.584, 14.948, "Most of them, say eighty percent, or forty thousand, are the training split. Every gradient comes from these.", [[8.354, 8.584], [9.904, 10.054], [11.154, 11.444], [12.554, 13.054]]],
   "splits/val": [15.328, 24.189, "Ten percent, five thousand, are the validation split. They make the choices: when to stop, which learning rate, which batch size.", [[16.078, 16.358], [17.268, 17.508], [18.818, 19.378], [20.528, 20.948], [21.658, 21.968], [22.888, 23.148]]],
   "splits/test": [24.569, 33.598, "The last ten percent is the test split. It is used once, at the very end, to report how the model does on data it has never seen.", [[27.189, 27.709], [28.809, 28.999], [29.979, 30.259]]],
-  "curves/both": [35.398, 39.94, "Train, and after every epoch measure the loss on both splits.", [[35.898, 36.238], [37.698, 37.908]]],
-  "curves/early": [40.32, 45.876, "At first they fall together. The model is learning patterns that hold for every example.", [[42.05, 42.6]]],
-  "curves/gap": [46.256, 52.724, "Then they part. The training loss keeps falling, but the validation loss turns and climbs.", [[47.366, 47.966], [49.616, 50.046]]],
-  "curves/memo": [53.104, 61.354, "That is overfitting. The model is memorizing its training examples, quirks and all, and getting worse on everything else.", [[54.574, 55.204], [57.804, 58.064], [58.974, 59.274]]],
-  "curves/blind": [61.734, 67.692, "The training loss alone can never show it, because it only measures examples the model has already fit.", [[64.074, 64.384]]],
-  "stop/table": [69.492, 72.313, "Here are the numbers, every two epochs.", [[70.572, 70.932]]],
-  "stop/min": [72.693, 79.457, "The validation loss bottoms out at epoch eight, at one point oh seven, while the training loss keeps falling.", [[75.593, 75.823], [77.173, 77.563]]],
-  "stop/keep": [79.837, 88.794, "So keep the weights from epoch eight. Past it, more training only makes the model worse on new data. This is early stopping.", [[81.847, 82.397], [82.917, 83.227], [86.447, 86.957]]],
-  "stop/under": [89.174, 97.604, "The opposite failure is underfitting: both losses stay high, and close together, because the model has not even fit its training data.", [[91.424, 91.894], [94.554, 94.834]]],
-  "stop/fine": [97.984, 104.941, "Low and close together is the goal: the model does about as well on new examples as on the ones it trained on.", [[100.244, 100.814], [103.284, 103.484]]],
-  "stop/turn": [105.321, 106.061, "Your turn.", []]
+  "curves/loss": [35.398, 47.232, "Training lowers a function called the loss, L. Each example adds a number for how wrong the model is on it: zero when it is exactly right, bigger the more wrong it is.", [[37.838, 38.178], [38.538, 39.148], [42.508, 43.018], [45.038, 45.538]]],
+  "curves/avg": [47.612, 59.659, "The loss is the average of those numbers. Three examples at zero point two, one point five and zero point four give a loss of zero point seven. Lower is better.", [[49.972, 50.542], [51.482, 51.812], [53.022, 53.322], [54.292, 54.502], [55.742, 56.032], [57.892, 58.452]]],
+  "curves/both": [60.039, 69.165, "Train, and after every epoch measure the loss on both splits: averaged over the training examples, and over the validation examples.", [[60.539, 60.929], [62.369, 62.549], [64.479, 64.959], [66.889, 67.079]]],
+  "curves/early": [69.545, 75.102, "At first they fall together. The model is learning patterns that hold for every example.", [[71.275, 71.825]]],
+  "curves/gap": [75.482, 81.95, "Then they part. The training loss keeps falling, but the validation loss turns and climbs.", [[76.592, 77.192], [78.842, 79.272]]],
+  "curves/memo": [82.33, 90.58, "That is overfitting. The model is memorizing its training examples, quirks and all, and getting worse on everything else.", [[83.8, 84.43], [87.03, 87.29], [88.2, 88.5]]],
+  "curves/blind": [90.96, 96.917, "The training loss alone can never show it, because it only measures examples the model has already fit.", [[93.3, 93.61]]],
+  "stop/table": [98.717, 101.539, "Here are the numbers, every two epochs.", [[99.797, 100.157]]],
+  "stop/min": [101.919, 108.683, "The validation loss bottoms out at epoch eight, at one point oh seven, while the training loss keeps falling.", [[104.819, 105.049], [106.399, 106.789]]],
+  "stop/keep": [109.063, 118.02, "So keep the weights from epoch eight. Past it, more training only makes the model worse on new data. This is early stopping.", [[111.073, 111.623], [112.143, 112.453], [115.673, 116.183]]],
+  "stop/good": [118.4, 128.307, "Now judge a finished model by its numbers. Say training started at a loss of two point three, and a good model on this data reaches about zero point four.", [[120.84, 121.4], [124.34, 124.69], [126.28, 126.43]]],
+  "stop/under": [128.687, 142.46, "Training ends at one point nine and validation at two: both far above zero point four, and close together. The model has not even fit its training data. That is underfitting, the opposite failure.", [[130.607, 130.787], [132.247, 132.707], [134.807, 134.987], [135.957, 136.567], [139.117, 139.557], [140.977, 141.307]]],
+  "stop/over": [142.84, 152.729, "Training at zero point one, but validation at one point three: the model fits its own examples and not new ones. That gap is overfitting.", [[144.59, 144.84], [146.86, 147.45], [150.5, 150.97]]],
+  "stop/fine": [153.109, 165.342, "Zero point four and zero point five: near what a good model reaches, and close together. That is the goal: the model does about as well on new examples as on the ones it trained on.", [[155.529, 156.059], [157.769, 157.939], [159.069, 159.659], [160.719, 161.139], [163.639, 163.879]]],
+  "stop/turn": [165.722, 166.463, "Your turn.", []]
  }
 }

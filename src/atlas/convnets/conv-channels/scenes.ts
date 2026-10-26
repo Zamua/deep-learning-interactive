@@ -106,9 +106,70 @@ const many: SceneDef = {
     s.alpha(s.ease('next', 0.6, 0.4), () => {
       const cx = s.w / 2 - 12 * s.u;
       miniFilter(s, cx, s.h * 0.86, K, 6, () => 'gold', 1, 0.6);
-      s.text('next filter: 3 × 3 × 8', cx + 8 * s.u, s.h * 0.86, { size: 3.4, font: 'mono', weight: 600, align: 'left', color: s.c('--ink-2') });
+      s.text('next filter: 8 × 3 × 3', cx + 8 * s.u, s.h * 0.86, { size: 3.4, font: 'mono', weight: 600, align: 'left', color: s.c('--ink-2') });
     });
   },
 };
 
-export const scenes: Record<string, SceneDef> = { depth, many };
+/** Eases in a fraction `f` of the way through beat `id`, so it follows the voice at any pace. */
+const at = (s: Scene, id: string, f: number) => s.ease(id, 0.6, f * (s.end(id) - s.at(id)));
+
+/** The call's text, with the x center of each run returned so labels can sit under its numbers. */
+function call(s: Scene, runs: [string, Ink][], x: number, y: number, size: number): number[] {
+  const o = { size, font: 'mono' as const, weight: 600 };
+  const ws = runs.map(([t]) => s.measure(t, o));
+  let cur = x - ws.reduce((a, b) => a + b, 0) / 2;
+  return runs.map(([t, k], i) => {
+    s.text(t, cur, y, { ...o, align: 'left', color: s.c(k) });
+    cur += ws[i]!;
+    return cur - ws[i]! / 2;
+  });
+}
+
+const layer: SceneDef = {
+  draw(s) {
+    const f = frame(s);
+    const out = s.ease('out', 0.7);
+    const xs = call(s, [['nn.Conv2d(', '--ink-2'], ['3', 'blue'], [', ', '--ink-2'], ['8', 'gold'], [', kernel_size=', '--ink-2'], ['5', 'slate'], [')', '--ink-2']], s.w / 2, s.h * 0.1, s.tall ? 4 : 4.4);
+    const tag = (t: string, x: number, k: Ink, a: number) => s.alpha(a * (1 - out), () => s.text(t, x, s.h * 0.18, { size: 3.2, font: 'mono', color: s.c(k) }));
+    tag('in', xs[1]!, 'blue', at(s, 'args', 0.48));
+    tag('out', xs[3]!, 'gold', at(s, 'args', 0.6));
+    tag('size', xs[5]!, 'slate', at(s, 'args', 0.72));
+
+    s.alpha(s.ease('filters', 0.6) * (1 - out), () => {
+      const gap = (s.tall ? 12 : 13) * s.u;
+      const y = s.h * 0.37;
+      for (let k = 0; k < 8; k++) miniFilter(s, s.w / 2 + (k - 3.5) * gap, y, 3, 6.5, (l) => RGB[l]!, k === 0 ? at(s, 'filters', 0.4) : 0, 1.1);
+      label(s, 'K = 8 filters', s.w / 2, y - 9 * s.u, 'gold');
+      s.alpha(at(s, 'filters', 0.4), () => label(s, 'each 3 × 5 × 5: 75 weights', s.w / 2, y + 9 * s.u, 'blue'));
+    });
+
+    s.alpha(s.ease('weight', 0.6) * (1 - out), () => {
+      const gap = (s.tall ? 19 : 21) * s.u;
+      const cx = [0, 1, 2, 3].map((i) => s.w / 2 + (i - 1.5) * gap);
+      const y = s.h * 0.7;
+      const ink: Ink[] = ['gold', 'blue', 'slate', 'slate'];
+      label(s, 'conv.weight.shape', s.w / 2, y - 10 * s.u, '--ink-2');
+      ['8', '3', '5', '5'].forEach((t, i) => {
+        s.alpha(at(s, 'weight', 0.45 + 0.08 * i), () => {
+          s.cell(cx[i]! - 5 * s.u, y - 4.5 * s.u, 10 * s.u, 9 * s.u, t, ink[i]!, { on: 0.6 });
+          s.text(['filters', 'depth', 'height', 'width'][i]!, cx[i]!, y + 8.5 * s.u, { size: 3.2, font: 'mono', color: s.c(ink[i]!) });
+        });
+      });
+    });
+
+    s.alpha(out, () => {
+      volume(s, f.ix, f.top, f.sz, 3, (l) => RGB[l]!, { step: IN_STEP });
+      label(s, '(3, 32, 32)', f.ix + f.sz / 2 + IN_STEP * s.u, f.ly, '--ink-2');
+      miniFilter(s, f.mx, s.h * 0.42, 3, 8, (l) => RGB[l]!, 0, 1.4);
+      label(s, '× 8', f.mx, s.h * 0.42 + 9 * s.u, 'gold');
+    });
+    s.alpha(at(s, 'out', 0.3), () => {
+      volume(s, f.ox, f.top, f.sz, 8, () => 'gold', { step: 1.1 });
+      label(s, '(8, 28, 28)', f.ox + f.sz / 2 + 4 * s.u, f.ly, 'gold');
+    });
+    s.alpha(at(s, 'out', 0.5), () => s.text('down and across: 32 − 5 + 1 = 28', s.w / 2, s.h * 0.88, { size: 3.4, font: 'mono', color: s.c('--ink-2') }));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { depth, many, layer };

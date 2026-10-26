@@ -31,9 +31,9 @@ export const generators: Generator[] = [
         answer: { kind: 'number', value: v, places: 2 },
         traps: rise === 0 ? [] : cleanTraps(traps, v, 2),
         solution: [
-          `The slope between two points is rise over run, $\\dfrac{\\symf(${num(x)} + h) - \\symf(${num(x)})}{h}$, with run $h = ${num(x1)} - ${paren(num(x))} = ${num(h)}$.`,
-          `The rise: $\\symf(${num(x1)}) - \\symf(${num(x)}) = ${num(f1)} - ${paren(num(f0))} = ${num(rise)}$.`,
-          `Rise over run: $${paren(num(rise))} / ${num(h)} = ${num(v)}$.`,
+          `The run is the step in $\\symx$: $h = ${num(x1)} - ${paren(num(x))} = ${num(h)}$.`,
+          `The rise is the later value minus the earlier one: $\\symf(${num(x1)}) - \\symf(${num(x)}) = ${num(f1)} - ${paren(num(f0))} = ${num(rise)}$.`,
+          `The slope is rise over run: $${paren(num(rise))} / ${num(h)} = ${num(v)}$.`,
         ],
       };
     },

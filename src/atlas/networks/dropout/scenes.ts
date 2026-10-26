@@ -35,7 +35,8 @@ const drop: SceneDef = {
       s.text('p = 0.5: keep each unit with probability ½', s.w / 2, L.ym - 10 * u, { size: 3.2, font: 'mono', color: s.c('--ink-3'), halo: true });
     });
     const zA = s.ease('zeroed', 0.6);
-    const sc = s.ease('scale', 0.8);
+    // Inverted dropout's division, undone again for plain dropout.
+    const sc = s.ease('scale', 0.8) * (1 - s.ease('plain', 0.6));
     s.alpha(zA, () => {
       L.xs.forEach((x) => s.arrow(x, L.ym + 5 * u, x, L.yo - 5.5 * u, s.c('--ink-3'), 0.35, 2));
       rowLabel(s, 'out', L.lx, L.yo, 'gold', 3.8);
@@ -44,10 +45,12 @@ const drop: SceneDef = {
     });
     s.alpha(sc, () => s.text('÷ p', L.xs[3]! + 10 * u, (L.ym + L.yo) / 2, { size: 3.6, font: 'mono', weight: 650, align: 'left', color: s.c('gold'), halo: true }));
     const cy = s.h * 0.86;
+    s.alpha(s.win('kept', 'zeroed'), () => caption(s, 'kept on average: 4 × 0.5 = 2 units', cy, 'green', 3.6));
     s.alpha(s.win('zeroed', 'scale'), () => caption(s, 'h × m = [2, 0, 3, 0]', cy, 'gold', 3.8));
     s.alpha(s.win('scale', 'why'), () => caption(s, '÷ 0.5 = [4, 0, 6, 0]', cy, 'gold', 3.8));
+    s.alpha(s.win('why', 'plain'), () => caption(s, 'unit 0 on average: ½ × 4 + ½ × 0 = 2 = h', cy, 'gold', 3.5));
+    s.alpha(s.ease('plain', 0.6), () => caption(s, 'plain, unit 0: ½ × 2 + ½ × 0 = 1 = p × h', cy, 'gold', 3.5));
     s.alpha(s.ease('why', 0.6), () => {
-      caption(s, 'unit 0 on average: ½ × 4 + ½ × 0 = 2 = h', cy, 'gold', 3.5);
       for (const [y, r] of [[L.yh, 7.5], [L.yo, 6.5]] as const) s.rrect(L.xs[0]! - r * u, y - r * u, 2 * r * u, 2 * r * u, 2, { stroke: s.tint('gold', 0.8), lw: 0.45 });
     });
   },
@@ -68,16 +71,25 @@ const test: SceneDef = {
     const off = MASKS[k]!.map((m) => (1 - m) * lean);
     rowLabel(s, 'h', L.lx, L.yh, 'gold', 3.8);
     units(s, L.xs, L.yh, off);
+    const pl = s.ease('plain', 0.6);
     s.alpha(1 - lean, () => {
       L.xs.forEach((x) => s.arrow(x, L.yh + 7 * u, x, L.yo - 5.5 * u, s.c('--ink-3'), 0.35, 2));
       rowLabel(s, 'out', L.lx, L.yo, 'gold', 3.8);
-      cells(s, L.xs, L.yo, H.map(String), 'gold', { w: 11, h: 8.5, on: H.map(() => s.win('test', 'match')) });
-      s.text('keep all, no scaling', s.w / 2, L.yo + 10 * u, { size: 3.4, font: 'mono', weight: 600, color: s.c('green'), halo: true });
+      s.alpha(1 - pl, () => {
+        cells(s, L.xs, L.yo, H.map(String), 'gold', { w: 11, h: 8.5, on: H.map(() => s.win('test', 'match')) });
+        s.text('keep all, no scaling', s.w / 2, L.yo + 10 * u, { size: 3.4, font: 'mono', weight: 600, color: s.c('green'), halo: true });
+      });
+      s.alpha(pl, () => {
+        cells(s, L.xs, L.yo, H.map((v) => String(v * P)), 'gold', { w: 11, h: 8.5, on: H.map(() => 1) });
+        s.text('× p', L.xs[3]! + 10 * u, (L.yh + L.yo) / 2, { size: 3.6, font: 'mono', weight: 650, align: 'left', color: s.c('gold'), halo: true });
+        s.text('plain dropout: keep all, × p', s.w / 2, L.yo + 10 * u, { size: 3.4, font: 'mono', weight: 600, color: s.c('gold'), halo: true });
+      });
     });
     s.alpha(lean, () => s.text('training: a new random mask each time', s.w / 2, L.yo, { size: 3.4, font: 'mono', weight: 600, color: s.c('--ink-2'), halo: true }));
     const cy = s.h * 0.86;
     s.alpha(s.win('test', 'match'), () => caption(s, 'test: out = h = [2, 1, 3, 2]', cy, 'gold', 3.8));
-    s.alpha(s.win('match', 'lean'), () => caption(s, 'training average: p × (h / p) = h', cy, 'gold', 3.8));
+    s.alpha(s.win('match', 'plain'), () => caption(s, 'training average: p × (h / p) = h', cy, 'gold', 3.8));
+    s.alpha(s.win('plain', 'lean'), () => caption(s, 'plain: p × h = [1, 0.5, 1.5, 1]', cy, 'gold', 3.8));
     s.alpha(lean, () => caption(s, 'no unit can count on another', cy, 'green', 3.8));
   },
 };

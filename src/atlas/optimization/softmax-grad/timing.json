@@ -1,23 +1,28 @@
 {
- "duration": 152.744,
+ "duration": 243.446,
  "scenes": {
-  "setup": [0.0, 47.15],
-  "derive": [47.15, 104.226],
-  "bars": [104.226, 152.744]
+  "setup": [0.0, 84.434],
+  "derive": [84.434, 182.922],
+  "bars": [182.922, 243.446]
  },
  "beats": {
   "setup/chain": [0.7, 17.769, "Scores, s, go through softmax to give probabilities, p. The loss is minus the log of the correct option's probability. Here the correct option is option one, so the loss is minus log zero point three, about one point two.", [[1.41, 1.78], [2.21, 2.67], [5.18, 5.5], [5.81, 6.54], [10.04, 10.61], [12.88, 13.26], [16.13, 16.51]]],
   "setup/ask": [18.149, 31.048, "Now ask how the loss changes as each score moves. One partial derivative per score, stacked into a vector: the gradient, partial L, partial s, called ds in code.", [[21.599, 22.169], [24.189, 24.419], [25.659, 26.129], [26.839, 27.179], [28.939, 29.309]]],
-  "setup/answer": [31.428, 46.05, "It comes out remarkably simple: p, minus one-hot of y, the vector with a one at the correct option and zeros elsewhere. Here, zero point six, minus zero point seven, and zero point one.", [[33.328, 33.888], [34.248, 34.558], [36.208, 36.718], [38.968, 39.158], [40.448, 40.998], [41.348, 41.658], [42.748, 43.028], [44.528, 44.808]]],
-  "derive/expand": [47.85, 59.862, "Write the loss out. Minus the log of a fraction is minus the log of the top, plus the log of the bottom: minus s y, the correct option's score, plus the log of the sum.", [[48.96, 49.64], [53.0, 53.29], [54.62, 55.2], [56.5, 56.71], [58.06, 58.41]]],
-  "derive/log": [60.242, 76.321, "Now take the partial derivative with respect to any one score, s j, written partial by partial s j. By the chain rule, the log of the sum gives one over the sum, times e to the s j. That is exactly p j.", [[63.902, 64.112], [64.832, 65.212], [67.542, 68.192], [69.092, 69.332], [72.082, 72.262], [73.952, 74.452]]],
-  "derive/minus": [76.701, 89.341, "Minus s y depends only on the correct score: its derivative is minus one when j is y, and zero when j is not y, the slashed equals sign reading \u201cis not\u201d.", [[80.031, 80.551], [83.701, 84.031], [86.181, 86.581], [88.471, 88.671]]],
-  "derive/together": [89.721, 103.126, "Add the two: p j, minus the bracket j equals y. The bracket is one when j is y and zero otherwise, so it is p j with one taken away at the correct option.", [[90.551, 91.131], [91.801, 92.041], [93.461, 93.691], [94.551, 95.161], [97.521, 97.761], [99.051, 99.441]]],
-  "bars/p": [104.926, 114.393, "Back to our numbers. The probabilities are zero point six, zero point three and zero point one, and the correct option is option one.", [[105.966, 106.516], [108.916, 109.186], [110.226, 110.466], [111.686, 112.116], [113.116, 113.316]]],
-  "bars/sub": [114.773, 124.182, "Take one away at option one: zero point three minus one is minus zero point seven. The other options keep their probabilities.", [[116.723, 117.333], [119.173, 119.413], [121.233, 121.863]]],
-  "bars/sum": [124.562, 132.077, "The entries always add up to zero: p adds up to one, and the one-hot vector takes exactly one away.", [[126.762, 127.342], [128.702, 129.072]]],
-  "bars/step": [132.457, 142.39, "So to lower the loss, move each score against its entry: the correct score goes up, and the others go down, the most confident wrong option the most.", [[133.877, 134.107], [136.177, 136.687], [138.057, 138.347], [139.577, 140.057]]],
-  "bars/done": [142.77, 150.523, "And once the correct option gets nearly all the probability, the gradient is nearly zero: there is little loss left to remove.", [[145.9, 146.26], [148.02, 148.56]]],
-  "bars/turn": [150.903, 151.644, "Your turn.", []]
+  "setup/nudge": [31.428, 50.479, "Measure the first one. Raise s zero by zero point zero one, and the loss goes from one point two zero eight to one point two one four: up zero point zero zero six, which is zero point six times the nudge. That slope, zero point six, is the first entry.", [[32.558, 33.078], [36.098, 36.478], [39.078, 39.338], [40.918, 41.448], [43.728, 44.088], [46.538, 47.108], [47.818, 48.088], [49.108, 49.348]]],
+  "setup/others": [50.859, 68.638, "Nudge the others the same way. Raising s one, the correct score, lowers the loss, by zero point zero zero seven: a slope of minus zero point seven. Raising s two adds zero point zero zero one: a slope of zero point one.", [[52.589, 53.389], [54.589, 54.829], [55.699, 56.069], [57.059, 57.289], [59.559, 59.939], [62.199, 62.839], [66.539, 66.899]]],
+  "setup/pattern": [69.018, 83.334, "Now compare with p. The two wrong options' slopes are their own probabilities, zero point six and zero point one. The correct option's slope is its probability minus one: zero point three minus one.", [[70.488, 71.068], [74.248, 74.618], [75.738, 75.888], [77.058, 77.588], [80.938, 81.338]]],
+  "derive/expand": [85.134, 97.662, "Write the loss out. Minus the log of a fraction is minus the log of the top, plus the log of the bottom: minus s y, the correct option's score, plus the log of the total, T.", [[86.204, 86.754], [88.334, 88.514], [90.134, 90.414], [91.754, 92.364], [93.614, 93.884], [95.244, 95.614], [97.014, 97.274]]],
+  "derive/dT": [98.042, 120.759, "Start with the log of the total. It reaches s zero through a chain: s zero feeds T, and T feeds log T. T adds up e to every score, and only one of those terms holds s zero. e to the x is its own derivative, so T moves e to the one point eight, about six, times as fast as s zero.", [[99.812, 100.332], [102.622, 103.172], [104.662, 104.902], [106.492, 107.162], [109.292, 109.562], [112.092, 112.702], [114.782, 115.102], [117.542, 117.772], [118.542, 118.802]]],
+  "derive/dlog": [121.139, 138.284, "And log T, the natural log, has slope one over T. T is about ten, so log T moves a tenth as fast as T. A nudge of zero point zero one grows to zero point zero six, then shrinks to zero point zero zero six.", [[122.149, 122.379], [123.229, 123.469], [125.149, 125.809], [126.999, 127.299], [130.229, 130.869], [132.919, 133.089], [135.069, 135.379]]],
+  "derive/pj": [138.664, 153.149, "The chain rule multiplies the two: six times a tenth is zero point six, the slope measured before. For any score s j, it is e to the s j, over the total. That is exactly p j.", [[140.694, 141.264], [143.874, 144.204], [145.534, 146.114], [147.754, 148.034], [149.744, 150.024], [150.854, 151.304]]],
+  "derive/minus": [153.529, 166.169, "Minus s y depends only on the correct score: its derivative is minus one when j is y, and zero when j is not y, the slashed equals sign reading \u201cis not\u201d.", [[156.859, 157.379], [160.529, 160.859], [163.009, 163.409], [165.299, 165.499]]],
+  "derive/together": [166.549, 181.822, "Add the two: p j, minus the bracket j equals y. The bracket is one when j is y and zero otherwise, so it is p j with one taken away at the correct option. Just the pattern the nudges found.", [[167.339, 167.909], [168.549, 168.869], [170.289, 170.469], [171.289, 171.919], [174.269, 174.479], [175.729, 176.149], [179.639, 180.109]]],
+  "bars/p": [183.622, 193.089, "Back to our numbers. The probabilities are zero point six, zero point three and zero point one, and the correct option is option one.", [[184.662, 185.212], [187.612, 187.882], [188.922, 189.162], [190.382, 190.812], [191.812, 192.012]]],
+  "bars/answer": [193.469, 205.095, "As a vector, the gradient is p, minus one-hot of y: the vector with a one at the correct option and zeros elsewhere. Here, zero, one, zero.", [[194.259, 194.539], [195.439, 195.599], [195.949, 196.149], [197.859, 198.379], [200.689, 200.929], [202.229, 202.709], [203.069, 203.409]]],
+  "bars/sub": [205.475, 214.884, "Take one away at option one: zero point three minus one is minus zero point seven. The other options keep their probabilities.", [[207.425, 208.035], [209.875, 210.115], [211.935, 212.565]]],
+  "bars/sum": [215.264, 222.779, "The entries always add up to zero: p adds up to one, and the one-hot vector takes exactly one away.", [[217.464, 218.044], [219.404, 219.774]]],
+  "bars/step": [223.159, 233.092, "So to lower the loss, move each score against its entry: the correct score goes up, and the others go down, the most confident wrong option the most.", [[224.579, 224.809], [226.879, 227.389], [228.759, 229.049], [230.279, 230.759]]],
+  "bars/done": [233.472, 241.226, "And once the correct option gets nearly all the probability, the gradient is nearly zero: there is little loss left to remove.", [[236.602, 236.962], [238.722, 239.262]]],
+  "bars/turn": [241.606, 242.346, "Your turn.", []]
  }
 }

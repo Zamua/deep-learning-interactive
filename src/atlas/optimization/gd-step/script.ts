@@ -29,18 +29,24 @@ export const script: LectureScript = {
       title: 'The update',
       codeTitle: 'step.py',
       code: `
-        eta = 0.5                       #@eta
-        w = w - eta * g                 #@rule
-        # g: 2.8, 1.4, 0.7, 0.35 ...    #@steep
-        w = np.array([1.0, -0.5])       #@vec
-        g = np.array([2.0, -1.0])       #@vec
-        w = w - 0.1 * g   # [0.8, -0.4] #@vec
+        eta = 0.5                          #@eta
+        w = w - eta * g                    #@rule
+        3 - 0.5 * 2          # 2.0         #@num
+        -1 - 0.5 * (-2)      # 0.0         #@neg
+        # g: 2, 1, 0.5, 0.25 ...           #@steep
+        w = np.array([1.0, -0.5])          #@vec
+        g = np.array([2.0, -1.0])          #@vec
+        0.1 * g              # [0.2, -0.1] #@vnum
+        w - 0.1 * g          # [0.8, -0.4] #@vnum
       `,
       beats: [
         { id: 'rule', say: 'That is the whole rule, written {w ← w − ηg|w gets w minus eta g}. The arrow reads “gets”: the new w is the old w, minus {η|eta} times g.', code: 'rule' },
         { id: 'eta', say: '{η|Eta} is the step size: a small positive number that sets how far each step goes.', code: 'eta' },
-        { id: 'steep', say: 'The step is proportional to g, so a steep slope makes a big step. Near the bottom the slope flattens, and the steps shrink on their own.', code: ['rule', 'steep'] },
-        { id: 'vector', say: 'When w is a vector, every entry steps at once. Entry i, written {wᵢ|w sub i} with the index set low, moves against {gᵢ|g sub i}, its own entry of the gradient. One and minus a half become {0.8|zero point eight} and minus {0.4|zero point four}.', code: 'vec' },
+        { id: 'num', say: 'Try it where w is three and the slope g is two, with {η|eta} equal to {0.5|zero point five}. The step, {η|eta} times g, is one, and three minus one is two.', code: 'num' },
+        { id: 'neg', say: 'At minus one the slope is minus two, so {η|eta} times g is minus one. Subtracting a negative adds: minus one, plus one, is zero. w moves right, still downhill.', code: 'neg' },
+        { id: 'steep', say: 'The step is proportional to g, so a steep slope makes a big step. From three, g goes two, one, a half: near the bottom the slope flattens, and the steps shrink on their own.', code: ['rule', 'steep'] },
+        { id: 'vector', say: 'When w is a vector, every entry steps at once. Entry i, written {wᵢ|w sub i} with the index set low, moves against {gᵢ|g sub i}, its own entry of the gradient.', code: 'vec' },
+        { id: 'vnum', say: 'With w equal to one and minus a half, g equal to two and minus one, and {η|eta} {0.1|zero point one}: {η|eta} times g is {0.2|zero point two} and minus {0.1|zero point one}. Subtract entry by entry, and w becomes {0.8|zero point eight} and minus {0.4|zero point four}.', code: 'vnum' },
       ],
     },
     {
@@ -49,14 +55,17 @@ export const script: LectureScript = {
       codeTitle: 'drop.py',
       code: `
         w, g, eta = 3.0, 2.0, 0.1
-        dw = -eta * g         # -0.2           #@move
-        df = g * dw           # -0.4, about    #@dL
-        # = -eta * g**2: never above 0         #@sq
+        dw = -eta * g         # -0.2              #@move
+        df = g * dw           # -0.4, about       #@dL
+        # = -eta * g**2: never above 0            #@sq
+        g = np.array([2.0, -1.0])                 #@sum
+        -0.1 * (g**2).sum()   # -0.1 * 5 = -0.5   #@sum
       `,
       beats: [
         { id: 'tangent', say: 'How much does one step lower f? Close up, the curve is almost its tangent line, so f changes by about the slope times the move.', code: 'move' },
         { id: 'formula', say: 'The move is minus {η|eta} g. Times the slope g, that is minus {η|eta} g squared. Here, minus {0.4|zero point four}, and the true change is minus {0.38|zero point three eight}.', code: ['dL', 'sq'] },
-        { id: 'always', say: '{η|Eta} g squared is never negative, written {ηg² ≥ 0|eta g squared is at least zero}, where the sign {≥|greater than or equal} reads “is at least”. So a small enough step never raises f, and when w is a vector, each entry adds its own minus {η|eta} g squared.', code: 'sq' },
+        { id: 'always', say: '{η|Eta} g squared is never negative, written {ηg² ≥ 0|eta g squared is at least zero}, where the sign {≥|greater than or equal} reads “is at least”. So a small enough step never raises f.', code: 'sq' },
+        { id: 'sum', say: 'When w is a vector, each entry adds its own minus {η|eta} g squared. For g of two and minus one, with {η|eta} {0.1|zero point one}: two squared, plus minus one squared, is four plus one, five. Minus {0.1|zero point one} times five is minus {0.5|zero point five}.', code: 'sum' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

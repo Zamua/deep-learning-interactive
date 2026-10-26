@@ -34,10 +34,31 @@ export const script: LectureScript = {
       codeTitle: 'augment.py',
       code,
       beats: [
-        { id: 'count', say: 'Random crops alone add a lot. A twenty eight pixel crop fits at five places across a thirty two pixel image, and five down: twenty five crops.', code: 'crop' },
-        { id: 'flips', say: 'Add a random flip, and every image comes in fifty versions.', code: 'flip' },
+        { id: 'count', say: 'Random crops alone add a lot. Cut a twenty eight by twenty eight crop from a thirty two by thirty two image.', code: 'crop' },
+        { id: 'across', say: 'Slide it across one pixel at a time. Its left edge can sit at zero, one, two, three or four, where its right edge meets the image\'s. That is thirty two minus twenty eight, plus one for position zero: five places.', code: 'crop' },
+        { id: 'down', say: 'Down, the same: its top edge sits at zero to four, five places. Every place across pairs with every place down: five times five, twenty five crops.', code: 'crop' },
+        { id: 'flips', say: 'Add a random flip, and each crop also comes mirrored: twenty five times two, fifty versions of every image.', code: 'flip' },
         { id: 'train', say: 'Do this only while training, with fresh random choices every time. Validation and test images stay untouched, so they still measure the model on real data.', code: 'test' },
         { id: 'gap', say: 'The training loss ends a little higher, because varied images are harder to memorize, and the validation loss ends lower: a smaller gap.', code: 'all' },
+      ],
+    },
+    {
+      id: 'try',
+      title: 'Try one',
+      codeTitle: 'count.py',
+      code: `
+        width, height, crop = 36, 32, 28   #@p1
+        across = width - crop + 1   # 9    #@across
+        down = height - crop + 1    # 5    #@down
+        crops = across * down       # 45   #@total
+        versions = crops * 2        # 90   #@flip
+      `,
+      beats: [
+        { id: 'p1', say: 'Try one. A training image is thirty six pixels wide and thirty two high. A random twenty eight by twenty eight crop is cut from it, then flipped left to right half of the time. How many different versions can that give?', code: 'p1' },
+        { id: 'across', say: 'Across, the crop\'s left edge can sit at zero up to thirty six minus twenty eight, which is eight: nine places.', code: 'across' },
+        { id: 'down', say: 'Down, the image is only thirty two high, so the top edge sits at zero to four: five places.', code: 'down' },
+        { id: 'total', say: 'Nine across times five down is forty five crops.', code: 'total' },
+        { id: 'flip', say: 'And each comes flipped or not: forty five times two, ninety versions.', code: 'flip' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

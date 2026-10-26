@@ -1,5 +1,5 @@
 import { type Scene, type SceneDef, clamp01, lerp, smooth } from '../../../lecture/scene';
-import { Frame, inset, note } from '../draw';
+import { after, Frame, inset, note } from '../draw';
 
 const f = (x: number) => x * x;
 const f2 = (v: number) => v.toFixed(2);
@@ -70,14 +70,24 @@ const slope: SceneDef = {
   },
 };
 
-/** h on a log scale: 1, then 0.5 and 0.1 during "shrink", then toward 0 during "limit". */
+/** h on a log scale: 1 to 0.5 early in "shrink", 0.5 to 0.1 early in "tenth", then toward 0 in "limit". */
 function hAt(s: Scene): number {
-  const p = s.prog('shrink');
-  const q = s.prog('limit');
   const l = (a: number, b: number, t: number) => Math.exp(lerp(Math.log(a), Math.log(b), smooth(t)));
-  if (q > 0) return l(0.1, 0.002, clamp01(q / 0.6));
-  if (p < 0.5) return l(1, 0.5, clamp01((p - 0.1) / 0.3));
-  return l(0.5, 0.1, clamp01((p - 0.6) / 0.3));
+  if (s.prog('limit') > 0) return l(0.1, 0.002, clamp01(s.prog('limit') / 0.6));
+  if (s.prog('tenth') > 0) return l(0.5, 0.1, clamp01(s.prog('tenth') / 0.25));
+  return l(1, 0.5, clamp01((s.prog('shrink') - 0.05) / 0.2));
+}
+
+/** The worked secant for one step: f at the far point, the rise, then rise over run, each with the voice. */
+function worked(s: Scene, F: Frame, beat: string, h: number, a: number) {
+  const x1 = 1 + h;
+  const rise = f(x1) - 1;
+  const n = (v: number) => String(+v.toFixed(2));
+  s.alpha(a, () => {
+    s.alpha(after(s, beat, 0.12), () => note(s, F, `h = ${n(h)}: f(${n(x1)}) = ${n(f(x1))}`, 0, '--ink-2'));
+    s.alpha(after(s, beat, 0.4), () => note(s, F, `rise = ${n(f(x1))} − 1 = ${n(rise)}`, 1, '--ink-2'));
+    s.alpha(after(s, beat, 0.62), () => note(s, F, `slope = ${n(rise)} / ${n(h)} = ${n(rise / h)}`, 2, 'gold'));
+  });
 }
 
 const shrink: SceneDef = {
@@ -92,9 +102,13 @@ const shrink: SceneDef = {
     s.alpha(tan, () => F.tangent(1, 1, 2, 'teal', -0.6, 2.7, 0.75));
     F.dot(1, 1, 'purple');
     s.alpha(clamp01((h - 0.03) / 0.05), () => F.dot(1 + h, f(1 + h), 'purple', 1.1));
-    stepTriangle(s, F, 1, 1 + h, 'h', '', clamp01((h - 0.25) / 0.2));
+    const tri = clamp01((h - 0.25) / 0.2);
+    stepTriangle(s, F, 1, 1 + h, 'h', '', tri);
+    s.alpha(tri * after(s, 'shrink', 0.4), () => s.text('1.25', F.X(1.5) + 2 * s.u, (F.Y(1) + F.Y(2.25)) / 2, { size: 3.4, font: 'mono', align: 'left', color: s.c('--ink-2'), halo: true }));
+    worked(s, F, 'shrink', 0.5, 1 - s.ease('tenth', 0.4));
+    worked(s, F, 'tenth', 0.1, s.ease('tenth', 0.5, 0.3) * (1 - s.ease('limit', 0.4)));
     const lim = s.ease('limit', 0.6, 1.2);
-    s.alpha(1 - lim, () => note(s, F, `h = ${f2(h)}   slope = ${f2(m)}`, 0, 'gold'));
+    s.alpha((1 - after(s, 'shrink', 0.1)) + s.ease('limit', 0.5, 0.3) * (1 - lim), () => note(s, F, `h = ${f2(h)}   slope = ${f2(m)}`, 0, 'gold'));
     s.alpha(lim, () => note(s, F, "f′(1) = 2", 0, 'teal', 4.6));
     s.alpha(s.ease('line', 0.7), () => {
       F.fn((x) => 2 * x + 1, '--ink-2', 0.6);

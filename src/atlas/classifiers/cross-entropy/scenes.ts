@@ -87,30 +87,46 @@ const TEN = Array.from({ length: 10 }, () => 0.1);
 
 const scores: SceneDef = {
   marks: {
-    f: { tex: String.raw`\symL = -\ln \symp_{\symy} = \ln T - \syms_{\symy}`, x: 0.5, y: 0.62, size: 5 },
+    py: { tex: String.raw`\symp_{\symy} = e^{2} / T = 7.39 / 10.48`, x: 0.5, y: 0.49, size: 4.2 },
+    quot: { tex: String.raw`\ln \symp_{\symy} = \ln e^{2} - \ln 10.48`, x: 0.5, y: 0.585, size: 4.2 },
+    undo: { tex: String.raw`\ln \symp_{\symy} \approx 2 - 2.35 = -0.35`, x: 0.5, y: 0.68, size: 4.2 },
+    flip: { tex: String.raw`\symL = -\ln \symp_{\symy} \approx 2.35 - 2 = 0.35`, x: 0.5, y: 0.775, size: 4.2 },
+    f: { tex: String.raw`\symL = \ln T - \syms_{\symy}`, x: 0.5, y: 0.895, size: 5 },
   },
   draw(s) {
     const xs = columns(s, 3, s.tall ? 24 : 26);
     const lx = xs[0]! - 13 * s.u;
-    const init = s.ease('init', 0.8);
-    s.alpha(1 - init, () => {
-      rowLabel(s, 's', lx, s.h * 0.15, 'purple');
-      cells(s, xs, s.h * 0.15, SS.map(String), 'purple', { on: [s.ease('rule', 0.6), 0, 0] });
-      s.text('y', xs[0]!, s.h * 0.15 - 7.5 * s.u, { size: 3.4, font: 'mono', weight: 700, color: s.c('gold') });
-      downArrows(s, xs, s.h * 0.15 + 5.5 * s.u, s.h * 0.32 - 5.5 * s.u);
-      rowLabel(s, 'e', lx, s.h * 0.32, 'gold');
-      cells(s, xs, s.h * 0.32, SE.map(f2), 'gold');
-      s.text(`T = ${SE.map(f2).join(' + ')} = ${f2(ST)}`, s.w / 2, s.h * 0.44, { size: 3.4, font: 'mono', color: s.c('--ink-2'), halo: true });
-      s.alpha(s.ease('rule', 0.6, 2.4), () => s.text(`ln ${f2(ST)} − 2 = ${f2(Math.log(ST))} − 2 = ${f2(Math.log(ST) - 2)}`, s.w / 2, s.h * 0.78, { size: 3.8, font: 'mono', weight: 600, color: s.c('red') }));
-    });
-    s.show('f', s.ease('rule', 0.6) * (1 - init));
-    s.alpha(init, () => {
-      const tx = columns(s, 10, s.tall ? 8.5 : 9);
-      bars(s, tx, s.h * 0.5, TEN, 'teal', { max: 1, height: 30, w: 6.5 });
-      s.text('10 equal scores: p = 0.1 each', s.w / 2, s.h * 0.58, { size: 3.4, font: 'mono', color: s.c('teal') });
-      s.text('L = −ln 0.1 = ln 10 ≈ 2.30', s.w / 2, s.h * 0.74, { size: 4.2, font: 'mono', weight: 650, color: s.c('red') });
+    const [ys, ye, yt] = [0.14, 0.285, 0.39].map((f) => s.h * f);
+    rowLabel(s, 's', lx, ys, 'purple');
+    cells(s, xs, ys, SS.map(String), 'purple', { on: [s.ease('py', 0.6), 0, 0] });
+    s.text('y', xs[0]!, ys - 7.5 * s.u, { size: 3.4, font: 'mono', weight: 700, color: s.c('gold') });
+    downArrows(s, xs, ys + 5.5 * s.u, ye - 5.5 * s.u);
+    rowLabel(s, 'e', lx, ye, 'gold');
+    cells(s, xs, ye, SE.map(f2), 'gold', { on: [s.ease('py', 0.6), 0, 0] });
+    s.text(`T = ${SE.map(f2).join(' + ')} = ${f2(ST)}`, s.w / 2, yt, { size: 3.4, font: 'mono', color: s.c('--ink-2'), halo: true });
+    for (const k of ['py', 'quot', 'undo', 'flip']) s.show(k, s.ease(k, 0.6));
+    s.show('f', s.ease('rule', 0.6));
+    s.alpha(s.ease('rule', 0.6, 0.8), () => {
+      const r = 19 * s.u;
+      s.rrect(s.w / 2 - r, s.h * 0.895 - 5.5 * s.u, 2 * r, 11 * s.u, 2, { stroke: s.tint('red', 0.7), lw: 0.35 });
     });
   },
 };
 
-export const scenes: Record<string, SceneDef> = { loss, curve, scores };
+const uniform: SceneDef = {
+  marks: {
+    recip: { tex: String.raw`\symL = -\ln(1/10) = \ln 10 \approx 2.30`, x: 0.5, y: 0.58, size: 4.4 },
+    logC: { tex: String.raw`\symL = -\ln(1/C) = \ln C`, x: 0.5, y: 0.71, size: 4.6 },
+    eight: { tex: String.raw`\ln 8 = \ln 2^{3} = 3 \ln 2 \approx 3 \times 0.693 \approx 2.08`, x: 0.5, y: 0.85, size: 4.2 },
+  },
+  draw(s) {
+    const tx = columns(s, 10, s.tall ? 9 : 10);
+    bars(s, tx, s.h * 0.38, TEN, 'teal', { max: 0.15, height: 22, w: 6.5, grow: s.ease('init', 0.8) });
+    s.alpha(s.ease('init', 0.6, 0.6), () => s.text('10 equal scores: p = 1/10 = 0.1 each', s.w / 2, s.h * 0.46, { size: 3.4, font: 'mono', color: s.c('teal') }));
+    s.show('recip', s.ease('recip', 0.6));
+    s.show('logC', s.ease('logC', 0.6));
+    s.show('eight', s.ease('eight', 0.6));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { loss, curve, scores, uniform };

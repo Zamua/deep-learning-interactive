@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import { int, ints, num, pick, vec } from '../../kit';
-import { atraps, clean, nonzero, par, shp, shuffled, traps } from '../kit';
+import { atraps, clean, nonzero, outSize, par, shp, shuffled, traps } from '../kit';
 
 const relu = (v: number) => Math.max(0, v);
 
@@ -55,6 +55,7 @@ export const generators: Generator[] = [
             { value: g, why: 'That keeps only the shortcuts. The paths through $F_1$ and $F_2$ add to the gradient too.' },
           ]),
           solution: [
+            'Walking back from $y$, each block multiplies the gradient by $1$ plus its slope: block 2 first, then block 1.',
             `Through block 2: $\\symg \\, (1 + ${par(b)}) = ${par(g)} \\times ${num(clean(1 + b))} = ${num(clean(g * (1 + b)))}$.`,
             `Through block 1: $${num(clean(g * (1 + b)))} \\times (1 + ${par(a)}) = ${num(v)}$.`,
             'Each factor is 1 plus a slope: the 1 is the shortcut, so the gradient does not have to pass through every layer\'s slope.',
@@ -112,19 +113,30 @@ export const generators: Generator[] = [
       const same = d < 0.35 ? rng.int(2) === 0 : rng.int(4) === 0;
       const S = same ? 1 : 2;
       const K = same ? C : 2 * C;
-      const v = [K, H / S, H / S];
+      const raw = outSize(H, 3, S, 1);
+      const O = Math.floor(raw);
+      const v = [K, O, O];
+      const size = same
+        ? [`Its height and width: $(${H} - 3 + 2 \\cdot 1) / 1 + 1 = ${O}$, unchanged.`]
+        : [`Its height and width: $(${H} - 3 + 2 \\cdot 1) / 2 + 1 = ${num(raw)}$.`, `That is not whole, so it rounds down: $${O}$.`];
       return {
         prompt: `In a residual block, $\\symx$ has shape $${shp([C, H, H])}$. $F$ is a $3 \\times 3$ conv with $${K}$ filters, stride ${S} and padding 1, a ReLU, and a $3 \\times 3$ conv with $${K}$ filters, stride 1 and padding 1. What shape must the shortcut output?`,
         answer: { kind: 'shape', value: v },
         traps: atraps(v, [
           { value: [C, H, H], why: `That is $\\symx$ as it is. $F$ changes the shape here, so the shortcut needs a $1 \\times 1$ conv with $${K}$ filters and stride ${S} to match.` },
           { value: [K, H, H], why: `That forgets the stride: the first conv has stride ${S}, which shrinks the height and width.` },
-          { value: [C, H / S, H / S], why: `That keeps $\\symx$'s channels. $F$ ends with $${K}$ filters, so the sum needs $${K}$ channels.` },
+          { value: [C, O, O], why: `That keeps $\\symx$'s channels. $F$ ends with $${K}$ filters, so the sum needs $${K}$ channels.` },
+          ...(same ? [] : [{ value: [K, O + 1, O + 1], why: `That rounds $${num(raw)}$ up. An output size that is not whole rounds down: $${O}$.` }]),
         ]),
         solution: [
-          `$F(\\symx)$: the first conv gives $${shp([K, H / S, H / S])}$ (padding 1, stride ${S}); the second keeps it.`,
+          `$F$'s first conv has $${K}$ filters, so it outputs $${K}$ channels.`,
+          ...size,
+          `So the first conv gives $${shp(v)}$.`,
+          `The second conv has stride 1 and padding 1: $(${O} - 3 + 2 \\cdot 1) / 1 + 1 = ${O}$, so it keeps the size. With $${K}$ filters, $F(\\symx)$ is $${shp(v)}$.`,
           'A sum needs equal shapes, so the shortcut must output that shape too.',
-          same ? 'Here that is $\\symx$\'s own shape: the identity shortcut works as is.' : `$\\symx$ is $${shp([C, H, H])}$, so the shortcut is a $1 \\times 1$ conv with $${K}$ filters and stride 2.`,
+          same
+            ? 'Here that is $\\symx$\'s own shape: the identity shortcut works as is.'
+            : `$\\symx$ is $${shp([C, H, H])}$, so the shortcut is a $1 \\times 1$ conv with $${K}$ filters and stride 2: $(${H} - 1) / 2 + 1 = ${num(outSize(H, 1, 2, 0))}$, rounded down to $${O}$.`,
         ],
       };
     },

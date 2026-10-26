@@ -250,27 +250,42 @@ function draw(rng: Rng, d: number, ok?: (v: V) => boolean): V {
 const usable = (d: number) => T.filter((t) => (d < 0.35 ? t.level === 0 : d < 0.7 ? t.level <= 1 : t.level >= 1));
 const at = (v: V) => `$x = ${n(v.x)}$, $y = ${n(v.y)}$ and $z = ${n(v.z)}$`;
 
-/** Graphs where one input feeds two nodes, with the gradient each use sends back. */
-const TWICE: { tex: string; who: 'x' | 'y'; uses: [string, string]; ok?: (v: V) => boolean; branch: (v: V) => [number, number]; check: string }[] = [
+/** Graphs where one input feeds two nodes: the gradient each use sends back, and the steps that produce it. */
+const TWICE: { tex: string; who: 'x' | 'y'; uses: [string, string]; branch: (v: V) => [number, number]; steps: (v: V) => [string, string, string]; check: string }[] = [
   {
     tex: 'x \\cdot y + x',
     who: 'x',
     uses: ['the multiply', 'the add'],
     branch: ({ y }) => [y, 1],
+    steps: ({ y }) => [
+      `${SEED} The add passes that 1 to both its inputs: the product $x \\cdot y$, and $x$ itself.`,
+      `Back through the multiply, which swaps: $x$ gets the other factor times 1, $y \\times 1 = ${n(y)}$.`,
+      'Back through the add, directly: $x$ is one of its inputs, so it gets $1$.',
+    ],
     check: '$f = xy + x$, so $\\partial f / \\partial x = y + 1$.',
   },
   {
     tex: '(x + y) \\cdot x',
     who: 'x',
     uses: ['the add', 'the multiply'],
-    branch: ({ x }) => [x, 0],
+    branch: ({ x, y }) => [x, clean(x + y)],
+    steps: ({ x, y }) => [
+      `${SEED} The multiply swaps: its input $x + y$ gets the other factor, $x = ${n(x)}$, and its input $x$ gets $x + y = ${n(clean(x + y))}$.`,
+      `Back through the add, which copies what it got: $x$ gets $${n(x)}$.`,
+      `Back through the multiply, directly: $x$ is its other input, so it gets $x + y = ${n(clean(x + y))}$.`,
+    ],
     check: '$f = x^{2} + xy$, so $\\partial f / \\partial x = 2x + y$.',
   },
   {
     tex: '(x + y) \\cdot (y + z)',
     who: 'y',
     uses: ['the first add', 'the second add'],
-    branch: () => [0, 0],
+    branch: ({ x, y, z }) => [clean(y + z), clean(x + y)],
+    steps: ({ x, y, z }) => [
+      `${SEED} The multiply swaps: $x + y$ gets the other factor, $y + z = ${n(clean(y + z))}$, and $y + z$ gets $x + y = ${n(clean(x + y))}$.`,
+      `Back through the first add, $x + y$, which copies what it got: $y$ gets $${n(clean(y + z))}$.`,
+      `Back through the second add, $y + z$, which copies too: $y$ gets $${n(clean(x + y))}$.`,
+    ],
     check: '$\\partial f / \\partial y = (y + z) + (x + y)$: each add passes on what the multiply sent it.',
   },
   {
@@ -278,15 +293,14 @@ const TWICE: { tex: string; who: 'x' | 'y'; uses: [string, string]; ok?: (v: V) 
     who: 'x',
     uses: ['the first multiply', 'the second multiply'],
     branch: ({ y, z }) => [y, z],
+    steps: ({ y, z }) => [
+      `${SEED} The add passes that 1 to both products, $x \\cdot y$ and $x \\cdot z$.`,
+      `Back through the first multiply, which swaps: $x$ gets $y \\times 1 = ${n(y)}$.`,
+      `Back through the second multiply, which swaps too: $x$ gets $z \\times 1 = ${n(z)}$.`,
+    ],
     check: '$f = x(y + z)$, so $\\partial f / \\partial x = y + z$.',
   },
 ];
-
-function branches(i: number, v: V): [number, number] {
-  if (i === 1) return [v.x, v.x + v.y];
-  if (i === 2) return [v.y + v.z, v.x + v.y];
-  return TWICE[i]!.branch(v);
-}
 
 export const generators: Generator[] = [
   {
@@ -341,7 +355,7 @@ export const generators: Generator[] = [
         const i = rng.int(TWICE.length);
         const t = TWICE[i]!;
         const v = draw(rng, Math.min(d, 0.69));
-        const [a, c] = branches(i, v).map(clean) as [number, number];
+        const [a, c] = t.branch(v).map(clean) as [number, number];
         const sum = clean(a + c);
         const opts = [sum, clean(a * c), a, clean(sum / 2)];
         if (new Set(opts).size < 4 || a === c) continue;
@@ -364,8 +378,7 @@ export const generators: Generator[] = [
             ],
           },
           solution: [
-            `Back through ${t.uses[0]}, $${who}$ gets $${n(a)}$.`,
-            `Back through ${t.uses[1]}, it gets $${n(c)}$.`,
+            ...t.steps(v),
             `A value used twice adds the gradients from its uses: $${n(a)} + ${par(c)} = ${n(sum)}$.`,
             `Check: ${t.check}`,
           ],

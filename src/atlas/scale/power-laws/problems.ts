@@ -29,8 +29,11 @@ export const generators: Generator[] = [
         answer: { kind: 'number', value: v, places: 2 },
         traps: ptraps(v, 2, tr),
         solution: [
-          `The law is $${LAW}$. Multiplying $${C}$ by ${times.toLocaleString('en-US')} multiplies $${C}^{-${ALPHA}}$ by $${k === 1 ? '' : `(10^{${k}})^{-${num(alpha)}} = `}${pow(k * alpha)} \\approx ${num(f, 2)}$, and $a$ stays the same.`,
-          `So the loss is multiplied by ${num(f, 2)}: $${num(L)} \\times ${num(f, 2)} \\approx ${num(v, 2)}$.`,
+          `In $${LAW}$, each factor of ten in $${C}$ multiplies the loss by $10^{-${ALPHA}} = ${pow(alpha)}$.`,
+          k === 1
+            ? `${times} times the compute is one factor of ten: the loss is multiplied by $${pow(alpha)} \\approx ${num(f, 2)}$.`
+            : `${times.toLocaleString('en-US')} times the compute is ${k} factors of ten. Multiplying adds the powers: $${Array(k).fill(pow(alpha)).join(' \\times ')} = ${pow(k * alpha)} \\approx ${num(f, 2)}$.`,
+          `So the loss becomes $${num(L)} \\times ${num(f, 2)} \\approx ${num(v, 2)}$.`,
         ],
       };
     },
