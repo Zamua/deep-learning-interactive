@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick, round } from '../../kit';
-import { ADV, choose, clean, E2, EPS, OLD, paren, PI, RHO, traps } from '../kit';
+import { num, pick } from '../../kit';
+import { ADV, choose, clean, EPS, OLD, paren, PI, RHO, traps } from '../kit';
 
 const clip = (x: number, e: number) => Math.min(1 + e, Math.max(1 - e, x));
 
@@ -14,54 +14,6 @@ function setup(rng: Rng, d: number): { rho: number; a: number; e: number } {
 }
 
 export const generators: Generator[] = [
-  {
-    id: 'ratio',
-    make(rng, d) {
-      if (d < 0.5) {
-        const [po, pn] = pick(rng, [[0.2, 0.3], [0.4, 0.5], [0.5, 0.4], [0.2, 0.1], [0.25, 0.5], [0.4, 0.6], [0.5, 0.6], [0.8, 0.6], [0.3, 0.6], [0.6, 0.3]] as const);
-        const v = clean(pn / po);
-        return {
-          prompt: `A token had $${OLD} = ${num(po)}$ when its batch was sampled, and after one update $${PI} = ${num(pn)}$. What is its ratio $${RHO}$? Round to two decimals.`,
-          answer: { kind: 'number', value: v, places: 2 },
-          traps: traps(
-            v,
-            [
-              { value: po / pn, why: `That is old over new. The ratio puts the model being trained on top: $${PI} / ${OLD}$.` },
-              { value: clean(pn - po), why: 'That is the difference. The ratio divides.' },
-            ],
-            2,
-          ),
-          solution: [
-            `$${RHO} = ${PI} / ${OLD}$: the new probability over the old one.`,
-            `$${RHO} = ${num(pn)} / ${num(po)} ${round(v, 2) === v ? '=' : '\\approx'} ${num(v, 2)}$.`,
-            v > 1 ? 'Above 1: the update made this token more likely.' : 'Below 1: the update made this token less likely.',
-          ],
-        };
-      }
-      const delta = pick(rng, [0.1, 0.2, 0.3, -0.1, -0.2, -0.3, 0.5, -0.5]);
-      const lo = -pick(rng, [12, 15, 20, 31, 8, 25]) - pick(rng, [0, 0.4, 0.7]);
-      const ln = clean(lo + delta);
-      const v = E2(delta);
-      return {
-        prompt: `For a sampled answer, $\\ln ${OLD} = ${num(lo)}$ and, after a few updates, $\\ln ${PI} = ${num(ln)}$. What is the ratio $${RHO}$? Round to two decimals.\n\nUse $e^{${num(delta)}} \\approx ${num(v, 2)}$.`,
-        answer: { kind: 'number', value: v, places: 2 },
-        traps: traps(
-          v,
-          [
-            { value: delta, why: 'That is the log of the ratio. Exponentiate it to get the ratio.' },
-            { value: E2(-delta), why: `That is $${OLD} / ${PI}$, the wrong way round.` },
-            { value: clean(ln / lo), why: 'That divides the logs. A ratio of probabilities is the exponential of the difference of their logs.' },
-          ],
-          2,
-        ),
-        solution: [
-          `$${RHO} = ${PI} / ${OLD}$, and the log of a quotient is a difference of logs: $\\ln ${RHO} = \\ln ${PI} - \\ln ${OLD}$.`,
-          `$\\ln ${RHO} = ${num(ln)} - (${num(lo)}) = ${num(delta)}$.`,
-          `$${RHO} = e^{${num(delta)}} \\approx ${num(v, 2)}$.`,
-        ],
-      };
-    },
-  },
   {
     id: 'clipped',
     make(rng, d) {

@@ -1,0 +1,26 @@
+{
+ "duration": 178.193,
+ "scenes": {
+  "boxes": [0.0, 37.725],
+  "overlap": [37.725, 133.48],
+  "inside": [133.48, 178.193]
+ },
+ "beats": {
+  "boxes/box": [0.7, 5.629, "To say where an object is, not just what it is, draw a box around it.", [[2.45, 2.64], [3.84, 4.17]]],
+  "boxes/corners": [6.009, 18.144, "Four numbers pin it down: the top-left corner, x one and y one, and the bottom-right corner, x two and y two. As in an image, y counts down from the top.", [[7.619, 8.119], [9.209, 9.619], [10.999, 11.419], [12.729, 13.129], [14.539, 15.189], [16.139, 16.399]]],
+  "boxes/area": [18.524, 27.66, "Its width is x two minus x one, four, and its height y two minus y one, three: an area of twelve.", [[21.234, 21.574], [22.004, 22.454], [23.154, 23.424], [25.024, 25.314], [25.734, 26.254]]],
+  "boxes/guess": [28.04, 36.625, "A network guesses a box of its own, from two, two to six, five. Also twelve. How well do they agree?", [[30.18, 30.53], [31.21, 31.54], [32.38, 32.58], [33.12, 33.59], [34.76, 35.27]]],
+  "overlap/inter": [38.425, 54.166, "First, their overlap, the intersection. Its left edge is the larger left, the max of one and two: two. Its right edge is the smaller right, the min of five and six: five. So it is three wide.", [[38.985, 39.175], [40.025, 40.375], [41.265, 41.795], [43.745, 44.095], [45.765, 46.295], [46.605, 47.255], [49.175, 49.525], [51.185, 51.615], [52.085, 52.545]]],
+  "overlap/tall": [54.546, 64.943, "Its top is the larger top, two, and its bottom the smaller bottom, four: two tall. The intersection is three times two, six.", [[56.316, 56.656], [56.956, 57.416], [59.286, 59.606], [60.016, 60.496], [61.166, 61.706], [64.016, 64.346]]],
+  "overlap/apart": [65.323, 72.973, "If the boxes miss each other, right minus left comes out negative: no overlap, so the intersection is zero.", [[66.893, 67.253], [69.513, 69.973], [70.803, 71.203]]],
+  "overlap/both": [73.353, 90.955, "Boxes can miss on both sides. Take one from one, one to four, three, and one from six, four to nine, six. Right minus left is four minus six, minus two. Bottom minus top is three minus four, minus one.", [[75.453, 75.983], [77.053, 77.403], [78.143, 78.403], [78.843, 79.183], [80.273, 80.523], [81.363, 81.543], [82.083, 82.753], [85.523, 85.703], [86.503, 87.063], [88.313, 88.473], [89.923, 90.163]]],
+  "overlap/clamp": [91.335, 105.14, "Multiplied, the two negatives would give two, an overlap that is not there. So each side is clamped at zero first: the max of zero and minus two is zero, and zero times zero is zero.", [[92.105, 92.335], [94.125, 94.575], [96.245, 96.795], [99.435, 99.865], [102.625, 102.995]]],
+  "overlap/union": [105.52, 115.66, "The union is everything either box covers: twelve plus twelve, minus the six they share, so the overlap is not counted twice. Eighteen.", [[108.23, 108.71], [109.93, 110.24], [111.82, 112.23], [114.43, 115.07]]],
+  "overlap/iou": [116.04, 123.282, "Intersection over union, IoU: six over eighteen, about zero point three three.", [[117.7, 118.09], [119.08, 119.7], [121.02, 121.44]]],
+  "overlap/range": [123.662, 132.38, "Identical boxes score one, and boxes that do not touch score zero. A guess often counts as a hit at a half or more.", [[125.592, 125.962], [128.552, 129.202]]],
+  "inside/ask": [134.18, 147.399, "Box A is one, one, seven, five: six by four, twenty four. Box B is two, two, five, four: three by two, six. Their IoU?", [[135.39, 135.65], [137.18, 137.69], [138.72, 139.02], [139.75, 140.42], [141.58, 141.83], [143.22, 143.72], [144.67, 144.86], [145.42, 146.04], [147.13, 147.37]]],
+  "inside/edges": [147.779, 166.795, "The overlap runs from the larger left, two, to the smaller right, five, and from top two to bottom four: three by two, six. That is all of B, which lies inside A, so the union is twenty four plus six minus six: twenty four.", [[150.059, 150.379], [150.749, 151.079], [152.219, 152.569], [153.059, 153.539], [154.729, 154.879], [155.799, 156.319], [157.339, 157.679], [158.199, 158.799], [160.079, 160.279], [161.819, 162.229], [165.639, 166.079]]],
+  "inside/answer": [167.175, 175.973, "IoU: six over twenty four, zero point two five. Not a hit, though B is wholly inside A.", [[168.195, 168.695], [170.165, 170.605], [172.095, 172.655], [173.355, 173.675]]],
+  "inside/turn": [176.353, 177.093, "Your turn.", []]
+ }
+}

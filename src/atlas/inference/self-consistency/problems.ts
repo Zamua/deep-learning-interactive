@@ -1,67 +1,8 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { choice, clean, power, repeat, traps } from '../kit';
-
-/** Questions whose final answer is a number, with a right answer and nearby wrong ones. */
-const QUESTIONS: [string, number, number[]][] = [
-  ['What is $17 \\times 24$?', 408, [398, 418, 388, 428, 308]],
-  ['Ana has 3 boxes of 12 eggs, uses 7, then buys 5 more. How many eggs does she have?', 34, [29, 36, 24, 41, 31]],
-  ['A shirt costs \\$40 and is 25% off. What does it cost?', 30, [10, 35, 15, 32, 25]],
-  ['How many minutes are there in $3.5$ hours?', 210, [180, 350, 200, 240, 215]],
-  ['A train travels 60 km per hour for 2.5 hours. How far does it go, in km?', 150, [120, 160, 125, 140, 180]],
-  ['What is $15\\%$ of 80?', 12, [15, 8, 16, 10, 13]],
-  ['A rectangle is 7 m by 9 m. What is its perimeter, in meters?', 32, [63, 16, 30, 34, 36]],
-];
-
-/** Tasks whose sampled answers can be compared, and tasks where no two samples match. */
-const COMPARABLE = [
-  'a math word problem whose answer is a number',
-  'a multiple-choice question answered with a letter, A to D',
-  'a yes-or-no question about a short passage',
-  'a puzzle whose answer is a date',
-];
-const OPEN = [
-  'writing a short story about a lighthouse',
-  'summarizing a news article in one paragraph',
-  'writing a cover letter for a job',
-  'explaining in a paragraph why the sky is blue',
-];
+import { num, pick } from '../../kit';
+import { choice, clean, power, traps } from '../kit';
 
 export const generators: Generator[] = [
-  {
-    id: 'vote',
-    make(rng, d) {
-      const [q, right, wrongs] = pick(rng, QUESTIONS);
-      const n = d < 0.35 ? 5 : d < 0.7 ? 7 : 9;
-      // The winner is usually right; at higher difficulty a wrong answer sometimes wins.
-      const win = d < 0.5 || rng.next() < 0.7 ? right : pick(rng, wrongs);
-      const others = rng.shuffle([right, ...wrongs].filter((v) => v !== win));
-      const top = n === 5 ? int(rng, 2, 3) : n === 7 ? int(rng, 3, 4) : int(rng, 3, 5);
-      const second = Math.min(top - 1, n - top);
-      const rest = n - top - second;
-      const counts: [number, number][] = [[win, top], [others[0]!, second]];
-      for (let i = 0; i < rest; i++) counts.push([others[1 + i]!, 1]);
-      const answers = rng.shuffle(repeat(counts));
-      // A first sample that is not the winner, so taking the first is a visible mistake.
-      const fi = answers.findIndex((a) => a !== win);
-      if (fi > 0) [answers[0], answers[fi]] = [answers[fi]!, answers[0]!];
-      const mean = clean(answers.reduce((a, b) => a + b, 0) / n);
-      const tally = counts.map(([v, c]) => `${num(v)} $(\\times ${c})$`).join(', ');
-      return {
-        prompt: `A model is asked: ${q}\n\nIt samples ${n} chains of thought, and their final answers are $${answers.join(',\\ ')}$. What answer does self-consistency return?`,
-        answer: { kind: 'number', value: win },
-        traps: traps(win, [
-          { value: answers[0]!, why: 'That is the first sample\'s answer: one path. Self-consistency counts the final answers of all the paths and takes the most common.' },
-          { value: counts[1]![0], why: `That answer has ${second} vote${second === 1 ? '' : 's'}; the winner has ${top}.` },
-          { value: mean, why: 'That averages the answers. The vote takes the most common one; an average can be a number no path reached.' },
-        ]),
-        solution: [
-          `Count each final answer: ${tally}.`,
-          `The most common is $${num(win)}$, with ${top} of the ${n} votes: that is the answer returned${win === right ? '' : ', even though here it is wrong: the vote picks what most paths agree on'}.`,
-        ],
-      };
-    },
-  },
   {
     id: 'two-of-three',
     make(rng, d) {
@@ -95,55 +36,63 @@ export const generators: Generator[] = [
     },
   },
   {
-    id: 'comparable',
-    make(rng) {
-      const ok = rng.next() < 0.5;
-      const task = ok ? pick(rng, COMPARABLE) : pick(rng, OPEN);
-      const n = pick(rng, [5, 8, 10, 20]);
+    id: 'pattern',
+    make(rng, d) {
+      const n = d < 0.35 ? 2 : 3;
+      const p = pick(rng, n === 2 ? [0.5, 0.6, 0.7, 0.8, 0.9] : [0.6, 0.7, 0.8, 0.9]);
+      const q = clean(1 - p);
+      const ways = n === 2 ? [[1, 1], [0, 0], [1, 0], [0, 1]] : [[1, 1, 1], [1, 1, 0], [1, 0, 1], [0, 1, 1], [1, 0, 0], [0, 0, 1]];
+      const pat = pick(rng, ways);
+      const names = ['first', 'second', 'third'];
+      const said = pat.map((ok, i) => `the ${names[i]} is ${ok ? 'right' : 'wrong'}`);
+      const same = pat.every((ok) => ok === pat[0]);
+      const ask = same ? `${n === 2 ? 'both' : 'all three'} are ${pat[0] ? 'right' : 'wrong'}` : n === 2 ? `${said[0]} and ${said[1]}` : `${said[0]}, ${said[1]} and ${said[2]}`;
+      const fs = pat.map((ok) => (ok ? p : q));
+      const v = clean(fs.reduce((a, b) => a * b, 1));
+      const k = pat.filter((ok) => ok).length;
+      // Orders with the same count of right samples: the trap for counting every order.
+      const orders = n === 2 ? (k === 1 ? 2 : 1) : k === 1 || k === 2 ? 3 : 1;
       return {
-        prompt: `A model samples ${n} replies, each with a chain of thought, for ${task}. Can self-consistency's vote pick a better reply than one sample?`,
-        answer: choice([
-          { text: 'Yes: the final answers can be compared, and the most common one wins', why: ok ? null : 'Two replies like these almost never match word for word, so no answer gets more than one vote.' },
-          { text: 'No: no two replies will match, so there is nothing to count', why: ok ? 'Final answers like these come from a short list, so different paths often reach the very same one, and that can be counted.' : null },
-          { text: 'Yes: the longest reply wins, since it shows the most reasoning', why: 'The vote counts matching final answers. Length is not a vote, and a long chain can still end wrong.' },
-          { text: 'No: voting only works when all the paths agree word for word', why: 'Only the final answers need to match. The paths that lead there can differ completely.' },
+        prompt: `Each sampled answer is right with probability $p = ${num(p)}$, independently of the others. ${n === 2 ? 'Two' : 'Three'} answers are sampled. What is the chance that ${ask}?`,
+        answer: { kind: 'number', value: v },
+        traps: traps(v, [
+          { value: clean(fs.reduce((a, b) => a + b, 0)), why: 'That adds the chances. For independent samples, multiply them: one factor per sample.' },
+          { value: clean(p ** n), why: `That gives every sample the chance $p$. A wrong sample's chance is $1 - p = ${num(q)}$.` },
+          ...(orders > 1 ? [{ value: clean(orders * v), why: `That counts every order. The question fixes which sample is wrong, so there is just one way.` }] : []),
         ]),
-        solution: ok
-          ? [
-              'Self-consistency counts final answers, so it needs answers that can be compared for equality.',
-              'Here the answer is short and checkable for a match: different paths often land on the same one, and the most common wins.',
-            ]
-          : [
-              'Self-consistency counts final answers, so it needs answers that can be compared for equality.',
-              'Free-form text almost never repeats exactly: every reply gets one vote, and there is no majority to find.',
-            ],
+        solution: [
+          ...(k < n ? [`A wrong sample has chance $1 - p = 1 - ${num(p)} = ${num(q)}$.`] : []),
+          `The samples are independent, so multiply, one factor per sample: $${fs.map((f) => num(f)).join(' \\times ')}$.`,
+          n === 2 ? `That is $${num(v)}$.` : `$${num(fs[0]!)} \\times ${num(fs[1]!)} = ${num(clean(fs[0]! * fs[1]!))}$, then $${num(clean(fs[0]! * fs[1]!))} \\times ${num(fs[2]!)} = ${num(v)}$.`,
+        ],
       };
     },
   },
   {
-    id: 'greedy',
+    id: 'helps',
     make(rng) {
-      const greedy = rng.next() < 0.5;
-      const n = pick(rng, [3, 5, 7, 9, 15]);
-      const T = greedy ? 0 : pick(rng, [0.5, 0.7, 0.8, 1]);
-      const tTex = greedy ? 'temperature $\\symT \\to 0$' : `temperature $\\symT = ${num(T)}$`;
+      const p = pick(rng, [0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9]);
+      const task = pick(rng, ['a math word problem', 'a multiple-choice question', 'a yes-or-no question', 'a date puzzle']);
+      const p2 = power(p, 2).v;
+      const p3 = power(p, 3).v;
+      const q = clean(1 - p);
+      const v = clean(p3 + 3 * p2 * q);
+      const up = v > p;
       return {
-        prompt: `Self-consistency samples ${n} chains of thought for one question at ${tTex}, then votes on the final answers. What does the vote give?`,
+        prompt: `A model's sampled answer to ${task} is right with probability $p = ${num(p)}$, independently each time. Which is more likely to be right: one sample, or the majority vote of 3 samples?`,
         answer: choice([
-          { text: `Just the greedy answer: all ${n} paths are the same path`, why: greedy ? null : `At $\\symT = ${num(T)}$ sampling picks different tokens on different runs, so the paths differ.` },
-          { text: 'The most common answer among paths that differ', why: greedy ? 'As $\\symT \\to 0$ every run takes the top token at every step, so every path is identical and the vote adds nothing.' : null },
-          { text: 'An even split: every answer gets the same number of votes', why: 'Different paths often reach the same final answer, so the counts are rarely all equal.' },
-          { text: 'Always the right answer, whatever the model', why: 'A vote returns the most common answer. If most paths go wrong the same way, it is wrong too.' },
+          { text: 'The majority vote of 3 samples', why: up ? null : `Below one half, each sample is usually wrong, so the majority is wrong even more often: the vote is right only $${num(v)}$ of the time.` },
+          { text: 'One sample', why: up ? `Above one half, the majority is right even more often than one sample: $${num(v)}$ against $${num(p)}$.` : null },
+          { text: 'Both are equally likely to be right', why: `They differ: the vote is right $${num(v)}$ of the time, one sample $${num(p)}$.` },
         ]),
-        solution: greedy
-          ? [
-              'As $\\symT \\to 0$ sampling becomes greedy: every step takes the most likely token.',
-              `So all ${n} runs write the same chain of thought and reach the same answer. The vote is that one greedy answer: sampling at a temperature above 0 is what gives the vote different paths to count.`,
-            ]
-          : [
-              `At $\\symT = ${num(T)}$ each run samples its tokens, so the ${n} chains of thought take different routes.`,
-              'Many routes still reach the same final answer. The vote counts them and returns the most common.',
-            ],
+        solution: [
+          `All three right: $p^3 = ${num(p3)}$.`,
+          `Exactly two right, in any of 3 orders: $3 \\times ${num(p2)} \\times ${num(q)} = ${num(clean(3 * p2 * q))}$.`,
+          `The vote is right with chance $${num(p3)} + ${num(clean(3 * p2 * q))} = ${num(v)}$.`,
+          up
+            ? `That beats one sample's $${num(p)}$: when a sample is usually right, the majority is right even more often.`
+            : `That is below one sample's $${num(p)}$: when a sample is usually wrong, the majority is wrong even more often.`,
+        ],
       };
     },
   },

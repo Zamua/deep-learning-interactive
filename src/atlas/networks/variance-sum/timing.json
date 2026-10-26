@@ -1,0 +1,23 @@
+{
+ "duration": 157.546,
+ "scenes": {
+  "spread": [0.0, 31.882],
+  "adds": [31.882, 121.312],
+  "try": [121.312, 157.546]
+ },
+ "beats": {
+  "spread/spread": [0.7, 9.985, "How spread out is a random value? Take one that is minus two or two, equally often. Its mean, the average, is zero.", [[2.9, 3.59], [5.94, 6.17], [6.97, 7.48], [8.14, 8.4], [9.02, 9.28]]],
+  "spread/var": [10.365, 19.624, "The variance is the average squared distance from the mean. Each value sits two away, and two squared is four, so the variance is four.", [[13.675, 14.255], [15.945, 16.245], [17.765, 18.115]]],
+  "spread/std": [20.004, 30.782, "Its square root, the square root of four, is two: the standard deviation, S T D for short. Square a standard deviation to get the variance back.", [[21.054, 21.364], [22.584, 22.734], [23.344, 23.864], [25.194, 25.544], [26.944, 27.554]]],
+  "adds/pair": [32.582, 49.085, "Now add two independent values, each minus one or one, with variance one. Independent: one tells nothing about the other, so all four pairs are equally likely. Their sums are minus two, zero, zero and two.", [[34.862, 35.192], [36.982, 37.262], [38.242, 38.912], [39.602, 40.092], [41.932, 42.222], [44.552, 45.082], [46.652, 46.952], [47.492, 47.752], [48.262, 48.462]]],
+  "adds/adds": [49.465, 60.34, "Squared, those are four, zero, zero and four, which average to two: one plus one. When independent values add, their variances add.", [[50.115, 50.595], [51.485, 51.675], [53.485, 53.765], [54.945, 55.385], [56.405, 56.965], [58.705, 58.985]]],
+  "adds/prod": [60.72, 78.412, "Multiply instead: a weight of minus two or two, times an independent input of minus one or one. Every product is minus two or two: variance four, which is four times one. With mean zero, variances multiply.", [[62.06, 62.58], [64.8, 65.1], [67.76, 67.93], [68.48, 69.28], [71.74, 72.22], [73.24, 73.51], [74.95, 75.62], [76.66, 76.92]]],
+  "adds/sum": [78.792, 93.15, "A unit adds up n such terms, inputs times weights. If each has variance v, the sum z has variance n times v, written var of z equals n v, Var for variance.", [[81.082, 81.412], [82.912, 83.502], [85.162, 85.462], [88.192, 88.602], [88.972, 89.202], [91.252, 91.762]]],
+  "adds/big": [93.53, 106.88, "Give a hundred inputs, and their weights, a variance of one. Each term has variance one times one, so the sum has variance a hundred, and a standard deviation of the square root of a hundred: ten.", [[95.8, 96.01], [97.13, 97.79], [100.25, 100.71], [102.76, 103.11], [106.04, 106.44]]],
+  "adds/root": [107.26, 120.212, "Four times as many terms make the variance four times as big, but the standard deviation only twice as big: twenty-five such terms give a standard deviation of five, and a hundred give ten.", [[111.05, 111.49], [114.16, 114.78], [118.34, 118.7]]],
+  "try/p1": [122.012, 136.065, "Try one. A unit computes z, w dot x, over four hundred inputs, each of variance one. Each weight has a standard deviation of zero point one. What is the standard deviation of z?", [[122.632, 123.212], [124.822, 124.982], [126.092, 126.272], [127.802, 128.082], [129.462, 129.972], [133.232, 133.842]]],
+  "try/a1": [136.445, 148.081, "Square the weight's standard deviation to get its variance: zero point zero one. Times the input's variance, one, each term has variance zero point zero one.", [[139.685, 140.125], [141.585, 142.175], [143.855, 144.235], [144.605, 145.055]]],
+  "try/b1": [148.461, 155.325, "Four hundred terms add up to a variance of four. Its square root is the standard deviation: two.", [[151.451, 151.991], [154.491, 154.941]]],
+  "try/turn": [155.705, 156.446, "Your turn.", []]
+ }
+}

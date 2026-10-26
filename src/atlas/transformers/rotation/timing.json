@@ -1,0 +1,22 @@
+{
+ "duration": 148.783,
+ "scenes": {
+  "turn": [0.0, 50.996],
+  "rule": [50.996, 101.291],
+  "try": [101.291, 148.783]
+ },
+ "beats": {
+  "turn/pair": [0.7, 7.687, "Take two entries of a query, a pair: two, one. Draw it as an arrow from the origin.", [[2.54, 2.93], [3.44, 3.92], [4.29, 4.57], [4.95, 5.51]]],
+  "turn/turn": [8.067, 17.127, "Rotating turns the arrow about the origin, keeping its length: a quarter turn, ninety degrees, carries it to minus one, two.", [[10.767, 11.107], [12.047, 12.597], [13.457, 13.707], [14.557, 14.897], [16.407, 16.747]]],
+  "turn/unit": [17.507, 33.149, "To turn any pair, start from an arrow of length one, pointing right, and turn it by the angle. Its tip lands at two numbers: across, the angle's cosine, written cos, and up, its sine, written sine.", [[18.717, 19.027], [21.007, 21.287], [22.017, 22.337], [23.747, 24.317], [26.217, 26.727], [27.347, 27.627], [28.827, 29.067], [29.887, 30.287], [30.817, 31.127], [31.857, 32.157]]],
+  "turn/cossin": [33.529, 49.896, "At ninety degrees the arrow points straight up: cos is zero and sin is one. At sixty degrees it lands one half across and about zero point eight seven up. Like e to a power, they are looked up, not worked out by hand.", [[34.609, 34.759], [36.279, 36.799], [37.929, 38.129], [39.329, 39.889], [40.979, 41.159], [42.779, 43.019], [45.119, 45.739], [47.009, 47.279], [48.149, 48.419]]],
+  "rule/basis": [51.696, 71.363, "So one, zero turns to cos, sin. And zero, one is one, zero already turned a quarter, so it lands a quarter turn past cos, sin. A quarter turn swaps the entries and flips the first sign, as two, one became minus one, two: minus sin, cos.", [[52.566, 52.956], [54.456, 54.606], [55.066, 55.566], [56.696, 56.906], [57.536, 57.786], [59.656, 59.916], [62.566, 63.136], [66.476, 66.776], [67.656, 67.846], [69.276, 69.736]]],
+  "rule/rule": [71.743, 90.522, "Any pair a, b is a times one, zero, plus b times zero, one. Turning moves both pieces, so it lands at a times cos, sin, plus b times minus sin, cos: a cos minus b sin, and a sin plus b cos.", [[73.143, 73.313], [73.953, 74.113], [74.823, 74.993], [75.493, 75.833], [76.503, 76.653], [77.883, 78.513], [80.063, 80.313], [83.053, 83.303], [85.583, 86.103], [88.013, 88.353]]],
+  "rule/check": [90.902, 100.191, "For ninety degrees: two times zero minus one times one is minus one, and two times one plus one times zero is two.", [[92.142, 92.732], [95.352, 95.502], [96.392, 96.772], [99.422, 99.612]]],
+  "try/p": [101.991, 116.588, "Try one. One pair of a key is one, one. What is it after a sixty degree rotation? Use cos sixty degrees is one half, and sin sixty degrees about zero point eight seven.", [[102.601, 103.231], [105.111, 105.691], [106.071, 106.891], [109.381, 109.961], [112.671, 113.001], [114.571, 114.831]]],
+  "try/first": [116.968, 127.907, "The first entry is a cos minus b sin: one times one half, minus one times zero point eight seven. About minus zero point three seven.", [[118.238, 118.468], [120.358, 120.888], [122.238, 122.488], [124.998, 125.548]]],
+  "try/second": [128.287, 137.521, "The second is a sin plus b cos: one times zero point eight seven, plus one times one half. About one point three seven.", [[130.897, 131.397], [133.407, 133.657], [135.377, 135.877]]],
+  "try/done": [137.901, 146.563, "So the pair turns to minus zero point three seven, one point three seven: the same length, pointing a sixth of a turn further round.", [[141.131, 141.321], [142.511, 143.031], [143.861, 144.131]]],
+  "try/turn": [146.943, 147.683, "Your turn.", []]
+ }
+}

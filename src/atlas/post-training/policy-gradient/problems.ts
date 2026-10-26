@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
 import { num, pick, vec } from '../../kit';
-import { choose, clean, paren, PI, R, TH, traps, vtraps } from '../kit';
+import { choose, clean, PI, R, TH, vtraps } from '../kit';
 
 /** A question and three answers a model might sample for it. */
 const QUESTIONS: [string, string[]][] = [
@@ -76,42 +76,6 @@ export const generators: Generator[] = [
           `Add the two estimates entry by entry: $${vec(g.map((x, i) => clean(Rv * x + R2 * g2[i]!)))}$.`,
           `Halve each entry to average them: $${vec(v)}$.`,
         ],
-      };
-    },
-  },
-  {
-    id: 'log-grad',
-    make(rng, d) {
-      const pv = pick(rng, d < 0.35 ? [0.1, 0.2, 0.5] : [0.1, 0.2, 0.25, 0.4, 0.5, 0.8]);
-      const g = d < 0.35 ? pick(rng, [0.5, 0.8, 0.9, 0.6]) : pick(rng, [0.5, 0.8, -0.2, -0.4, 0.6, -0.1, 0.75]);
-      const dp = clean(pv * g);
-      const back = d >= 0.6 && rng.int(2) === 0;
-      const DP = `\\dfrac{\\partial ${PI}(y)}{\\partial ${TH}_0}`;
-      const DL = `\\dfrac{\\partial \\ln ${PI}(y)}{\\partial ${TH}_0}`;
-      if (!back) {
-        return {
-          prompt: `For one parameter $${TH}_0$, a sampled answer $y$ has $${PI}(y) = ${num(pv)}$ and $${DP} = ${num(dp)}$. What is $${DL}$?`,
-          answer: { kind: 'number', value: g },
-          traps: traps(g, [
-            { value: dp, why: `That is the slope of $${PI}(y)$ itself. The slope of its log divides by $${PI}(y)$.` },
-            { value: clean(dp * pv), why: `That multiplies by $${PI}(y)$. The chain rule divides: the slope of $\\ln u$ is $1/u$.` },
-            { value: clean(pv / dp), why: 'That divides the other way round. It is the slope over the probability.' },
-          ]),
-          solution: [
-            `The slope of $\\ln u$ is $1/u$, so by the chain rule $${DL} = \\dfrac{1}{${PI}(y)}\\,${DP}$.`,
-            `$${num(dp)} / ${num(pv)} = ${num(g)}$.`,
-            `This is the log trick: $\\nabla ${PI} = ${PI}\\,\\nabla \\ln ${PI}$.`,
-          ],
-        };
-      }
-      return {
-        prompt: `For one parameter $${TH}_0$, a sampled answer $y$ has $${PI}(y) = ${num(pv)}$ and $${DL} = ${num(g)}$. What is $${DP}$?`,
-        answer: { kind: 'number', value: dp },
-        traps: traps(dp, [
-          { value: g, why: `That is the slope of the log. The slope of $${PI}(y)$ is $${PI}(y)$ times it.` },
-          { value: clean(g / pv), why: `That divides by $${PI}(y)$. Undoing the log trick multiplies: $\\nabla ${PI} = ${PI}\\,\\nabla \\ln ${PI}$.` },
-        ]),
-        solution: [`The log trick: $\\nabla ${PI} = ${PI}\\,\\nabla \\ln ${PI}$, since the slope of $\\ln u$ is $1/u$.`, `$${num(pv)} \\times ${paren(g)} = ${num(dp)}$.`],
       };
     },
   },

@@ -1,0 +1,22 @@
+{
+ "duration": 108.662,
+ "scenes": {
+  "power": [0.0, 62.017],
+  "sums": [62.017, 108.662]
+ },
+ "beats": {
+  "power/measured": [0.7, 13.614, "Measure the slope of x squared with a tiny step, at a few points: minus three at minus one point five, zero at zero, two at one, and three at one point five.", [[3.75, 4.03], [5.03, 5.6], [8.16, 8.6], [9.86, 10.3], [11.34, 11.7]]],
+  "power/twox": [13.994, 22.476, "Every one of them is two times x. So the derivative of x squared is two x, at every point, with no limit to take.", [[16.354, 16.814], [19.674, 19.954], [20.904, 21.144]]],
+  "power/sq": [22.856, 34.826, "Write it as x squared becomes two x. The arrow stands for \u201cbecomes\u201d, from a function to its derivative. The two came down in front, and the power dropped by one.", [[23.706, 23.866], [25.916, 26.536], [28.586, 28.956], [30.816, 31.376], [32.866, 33.116]]],
+  "power/cube": [35.206, 43.443, "Do the same to x cubed: bring the three down, and drop the power to two. x cubed becomes three x squared.", [[36.876, 37.526], [38.556, 38.766], [40.176, 40.896]]],
+  "power/check": [43.823, 51.93, "Check it at x equals two. The measured slope of x cubed is twelve, and three times two squared is twelve.", [[45.733, 46.323], [48.943, 49.363]]],
+  "power/rule": [52.31, 60.917, "In general, for any power n, x to the n becomes n times x to the n minus one. That is the power rule.", [[53.05, 53.31], [54.6, 55.02], [58.98, 59.48]]],
+  "sums/factor": [62.717, 71.262, "A number in front comes along for the ride. Five x cubed becomes five times three x squared: fifteen x squared.", [[65.017, 65.577], [69.337, 69.807]]],
+  "sums/sum": [71.642, 78.01, "A sum is differentiated one term at a time. Two x is a line with slope two.", [[74.772, 75.392]]],
+  "sums/zero": [78.39, 84.362, "A constant on its own is flat, so its derivative is zero. The seven drops out.", [[80.43, 80.78], [82.6, 83.09]]],
+  "sums/whole": [84.742, 91.539, "So five x cubed plus two x plus seven has derivative fifteen x squared plus two.", [[88.052, 88.302], [89.152, 89.392]]],
+  "sums/ask": [91.919, 97.204, "Now the slope at one point. For that f, what is f prime of two?", [[93.629, 94.219], [95.069, 95.459]]],
+  "sums/put": [97.584, 106.442, "Put two into the derivative. Two squared is four, fifteen times four is sixty, and sixty plus two is sixty-two.", [[99.314, 99.944], [101.204, 101.674], [103.564, 103.914], [105.344, 105.494]]],
+  "sums/turn": [106.822, 107.562, "Your turn.", []]
+ }
+}

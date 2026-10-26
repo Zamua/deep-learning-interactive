@@ -1,9 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
 import { after } from '../../backprop/draw';
-import { cells, columns, rowLabel } from '../../draw';
+import { columns } from '../../draw';
 import { ball } from '../../optimization/draw';
-import { axes, brace, clipped, curve, fmt, frame, type Frame, type Ink } from '../draw';
+import { axes, clipped, curve, frame, type Frame, type Ink } from '../draw';
 
 const Y = (s: Scene, v: number) => (v / 100) * s.h;
 /** A number with at most two places and a typographic minus: `1.5`, `−0.8`, `0.85`. */
@@ -12,83 +12,7 @@ const clip = (r: number, e: number) => Math.min(1 + e, Math.max(1 - e, r));
 /** One token's term in the clipped objective. */
 const term = (r: number, a: number, e: number) => Math.min(r * a, clip(r, e) * a);
 
-// ---- scene 1: the ratio, from probabilities and from log-probabilities
-
-const TOK = ['sure', 'thing', '!'];
-const OLD = [0.2, 0.5, 0.4];
-const NEW = [0.3, 0.45, 0.5];
-const RHO = NEW.map((p, i) => p / OLD[i]!);
-const ADV = [1, -1, 1];
-// One whole answer's log-probabilities, when it was sampled and after a few updates.
-const LP_OLD = -12.4;
-const LP_NEW = -12.7;
-
-/** Each token's old and new probability as paired bars, then its ratio, advantage and product. */
-function tokens(s: Scene, xs: number[]): void {
-  const base = s.h * 0.5;
-  const H = 40;
-  const lx = xs[0]! - 13 * s.u;
-  s.line(xs[0]! - 11 * s.u, base, xs[2]! + 11 * s.u, base, s.c('--axis'), 0.35);
-  const nw = s.ease('old', 0.8, 0.8);
-  xs.forEach((x, i) => {
-    const bar = (dx: number, v: number, k: 'teal' | 'slate', a: number) =>
-      s.alpha(a, () => {
-        const hh = v * H * s.u;
-        s.rrect(x + dx - 3.6 * s.u, base - hh, 7.2 * s.u, hh, 0.8, { fill: s.tint(k, 0.45), stroke: s.tint(k, 0.9), lw: 0.25 });
-        s.text(v.toFixed(2), x + dx, base - hh - 2.8 * s.u, { size: 2.8, font: 'mono', weight: 600, color: s.c(k), halo: true });
-      });
-    bar(-4.4 * s.u * nw, OLD[i]!, 'slate', 1);
-    bar(4.4 * s.u, NEW[i]!, 'teal', nw);
-  });
-  rowLabel(s, 'π_old', lx, base - 14 * s.u, 'slate', 3);
-  s.alpha(nw, () => rowLabel(s, 'π', lx, base - 7 * s.u, 'teal', 3.6));
-  s.alpha(s.ease('rho', 0.6, 0.6), () => {
-    rowLabel(s, 'ρ', lx, base + 8 * s.u, 'purple', 3.6);
-    cells(s, xs, base + 8 * s.u, RHO.map((v) => fmt(v)), 'purple', { w: 12, h: 7, on: [s.win('eg', 'logs'), 0, 0] });
-  });
-  s.alpha(s.win('eg', 'logs'), () => s.text('0.3 / 0.2 = 1.5', s.w / 2, s.h * 0.88, { size: 3.4, font: 'mono', weight: 600, color: s.c('purple') }));
-  s.alpha(s.ease('obj', 0.6), () => {
-    rowLabel(s, 'A', lx, base + 17 * s.u, 'green', 3.6);
-    cells(s, xs, base + 17 * s.u, ADV.map((v) => (v > 0 ? '+1' : '−1')), 'green', { w: 12, h: 7 });
-    rowLabel(s, 'ρA', lx, base + 26 * s.u, '--ink-2', 3.4);
-    cells(s, xs, base + 26 * s.u, RHO.map((v, i) => fmt(v * ADV[i]!)), 'slate', { w: 12, h: 7, on: [1, 1, 1] });
-  });
-}
-
-/** The tokens as one answer, with its log-probability before and after the updates. */
-function answer(s: Scene, xs: number[]): void {
-  brace(s, 'bottom', xs[0]! - 7 * s.u, xs[2]! + 7 * s.u, s.h * 0.1 + 6 * s.u, 'one whole answer', '--ink-3', 3);
-  const y = Y(s, 36);
-  const hot = s.win('lognum', 'obj') * (1 - after(s, 'lognum', 0.5));
-  const box = (x: number, name: string, v: number, k: Ink, a: number) =>
-    s.alpha(a, () => {
-      s.text(name, x, y - 7.6 * s.u, { size: 3.2, font: 'mono', weight: 650, color: s.c(k) });
-      s.cell(x - 9 * s.u, y - 4 * s.u, 18 * s.u, 8 * s.u, nf(v), k, { on: hot, size: 3.6 });
-    });
-  box(s.w / 2 - 14 * s.u, 'ln π_old', LP_OLD, 'slate', after(s, 'logs', 0.42));
-  box(s.w / 2 + 14 * s.u, 'ln π', LP_NEW, 'teal', after(s, 'logs', 0.72));
-}
-
-const ratio: SceneDef = {
-  marks: {
-    lq: { tex: String.raw`\ln \sym{rho}{\rho} = \ln \sym{pi}{\pi} - \ln \sym{piold}{\pi_{\text{old}}}`, x: 0.5, y: 0.54, size: 4.8 },
-    ln1: { tex: String.raw`\ln \sym{rho}{\rho} = -12.7 - (-12.4) = -0.3`, x: 0.5, y: 0.66, size: 4.8 },
-    ln2: { tex: String.raw`\sym{rho}{\rho} = e^{-0.3} \approx 0.74`, x: 0.5, y: 0.8, size: 5.2 },
-  },
-  draw(s) {
-    const xs = columns(s, 3, 26);
-    TOK.forEach((t, i) => s.cell(xs[i]! - 7 * s.u, s.h * 0.1 - 4 * s.u, 14 * s.u, 8 * s.u, t, 'purple', { on: i === 0 ? s.win('eg', 'logs') : 0, size: 3.4 }));
-    const logs = s.win('logs', 'obj');
-    s.alpha(1 - logs, () => tokens(s, xs));
-    s.alpha(logs, () => answer(s, xs));
-    const out = 1 - s.ease('obj', 0.5);
-    s.show('lq', after(s, 'lognum', 0.02) * out);
-    s.show('ln1', after(s, 'lognum', 0.3) * out);
-    s.show('ln2', after(s, 'lognum', 0.66) * out);
-  },
-};
-
-// ---- scene 2: the clip, one token at a time, with ε = 0.2
+// ---- scene 1: the clip, one token at a time, with ε = 0.2
 
 const EPS = 0.2;
 const R0 = 0.4;
@@ -211,12 +135,12 @@ const clipScene: SceneDef = {
   },
 };
 
-// ---- scene 3: the rule, and its shape
+// ---- scene 2: the rule, and its shape
 
 const objective = (a: number) => (r: number) => term(r, a, EPS);
 
-/** One objective-versus-ratio panel; `hot` lights its flat part, `wrong` its still-sloped tail, `dots` the worked tokens. */
-function panel(s: Scene, F: Frame, a: number, o: { show: number; line: number; hot: number; wrong: number; dots: [number, number][] }): void {
+/** One objective-versus-ratio panel; `hot` lights its flat part, `dots` the worked tokens. */
+function panel(s: Scene, F: Frame, a: number, o: { show: number; line: number; hot: number; dots: [number, number][] }): void {
   s.alpha(o.show, () => {
     axes(s, F, 'ρ', '', { x: 'purple', y: 'green' });
     // Named in the corner its lines stay clear of.
@@ -229,8 +153,6 @@ function panel(s: Scene, F: Frame, a: number, o: { show: number; line: number; h
   // Where the minimum is flat: past 1 + ε for A > 0, below 1 - ε for A < 0.
   const [f0, f1] = a > 0 ? [1 + EPS, R1] : [R0, 1 - EPS];
   s.alpha(o.hot, () => clipped(s, F, () => s.line(F.X(f0), F.Y(objective(a)(f0)), F.X(f1), F.Y(objective(a)(f1)), s.c('gold'), 1.4)));
-  const [w0, w1] = a > 0 ? [R0, 1 - EPS] : [1 + EPS, R1];
-  s.alpha(o.wrong, () => clipped(s, F, () => s.line(F.X(w0), F.Y(objective(a)(w0)), F.X(w1), F.Y(objective(a)(w1)), s.c('orange'), 1.4)));
   for (const [r, al] of o.dots) {
     s.alpha(al, () => {
       const x = F.X(r);
@@ -260,19 +182,17 @@ const rule: SceneDef = {
     const top = frame(l, Y(s, 17), r, Y(s, 45), [R0, R1], [0.3, 1.9]);
     const bot = frame(l, Y(s, 56), r, Y(s, 84), [R0, R1], [-1.9, -0.3]);
     const show = s.ease('plot', 0.6, 0.4);
-    const wrong = s.ease('wrong', 0.6, 0.6);
-    panel(s, top, 1, { show, line: s.ease('plot', 1.4, 0.8), hot: after(s, 'plot', 0.3), wrong, dots: [[1.1, after(s, 'plot', 0.32)], [1.5, after(s, 'plot', 0.4)]] });
-    panel(s, bot, -1, { show, line: after(s, 'plot', 0.5, 1.4), hot: after(s, 'plot', 0.74), wrong, dots: [[0.6, after(s, 'plot', 0.8)], [1.3, after(s, 'wrong', 0.6)]] });
+    panel(s, top, 1, { show, line: s.ease('plot', 1.4, 0.8), hot: after(s, 'plot', 0.3), dots: [[1.1, after(s, 'plot', 0.32)], [1.5, after(s, 'plot', 0.4)]] });
+    panel(s, bot, -1, { show, line: after(s, 'plot', 0.5, 1.4), hot: after(s, 'plot', 0.74), dots: [[0.6, after(s, 'plot', 0.8)]] });
     const cap = (a: number, t: string, k: Ink) => s.alpha(a, () => s.text(t, s.w / 2, Y(s, 94), { size: 3.2, color: s.c(k) }));
     cap(after(s, 'plot', 0.3) * (1 - after(s, 'plot', 0.55)), 'A > 0: flat past 1.2, no push', 'gold');
-    cap(after(s, 'plot', 0.74) * (1 - s.ease('wrong', 0.5)), 'A < 0: flat below 0.8, no push', 'gold');
-    cap(s.win('wrong', 'why'), 'moved the wrong way: still pulled back', 'orange');
+    cap(after(s, 'plot', 0.74) * (1 - s.ease('why', 0.5)), 'A < 0: flat below 0.8, no push', 'gold');
     cap(s.ease('why', 0.6) * (1 - after(s, 'why', 0.62)), 'one batch, several updates, none far from π_old', '--ink-2');
     cap(after(s, 'why', 0.66), 'the KL penalty: the whole run near the reference', '--ink-2');
   },
 };
 
-// ---- scene 4: two worked problems, as the practice asks them
+// ---- scene 3: two worked problems, as the practice asks them
 
 /** The objective for A = -2 with ε = 0.3, the second problem's token. */
 const obj2 = (r: number) => term(r, -2, 0.3);
@@ -336,4 +256,4 @@ const tryIt: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { ratio, clip: clipScene, rule, try: tryIt };
+export const scenes: Record<string, SceneDef> = { clip: clipScene, rule, try: tryIt };

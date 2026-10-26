@@ -2,53 +2,40 @@ import type { Generator } from '../../../mastery/domain/types';
 import { int, num, pick, round } from '../../kit';
 import { clean, minus, nonzero, paren, tenth, traps, whys } from '../kit';
 
-const M_RULE = 'm \\leftarrow \\beta_1 m + (1 - \\beta_1)\\,\\symg';
-const V_RULE = 'v \\leftarrow \\beta_2 v + (1 - \\beta_2)\\,\\symg^2';
 const STEP = '\\symw \\leftarrow \\symw - \\symeta\\,\\hat m / (\\sqrt{\\hat v} + \\epsilon)';
 
 export const generators: Generator[] = [
   {
-    id: 'moments',
+    id: 'step',
     make(rng, d) {
-      const askM = rng.next() < 0.6;
-      const b1 = d < 0.7 ? 0.9 : pick(rng, [0.8, 0.9]);
-      const b2 = d < 0.7 ? 0.999 : pick(rng, [0.99, 0.999]);
-      const g = d < 0.35 ? int(rng, 1, 5) : d < 0.7 ? nonzero(rng, -5, 5) : tenth(rng, -3, 3);
-      const fresh = d < 0.35;
-      const m0 = fresh ? 0 : d < 0.7 ? pick(rng, [0.5, 1, -0.5, 2, 0.2]) : tenth(rng, -2, 2);
-      const v0 = fresh ? 0 : pick(rng, [0.01, 0.04, 0.1, 0.5, 1]);
-      const m = clean(b1 * m0 + (1 - b1) * g);
-      const v = clean(b2 * v0 + (1 - b2) * g * g);
-      const ans = askM ? m : v;
-      const beta = askM ? `\\beta_1 = ${num(b1)}` : `\\beta_2 = ${num(b2)}`;
+      const pairs: [number, number][] = [[0.04, 0.2], [0.25, 0.5], [1, 1], [4, 2], [9, 3], [16, 4], [0.01, 0.1], [0.0004, 0.02]];
+      const [vh, root] = pick(rng, pairs);
+      const k = d < 0.35 ? pick(rng, [1, 2, 0.5]) : pick(rng, [1, 2, 0.5, -1, -0.5, 1.5, -2]);
+      const mh = clean(k * root);
+      const eta = pick(rng, [0.001, 0.01, 0.1]);
+      const step = clean((eta * mh) / root);
+      const askW = d >= 0.35;
+      const w = askW ? (d < 0.7 ? int(rng, -2, 3) : tenth(rng, -2, 2)) : 0;
+      const ans = askW ? clean(w - step) : step;
+      const base = askW ? w : 0;
+      const sign = askW ? -1 : 1;
       return {
-        prompt: `${fresh ? `Adam starts from $m = v = 0$ with $${beta}$. The first gradient` : `In Adam, ${askM ? `$m = ${num(m0)}$` : `$v = ${num(v0)}$`} and $${beta}$. The new gradient`} is $\\symg = ${num(g)}$. What is ${askM ? '$m$' : '$v$'} after the update?`,
+        prompt: askW
+          ? `In Adam, a weight at $\\symw = ${num(w)}$ has $\\hat m = ${num(mh)}$ and $\\hat v = ${num(vh)}$, with $\\symeta = ${num(eta)}$. Ignoring $\\epsilon$, where is $\\symw$ after the step?`
+          : `In Adam, a parameter has $\\hat m = ${num(mh)}$ and $\\hat v = ${num(vh)}$, with $\\symeta = ${num(eta)}$. Ignoring $\\epsilon$, how far does it move in one step?`,
         answer: { kind: 'number', value: ans },
-        traps: traps(ans, askM
-          ? [
-              { value: g, why: 'That is the raw gradient. $m$ is a running average, so it moves only part of the way toward $\\symg$.' },
-              { value: b1 * g + (1 - b1) * m0, why: 'That swaps the weights: the old average keeps $\\beta_1$, and the new gradient gets $1 - \\beta_1$.' },
-              { value: b1 * m0 + g, why: 'That adds the whole gradient. It is scaled by $1 - \\beta_1$ first.' },
-            ]
-          : [
-              { value: b2 * v0 + (1 - b2) * g, why: 'That averages $\\symg$ itself. The second moment averages the squared gradient, $\\symg^2$.' },
-              { value: g * g, why: 'That is the raw squared gradient. $v$ is a running average, so it moves only part of the way toward $\\symg^2$.' },
-              { value: b2 * g * g + (1 - b2) * v0, why: 'That swaps the weights: the old average keeps $\\beta_2$, and the new $\\symg^2$ gets $1 - \\beta_2$.' },
-            ]),
-        solution: askM
-          ? [
-              `The update: $${M_RULE}$.`,
-              `$m = ${num(b1)} \\times ${paren(m0)} + ${num(clean(1 - b1))} \\times ${paren(g)}$.`,
-              `$= ${num(clean(b1 * m0))} + ${paren(clean((1 - b1) * g))} = ${num(m)}$.`,
-              fresh ? 'Starting from 0, $m$ is only a tenth of the gradient: biased toward 0, which the bias correction fixes.' : `It moved ${b1 === 0.9 ? 'a tenth' : 'a fifth'} of the way from $${num(m0)}$ toward the gradient $${num(g)}$.`,
-            ]
-          : [
-              `The update: $${V_RULE}$.`,
-              `$\\symg^2 = ${num(clean(g * g))}$.`,
-              `$v = ${num(b2)} \\times ${num(v0)} + ${num(clean(1 - b2))} \\times ${num(clean(g * g))}$.`,
-              `$= ${num(clean(b2 * v0))} + ${num(clean((1 - b2) * g * g))} = ${num(v)}$.`,
-              fresh ? 'Starting from 0, $v$ is far below $\\symg^2$: biased toward 0, which the bias correction fixes.' : '$v$ tracks how large this parameter\'s gradients usually are, whatever their sign.',
-            ],
+        traps: traps(ans, [
+          { value: base + (sign * eta * mh) / vh, why: 'That divides by $\\hat v$ itself. Adam divides by its square root, $\\sqrt{\\hat v}$, the typical size of the gradient.' },
+          { value: base + sign * eta * mh, why: 'That leaves out the division by $\\sqrt{\\hat v}$: it is a momentum step, not an Adam step.' },
+          ...(askW ? [{ value: w + step, why: 'That steps uphill. The update subtracts the step, as gradient descent does.' }] : []),
+        ]),
+        solution: [
+          `The update: $${STEP}$.`,
+          `$\\sqrt{\\hat v} = \\sqrt{${num(vh)}} = ${num(root)}$.`,
+          `The step: $\\symeta\\,\\hat m / \\sqrt{\\hat v} = ${num(eta)} \\times ${paren(mh)} / ${num(root)} = ${num(step)}$.`,
+          ...(askW ? [`$\\symw \\leftarrow ${minus(w, step)} = ${num(ans)}$.`] : []),
+          `The ratio $\\hat m / \\sqrt{\\hat v} = ${num(k)}$ is the gradient in units of its own typical size, so the step is $${num(k)}$ times $\\symeta$.`,
+        ],
       };
     },
   },
@@ -98,40 +85,6 @@ export const generators: Generator[] = [
           `Step 2: $m = 0.9 \\times ${paren(m1)} + 0.1 \\times ${paren(g2)} = ${num(clean(0.9 * m1))} ${g2 < 0 ? '-' : '+'} ${num(clean(Math.abs(0.1 * g2)))} = ${num(m2)}$.`,
           'The correction at $t = 2$: $\\beta_1^2 = 0.9^2 = 0.81$, so $1 - \\beta_1^2 = 1 - 0.81 = 0.19$.',
           `$\\hat m = m / 0.19 = ${num(m2)} / 0.19 \\approx ${num(ans, 2)}$.`,
-        ],
-      };
-    },
-  },
-  {
-    id: 'step',
-    make(rng, d) {
-      const pairs: [number, number][] = [[0.04, 0.2], [0.25, 0.5], [1, 1], [4, 2], [9, 3], [16, 4], [0.01, 0.1], [0.0004, 0.02]];
-      const [vh, root] = pick(rng, pairs);
-      const k = d < 0.35 ? pick(rng, [1, 2, 0.5]) : pick(rng, [1, 2, 0.5, -1, -0.5, 1.5, -2]);
-      const mh = clean(k * root);
-      const eta = pick(rng, [0.001, 0.01, 0.1]);
-      const step = clean((eta * mh) / root);
-      const askW = d >= 0.35;
-      const w = askW ? (d < 0.7 ? int(rng, -2, 3) : tenth(rng, -2, 2)) : 0;
-      const ans = askW ? clean(w - step) : step;
-      const base = askW ? w : 0;
-      const sign = askW ? -1 : 1;
-      return {
-        prompt: askW
-          ? `In Adam, a weight at $\\symw = ${num(w)}$ has $\\hat m = ${num(mh)}$ and $\\hat v = ${num(vh)}$, with $\\symeta = ${num(eta)}$. Ignoring $\\epsilon$, where is $\\symw$ after the step?`
-          : `In Adam, a parameter has $\\hat m = ${num(mh)}$ and $\\hat v = ${num(vh)}$, with $\\symeta = ${num(eta)}$. Ignoring $\\epsilon$, how far does it move in one step?`,
-        answer: { kind: 'number', value: ans },
-        traps: traps(ans, [
-          { value: base + (sign * eta * mh) / vh, why: 'That divides by $\\hat v$ itself. Adam divides by its square root, $\\sqrt{\\hat v}$, the typical size of the gradient.' },
-          { value: base + sign * eta * mh, why: 'That leaves out the division by $\\sqrt{\\hat v}$: it is a momentum step, not an Adam step.' },
-          ...(askW ? [{ value: w + step, why: 'That steps uphill. The update subtracts the step, as gradient descent does.' }] : []),
-        ]),
-        solution: [
-          `The update: $${STEP}$.`,
-          `$\\sqrt{\\hat v} = \\sqrt{${num(vh)}} = ${num(root)}$.`,
-          `The step: $\\symeta\\,\\hat m / \\sqrt{\\hat v} = ${num(eta)} \\times ${paren(mh)} / ${num(root)} = ${num(step)}$.`,
-          ...(askW ? [`$\\symw \\leftarrow ${minus(w, step)} = ${num(ans)}$.`] : []),
-          `The ratio $\\hat m / \\sqrt{\\hat v} = ${num(k)}$ is the gradient in units of its own typical size, so the step is $${num(k)}$ times $\\symeta$.`,
         ],
       };
     },

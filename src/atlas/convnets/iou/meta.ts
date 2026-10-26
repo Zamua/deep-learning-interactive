@@ -2,9 +2,9 @@ import type { ConceptMeta } from '../../../mastery/domain/types';
 
 export const meta: ConceptMeta = {
   id: 'iou',
-  title: 'Boxes and IoU',
-  blurb: 'Score how well two boxes overlap by intersection over union, and drop the weaker of two boxes that overlap too much.',
-  prereqs: ['convnet-arch'],
+  title: 'Non-max suppression',
+  blurb: 'Keep one box per object: sort by confidence, keep the best, and drop the boxes that overlap it too much.',
+  prereqs: ['box-iou'],
   mastery: { streak: 4, seconds: 50 },
   deeper: [{ chapter: 'detection' }],
 };

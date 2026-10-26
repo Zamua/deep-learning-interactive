@@ -1,9 +1,11 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
 import { int, num, pick } from '../../kit';
-import { choose, clean, LN, minus, SIG, traps, useSig } from '../kit';
+import { choose, clean, minus, SIG, traps } from '../kit';
 
 const r = '\\sym{r}{r}';
+const wTex = `${r}_w`;
+const lTex = `${r}_l`;
 
 /** Scores for two answers to one prompt, never tied; whole at first, halves when harder. */
 function scores(rng: Rng, d: number): [number, number] {
@@ -16,68 +18,10 @@ function scores(rng: Rng, d: number): [number, number] {
   }
 }
 
-const ra = `${r}_a`;
-const rb = `${r}_b`;
-const ri = (who: string) => `${r}_${who}`;
-const useLnSig = (zs: number[]) => [...new Set(zs.map(SIG))].sort((x, y) => y - x).map((p) => `$\\ln ${num(p, 2)} \\approx ${num(LN(p), 2)}$`).join(', ');
+/** `\sigma(z) \approx 0.73`, or `=` at 0. */
+const sigEq = (z: number): string => `\\sigma(${num(z)}) ${z === 0 ? '=' : '\\approx'} ${num(SIG(z), 2)}`;
 
 export const generators: Generator[] = [
-  {
-    id: 'prob',
-    make(rng, d) {
-      const [a, b] = scores(rng, d);
-      const askA = rng.int(2) === 0;
-      const z = clean(askA ? a - b : b - a);
-      const v = SIG(z);
-      const who = askA ? 'a' : 'b';
-      return {
-        prompt: `A reward model scores two answers to the same prompt: $${ra} = ${num(a)}$ and $${rb} = ${num(b)}$. What probability does it give that people prefer answer ${who}? Round to two decimals.\n\nUse ${useSig([z, -z])}.`,
-        answer: { kind: 'number', value: v, places: 2 },
-        traps: traps(
-          v,
-          [
-            { value: SIG(-z), why: `That is the probability that the other answer wins. Answer ${who} wins with $\\sigma$ of its own score minus the other's.` },
-            { value: Math.abs(z) <= 1 ? Math.abs(z) : NaN, why: 'That is the gap between the scores. The probability is the sigmoid of the gap.' },
-          ],
-          2,
-        ),
-        solution: [
-          `Answer ${who} wins with $\\sigma(${ri(who)} - ${ri(askA ? 'b' : 'a')})$.`,
-          `The gap: $${minus(askA ? a : b, askA ? b : a)} = ${num(z)}$.`,
-          `$\\sigma(${num(z)}) \\approx ${num(v, 2)}$.`,
-        ],
-      };
-    },
-  },
-  {
-    id: 'loss',
-    make(rng, d) {
-      const [a, b] = scores(rng, d);
-      const aWins = rng.int(2) === 0;
-      const z = clean(aWins ? a - b : b - a);
-      const v = -LN(SIG(z));
-      const w = aWins ? 'a' : 'b';
-      const l = aWins ? 'b' : 'a';
-      return {
-        prompt: `A labeler preferred answer ${w}. The reward model scores $${ra} = ${num(a)}$ and $${rb} = ${num(b)}$. What is its loss on this pair? Round to two decimals.\n\nUse ${useSig([z, -z])}, ${useLnSig([z, -z])}.`,
-        answer: { kind: 'number', value: v, places: 2 },
-        traps: traps(
-          v,
-          [
-            { value: -LN(SIG(-z)), why: `That subtracts the scores the wrong way round: the loss uses the preferred answer's score minus the other's.` },
-            { value: LN(SIG(z)), why: 'That leaves out the minus sign. A loss is never negative.' },
-            { value: SIG(z), why: `That is the probability the model gives answer ${w}. The loss is minus its log.` },
-          ],
-          2,
-        ),
-        solution: [
-          `The loss is $-\\ln \\sigma(${ri(w)} - ${ri(l)})$. The gap, preferred minus other: $${ri(w)} - ${ri(l)} = ${minus(aWins ? a : b, aWins ? b : a)} = ${num(z)}$.`,
-          `$\\sigma(${num(z)}) \\approx ${num(SIG(z), 2)}$: the probability the model gives the labeler's choice.`,
-          `The loss is $-\\ln ${num(SIG(z), 2)} \\approx ${num(v, 2)}$.${z < 0 ? ' Large, because the model scored the rejected answer higher.' : ''}`,
-        ],
-      };
-    },
-  },
   {
     id: 'push',
     make(rng, d) {
@@ -85,8 +29,6 @@ export const generators: Generator[] = [
       const s = SIG(z);
       const winner = rng.int(2) === 0;
       const v = clean(winner ? s - 1 : 1 - s);
-      const wTex = `${r}_w`;
-      const lTex = `${r}_l`;
       const wrt = winner ? wTex : lTex;
       return {
         prompt: `For a reward model's loss on a pair with $${wTex} - ${lTex} = ${num(z)}$, where $\\sigma(${num(z)}) ${z === 0 ? '=' : '\\approx'} ${num(s, 2)}$, what is $\\dfrac{\\partial \\symL}{\\partial ${wrt}}$?`,
@@ -107,37 +49,59 @@ export const generators: Generator[] = [
     },
   },
   {
-    id: 'learns',
+    id: 'move',
     make(rng, d) {
-      const [a, b] = scores(rng, Math.max(d, 0.3));
-      const hi = Math.max(a, b);
-      const lo = Math.min(a, b);
-      const gap = clean(hi - lo);
-      const c = pick(rng, [5, 10, 20, 100]);
-      if (rng.int(2) === 0) {
-        return {
-          prompt: `A reward model scores two answers to one prompt: $${ra} = ${num(hi)}$ and $${rb} = ${num(lo)}$. If $${c}$ is added to every score it gives, what probability does it give that people prefer answer a?`,
-          answer: choose(`Still $\\sigma(${num(gap)})$: the gap has not changed`, [
-            [`More: $\\sigma(${num(clean(hi + c))})$, from answer a's new score`, `The prediction is $\\sigma$ of the gap between the scores. Both grew by ${c}, so the gap is still ${num(gap)}.`],
-            ['Exactly one half: both answers moved together', 'Moving together keeps them apart by the same gap, and the prediction depends only on the gap.'],
-            ['Less: the scores are now closer in ratio', 'Ratios of scores mean nothing to the model. Only their difference goes into the sigmoid.'],
-          ]),
-          solution: [
-            `The prediction is $\\sigma(${ra} - ${rb})$, and adding the same $${c}$ to both cancels in the difference.`,
-            `So it is still $\\sigma(${num(gap)})$. Comparisons fix only the gaps between scores, never their zero point.`,
-          ],
-        };
-      }
+      const [a, b] = scores(rng, d);
+      const aWins = rng.int(2) === 0;
+      const w = aWins ? 'a' : 'b';
+      const l = aWins ? 'b' : 'a';
+      const sw = aWins ? a : b;
+      const sl = aWins ? b : a;
+      const z = clean(sw - sl);
+      const rw = `${r}_${w}`;
+      const rl = `${r}_${l}`;
+      const right = z > 0;
       return {
-        prompt: `A reward model trained on comparisons gives an answer the score $${r} = ${num(hi)}$. What does that number alone tell you?`,
-        answer: choose('Little: only gaps between scores for the same prompt mean something', [
-          [hi > 0 ? 'That the answer is good, since its score is positive' : 'That the answer is fine, since scores are relative to zero', 'Adding any constant to every score changes no prediction, so where zero sits means nothing.'],
-          [`That people prefer it with probability $\\sigma(${num(hi)})$`, 'A preference probability needs a second answer: it is $\\sigma$ of the gap between two scores.'],
-          ['How many times better it is than an answer scoring 1', 'The model only learns differences between scores. Ratios mean nothing to it.'],
+        prompt: `A labeler preferred answer ${w}. The reward model scores $${r}_a = ${num(a)}$ and $${r}_b = ${num(b)}$. After one small step that lowers its loss on this pair, what happens to the two scores?`,
+        answer: choose(`$${rw}$ rises and $${rl}$ falls, by the same amount`, [
+          [`$${rl}$ rises and $${rw}$ falls, by the same amount`, `That is the step for the opposite choice. Lowering the loss pushes the preferred answer's score up.`],
+          [`Only $${rw}$ rises; $${rl}$ stays where it is`, `The loss depends on the gap $${rw} - ${rl}$, so its slope on $${rl}$ is as large as its slope on $${rw}$, with the sign flipped.`],
+          right
+            ? [`Nothing: the model already scores answer ${w} higher`, `The slope on each score is $1 - \\sigma$ in size, and $\\sigma$ never reaches 1. A pair already ranked right moves less, but it still moves.`]
+            : [`Both rise together, keeping their gap`, 'Raising both by the same amount leaves the gap, and so the loss, unchanged. The step widens the gap instead.'],
         ]),
         solution: [
-          `The loss depends only on differences $${ra} - ${rb}$ between answers to the same prompt.`,
-          `Adding a constant to every score leaves every difference, and every prediction, unchanged. So $${num(hi)}$ means something only next to another answer's score.`,
+          `The loss is $-\\ln \\sigma(z)$ with $z = ${rw} - ${rl} = ${minus(sw, sl)} = ${num(z)}$, and its slope on $z$ is $-(1 - \\sigma(z))$.`,
+          `$z$ rises one for one with $${rw}$ and falls one for one as $${rl}$ rises, so the slope on $${rw}$ is $-(1 - \\sigma)$ and on $${rl}$ it is $1 - \\sigma$.`,
+          `Stepping against those slopes raises $${rw}$ and lowers $${rl}$ by the same amount, in proportion to $1 - ${num(SIG(z), 2)} = ${num(clean(1 - SIG(z)))}$: ${right ? 'small, since the model already ranks this pair right' : 'large, since the model ranks this pair wrong'}.`,
+        ],
+      };
+    },
+  },
+  {
+    id: 'agree',
+    make(rng, d) {
+      const pool = d < 0.5 ? [-2, -1, 1, 2, 3] : [-3, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 3];
+      const gaps = rng.shuffle(pool.slice()).slice(0, 2) as [number, number];
+      const pairs = gaps.map((g) => {
+        const lo = int(rng, d < 0.5 ? 0 : -2, 3);
+        return g >= 0 ? [clean(lo + g), lo] : [lo, clean(lo - g)];
+      });
+      const k = gaps[0] < gaps[1] ? 0 : 1;
+      const move = (g: number) => num(clean(1 - SIG(g)));
+      const mv = (g: number) => `1 - \\sigma ${g === 0 ? '=' : '\\approx'} ${move(g)}`;
+      const desc = (i: number) => `pair ${i} has $${wTex} = ${num(pairs[i]![0]!)}$, $${lTex} = ${num(pairs[i]![1]!)}$`;
+      const line = (i: number) => `Pair ${i}: the gap is $${minus(pairs[i]![0]!, pairs[i]![1]!)} = ${num(gaps[i]!)}$, $${sigEq(gaps[i]!)}$, so $${mv(gaps[i]!)}$.`;
+      const why: (string | null)[] = [0, 1].map((i) => (i === k ? null : `Its gap is $${num(gaps[i]!)}$, so its scores move in proportion to $${mv(gaps[i]!)}$, less than pair ${k}'s $${move(gaps[k]!)}$.`));
+      why.push(`The step follows the slopes, $1 - \\sigma$ in size, and $\\sigma$ depends on each pair's gap. Here they are $${move(gaps[0])}$ and $${move(gaps[1])}$.`);
+      return {
+        prompt: `A reward model takes one small step on each of two preference pairs, separately, where $${wTex}$ is the preferred answer's score and $${lTex}$ the other's: ${desc(0)}, and ${desc(1)}. Which pair's scores move more?`,
+        answer: { kind: 'choice', options: ['Pair 0', 'Pair 1', 'Both move by the same amount: the step is the same size'], correct: k, why },
+        solution: [
+          `One step moves both scores of a pair in proportion to $1 - \\sigma(${wTex} - ${lTex})$: the lower $\\sigma$, the bigger the move.`,
+          line(0),
+          line(1),
+          `Pair ${k} moves more: ${gaps[k]! >= 0 ? 'the model agrees with it less' : gaps[1 - k]! < 0 ? 'the model ranks it wrong by more' : 'the model ranks it wrong'}.`,
         ],
       };
     },

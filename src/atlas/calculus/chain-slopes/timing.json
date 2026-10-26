@@ -1,0 +1,22 @@
+{
+ "duration": 137.504,
+ "scenes": {
+  "chain": [0.0, 46.929],
+  "local": [46.929, 99.008],
+  "back": [99.008, 137.504]
+ },
+ "beats": {
+  "chain/chain": [0.7, 8.742, "Often one function feeds another. Here x goes in and u comes out, where u is three x plus one.", [[1.19, 1.34], [2.94, 3.5], [3.88, 4.06], [4.95, 5.1], [6.28, 6.59]]],
+  "chain/feed": [9.122, 13.631, "Then u feeds a second function: z is u squared.", [[11.472, 11.952]]],
+  "chain/nest": [14.011, 23.977, "In one line, z is three x plus one, squared. Three x plus one is the inside. The squaring wrapped around it is the outside.", [[14.831, 15.131], [18.011, 18.601], [20.861, 21.371], [22.881, 23.031]]],
+  "chain/vals": [24.357, 45.829, "At x equals one, u is four, and z is sixteen. How fast does z change when x is nudged? That rate is written d z, d x, read \u201cd z, d x\u201d: the derivative of z with respect to x, a tiny change in z over the tiny change in x that caused it.", [[25.767, 26.087], [27.107, 27.357], [28.747, 29.337], [32.247, 32.907], [35.737, 36.247], [36.567, 36.797], [37.397, 37.577], [38.227, 38.737], [41.297, 41.767], [43.197, 43.397]]],
+  "local/du": [47.629, 59.063, "Each link has its own local slope. The inside, u equals three x plus one, moves three times as fast as x: d u, d x is three.", [[49.899, 50.489], [51.289, 51.619], [53.669, 54.009], [56.239, 56.819], [57.499, 57.709]]],
+  "local/dz": [59.443, 71.441, "The outside, z equals u squared, has slope two u. At u equals four, d z, d u is eight, also written z prime of four is eight.", [[60.303, 60.633], [62.273, 62.573], [63.153, 63.313], [63.883, 64.553], [65.893, 66.223], [68.193, 68.593], [69.283, 69.503]]],
+  "local/nudge": [71.821, 82.993, "Now nudge x by zero point zero one. u moves three times that, zero point zero three. And z moves eight times that, zero point two four.", [[74.711, 75.261], [76.881, 77.231], [78.751, 79.281], [81.191, 81.551]]],
+  "local/mult": [83.373, 97.908, "So z moves three times eight, twenty four times as fast as x. That is the chain rule: multiply the local slopes, d z, d x equals d z, d u times d u, d x.", [[85.593, 85.893], [88.293, 88.863], [90.143, 90.573], [92.243, 92.523], [93.123, 93.283]]],
+  "back/longer": [99.708, 115.44, "A chain can be as long as you like. Here x feeds u, u feeds v, and v feeds z. At the current point, the local slopes are three, minus two, and a half. What is d z, d x?", [[101.568, 102.168], [102.558, 102.858], [103.928, 104.288], [105.408, 105.718], [107.088, 107.728], [108.678, 108.938], [110.518, 110.828], [111.618, 111.828], [112.508, 113.128], [114.378, 114.588]]],
+  "back/back": [115.82, 125.575, "Start at the end and walk backwards, multiplying as you go: a half, times minus two is minus one, times three is minus three.", [[117.99, 118.3], [119.63, 120.19], [120.77, 120.98], [123.17, 123.58], [124.35, 124.55]]],
+  "back/backprop": [125.955, 135.283, "So d z, d x is minus three. On the way, the walk also found the slope of z with respect to v and to u.", [[127.205, 127.655], [129.445, 130.135], [130.775, 131.055]]],
+  "back/turn": [135.663, 136.404, "Your turn.", []]
+ }
+}

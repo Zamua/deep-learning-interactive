@@ -1,8 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { cells } from '../../draw';
 import { after } from '../../networks/draw';
-import { type Ink, fmt, rich } from '../draw';
+import { type Ink, rich } from '../draw';
 
 /** The block diagram: x, the box F, the sum and y on one row, with the shortcut arching above. */
 function diagram(s: Scene, o: { yD: number; cut: number; dim?: number; red?: { cut: number; box: number }; proj?: number }) {
@@ -49,68 +48,13 @@ function diagram(s: Scene, o: { yD: number; cut: number; dim?: number; red?: { c
   return { xN, b0, b1, pN, yN, top, r };
 }
 
-const X = [2, -1, 3];
-const FX = [0.5, 0.5, -1];
-const Y = X.map((v, i) => v + FX[i]!);
+type Spot = 'x' | 'b1' | 'h' | 'b2' | 'y';
 
-/** A labelled column of three cells. */
-function column(s: Scene, x: number, y: number, label: string, vals: string[], k: Ink, on = 0) {
-  s.text(label, x, y - 13 * s.u, { size: 3.6, font: 'mono', weight: 650, color: s.c(k) });
-  [0, 1, 2].forEach((i) => cells(s, [x], y - 6.8 * s.u + i * 6.8 * s.u, [vals[i]!], k, { w: 11, h: 6, size: 3.2, on: [on] }));
-}
-
-const block: SceneDef = {
-  draw(s) {
-    const yD = s.h * 0.34;
-    diagram(s, { yD, cut: s.ease('add', 0.8, 1.6) });
-    const ex = s.ease('example', 0.6);
-    const zero = s.ease('zero', 0.8, 0.6);
-    s.alpha(ex, () => {
-      const y = s.h * 0.74;
-      const [c1, c2, c3] = [0.18, 0.47, 0.8].map((f) => s.w * f);
-      column(s, c1!, y, 'x', X.map(fmt), 'orange');
-      s.text('+', (c1! + c2!) / 2, y, { size: 5, font: 'mono', color: s.c('--ink-2') });
-      s.alpha(1 - zero, () => column(s, c2!, y, 'F(x)', FX.map(fmt), 'blue'));
-      s.alpha(zero, () => column(s, c2!, y, 'F(x)', ['0', '0', '0'], 'blue', 1));
-      s.text('=', (c2! + c3!) / 2, y, { size: 5, font: 'mono', color: s.c('--ink-2') });
-      s.alpha(1 - zero, () => column(s, c3!, y, 'y', Y.map(fmt), 'green', s.ease('example', 0.6, 3)));
-      s.alpha(zero, () => column(s, c3!, y, 'y = x', X.map(fmt), 'green', 1));
-    });
-  },
-};
-
-/** One line of working under the diagram, `row` lines down. */
-function work(s: Scene, y0: number, row: number, runs: [string, Ink][], a: number): void {
-  s.alpha(a, () => rich(s, runs, s.w / 2, y0 + row * 6.6 * s.u, { size: 3.2, weight: 600 }));
-}
-
-const match: SceneDef = {
-  draw(s) {
-    const yD = s.h * 0.27;
-    diagram(s, { yD, cut: 1, proj: s.ease('cut', 0.6, 0.3) });
-    const y0 = yD + 16 * s.u;
-    const k2 = '--ink-2';
-    const k3 = '--ink-3';
-    // Earlier lines dim once the shortcut's own working starts.
-    const fPath = 1 - 0.45 * s.ease('cut', 0.6);
-    work(s, y0, 0, [['x: ', k2], ['(64, 8, 8)', 'orange']], s.ease('need', 0.6, 0.6));
-    work(s, y0, 1, [['64 filters, stride 1: F(x) is ', k2], ['(64, 8, 8)', 'blue']], after(s, 'keep', 0.2) * (1 - s.ease('first', 0.4)));
-    work(s, y0, 2, [['shortcut = x', 'orange'], ['   ✓', 'green']], after(s, 'keep', 0.7) * (1 - s.ease('first', 0.4)));
-    work(s, y0, 1, [['conv 1: ', k2], ['128', 'blue'], [' filters, stride ', k2], ['2', 'blue']], after(s, 'first', 0.1) * fPath);
-    work(s, y0, 2, [['(8 − 3 + 2) / 2 + 1 = 4.5', k2], [', down to ', k3], ['4', 'blue']], after(s, 'round', 0.15) * fPath);
-    work(s, y0, 3, [['conv 2: stride 1, padding 1, keeps ', k2], ['4 × 4', 'blue']], after(s, 'second', 0.1) * fPath);
-    work(s, y0, 4, [['F(x): ', k2], ['(128, 4, 4)', 'blue'], ['   ✗ cannot add x', 'red']], after(s, 'second', 0.55));
-    work(s, y0, 5, [['shortcut: 1 × 1 conv, ', k2], ['128', 'orange'], [' filters, stride ', k2], ['2', 'orange']], after(s, 'cut', 0.3));
-    work(s, y0, 6, [['(8 − 1) / 2 + 1 = 4.5', k2], [', down to ', k3], ['4', 'orange']], after(s, 'check', 0.2));
-    work(s, y0, 7, [['shortcut(x): ', k2], ['(128, 4, 4)', 'orange'], ['   ✓ adds to F(x)', 'green']], after(s, 'check', 0.65));
-  },
-};
-
-/** Two blocks in a chain, x to h to y, with the gradient walked back through each factor. */
-function stack(s: Scene, yS: number): void {
-  const a = s.ease('stack', 0.6) * (1 - s.ease('deep', 0.5));
+/** Two blocks in a chain, x to h to y, with the gradient's steps written under the spots they reach. */
+function stack(s: Scene, yS: number, a: number, steps: [string, Spot, number][], total: [string, string, number]): void {
   if (a <= 0.003) return;
-  const [xN, b1, hN, b2, yN] = [0.1, 0.3, 0.5, 0.7, 0.9].map((f) => s.w * f) as [number, number, number, number, number];
+  const at = { x: 0.1, b1: 0.3, h: 0.5, b2: 0.7, y: 0.9 };
+  const [xN, b1, hN, b2, yN] = [at.x, at.b1, at.h, at.b2, at.y].map((f) => s.w * f) as [number, number, number, number, number];
   const r = 3.5 * s.u;
   const bw = s.w * 0.2;
   const ink = s.c('--ink-3');
@@ -135,34 +79,60 @@ function stack(s: Scene, yS: number): void {
     node(yN, 'y', 'green');
   });
   const yG = yS + 9 * s.u;
-  const red = (t: string, x: number, v: number) => s.alpha(a * v, () => s.text(t, x, yG, { size: 3.3, font: 'mono', weight: 650, color: s.c('red'), halo: true }));
-  red('g = 1', yN, after(s, 'back2', 0.15));
-  red('× (1 + 1)', b2, after(s, 'back2', 0.5));
-  red('2', hN, after(s, 'back2', 0.8));
-  red('× (1 − 0.5)', b1, after(s, 'back1', 0.2));
-  red('1', xN, after(s, 'back1', 0.45));
-  s.alpha(a * after(s, 'back1', 0.7), () =>
-    rich(s, [['g (1 + F₂′)(1 + F₁′) = 1 × 2 × 0.5 = ', '--ink-2'], ['1', 'red']], s.w / 2, yG + 8 * s.u, { size: 3.2, weight: 650 }),
-  );
+  for (const [t, spot, v] of steps) s.alpha(a * v, () => s.text(t, s.w * at[spot], yG, { size: 3.3, font: 'mono', weight: 650, color: s.c('red'), halo: true }));
+  s.alpha(a * total[2], () => rich(s, [[total[0], '--ink-2'], [total[1], 'red']], s.w / 2, yG + 8 * s.u, { size: 3.2, weight: 650 }));
+}
+
+/** The one-block walk back: g at y, g along the shortcut, g F′ through F, and the sum at x. */
+function oneBlock(s: Scene, yD: number, o: { dim: number; split: number; g: string; through: string; sum: string; formula: string; at: [number, number, number, number] }): void {
+  const d = diagram(s, { yD, cut: 1, dim: o.dim, red: { cut: o.split, box: o.split } });
+  const red = (t: string, x: number, y: number, size = 3.3) => s.text(t, x, y, { size, font: 'mono', weight: 650, color: s.c('red'), halo: true });
+  const [gA, cutA, fA, sumA] = o.at;
+  s.alpha(gA, () => red(o.g, d.yN, yD - 7.5 * s.u));
+  s.alpha(cutA, () => red(o.g, (d.xN + d.pN) / 2, d.top + 5 * s.u));
+  s.alpha(fA, () => red(o.through, (d.b0 + d.b1) / 2, yD + 13.5 * s.u, 3.1));
+  s.alpha(sumA, () => {
+    red(o.sum, d.xN + 6 * s.u, yD + 21 * s.u);
+    s.text(o.formula, s.w / 2 + 6 * s.u, yD + 21 * s.u, { size: 3.6, font: 'mono', weight: 650, color: s.c('--ink-2') });
+  });
 }
 
 const gradient: SceneDef = {
   draw(s) {
     const yD = s.h * 0.3;
     const split = s.ease('split', 0.6, 0.6);
-    // The one-block example steps back while two stacked blocks use other numbers.
-    s.alpha(1 - 0.6 * s.ease('stack', 0.6), () => {
-      const d = diagram(s, { yD, cut: 1, dim: 1, red: { cut: split, box: split } });
-      const red = (t: string, x: number, y: number, size = 3.3) => s.text(t, x, y, { size, font: 'mono', weight: 650, color: s.c('red'), halo: true });
-      s.alpha(s.ease('split', 0.6), () => red('g = 2', d.yN, yD - 7.5 * s.u));
-      s.alpha(s.ease('paths', 0.6, 0.3), () => red('g = 2', (d.xN + d.pN) / 2, d.top + 5 * s.u));
-      s.alpha(s.ease('paths', 0.6, 2.4), () => red('g · F′ = 2 × 0.5 = 1', (d.b0 + d.b1) / 2, yD + 13.5 * s.u, 3.1));
-      s.alpha(s.ease('formula', 0.6, 0.4), () => {
-        red('2 + 1 = 3', d.xN + 6 * s.u, yD + 21 * s.u);
-        s.text('g (1 + F′)', s.w / 2, yD + 21 * s.u, { size: 3.6, font: 'mono', weight: 650, color: s.c('--ink-2') });
-      });
+    // The forward pass, in numbers, until the walk back starts.
+    s.alpha(s.ease('recap', 0.6, 1.2) * (1 - s.ease('split', 0.4)), () => {
+      const lab = (t: string, f: number, k: Ink) => s.text(t, s.w * f, yD + 11 * s.u, { size: 3.4, font: 'mono', weight: 650, color: s.c(k), halo: true });
+      lab('x = 2', 0.1, 'orange');
+      lab('F(x) = 0.5', 0.41, 'blue');
+      lab('y = 2.5', 0.87, 'green');
     });
-    stack(s, s.h * 0.67);
+    // The one-block example steps back while two stacked blocks use other numbers.
+    s.alpha(1 - 0.6 * s.ease('stack', 0.6), () =>
+      oneBlock(s, yD, {
+        dim: s.ease('split', 0.6),
+        split,
+        g: 'g = 2',
+        through: 'g · F′ = 2 × 0.5 = 1',
+        sum: '2 + 1 = 3',
+        formula: 'g (1 + F′)',
+        at: [s.ease('split', 0.6), s.ease('paths', 0.6, 0.3), s.ease('paths', 0.6, 2.4), s.ease('formula', 0.6, 0.4)],
+      }),
+    );
+    stack(
+      s,
+      s.h * 0.67,
+      s.ease('stack', 0.6) * (1 - s.ease('deep', 0.5)),
+      [
+        ['g = 1', 'y', after(s, 'back2', 0.15)],
+        ['× (1 + 1)', 'b2', after(s, 'back2', 0.5)],
+        ['2', 'h', after(s, 'back2', 0.8)],
+        ['× (1 − 0.5)', 'b1', after(s, 'back1', 0.2)],
+        ['1', 'x', after(s, 'back1', 0.45)],
+      ],
+      ['g (1 + F₂′)(1 + F₁′) = 1 × 2 × 0.5 = ', '1', after(s, 'back1', 0.7)],
+    );
     const deep = s.ease('deep', 0.6);
     s.alpha(deep, () => {
       const n = 10;
@@ -186,4 +156,49 @@ const gradient: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { block, match, gradient };
+// ---- the worked problems, in the practice's format
+
+const tryIt: SceneDef = {
+  marks: {
+    p1: { tex: String.raw`F'(\symx) = 3,\quad \symg = 2`, x: 0.5, y: 0.1, size: 4.8 },
+    q1: { tex: String.raw`\text{gradient at } \symx\,?`, x: 0.5, y: 0.21, size: 4.6 },
+    p2a: { tex: String.raw`h = \symx + F_1(\symx),\quad y = h + F_2(h)`, x: 0.5, y: 0.09, size: 4.4 },
+    p2b: { tex: String.raw`F_1' = 1,\quad F_2' = -0.5,\quad \symg = 4`, x: 0.5, y: 0.2, size: 4.4 },
+    q2: { tex: String.raw`\text{gradient at } \symx\,?`, x: 0.5, y: 0.31, size: 4.4 },
+  },
+  draw(s) {
+    const one = s.ease('p1', 0.6, 0.2) * (1 - s.ease('p2', 0.5));
+    s.show('p1', one);
+    s.show('q1', one * after(s, 'p1', 0.7));
+    const two = s.ease('p2', 0.6, 0.3);
+    s.show('p2a', two);
+    s.show('p2b', two * after(s, 'p2', 0.3));
+    s.show('q2', two * after(s, 'p2', 0.8));
+    s.alpha(one, () =>
+      oneBlock(s, s.h * 0.6, {
+        dim: 0.6,
+        split: after(s, 'a1', 0.05),
+        g: 'g = 2',
+        through: 'g · F′ = 2 × 3 = 6',
+        sum: '2 + 6 = 8',
+        formula: 'g (1 + F′) = 2 × 4 = 8',
+        at: [after(s, 'p1', 0.7), after(s, 'a1', 0.1), after(s, 'a1', 0.45), after(s, 'a1', 0.8)],
+      }),
+    );
+    stack(
+      s,
+      s.h * 0.56,
+      two,
+      [
+        ['g = 4', 'y', after(s, 'p2', 0.85)],
+        ['× (1 − 0.5)', 'b2', after(s, 'a2', 0.05)],
+        ['2', 'h', after(s, 'a2', 0.35)],
+        ['× (1 + 1)', 'b1', after(s, 'a2', 0.55)],
+        ['4', 'x', after(s, 'a2', 0.85)],
+      ],
+      ['g (1 + F₂′)(1 + F₁′) = 4 × 0.5 × 2 = ', '4', after(s, 'a2', 0.9)],
+    );
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { gradient, try: tryIt };

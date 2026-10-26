@@ -1,0 +1,25 @@
+{
+ "duration": 175.606,
+ "scenes": {
+  "loop": [0.0, 34.573],
+  "outer": [34.573, 129.45],
+  "try": [129.45, 175.606]
+ },
+ "beats": {
+  "loop/x": [0.7, 10.2, "A tiny linear classifier has two features and two classes. The input x is two, one, and the correct class is class zero.", [[4.7, 5.28], [7.0, 7.17], [7.53, 7.97]]],
+  "loop/scores": [10.58, 17.555, "The scores are W x plus b, one per class: one, and one point eight five.", [[11.56, 11.82], [13.38, 13.8], [14.8, 15.21], [15.59, 15.84]]],
+  "loop/probs": [17.935, 23.424, "Softmax turns them into probabilities, zero point three and zero point seven.", [[20.325, 20.795], [21.885, 22.075]]],
+  "loop/grad": [23.804, 33.473, "The gradient on the scores, ds for short, is p minus the one-hot label: minus zero point seven and plus zero point seven.", [[25.254, 25.544], [26.684, 27.054], [29.374, 29.864], [31.454, 31.724]]],
+  "outer/one": [35.273, 56.286, "Now the weights. Take one, W zero zero: the one in row zero, column zero. Row zero belongs to class zero, so this weight feeds only score zero: s zero is W zero zero times x zero, plus W zero one times x one, plus b zero.", [[36.273, 36.843], [37.433, 37.923], [39.383, 39.873], [41.233, 41.403], [42.173, 42.833], [44.903, 45.273], [47.603, 48.293], [51.723, 52.153], [54.783, 55.133], [55.443, 55.603]]],
+  "outer/slope": [56.666, 65.099, "So nudging W zero zero moves s zero by x zero times as much: twice as much, since x zero is two.", [[58.866, 59.046], [62.076, 62.506], [63.286, 63.516]]],
+  "outer/entry": [65.479, 84.612, "And the loss moves d s zero times as much as s zero: minus zero point seven times. The chain rule multiplies the two: the gradient on W zero zero, partial L, partial W zero zero, is minus zero point seven times two, minus one point four.", [[69.499, 70.039], [72.119, 72.749], [74.569, 75.109], [77.199, 77.489], [80.009, 80.309], [82.869, 83.239]]],
+  "outer/row0": [84.992, 95.48, "W zero one is in the same row, so it also gets d s zero, times its own input, x one, which is one: minus zero point seven.", [[87.352, 87.612], [88.702, 88.852], [90.102, 90.382], [91.562, 91.752], [92.412, 92.662], [93.312, 93.782]]],
+  "outer/row1": [95.86, 105.681, "Row one feeds score one, whose ds is plus zero point seven. Times two is one point four, and times one is zero point seven.", [[97.82, 98.07], [100.51, 101.13], [103.05, 103.34]]],
+  "outer/rule": [106.061, 122.592, "The weight in row i, column j, W i j, gets d s i times x j: its row's score gradient, times its column's input. A grid of every entry of ds times every entry of x is called an outer product.", [[107.551, 107.721], [108.541, 108.811], [109.821, 110.211], [112.541, 112.991], [114.431, 114.681], [116.141, 116.791], [120.781, 120.941]]],
+  "outer/db": [122.972, 128.35, "Each bias adds straight into its own score, so its gradient is just ds.", [[125.652, 126.002]]],
+  "try/p1": [130.15, 146.101, "Try one. W has rows two, zero, and minus one, one. x is one, three, with label class zero, and softmax gives zero point two and zero point eight. What is the gradient on W zero one?", [[130.77, 131.39], [133.03, 133.2], [133.74, 133.94], [135.4, 136.05], [137.77, 137.95], [139.29, 139.64], [142.99, 143.63]]],
+  "try/ds": [146.481, 157.745, "First the score gradient: take one away at class zero, the label. zero point two minus one is minus zero point eight; zero point eight stays.", [[148.041, 148.631], [150.481, 150.761], [151.271, 151.861], [153.701, 153.911], [155.571, 156.121]]],
+  "try/dw": [158.125, 173.386, "W zero one sits in row zero, so it takes d s zero, minus zero point eight. Column one takes x one, three. Its gradient is minus zero point eight times three: minus two point four.", [[160.745, 161.135], [162.985, 163.175], [164.635, 165.265], [166.965, 167.255], [167.645, 168.195], [171.485, 171.995]]],
+  "try/turn": [173.766, 174.506, "Your turn.", []]
+ }
+}

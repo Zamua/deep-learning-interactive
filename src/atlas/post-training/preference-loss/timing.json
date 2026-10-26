@@ -1,0 +1,22 @@
+{
+ "duration": 127.12,
+ "scenes": {
+  "compare": [0.0, 45.55],
+  "loss": [45.55, 81.514],
+  "try": [81.514, 127.12]
+ },
+ "beats": {
+  "compare/hard": [0.7, 6.984, "Grading an answer on a scale is hard for people. Saying which of two answers is better is easy.", [[3.55, 4.1], [6.18, 6.37]]],
+  "compare/score": [7.364, 18.842, "A reward model reads an answer and gives it one number, a score, r. Answer a's score, r a, is two, and answer b's, r b, is one.", [[10.594, 10.894], [11.474, 11.804], [12.164, 12.814], [14.064, 14.334], [15.004, 15.174], [15.744, 16.134], [17.124, 17.364], [18.004, 18.254]]],
+  "compare/sigma": [19.222, 29.154, "Its prediction that people prefer a is the sigmoid of the gap: sigma of two minus one, which is sigma of one, about zero point seven three.", [[21.462, 21.692], [23.062, 23.542], [25.302, 25.582], [26.932, 27.272]]],
+  "compare/soft": [29.534, 38.435, "That is softmax over the two scores: e to the score of a, over the sum for both. Divide through, and it is the same sigmoid.", [[31.874, 32.344], [33.764, 33.994], [35.244, 35.844], [36.664, 36.874]]],
+  "compare/gap": [38.815, 44.45, "Only the gap matters. Add ten to both scores, and the prediction does not move.", [[40.365, 40.915], [42.505, 42.755]]],
+  "loss/pairs": [46.25, 55.895, "The training data is pairs of answers to the same prompt, where a person picked the winner. Call the winner's score r w and the loser's r l.", [[49.5, 49.8], [51.27, 51.87], [53.93, 54.23], [54.96, 55.15]]],
+  "loss/loss": [56.275, 72.559, "The loss, L, is cross-entropy on that choice: minus the log of sigma of r w minus r l, the probability the model gave the winner. With a preferred, minus the log of zero point seven three: zero point three one.", [[56.975, 57.215], [57.565, 57.815], [59.745, 60.215], [63.885, 64.345], [66.385, 67.025], [67.895, 68.235], [70.715, 71.145]]],
+  "loss/flip": [72.939, 80.414, "Had the person picked b, the model would have given that only zero point two seven, and the loss would be one point three one.", [[74.459, 74.799], [77.799, 78.109]]],
+  "try/p1": [82.214, 101.409, "Try one. A labeler preferred answer b. The reward model scores a at three and b at one. What is its loss on this pair? Use sigma of minus two, about zero point one two, and ln zero point one two is about minus two point one two.", [[82.844, 83.434], [85.434, 86.074], [88.504, 88.694], [89.794, 90.414], [92.114, 92.784], [94.614, 94.864], [96.554, 96.904], [99.094, 99.344]]],
+  "try/a1": [101.789, 113.165, "The gap is the preferred score minus the other: one minus three, minus two. So the model gives b sigma of minus two, about zero point one two.", [[104.639, 105.159], [106.389, 106.679], [107.389, 107.999], [111.009, 111.379]]],
+  "try/a2": [113.545, 124.9, "The loss is minus the log of that: minus ln zero point one two, about two point one two. Large, because the model scored the rejected answer higher.", [[115.745, 116.245], [118.865, 119.295], [120.695, 121.265], [121.855, 122.105]]],
+  "try/turn": [125.28, 126.02, "Your turn.", []]
+ }
+}

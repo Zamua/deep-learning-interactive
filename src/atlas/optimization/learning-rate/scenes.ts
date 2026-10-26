@@ -40,19 +40,13 @@ function row(s: Scene, xs: number[], y: number, vals: string[], n: number, name:
   });
 }
 
-const factor: SceneDef = {
+const slide: SceneDef = {
   marks: {
-    f: { tex: String.raw`\symf(\symx) = a\,\symx^2`, x: 0.5, y: 0.09, size: 5.6 },
-    step: { tex: String.raw`\symx \leftarrow \symx - \symeta \cdot 2a\symx`, x: 0.5, y: 0.09, size: 5.6 },
-    r: { tex: String.raw`\symx \leftarrow (1 - 2a\symeta)\,\symx`, x: 0.5, y: 0.09, size: 5.6 },
     fs: { tex: String.raw`\symf(\symx) = a(\symx - 3)^2,\quad a = 1`, x: 0.5, y: 0.09, size: 5.2 },
     rs: { tex: String.raw`\symx - 3 \leftarrow (1 - 2a\symeta)(\symx - 3)`, x: 0.5, y: 0.09, size: 5.2 },
   },
   draw(s) {
-    const moved = s.ease('shift', 0.6);
-    s.show('f', s.win('bowl', 'grad'));
-    s.show('step', s.win('grad', 'factor'));
-    s.show('r', s.win('factor', 'shift'));
+    const moved = s.ease('shift', 0.6, 0.6);
     s.show('fs', s.win('shift', 'dist'));
     s.show('rs', s.ease('dist', 0.6));
     const F = bowl(s, 0.19, 0.6);
@@ -66,26 +60,16 @@ const factor: SceneDef = {
       tick(0, '3');
       tick(1, '4');
     });
-    curve(s, F, sq, -1.6, 1.6, 'purple', { upto: s.ease('bowl', 1.2) });
-    const slope = (t: string) => {
+    curve(s, F, sq, -1.6, 1.6, 'purple');
+    s.alpha(s.win('shift', 'dist') * moved, () => {
       curve(s, F, (x) => 1 + 2 * (x - 1), 0.55, 1.45, '--ink-3', { width: 0.4, dash: [1.4, 1] });
-      s.text(t, F.X(0.85), F.Y(1.25), { size: 3.4, font: 'mono', weight: 600, align: 'right', color: s.c('red'), halo: true });
-    };
-    s.alpha(s.win('grad', 'factor'), () => slope('slope 2ax = 2'));
-    s.alpha(s.win('shift', 'dist'), () => slope('slope 2a(x − 3) = 2'));
-    const P = path(0.3, 3);
-    s.alpha(s.ease('bowl', 0.6, 0.8), () => {
-      s.alpha(1 - moved, () => {
-        if (s.since('factor') < 0) ball(s, F.X(1), F.Y(1), 'blue');
-        else descent(s, F, P, s.since('factor') - 1.5, 1.2);
-      });
-      s.alpha(moved, () => descent(s, F, P, s.since('dist') - 0.5, 1.2));
+      s.text('slope 2a(x − 3) = 2', F.X(0.85), F.Y(1.25), { size: 3.4, font: 'mono', weight: 600, align: 'right', color: s.c('red'), halo: true });
     });
+    const P = path(0.3, 3);
+    descent(s, F, P, s.since('dist') - 0.5, 1.2);
     const xs = columns(s, 4, s.tall ? 21 : 20);
-    const landed = (id: string, delay: number) => Math.min(3, Math.floor((s.since(id) - delay) / 1.2) + 1);
-    s.alpha(s.ease('factor', 0.6, 1.5) * (1 - moved), () => row(s, xs, s.h * 0.86, P.map(([x]) => fmt(x)), landed('factor', 1.5), 'x', '×0.4'));
     s.alpha(s.ease('dist', 0.6, 0.3), () => {
-      const n = landed('dist', 0.5);
+      const n = Math.min(3, Math.floor((s.since('dist') - 0.5) / 1.2) + 1);
       row(s, xs, s.h * 0.72, P.map(([x]) => fmt(x + 3)), n, 'x');
       row(s, xs, s.h * 0.86, P.map(([x]) => fmt(x)), n, 'x − 3', '×0.4');
     });
@@ -93,40 +77,11 @@ const factor: SceneDef = {
 };
 
 const RUNS = [
-  { beat: 'small', lr: 0.05, r: 0.9, n: 14, name: 'creeps' },
-  { beat: 'good', lr: 0.3, r: 0.4, n: 6, name: 'slides in' },
-  { beat: 'zig', lr: 0.8, r: -0.6, n: 10, name: 'zigzags in' },
-  { beat: 'big', lr: 1.1, r: -1.2, n: 6, name: 'blows up' },
+  { lr: 0.05, r: 0.9 },
+  { lr: 0.3, r: 0.4 },
+  { lr: 0.8, r: -0.6 },
+  { lr: 1.1, r: -1.2 },
 ] as const;
-const PATHS = RUNS.map((r) => path(r.lr, r.n));
-
-const race: SceneDef = {
-  draw(s) {
-    const F = bowl(s, 0.15, 0.68, 1.9);
-    axes(s, F, 'x', 'f', { x: 'orange', y: 'purple' });
-    curve(s, F, sq, -1.9, 1.9, 'purple');
-    const cur = RUNS.reduce((k, r, i) => (s.since(r.beat) >= 0 ? i : k), 0);
-    s.slot('lr', String(RUNS[cur]!.lr));
-    s.slot('r', String(RUNS[cur]!.r));
-    RUNS.forEach((r, i) => {
-      const next = RUNS[i + 1];
-      s.alpha(s.ease(r.beat, 0.4) * (next ? 1 - s.ease(next.beat, 0.4) : 1), () => {
-        descent(s, F, PATHS[i]!, s.since(r.beat) - 0.5, r.lr < 0.1 ? 0.6 : 0.8, i === 3 ? 'red' : 'blue');
-        s.text(`η = ${r.lr}   factor ${fmt(r.r)}`, s.w / 2, s.h * 0.07, { size: 3.8, font: 'mono', weight: 600, color: s.c('--ink-2') });
-      });
-    });
-    const xs = columns(s, 4, s.tall ? 25 : 22);
-    const y = s.h * 0.8;
-    const colors = ['blue', 'green', 'gold', 'red'] as const;
-    RUNS.forEach((r, i) => {
-      const on = s.since(r.beat) >= 0 ? (i === cur ? 1 : 0.35) : 0.12;
-      s.alpha(on, () => {
-        cells(s, [xs[i]!], y, [`×${fmt(r.r)}`], colors[i], { w: 15, h: 8, size: 3.4, on: [i === cur ? 1 : 0] });
-        s.text(r.name, xs[i]!, y + 8 * s.u, { size: 3.2, color: s.c(colors[i]) });
-      });
-    });
-  },
-};
 
 /** The factor 1 - 2a eta against eta, over green, gold and red bands for slides in, zigzags in, blows up. */
 function bands(s: Scene, F: Frame): void {
@@ -167,6 +122,10 @@ const limit: SceneDef = {
       s.alpha(s.ease('line', 0.6, 1.4), () => {
         RUNS.forEach((r) => s.circle(F.X(r.lr), F.Y(r.r), 1.1 * s.u, { fill: s.tint('orange', 0.6) }));
       });
+      s.alpha(after(s, 'recap', 0.6) * (1 - s.ease('line', 0.6, 1.4)), () => {
+        s.circle(F.X(0.8), F.Y(-0.6), 1.3 * s.u, { fill: s.c('orange') });
+        s.text('η = 0.8: factor −0.6', F.X(0.8) - 3 * s.u, F.Y(-0.6) + 4 * s.u, { size: 3.4, font: 'mono', align: 'right', color: s.c('--ink'), halo: true });
+      });
       s.alpha(s.ease('half', 0.6), () => ball(s, F.X(0.5), F.Y(0), 'green', 1.6));
       s.alpha(s.win('half', 'solve'), () => {
         s.text('1/(2a): one step', F.X(0.55), F.Y(0.2), { size: 3.4, font: 'mono', align: 'left', color: s.c('--ink'), halo: true });
@@ -188,56 +147,50 @@ const limit: SceneDef = {
 
 const tryIt: SceneDef = {
   marks: {
-    q1: { tex: String.raw`\symf(\symx) = 4\symx^2,\quad \symx = 3,\quad \symeta = 0.1`, x: 0.5, y: 0.08, size: 4.8 },
-    g1: { tex: String.raw`\symg = 2 \times 4 \times 3 = 24`, x: 0.5, y: 0.69, size: 4.6 },
-    st1: { tex: String.raw`\symeta\,\symg = 0.1 \times 24 = 2.4`, x: 0.5, y: 0.78, size: 4.6 },
-    c1: { tex: String.raw`1 - 2 \times 4 \times 0.1 = 0.2`, x: 0.5, y: 0.69, size: 4.6 },
-    c2: { tex: String.raw`0.2 \times 3 = 0.6`, x: 0.5, y: 0.78, size: 4.6 },
-    x1: { tex: String.raw`\symx \leftarrow 3 - 2.4 = 0.6`, x: 0.5, y: 0.87, size: 4.6 },
-    q2: { tex: String.raw`\symf(\symx) = 4(\symx - 3)^2,\quad \symeta_{\max} = \,?`, x: 0.5, y: 0.08, size: 4.8 },
+    q1: { tex: String.raw`\symf(\symx) = 4(\symx - 3)^2,\quad \symeta_{\max} = \,?`, x: 0.5, y: 0.08, size: 4.8 },
     e1: { tex: String.raw`a = 4{:}\quad 1 - 8\symeta = -1`, x: 0.5, y: 0.69, size: 4.6 },
     e2: { tex: String.raw`8\symeta = 2`, x: 0.5, y: 0.78, size: 4.6 },
     e3: { tex: String.raw`\symeta_{\max} = 2/8 = 0.25`, x: 0.5, y: 0.87, size: 4.6 },
+    q2: { tex: String.raw`\symf(\symx) = 4(\symx - 3)^2,\quad \text{one step: } \symeta = \,?`, x: 0.5, y: 0.08, size: 4.8 },
+    o1: { tex: String.raw`1 - 8\symeta = 0`, x: 0.5, y: 0.69, size: 4.6 },
+    o2: { tex: String.raw`8\symeta = 1`, x: 0.5, y: 0.78, size: 4.6 },
+    o3: { tex: String.raw`\symeta = 1/8 = 0.125`, x: 0.5, y: 0.87, size: 4.6 },
+    q3: { tex: String.raw`\symf(\symx) = 4(\symx - 3)^2,\quad \symeta = 0.2`, x: 0.5, y: 0.08, size: 4.8 },
+    z1: { tex: String.raw`1 - 8 \times 0.2 = -0.6`, x: 0.5, y: 0.69, size: 4.6 },
+    z2: { tex: String.raw`-1 < -0.6 < 0{:}\ \ \text{zigzags in}`, x: 0.5, y: 0.78, size: 4.6 },
   },
   draw(s) {
     const one = 1 - s.ease('p2', 0.5);
-    const two = s.ease('p2', 0.6, 0.4);
+    const two = s.ease('p2', 0.5) * (1 - s.ease('p3', 0.5));
+    const three = s.ease('p3', 0.5);
     s.show('q1', s.ease('p1', 0.6) * one);
-    s.show('g1', after(s, 'a1', 0.05) * (1 - s.ease('check', 0.4)));
-    s.show('st1', after(s, 'a1', 0.35) * (1 - s.ease('check', 0.4)));
-    s.show('x1', after(s, 'a1', 0.7) * one);
-    s.show('c1', after(s, 'check', 0.1) * one);
-    s.show('c2', after(s, 'check', 0.6) * one);
-    s.alpha(s.ease('p1', 0.6) * one, () => {
-      const F = frame(10 * s.u, s.h * 0.17, s.w - 8 * s.u, s.h * 0.6, [-3.6, 3.6], [0, 52]);
-      axes(s, F, 'x', 'f', { x: 'orange', y: 'purple' });
-      curve(s, F, (x) => 4 * x * x, -3.6, 3.6, 'purple');
-      const at = (x: number, t: string) => {
-        s.line(F.X(x), F.b - 1.2 * s.u, F.X(x), F.b + 1.2 * s.u, s.c('--axis'), 0.35);
-        s.text(t, F.X(x), F.b + 4 * s.u, { size: 3.2, font: 'mono', color: s.c('--ink-3') });
-      };
-      at(3, '3');
-      s.alpha(after(s, 'a1', 0.75), () => at(0.6, '0.6'));
-      s.alpha(after(s, 'a1', 0.05) * (1 - after(s, 'a1', 0.7)), () => {
-        curve(s, F, (x) => 36 + 24 * (x - 3), 2.4, 3.5, '--ink-3', { width: 0.4, dash: [1.4, 1] });
-        s.text('slope 24', F.X(2.75), F.Y(42), { size: 3.4, font: 'mono', weight: 600, align: 'right', color: s.c('red'), halo: true });
-      });
-      descent(s, F, [[3, 36], [0.6, 1.44]], s.t - s.at('a1') - 0.72 * (s.end('a1') - s.at('a1')), 1.2);
-    });
+    s.show('e1', after(s, 'a1', 0.3) * one);
+    s.show('e2', after(s, 'a1', 0.62) * one);
+    s.show('e3', after(s, 'a1', 0.8) * one);
     s.show('q2', two);
-    s.show('e1', after(s, 'a2', 0.3) * two);
-    s.show('e2', after(s, 'a2', 0.62) * two);
-    s.show('e3', after(s, 'a2', 0.8) * two);
-    s.alpha(two, () => {
-      const F = frame(12 * s.u, s.h * 0.17, s.w - 8 * s.u, s.h * 0.6, [0, 0.35], [-1.8, 1.2]);
-      bands(s, F);
-      curve(s, F, (e) => 1 - 8 * e, 0, 0.35, 'orange', { width: 0.7, upto: s.ease('p2', 1.4, 0.6) });
-      s.alpha(after(s, 'a2', 0.8), () => {
-        ball(s, F.X(0.25), F.Y(-1), 'red', 1.6);
-        s.text('0.25', F.X(0.25) + 2.6 * s.u, F.Y(-1) - 3 * s.u, { size: 3.4, font: 'mono', align: 'left', color: s.c('--ink'), halo: true });
-      });
+    s.show('o1', after(s, 'a2', 0.15) * two);
+    s.show('o2', after(s, 'a2', 0.45) * two);
+    s.show('o3', after(s, 'a2', 0.7) * two);
+    s.show('q3', three);
+    s.show('z1', after(s, 'p3', 0.4));
+    s.show('z2', after(s, 'p3', 0.7));
+    const F = frame(12 * s.u, s.h * 0.17, s.w - 8 * s.u, s.h * 0.6, [0, 0.35], [-1.8, 1.2]);
+    bands(s, F);
+    curve(s, F, (e) => 1 - 8 * e, 0, 0.35, 'orange', { width: 0.7, upto: s.ease('p1', 1.4, 0.6) });
+    const label = (t: string, x: number, y: number) => s.text(t, x, y, { size: 3.4, font: 'mono', align: 'left', color: s.c('--ink'), halo: true });
+    s.alpha(after(s, 'a1', 0.8), () => {
+      ball(s, F.X(0.25), F.Y(-1), 'red', 1.6);
+      label('0.25', F.X(0.25) + 2.6 * s.u, F.Y(-1) - 3 * s.u);
+    });
+    s.alpha(after(s, 'a2', 0.7), () => {
+      ball(s, F.X(0.125), F.Y(0), 'green', 1.6);
+      label('0.125', F.X(0.125) + 2.6 * s.u, F.Y(0) - 3 * s.u);
+    });
+    s.alpha(after(s, 'p3', 0.4), () => {
+      ball(s, F.X(0.2), F.Y(-0.6), 'gold', 1.6);
+      label('0.2', F.X(0.2) + 2.6 * s.u, F.Y(-0.6) - 3 * s.u);
     });
   },
 };
 
-export const scenes: Record<string, SceneDef> = { factor, race, limit, try: tryIt };
+export const scenes: Record<string, SceneDef> = { limit, slide, try: tryIt };

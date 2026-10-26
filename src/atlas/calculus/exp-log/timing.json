@@ -1,32 +1,21 @@
 {
- "duration": 248.66,
+ "duration": 153.658,
  "scenes": {
-  "exp": [0.0, 81.876],
-  "log": [81.876, 128.136],
-  "rules": [128.136, 186.263],
-  "quot": [186.263, 248.66]
+  "rules": [0.0, 58.128],
+  "quot": [58.128, 153.658]
  },
  "beats": {
-  "exp/e": [0.7, 15.842, "The number e is about two point seven one eight, written e is about two point seven one eight: the wavy equals sign means \u201cis about\u201d. e to the x means e multiplied by itself, x times.", [[3.87, 4.4], [5.15, 5.33], [7.38, 7.95], [9.88, 10.1], [10.74, 11.35], [14.58, 14.94]]],
-  "exp/zero": [16.222, 26.651, "e to the zero is one. Each step of one in x multiplies by e again: two point seven two, seven point three nine, then about twenty.", [[17.892, 18.452], [21.782, 22.292], [23.412, 23.722], [25.032, 25.402]]],
-  "exp/neg": [27.031, 38.541, "A step down divides by e instead: e to the minus one is zero point three seven. Smaller, but never negative. e to any power is positive.", [[29.871, 30.531], [33.531, 34.011], [34.581, 34.791], [35.841, 36.461]]],
-  "exp/add": [38.921, 50.628, "So adding powers multiplies results. e squared times e to the one is e cubed, where the raised dot means times: the powers add, two plus one.", [[41.691, 42.261], [44.211, 44.411], [45.391, 45.811], [47.781, 48.271], [49.201, 49.621]]],
-  "exp/div": [51.008, 66.416, "Dividing takes factors of e away. e cubed over e to the one is e squared: twenty point oh nine divided by two point seven two is seven point three nine. The powers subtract, three minus one.", [[53.578, 54.138], [57.208, 57.708], [60.938, 61.178], [62.688, 63.268], [64.668, 65.108]]],
-  "exp/pow": [66.796, 80.776, "And e squared, cubed is e squared times itself three times. The powers add, two plus two plus two, which is three times two: e to the six. A power of a power multiplies.", [[68.276, 68.436], [71.246, 71.796], [72.766, 73.156], [74.806, 75.146], [76.536, 76.936], [77.936, 78.466]]],
-  "log/ask": [82.576, 92.371, "The natural log, ln, runs this backwards. For a positive number y, ln of y asks: e to what power gives y?", [[83.596, 83.846], [84.496, 84.746], [85.966, 86.476], [87.996, 88.316], [89.846, 90.326]]],
-  "log/two": [92.751, 98.883, "e squared is seven point three nine, so ln of seven point three nine is two.", [[95.111, 95.561]]],
-  "log/one": [99.263, 103.643, "e to the zero is one, so ln of one is zero.", [[100.873, 101.273]]],
-  "log/neg": [104.023, 114.657, "Below one, the log is negative: ln of zero point three seven is minus one. Any number between zero and one has a negative log.", [[104.893, 105.333], [106.593, 107.213], [109.403, 109.593], [110.563, 111.203], [113.283, 113.433]]],
-  "log/undo": [115.037, 127.036, "ln and e to the x undo each other. For any number a, ln of e to the a is a, and for a positive a, e to the ln of a is a.", [[117.997, 118.577], [119.797, 120.157], [122.517, 122.957], [124.397, 124.777]]],
-  "rules/why": [128.836, 144.852, "Since powers add when exponentials multiply, ln turns a product into a sum. e squared times e cubed is e to the five, so its ln is five: two plus three, the ln of each factor, added.", [[131.866, 132.296], [134.796, 135.456], [137.336, 137.526], [138.726, 139.056], [140.706, 141.216], [142.246, 142.576], [144.076, 144.396]]],
-  "rules/rule": [145.232, 153.773, "The same holds for any positive numbers a and b: ln of a times b is ln a plus ln b.", [[148.412, 148.972], [150.832, 151.062], [152.232, 152.382]]],
-  "rules/nums": [154.153, 164.08, "ln two is about zero point six nine and ln three about one point one, so ln six is their sum, one point seven nine.", [[156.983, 157.363], [159.773, 160.253], [162.343, 162.753]]],
-  "rules/nine": [164.46, 176.255, "A power is a product of equal factors. Nine is three times three, so ln nine is ln three plus ln three: two ln three, about two point two.", [[167.02, 167.53], [169.24, 169.66], [173.3, 173.71], [174.77, 175.06]]],
-  "rules/power": [176.635, 185.163, "So for any power k, ln of a to the k is k times ln a: the power comes out in front.", [[178.545, 178.955], [180.625, 180.885], [183.025, 183.525]]],
-  "quot/flip": [186.963, 203.975, "Two times a half is one, and ln one is zero. So ln two plus ln a half is zero: ln of a half is minus ln two, about minus zero point six nine. One over a number flips the sign of its log.", [[188.653, 188.983], [190.893, 191.313], [191.703, 191.853], [194.743, 195.203], [197.753, 198.053], [200.253, 200.953]]],
-  "quot/quot": [204.355, 221.819, "Dividing by two is multiplying by a half. So ln of three halves is ln three plus ln a half, which is ln three minus ln two: about one point one minus zero point six nine, zero point four one.", [[207.415, 207.885], [209.945, 210.185], [211.285, 211.455], [212.895, 213.295], [213.745, 213.895], [216.215, 216.705], [219.975, 220.415]]],
-  "quot/diff": [222.199, 230.765, "The log of a quotient is the difference of the logs: ln of a over b is ln a minus ln b.", [[225.109, 225.639], [227.609, 227.869], [229.059, 229.209]]],
-  "quot/small": [231.145, 246.439, "So minus the log of a number below one is positive: minus ln of a half is zero point six nine. The smaller a number p, the bigger minus ln p: minus ln of a tenth is about two point three.", [[234.675, 235.235], [236.815, 236.995], [238.525, 239.205], [240.615, 240.925], [242.795, 243.355]]],
-  "quot/turn": [246.819, 247.56, "Your turn.", []]
+  "rules/why": [0.7, 16.716, "Since powers add when exponentials multiply, ln turns a product into a sum. e squared times e cubed is e to the five, so its ln is five: two plus three, the ln of each factor, added.", [[3.73, 4.16], [6.66, 7.32], [9.2, 9.39], [10.59, 10.92], [12.57, 13.08], [14.11, 14.44], [15.94, 16.26]]],
+  "rules/rule": [17.096, 25.637, "The same holds for any positive numbers a and b: ln of a times b is ln a plus ln b.", [[20.276, 20.836], [22.696, 22.926], [24.096, 24.246]]],
+  "rules/nums": [26.017, 35.944, "ln two is about zero point six nine and ln three about one point one, so ln six is their sum, one point seven nine.", [[28.847, 29.227], [31.637, 32.117], [34.207, 34.617]]],
+  "rules/nine": [36.324, 48.119, "A power is a product of equal factors. Nine is three times three, so ln nine is ln three plus ln three: two ln three, about two point two.", [[38.884, 39.394], [41.104, 41.524], [45.164, 45.574], [46.634, 46.924]]],
+  "rules/power": [48.499, 57.028, "So for any power k, ln of a to the k is k times ln a: the power comes out in front.", [[50.409, 50.819], [52.489, 52.749], [54.889, 55.389]]],
+  "quot/flip": [58.828, 75.839, "Two times a half is one, and ln one is zero. So ln two plus ln a half is zero: ln of a half is minus ln two, about minus zero point six nine. One over a number flips the sign of its log.", [[60.518, 60.848], [62.758, 63.178], [63.568, 63.718], [66.608, 67.068], [69.618, 69.918], [72.118, 72.818]]],
+  "quot/quot": [76.219, 93.684, "Dividing by two is multiplying by a half. So ln of three halves is ln three plus ln a half, which is ln three minus ln two: about one point one minus zero point six nine, zero point four one.", [[79.279, 79.749], [81.809, 82.049], [83.149, 83.319], [84.759, 85.159], [85.609, 85.759], [88.079, 88.569], [91.839, 92.279]]],
+  "quot/diff": [94.064, 102.63, "The log of a quotient is the difference of the logs: ln of a over b is ln a minus ln b.", [[96.974, 97.504], [99.474, 99.734], [100.924, 101.074]]],
+  "quot/small": [103.01, 119.615, "So minus the log of a number below one is positive: minus ln of a half is zero point six nine. The bigger a number p, the smaller minus ln p: minus ln of zero point nine is only zero point one one.", [[106.48, 107.09], [108.62, 108.82], [110.38, 111.23], [112.59, 112.9], [114.87, 115.49], [117.52, 117.75]]],
+  "quot/try": [119.995, 132.46, "Try one. Use ln two is about zero point six nine and ln five is about one point six one. Let p be one tenth. What is minus ln p?", [[120.605, 121.195], [124.475, 124.885], [127.815, 128.355], [130.045, 130.565]]],
+  "quot/solve": [132.84, 151.438, "Ten is two times five, so ln ten is zero point six nine plus one point six one: two point three oh. One over ten flips the sign of its log, so minus ln p is two point three oh. The smaller p, the taller the bar.", [[134.75, 135.13], [136.46, 136.61], [138.22, 138.38], [139.91, 140.43], [141.61, 142.28], [144.76, 145.18], [147.04, 147.22], [148.62, 149.19], [150.09, 150.38]]],
+  "quot/turn": [151.818, 152.558, "Your turn.", []]
  }
 }

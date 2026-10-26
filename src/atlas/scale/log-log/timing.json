@@ -1,0 +1,25 @@
+{
+ "duration": 167.218,
+ "scenes": {
+  "runs": [0.0, 35.948],
+  "why": [35.948, 114.914],
+  "try": [114.914, 167.218]
+ },
+ "beats": {
+  "runs/runs": [0.7, 14.438, "Train the same kind of model with more and more compute, C: the total arithmetic of training, counted in floating point operations, or FLOPs. Each dot is one run's final loss, L.", [[3.92, 4.48], [4.91, 5.48], [7.29, 7.55], [9.62, 9.78], [10.57, 11.15], [13.62, 14.04]]],
+  "runs/flat": [14.818, 21.12, "On ordinary axes the loss plunges, then flattens, and most runs crowd into one corner.", [[17.428, 17.698], [18.588, 18.908]]],
+  "runs/log": [21.5, 30.306, "Now space both axes by powers of ten, so every step to the right is ten times the compute. These are log-log axes.", [[24.29, 24.67], [27.83, 28.36]]],
+  "runs/line": [30.686, 34.848, "The runs fall on a straight line. That is a scaling law.", [[32.766, 33.256]]],
+  "why/law": [36.648, 49.273, "The law says L equals a times C to the minus alpha. The numbers a and alpha, the Greek letter alpha, are fixed by fitting the runs. Alpha is the scaling exponent.", [[37.498, 37.678], [40.858, 41.518], [43.178, 43.418], [44.578, 44.948], [46.778, 47.268]]],
+  "why/logs": [49.653, 60.436, "Take logs to base ten, written log base ten, or here just log. They count powers of ten: the log of ten to the twenty is twenty.", [[51.303, 51.823], [53.453, 53.803], [55.313, 55.873], [57.383, 57.933], [59.563, 59.743]]],
+  "why/power": [60.816, 77.51, "Like ln, a log to base ten turns a product into a sum. So it turns a power into a multiple: ten cubed, squared, is ten cubed times ten cubed, so its log is three plus three, six: two times three.", [[61.866, 62.276], [63.646, 63.856], [65.536, 66.066], [68.376, 68.886], [69.706, 69.926], [70.456, 70.776], [72.916, 73.316], [75.356, 75.646], [76.136, 76.536]]],
+  "why/minus": [77.89, 94.3, "The same holds for the power minus alpha: the log of C to the minus alpha is minus alpha times the log of C. With C at ten to the twenty and alpha at zero point one, that is minus zero point one times twenty: minus two.", [[80.32, 80.8], [82.81, 83.03], [85.56, 86.13], [87.87, 88.05], [89.84, 90.16], [93.0, 93.47]]],
+  "why/line": [94.68, 102.807, "So log L is log a, minus alpha times log C: a straight line, with slope minus alpha.", [[97.04, 97.35], [99.44, 99.99], [100.86, 101.16]]],
+  "why/height": [103.187, 113.814, "Log a sets its height. Here it is two point four, so at ten to the twenty FLOPs, log L is two point four minus two: zero point four.", [[104.847, 105.417], [106.867, 107.277], [109.277, 109.617], [112.277, 112.787]]],
+  "try/p": [115.614, 134.708, "Try one. A run with ten to the eighteen FLOPs ends at loss three point nine eight, and one with ten to the twenty one at two point zero. What is the slope of the line through them? Use log three point nine eight is about zero point six, and log two about zero point three.", [[116.224, 116.884], [119.034, 119.184], [121.234, 121.674], [123.564, 123.794], [124.974, 125.554], [127.494, 128.144], [130.104, 130.254], [131.894, 132.274]]],
+  "try/pts": [135.088, 144.744, "On log-log axes, each run sits at log C, log L: eighteen, zero point six, and twenty one, zero point three.", [[136.508, 136.818], [139.468, 140.058], [140.628, 140.908], [141.998, 142.318], [143.408, 143.618]]],
+  "try/rise": [145.124, 155.076, "The rise is zero point three minus zero point six: minus zero point three. The run is twenty one minus eighteen: three.", [[148.834, 149.364], [150.924, 151.574], [154.174, 154.634]]],
+  "try/slope": [155.456, 164.998, "Rise over run: minus zero point three over three, a slope of minus zero point one. So alpha is zero point one.", [[156.706, 157.306], [159.596, 160.076], [162.146, 162.666]]],
+  "try/turn": [165.378, 166.118, "Your turn.", []]
+ }
+}

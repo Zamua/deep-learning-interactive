@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import { num, pick } from '../../kit';
-import { C, D, N, big, clean, norm, sci, sciOf, traps, whys, words } from '../kit';
+import { C, D, N, big, clean, norm, sci, sciOf, traps, words } from '../kit';
 
 /** Model sizes in billions whose compute-optimal budget, 120 N², has a clean square root. */
 const SIZES = [[1, 10, 100], [2, 3, 5, 20, 30, 50], [4, 6, 7, 8, 40, 60, 70]];
@@ -49,14 +49,6 @@ export const generators: Generator[] = [
     make(rng, d) {
       const m = pick(rng, sizes(d));
       const v = 20 * m;
-      if (d < 0.35) {
-        return {
-          prompt: `A model with ${words(m * 1e9)} parameters is trained compute-optimally. How many billion tokens should it see?`,
-          answer: { kind: 'number', value: v },
-          traps: traps(v, [{ value: 6 * m, why: 'The 6 belongs to the compute, $6ND$ FLOPs. The compute-optimal ratio is about 20 tokens per parameter.' }]),
-          solution: [`Compute-optimal training uses about 20 tokens per parameter: $${D} = 20${N}$.`, `$20 \\times ${m} = ${big(v)}$ billion tokens.`],
-        };
-      }
       return {
         prompt: `A training budget is $${C} = ${sciOf(budget(m))}$ FLOPs. How many billion tokens should a compute-optimal model see?`,
         answer: { kind: 'number', value: v },
@@ -96,37 +88,40 @@ export const generators: Generator[] = [
     },
   },
   {
-    id: 'trained',
+    id: 'formula',
     make(rng) {
-      const cat = rng.int(3);
-      const n = pick(rng, [1, 2, 3, 7, 8, 13, 30, 65, 70, 175, 280]) * 1e9;
-      const ratio = pick(rng, [[0.5, 1, 1.5, 2, 4, 5], [16, 20, 24], [100, 140, 200, 500, 1000, 2000]][cat]!);
-      const t = clean(n * ratio);
-      const options = ['Under-trained: too few tokens for its size', 'About compute-optimal', 'Trained well past compute-optimal: many more tokens per parameter'];
-      const bn = (x: number) => `${big(clean(x / 1e9))}\\text{ billion}`;
-      const said = `$${bn(t)} / ${bn(n)} = ${num(ratio)}$ tokens per parameter`;
+      const r = pick(rng, [10, 15, 25, 30, 40, 50, 60, 80]);
+      const k = 6 * r;
+      if (rng.int(2) === 0) {
+        const options = [`$${N} = \\sqrt{${C} / ${k}}$`, `$${N} = ${C} / ${k}$`, `$${N} = \\sqrt{${C} / 6}$`, `$${N} = \\sqrt{${C} / ${r}}$`];
+        const order = rng.shuffle([0, 1, 2, 3]);
+        const why = [
+          null,
+          `That leaves out the square. $${D}$ grows with $${N}$, so $${C} = ${k}${N}^2$, and $${N}$ is its square root.`,
+          `That leaves out the ${r} tokens per parameter: $${D} = ${r}${N}$ puts a factor of ${r} into the compute.`,
+          `That leaves out the 6 FLOPs per parameter per token: $${C} = 6${N}${D}$.`,
+        ];
+        return {
+          prompt: `Suppose compute-optimal training read ${r} tokens per parameter. Which gives the compute-optimal $${N}$ for a budget of $${C}$ FLOPs?`,
+          answer: { kind: 'choice', options: order.map((i) => options[i]!), correct: order.indexOf(0), why: order.map((i) => why[i]!) },
+          solution: [
+            `Put $${D} = ${r}${N}$ into $${C} = 6${N}${D}$: $${C} = 6${N} \\times ${r}${N} = ${k}${N}^2$.`,
+            `So $${N}^2 = ${C} / ${k}$, and $${N} = \\sqrt{${C} / ${k}}$.`,
+          ],
+        };
+      }
+      const options = [`$${C} = ${k}${N}^2$`, `$${C} = ${k}${N}$`, `$${C} = 6${N}^2$`, `$${C} = ${r}${N}^2$`];
+      const order = rng.shuffle([0, 1, 2, 3]);
+      const why = [
+        null,
+        `That treats the tokens as fixed. $${D} = ${r}${N}$ grows with $${N}$, so $${N}$ appears twice: $${N}^2$.`,
+        `That leaves out the ${r} tokens per parameter: $${D} = ${r}${N}$, not $${N}$.`,
+        `That leaves out the 6 FLOPs per parameter per token: $${C} = 6${N}${D}$.`,
+      ];
       return {
-        prompt: `A model with ${words(n)} parameters was trained on ${words(t)} tokens. Next to compute-optimal, how was it trained?`,
-        answer: {
-          kind: 'choice',
-          options,
-          correct: cat,
-          why: whys(3, cat, (i) =>
-            i === 0
-              ? `It saw ${said}, not fewer than 20.`
-              : i === 1
-                ? `It saw ${said}: ${cat === 0 ? 'far below' : 'far above'} 20.`
-                : `It saw ${said}, not more than 20.`,
-          ),
-        },
-        solution: [
-          `Tokens per parameter: ${said}.`,
-          cat === 0
-            ? 'Far below 20: the same compute would have bought a lower loss with a smaller model trained on more tokens.'
-            : cat === 1
-              ? 'Close to 20: about the split that gives the lowest loss for its compute.'
-              : 'Far above 20: a smaller model than this budget would choose, trained much longer. It costs extra training, and every forward pass afterwards is cheaper.',
-        ],
+        prompt: `Suppose compute-optimal training read ${r} tokens per parameter. What budget does a compute-optimal model of $${N}$ parameters take?`,
+        answer: { kind: 'choice', options: order.map((i) => options[i]!), correct: order.indexOf(0), why: order.map((i) => why[i]!) },
+        solution: [`Compute-optimal means $${D} = ${r}${N}$.`, `$${C} = 6${N}${D} = 6${N} \\times ${r}${N} = ${k}${N}^2$ FLOPs.`],
       };
     },
   },

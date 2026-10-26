@@ -1,0 +1,24 @@
+{
+ "duration": 151.71,
+ "scenes": {
+  "factor": [0.0, 55.994],
+  "race": [55.994, 92.845],
+  "try": [92.845, 151.71]
+ },
+ "beats": {
+  "factor/bowl": [0.7, 16.917, "Take the simplest function to walk down, a bowl: f of x equals a x squared, where a, a positive number, sets how steep it is. Its minimum is at zero. Here a is one, and x starts at one.", [[2.12, 2.43], [3.19, 3.54], [4.04, 4.67], [7.08, 7.5], [8.19, 8.4], [9.33, 9.6], [10.93, 11.48], [12.96, 13.51], [13.91, 14.08], [15.0, 15.3]]],
+  "factor/grad": [17.297, 29.138, "Its gradient is two a x. So one step takes x to x, minus eta times two a x. That step size, eta, is called the learning rate.", [[19.597, 20.037], [25.277, 25.727], [27.317, 27.567], [28.927, 29.107]]],
+  "factor/factor": [29.518, 41.117, "Pull out the x, and every step just multiplies x by the same factor: one minus two a eta. With eta at zero point three, that is zero point four.", [[30.558, 30.818], [34.368, 34.768], [36.718, 37.288], [39.108, 39.418]]],
+  "factor/repeat": [41.497, 54.894, "So from one, x goes to zero point four. The next step multiplies by zero point four again, to zero point one six, then to zero point zero six four: the same factor, every step.", [[42.507, 42.857], [44.647, 45.257], [48.157, 48.417], [49.827, 50.177], [52.417, 52.807], [53.807, 54.087]]],
+  "race/small": [56.694, 66.022, "With a learning rate of zero point zero five, the factor is zero point nine. Each step keeps ninety percent of x, and the ball creeps.", [[59.344, 59.634], [61.544, 62.124], [64.524, 64.784]]],
+  "race/good": [66.402, 73.2, "With zero point three, the factor is zero point four. x shrinks fast and slides straight in.", [[67.762, 68.002], [69.882, 70.392]]],
+  "race/zig": [73.58, 83.463, "With zero point eight, the factor is minus zero point six. Each step overshoots to the other side, but lands closer: it zigzags in.", [[74.87, 75.12], [77.61, 78.15], [80.42, 80.65], [81.74, 82.25]]],
+  "race/big": [83.843, 91.745, "With one point one, the factor is minus one point two. Every overshoot lands farther out, and the steps blow up.", [[85.053, 85.283], [87.483, 88.073], [90.193, 90.443]]],
+  "try/p1": [93.545, 102.416, "Try one: f of x is four x squared, x is three, and eta is zero point one. Where does one step land?", [[94.155, 94.735], [96.695, 97.135], [98.145, 98.445], [100.325, 100.865]]],
+  "try/a1": [102.796, 114.83, "The gradient is two times four times three: twenty-four. The step is zero point one times that, two point four. So x goes from three to zero point six.", [[105.526, 106.026], [106.716, 107.326], [109.836, 110.246], [111.086, 111.576], [113.376, 113.526]]],
+  "try/check": [115.21, 125.507, "Check with the factor: one minus two times four times zero point one is zero point two, and zero point two times three is zero point six.", [[116.34, 116.99], [120.25, 120.48], [121.62, 122.05], [124.04, 124.22]]],
+  "try/two": [125.887, 135.913, "And after two steps? The second step multiplies by the same zero point two: zero point two times zero point six is zero point one two.", [[127.147, 127.717], [131.107, 131.687], [134.157, 134.367]]],
+  "try/where": [136.293, 149.489, "So what does x do over the next steps? The factor, zero point two, is between zero and one, well below one: x keeps its sign and shrinks fast. It slides straight in.", [[138.853, 139.433], [141.283, 141.553], [143.213, 143.533], [144.553, 145.103], [147.603, 148.013]]],
+  "try/turn": [149.869, 150.61, "Your turn.", []]
+ }
+}

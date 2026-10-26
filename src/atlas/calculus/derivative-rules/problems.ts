@@ -3,17 +3,6 @@ import type { Rng } from '../../../core/rand';
 import { int, num, pick } from '../../kit';
 import { cleanTraps, dPoly, evalPoly, joinSigned, paren, polyExpr, polyTex, type Term } from '../kit';
 
-/** A polynomial whose terms have distinct powers, highest first, ending in a constant. */
-function poly(rng: Rng, d: number, top = d < 0.65 ? 4 : 5, constant = d >= 0.3): Term[] {
-  const nTerms = d < 0.3 ? 1 : d < 0.65 ? 2 : 3;
-  const coef = () => (d < 0.3 ? int(rng, 1, 5) : int(rng, 1, 6) * (d < 0.65 && rng.int(3) ? 1 : pick(rng, [1, -1])));
-  const powers = [5, 4, 3, 2, 1].filter((n) => n <= top && n >= (nTerms === 1 ? 2 : 1));
-  const chosen = rng.shuffle(powers).slice(0, nTerms).sort((a, b) => b - a);
-  const ts = chosen.map((n) => ({ c: coef(), n }));
-  if (constant) ts.push({ c: int(rng, 1, 9) * (d < 0.65 ? 1 : pick(rng, [1, -1])), n: 0 });
-  return ts;
-}
-
 /** One sentence per term: what the power rule does to it. */
 function termStep(t: Term): string {
   const tex = polyTex([t]);
@@ -24,18 +13,6 @@ function termStep(t: Term): string {
 }
 
 export const generators: Generator[] = [
-  {
-    id: 'power',
-    make(rng, d) {
-      const ts = poly(rng, d);
-      const dts = dPoly(ts);
-      return {
-        prompt: `What is the derivative of $\\symf(\\symx) = ${polyTex(ts)}$?`,
-        answer: { kind: 'expr', value: polyExpr(dts), vars: ['x'] },
-        solution: [...ts.map(termStep), `${ts.length > 1 ? 'Add the pieces: ' : 'So '}$\\symf'(\\symx) = ${polyTex(dts)}$.`],
-      };
-    },
-  },
   {
     id: 'exp-log',
     make(rng, d) {
@@ -86,42 +63,9 @@ export const generators: Generator[] = [
     },
   },
   {
-    id: 'value',
-    make(rng, d) {
-      const ts = poly(rng, d, 3, true);
-      const x = d < 0.5 ? int(rng, 1, 2) : pick(rng, [-2, -1, 1, 2, 3]);
-      const withLn = d >= 0.6 && x > 0 && rng.int(2) === 0;
-      const lnC = withLn ? x * int(rng, 1, 4) : 0;
-      const dts = dPoly(ts);
-      const v = evalPoly(dts, x) + (withLn ? lnC / x : 0);
-      const c0 = ts.find((t) => t.n === 0)?.c ?? 0;
-      const fTex = polyTex(ts) + (withLn ? ` + ${lnC}\\ln \\symx` : '');
-      const noLower = ts.reduce((a, t) => a + (t.n > 0 ? t.c * t.n * x ** t.n : 0), 0) + (withLn ? lnC / x : 0);
-      const fx = withLn ? null : evalPoly(ts, x);
-      const traps = [
-        { value: noLower, why: `That multiplies by the power but keeps it: $n\\symx^{n}$ instead of $n\\symx^{n-1}$. The power drops by one.` },
-        { value: v + c0, why: `That keeps the constant ${c0}. A constant is flat, so its derivative is 0.` },
-        ...(fx === null ? [] : [{ value: fx, why: `That is $\\symf(${x})$, the value of the function. The question asks for its slope.` }]),
-      ];
-      const dTex = polyTex(dts) + (withLn ? ` + \\dfrac{${lnC}}{\\symx}` : '');
-      return {
-        prompt: `$\\symf(\\symx) = ${fTex}$. What is $\\symf'(${x})$?`,
-        answer: { kind: 'number', value: v },
-        traps: cleanTraps(traps, v),
-        solution: [
-          ...ts.map(termStep),
-          ...(withLn ? [`$${lnC}\\ln \\symx$: the derivative of $\\ln \\symx$ is $\\dfrac{1}{\\symx}$, so this is $\\dfrac{${lnC}}{\\symx}$.`] : []),
-          `So $\\symf'(\\symx) = ${dTex}$.`,
-          `Put in $\\symx = ${x}$: $\\symf'(${x}) = ${dts.map((t) => `${paren(t.c)}${t.n === 0 ? '' : ` \\cdot ${paren(x)}${t.n === 1 ? '' : `^{${t.n}}`}`}`).join(' + ')}${withLn ? ` + \\dfrac{${lnC}}{${x}}` : ''}$.`,
-          `$= ${[...dts.map((t) => paren(t.c * x ** t.n)), ...(withLn ? [String(lnC / x)] : [])].join(' + ')} = ${num(v)}$.`,
-        ],
-      };
-    },
-  },
-  {
     id: 'which-rule',
     make(rng, d) {
-      const kind = pick(rng, d < 0.4 ? ['power', 'exp', 'const'] : ['power', 'exp', 'ln', 'const']);
+      const kind = pick(rng, d < 0.4 ? ['exp', 'ln'] : ['exp', 'ln', 'power']);
       const opts: [string, string | null][] = [];
       let fTex: string;
       if (kind === 'power') {
@@ -145,7 +89,7 @@ export const generators: Generator[] = [
           [`$${a}\\symx\\, e^{${a}\\symx - 1}$`, 'That treats the exponential like a power of $\\symx$. The power rule needs $\\symx$ in the base, not in the exponent.'],
           [`$\\dfrac{e^{${a}\\symx}}{${a}}$`, `That divides by ${a}, which runs the rule backwards. The number in the power comes out in front as a factor.`],
         );
-      } else if (kind === 'ln') {
+      } else {
         const c = int(rng, 2, 9);
         fTex = `${c}\\ln \\symx`;
         opts.push(
@@ -154,15 +98,6 @@ export const generators: Generator[] = [
           [`$${c}e^{\\symx}$`, '$e^{\\symx}$ is the inverse of $\\ln \\symx$, which undoes it. The derivative is $\\dfrac{1}{\\symx}$.'],
           [`$\\dfrac{1}{${c}\\symx}$`, `That divides by ${c} instead of multiplying. A constant factor comes along unchanged: $${c} \\cdot \\dfrac{1}{\\symx}$.`],
         );
-      } else {
-        const c = int(rng, 2, 12);
-        fTex = String(c);
-        opts.push(
-          ['$0$', null],
-          [`$${c}$`, `${c} is the height of a flat line, not its slope.`],
-          ['$1$', 'A slope of 1 belongs to $\\symx$ itself, which rises one for every step. A constant does not rise at all.'],
-          [`$${c}\\symx$`, `That is the reverse: $${c}\\symx$ is what has slope ${c}.`],
-        );
       }
       return {
         prompt: `What is the derivative of $\\symf(\\symx) = ${fTex}$?`,
@@ -170,9 +105,65 @@ export const generators: Generator[] = [
         solution: [
           kind === 'power' ? 'Power rule: $\\symx^{n}$ becomes $n\\symx^{n-1}$, and a constant factor comes along.'
             : kind === 'exp' ? 'The number multiplying $\\symx$ in the power comes out in front: $e^{a\\symx}$ becomes $ae^{a\\symx}$.'
-            : kind === 'ln' ? 'The derivative of $\\ln \\symx$ is $\\dfrac{1}{\\symx}$, and a constant factor comes along.'
-            : 'A constant never changes, so its graph is flat and its slope is 0.',
+            : 'The derivative of $\\ln \\symx$ is $\\dfrac{1}{\\symx}$, and a constant factor comes along.',
           `So the derivative is ${opts[0]![0]}.`,
+        ],
+      };
+    },
+  },
+  {
+    id: 'slope-at',
+    make(rng, d) {
+      const sign = () => (d >= 0.7 ? pick(rng, [1, -1]) : 1);
+      const pow: Term | null = d >= 0.35 ? { c: int(rng, 1, 4) * sign(), n: int(rng, 1, 2) } : null;
+      const C = (k: number) => (Math.abs(k) === 1 ? '' : String(Math.abs(k)));
+      if (rng.int(2) === 0) {
+        const x = int(rng, 1, d < 0.35 ? 3 : 4);
+        const k = int(rng, 1, 4) * sign();
+        const c = k * x;
+        const dPow = pow ? evalPoly(dPoly([pow]), x) : 0;
+        const v = dPow + k;
+        const lnPart = { neg: c < 0, body: `${C(c)}\\ln \\symx` };
+        const fTex = joinSigned([...(pow ? [{ neg: pow.c < 0, body: polyTex([{ ...pow, c: Math.abs(pow.c) }]) }] : []), lnPart]);
+        const dTex = joinSigned([...(pow ? [{ neg: pow.c < 0, body: polyTex(dPoly([{ ...pow, c: Math.abs(pow.c) }])) }] : []), { neg: c < 0, body: `\\dfrac{${Math.abs(c)}}{\\symx}` }]);
+        const traps = [
+          { value: dPow + c, why: `That treats $\\ln \\symx$ like $\\symx$, whose slope is 1. The slope of $\\ln \\symx$ is $\\dfrac{1}{\\symx}$.` },
+          { value: dPow + c * x, why: `That multiplies by $\\symx$. The slope of $\\ln \\symx$ is $\\dfrac{1}{\\symx}$, so divide by ${x}.` },
+        ];
+        return {
+          prompt: `$\\symf(\\symx) = ${fTex}$. What is $\\symf'(${x})$?`,
+          answer: { kind: 'number', value: v },
+          traps: cleanTraps(traps, v),
+          solution: [
+            ...(pow ? [termStep(pow)] : []),
+            `$${c < 0 ? '-' : ''}${C(c)}\\ln \\symx$: the derivative of $\\ln \\symx$ is $\\dfrac{1}{\\symx}$, so this is $${c < 0 ? '-' : ''}\\dfrac{${Math.abs(c)}}{\\symx}$.`,
+            `So $\\symf'(\\symx) = ${dTex}$.`,
+            `Put in $\\symx = ${x}$: ${pow ? `$${num(dPow)}$ from the first term, and ` : ''}$\\dfrac{${c}}{${x}} = ${k}$${pow ? `, so $\\symf'(${x}) = ${num(dPow)} + ${paren(k)} = ${num(v)}$` : `, so $\\symf'(${x}) = ${num(v)}$`}.`,
+          ],
+        };
+      }
+      const a = d < 0.35 ? int(rng, 2, 5) : pick(rng, d < 0.7 ? [2, 3, 4, 5] : [-3, -2, 2, 3, 4]);
+      const c = d < 0.35 ? int(rng, 1, 3) : int(rng, 1, 4) * sign();
+      const ca = c * a;
+      // At 0 a linear term keeps its slope and x² contributes nothing.
+      const dPow = pow && pow.n === 1 ? pow.c : 0;
+      const v = ca + dPow;
+      const body = `e^{${a}\\symx}`;
+      const fTex = joinSigned([{ neg: c < 0, body: `${C(c)}${body}` }, ...(pow ? [{ neg: pow.c < 0, body: polyTex([{ ...pow, c: Math.abs(pow.c) }]) }] : [])]);
+      const dTex = joinSigned([{ neg: ca < 0, body: `${Math.abs(ca)}${body}` }, ...(pow ? dPoly([pow]).map((t) => ({ neg: t.c < 0, body: polyTex([{ ...t, c: Math.abs(t.c) }]) })) : [])]);
+      const traps = [
+        { value: c + dPow, why: `That leaves the ${a} where it was. The number multiplying $\\symx$ in the power comes out in front: $${body}$ becomes $${a}${body}$.` },
+        { value: c, why: `That is $\\symf(0)$, the height at 0. The question asks for the slope.` },
+      ];
+      return {
+        prompt: `$\\symf(\\symx) = ${fTex}$. What is $\\symf'(0)$?`,
+        answer: { kind: 'number', value: v },
+        traps: cleanTraps(traps, v),
+        solution: [
+          `$${c < 0 ? '-' : ''}${C(c)}${body}$: the ${a} in the power comes out in front: $${paren(c)} \\times ${paren(a)} = ${ca}$, so $${ca}${body}$.`,
+          ...(pow ? [termStep(pow)] : []),
+          `So $\\symf'(\\symx) = ${dTex}$.`,
+          `Put in $\\symx = 0$: $e^{0} = 1$, so $\\symf'(0) = ${ca}${pow ? ` + ${paren(dPow)}` : ''}${pow ? ` = ${v}` : ''}$.`,
         ],
       };
     },

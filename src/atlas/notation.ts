@@ -23,7 +23,7 @@ export const NOTATION: Record<string, Notation> = {
     name: 'partial derivative',
     about: 'A curly d, read “partial”. ∂f/∂x is how fast f changes when only x moves, with every other input held still.',
     glyph: String.raw`\partial f / \partial x`,
-    from: ['gradient'],
+    from: ['partials'],
   },
   nabla: {
     tex: /\\nabla/,
@@ -39,7 +39,7 @@ export const NOTATION: Record<string, Notation> = {
     name: 'derivative',
     about: 'dz/dx, read “d z, d x”: how fast z changes per tiny change in x.',
     glyph: String.raw`\frac{dz}{dx}`,
-    from: ['chain-rule'],
+    from: ['chain-slopes'],
   },
   prime: {
     tex: /[A-Za-z]'\(|\\prime/,
@@ -47,7 +47,7 @@ export const NOTATION: Record<string, Notation> = {
     name: 'prime: the derivative',
     about: 'f′(x), read “f prime of x”: the slope of f at x.',
     glyph: String.raw`f'(x)`,
-    from: ['derivative'],
+    from: ['slope'],
   },
   delta: {
     tex: /\\Delta/,
@@ -63,7 +63,7 @@ export const NOTATION: Record<string, Notation> = {
     name: 'is about',
     about: 'A wavy equals sign: the two sides are nearly equal.',
     glyph: String.raw`\approx`,
-    from: ['derivative', 'exp-log'],
+    from: ['e-and-ln', 'derivative'],
   },
   sum: {
     tex: /\\sum/,
@@ -79,7 +79,7 @@ export const NOTATION: Record<string, Notation> = {
     name: 'square root',
     about: '√a is the positive number whose square is a.',
     glyph: String.raw`\sqrt{a}`,
-    from: ['minibatch', 'adam', 'weight-init', 'bptt'],
+    from: ['minibatch', 'adam', 'variance-sum', 'bptt'],
   },
   norm: {
     tex: /\\lVert|\\\|/,
@@ -135,7 +135,7 @@ export const NOTATION: Record<string, Notation> = {
     name: 'arrow',
     about: 'Points from what goes in to what comes out, or toward a limit: “goes to”.',
     glyph: String.raw`\to`,
-    from: ['derivative-rules', 'matvec', 'cross-entropy'],
+    from: ['matvec', 'power-rule', 'cross-entropy'],
   },
   neq: {
     tex: /\\ne(?![a-z])|\\neq/,
@@ -200,7 +200,7 @@ export const NOTATION: Record<string, Notation> = {
     name: 'max and min',
     about: 'max(a, b) is the larger of a and b; min(a, b) the smaller.',
     glyph: String.raw`\max`,
-    from: ['argmax', 'comp-graph', 'hinge-loss', 'neuron', 'pooling'],
+    from: ['argmax', 'hinge-loss', 'neuron', 'pooling', 'comp-graph'],
   },
   argmax: {
     word: true,
@@ -218,7 +218,7 @@ export const NOTATION: Record<string, Notation> = {
     name: 'logarithm',
     about: 'ln y asks: e to what power gives y? log₁₀ asks the same of 10.',
     glyph: String.raw`\ln`,
-    from: ['exp-log'],
+    from: ['e-and-ln'],
   },
   exp: {
     tex: /(^|[^\w\\])e\^|\\exp/,
@@ -226,6 +226,6 @@ export const NOTATION: Record<string, Notation> = {
     name: 'e to a power',
     about: 'e is about 2.718. eˣ is e multiplied by itself x times, defined for every x.',
     glyph: String.raw`e^x`,
-    from: ['exp-log'],
+    from: ['e-and-ln'],
   },
 };

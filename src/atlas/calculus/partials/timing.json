@@ -1,0 +1,23 @@
+{
+ "duration": 170.853,
+ "scenes": {
+  "partials": [0.0, 64.236],
+  "mixed": [64.236, 122.525],
+  "worked": [122.525, 170.853]
+ },
+ "beats": {
+  "partials/two": [0.7, 12.251, "Many functions take more than one input. Here f of u and v is u squared plus two v squared: a bowl, seen from above as rings of equal height.", [[3.16, 3.71], [4.08, 4.34], [5.76, 5.95], [8.33, 8.89], [9.45, 9.74]]],
+  "partials/du": [12.631, 30.605, "Hold v fixed and move only u. Along that line f is an ordinary curve, and its slope is the partial derivative in u, written partial f, partial u. The curly d, read \u201cpartial\u201d, means only u moves, with v held still.", [[13.901, 14.061], [15.381, 16.011], [18.541, 18.881], [21.521, 21.871], [22.241, 22.431], [23.191, 23.381], [24.171, 24.841], [25.831, 26.111], [26.401, 26.581], [27.111, 27.481], [28.991, 29.241]]],
+  "partials/terms": [30.985, 47.536, "Take f term by term. u squared gives two u. Two v squared does not change while v is held, so it is a constant, and gives zero. So partial f, partial u is two u: two, at the point one, one.", [[31.725, 31.895], [32.875, 33.405], [35.175, 35.775], [38.745, 39.005], [40.285, 40.455], [41.335, 41.865], [44.905, 45.395], [45.755, 46.065], [46.655, 46.805]]],
+  "partials/dv": [47.916, 63.136, "Hold u fixed instead. Now u squared is the constant, and gives zero, while two v squared gives four v. So partial f, partial v is four v: four here. Each input has its own slope.", [[49.426, 50.056], [50.466, 50.636], [52.276, 52.446], [53.306, 53.676], [55.776, 56.326], [59.386, 59.796], [60.576, 61.126]]],
+  "mixed/mix": [64.936, 75.379, "Some terms mix the inputs. Take f of u and v is u squared plus three u v, at the point u equals one, v equals two.", [[66.826, 67.336], [67.636, 67.786], [69.146, 69.306], [71.766, 72.146], [73.886, 74.146]]],
+  "mixed/held": [75.759, 89.505, "For the partial in u, hold v at two. Then three u v is three times two times u: six u, a line in u with slope six. And six is three times v.", [[77.179, 77.509], [78.849, 79.409], [81.009, 81.189], [83.319, 83.849], [84.509, 84.909], [86.989, 87.499]]],
+  "mixed/pu": [89.885, 105.574, "So a held v acts as a number multiplying u, and three u v gives three v. With u squared giving two u, partial f, partial u is two u plus three v: two plus six, eight.", [[93.615, 93.965], [95.305, 95.465], [96.355, 97.015], [99.095, 99.485], [101.275, 101.465], [103.395, 103.935], [104.855, 105.185]]],
+  "mixed/pv": [105.954, 121.425, "For the partial in v, hold u at one. u squared is a constant, giving zero. Three u v is three v, giving three, which is three u. So partial f, partial v is three u: three.", [[107.344, 107.654], [109.014, 109.604], [111.194, 111.444], [112.224, 112.774], [114.764, 115.034], [115.784, 116.014], [117.024, 117.514], [119.614, 119.784], [120.584, 120.984]]],
+  "worked/p": [123.225, 134.429, "Try one. f of u and v is u squared v, plus two v squared, plus three u. What is partial f, partial u at two, one?", [[123.835, 124.505], [126.385, 126.575], [127.605, 127.825], [129.095, 129.325], [130.295, 130.965], [133.175, 133.325]]],
+  "worked/du": [134.809, 150.634, "Hold v. u squared v is v times u squared, so it gives v times two u: two u v. Two v squared gives zero, and three u gives three. Two times two times one, plus three: seven.", [[136.919, 137.129], [138.759, 139.179], [141.159, 141.589], [142.509, 143.069], [144.769, 145.119], [146.639, 147.159], [148.859, 149.089], [149.699, 150.139]]],
+  "worked/q": [151.014, 154.354, "And partial f, partial v at the same point?", []],
+  "worked/dv": [154.734, 168.633, "Hold u. u squared v is u squared times v, so it gives u squared. Two v squared gives four v, and three u gives zero. Two squared, plus four times one: eight.", [[155.454, 156.024], [158.794, 159.094], [160.514, 161.044], [162.944, 163.304], [165.014, 165.584], [166.264, 166.544], [167.834, 168.264]]],
+  "worked/turn": [169.013, 169.753, "Your turn.", []]
+ }
+}

@@ -1,11 +1,10 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
-import { axes, ball, curve, frame, series, xTicks, yTicks, type Frame } from '../draw';
+import { axes, ball, curve, frame, xTicks, yTicks, type Frame } from '../draw';
 
 const PEAK = 0.1;
 const K = 1000;
 const END = 4000;
-const decay = (t: number) => 0.5 * PEAK * (1 + Math.cos((Math.PI * t) / END));
 const warm = (t: number) => (t < K ? (PEAK * t) / K : 0.5 * PEAK * (1 + Math.cos((Math.PI * (t - K)) / (END - K))));
 const k1 = (t: number) => (t === 0 ? '0' : `${t / 1000}k`);
 /** Eased 0 -> 1 from a fraction `f` of the way through beat `id`, so it tracks the voice at any pace. */
@@ -21,76 +20,6 @@ function pin(s: Scene, F: Frame, x: number, y: number, a: number): void {
     ball(s, F.X(x), F.Y(y), 'slate', 1.4);
   });
 }
-
-const warmup: SceneDef = {
-  draw(s) {
-    const F = frame(16 * s.u, s.h * 0.1, s.w - 7 * s.u, s.h - 9 * s.u, [0, END], [0, 0.12]);
-    axes(s, F, 'step', 'η', { x: '--ink-3', y: 'slate' });
-    xTicks(s, F, [1000, 2000, 3000], k1);
-    yTicks(s, F, [0.05, 0.1]);
-    const m = s.ease('ramp', 1.2);
-    const f = (t: number) => (1 - m) * decay(t) + m * warm(t);
-    curve(s, F, f, 0, END, 'slate', { width: 0.7, upto: s.ease('why', 1.5) });
-    s.alpha(s.win('why', 'ramp'), () => {
-      s.text('big steps early', F.X(300), F.Y(0.112), { size: 3.2, align: 'left', color: s.c('--ink-2'), halo: true });
-      s.text('small steps late', F.X(3900), F.Y(0.022), { size: 3.2, align: 'right', color: s.c('--ink-2'), halo: true });
-    });
-    s.alpha(s.ease('ramp', 0.6, 1.2), () => {
-      s.line(F.X(K), F.t, F.X(K), F.b, s.tint('gold', 0.6), 0.3, [1.2, 1]);
-      s.text('k: warmup ends', F.X(K) + 1.5 * s.u, F.t + 2 * s.u, { size: 3.2, font: 'mono', align: 'left', color: s.c('gold'), halo: true });
-    });
-    const exA = 1 - s.ease('reason', 0.5);
-    pin(s, F, 250, 0.025, s.ease('ex', 0.6, 1.5) * exA);
-    s.alpha(s.ease('ex', 0.6, 2.5) * exA, () => {
-      s.text('step 250: 0.025', F.X(250) + 3 * s.u, F.Y(0.025) + 0.5 * s.u, { size: 3.2, font: 'mono', align: 'left', color: s.c('--ink'), halo: true });
-    });
-    s.alpha(s.ease('reason', 0.6, 1), () => {
-      s.text('big gradients:', F.X(1250), F.Y(0.03), { size: 3.2, align: 'left', color: s.c('gold'), halo: true });
-      s.text('small steps first', F.X(1250), F.Y(0.03) + 4 * s.u, { size: 3.2, align: 'left', color: s.c('gold'), halo: true });
-    });
-  },
-};
-
-const STAIR: [number, number][] = [[0, -1], [10, -1], [10, -2], [20, -2], [20, -3], [30, -3]];
-
-/** Linear decay from 0.1 to 0 over T, sampled at quarters. */
-const LIN = [0, 0.25, 0.5, 0.75, 1].map((x) => [x, 0.1 * (1 - x)] as [number, number]);
-const quarter = (x: number) => (x === 1 ? 't = T' : x === 0.5 ? 'T/2' : x === 0.25 ? 'T/4' : '3T/4');
-
-const steps: SceneDef = {
-  draw(s) {
-    const lin = s.ease('linear', 0.6);
-    s.alpha(1 - lin, () => {
-      const F = frame(17 * s.u, s.h * 0.1, s.w - 7 * s.u, s.h - 9 * s.u, [0, 30], [-3.4, -0.6]);
-      axes(s, F, 'step', 'η', { x: '--ink-3', y: 'slate' });
-      xTicks(s, F, [10, 20], (x) => `${x}k`);
-      yTicks(s, F, [-1, -2, -3], (y) => String(10 ** y));
-      s.text('log scale', F.l + 6 * s.u, F.t + 2 * s.u, { size: 2.8, font: 'mono', align: 'left', color: s.c('--ink-3') });
-      series(s, F, STAIR, 'slate', { upto: Math.max(0, Math.min(1, (s.since('rule') - 0.3) / 3)), width: 0.7 });
-      s.alpha(s.ease('rule', 0.6, 2.5), () => {
-        for (const x of [10, 20]) s.text('×0.1', F.X(x) + 1.5 * s.u, F.Y(x === 10 ? -1.5 : -2.5), { size: 3.2, font: 'mono', align: 'left', color: s.c('gold'), halo: true });
-      });
-      pin(s, F, 15, -2, s.ease('ex', 0.6, 2.5));
-      s.alpha(s.ease('ex', 0.6, 3), () => s.text('step 15k: 0.01', F.X(15), F.Y(-2) - 4 * s.u, { size: 3.2, font: 'mono', color: s.c('--ink'), halo: true }));
-      pin(s, F, 25, -3, s.ease('ex', 0.6, 5));
-      s.alpha(s.ease('ex', 0.6, 5.5), () => s.text('step 25k: 0.001', F.X(25), F.Y(-3) - 4 * s.u, { size: 3.2, font: 'mono', align: 'right', color: s.c('--ink'), halo: true }));
-    });
-    s.alpha(lin, () => {
-      const F = frame(17 * s.u, s.h * 0.1, s.w - 12 * s.u, s.h - 9 * s.u, [0, 1], [0, 0.12]);
-      axes(s, F, '', 'η', { x: '--ink-3', y: 'slate' });
-      xTicks(s, F, [0.25, 0.5, 0.75, 1], quarter);
-      yTicks(s, F, [0.05, 0.1]);
-      curve(s, F, (x) => 0.1 * (1 - x), 0, 1, 'slate', { width: 0.7, upto: s.ease('linear', 1.5, 0.3) });
-      LIN.forEach(([x, y], i) => {
-        s.alpha(after(s, 'linear', 0.5 + 0.1 * i), () => {
-          ball(s, F.X(x), F.Y(y), 'slate', 1.3);
-          mono(s, String(Math.round(y * 1000) / 1000), F.X(x) + 2 * s.u, F.Y(y) - 3 * s.u, '--ink', 'left');
-        });
-      });
-      s.alpha(after(s, 'linear', 0.35), () => mono(s, 'the same drop, 0.025, each time', F.X(0.98), F.Y(0.112), 'gold', 'right'));
-    });
-  },
-};
 
 /** The curve at x = t / T: the cosine, morphing into (1 + cos) / 2 as `m` goes 0 to 1. */
 const shape = (x: number, m: number) => lerp(Math.cos(Math.PI * x), (1 + Math.cos(Math.PI * x)) / 2, m);
@@ -148,6 +77,29 @@ const cosine: SceneDef = {
   },
 };
 
+const both: SceneDef = {
+  draw(s) {
+    const F = frame(16 * s.u, s.h * 0.1, s.w - 7 * s.u, s.h - 9 * s.u, [0, END], [0, 0.12]);
+    axes(s, F, 'step', 'η', { x: '--ink-3', y: 'slate' });
+    xTicks(s, F, [1000, 2500], k1);
+    yTicks(s, F, [0.05, 0.1]);
+    curve(s, F, warm, 0, END, 'slate', { width: 0.7, upto: s.ease('both', 2, 0.3) });
+    s.alpha(s.ease('both', 0.6, 1), () => {
+      s.line(F.X(K), F.t, F.X(K), F.b, s.tint('gold', 0.6), 0.3, [1.2, 1]);
+      mono(s, 'k = 1,000', F.X(K) + 1.5 * s.u, F.Y(0.007), 'gold', 'left');
+      mono(s, 'warmup', F.X(450), F.Y(0.09), '--ink-2');
+    });
+    s.alpha(after(s, 'both', 0.55), () => mono(s, 'cosine over the next T = 3,000', F.X(2550), F.Y(0.113), '--ink-2'));
+    s.alpha(after(s, 'ex', 0.3), () => {
+      const y = F.Y(0.022);
+      s.arrow(F.X(K), y, F.X(2500), y, s.c('gold'), 0.35, 1.4);
+      mono(s, '1,500 = T/2', F.X(1750), y - 3 * s.u, 'gold');
+    });
+    pin(s, F, 2500, warm(2500), after(s, 'ex', 0.6));
+    s.alpha(after(s, 'ex', 0.7), () => mono(s, 'step 2.5k: 0.05', F.X(2500) + 2.5 * s.u, F.Y(0.05) - 3 * s.u, '--ink', 'left', 3.4));
+  },
+};
+
 const TRY = (t: number) => 0.01 + 0.045 * (1 + Math.cos((Math.PI * t) / 1200));
 
 const tryIt: SceneDef = {
@@ -177,4 +129,4 @@ const tryIt: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { warmup, steps, cosine, try: tryIt };
+export const scenes: Record<string, SceneDef> = { cosine, both, try: tryIt };

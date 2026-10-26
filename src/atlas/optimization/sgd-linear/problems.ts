@@ -56,56 +56,23 @@ export const generators: Generator[] = [
     },
   },
   {
-    id: 'dW-entry',
-    make(rng, d) {
-      const o = setup(rng, d);
-      const i = rng.int(2);
-      const j = rng.int(2);
-      const v = clean(o.ds[i]! * o.x[j]!);
-      return {
-        prompt: `${given(o)} For the cross-entropy loss $\\symL$, what is $\\partial \\symL / \\partial ${Wij(i, j)}$?`,
-        answer: { kind: 'number', value: v },
-        traps: traps(v, [
-          ...(i === o.y ? [{ value: o.p[i]! * o.x[j]!, why: `That uses $\\symp_{${i}}$ as the score gradient. Class ${i} is the correct class, so its entry is $\\symp_{${i}} - 1$.` }] : []),
-          ...(i !== j ? [{ value: o.ds[j]! * o.x[i]!, why: `That swaps row and column. Row ${i} belongs to class ${i} and column ${j} to feature ${j}: $d\\syms_{${i}}\\, \\symx_{${j}}$.` }] : []),
-          { value: o.ds[i]!, why: `That is the score gradient alone, the bias's gradient. A weight's gradient also multiplies by its input, $\\symx_{${j}}$.` },
-          { value: -v, why: 'That has the wrong sign. The score gradient is $d\\syms = \\symp - \\mathrm{onehot}(\\symy)$, not the other way round.' },
-        ]),
-        solution: [
-          dsStep(o),
-          `Score ${i} is $\\symW_{${i},0}\\symx_0 + \\symW_{${i},1}\\symx_1 + \\symb_{${i}}$, so nudging $${Wij(i, j)}$ moves it by $\\symx_{${j}}$ times as much.`,
-          `Chain rule: $\\partial \\symL / \\partial ${Wij(i, j)} = d\\syms_{${i}}\\, \\symx_{${j}} = ${paren(o.ds[i]!)} \\times ${paren(o.x[j]!)} = ${num(v)}$.`,
-        ],
-      };
-    },
-  },
-  {
     id: 'bias',
     make(rng, d) {
       const o = setup(rng, d);
-      const after = d >= 0.5;
-      const v = after ? o.b.map((b, i) => clean(b - o.eta * o.ds[i]!)) : o.ds;
+      const v = o.b.map((b, i) => clean(b - o.eta * o.ds[i]!));
       return {
-        prompt: `${given(o)} The biases are $\\symb = ${vec(o.b)}$. ${after ? `After one SGD step with $\\symeta = ${num(o.eta)}$, what is $\\symb$?` : 'For the cross-entropy loss $\\symL$, what is $\\partial \\symL / \\partial \\symb$?'}`,
+        prompt: `${given(o)} The biases are $\\symb = ${vec(o.b)}$. After one SGD step with $\\symeta = ${num(o.eta)}$, what is $\\symb$?`,
         answer: { kind: 'vector', value: v },
-        traps: vtraps(
-          v,
-          after
-            ? [
-                { value: o.b.map((b, i) => b + o.eta * o.ds[i]!), why: 'That adds $\\symeta\\, d\\symb$: a step uphill. SGD subtracts it.' },
-                { value: o.b.map((b, i) => b - o.ds[i]!), why: 'That subtracts the whole gradient, leaving out $\\symeta$.' },
-                { value: o.b.map((b, i) => b - o.eta * o.p[i]!), why: 'That uses $\\symp$ as the gradient. The correct class\'s entry is $\\symp_{\\symy} - 1$.' },
-              ]
-            : [
-                { value: o.p, why: 'That is $\\symp$ unchanged. Subtract the one-hot label: 1 comes off the correct class\'s entry.' },
-                { value: o.ds.map((x) => -x), why: 'That has the signs flipped. The gradient is $\\symp - \\mathrm{onehot}(\\symy)$, negative at the correct class.' },
-                { value: o.ds.map((x, i) => x * o.x[i]!), why: 'That multiplies by $\\symx$, which belongs in the weights\' gradient. A bias adds straight into its score, so its gradient is just the score gradient.' },
-              ],
-        ),
+        traps: vtraps(v, [
+          { value: o.b.map((b, i) => b + o.eta * o.ds[i]!), why: 'That adds $\\symeta\\, d\\symb$: a step uphill. SGD subtracts it.' },
+          { value: o.b.map((b, i) => b - o.ds[i]!), why: 'That subtracts the whole gradient, leaving out $\\symeta$.' },
+          { value: o.b.map((b, i) => b - o.eta * o.p[i]!), why: 'That uses $\\symp$ as the gradient. The correct class\'s entry is $\\symp_{\\symy} - 1$.' },
+          { value: o.b.map((b, i) => b - o.eta * o.ds[i]! * o.x[i]!), why: 'That multiplies by $\\symx$, which belongs in the weights\' gradient. A bias adds straight into its score, so its gradient is just the score gradient.' },
+        ]),
         solution: [
-          'Each bias adds straight into its own score, so its gradient is that score\'s gradient: $\\partial \\symL / \\partial \\symb = \\symp - \\mathrm{onehot}(\\symy)$. Neither $\\symW$ nor $\\symx$ enters.',
+          'Each bias adds straight into its own score, so its gradient is that score\'s gradient: $\\partial \\symL / \\partial \\symb = \\symp - \\mathrm{onehot}(\\symy)$.',
           dsStep(o),
-          ...(after ? o.b.map((b, k) => `Entry ${k} steps against its own gradient: $\\symb_{${k}} - \\symeta\\, d\\syms_{${k}} = ${num(b)} - ${num(o.eta)} \\times ${paren(o.ds[k]!)} = ${minus(b, clean(o.eta * o.ds[k]!))} = ${num(v[k]!)}$.`) : []),
+          ...o.b.map((b, k) => `Entry ${k} steps against its own gradient: $\\symb_{${k}} - \\symeta\\, d\\syms_{${k}} = ${num(b)} - ${num(o.eta)} \\times ${paren(o.ds[k]!)} = ${minus(b, clean(o.eta * o.ds[k]!))} = ${num(v[k]!)}$.`),
         ],
       };
     },

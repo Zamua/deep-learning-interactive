@@ -2,43 +2,11 @@ import type { LectureScript } from '../../../lecture/types';
 
 export const script: LectureScript = {
   id: 'atlas-lr-schedule',
-  title: 'Learning rate schedules',
+  title: 'Cosine decay',
   model: 'elevenlabs/eleven-v4',
   voice: 'george',
   speed: 1,
   scenes: [
-    {
-      id: 'warmup',
-      title: 'Warmup',
-      codeTitle: 'warmup.py',
-      code: `
-        peak, k = 0.1, 1000                 #@peak
-        lr = peak * min(1, t / k)           #@ramp
-        # t = 250:  0.1 * 0.25 = 0.025      #@ex
-      `,
-      beats: [
-        { id: 'why', say: 'The learning rate does not have to stay fixed. Big steps make fast progress early on, and small steps settle in at the end.' },
-        { id: 'ramp', say: 'Many runs begin with a warmup: the rate climbs in a straight line from zero to its peak, written {ηₘₐₓ|eta max}, over the first k steps. So at step t it is the peak times t over k.', code: ['peak', 'ramp'] },
-        { id: 'ex', say: 'With a peak of {0.1|zero point one} over a thousand steps, step two hundred and fifty runs at a quarter of the peak: {0.025|zero point zero two five}.', code: 'ex' },
-        { id: 'reason', say: 'Why bother? At the start, far from any minimum, the slopes are steep and the gradients large. The full rate times a large gradient makes a huge step, which can overshoot and blow up, just as too large a rate does. So warmup eases in.', code: 'ramp' },
-      ],
-    },
-    {
-      id: 'steps',
-      title: 'Step and linear decay',
-      codeTitle: 'decay.py',
-      code: `
-        lr = 0.1 * 0.1 ** (step // 10000)        #@rule
-        # step 15,000: 0.01,  25,000: 0.001      #@ex
-        lr = hi - (hi - lo) * t / T   # linear   #@linear
-        # 0.1, 0.075, 0.05, 0.025, 0             #@linear
-      `,
-      beats: [
-        { id: 'rule', say: 'The classic decay goes in steps: multiply the rate by a factor, often {0.1|zero point one}, every so many steps.', code: 'rule' },
-        { id: 'ex', say: 'Start at {0.1|zero point one} and drop every {10,000|ten thousand} steps: step {15,000|fifteen thousand} runs at {0.01|zero point zero one}, and step {25,000|twenty-five thousand} at {0.001|zero point zero zero one}.', code: 'ex' },
-        { id: 'linear', say: 'Linear decay goes in a straight line instead, from the top rate down to the bottom one over T steps: the same drop every step. From {0.1|zero point one} to zero, sampled four times along the way: {0.075|zero point zero seven five}, {0.05|zero point zero five}, {0.025|zero point zero two five}, zero.', code: 'linear' },
-      ],
-    },
     {
       id: 'cosine',
       title: 'Cosine decay',
@@ -56,9 +24,24 @@ export const script: LectureScript = {
         { id: 'cos', say: 'Cosine decay glides along a curve called the cosine, written cos. Feed it {π|pi}, a number about {3.14|three point one four}, times t over T. As t runs from zero to T, {cos(πt/T)|the cosine of pi t over T} falls from one to minus one: slowly, then fast, then slowly.', code: 'cos' },
         { id: 'vals', say: 'Along the way, a third of the way through, it is a half. Halfway, it is zero. Three quarters of the way, it is about minus {0.71|zero point seven one}.', code: 'vals' },
         { id: 'halve', say: 'Add one and halve it, and the curve runs from one down to zero instead: a third of the way, {0.75|zero point seven five}; halfway, a half.', code: 'halve' },
-        { id: 'scale', say: 'Now stretch it across the gap from the top rate, {ηₘₐₓ|eta max}, to the bottom one, {ηₘᵢₙ|eta min}, and add the bottom. The rate at step t, {ηₜ|eta t}, is {ηₘᵢₙ|eta min} plus half the gap, times one plus the cosine.', code: 'scale' },
+        { id: 'scale', say: 'Stretch it across the gap from the top rate, {ηₘₐₓ|eta max}, to the bottom one, {ηₘᵢₙ|eta min}, and add the bottom. The rate at step t, {ηₜ|eta t}, is {ηₘᵢₙ|eta min} plus half the gap, times one plus the cosine.', code: 'scale' },
         { id: 'half', say: 'From {0.1|zero point one} down to zero, half the gap is {0.05|zero point zero five}. Halfway through, the cosine is zero, so the rate is {0.05|zero point zero five} times one: {0.05|zero point zero five}.', code: 'half' },
         { id: 'third', say: 'A third of the way in, the cosine is a half, so the rate is {0.05|zero point zero five} times {1.5|one point five}: {0.075|zero point zero seven five}.', code: 'third' },
+      ],
+    },
+    {
+      id: 'both',
+      title: 'Warmup, then cosine',
+      codeTitle: 'schedule.py',
+      code: `
+        k, T, hi, lo = 1000, 3000, 0.1, 0.0           #@both
+        if step < k: lr = hi * step / k               #@both
+        else: lr = cosine(step - k, T, hi, lo)        #@both
+        # step 2500:  1500 / 3000 = 1/2,  lr = 0.05   #@ex
+      `,
+      beats: [
+        { id: 'both', say: 'Runs often join the two: warm up over the first k steps, then decay along the cosine over the next T, counting its t from the end of the warmup.', code: 'both' },
+        { id: 'ex', say: 'Warm up to {0.1|zero point one} over a thousand steps, then decay to zero over three thousand. Step two thousand five hundred is fifteen hundred steps into the decay: halfway, where the cosine is zero. So the rate is {0.05|zero point zero five}.', code: 'ex' },
       ],
     },
     {

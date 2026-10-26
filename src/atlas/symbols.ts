@@ -294,6 +294,27 @@ const dif: SymbolMap = {
   tstep: { color: 'slate', name: 't: the noise step', tex: 't', code: [], about: 'Which step of the schedule: step 0 is the clean image, and each later step holds more noise.' },
 };
 
+const fGrad: SymbolDef = { ...grad, name: 'g: a gradient of f', about: 'One partial derivative of f per entry, laid out in the shape of what it is the gradient of.' };
+const softmaxGrad: SymbolMap = { s: scores, y: answer, p: probs, L: loss, g: { ...grad, about: 'One partial derivative per score: how fast L changes as that score is nudged.' } };
+const lrEta: SymbolMap = { g: grad, eta: { ...ATLAS_SYMBOLS.eta!, about: 'The step size: each step moves η times the gradient. Too small crawls; too large overshoots.' } };
+const termVar: SymbolDef = { color: 'orange', name: 'v: the variance of one term', about: 'How spread out each product w x is. A sum of n such terms has variance n v.' };
+const flops: SymbolDef = { ...ATLAS_SYMBOLS.Cflops!, about: 'The total arithmetic a training run does, counted in floating point operations, or FLOPs.' };
+const rho: SymbolDef = { color: 'purple', name: 'ρ: the probability ratio', tex: '\\rho', code: ['rho', 'ratio'], about: 'π / π_old: how much more likely the answer has become since it was sampled.' };
+const baseline: SymbolMap = { ...pick(rl, 'pi R theta A'), b: { color: 'gold', name: 'b: the baseline', code: ['baseline'], about: 'The reward expected before seeing the answer. A = R − b.' } };
+const temperature: SymbolMap = {
+  tau: { color: 'slate', name: 'τ: the temperature', tex: '\\tau', code: ['tau'], about: 'Similarities are divided by τ before the softmax. Small τ sharpens the contest.' },
+  s: { color: 'purple', name: 's: the row\'s scores', code: ['s', 'scores'], about: 'Each similarity divided by τ: one per candidate in the row.' },
+};
+const secondInput: SymbolDef = { color: 'orange', name: 'v: the second input', about: 'f takes two numbers, u and v. ∂f/∂v holds u still and moves only v.' };
+/** A linear recurrence's letters: hₜ = a hₜ₋₁ + b xₜ, yₜ = c hₜ. */
+const ssm: SymbolMap = {
+  h: { color: 'gold', name: 'h: the state', about: 'What the recurrence carries from step to step: hₜ = a hₜ₋₁ + b xₜ. Unrolled, a weighted sum of every input so far.' },
+  a: { color: 'teal', name: 'a: the decay', about: 'Multiplies the state at every step, so an input k steps back is weighted by aᵏ: it fades when |a| < 1 and blows up when |a| > 1.' },
+  b: { color: 'green', name: 'b: the input weight', about: 'Scales each input as it enters the state. A weight, not a bias.' },
+  c: { color: 'red', name: 'c: the output weight', about: 'Reads the state out: yₜ = c hₜ.' },
+  y: { color: 'purple', name: 'y: the output', about: 'What the recurrence reads out at each step: yₜ = c hₜ.' },
+};
+
 const sig: SymbolDef = { color: 'teal', name: 'σ: the sigmoid', tex: '\\sigma', code: [], about: 'σ(z) = 1 / (1 + e⁻ᶻ) squashes any number into the range 0 to 1, with σ(0) = 0.5.' };
 
 /**
@@ -304,8 +325,12 @@ export const SCOPED: Record<string, SymbolMap> = {
   derivative: { h: step },
   'derivative-rules': { h: step },
   'grad-check': { h: { ...step, about: 'The small nudge for the numerical slope: (f(x + h) - f(x - h)) / 2h.' } },
-  'chain-rule': { v: { color: 'orange', name: 'v: a value in the middle', about: 'The output of one function and the input of the next.' } },
+  slope: { h: step },
+  'power-rule': { h: step },
+  'chain-slopes': { v: { color: 'orange', name: 'v: a value in the middle', about: 'The output of one function and the input of the next.' } },
+  partials: { v: secondInput },
   gradient: {
+    v: secondInput,
     W: { color: 'blue', name: 'W: a grid of numbers', about: 'Numbers in rows and columns, all of them inputs to f.' },
     w: { color: 'blue', name: 'w: a vector of inputs', about: 'Several numbers fed to f at once.' },
   },
@@ -313,7 +338,8 @@ export const SCOPED: Record<string, SymbolMap> = {
   argmax: { s: scores, y: answer },
   softmax: { s: scores, p: probs },
   'cross-entropy': { s: scores, y: answer, p: probs, L: loss },
-  'softmax-grad': { s: scores, y: answer, p: probs, L: loss, g: { ...grad, about: 'One partial derivative per score: how fast L changes as that score is nudged.' } },
+  'score-grad': softmaxGrad,
+  'softmax-grad': softmaxGrad,
   'hinge-loss': { L: loss },
   'gd-step': { g: grad, eta: { ...ATLAS_SYMBOLS.eta!, name: 'η: the step size', about: 'How far each step goes, as a multiple of the gradient.' } },
   'grad-clipping': {
@@ -321,7 +347,8 @@ export const SCOPED: Record<string, SymbolMap> = {
     eta: { ...ATLAS_SYMBOLS.eta!, name: 'η: the step size', code: ['eta'], about: 'How far each step goes, as a multiple of the gradient.' },
     c: { color: 'slate', name: 'c: the clipping threshold', code: ['c'], about: 'The longest gradient allowed. A longer one is scaled down to length c, keeping its direction.' },
   },
-  'learning-rate': { g: grad, eta: { ...ATLAS_SYMBOLS.eta!, about: 'The step size: each step moves η times the gradient. Too small crawls; too large overshoots.' } },
+  'step-factor': lrEta,
+  'learning-rate': lrEta,
   minibatch: { g: grad, N: { color: 'slate', name: 'N: the number of examples', about: 'How many examples the function averages over. One pass through all N is an epoch.' } },
   'param-count': {
     D: { color: 'slate', name: 'D: the number of input features', about: 'How many numbers make up one input: 3,072 for a 32 by 32 color image. It is the number of columns of W.' },
@@ -370,6 +397,7 @@ export const SCOPED: Record<string, SymbolMap> = {
     W1: { color: 'blue', name: 'W1: the first weights', tex: 'W_1', about: 'Shape (d, 4d), applied as x @ W1: one column per output, so a column split gives each GPU some of the outputs.' },
     W2: { color: 'blue', name: 'W2: the second weights', tex: 'W_2', about: 'Shape (4d, d), applied as h @ W2: a row split gives each GPU a part of every output, to be added up.' },
   },
+  'adam-moments': pick(adamAll, 'm v beta1 beta2'),
   adam: adamAll,
   adamw: adamAll,
   moe: {
@@ -405,8 +433,10 @@ export const SCOPED: Record<string, SymbolMap> = {
     A: { color: 'blue', name: 'A: the down-projection', about: 'Shape (r, k), starting random.' },
     r: { color: 'slate', name: 'r: the rank', about: 'How narrow the change BA is: it has r(d + k) parameters instead of dk.' },
   },
+  'log-trick': pick(rl, 'pi R theta'),
   'policy-gradient': pick(rl, 'pi R theta'),
-  advantage: { ...pick(rl, 'pi R theta A'), b: { color: 'gold', name: 'b: the baseline', code: ['baseline'], about: 'The reward expected before seeing the answer. A = R − b.' } },
+  baseline,
+  advantage: baseline,
   'sigmoid-grad': { sig },
   activations: { sig },
   gan: {
@@ -421,6 +451,7 @@ export const SCOPED: Record<string, SymbolMap> = {
     ogate: { color: 'purple', name: 'o: the output gate', tex: 'o', code: [], about: 'A sigmoid, between 0 and 1: how much of the cell, through a tanh, to show as h.' },
     cand: { color: 'gold', name: 'g: the candidate', tex: 'g', code: [], about: 'A tanh, between −1 and 1: the new content proposed for the cell.' },
   },
+  'preference-loss': { r: { color: 'gold', name: 'r: the reward model\'s score', about: 'One number per answer. Only differences between two answers\' scores matter.' }, sig },
   'reward-model': { r: { color: 'gold', name: 'r: the reward model\'s score', about: 'One number per answer. Only differences between two answers\' scores matter.' }, sig },
   'kl-penalty': pick(rl, 'pi R theta piref beta'),
   distillation: {
@@ -429,7 +460,8 @@ export const SCOPED: Record<string, SymbolMap> = {
     p: { ...probs, name: 'p: the student\'s probabilities', about: 'The small network\'s softmax at the same temperature T.' },
     L: { ...loss, name: 'L: the distillation loss', about: 'Cross-entropy against the soft targets: −Σ q ln p.' },
   },
-  ppo: { ...pick(rl, 'pi piold A'), rho: { color: 'purple', name: 'ρ: the probability ratio', tex: '\\rho', code: ['rho', 'ratio'], about: 'π / π_old: how much more likely the answer has become since it was sampled.' }, eps: { color: 'slate', name: 'ε: the clip range', tex: '\\epsilon', code: ['eps'], about: 'How far ρ may move from 1 before the objective stops rewarding it, often 0.2.' } },
+  'prob-ratio': { ...pick(rl, 'pi piold A'), rho },
+  ppo: { ...pick(rl, 'pi piold A'), rho, eps: { color: 'slate', name: 'ε: the clip range', tex: '\\epsilon', code: ['eps'], about: 'How far ρ may move from 1 before the objective stops rewarding it, often 0.2.' } },
   dpo: { ...pick(rl, 'pi piref beta'), yw: { color: 'green', name: 'y_w: the chosen answer', tex: 'y_w', about: 'The answer people preferred.' }, yl: { color: 'red', name: 'y_l: the rejected answer', tex: 'y_l', about: 'The answer people passed over.' }, sig },
   grpo: { A: rl.A!, G: { color: 'slate', name: 'G: the group size', about: 'How many answers are sampled for one prompt.' }, r: { color: 'gold', name: 'r: an answer\'s reward', about: '1 when the answer checks out, 0 when it does not.' } },
   unembedding: {
@@ -451,13 +483,12 @@ export const SCOPED: Record<string, SymbolMap> = {
     eps: { ...dif.eps!, about: 'Standard normal noise: mean 0, spread 1.' },
     z: { color: 'purple', name: 'z: the sampled code', about: 'z = μ + σε: a code drawn near μ, which the decoder turns back into an input.' },
   },
-  contrastive: {
-    tau: { color: 'slate', name: 'τ: the temperature', tex: '\\tau', code: ['tau'], about: 'Similarities are divided by τ before the softmax. Small τ sharpens the contest.' },
-    s: { color: 'purple', name: 's: the row\'s scores', code: ['s', 'scores'], about: 'Each similarity divided by τ: one per candidate in the row.' },
-  },
+  'contrastive-loss': temperature,
+  contrastive: temperature,
   clip: { N: { color: 'slate', name: 'N: the pairs in the batch', about: 'N images and their N captions. Each row has 1 right caption and N − 1 wrong ones.' } },
   'diffusion-noise': pick(dif, 'x0 xt eps ab tstep'),
   'diffusion-loss': pick(dif, 'x0 xt eps ab epshat tstep'),
+  rotation: pick(att, 'q k'),
   rope: {
     ...pick(att, 'q k dk'),
     theta: { color: 'orange', name: 'θ: the turn per position', tex: '\\theta', code: ['theta'], about: 'The angle a pair turns for each step of position: at position m it turns by mθ. Each pair has its own θ.' },
@@ -498,14 +529,16 @@ export const SCOPED: Record<string, SymbolMap> = {
     wg: { color: 'gold', name: 'w: the guidance scale', tex: 'w', code: ['scale'], about: 'How far to step along ε_c − ε_u. 1 is the plain prompted guess; larger follows the prompt harder.' },
   },
   quantization: { w: { color: 'blue', name: 'w: the weights to store', about: 'Each one is kept as an integer q times the scale s.' } },
-  'weight-init': { v: { color: 'orange', name: 'v: the variance of one term', about: 'How spread out each product w x is. A sum of n such terms has variance n v.' } },
+  'variance-sum': { v: termVar },
   momentum: {
     v: { color: 'orange', name: 'v: the velocity', about: 'A running blend of past gradients. Momentum steps along v instead of the latest gradient, so steady directions build speed and noise cancels out.' },
     mu: { color: 'orange', name: 'μ: the momentum coefficient', tex: '\\mu', about: 'The share of the velocity that survives each step, often 0.9: one minus friction.' },
   },
 
-  'matmul-grad': { g: { ...grad, name: 'g: a gradient of f', about: 'One partial derivative of f per entry, laid out in the shape of what it is the gradient of.' } },
-  'power-laws': { Cflops: { ...ATLAS_SYMBOLS.Cflops!, about: 'The total arithmetic a training run does, counted in floating point operations, or FLOPs.' } },
+  'weight-grad': { g: fGrad },
+  'matmul-grad': { g: fGrad },
+  'log-log': { Cflops: flops },
+  'power-laws': { Cflops: flops },
   neuron: { b: { color: 'green', name: 'b: the bias', about: 'One number added to the weighted sum. It shifts where the neuron switches on.' } },
   residual: { g: { ...grad, name: 'g: the gradient arriving at y', about: 'How much the final output moves per nudge of the block\'s output y.' } },
   'conv-output-size': { F: { ...ATLAS_SYMBOLS.F!, about: 'A filter covers F positions along each side of the input. 3 is the usual choice.' } },
@@ -514,6 +547,40 @@ export const SCOPED: Record<string, SymbolMap> = {
     alpha: { color: 'teal', name: 'α: the attention weights', tex: '\\alpha', code: ['alpha', 'weights'], about: 'The softmax of the scores: positive, adding up to one.' },
   },
   sampling: { s: { ...scores, name: 's: the next-token scores', about: 'One number per token in the vocabulary. Softmax turns them into probabilities.' } },
+  'linear-recurrence': ssm,
+  'selective-ssm': {
+    ...ssm,
+    a: { color: 'teal', name: 'aₜ: the decay at step t', about: 'aₜ = e^(−Δₜ), set by each input: near 0 forgets the old state, near 1 keeps it.' },
+    Delta: { color: 'slate', name: 'Δ: the step size', tex: '\\Delta', code: ['dt'], about: 'Computed from each input by a small learned layer, always positive. A big step gives a decay near 0, a small one a decay near 1.' },
+    d: att.d!,
+  },
+  'latent-attention': {
+    ...pick(att, 'q k v d heads dhead x'),
+    kvheads: { color: 'slate', name: 'g: the number of key-value heads', tex: 'g', code: ['n_kv'], about: 'How many key and value heads grouped-query attention keeps; the query heads share them.' },
+    dc: { color: 'slate', name: 'd_c: the latent\'s size', tex: 'd_c', code: ['d_c'], about: 'How many numbers the latent c holds: all the cache keeps per token per layer, far fewer than 2 h d_head.' },
+    latent: { color: 'green', name: 'c: the latent', tex: 'c', code: ['c'], about: 'A short vector, c = W_DKV x, made once per token per layer and cached. Every head rebuilds its key and value from it.' },
+    Wdkv: { color: 'blue', name: 'W_DKV: the down-projection', tex: 'W_{DKV}', code: ['W_dkv'], about: 'A learned (d_c, d) matrix that squeezes a token\'s d numbers into the latent c. D for down, KV for the keys and values it serves.' },
+    Wuk: { color: 'blue', name: 'W_UK: the key up-projection', tex: 'W_{UK}', code: ['W_uk'], about: 'A learned (h d_head, d_c) matrix. Head i\'s part, (d_head, d_c), rebuilds that head\'s key from c.' },
+    Wuv: { color: 'blue', name: 'W_UV: the value up-projection', tex: 'W_{UV}', code: ['W_uv'], about: 'A learned (h d_head, d_c) matrix. Head i\'s part rebuilds that head\'s value from c.' },
+  },
+  'rope-scaling': {
+    theta: { color: 'orange', name: 'θ: the turn per position', tex: '\\theta', code: ['theta'], about: 'The angle a pair turns for each step of position: at position m it turns by mθ, or mθ / s after interpolation.' },
+    stretch: { color: 'gold', name: 's: the stretch', tex: 's', code: ['scale'], about: 'The new length over L_train. Position interpolation divides every position by s, so every angle stays in the trained range.' },
+    Ltrain: { color: 'slate', name: 'L_train: the trained length', tex: 'L_{\\text{train}}', code: ['train_len'], about: 'The longest text the model was trained on. Its positions run from 0 to L_train − 1.' },
+  },
+  'vision-language': {
+    d: { ...att.d!, name: 'd: the language model\'s width', about: 'How many numbers each token\'s vector has inside the language model.' },
+    W: { color: 'blue', name: 'W: the projection', about: 'One matrix, shared by every patch: it maps a patch vector to the language model\'s width d.' },
+    b: { color: 'green', name: 'b: the projection\'s biases', about: 'One per output number, added after W.' },
+    N: { color: 'slate', name: 'N: the number of patches', about: '(H / P)²: each patch becomes one image token.' },
+    x: { color: 'orange', name: 'x: the prompt\'s vectors', about: 'One per token: the image tokens first, then the text.' },
+    Tmax: { color: 'slate', name: 'T_max: the longest input', tex: 'T_{\\max}', code: ['T_max'], about: 'The most tokens the language model reads at once. Image tokens and text share it.' },
+  },
+  'verifiable-rewards': {
+    A: rl.A!,
+    G: { color: 'slate', name: 'G: the group size', about: 'How many answers are sampled for one prompt.' },
+    r: { color: 'gold', name: 'r: the checker\'s reward', about: '1 when the final answer checks out, or every test passes; 0 when it does not.' },
+  },
 };
 
 /** Library notes that would name later topics, said only in general terms. */
@@ -575,9 +642,8 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
     gen: { is: 'the generator: turns random noise into a fake image' },
     disc: { is: 'the discriminator: the probability that an image is real' },
   },
-  contrastive: {
+  'contrastive-loss': {
     crop: { is: 'a random crop of the image, recolored: one view' },
-    unit: { is: 'scales a vector to length 1, so dot products are cosines' },
     enc: { is: 'the encoder: one vector per image' },
   },
   clip: {
@@ -587,10 +653,8 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
     cross_entropy: { is: 'the average of −ln softmax(row)[right column] over the rows' },
   },
   'diffusion-loss': { model: { is: 'the denoising network: from x_t and t, its guess of the noise' } },
-  iou: {
-    area: { is: 'the area of a box: width times height' },
-    iou: { is: 'intersection over union of two boxes' },
-  },
+  'box-iou': { area: { is: 'the area of a box: width times height' } },
+  iou: { iou: { is: 'intersection over union of two boxes' } },
   upsampling: { up_size: { is: 'the output width of a transposed convolution: S(W − 1) + F − 2P' } },
   'ddpm-sampling': { model: { is: 'the denoising network: from x_t and t, its guess of the noise' } },
   'flow-matching': { model: { is: 'the network: from x_t and t, its guess of the velocity' } },
@@ -609,6 +673,7 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
   },
   gpt: { block: { is: 'one causal transformer block: (T, d) in, (T, d) out' } },
   'in-context': { complete: { is: 'runs the model on a prompt and returns its continuation' } },
+  rotation: { rotate: { is: 'turns a pair by an angle in degrees: the rotation matrix times the pair' } },
   rope: { rotate: { is: 'turns a pair by an angle in degrees: the rotation matrix times the pair' } },
   retrieval: {
     embed: { is: 'turns a text into a vector of size 1' },
@@ -622,14 +687,14 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
   },
   sft: { model: { is: 'runs the model and returns each token\'s probability' } },
   'policy-gradient': { grad_logp: { is: 'the gradient of ln π for a sampled answer, with respect to θ' } },
-  advantage: { grad_logp: { is: 'the gradient of ln π for a sampled answer, with respect to θ' } },
-  'reward-model': { rm: { is: 'the reward model: one score for an answer' } },
+  baseline: { grad_logp: { is: 'the gradient of ln π for a sampled answer, with respect to θ' } },
+  'preference-loss': { rm: { is: 'the reward model: one score for an answer' } },
   'kl-penalty': { frozen_copy: { is: 'a copy of the model that never trains' } },
   distillation: {
     teacher: { is: 'the large trained network: its scores for an input' },
     student: { is: 'the small network being trained: its scores for an input' },
   },
-  ppo: {
+  'prob-ratio': {
     sample: { is: 'draws answers from a model' },
     pi: { is: 'a token\'s probability under the model being trained' },
     pi_old: { is: 'a token\'s probability under the model that sampled the batch' },
@@ -654,7 +719,7 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
   'chain-of-thought': {
     generate: { is: 'writes a reply to the prompt, one token per pass' },
   },
-  'self-consistency': {
+  'majority-vote': {
     solve: { is: 'samples one chain of thought and returns its final answer' },
     Counter: { is: 'counts each distinct item', more: '.most_common(1) gives the top item and its count.', eg: 'Counter([3, 5, 3]).most_common(1)   # [(3, 2)]' },
   },
@@ -666,6 +731,28 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
     tokens: { is: 'splits text into token ids' },
     model: { is: 'one forward pass: next-token scores at every position, and the updated KV cache' },
     sample: { is: 'draws a token from the probabilities' },
+  },
+  'power-rule': { df: { is: 'the derivative, written as a function: df(2) is the slope of f at x = 2' } },
+  'derivative-rules': { df: { is: 'the derivative, written as a function: df(2) is the slope of f at x = 2' } },
+  'chain-rule': { dz_dx: { is: 'dz/dx written as a function of x: dz_dx(1) is the slope at x = 1' } },
+  'lr-schedule': { cosine: { is: 'the cosine schedule: the rate at step t of T, from hi down to lo' } },
+  'res-block': { cut: { is: 'the shortcut: a 1 × 1 conv that matches x to F(x)\'s shape' } },
+  residual: {
+    block1: { is: 'the first residual block: x + F₁(x)' },
+    block2: { is: 'the second residual block: h + F₂(h)' },
+  },
+  'tool-calls': {
+    generate: { is: 'runs the model on a context, one token at a time, until it writes the stop text' },
+    parse_call: { is: 'reads the tool name and argument between the call markers' },
+    weather: { is: 'the tool: looks up a city\'s forecast' },
+  },
+  'agent-loop': {
+    generate: { is: 'runs the model on a context, one token at a time, until it writes the stop text' },
+    run_tool: { is: 'reads the call between the markers, runs that tool and returns its result' },
+  },
+  'vision-language': {
+    vit: { is: 'the trained vision transformer: one vector per patch, plus the class token' },
+    gpt: { is: 'the decoder-only language model: reads the vectors and writes the reply' },
   },
   speculative: {
     draft: { is: 'the small model\'s next k tokens, one at a time' },

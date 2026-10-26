@@ -1,0 +1,26 @@
+{
+ "duration": 132.059,
+ "scenes": {
+  "valley": [0.0, 48.342],
+  "ratio": [48.342, 91.351],
+  "try": [91.351, 132.059]
+ },
+ "beats": {
+  "valley/budget": [0.7, 11.218, "Fix a budget of one point two times ten to the twenty two FLOPs. Compute is six N D, so the bigger the model, the fewer tokens it can afford to read.", [[4.8, 5.39], [7.13, 7.52], [8.8, 9.06]]],
+  "valley/trade": [11.598, 20.165, "A billion parameters can read two trillion tokens. Ten times the parameters read a tenth of the tokens: two hundred billion.", [[14.888, 15.428], [16.768, 16.968], [18.468, 18.918]]],
+  "valley/sizes": [20.545, 26.879, "Train models of many sizes on that same budget, and plot each one's final loss against its size.", [[23.515, 23.795]]],
+  "valley/small": [27.259, 32.23, "Too small, and the model lacks the room to learn, however many tokens it reads.", [[28.109, 28.299], [30.169, 30.449]]],
+  "valley/big": [32.61, 38.861, "Too big, and it reads too few tokens to train all those parameters: it is under-trained.", [[33.31, 33.56], [37.16, 37.65]]],
+  "valley/best": [39.241, 47.242, "The bottom of the valley is the compute-optimal size. Measured across many budgets, it sits at about twenty tokens per parameter.", [[42.221, 42.771], [44.311, 44.581]]],
+  "ratio/ratio": [49.042, 54.663, "To judge a trained model, divide its tokens by its parameters, and compare with twenty.", [[50.432, 50.782], [52.932, 53.192]]],
+  "ratio/under": [55.043, 68.692, "A hundred and seventy five billion parameters on three hundred billion tokens is under two per parameter: badly under-trained. A smaller model, on more tokens, would have reached a lower loss for the same compute.", [[59.583, 59.863], [61.483, 62.003], [63.353, 63.923], [64.813, 64.983], [65.913, 66.133]]],
+  "ratio/opt": [69.072, 76.226, "Seventy billion parameters on one point four trillion tokens is twenty per parameter: compute-optimal.", [[72.932, 73.092], [74.662, 75.112]]],
+  "ratio/over": [76.606, 90.251, "Eight billion on fifteen trillion is nearly two thousand per parameter, far past compute-optimal. That costs extra training, but every forward pass afterwards is cheaper, at two N FLOPs per token.", [[81.076, 81.406], [83.076, 83.646], [85.186, 85.586], [88.116, 88.396]]],
+  "try/p1": [92.051, 102.044, "Try one. A model with eight billion parameters was trained on one point six trillion tokens. Next to compute-optimal, how was it trained?", [[92.641, 93.281], [95.401, 95.621], [98.471, 99.081], [100.541, 100.971]]],
+  "try/r1": [102.424, 110.577, "One point six trillion is sixteen hundred billion. Divided by eight billion, that is two hundred tokens per parameter.", [[105.754, 106.364], [107.774, 108.074]]],
+  "try/v1": [110.957, 115.331, "Far more than twenty: it was trained well past compute-optimal.", [[112.367, 112.867]]],
+  "try/p2": [115.711, 122.826, "Now a model with thirty billion parameters is trained compute-optimally. How many billion tokens should it see?", [[120.131, 120.641]]],
+  "try/r2": [123.206, 129.838, "Twenty tokens for each parameter: twenty times thirty billion is six hundred billion tokens.", [[125.276, 125.846], [127.556, 127.736]]],
+  "try/turn": [130.218, 130.959, "Your turn.", []]
+ }
+}

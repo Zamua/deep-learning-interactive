@@ -1,0 +1,21 @@
+{
+ "duration": 144.743,
+ "scenes": {
+  "setup": [0.0, 84.434],
+  "bars": [84.434, 144.743]
+ },
+ "beats": {
+  "setup/chain": [0.7, 17.769, "Scores, s, go through softmax to give probabilities, p. The loss is minus the log of the correct option's probability. Here the correct option is option one, so the loss is minus log zero point three, about one point two.", [[1.41, 1.78], [2.21, 2.67], [5.18, 5.5], [5.81, 6.54], [10.04, 10.61], [12.88, 13.26], [16.13, 16.51]]],
+  "setup/ask": [18.149, 31.048, "Now ask how the loss changes as each score moves. One partial derivative per score, stacked into a vector: the gradient, partial L, partial s, called ds in code.", [[21.599, 22.169], [24.189, 24.419], [25.659, 26.129], [26.839, 27.179], [28.939, 29.309]]],
+  "setup/nudge": [31.428, 50.479, "Measure the first one. Raise s zero by zero point zero one, and the loss goes from one point two zero eight to one point two one four: up zero point zero zero six, which is zero point six times the nudge. That slope, zero point six, is the first entry.", [[32.558, 33.078], [36.098, 36.478], [39.078, 39.338], [40.918, 41.448], [43.728, 44.088], [46.538, 47.108], [47.818, 48.088], [49.108, 49.348]]],
+  "setup/others": [50.859, 68.638, "Nudge the others the same way. Raising s one, the correct score, lowers the loss, by zero point zero zero seven: a slope of minus zero point seven. Raising s two adds zero point zero zero one: a slope of zero point one.", [[52.589, 53.389], [54.589, 54.829], [55.699, 56.069], [57.059, 57.289], [59.559, 59.939], [62.199, 62.839], [66.539, 66.899]]],
+  "setup/pattern": [69.018, 83.334, "Now compare with p. The two wrong options' slopes are their own probabilities, zero point six and zero point one. The correct option's slope is its probability minus one: zero point three minus one.", [[70.488, 71.068], [74.248, 74.618], [75.738, 75.888], [77.058, 77.588], [80.938, 81.338]]],
+  "bars/p": [85.134, 95.445, "Now write it as a vector. The probabilities are zero point six, zero point three and zero point one, and the correct option is option one.", [[86.754, 87.314], [88.554, 88.704], [89.864, 90.104], [91.204, 91.464], [92.734, 93.214], [94.214, 94.404]]],
+  "bars/answer": [95.825, 106.392, "The gradient is p, minus one-hot of y: the vector with a one at the correct option and zeros elsewhere. Here, zero, one, zero.", [[97.145, 97.495], [99.195, 99.705], [102.005, 102.185], [103.505, 104.035], [104.365, 104.675]]],
+  "bars/sub": [106.772, 116.181, "Take one away at option one: zero point three minus one is minus zero point seven. The other options keep their probabilities.", [[108.722, 109.332], [111.172, 111.412], [113.232, 113.862]]],
+  "bars/sum": [116.561, 124.076, "The entries always add up to zero: p adds up to one, and the one-hot vector takes exactly one away.", [[118.761, 119.341], [120.701, 121.071]]],
+  "bars/step": [124.456, 134.389, "So to lower the loss, move each score against its entry: the correct score goes up, and the others go down, the most confident wrong option the most.", [[125.876, 126.106], [128.176, 128.686], [130.056, 130.346], [131.576, 132.056]]],
+  "bars/done": [134.769, 142.522, "And once the correct option gets nearly all the probability, the gradient is nearly zero: there is little loss left to remove.", [[137.899, 138.259], [140.019, 140.559]]],
+  "bars/turn": [142.902, 143.643, "Your turn.", []]
+ }
+}

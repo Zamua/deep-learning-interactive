@@ -1,27 +1,20 @@
 {
- "duration": 197.211,
+ "duration": 147.593,
  "scenes": {
-  "compare": [0.0, 45.55],
-  "loss": [45.55, 81.514],
-  "slope": [81.514, 197.211]
+  "slope": [0.0, 108.199],
+  "try": [108.199, 147.593]
  },
  "beats": {
-  "compare/hard": [0.7, 6.984, "Grading an answer on a scale is hard for people. Saying which of two answers is better is easy.", [[3.55, 4.1], [6.18, 6.37]]],
-  "compare/score": [7.364, 18.842, "A reward model reads an answer and gives it one number, a score, r. Answer a's score, r a, is two, and answer b's, r b, is one.", [[10.594, 10.894], [11.474, 11.804], [12.164, 12.814], [14.064, 14.334], [15.004, 15.174], [15.744, 16.134], [17.124, 17.364], [18.004, 18.254]]],
-  "compare/sigma": [19.222, 29.154, "Its prediction that people prefer a is the sigmoid of the gap: sigma of two minus one, which is sigma of one, about zero point seven three.", [[21.462, 21.692], [23.062, 23.542], [25.302, 25.582], [26.932, 27.272]]],
-  "compare/soft": [29.534, 38.435, "That is softmax over the two scores: e to the score of a, over the sum for both. Divide through, and it is the same sigmoid.", [[31.874, 32.344], [33.764, 33.994], [35.244, 35.844], [36.664, 36.874]]],
-  "compare/gap": [38.815, 44.45, "Only the gap matters. Add ten to both scores, and the prediction does not move.", [[40.365, 40.915], [42.505, 42.755]]],
-  "loss/pairs": [46.25, 55.895, "The training data is pairs of answers to the same prompt, where a person picked the winner. Call the winner's score r w and the loser's r l.", [[49.5, 49.8], [51.27, 51.87], [53.93, 54.23], [54.96, 55.15]]],
-  "loss/loss": [56.275, 72.559, "The loss, L, is cross-entropy on that choice: minus the log of sigma of r w minus r l, the probability the model gave the winner. With a preferred, minus the log of zero point seven three: zero point three one.", [[56.975, 57.215], [57.565, 57.815], [59.745, 60.215], [63.885, 64.345], [66.385, 67.025], [67.895, 68.235], [70.715, 71.145]]],
-  "loss/flip": [72.939, 80.414, "Had the person picked b, the model would have given that only zero point two seven, and the loss would be one point three one.", [[74.459, 74.799], [77.799, 78.109]]],
-  "slope/chain": [82.214, 103.051, "How does one choice move the two scores? Call the gap z: r w minus r l. The loss is a chain: z feeds the sigmoid, and the sigmoid feeds minus ln. With a preferred, z is one, sigma is zero point seven three, and the loss zero point three one.", [[84.774, 85.324], [86.514, 86.904], [88.894, 89.504], [90.814, 91.324], [92.894, 93.184], [95.514, 96.114], [96.954, 97.214], [98.144, 98.474], [100.564, 100.904]]],
-  "slope/back": [103.431, 116.143, "Walk back from the loss, multiplying local slopes. Minus ln has slope minus one over its input. At zero point seven three, that is about minus one point three seven.", [[104.811, 105.191], [106.951, 107.511], [111.161, 111.721], [113.301, 113.601]]],
-  "slope/sig": [116.523, 133.55, "The sigmoid's slope is sigma times one minus sigma: zero point seven three times zero point two seven, about zero point two. So the slope on z is minus one point three seven times zero point two: minus zero point two seven.", [[120.063, 120.633], [123.823, 124.223], [125.523, 126.123], [131.013, 131.463], [133.323, 133.523]]],
-  "slope/cancel": [133.93, 151.085, "In symbols, that is minus one over sigma, times sigma times one minus sigma. The sigmas cancel, leaving minus, one minus sigma: one minus zero point seven three, made negative. The same minus zero point two seven.", [[134.78, 135.01], [137.18, 137.47], [138.31, 138.49], [139.98, 140.62], [141.78, 142.03], [142.97, 143.2], [144.32, 144.77], [147.0, 147.22], [148.03, 148.49], [149.04, 149.2]]],
-  "slope/scores": [151.465, 169.325, "Last, z rises one for one with the winner's score, and falls one for one as the loser's rises. So the slope on r w is sigma minus one, minus zero point two seven, and on r l it is one minus sigma, plus zero point two seven.", [[152.015, 152.315], [155.095, 155.425], [158.145, 158.715], [160.515, 160.765], [162.135, 162.345], [164.155, 164.675], [165.725, 165.965], [167.385, 167.585]]],
-  "slope/push": [169.705, 177.552, "Lowering the loss steps against those slopes: it raises the winner and lowers the loser, by zero point two seven each.", [[172.285, 172.775], [175.215, 175.545]]],
-  "slope/agree": [177.932, 185.725, "A pair the model already ranks right, with sigma near one, barely moves it. A pair it gets wrong moves it the most.", [[180.222, 180.442], [181.622, 181.912], [182.782, 183.292], [184.482, 184.672]]],
-  "slope/rank": [186.105, 194.991, "So the model learns to rank answers the way people do. A score alone means nothing; only its gap to another answer's score does.", [[189.385, 189.915], [191.635, 192.155]]],
-  "slope/turn": [195.371, 196.111, "Your turn.", []]
+  "slope/chain": [0.7, 24.425, "How does one choice move the two scores? Call the gap z: r w minus r l. The loss is a chain: z feeds the sigmoid, and the sigmoid feeds minus ln. People preferred an answer scored two over one scored one, so z is one, sigma is zero point seven three, and the loss zero point three one.", [[3.28, 3.86], [5.08, 5.47], [7.41, 7.97], [9.29, 9.78], [11.22, 11.46], [13.8, 14.35], [18.03, 18.42], [19.63, 19.96], [21.97, 22.28]]],
+  "slope/back": [24.805, 37.517, "Walk back from the loss, multiplying local slopes. Minus ln has slope minus one over its input. At zero point seven three, that is about minus one point three seven.", [[26.185, 26.565], [28.325, 28.885], [32.535, 33.095], [34.675, 34.975]]],
+  "slope/sig": [37.897, 54.924, "The sigmoid's slope is sigma times one minus sigma: zero point seven three times zero point two seven, about zero point two. So the slope on z is minus one point three seven times zero point two: minus zero point two seven.", [[41.437, 42.007], [45.197, 45.597], [46.897, 47.497], [52.387, 52.837], [54.697, 54.897]]],
+  "slope/cancel": [55.304, 72.458, "In symbols, that is minus one over sigma, times sigma times one minus sigma. The sigmas cancel, leaving minus, one minus sigma: one minus zero point seven three, made negative. The same minus zero point two seven.", [[56.154, 56.384], [58.554, 58.844], [59.684, 59.864], [61.354, 61.994], [63.154, 63.404], [64.344, 64.574], [65.694, 66.144], [68.374, 68.594], [69.404, 69.864], [70.414, 70.574]]],
+  "slope/scores": [72.838, 90.699, "Last, z rises one for one with the winner's score, and falls one for one as the loser's rises. So the slope on r w is sigma minus one, minus zero point two seven, and on r l it is one minus sigma, plus zero point two seven.", [[73.388, 73.688], [76.468, 76.798], [79.518, 80.088], [81.888, 82.138], [83.508, 83.718], [85.528, 86.048], [87.098, 87.338], [88.758, 88.958]]],
+  "slope/push": [91.079, 98.926, "Lowering the loss steps against those slopes: it raises the winner and lowers the loser, by zero point two seven each.", [[93.659, 94.149], [96.589, 96.919]]],
+  "slope/agree": [99.306, 107.099, "A pair the model already ranks right, with sigma near one, barely moves it. A pair it gets wrong moves it the most.", [[101.596, 101.816], [102.996, 103.286], [104.156, 104.666], [105.856, 106.046]]],
+  "try/p1": [108.899, 123.928, "Try one. A pair has r w minus r l of minus one: the model scored the rejected answer higher. sigma of minus one is about zero point two seven. What is the loss's slope on r l?", [[109.519, 110.099], [114.049, 114.589], [117.049, 117.579], [120.989, 121.569]]],
+  "try/a1": [124.308, 133.31, "The slope on z is minus, one minus sigma: one minus zero point two seven is zero point seven three, made negative.", [[126.288, 126.618], [127.828, 128.288], [130.268, 130.528], [132.108, 132.458]]],
+  "try/a2": [133.69, 145.372, "z falls as r l rises, so multiply by minus one: plus zero point seven three. Far more than the zero point two seven of the pair it ranked right.", [[136.21, 136.62], [138.49, 139.05], [140.98, 141.57]]],
+  "try/turn": [145.752, 146.493, "Your turn.", []]
  }
 }

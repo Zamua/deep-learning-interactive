@@ -6,76 +6,6 @@ import { axes, clipped, curve, type Frame, fmt, frame, rich } from '../draw';
 const sig = (z: number) => 1 / (1 + Math.exp(-z));
 const nls = (z: number) => -Math.log(sig(z));
 
-/** Two answer cards with their scores, side by side near the top. */
-function cards(s: Scene, y: number, ra: string, rb: string, o: { on?: [number, number]; a?: number } = {}): { xa: number; xb: number } {
-  const xa = s.w / 2 - 17 * s.u;
-  const xb = s.w / 2 + 17 * s.u;
-  [
-    [xa, 'answer a', ra, o.on?.[0] ?? 0],
-    [xb, 'answer b', rb, o.on?.[1] ?? 0],
-  ].forEach(([x, name, r, on]) => {
-    s.rrect((x as number) - 13 * s.u, y - 6 * s.u, 26 * s.u, 12 * s.u, 1.6, { fill: s.tint('slate', 0.12), stroke: s.tint('slate', 0.5 + 0.5 * (on as number)), lw: 0.3 + 0.3 * (on as number) });
-    s.text(name as string, x as number, y - 2.4 * s.u, { size: 3, color: s.c('--ink-3') });
-    s.alpha(o.a ?? 1, () => s.text(r as string, x as number, y + 2.6 * s.u, { size: 3.6, font: 'mono', weight: 650, color: s.c('gold') }));
-  });
-  return { xa, xb };
-}
-
-const compare: SceneDef = {
-  marks: {
-    soft: { tex: String.raw`\sigma(\sym{r}{r}_a - \sym{r}{r}_b) = \frac{e^{\sym{r}{r}_a}}{e^{\sym{r}{r}_a} + e^{\sym{r}{r}_b}}`, x: 0.5, y: 0.88, size: 5 },
-  },
-  draw(s) {
-    const y = s.h * 0.12;
-    const shift = s.ease('gap', 1.2, 0.6);
-    const ra = 2 + 10 * shift;
-    const rb = 1 + 10 * shift;
-    const sc = s.ease('score', 0.6);
-    cards(s, y, `r = ${ra.toFixed(1)}`, `r = ${rb.toFixed(1)}`, { a: sc, on: [s.win('sigma', 'soft'), 0] });
-    s.alpha(1 - sc, () => s.text('which is better?', s.w / 2, y + 11 * s.u, { size: 3.2, color: s.c('--ink-2') }));
-    // σ of the gap, with the gap marked.
-    const F = frame(s.w / 2 - 34 * s.u, s.h * 0.3, s.w / 2 + 34 * s.u, s.h * 0.74, [-4, 4], [0, 1]);
-    const pl = s.ease('sigma', 0.8);
-    s.alpha(pl, () => {
-      axes(s, F, 'r_a − r_b', 'σ', { x: 'gold', y: 'teal' });
-      s.line(F.X(0), F.b, F.X(0), F.t, s.tint('--axis', 0.6), 0.25, [1, 1]);
-      curve(s, F, sig, -4, 4, 'teal', { upto: pl });
-      const p = sig(1);
-      s.line(F.X(1), F.b, F.X(1), F.Y(p), s.tint('gold', 0.7), 0.3, [1, 0.8]);
-      s.line(F.l, F.Y(p), F.X(1), F.Y(p), s.tint('teal', 0.7), 0.3, [1, 0.8]);
-      ball(s, F.X(1), F.Y(p), 'teal', 1.6);
-      s.text('0.73', F.X(1) + 2.5 * s.u, F.Y(p) + 3.4 * s.u, { size: 3.2, font: 'mono', weight: 650, align: 'left', color: s.c('teal'), halo: true });
-      s.text('gap 1', F.X(1) + 1.5 * s.u, F.b - 3 * s.u, { size: 2.8, font: 'mono', align: 'left', color: s.c('gold'), halo: true });
-    });
-    s.show('soft', s.win('soft', 'gap'));
-    s.alpha(s.ease('gap', 0.6, 2), () => s.text('same gap, same 0.73', s.w / 2, s.h * 0.88, { size: 3.4, font: 'mono', weight: 600, color: s.c('green') }));
-  },
-};
-
-const loss: SceneDef = {
-  marks: {
-    f: { tex: String.raw`\symL = -\ln \sigma(\sym{r}{r}_w - \sym{r}{r}_l)`, x: 0.5, y: 0.25, size: 4.6 },
-  },
-  draw(s) {
-    const y = s.h * 0.1;
-    const { xa, xb } = cards(s, y, 'r = 2.0', 'r = 1.0', { on: [s.win('pairs', 'flip'), s.win('flip')] });
-    s.alpha(s.win('pairs', 'flip'), () => s.text('chosen', xa, y + 8.5 * s.u, { size: 2.8, font: 'mono', color: s.c('green') }));
-    s.alpha(s.win('flip'), () => s.text('chosen, had b won', xb, y + 8.5 * s.u, { size: 2.8, font: 'mono', color: s.c('green') }));
-    s.show('f', s.ease('loss', 0.6));
-    // The loss against the gap: small when the chosen answer scores higher.
-    const F = lossFrame(s, 0.35, 0.78);
-    axes(s, F, 'r_w − r_l', 'loss', { x: 'gold', y: 'red' });
-    curve(s, F, nls, -3, 3, 'red', { upto: s.ease('loss', 1.2) });
-    const dot = (z: number, label: string, a: number) =>
-      s.alpha(a, () => {
-        ball(s, F.X(z), F.Y(nls(z)), 'red', 1.5);
-        s.text(label, F.X(z) + 2.5 * s.u, F.Y(nls(z)) - 3 * s.u, { size: 3, font: 'mono', weight: 650, align: 'left', color: s.c('red'), halo: true });
-      });
-    dot(1, 'a won: 0.31', s.ease('loss', 0.6, 2.5));
-    dot(-1, 'b won: 1.31', s.ease('flip', 0.6, 0.6));
-  },
-};
-
 /** The loss against the gap, between `top` and `bottom` (fractions of the stage height). */
 const lossFrame = (s: Scene, top: number, bottom: number): Frame => frame(s.w / 2 - 34 * s.u, s.h * top, s.w / 2 + 34 * s.u, s.h * bottom, [-3, 3], [0, 3.2]);
 
@@ -122,7 +52,7 @@ const slope: SceneDef = {
     // The loss against the gap, with its slope there drawn as a tangent.
     const F = lossFrame(s, 0.52, 0.84);
     axes(s, F, 'r_w − r_l', 'loss', { x: 'gold', y: 'red' });
-    curve(s, F, nls, -3, 3, 'red');
+    curve(s, F, nls, -2.6, 3, 'red');
     const z = 1 + 1.5 * s.ease('agree', 1.2, 0.3) - 4 * after(s, 'agree', 0.5, 2);
     const k = dl(z);
     s.alpha(sg, () => {
@@ -131,11 +61,49 @@ const slope: SceneDef = {
     });
     ball(s, F.X(z), F.Y(nls(z)), 'red', 1.5);
     s.alpha(sg * (1 - s.ease('agree', 0.4)), () => mono(s, `slope ${fmt(DZ)}`, F.X(1) + 3 * u, F.Y(nls(1)) - 5 * u, 'red', 3.2, 'left', 650));
-    const ag = s.ease('agree', 0.6) * (1 - s.ease('rank', 0.6));
+    const ag = s.ease('agree', 0.6);
     s.alpha(s.win('push', 'agree'), () => rich(s, [['r_w ', 'gold'], [`↑ ${fmt(-DZ)}`, 'green'], ['    r_l ', 'gold'], [`↓ ${fmt(-DZ)}`, 'red']], s.w / 2, s.h * 0.94, { size: 3.4, weight: 650 }));
     s.alpha(ag, () => rich(s, [['gap ', '--ink-3'], [fmt(z, 1), 'gold'], ['  push ', '--ink-3'], [fmt(-k), 'green']], s.w / 2, s.h * 0.94, { size: 3.2, weight: 600 }));
-    s.alpha(s.ease('rank', 0.6), () => s.text('only gaps between scores matter', s.w / 2, s.h * 0.94, { size: 3.4, color: s.c('--ink-2') }));
   },
 };
 
-export const scenes: Record<string, SceneDef> = { compare, loss, slope };
+/** The loss curve with its tangent at gap `z`, `half` gap units each side. */
+function tangent(s: Scene, F: Frame, z: number, half = 0.8): void {
+  const k = dl(z);
+  clipped(s, F, () => s.line(F.X(z - half), F.Y(nls(z) - k * half), F.X(z + half), F.Y(nls(z) + k * half), s.c('gold'), 0.45));
+  ball(s, F.X(z), F.Y(nls(z)), 'red', 1.5);
+}
+
+// The worked problem: a pair ranked wrong, gap -1, and the slope on the rejected answer's score.
+const LS = String.raw`\dfrac{\partial \symL}{\partial \sym{r}{r}_l}`;
+
+const tryIt: SceneDef = {
+  marks: {
+    given: { tex: String.raw`\sym{r}{r}_w - \sym{r}{r}_l = -1, \quad \sigma(-1) \approx 0.27`, x: 0.5, y: 0.08, size: 4.2 },
+    ask: { tex: String.raw`${LS} = \ ?`, x: 0.5, y: 0.2, size: 4.2 },
+    z: { tex: String.raw`\dfrac{\partial \symL}{\partial z} = -(1 - 0.27) = -0.73`, x: 0.5, y: 0.2, size: 4 },
+    rl: { tex: String.raw`${LS} = -0.73 \times (-1) = 0.73`, x: 0.5, y: 0.34, size: 4 },
+  },
+  draw(s) {
+    s.show('given', s.ease('p1', 0.6, 0.3));
+    s.show('ask', after(s, 'p1', 0.75) * (1 - s.ease('a1', 0.4)));
+    s.show('z', after(s, 'a1', 0.15));
+    s.show('rl', after(s, 'a2', 0.15));
+    const F = lossFrame(s, 0.46, 0.84);
+    s.alpha(s.ease('p1', 0.6, 2), () => {
+      axes(s, F, 'r_w − r_l', 'loss', { x: 'gold', y: 'red' });
+      curve(s, F, nls, -2.6, 3, 'red');
+    });
+    s.alpha(after(s, 'a1', 0.3), () => {
+      tangent(s, F, -1);
+      mono(s, 'slope −0.73', F.X(-1) + 3 * s.u, F.Y(nls(-1)) - 4 * s.u, 'red', 3.2, 'left', 650);
+    });
+    s.alpha(after(s, 'a2', 0.6), () => {
+      tangent(s, F, 1);
+      mono(s, 'ranked right: −0.27', F.X(1) + 2 * s.u, F.Y(nls(1)) - 4.5 * s.u, '--ink-3', 3, 'left', 600);
+    });
+    s.alpha(after(s, 'a2', 0.3), () => rich(s, [['r_l ', 'gold'], ['↓ 0.73', 'red'], ['    r_w ', 'gold'], ['↑ 0.73', 'green']], s.w / 2, s.h * 0.94, { size: 3.4, weight: 650 }));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { slope, try: tryIt };

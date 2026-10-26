@@ -1,0 +1,26 @@
+{
+ "duration": 150.217,
+ "scenes": {
+  "graph": [0.0, 75.11],
+  "grid": [75.11, 121.528],
+  "try": [121.528, 150.217]
+ },
+ "beats": {
+  "graph/node": [0.7, 8.786, "Take a node that computes z equals W times x: W is two by three, and x has three entries.", [[4.56, 5.11], [6.74, 7.04]]],
+  "graph/name": [9.166, 17.274, "Write W zero one for the entry of W in row zero, column one, and x one for entry one of x.", [[13.406, 13.556], [14.196, 14.566]]],
+  "graph/z0": [17.654, 30.07, "Then z zero, row zero dotted with x, is W zero zero x zero, plus W zero one x one, plus W zero two x two: ten.", [[19.024, 19.294], [21.064, 21.344], [21.634, 21.804], [23.894, 24.184], [26.444, 26.734], [29.064, 29.584]]],
+  "graph/gates": [30.45, 34.919, "As a graph, that is three multiply gates feeding one add.", [[31.24, 31.51], [31.96, 32.11]]],
+  "graph/dz": [35.299, 47.052, "Backprop hands the node partial f, partial z, the gradient from above: one number per entry of z, here two and minus one. Code calls it d z.", [[36.699, 37.029], [37.849, 38.019], [38.809, 39.239], [40.499, 40.989], [42.759, 43.129], [44.819, 45.359]]],
+  "graph/copy": [47.432, 53.95, "Walking back, the add copies partial f, partial z zero, two, to every product.", [[48.222, 48.512], [50.332, 50.622], [51.952, 52.222], [52.592, 52.872]]],
+  "graph/swap": [54.33, 62.313, "And each multiply swaps: W zero one gets the other input, x one, four, times two. Eight.", [[56.17, 56.67], [59.02, 59.28], [60.36, 60.61], [61.31, 61.89]]],
+  "graph/rule": [62.693, 74.01, "In general, the weight in row i, column j gets partial f, partial z i times x j: its row's output gradient, times its column's input.", [[63.403, 63.623], [65.823, 66.063], [66.383, 66.593], [67.403, 67.593], [70.133, 70.623], [72.203, 72.473]]],
+  "grid/fill": [75.81, 87.444, "Do that for every weight to fill partial f, partial W, a grid shaped like W. Row zero: two times three, two times four, two times one.", [[78.72, 78.95], [79.89, 80.26], [81.79, 82.64], [83.46, 83.95], [84.91, 85.2], [86.14, 86.5]]],
+  "grid/table": [87.824, 101.23, "Row one is minus one times each. So row i is x, scaled by partial f, partial z i: a multiplication table, d z down the side, x across the top.", [[90.454, 91.004], [92.904, 93.174], [94.704, 94.874], [96.084, 96.504], [97.814, 98.184], [99.644, 99.974]]],
+  "grid/outer": [101.61, 112.467, "That table is the outer product, d z, x transpose: d z as a column, two by one, times x transposed into a row, one by three.", [[103.59, 104.0], [104.67, 104.9], [105.98, 106.51], [107.79, 108.06], [108.76, 109.09], [111.3, 111.62]]],
+  "grid/shapes": [112.847, 120.428, "Two by one, times one by three, gives two by three: the same shape as W, as a gradient must be.", [[113.737, 114.017], [115.377, 115.597], [116.737, 117.227], [118.657, 118.977]]],
+  "try/p1": [122.228, 132.401, "Try one: x is two, five, and d z is three, minus one. What is entry one, zero of partial f, partial W?", [[122.838, 123.408], [124.478, 124.718], [125.218, 125.518], [127.858, 128.498], [131.308, 131.458]]],
+  "try/row": [132.781, 141.39, "Entry one, zero is the weight in row one, column zero. Row one picks z one's gradient: minus one.", [[133.621, 134.271], [136.281, 136.471], [137.261, 137.891], [140.211, 140.631]]],
+  "try/a1": [141.77, 147.997, "Column zero picks x zero: two. Minus one times two is minus two.", [[143.8, 144.27], [144.61, 145.22], [146.81, 146.98]]],
+  "try/turn": [148.377, 149.117, "Your turn.", []]
+ }
+}

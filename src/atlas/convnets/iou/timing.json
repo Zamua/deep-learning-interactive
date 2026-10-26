@@ -1,34 +1,22 @@
 {
- "duration": 242.088,
+ "duration": 133.637,
  "scenes": {
-  "boxes": [0.0, 37.725],
-  "overlap": [37.725, 133.627],
-  "nms": [133.627, 180.94],
-  "table": [180.94, 242.088]
+  "nms": [0.0, 72.488],
+  "table": [72.488, 133.637]
  },
  "beats": {
-  "boxes/box": [0.7, 5.629, "To say where an object is, not just what it is, draw a box around it.", [[2.45, 2.64], [3.84, 4.17]]],
-  "boxes/corners": [6.009, 18.144, "Four numbers pin it down: the top-left corner, x one and y one, and the bottom-right corner, x two and y two. As in an image, y counts down from the top.", [[7.619, 8.119], [9.209, 9.619], [10.999, 11.419], [12.729, 13.129], [14.539, 15.189], [16.139, 16.399]]],
-  "boxes/area": [18.524, 27.66, "Its width is x two minus x one, four, and its height y two minus y one, three: an area of twelve.", [[21.234, 21.574], [22.004, 22.454], [23.154, 23.424], [25.024, 25.314], [25.734, 26.254]]],
-  "boxes/guess": [28.04, 36.625, "A network guesses a box of its own, from two, two to six, five. Also twelve. How well do they agree?", [[30.18, 30.53], [31.21, 31.54], [32.38, 32.58], [33.12, 33.59], [34.76, 35.27]]],
-  "overlap/inter": [38.425, 54.312, "First, their overlap, the intersection. Its left edge is the larger left, the max of one and two, which is two. Its right edge is the smaller right, the min of five and six, which is five. So it is three wide.", [[38.965, 39.225], [40.045, 40.385], [41.305, 41.895], [43.855, 44.195], [45.745, 46.025], [46.685, 47.345], [49.305, 49.645], [51.265, 51.475], [52.265, 52.735]]],
-  "overlap/tall": [54.692, 65.09, "Its top is the larger top, two, and its bottom the smaller bottom, four: two tall. The intersection is three times two, six.", [[56.462, 56.802], [57.102, 57.562], [59.432, 59.752], [60.162, 60.642], [61.312, 61.852], [64.162, 64.492]]],
-  "overlap/apart": [65.47, 73.12, "If the boxes miss each other, right minus left comes out negative: no overlap, so the intersection is zero.", [[67.04, 67.4], [69.66, 70.12], [70.95, 71.35]]],
-  "overlap/both": [73.5, 91.102, "Boxes can miss on both sides. Take one from one, one to four, three, and one from six, four to nine, six. Right minus left is four minus six, minus two. Bottom minus top is three minus four, minus one.", [[75.6, 76.13], [77.2, 77.55], [78.29, 78.55], [78.99, 79.33], [80.42, 80.67], [81.51, 81.69], [82.23, 82.9], [85.67, 85.85], [86.65, 87.21], [88.46, 88.62], [90.07, 90.31]]],
-  "overlap/clamp": [91.482, 105.287, "Multiplied, the two negatives would give two, an overlap that is not there. So each side is clamped at zero first: the max of zero and minus two is zero, and zero times zero is zero.", [[92.252, 92.482], [94.272, 94.722], [96.392, 96.942], [99.582, 100.012], [102.772, 103.142]]],
-  "overlap/union": [105.667, 115.806, "The union is everything either box covers: twelve plus twelve, minus the six they share, so the overlap is not counted twice. Eighteen.", [[108.377, 108.857], [110.077, 110.387], [111.967, 112.377], [114.577, 115.217]]],
-  "overlap/iou": [116.186, 123.429, "Intersection over union, IoU: six over eighteen, about zero point three three.", [[117.846, 118.236], [119.226, 119.846], [121.166, 121.586]]],
-  "overlap/range": [123.809, 132.527, "Identical boxes score one, and boxes that do not touch score zero. A guess often counts as a hit at a half or more.", [[125.739, 126.109], [128.699, 129.349]]],
-  "nms/many": [134.327, 143.145, "A detector, a network that finds and boxes objects, often fires several boxes on one object, each with a confidence score.", [[135.137, 135.647], [138.247, 138.657], [141.207, 141.577]]],
-  "nms/sort": [143.525, 149.941, "Non-max suppression keeps one box per object. First, sort the boxes by confidence.", [[146.645, 147.255], [147.725, 148.005]]],
-  "nms/keep": [150.321, 162.945, "Keep the top box, A, and drop every box whose IoU with it is above a threshold, here a half. B overlaps A at zero point five eight: a duplicate, gone.", [[151.511, 151.771], [152.111, 152.411], [156.201, 156.561], [157.571, 158.171], [161.061, 161.521], [162.191, 162.551]]],
-  "nms/stay": [163.325, 175.377, "C does not touch A, so it stays. Repeat with what is left: C is now the best, so it is kept, and D, at zero point six three with C, is dropped.", [[165.025, 165.275], [166.195, 166.875], [168.215, 168.815], [170.215, 170.415], [171.295, 171.655], [172.265, 172.475], [174.515, 174.725]]],
-  "nms/done": [175.757, 179.84, "Nothing is left: two boxes, one per object.", [[176.947, 177.497], [178.287, 178.617]]],
-  "table/grid": [181.64, 200.899, "The same steps work from a table. Four boxes, with confidences: A zero point six, B zero point nine, C zero point seven, D zero point eight. Row A, column C holds the IoU of A and C: zero point six nine.", [[183.53, 184.11], [185.01, 185.22], [186.22, 186.73], [188.12, 188.51], [190.02, 190.39], [192.0, 192.33], [193.86, 194.46], [196.12, 196.3], [198.88, 199.42]]],
-  "table/order": [201.279, 205.524, "Sort by confidence: B, D, C, A.", [[202.629, 203.069], [203.489, 203.769], [204.179, 204.429], [204.879, 205.119]]],
-  "table/first": [205.904, 215.153, "Keep B, and read its row. D is at zero point six one, above a half: dropped. C and A are below.", [[206.734, 207.034], [208.084, 208.704], [210.904, 211.154], [212.024, 212.484], [212.914, 213.414]]],
-  "table/chain": [215.533, 230.59, "Next, C. It overlaps D at zero point five six, but D was dropped, and a dropped box drops nothing. Only kept boxes count: with B, C is at zero point three two, so C is kept.", [[216.073, 216.363], [216.813, 217.303], [220.153, 220.483], [221.573, 221.923], [223.733, 224.233], [225.823, 226.323], [226.913, 227.143], [229.213, 229.493]]],
-  "table/last": [230.97, 239.868, "Last, A. With C, now kept, it is at zero point six nine: dropped. B and C survive.", [[231.52, 232.0], [232.34, 232.91], [233.54, 234.02], [234.7, 234.95], [236.8, 237.3], [237.73, 238.22]]],
-  "table/turn": [240.248, 240.988, "Your turn.", []]
+  "nms/many": [0.7, 9.518, "A detector, a network that finds and boxes objects, often fires several boxes on one object, each with a confidence score.", [[1.51, 2.02], [4.62, 5.03], [7.58, 7.95]]],
+  "nms/recall": [9.898, 21.9, "How much two boxes overlap is their IoU, intersection over union. A and B share thirty six units of the sixty two they cover: zero point five eight.", [[13.348, 13.758], [15.308, 15.988], [19.988, 20.448]]],
+  "nms/sort": [22.28, 28.697, "Non-max suppression keeps one box per object. First, sort the boxes by confidence.", [[25.4, 26.01], [26.48, 26.76]]],
+  "nms/keep": [29.077, 41.701, "Keep the top box, A, and drop every box whose IoU with it is above a threshold, here a half. B overlaps A at zero point five eight: a duplicate, gone.", [[30.267, 30.527], [30.867, 31.167], [34.957, 35.317], [36.327, 36.927], [39.817, 40.277], [40.947, 41.307]]],
+  "nms/stay": [42.081, 54.133, "C does not touch A, so it stays. Repeat with what is left: C is now the best, so it is kept, and D, at zero point six three with C, is dropped.", [[43.781, 44.031], [44.951, 45.631], [46.971, 47.571], [48.971, 49.171], [50.051, 50.411], [51.021, 51.231], [53.271, 53.481]]],
+  "nms/done": [54.513, 58.595, "Nothing is left: two boxes, one per object.", [[55.703, 56.253], [57.043, 57.373]]],
+  "nms/thresh": [58.975, 71.388, "The threshold sets what counts as a duplicate. At zero point six, B's zero point five eight would not be above it, and B would stay: a higher threshold drops fewer boxes.", [[61.585, 62.155], [63.515, 63.765], [66.885, 67.265], [68.415, 68.925]]],
+  "table/grid": [73.188, 92.448, "The same steps work from a table. Four boxes, with confidences: A zero point six, B zero point nine, C zero point seven, D zero point eight. Row A, column C holds the IoU of A and C: zero point six nine.", [[75.078, 75.658], [76.558, 76.768], [77.768, 78.278], [79.668, 80.058], [81.568, 81.938], [83.548, 83.878], [85.408, 86.008], [87.668, 87.848], [90.428, 90.968]]],
+  "table/order": [92.828, 97.073, "Sort by confidence: B, D, C, A.", [[94.178, 94.618], [95.038, 95.318], [95.728, 95.978], [96.428, 96.668]]],
+  "table/first": [97.453, 106.702, "Keep B, and read its row. D is at zero point six one, above a half: dropped. C and A are below.", [[98.283, 98.583], [99.633, 100.253], [102.453, 102.703], [103.573, 104.033], [104.463, 104.963]]],
+  "table/chain": [107.082, 122.138, "Next, C. It overlaps D at zero point five six, but D was dropped, and a dropped box drops nothing. Only kept boxes count: with B, C is at zero point three two, so C is kept.", [[107.622, 107.912], [108.362, 108.852], [111.702, 112.032], [113.122, 113.472], [115.282, 115.782], [117.372, 117.872], [118.462, 118.692], [120.762, 121.042]]],
+  "table/last": [122.518, 131.417, "Last, A. With C, now kept, it is at zero point six nine: dropped. B and C survive.", [[123.068, 123.548], [123.888, 124.458], [125.088, 125.568], [126.248, 126.498], [128.348, 128.848], [129.278, 129.768]]],
+  "table/turn": [131.797, 132.537, "Your turn.", []]
  }
 }

@@ -1,33 +1,20 @@
 {
- "duration": 267.674,
+ "duration": 141.749,
  "scenes": {
-  "loop": [0.0, 51.541],
-  "outer": [51.541, 145.487],
-  "toward": [145.487, 180.951],
-  "try": [180.951, 267.674]
+  "toward": [0.0, 55.026],
+  "try": [55.026, 141.749]
  },
  "beats": {
-  "loop/x": [0.7, 15.066, "Here is one full step of stochastic gradient descent, or SGD, for a tiny linear classifier, with two features and two classes. The input x is two, one, and the correct class is class zero.", [[4.01, 4.25], [5.47, 5.7], [7.5, 7.74], [9.76, 10.35], [12.06, 12.21], [12.63, 12.93]]],
-  "loop/scores": [15.446, 23.484, "Forward: the scores are W x plus b, one per class: one, and one point eight five.", [[15.936, 16.396], [17.286, 17.536], [19.066, 19.566], [20.526, 21.076], [21.436, 21.736]]],
-  "loop/probs": [23.864, 31.489, "Softmax turns them into probabilities, zero point three and zero point seven. The model leans the wrong way.", [[26.184, 26.644], [27.794, 27.944], [29.224, 29.744]]],
-  "loop/grad": [31.869, 42.899, "Backward: the gradient on the scores, ds for short, is p minus the one-hot label: minus zero point seven and plus zero point seven.", [[32.429, 33.049], [34.549, 34.859], [36.139, 36.519], [38.849, 39.399], [40.969, 41.209]]],
-  "loop/update": [43.279, 50.441, "Then every weight and bias steps against its own gradient. What is left is to find those gradients.", [[47.259, 47.839]]],
-  "outer/one": [52.241, 71.457, "Take one weight, W zero zero: the one in row zero, column zero. Row zero belongs to class zero, so this weight feeds only score zero: s zero is W zero zero times x zero, plus W zero one times x one, plus b zero.", [[53.181, 53.511], [54.851, 55.271], [56.621, 56.771], [57.561, 58.141], [60.201, 60.531], [62.921, 63.461], [66.921, 67.311], [67.701, 67.851], [69.971, 70.261], [70.581, 70.741]]],
-  "outer/slope": [71.837, 80.271, "So nudging W zero zero moves s zero by x zero times as much: twice as much, since x zero is two.", [[74.037, 74.217], [77.247, 77.677], [78.457, 78.687]]],
-  "outer/entry": [80.651, 99.783, "And the loss moves d s zero times as much as s zero: minus zero point seven times. The chain rule multiplies the two: the gradient on W zero zero, partial L, partial W zero zero, is minus zero point seven times two, minus one point four.", [[84.671, 85.211], [87.291, 87.921], [89.741, 90.281], [92.371, 92.661], [95.181, 95.481], [98.041, 98.411]]],
-  "outer/row0": [100.163, 110.651, "W zero one is in the same row, so it also gets d s zero, times its own input, x one, which is one: minus zero point seven.", [[102.523, 102.783], [103.873, 104.023], [105.273, 105.553], [106.733, 106.923], [107.583, 107.833], [108.483, 108.953]]],
-  "outer/row1": [111.031, 120.853, "Row one feeds score one, whose ds is plus zero point seven. Times two is one point four, and times one is zero point seven.", [[112.991, 113.241], [115.681, 116.301], [118.221, 118.511]]],
-  "outer/rule": [121.233, 138.629, "So the weight in row i, column j, W i j, gets d s i times x j: its row's score gradient, times its column's input. A grid of every entry of ds times every entry of x is called an outer product.", [[123.113, 123.323], [124.123, 124.433], [125.523, 125.873], [128.443, 128.923], [130.403, 130.643], [132.123, 132.763], [136.773, 137.013]]],
-  "outer/db": [139.009, 144.387, "Each bias adds straight into its own score, so its gradient is just ds.", [[141.689, 142.039]]],
-  "toward/step": [146.187, 160.015, "Now step, here with eta one half. Row zero belongs to the correct class, and its ds is minus zero point seven, so it gains zero point three five times x: it moves toward x.", [[146.857, 147.207], [148.847, 149.347], [151.757, 152.027], [154.587, 154.957], [157.977, 158.417]]],
-  "toward/away": [160.395, 169.811, "Row one, the wrong class, has ds plus zero point seven. It loses zero point three five times x, and moves away.", [[161.125, 161.585], [162.625, 162.945], [165.205, 165.735], [168.655, 168.885]]],
-  "toward/scores": [170.191, 179.851, "Measured along x, the correct row climbs from one to two point seven five, and the wrong one falls from one point eight five to zero point one.", [[171.521, 171.821], [175.331, 175.731], [178.361, 178.581]]],
-  "try/p1": [181.651, 200.695, "Try one. W has rows one, two, and two, minus one. The input x is three, one, its label is class one, and softmax gives zero point four and zero point six. After one step with eta one half, what is W one zero?", [[182.291, 182.941], [184.561, 184.811], [185.201, 185.451], [186.761, 187.471], [189.591, 190.031], [191.521, 191.901], [194.201, 194.411], [195.661, 196.301], [198.541, 198.921]]],
-  "try/ds": [201.075, 212.266, "First the score gradient: take one away at the label, class one. zero point four, and zero point six minus one, which is minus zero point four.", [[202.715, 203.225], [204.815, 205.085], [205.815, 206.355], [207.445, 207.835], [209.985, 210.265]]],
-  "try/dw": [212.646, 228.173, "W one zero sits in row one, so it takes d s one, minus zero point four. Column zero takes x zero, three. Its gradient is minus zero point four times three: minus one point two.", [[215.136, 215.516], [217.296, 217.546], [219.086, 219.736], [221.776, 222.076], [222.476, 223.036], [226.286, 226.756]]],
-  "try/step": [228.553, 240.196, "Step against it: two, minus one half times minus one point two. Subtracting a negative adds, so two plus zero point six: two point six.", [[229.553, 230.133], [230.493, 230.933], [232.013, 232.173], [233.893, 234.403], [236.223, 236.493], [238.723, 239.253]]],
-  "try/p2": [240.576, 248.125, "Now the biases, minus zero point two and zero point two. After the same step, what is b?", [[241.786, 242.286], [245.256, 245.866], [246.976, 247.296]]],
-  "try/a2": [248.505, 265.453, "A bias's gradient is just ds, zero point four and minus zero point four. Half of each comes off: minus zero point two minus zero point two is minus zero point four, and zero point two plus zero point two is zero point four.", [[251.155, 251.505], [254.255, 254.795], [256.075, 256.555], [259.355, 259.595], [261.165, 261.555], [264.025, 264.295]]],
-  "try/turn": [265.833, 266.574, "Your turn.", []]
+  "toward/recap": [0.7, 19.883, "For the input x of two, one, with correct class zero, the score gradient ds is minus zero point seven and plus zero point seven. So row zero of W has gradient minus zero point seven times x, and row one plus zero point seven times x.", [[2.46, 2.69], [3.11, 3.43], [4.95, 5.29], [8.8, 9.02], [10.67, 11.19], [16.29, 16.59], [17.39, 17.62]]],
+  "toward/step": [20.263, 34.091, "Now step, here with eta one half. Row zero belongs to the correct class, and its ds is minus zero point seven, so it gains zero point three five times x: it moves toward x.", [[20.933, 21.283], [22.923, 23.423], [25.833, 26.103], [28.663, 29.033], [32.053, 32.493]]],
+  "toward/away": [34.471, 43.887, "Row one, the wrong class, has ds plus zero point seven. It loses zero point three five times x, and moves away.", [[35.201, 35.661], [36.701, 37.021], [39.281, 39.811], [42.731, 42.961]]],
+  "toward/scores": [44.267, 53.926, "Measured along x, the correct row climbs from one to two point seven five, and the wrong one falls from one point eight five to zero point one.", [[45.597, 45.897], [49.407, 49.807], [52.437, 52.657]]],
+  "try/p1": [55.726, 74.77, "Try one. W has rows one, two, and two, minus one. The input x is three, one, its label is class one, and softmax gives zero point four and zero point six. After one step with eta one half, what is W one zero?", [[56.366, 57.016], [58.636, 58.886], [59.276, 59.526], [60.836, 61.546], [63.666, 64.106], [65.596, 65.976], [68.276, 68.486], [69.736, 70.376], [72.616, 72.996]]],
+  "try/ds": [75.15, 86.341, "First the score gradient: take one away at the label, class one. zero point four, and zero point six minus one, which is minus zero point four.", [[76.79, 77.3], [78.89, 79.16], [79.89, 80.43], [81.52, 81.91], [84.06, 84.34]]],
+  "try/dw": [86.721, 102.248, "W one zero sits in row one, so it takes d s one, minus zero point four. Column zero takes x zero, three. Its gradient is minus zero point four times three: minus one point two.", [[89.211, 89.591], [91.371, 91.621], [93.161, 93.811], [95.851, 96.151], [96.551, 97.111], [100.361, 100.831]]],
+  "try/step": [102.628, 114.272, "Step against it: two, minus one half times minus one point two. Subtracting a negative adds, so two plus zero point six: two point six.", [[103.628, 104.208], [104.568, 105.008], [106.088, 106.248], [107.968, 108.478], [110.298, 110.568], [112.798, 113.328]]],
+  "try/p2": [114.652, 122.201, "Now the biases, minus zero point two and zero point two. After the same step, what is b?", [[115.862, 116.362], [119.332, 119.942], [121.052, 121.372]]],
+  "try/a2": [122.581, 139.529, "A bias's gradient is just ds, zero point four and minus zero point four. Half of each comes off: minus zero point two minus zero point two is minus zero point four, and zero point two plus zero point two is zero point four.", [[125.231, 125.581], [128.331, 128.871], [130.151, 130.631], [133.431, 133.671], [135.241, 135.631], [138.101, 138.371]]],
+  "try/turn": [139.909, 140.649, "Your turn.", []]
  }
 }

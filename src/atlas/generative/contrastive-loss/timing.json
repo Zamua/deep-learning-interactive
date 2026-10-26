@@ -1,0 +1,21 @@
+{
+ "duration": 143.014,
+ "scenes": {
+  "pairs": [0.0, 74.761],
+  "loss": [74.761, 143.014]
+ },
+ "beats": {
+  "pairs/views": [0.7, 9.698, "Here is a way to learn from images with no labels at all. Take an image and cut two random crops from it: two views of the same thing.", [[4.0, 4.64], [5.8, 5.96], [7.53, 8.0]]],
+  "pairs/embed": [10.078, 20.113, "An encoder turns each view into a vector, z one for the first view and z two for the second. Say z one comes out as six, eight.", [[12.828, 13.328], [14.928, 15.218], [16.778, 17.378]]],
+  "pairs/size": [20.493, 34.518, "Picture it as an arrow from the origin. Its length as an arrow, not its count of entries, is the square root of its squared entries added up: thirty six plus sixty four is a hundred, whose square root is ten.", [[22.733, 23.313], [24.713, 24.923], [26.313, 26.603], [29.483, 30.033], [32.593, 32.913]]],
+  "pairs/unit": [34.898, 48.872, "Divide each entry by ten, and z one becomes zero point six, zero point eight: an arrow of length one, a unit vector. Both views are scaled this way, so only their directions count.", [[36.758, 37.148], [39.848, 40.108], [41.158, 41.618], [43.028, 43.428], [44.388, 44.928], [46.698, 46.978]]],
+  "pairs/sim": [49.252, 60.056, "The similarity of two views is the dot product of their unit vectors: one when they point the same way, lower as they turn apart. These two give zero point eight.", [[53.352, 53.872], [55.602, 55.952], [57.502, 58.072]]],
+  "pairs/batch": [60.436, 73.661, "In a batch, view one of each image has one positive, the other view of the same image. The views of every other image are its negatives. In the grid of similarities, the positives sit on the diagonal.", [[61.146, 61.496], [63.996, 64.346], [66.086, 66.596], [69.316, 69.886], [71.426, 71.676]]],
+  "loss/range": [75.461, 83.04, "Similarities of unit vectors stay between minus one and one: too narrow a range for a softmax to be confident.", [[79.451, 80.081]]],
+  "loss/divide": [83.42, 96.397, "So the scores are similarities divided by a temperature, written tau, the Greek letter tau: a small number, here zero point four. Dividing by it stretches the gaps between them.", [[84.67, 85.01], [85.93, 86.08], [87.5, 87.8], [88.73, 89.03], [90.19, 90.67], [91.51, 91.77], [93.23, 93.68]]],
+  "loss/row": [96.777, 115.271, "Take row zero: view one of image zero against the second view of every image. Its similarities, zero point eight, zero and zero point four, divided by zero point four, give scores of two, zero and one. Which of these candidates is my partner?", [[97.957, 98.527], [102.727, 103.297], [104.397, 104.657], [105.627, 105.807], [106.347, 106.537], [109.617, 109.927], [111.157, 111.377], [111.877, 112.087], [112.627, 113.217]]],
+  "loss/soft": [115.651, 131.571, "That is a classification problem. So run a softmax over the row, and take the cross-entropy with the positive as the right answer. The exponentials are seven point three nine, one, and two point seven two: a total of eleven point one one.", [[117.661, 118.111], [120.201, 120.461], [123.581, 124.161], [126.651, 126.971], [127.371, 127.631], [128.991, 129.501]]],
+  "loss/loss": [131.951, 140.794, "The loss is the log of the total, minus the positive's score: two point four one minus two, which is zero point four one.", [[133.981, 134.191], [135.721, 136.321], [138.401, 138.791], [139.231, 139.461]]],
+  "loss/turn": [141.174, 141.914, "Your turn.", []]
+ }
+}

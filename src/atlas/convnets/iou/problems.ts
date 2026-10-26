@@ -1,81 +1,14 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
 import { int, num, pick, round } from '../../kit';
-import { traps } from '../../networks/kit';
-import { shuffled } from '../kit';
+import { shuffled, traps } from '../kit';
+import { type Box, iou } from '../box-iou/box';
 
-/** Corners (x1, y1, x2, y2): top left, then bottom right. */
-type Box = [number, number, number, number];
-
-const area = (b: Box): number => (b[2] - b[0]) * (b[3] - b[1]);
-/** The overlap's edges, which cross over (right < left) when the boxes miss each other. */
-const edges = (a: Box, b: Box) => ({ l: Math.max(a[0], b[0]), r: Math.min(a[2], b[2]), t: Math.max(a[1], b[1]), bt: Math.min(a[3], b[3]) });
-const inter = (a: Box, b: Box): number => {
-  const e = edges(a, b);
-  return Math.max(0, e.r - e.l) * Math.max(0, e.bt - e.t);
-};
-const union = (a: Box, b: Box): number => area(a) + area(b) - inter(a, b);
-const iou = (a: Box, b: Box): number => inter(a, b) / union(a, b);
-/** The box around both, a common stand-in for the overlap or the union. */
-const hull = (a: Box, b: Box): number => (Math.max(a[2], b[2]) - Math.min(a[0], b[0])) * (Math.max(a[3], b[3]) - Math.min(a[1], b[1]));
-
-const tex = (b: Box): string => `(${b.join(', ')})`;
-
-type Kind = 'overlap' | 'nested' | 'apart';
-
-/** A box with corners on a grid of `step`, `lo` to `hi` steps wide and tall. */
-function box(rng: Rng, max: number, lo: number, hi: number, step: number): Box {
-  const w = int(rng, lo, hi);
-  const h = int(rng, lo, hi);
-  const x = int(rng, 0, max - w);
-  const y = int(rng, 0, max - h);
-  return [x * step, y * step, (x + w) * step, (y + h) * step];
-}
-
-/** Two boxes in the given relation, small whole numbers first, then pixel-sized ones. */
-function pair(rng: Rng, d: number, kind: Kind): [Box, Box] {
-  const step = d < 0.7 ? 1 : pick(rng, [5, 10]);
-  const max = d < 0.35 ? 8 : 10;
-  for (;;) {
-    const a = box(rng, max, 2, d < 0.35 ? 5 : 6, step);
-    const b = box(rng, max, 2, d < 0.35 ? 5 : 6, step);
-    const e = edges(a, b);
-    const inside = (p: Box, q: Box) => p[0] >= q[0] && p[1] >= q[1] && p[2] <= q[2] && p[3] <= q[3];
-    const nested = inside(a, b) || inside(b, a);
-    const ok =
-      kind === 'apart' ? e.r < e.l && e.bt < e.t
-      : kind === 'nested' ? nested && area(a) !== area(b)
-      : inter(a, b) > 0 && !nested;
-    if (ok) return [a, b];
-  }
-}
-
-function kindFor(rng: Rng, d: number): Kind {
-  if (d < 0.35) return 'overlap';
-  const r = rng.next();
-  if (d >= 0.6 && r < 0.2) return 'apart';
-  return r < 0.4 ? 'nested' : 'overlap';
-}
-
-/** The working for the overlap, edge by edge. */
-function overlapSteps(a: Box, b: Box): string[] {
-  const e = edges(a, b);
-  const w = e.r - e.l;
-  const h = e.bt - e.t;
-  const side = (lo: number, hi: number, name: string) => (hi - lo > 0 ? `$${hi} - ${lo} = ${hi - lo}$ ${name}` : `$${hi} - ${lo} = ${hi - lo}$, clamped: $\\max(0, ${hi - lo}) = 0$ ${name}`);
-  return [
-    `The overlap's left edge is the larger left, $\\max(${a[0]}, ${b[0]}) = ${e.l}$, and its right edge the smaller right, $\\min(${a[2]}, ${b[2]}) = ${e.r}$: ${side(e.l, e.r, 'wide')}.`,
-    `Its top is the larger top, $\\max(${a[1]}, ${b[1]}) = ${e.t}$, and its bottom the smaller bottom, $\\min(${a[3]}, ${b[3]}) = ${e.bt}$: ${side(e.t, e.bt, 'tall')}.`,
-    w > 0 && h > 0 ? `The intersection is $${w} \\times ${h} = ${w * h}$.` : 'A side came out negative, so the boxes do not overlap: the intersection is $0$.',
-  ];
-}
-
-const areaStep = (a: Box, b: Box): string =>
-  `Box A is $${a[2] - a[0]} \\times ${a[3] - a[1]} = ${area(a)}$ and box B is $${b[2] - b[0]} \\times ${b[3] - b[1]} = ${area(b)}$.`;
+const L = (i: number): string => 'ABCDE'[i]!;
 
 /** Box letters for prose: "A and C", "A, C and D", "B only". */
 function setText(xs: number[]): string {
-  const ls = [...xs].sort((p, q) => p - q).map((i) => 'ABCDE'[i]!);
+  const ls = [...xs].sort((p, q) => p - q).map(L);
   if (ls.length === 1) return `${ls[0]} only`;
   return `${ls.slice(0, -1).join(', ')} and ${ls[ls.length - 1]}`;
 }
@@ -94,139 +27,182 @@ function greedy(order: number[], drop: (k: number, o: number) => boolean): numbe
 
 const sameSet = (p: number[], q: number[]) => p.length === q.length && [...p].sort().join() === [...q].sort().join();
 
+/** A detector's boxes: their IoU table, confidences, the confidence order and the NMS survivors. */
+interface Dets {
+  n: number;
+  thresh: number;
+  M: number[][];
+  scores: number[];
+  desc: number[];
+  over: (k: number, o: number) => boolean;
+  right: number[];
+}
+
+const levels = (rng: Rng, d: number) => ({ n: d < 0.5 ? 4 : 5, thresh: d < 0.5 ? 0.5 : pick(rng, [0.3, 0.4, 0.5, 0.6]) });
+
+/** Boxes jittered around two objects (sometimes three), so duplicates overlap and the rest do not. */
+function detections(rng: Rng, n: number, thresh: number): Dets {
+  for (;;) {
+    const objects = n === 5 && rng.int(2) === 0 ? 3 : 2;
+    const bases: Box[] = Array.from({ length: objects }, (_, o) => {
+      const x = 4 + o * 34 + int(rng, 0, 4);
+      const y = int(rng, 4, 30);
+      return [x, y, x + int(rng, 18, 26), y + int(rng, 18, 26)];
+    });
+    const owner = Array.from({ length: n }, (_, i) => (i < objects ? i : rng.int(objects)));
+    const boxes: Box[] = owner.map((o) => {
+      const [x1, y1, x2, y2] = bases[o]!;
+      const j = () => int(rng, -5, 5);
+      return [x1 + j(), y1 + j(), x2 + j(), y2 + j()];
+    });
+    const M = boxes.map((p) => boxes.map((q) => round(iou(p, q), 2)));
+    const scores = rng.shuffle([0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6]).slice(0, n);
+    const desc = [...Array(n).keys()].sort((p, q) => scores[q]! - scores[p]!);
+    const over = (k: number, o: number) => M[k]![o]! > thresh;
+    if (M.some((r, i) => r.some((v, j) => i !== j && Math.abs(v - thresh) < 0.03))) continue;
+    const right = greedy(desc, over);
+    if (right.length < n) return { n, thresh, M, scores, desc, over, right };
+  }
+}
+
+/** The givens every table problem opens with, the IoU table last. */
+function given(D: Dets, ask: string): string {
+  const table = `\\begin{array}{c|${'c'.repeat(D.n)}} & ${D.M.map((_, i) => L(i)).join(' & ')} \\\\ \\hline ${D.M.map((r, i) => `${L(i)} & ${r.map((v, j) => (i === j ? '' : num(v))).join(' & ')}`).join(' \\\\ ')} \\end{array}`;
+  return `A detector proposes ${D.n} boxes with these confidences: ${D.scores.map((c, i) => `${L(i)} $${num(c)}$`).join(', ')}. The table gives their IoUs with each other. ${ask}\n\n$$${table}$$`;
+}
+
+const sortStep = (D: Dets): string => `Sort by confidence, highest first: ${D.desc.map((i) => `${L(i)} $${num(D.scores[i]!)}$`).join(', ')}.`;
+
+/** One step per box, in confidence order: a box is dropped only by a box already kept. */
+function walk(D: Dets): string[] {
+  const { M, desc, over, thresh } = D;
+  const steps: string[] = [`${L(desc[0]!)} is the most confident: keep it.`];
+  const kept = [desc[0]!];
+  for (const i of desc.slice(1)) {
+    const by = kept.find((k) => over(k, i));
+    const ghost = desc.slice(0, desc.indexOf(i)).find((j) => !kept.includes(j) && over(j, i));
+    if (by !== undefined) {
+      steps.push(`${L(i)}: its IoU with kept ${L(by)} is $${num(M[by]![i]!)}$, above $${num(thresh)}$: drop ${L(i)}.`);
+      continue;
+    }
+    const vs = kept.map((k) => `${L(k)} $${num(M[k]![i]!)}$`);
+    const k0 = kept[0]!;
+    const with_ = kept.length === 1 ? `its IoU with kept ${L(k0)} is $${num(M[k0]![i]!)}$,` : `its IoUs with the kept boxes, ${vs.slice(0, -1).join(', ')} and ${vs[vs.length - 1]}, are`;
+    const note = ghost === undefined ? '' : ` Its $${num(M[ghost]![i]!)}$ with ${L(ghost)} does not count: ${L(ghost)} was dropped, and only kept boxes suppress.`;
+    steps.push(`${L(i)}: ${with_} not above $${num(thresh)}$: keep ${L(i)}.${note}`);
+    kept.push(i);
+  }
+  return steps;
+}
+
+/** The usual wrong runs of NMS, each with what it gets wrong. */
+function mistakes(D: Dets): { set: number[]; why: string }[] {
+  const { desc, over } = D;
+  const asc = [...desc].reverse();
+  return [
+    {
+      set: desc.filter((i) => desc.slice(0, desc.indexOf(i)).every((j) => !over(j, i))),
+      why: 'That lets a box that was already dropped drop others too. Only kept boxes suppress: compare each box with the boxes kept so far.',
+    },
+    { set: desc.filter((i) => i === desc[0] || !over(desc[0]!, i)), why: 'That stops after the first box. Repeat with the boxes that are left: the most confident of them is kept, and drops its own duplicates.' },
+    { set: greedy(asc, over), why: 'That starts from the least confident box. NMS sorts by confidence, highest first, so each object keeps its most confident box.' },
+    { set: greedy(desc, (k, o) => !over(k, o)), why: 'That keeps the boxes that overlap the kept one and drops the rest. It is the other way round: overlapping it by more than the threshold makes a box a duplicate.' },
+  ];
+}
+
 export const generators: Generator[] = [
-  {
-    id: 'iou',
-    make(rng, d) {
-      const [a, b] = pair(rng, d, kindFor(rng, d));
-      const I = inter(a, b);
-      const U = union(a, b);
-      const v = I / U;
-      const e = edges(a, b);
-      const crossed = (e.r - e.l) * (e.bt - e.t);
-      return {
-        prompt: `Box A is $${tex(a)}$ and box B is $${tex(b)}$. What is their IoU? Round to two decimals.`,
-        answer: { kind: 'number', value: round(v, 4), places: 2 },
-        traps: traps(round(v, 4), [
-          { value: I / (area(a) + area(b)), why: 'That divides by the two areas added up, which counts the overlap twice. The union is area A plus area B, minus the intersection.' },
-          { value: I / Math.min(area(a), area(b)), why: 'That divides by the smaller box alone. IoU divides by the union: everything either box covers.' },
-          ...(I === 0 && crossed > 0 ? [{ value: crossed / (area(a) + area(b) - crossed), why: 'Both sides of the overlap came out negative, and their product is positive. A negative side means the boxes miss each other: the intersection is 0.' }] : []),
-          { value: I, why: 'That is the intersection on its own. Divide it by the union.' },
-        ], 2),
-        solution: [
-          areaStep(a, b),
-          ...overlapSteps(a, b),
-          `The union is $${area(a)} + ${area(b)} - ${I} = ${U}$.`,
-          `IoU $= ${I} / ${U} \\approx ${num(round(v, 2), 2)}$.`,
-        ],
-      };
-    },
-  },
-  {
-    id: 'areas',
-    make(rng, d) {
-      const [a, b] = pair(rng, d, kindFor(rng, d));
-      const I = inter(a, b);
-      const U = union(a, b);
-      const e = edges(a, b);
-      const crossed = (e.r - e.l) * (e.bt - e.t);
-      const askUnion = d >= 0.35 && rng.int(2) === 0;
-      const lead = `Box A is $${tex(a)}$ and box B is $${tex(b)}$.`;
-      if (askUnion) {
-        return {
-          prompt: `${lead} What is the area of their union?`,
-          answer: { kind: 'number', value: U },
-          traps: traps(U, [
-            { value: area(a) + area(b), why: 'That adds the two areas, so the overlap is counted twice. Subtract the intersection once.' },
-            { value: area(a) + area(b) - 2 * I, why: 'That subtracts the overlap twice. It was counted twice in the two areas, so remove it once.' },
-            { value: hull(a, b), why: 'That is the box around both, which also covers corners that are in neither box.' },
-          ]),
-          solution: [areaStep(a, b), ...overlapSteps(a, b), `The union is $${area(a)} + ${area(b)} - ${I} = ${U}$.`],
-        };
-      }
-      return {
-        prompt: `${lead} What is the area of their intersection?`,
-        answer: { kind: 'number', value: I },
-        traps: traps(I, [
-          ...(I === 0 ? [{ value: crossed, why: 'A side of the overlap came out negative: the boxes miss each other, so the intersection is 0, whatever the product says.' }] : []),
-          { value: hull(a, b), why: 'That is the box around both. The overlap starts at the larger of the two lefts and ends at the smaller of the two rights.' },
-          { value: Math.min(area(a), area(b)), why: 'That is the smaller box\'s area. Only the part inside both boxes counts.' },
-        ]),
-        solution: overlapSteps(a, b),
-      };
-    },
-  },
   {
     id: 'nms',
     make(rng, d) {
-      const n = d < 0.5 ? 4 : 5;
-      const thresh = d < 0.5 ? 0.5 : pick(rng, [0.3, 0.4, 0.5, 0.6]);
+      const { n, thresh } = levels(rng, d);
       for (;;) {
-        // Boxes jittered around two objects (sometimes three), so duplicates overlap and the rest do not.
-        const objects = n === 5 && rng.int(2) === 0 ? 3 : 2;
-        const bases: Box[] = Array.from({ length: objects }, (_, o) => {
-          const x = 4 + o * 34 + int(rng, 0, 4);
-          const y = int(rng, 4, 30);
-          return [x, y, x + int(rng, 18, 26), y + int(rng, 18, 26)];
-        });
-        const owner = Array.from({ length: n }, (_, i) => (i < objects ? i : rng.int(objects)));
-        const boxes: Box[] = owner.map((o) => {
-          const [x1, y1, x2, y2] = bases[o]!;
-          const j = () => int(rng, -5, 5);
-          return [x1 + j(), y1 + j(), x2 + j(), y2 + j()];
-        });
-        const M = boxes.map((p) => boxes.map((q) => round(iou(p, q), 2)));
-        const scores = rng.shuffle([0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6]).slice(0, n);
-        const desc = [...Array(n).keys()].sort((p, q) => scores[q]! - scores[p]!);
-        const asc = [...desc].reverse();
-        const over = (k: number, o: number) => M[k]![o]! > thresh;
-        if (M.some((r, i) => r.some((v, j) => i !== j && Math.abs(v - thresh) < 0.03))) continue;
-        const right = greedy(desc, over);
-        if (right.length === n) continue;
-        const fresh = (set: number[], taken: number[][]) => set.length > 0 && set.length < n && !sameSet(set, right) && !taken.some((t) => sameSet(t, set));
-        const chain = {
-          set: desc.filter((i) => desc.slice(0, desc.indexOf(i)).every((j) => !over(j, i))),
-          why: 'That lets a box that was already dropped drop others too. Only kept boxes suppress: compare each box with the boxes kept so far.',
-        };
-        const usual = rng.shuffle([
-          { set: desc.filter((i) => i === desc[0] || !over(desc[0]!, i)), why: 'That stops after the first box. Repeat with the boxes that are left: the most confident of them is kept, and drops its own duplicates.' },
-          { set: greedy(asc, over), why: 'That starts from the least confident box. NMS sorts by confidence, highest first, so each object keeps its most confident box.' },
-          { set: greedy(desc, (k, o) => !over(k, o)), why: 'That keeps the boxes that overlap the kept one and drops the rest. It is the other way round: overlapping it by more than the threshold makes a box a duplicate.' },
-        ]);
+        const D = detections(rng, n, thresh);
+        const fresh = (set: number[], taken: number[][]) => set.length > 0 && set.length < n && !sameSet(set, D.right) && !taken.some((t) => sameSet(t, set));
+        const [chain, ...rest] = mistakes(D);
         // The dropped-box mistake is the subtle one: always offered when it differs. Keeping
         // every box is never right here, so it is never offered.
         const picked: { set: number[]; why: string }[] = [];
-        for (const w of [chain, ...usual]) if (picked.length < 3 && fresh(w.set, picked.map((p) => p.set))) picked.push(w);
+        for (const w of [chain!, ...rng.shuffle(rest)]) if (picked.length < 3 && fresh(w.set, picked.map((p) => p.set))) picked.push(w);
         if (picked.length < 3) continue;
-        const L = (i: number) => 'ABCDE'[i]!;
-        const table = `\\begin{array}{c|${'c'.repeat(n)}} & ${boxes.map((_, i) => L(i)).join(' & ')} \\\\ \\hline ${M.map((r, i) => `${L(i)} & ${r.map((v, j) => (i === j ? '' : num(v))).join(' & ')}`).join(' \\\\ ')} \\end{array}`;
-        // One step per box, in confidence order: a box is dropped only by a box already kept.
-        const steps: string[] = [`${L(desc[0]!)} is the most confident: keep it.`];
-        const kept = [desc[0]!];
-        for (const i of desc.slice(1)) {
-          const by = kept.find((k) => over(k, i));
-          const ghost = desc.slice(0, desc.indexOf(i)).find((j) => !kept.includes(j) && over(j, i));
-          if (by !== undefined) {
-            steps.push(`${L(i)}: its IoU with kept ${L(by)} is $${num(M[by]![i]!)}$, above $${num(thresh)}$: drop ${L(i)}.`);
-            continue;
-          }
-          const vs = kept.map((k) => `${L(k)} $${num(M[k]![i]!)}$`);
-          const k0 = kept[0]!;
-          const with_ = kept.length === 1 ? `its IoU with kept ${L(k0)} is $${num(M[k0]![i]!)}$,` : `its IoUs with the kept boxes, ${vs.slice(0, -1).join(', ')} and ${vs[vs.length - 1]}, are`;
-          const note = ghost === undefined ? '' : ` Its $${num(M[ghost]![i]!)}$ with ${L(ghost)} does not count: ${L(ghost)} was dropped, and only kept boxes suppress.`;
-          steps.push(`${L(i)}: ${with_} not above $${num(thresh)}$: keep ${L(i)}.${note}`);
-          kept.push(i);
-        }
         return {
-          prompt: `A detector proposes ${n} boxes with these confidences: ${boxes.map((_, i) => `${L(i)} $${num(scores[i]!)}$`).join(', ')}. The table gives their IoUs with each other. Which boxes survive non-max suppression with IoU threshold $${num(thresh)}$?\n\n$$${table}$$`,
-          answer: shuffled(rng, [{ text: setText(right), why: null }, ...picked.map((w) => ({ text: setText(w.set), why: w.why }))]),
+          prompt: given(D, `Which boxes survive non-max suppression with IoU threshold $${num(thresh)}$?`),
+          answer: shuffled(rng, [{ text: setText(D.right), why: null }, ...picked.map((w) => ({ text: setText(w.set), why: w.why }))]),
+          solution: [sortStep(D), ...walk(D), `The survivors are ${setText(D.right)}.`],
+        };
+      }
+    },
+  },
+  {
+    id: 'survivors',
+    make(rng, d) {
+      const { n, thresh } = levels(rng, d);
+      const D = detections(rng, n, thresh);
+      const v = D.right.length;
+      return {
+        prompt: given(D, `How many boxes survive non-max suppression with IoU threshold $${num(thresh)}$?`),
+        answer: { kind: 'number', value: v },
+        traps: traps(v, mistakes(D).map((w) => ({ value: w.set.length, why: w.why }))),
+        solution: [sortStep(D), ...walk(D), `${setText(D.right)} survive: ${v} ${v === 1 ? 'box' : 'boxes'}.`],
+      };
+    },
+  },
+  {
+    id: 'first-round',
+    make(rng, d) {
+      const { n, thresh } = levels(rng, d);
+      for (;;) {
+        const D = detections(rng, n, thresh);
+        const { M, desc, over } = D;
+        const best = desc[0]!;
+        const others = desc.slice(1);
+        const dropped = others.filter((o) => over(best, o));
+        const v = dropped.length;
+        if (v === 0) continue;
+        const rowOf = (k: number) => [...Array(n).keys()].filter((o) => o !== k && over(k, o)).length;
+        const worst = desc[n - 1]!;
+        return {
+          prompt: given(D, `In non-max suppression with IoU threshold $${num(thresh)}$, how many boxes does the first box it keeps drop?`),
+          answer: { kind: 'number', value: v },
+          traps: traps(v, [
+            ...(best !== 0 ? [{ value: rowOf(0), why: `That reads row A. The first box kept is the most confident one, ${L(best)}: read its row.` }] : []),
+            { value: n - 1 - v, why: `That counts the boxes ${L(best)} lets stay. It drops the ones whose IoU with it is above the threshold.` },
+            { value: rowOf(worst), why: `That reads the row of ${L(worst)}, the least confident box. The first box kept is the most confident one, ${L(best)}.` },
+            { value: n - D.right.length, why: `That counts every box dropped by the end. The question asks only about ${L(best)}'s own drops.` },
+          ]),
           solution: [
-            `Sort by confidence, highest first: ${desc.map((i) => `${L(i)} $${num(scores[i]!)}$`).join(', ')}.`,
-            ...steps,
-            `The survivors are ${setText(right)}.`,
+            `The most confident box is ${L(best)}, at $${num(D.scores[best]!)}$: it is kept first.`,
+            `Its row: ${others.map((o) => `${L(o)} $${num(M[best]![o]!)}$`).join(', ')}.`,
+            `Above $${num(thresh)}$: ${dropped.length === 1 ? L(dropped[0]!) : `${dropped.slice(0, -1).map(L).join(', ')} and ${L(dropped[dropped.length - 1]!)}`}. So ${L(best)} drops ${v} ${v === 1 ? 'box' : 'boxes'}.`,
           ],
         };
       }
+    },
+  },
+  {
+    id: 'threshold',
+    make(rng) {
+      const v = pick(rng, [0.35, 0.42, 0.47, 0.53, 0.58, 0.64, 0.71]);
+      const [t1, t2] = rng.shuffle([0.3, 0.4, 0.5, 0.6, 0.7]).slice(0, 2) as [number, number];
+      const drops = (t: number) => v > t;
+      const fate = (t: number, drop: boolean) => `${drop ? 'dropped' : 'kept'} at $${num(t)}$`;
+      const say = (t: number) => `At $${num(t)}$, $${num(v)}$ is ${drops(t) ? '' : 'not '}above the threshold, so B is ${drops(t) ? 'dropped' : 'kept'}.`;
+      const opts = [
+        [true, true],
+        [true, false],
+        [false, true],
+        [false, false],
+      ].map(([a, b]) => {
+        const wrong = [a !== drops(t1) ? say(t1) : '', b !== drops(t2) ? say(t2) : ''].filter(Boolean);
+        const text = `B is ${fate(t1, a!)} and ${fate(t2, b!)}`;
+        if (!wrong.length) return { text, why: null };
+        const flipped = wrong.length === 2 ? 'That has the rule backwards: a box is dropped when its IoU with a kept box is above the threshold. ' : '';
+        return { text, why: flipped + wrong.join(' ') };
+      });
+      return {
+        prompt: `Non-max suppression has kept box A. Box B, less confident, has IoU $${num(v)}$ with A. What happens to B with IoU threshold $${num(t1)}$, and with $${num(t2)}$?`,
+        answer: shuffled(rng, opts),
+        solution: ['A box is dropped when its IoU with a kept box is above the threshold.', say(t1), say(t2)],
+      };
     },
   },
 ];

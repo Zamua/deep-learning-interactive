@@ -50,59 +50,29 @@ export const generators: Generator[] = [
     make: stdProblem,
   },
   {
-    id: 'sum-variance',
+    id: 'shrink',
     make(rng, d) {
-      const kind = d < 0.35 ? rng.int(2) : d < 0.7 ? rng.int(3) : 2;
-      if (kind === 0) {
-        const n = pick(rng, [2, 3, 4, 5, 10, 50, 100]);
-        const v = pick(rng, [1, 2, 3, 0.5, 4]);
-        const want = clean(n * v);
-        return {
-          prompt: `$z$ is the sum of ${n} independent terms, each with mean 0 and variance ${num(v)}. What is the variance of $z$?`,
-          answer: { kind: 'number', value: want },
-          traps: traps(want, [
-            { value: v, why: 'That is one term\'s variance. Every independent term adds its own.' },
-            { value: Math.sqrt(n) * v, why: 'The variances add up, $n$ of them. It is the standard deviation that grows like $\\sqrt{n}$.' },
-            { value: n * n * v, why: `Independent variances add: $${n} \\times ${num(v)}$, not $${n}^2 \\times ${num(v)}$.` },
-          ]),
-          solution: [`For independent terms the variances add: the variance of $z$ is $${n} \\times ${num(v)} = ${num(want)}$.`],
-        };
-      }
-      if (kind === 1) {
-        const n = pick(rng, [4, 9, 16, 25, 100, 400]);
-        const sd = pick(rng, [1, 2, 0.5, 3]);
-        const want = clean(Math.sqrt(n) * sd);
-        return {
-          prompt: `$z$ is the sum of ${n} independent terms, each with mean 0 and standard deviation ${num(sd)}. What is the standard deviation of $z$?`,
-          answer: { kind: 'number', value: want },
-          traps: traps(want, [
-            { value: n * sd, why: 'Standard deviations do not add; variances do. The sum\'s variance is $n$ times as big, so its standard deviation is $\\sqrt{n}$ times as big.' },
-            { value: n * sd * sd, why: 'That is the variance of the sum. Take its square root.' },
-            { value: sd, why: 'That is one term\'s. The sum spreads wider as terms pile up.' },
-          ]),
-          solution: [
-            `Square the standard deviation: each term has variance $${num(sd)}^2 = ${num(clean(sd * sd))}$.`,
-            `For independent terms the variances add: $${n} \\times ${num(clean(sd * sd))} = ${num(clean(n * sd * sd))}$.`,
-            `The standard deviation is the square root: $\\sqrt{${num(clean(n * sd * sd))}} = ${num(want)}$, which is $\\sqrt{${n}} = ${Math.sqrt(n)}$ times one term's.`,
-          ],
-        };
-      }
-      const n = pick(rng, [25, 100, 400, 2500]);
-      const s = pick(rng, [1, 0.1, 0.01, 0.2, 0.5]);
-      const want = clean(Math.sqrt(n) * s);
+      const n = d < 0.35 ? 100 : pick(rng, d < 0.7 ? [100, 400, 25] : [100, 400, 25, 10000]);
+      const f = d < 0.35 ? 0.1 : pick(rng, [0.1, 0.2, 0.5]);
+      const sd = clean(f / Math.sqrt(n));
+      const L = d < 0.7 ? pick(rng, [2, 3]) : pick(rng, [3, 4]);
+      const want = clean(f ** L);
+      const v = clean(sd * sd);
+      const f2 = clean(f * f);
       return {
-        prompt: `A unit computes $z = \\symw \\cdot \\symx$ over $n = ${n}$ inputs. Each input has mean 0 and variance 1, and each weight is drawn independently with mean 0 and standard deviation ${num(s)}. What is the standard deviation of $z$?`,
+        prompt: `Each unit of a deep tanh network adds up $n = ${n}$ inputs, with weights of standard deviation ${num(sd)}. The first layer's inputs have standard deviation 1. About what standard deviation is left after ${L} layers?`,
         answer: { kind: 'number', value: want },
         traps: traps(want, [
-          { value: n * s, why: 'Standard deviations do not add; variances do. Add the $n$ variances, then take the square root.' },
-          { value: n * s * s, why: 'That is the variance of $z$. Take its square root.' },
-          { value: s, why: 'That is one weight\'s. The sum of $n$ terms spreads $\\sqrt{n}$ times wider.' },
+          { value: f, why: `That is after one layer. Each layer multiplies the standard deviation by ${num(f)} again.` },
+          { value: f * L, why: `That multiplies by the number of layers. The factors compound: $${num(f)}^{${L}}$.` },
+          { value: f2 ** L, why: 'That is the variance after those layers. Take its square root.' },
+          { value: (n * sd) ** L, why: `That adds up the standard deviations, $${n} \\times ${num(sd)}$. Variances add, so one layer's factor is $\\sqrt{${n}} \\times ${num(sd)}$.` },
         ]),
         solution: [
-          `Square the weight's standard deviation for its variance: $${num(s)}^2 = ${num(clean(s * s))}$.`,
-          `Each term $\\symw_i \\symx_i$ has the weight's variance times the input's: $${num(clean(s * s))} \\times 1 = ${num(clean(s * s))}$.`,
-          `The ${n} variances add: $${n} \\times ${num(clean(s * s))} = ${num(clean(n * s * s))}$.`,
-          `So the standard deviation is $\\sqrt{${num(clean(n * s * s))}} = ${num(want)}$.${want === 1 ? ' Exactly 1: this is the scale Xavier initialization picks.' : ''}`,
+          `Each weight's variance: $${num(sd)}^2 = ${num(v)}$.`,
+          `Each unit adds ${n} terms, so its sum's variance is $${n} \\times ${num(v)} = ${num(f2)}$ times its inputs'.`,
+          `So each layer multiplies the standard deviation by $\\sqrt{${num(f2)}} = ${num(f)}$.`,
+          `Near 0, tanh passes values almost unchanged, so the factors compound: $${num(f)}^{${L}} = ${num(want)}$.`,
         ],
       };
     },

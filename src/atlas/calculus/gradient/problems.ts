@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import { int, pick, vec } from '../../kit';
-import { cleanTraps, joinSigned, paren } from '../kit';
+import { joinSigned, paren } from '../kit';
 
 const P = (v: string) => `\\frac{\\partial \\symf}{\\partial ${v}}`;
 
@@ -48,50 +48,6 @@ export const generators: Generator[] = [
           `So $${P('v')} = ${dvTex} = ${sub([[b, u], [c, null], ...(e ? [[2 * e, v] as [number, number]] : [])])} = ${fv}$.`,
           `Stack them: $\\nabla \\symf = ${vec([fu, fv])}$.`,
         ],
-      };
-    },
-  },
-  {
-    id: 'partial',
-    make(rng, d) {
-      const a = int(rng, 1, 3) * (d < 0.4 ? 1 : pick(rng, [1, -1]));
-      const c = int(rng, 1, 4);
-      const k = int(rng, 2, 6) * (d < 0.4 ? 1 : pick(rng, [1, -1]));
-      const u = d < 0.4 ? int(rng, 1, 3) : int(rng, -2, 3);
-      const v = d < 0.4 ? int(rng, 1, 3) : int(rng, -2, 3);
-      const inU = rng.int(2) === 0;
-      const du = 2 * a * u * v + k;
-      const dv = a * u * u + 2 * c * v;
-      const want = inU ? du : dv;
-      const fTex = joinSigned([mono(a, 'u^2 v'), mono(c, 'v^2'), mono(k, 'u')]);
-      const traps = inU
-        ? [
-            { value: dv, why: `That is the partial in $v$. The partial in $u$ holds $v$ fixed and moves only $u$.` },
-            { value: 2 * a * u + k, why: `$v$ is held fixed, but it still multiplies: the partial of $${joinSigned([mono(a, 'u^2 v')])}$ in $u$ is $${joinSigned([mono(2 * a, 'uv')])}$.` },
-          ]
-        : [
-            { value: du, why: `That is the partial in $u$. The partial in $v$ holds $u$ fixed and moves only $v$.` },
-            { value: dv + k * u, why: `That keeps the $${joinSigned([mono(k, 'u')])}$ term. It does not move when only $v$ moves, so its partial in $v$ is 0.` },
-          ];
-      return {
-        prompt: `$\\symf(u, v) = ${fTex}$. What is $${P(inU ? 'u' : 'v')}$ at $(u, v) = (${u}, ${v})$?`,
-        answer: { kind: 'number', value: want },
-        traps: cleanTraps(traps, want),
-        solution: inU
-          ? [
-              `Hold $v$ fixed. $${term(a, 'u^2 v')}$ is $${term(a, 'v')}$ times $u^2$, so it gives $${term(a, 'v')} \\cdot 2u = ${term(2 * a, 'uv')}$.`,
-              `$${term(c, 'v^2')}$ has no $u$, so it gives 0.`,
-              `$${term(k, 'u')}$ gives $${k}$.`,
-              `So $${P('u')} = ${joinSigned([mono(2 * a, 'uv'), mono(k, '')])}$.`,
-              `At $(${u}, ${v})$: $${2 * a} \\cdot ${paren(u)} \\cdot ${paren(v)} ${k < 0 ? '-' : '+'} ${Math.abs(k)} = ${du}$.`,
-            ]
-          : [
-              `Hold $u$ fixed. $${term(a, 'u^2 v')}$ is $${term(a, 'u^2')}$ times $v$, so it gives $${term(a, 'u^2')}$.`,
-              `$${term(c, 'v^2')}$ gives $${term(2 * c, 'v')}$.`,
-              `$${term(k, 'u')}$ has no $v$, so it gives 0.`,
-              `So $${P('v')} = ${joinSigned([mono(a, 'u^2'), mono(2 * c, 'v')])}$.`,
-              `At $(${u}, ${v})$: $${a} \\cdot ${paren(u)}^{2} + ${2 * c} \\cdot ${paren(v)} = ${dv}$.`,
-            ],
       };
     },
   },

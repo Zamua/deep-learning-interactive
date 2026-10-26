@@ -8,38 +8,11 @@ export const script: LectureScript = {
   speed: 1,
   scenes: [
     {
-      id: 'turn',
-      title: 'Turning a pair',
-      codeTitle: 'rotate.py',
-      code: `
-        def rotate(pair, angle):                      #@fn
-            t = np.radians(angle)                     #@fn
-            c, s = np.cos(t), np.sin(t)               #@unit
-            a, b = pair                               #@rule
-            return np.array([a*c - b*s, a*s + b*c])   #@rule
-        rotate([1, 0], 60)   # [0.5, 0.87]            #@basis
-        rotate([0, 1], 60)   # [-0.87, 0.5]           #@basis
-        q = np.array([2, 1])                          #@q
-        rotate(q, 90)     # [-1, 2]                   #@ninety
-        k = np.array([1, 1])                          #@sixty
-        rotate(k, 60)     # [-0.37, 1.37]             #@sixty
-      `,
-      beats: [
-        { id: 'pair', say: 'Draw a pair of numbers as an arrow from the origin. Here is a query, q: two, one.', code: 'q' },
-        { id: 'turn', say: 'Rotating turns the arrow about the origin, keeping its length: a quarter turn, {90°|ninety degrees}, carries it to minus one, two.', code: 'ninety' },
-        { id: 'unit', say: 'To turn any pair, start from an arrow of length one, pointing right, and turn it by the angle. Its tip lands at two numbers: across, the angle\'s cosine, written {cos|cos}, and up, its sine, written {sin|sine}.', code: ['fn', 'unit'] },
-        { id: 'cossin', say: 'At {90°|ninety degrees} the arrow points straight up: cos is zero and sin is one. At {60°|sixty degrees} it lands one half across and about {0.87|zero point eight seven} up. Like e to a power, they are looked up, not worked out by hand.', code: 'unit' },
-        { id: 'basis', say: 'So one, zero turns to cos, sin. And zero, one is one, zero already turned a quarter, so it lands a quarter turn past cos, sin. A quarter turn swaps the entries and flips the first sign, as two, one became minus one, two: minus sin, cos.', code: 'basis' },
-        { id: 'rule', say: 'Any pair a, b is a times one, zero, plus b times zero, one. Turning moves both pieces, so it lands at a times cos, sin, plus b times minus sin, cos: {[a cos − b sin, a sin + b cos]|a cos minus b sin, and a sin plus b cos}.', code: 'rule' },
-        { id: 'check', say: 'For {90°|ninety degrees}: two times zero minus one times one is minus one, and two times one plus one times zero is two.', code: ['rule', 'ninety'] },
-        { id: 'sixty', say: 'At {60°|sixty degrees}, with cosine one half and sine about {0.87|zero point eight seven}, the key one, one turns to about minus {0.37|zero point three seven} and {1.37|one point three seven}.', code: 'sixty' },
-      ],
-    },
-    {
       id: 'position',
       title: 'Turning by position',
       codeTitle: 'rope.py',
       code: `
+        rotate(q, 90)        # [2, 1] -> [-1, 2]      #@recap
         theta = 30           # degrees per position   #@theta
         rotate(q, 0 * theta) # position 0: no turn    #@zero
         rotate(q, 3 * theta) # position 3: 90°        #@three
@@ -48,6 +21,7 @@ export const script: LectureScript = {
         e = rotate(q, m*theta) @ rotate(k, n*theta)   #@score
       `,
       beats: [
+        { id: 'recap', say: 'A turn sends a, b to {[a cos − b sin, a sin + b cos]|a cos minus b sin, and a sin plus b cos}: a quarter turn takes two, one to minus one, two.', code: 'recap' },
         { id: 'idea', say: 'Rotary positions mark where a token sits by turning each query and key, instead of adding a position vector.', code: 'theta' },
         { id: 'angle', say: 'Each pair turns by a fixed angle per position, written {θ|theta}, the Greek letter theta. At position m, it has turned by {mθ|m times theta}.', code: 'theta' },
         { id: 'example', say: 'With {θ|theta} of {30°|thirty degrees}, position zero is not turned, and position three turns by {90°|ninety}.', code: ['zero', 'three'] },

@@ -3,53 +3,13 @@ import { int, num, pick, round } from '../../kit';
 import { cleanTraps, paren, polyExpr, polyTex } from '../kit';
 
 const D = (top: string, bot: string) => `\\frac{d${top}}{d${bot}}`;
+const DZDX = D('z', '\\symx');
 /** The inside `ax + b` as TeX and as an answer. */
 const inner = (a: number, b: number) => ({ tex: polyTex([{ c: a, n: 1 }, { c: b, n: 0 }]), expr: polyExpr([{ c: a, n: 1 }, { c: b, n: 0 }]) });
+/** `base` to the power k, as TeX; the power 1 left unwritten. */
+const pow = (base: string, k: number) => (k === 1 ? base : `${base}^{${k}}`);
 
 export const generators: Generator[] = [
-  {
-    id: 'local',
-    make(rng, d) {
-      const pool = d < 0.3 ? [2, 3, 4, 5, 6] : d < 0.65 ? [-3, -2, 2, 3, 4, 5, 0.5] : [-4, -2, -1, 0.5, 1.5, 2, 3, -0.5];
-      const three = d >= 0.65;
-      const s1 = pick(rng, pool);
-      const s2 = pick(rng, pool);
-      const s3 = three ? pick(rng, pool) : 1;
-      const v = round(s1 * s2 * s3, 4);
-      const names = three ? ['u', 'v', 'z'] : ['u', 'z'];
-      const links = three
-        ? [[D('u', '\\symx'), s1], [D('v', 'u'), s2], [D('z', 'v'), s3]] as const
-        : [[D('u', '\\symx'), s1], [D('z', 'u'), s2]] as const;
-      const shown = rng.shuffle([...links]);
-      const outer = links[links.length - 1]![1];
-      const traps = [
-        { value: round(s1 + s2 + (three ? s3 : 0), 4), why: 'That adds the local slopes. A nudge is scaled by each link in turn, so the slopes multiply.' },
-        { value: outer, why: `That is only the last link's slope. The earlier link${three ? 's scale' : ' scales'} the nudge first.` },
-      ];
-      if (s1 !== 0 && !three) traps.push({ value: round(s2 / s1, 4), why: 'That divides the slopes. Each link multiplies the nudge it receives, so the slopes multiply.' });
-      const mid = round(s3 * s2, 4);
-      const work = three
-        ? [
-            `Walk back from $z$, multiplying the local slopes: $${D('z', '\\symx')} = ${D('z', 'v')} \\cdot ${D('v', 'u')} \\cdot ${D('u', '\\symx')}$.`,
-            `Start at the end: $${D('z', 'v')} = ${num(s3)}$.`,
-            `Times $${D('v', 'u')}$: $${num(s3)} \\times ${paren(num(s2))} = ${num(mid)}$, which is $${D('z', 'u')}$.`,
-            `Times $${D('u', '\\symx')}$: $${num(mid)} \\times ${paren(num(s1))} = ${num(v)}$, which is $${D('z', '\\symx')}$.`,
-          ]
-        : [
-            `Multiply the local slopes along the chain: $${D('z', '\\symx')} = ${D('z', 'u')} \\cdot ${D('u', '\\symx')}$.`,
-            `$= ${num(s2)} \\times ${paren(num(s1))} = ${num(v)}$.`,
-          ];
-      return {
-        prompt: `$\\symx$ feeds $${names[0]}$${three ? ', $u$ feeds $v$,' : ','} and $${names[names.length - 2]}$ feeds $z$. At the current point, ${shown.map(([n, s]) => `$${n} = ${num(s)}$`).join(three ? ', ' : ' and ').replace(/, ([^,]*)$/, ' and $1')}. What is $${D('z', '\\symx')}$?`,
-        answer: { kind: 'number', value: v },
-        traps: cleanTraps(traps, v),
-        solution: [
-          ...work,
-          `A nudge of $0.01$ in $\\symx$ moves $z$ by about $${num(round(v * 0.01, 6))}$: ${num(v)} times as much.`,
-        ],
-      };
-    },
-  },
   {
     id: 'expr',
     make(rng, d) {
@@ -97,87 +57,172 @@ export const generators: Generator[] = [
     },
   },
   {
-    id: 'steps',
+    id: 'at-x',
     make(rng, d) {
-      const a = int(rng, 2, 4);
-      const x = int(rng, d < 0.5 ? 1 : -1, 3);
-      const outer = pick(rng, d < 0.5 ? ['sq', 'cube'] : ['sq', 'cube', 'ln']);
-      const u = outer === 'ln' ? pick(rng, [2, 4, 5]) : outer === 'cube' ? int(rng, -3, 3) : int(rng, -4, 6);
-      const b = u - a * x;
-      const ins = inner(a, b);
-      const [zTex, dzTex, dzv] = outer === 'sq'
-        ? [`(${ins.tex})^{2}`, '2u', 2 * u]
-        : outer === 'cube'
-          ? [`(${ins.tex})^{3}`, '3u^{2}', 3 * u * u]
-          : [`\\ln(${ins.tex})`, '\\tfrac{1}{u}', round(1 / u, 4)];
-      const v = round(dzv * a, 4);
+      const form = pick(rng, d < 0.35 ? ['pow', 'ln'] : d < 0.65 ? ['pow', 'ln', 'powSq', 'lnSq'] : ['pow', 'ln', 'powSq', 'lnSq', 'exp']);
+      /** The worked steps: name the inside, take both slopes, multiply, put the inside back, then evaluate. */
+      const steps = (inTex: string, zOfU: string, dIn: string, dOut: string, product: string, back: string, at: string) => [
+        `Name the inside $u = ${inTex}$. Then $z = ${zOfU}$.`,
+        `The inside's slope: $${D('u', '\\symx')} = ${dIn}$.`,
+        `The outside's slope: $${D('z', 'u')} = ${dOut}$.`,
+        `Multiply them: $${DZDX} = ${product}$.`,
+        `Put the inside back in for $u$: $${DZDX} = ${back}$.`,
+        at,
+      ];
+      const ask = (zTex: string, x0: number) => `For $z = ${zTex}$, what is $${DZDX}$ at $\\symx = ${x0}$?`;
+      const noInside = { why: "That is the outside's slope alone. It still has to be multiplied by the inside's slope." };
+      const xForU = { why: "That puts $\\symx$ into the outside's slope. The outside sees $u$, so its slope is taken at the inside's value." };
+      if (form === 'exp') {
+        const c = pick(rng, [1, 2, -1]);
+        const x0 = pick(rng, [1, -1]);
+        const E = c === 1 ? 2.72 : c === 2 ? 7.39 : 0.37;
+        const pw = polyTex([{ c, n: 2 }]);
+        const k = 2 * c;
+        const kx = polyTex([{ c: k, n: 1 }]);
+        const want = round(k * x0 * E, 2);
+        const eC = c === 1 ? 'e' : `e^{${c}}`;
+        return {
+          prompt: `${ask(`e^{${pw}}`, x0)} Use $${eC} \\approx ${E}$.`,
+          answer: { kind: 'number', value: want, places: 2 },
+          traps: cleanTraps([
+            { value: E, ...noInside },
+            { value: k * x0, why: `That is the inside's slope alone. It still has to be multiplied by the outside's slope, $e^{u}$ at $u = ${c}$.` },
+          ], want),
+          solution: steps(pw, 'e^{u}', kx, 'e^{u}', `e^{u} \\cdot ${k < 0 ? `(${kx})` : kx}`, `${kx}\\, e^{${pw}}`, `At $\\symx = ${x0}$, the inside is $${c}$: $${k} \\cdot ${paren(x0)} \\cdot ${eC} \\approx ${k * x0} \\times ${E} = ${num(want)}$.`),
+        };
+      }
+      if (form === 'ln' || form === 'lnSq') {
+        if (form === 'ln') {
+          const a = int(rng, 2, 4) * (d >= 0.65 && rng.int(3) === 0 ? -1 : 1);
+          const u0 = pick(rng, [1, 2, 4, 5, 10]);
+          let x0 = d < 0.35 ? int(rng, 0, 2) : int(rng, -2, 2);
+          if (u0 === a * x0) x0 -= 1;
+          const ins = inner(a, u0 - a * x0).tex;
+          const want = a / u0;
+          return {
+            prompt: ask(`\\ln(${ins})`, x0),
+            answer: { kind: 'number', value: want },
+            traps: cleanTraps([{ value: 1 / u0, ...noInside }, { value: a / x0, ...xForU }], want),
+            solution: steps(ins, '\\ln u', String(a), '\\dfrac{1}{u}', `\\dfrac{1}{u} \\cdot ${paren(a)} = \\dfrac{${a}}{u}`, `\\dfrac{${a}}{${ins}}`, `At $\\symx = ${x0}$, the inside is $${u0}$: $\\dfrac{${a}}{${u0}} = ${num(want)}$.`),
+          };
+        }
+        const x0 = pick(rng, [1, 2, -1, -2]);
+        const u0 = pick(rng, Math.abs(x0) === 1 ? [2, 4, 5, 8, 10] : [5, 8, 10]);
+        const ins = polyTex([{ c: 1, n: 2 }, { c: u0 - x0 * x0, n: 0 }]);
+        const want = (2 * x0) / u0;
+        return {
+          prompt: ask(`\\ln(${ins})`, x0),
+          answer: { kind: 'number', value: want },
+          traps: cleanTraps([
+            { value: 1 / u0, ...noInside },
+            { value: 2 / u0, why: `The inside's slope is $2\\symx$, which is $${2 * x0}$ at $\\symx = ${x0}$, not 2.` },
+            { value: 2 / x0, ...xForU },
+          ], want),
+          solution: steps(ins, '\\ln u', '2\\symx', '\\dfrac{1}{u}', '\\dfrac{1}{u} \\cdot 2\\symx = \\dfrac{2\\symx}{u}', `\\dfrac{2\\symx}{${ins}}`, `At $\\symx = ${x0}$, the inside is $${u0}$: $\\dfrac{${2 * x0}}{${u0}} = ${num(want)}$.`),
+        };
+      }
+      if (form === 'pow') {
+        const a = int(rng, 2, 4) * (d >= 0.65 && rng.int(3) === 0 ? -1 : 1);
+        const n = d < 0.35 ? 2 : pick(rng, [2, 3]);
+        const u0 = pick(rng, n === 3 ? [-2, -1, 1, 2, 3] : d < 0.35 ? [1, 2, 3, 4, 5] : [-3, -2, -1, 1, 2, 3, 4, 5]);
+        let x0 = d < 0.35 ? int(rng, 0, 2) : int(rng, -2, 2);
+        if (u0 === a * x0) x0 -= 1;
+        const ins = inner(a, u0 - a * x0).tex;
+        const outer = n * u0 ** (n - 1);
+        const want = outer * a;
+        const uPow = pow('u', n - 1);
+        return {
+          prompt: ask(`(${ins})^{${n}}`, x0),
+          answer: { kind: 'number', value: want },
+          traps: cleanTraps([{ value: outer, ...noInside }, { value: n * x0 ** (n - 1) * a, ...xForU }], want),
+          solution: steps(ins, `u^{${n}}`, String(a), `${n}${uPow}`, `${n}${uPow} \\cdot ${paren(a)} = ${n * a}${uPow}`, `${n * a}${pow(`(${ins})`, n - 1)}`, `At $\\symx = ${x0}$, the inside is $${u0}$: $${n * a} \\cdot ${pow(paren(u0), n - 1)} = ${want}$.`),
+        };
+      }
+      const x0 = pick(rng, [-2, -1, 1, 2]);
+      const n = Math.abs(x0) === 1 ? pick(rng, [2, 3]) : 2;
+      const b = int(rng, 1, 3);
+      const u0 = x0 * x0 + b;
+      const ins = polyTex([{ c: 1, n: 2 }, { c: b, n: 0 }]);
+      const outer = n * u0 ** (n - 1);
+      const want = outer * 2 * x0;
+      const uPow = pow('u', n - 1);
       return {
-        prompt: `Put the steps in order to find the slope of $z = ${zTex}$ at $\\symx = ${x}$.`,
-        answer: {
-          kind: 'order',
-          items: [
-            `Name the inside: $u = ${ins.tex}$`,
-            `Evaluate the inside at $\\symx = ${x}$: $u = ${u}$`,
-            `Take the outside's slope at that $u$: $${D('z', 'u')} = ${dzTex} = ${num(dzv)}$`,
-            `Multiply by the inside's slope $${D('u', '\\symx')} = ${a}$: $${D('z', '\\symx')} = ${num(v)}$`,
-          ],
-        },
-        solution: [
-          `The outside's slope depends on where it is taken, and it is taken at the inside's value, so $u$ has to be named and evaluated first.`,
-          `With $u = ${u}$, the outside's slope is $${dzTex} = ${num(dzv)}$.`,
-          `The chain rule multiplies the local slopes last: $${num(dzv)} \\times ${a} = ${num(v)}$.`,
-        ],
+        prompt: ask(`(${ins})^{${n}}`, x0),
+        answer: { kind: 'number', value: want },
+        traps: cleanTraps([
+          { value: outer, ...noInside },
+          { value: outer * 2, why: `The inside's slope is $2\\symx$, which is $${2 * x0}$ at $\\symx = ${x0}$, not 2.` },
+          { value: n * x0 ** (n - 1) * 2 * x0, ...xForU },
+        ], want),
+        solution: steps(ins, `u^{${n}}`, '2\\symx', `${n}${uPow}`, `${n}${uPow} \\cdot 2\\symx = ${2 * n}\\symx\\, ${uPow}`, `${2 * n}\\symx${pow(`(${ins})`, n - 1)}`, `At $\\symx = ${x0}$, the inside is $${u0}$: $${2 * n} \\cdot ${paren(x0)} \\cdot ${pow(String(u0), n - 1)} = ${want}$.`),
       };
     },
   },
   {
-    id: 'which',
+    id: 'form',
     make(rng, d) {
-      if (rng.int(2) === 0) {
-        const x = int(rng, 0, 4);
-        let u = int(rng, -3, 9);
-        if (u === x) u += 2;
-        return {
-          prompt: `$z$ is a function of $u$, and $u$ is a function of $\\symx$. At $\\symx = ${x}$, $u(${x}) = ${u}$. Which product is $${D('z', '\\symx')}$ at $\\symx = ${x}$?`,
-          answer: {
-            kind: 'choice',
-            options: [`$z'(${u}) \\cdot u'(${x})$`, `$z'(${x}) \\cdot u'(${x})$`, `$z'(${u}) + u'(${x})$`, `$z(${u}) \\cdot u'(${x})$`],
-            correct: 0,
-            why: [
-              null,
-              `That takes the outside's slope at $${x}$, the value of $\\symx$. The outside sees $u$, so its slope is taken at $u = ${u}$.`,
-              'That adds the local slopes. A nudge is scaled by each link in turn, so they multiply.',
-              `$z(${u})$ is the outside's value, not its slope. The chain multiplies slopes.`,
-            ],
-          },
-          solution: [
-            `The inside's slope is taken where the inside sits, at $\\symx = ${x}$: $u'(${x})$.`,
-            `The outside receives $u = ${u}$, so its slope is taken there: $z'(${u})$.`,
-            `The chain rule multiplies them: $z'(${u}) \\cdot u'(${x})$.`,
-          ],
-        };
+      const form = pick(rng, ['pow', 'exp', 'ln']);
+      const a = int(rng, 2, 5);
+      const b = int(rng, 1, 7) * (d >= 0.5 ? pick(rng, [1, -1]) : 1);
+      const ins = inner(a, b).tex;
+      const noInside = "That leaves out the inside's slope. The chain rule multiplies the outside's slope by it.";
+      const xForU = "That puts $\\symx$ back in for $u$. It is the inside that goes back in for $u$.";
+      let fTex: string;
+      let right: string;
+      let wrong: [string, string][];
+      let solution: string[];
+      if (form === 'pow') {
+        const n = int(rng, 2, d < 0.5 ? 3 : 5);
+        const p = (k: number) => pow(`(${ins})`, k);
+        fTex = p(n);
+        right = `${n * a}${p(n - 1)}`;
+        wrong = [
+          [`${n}${p(n - 1)}`, noInside],
+          [`${n * a}${pow('\\symx', n - 1)}`, xForU],
+          [`${a}${p(n)}`, `That leaves the outside as it is. Its slope is $${n}${pow('u', n - 1)}$, not $${pow('u', n)}$.`],
+        ];
+        solution = [
+          `Name the inside $u = ${ins}$. Then $z = u^{${n}}$.`,
+          `The inside's slope is $${a}$. The outside's slope is $${n}${pow('u', n - 1)}$.`,
+          `Multiply: $${n}${pow('u', n - 1)} \\cdot ${a} = ${n * a}${pow('u', n - 1)}$.`,
+          `Put the inside back in for $u$: $${right}$.`,
+        ];
+      } else if (form === 'exp') {
+        const c = int(rng, 1, 3) * (d >= 0.65 ? pick(rng, [1, -1]) : 1);
+        const pw = polyTex([{ c, n: 2 }]);
+        const kx = polyTex([{ c: 2 * c, n: 1 }]);
+        fTex = `e^{${pw}}`;
+        right = `${kx}\\, e^{${pw}}`;
+        wrong = [
+          [`e^{${pw}}`, noInside],
+          [`${kx}\\, e^{\\symx}`, xForU],
+          [`e^{${kx}}`, `That takes the slope of the power and leaves $e$ around it. The outside, $e^{u}$, has slope $e^{u}$, which is then multiplied by $${kx}$.`],
+        ];
+        solution = [
+          `Name the inside $u = ${pw}$. Then $z = e^{u}$.`,
+          `The inside's slope is $${kx}$. The outside's slope is $e^{u}$.`,
+          `Multiply: $e^{u} \\cdot ${2 * c < 0 ? `(${kx})` : kx}$.`,
+          `Put the inside back in for $u$: $${right}$.`,
+        ];
+      } else {
+        fTex = `\\ln(${ins})`;
+        right = `\\frac{${a}}{${ins}}`;
+        wrong = [
+          [`\\frac{1}{${ins}}`, noInside],
+          [`\\frac{${a}}{\\symx}`, xForU],
+          [`${a}\\ln(${ins})`, "That leaves the outside, $\\ln u$, as it is. Its slope is $\\frac{1}{u}$."],
+        ];
+        solution = [
+          `Name the inside $u = ${ins}$. Then $z = \\ln u$.`,
+          `The inside's slope is $${a}$. The outside's slope is $\\frac{1}{u}$.`,
+          `Multiply: $\\frac{1}{u} \\cdot ${a} = \\frac{${a}}{u}$.`,
+          `Put the inside back in for $u$: $${right}$.`,
+        ];
       }
-      const s1 = pick(rng, d < 0.5 ? [2, 3, 4, 5] : [2, 3, 4, -2, -3]);
-      const s2 = pick(rng, [2, 3, 4, 5, 6].filter((v) => v !== s1));
-      const dx = 0.01;
-      const opts = [s1 * s2, s1 + s2, s2, s1].map((v) => round(v * dx, 4));
       return {
-        prompt: `$\\symx$ feeds $u$, and $u$ feeds $z$, with local slopes $${D('u', '\\symx')} = ${s1}$ and $${D('z', 'u')} = ${s2}$. If $\\symx$ goes up by $0.01$, about how much does $z$ change?`,
-        answer: {
-          kind: 'choice',
-          options: opts.map((v) => `About $${num(v, 2)}$`),
-          correct: 0,
-          why: [
-            null,
-            'That adds the slopes. Each link multiplies the nudge it receives, so the slopes multiply.',
-            `That uses only the outside's slope. The inside first turns the $0.01$ into $${num(round(s1 * dx, 4))}$.`,
-            `That is how much $u$ changes. $z$ then changes $${s2}$ times as much again.`,
-          ],
-        },
-        solution: [
-          `$u$ changes by $${s1} \\times 0.01 = ${num(round(s1 * dx, 4))}$.`,
-          `$z$ changes by $${s2}$ times that: $${num(round(s1 * s2 * dx, 4))}$, which is $${D('z', '\\symx')} = ${s1 * s2}$ times the nudge.`,
-        ],
+        prompt: `Which is the derivative of $${fTex}$ with respect to $\\symx$?`,
+        answer: { kind: 'choice', options: [right, ...wrong.map(([t]) => t)].map((t) => `$${t}$`), correct: 0, why: [null, ...wrong.map(([, w]) => w)] },
+        solution,
       };
     },
   },

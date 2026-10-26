@@ -1,0 +1,23 @@
+{
+ "duration": 153.909,
+ "scenes": {
+  "exp": [0.0, 81.876],
+  "log": [81.876, 153.909]
+ },
+ "beats": {
+  "exp/e": [0.7, 15.842, "The number e is about two point seven one eight, written e is about two point seven one eight: the wavy equals sign means \u201cis about\u201d. e to the x means e multiplied by itself, x times.", [[3.87, 4.4], [5.15, 5.33], [7.38, 7.95], [9.88, 10.1], [10.74, 11.35], [14.58, 14.94]]],
+  "exp/zero": [16.222, 26.651, "e to the zero is one. Each step of one in x multiplies by e again: two point seven two, seven point three nine, then about twenty.", [[17.892, 18.452], [21.782, 22.292], [23.412, 23.722], [25.032, 25.402]]],
+  "exp/neg": [27.031, 38.541, "A step down divides by e instead: e to the minus one is zero point three seven. Smaller, but never negative. e to any power is positive.", [[29.871, 30.531], [33.531, 34.011], [34.581, 34.791], [35.841, 36.461]]],
+  "exp/add": [38.921, 50.628, "So adding powers multiplies results. e squared times e to the one is e cubed, where the raised dot means times: the powers add, two plus one.", [[41.691, 42.261], [44.211, 44.411], [45.391, 45.811], [47.781, 48.271], [49.201, 49.621]]],
+  "exp/div": [51.008, 66.416, "Dividing takes factors of e away. e cubed over e to the one is e squared: twenty point oh nine divided by two point seven two is seven point three nine. The powers subtract, three minus one.", [[53.578, 54.138], [57.208, 57.708], [60.938, 61.178], [62.688, 63.268], [64.668, 65.108]]],
+  "exp/pow": [66.796, 80.776, "And e squared, cubed is e squared times itself three times. The powers add, two plus two plus two, which is three times two: e to the six. A power of a power multiplies.", [[68.276, 68.436], [71.246, 71.796], [72.766, 73.156], [74.806, 75.146], [76.536, 76.936], [77.936, 78.466]]],
+  "log/ask": [82.576, 92.371, "The natural log, ln, runs this backwards. For a positive number y, ln of y asks: e to what power gives y?", [[83.596, 83.846], [84.496, 84.746], [85.966, 86.476], [87.996, 88.316], [89.846, 90.326]]],
+  "log/two": [92.751, 98.883, "e squared is seven point three nine, so ln of seven point three nine is two.", [[95.111, 95.561]]],
+  "log/one": [99.263, 103.643, "e to the zero is one, so ln of one is zero.", [[100.873, 101.273]]],
+  "log/neg": [104.023, 122.049, "Below one, the log is negative: ln of zero point three seven is minus one. Any number between zero and one has a negative log, so with a minus sign in front it turns positive: minus ln of zero point three seven is one.", [[104.873, 105.363], [106.583, 107.193], [109.403, 109.593], [110.523, 111.313], [114.533, 114.943], [116.653, 116.863], [117.953, 118.483], [121.123, 121.293]]],
+  "log/undo": [122.429, 134.428, "ln and e to the x undo each other. For any number a, ln of e to the a is a, and for a positive a, e to the ln of a is a.", [[125.389, 125.969], [127.189, 127.549], [129.909, 130.349], [131.789, 132.169]]],
+  "log/try": [134.808, 140.289, "Try one: what is ln of e to the four times e to the minus one?", [[135.418, 136.018]]],
+  "log/solve": [140.669, 151.689, "Multiplying adds the powers: four plus minus one is three, so the product is e cubed. And ln undoes e to a power, leaving three.", [[142.559, 143.019], [145.259, 145.599], [147.399, 147.909], [150.569, 150.859]]],
+  "log/turn": [152.069, 152.809, "Your turn.", []]
+ }
+}

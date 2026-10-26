@@ -1,0 +1,23 @@
+{
+ "duration": 154.469,
+ "scenes": {
+  "slope": [0.0, 87.091],
+  "shrink": [87.091, 154.469]
+ },
+ "beats": {
+  "slope/line": [0.7, 10.521, "A straight line climbs at the same rate everywhere. Each time x steps by one, two x plus one rises by two, so its slope is two.", [[3.55, 4.11], [6.07, 6.43], [8.68, 9.05]]],
+  "slope/shift": [10.901, 21.043, "The plus one only sets the height: two x minus two sits lower but tilts the same way, slope two. The constant never changes the slope.", [[13.061, 13.681], [15.631, 15.871], [17.191, 17.481], [18.211, 18.851]]],
+  "slope/fall": [21.423, 29.936, "A line that falls has a negative slope. Minus three x plus four drops three for every step: slope minus three.", [[23.893, 24.423], [26.133, 26.283], [28.013, 28.513], [28.923, 29.083]]],
+  "slope/forms": [30.316, 45.278, "However the line is written, find the number multiplying x. Three times, x minus one, is three x minus three: slope three. Half of two x plus four is x plus two: slope one.", [[31.756, 32.046], [34.246, 34.836], [36.776, 37.036], [38.676, 39.086], [40.026, 40.686], [42.496, 42.716], [43.906, 44.376]]],
+  "slope/curve": [45.658, 58.357, "A curve is steeper in some places than others. Take f of x equals x squared, where f of x is the value f gives for the input x. How steep is it at x equals one?", [[48.548, 49.168], [51.558, 51.888], [55.528, 56.108]]],
+  "slope/two": [58.737, 66.163, "Pick a second point a step h to the right, at x equals two. Between them, f goes from one to four.", [[61.387, 61.647], [62.977, 63.547], [64.127, 64.377]]],
+  "slope/rise": [66.543, 76.888, "The rise is the later value minus the earlier one: four minus one, three. Over a run of one, the slope between the two points is three.", [[69.773, 70.313], [71.513, 71.963], [72.353, 72.963], [74.163, 74.453]]],
+  "slope/formula": [77.268, 85.991, "Written out: the slope between x and x plus h is f of x plus h, minus f of x, all over h.", [[77.948, 78.638], [81.328, 81.598], [83.188, 83.478], [84.798, 85.038]]],
+  "shrink/shrink": [87.791, 105.862, "Shrink the step to a half. f of one point five is two point two five, so the rise is two point two five minus one: one point two five. Over a run of zero point five, the slope is one point two five over zero point five: two point five.", [[89.531, 90.171], [93.151, 93.601], [96.591, 97.081], [98.201, 98.871], [100.901, 101.201], [104.451, 104.971]]],
+  "shrink/tenth": [106.242, 117.64, "With a step of a tenth, f of one point one is one point two one: a rise of zero point two one over a run of zero point one, a slope of two point one.", [[107.522, 107.972], [109.412, 109.572], [110.882, 111.412], [113.352, 113.572], [115.552, 115.982]]],
+  "shrink/limit": [118.02, 133.782, "As h shrinks toward zero, the slope settles on two: two point zero one, then two point zero zero one. That limit is the derivative of f at one, written with a tick read \u201cprime\u201d: f prime of one equals two.", [[119.89, 120.16], [121.71, 122.12], [123.36, 123.7], [125.73, 126.22], [128.89, 129.28], [130.58, 130.75], [131.24, 131.79]]],
+  "shrink/tangent": [134.162, 139.903, "The line with that slope just grazes the curve at x equals one. It is the tangent.", [[138.312, 138.822]]],
+  "shrink/line": [140.283, 152.249, "A straight line has the same slope over every step, so for f of x equals two x plus one, the derivative is two at every x: f prime of x equals two.", [[143.413, 143.883], [146.943, 147.303], [149.823, 150.273]]],
+  "shrink/turn": [152.629, 153.369, "Your turn.", []]
+ }
+}

@@ -1,34 +1,22 @@
 {
- "duration": 215.02,
+ "duration": 126.191,
  "scenes": {
-  "power": [0.0, 62.017],
-  "sums": [62.017, 92.639],
-  "explog": [92.639, 146.03],
-  "try": [146.03, 215.02]
+  "explog": [0.0, 57.2],
+  "try": [57.2, 126.191]
  },
  "beats": {
-  "power/measured": [0.7, 13.614, "Measure the slope of x squared with a tiny step, at a few points: minus three at minus one point five, zero at zero, two at one, and three at one point five.", [[3.75, 4.03], [5.03, 5.6], [8.16, 8.6], [9.86, 10.3], [11.34, 11.7]]],
-  "power/twox": [13.994, 22.476, "Every one of them is two times x. So the derivative of x squared is two x, at every point, with no limit to take.", [[16.354, 16.814], [19.674, 19.954], [20.904, 21.144]]],
-  "power/sq": [22.856, 34.826, "Write it as x squared becomes two x. The arrow stands for \u201cbecomes\u201d, from a function to its derivative. The two came down in front, and the power dropped by one.", [[23.706, 23.866], [25.916, 26.536], [28.586, 28.956], [30.816, 31.376], [32.866, 33.116]]],
-  "power/cube": [35.206, 43.443, "Do the same to x cubed: bring the three down, and drop the power to two. x cubed becomes three x squared.", [[36.876, 37.526], [38.556, 38.766], [40.176, 40.896]]],
-  "power/check": [43.823, 51.93, "Check it at x equals two. The measured slope of x cubed is twelve, and three times two squared is twelve.", [[45.733, 46.323], [48.943, 49.363]]],
-  "power/rule": [52.31, 60.917, "In general, for any power n, x to the n becomes n times x to the n minus one. That is the power rule.", [[53.05, 53.31], [54.6, 55.02], [58.98, 59.48]]],
-  "sums/factor": [62.717, 71.262, "A number in front comes along for the ride. Five x cubed becomes five times three x squared: fifteen x squared.", [[65.017, 65.577], [69.337, 69.807]]],
-  "sums/sum": [71.642, 78.01, "A sum is differentiated one term at a time. Two x is a line with slope two.", [[74.772, 75.392]]],
-  "sums/zero": [78.39, 84.362, "A constant on its own is flat, so its derivative is zero. The seven drops out.", [[80.43, 80.78], [82.6, 83.09]]],
-  "sums/whole": [84.742, 91.539, "So five x cubed plus two x plus seven has derivative fifteen x squared plus two.", [[88.052, 88.302], [89.152, 89.392]]],
-  "explog/ex": [93.339, 100.521, "e to the x is special: it is its own derivative. At every point, its slope equals its height.", [[95.049, 95.549], [97.069, 97.559], [98.499, 98.769]]],
-  "explog/eax": [100.901, 112.619, "Now put a three in the power. Each step in x moves the power three times as far, and the measured slope of e to the three x at zero is three, where its height is one.", [[102.711, 103.271], [106.701, 107.151], [110.851, 111.231]]],
-  "explog/one": [112.999, 121.27, "At x equals one, the height is twenty point oh nine, and the slope is about sixty point three: three times the height again.", [[114.449, 114.679], [116.729, 117.039], [119.329, 119.789]]],
-  "explog/rule": [121.65, 134.373, "So the three comes out in front: e to the three x becomes three e to the three x. For any number a, e to the a x becomes a times e to the a x.", [[123.72, 124.34], [126.06, 126.21], [127.93, 128.52], [129.77, 130.18], [131.94, 132.11], [134.16, 134.36]]],
-  "explog/ln": [134.753, 144.93, "And ln x has derivative one over x: steep near zero, flatter as x grows. At x equals two, its slope is a half.", [[137.923, 138.453], [139.603, 139.873], [141.513, 142.063], [143.323, 143.573]]],
-  "try/p1": [146.73, 157.232, "Try a mix: f of x equals two x cubed, plus four e to the minus two x, minus three ln x. Take it one term at a time.", [[147.6, 148.16], [150.37, 150.62], [152.78, 153.01], [154.72, 155.38], [157.0, 157.2]]],
-  "try/t1": [157.612, 164.895, "Two x cubed: the three comes down, and three times two is six. Six x squared.", [[158.832, 159.452], [160.692, 160.982], [162.932, 163.482]]],
-  "try/t2": [165.275, 177.033, "Four e to the minus two x: the minus two in the power comes out in front. Four times minus two is minus eight, so minus eight e to the minus two x.", [[167.425, 167.985], [170.555, 171.095], [173.515, 173.845], [174.215, 174.385], [175.185, 175.345]]],
-  "try/t3": [177.413, 186.627, "Three ln x has derivative three over x. It is subtracted, so its derivative is too: minus three over x.", [[180.963, 181.513], [182.493, 182.743], [184.463, 184.943]]],
-  "try/sum": [187.007, 194.944, "Together, f prime of x is six x squared, minus eight e to the minus two x, minus three over x.", [[187.577, 187.847], [190.337, 190.637], [193.067, 193.267]]],
-  "try/p2": [195.324, 203.788, "Now a slope at one point. For f of x equals x squared plus six ln x, what is f prime of two?", [[197.094, 197.754], [201.574, 202.054]]],
-  "try/a2": [204.168, 212.8, "Differentiate first: two x, plus six over x. Then put in two: four plus three, seven.", [[205.598, 206.138], [206.728, 206.928], [208.418, 209.008], [210.238, 210.778], [211.868, 212.278]]],
-  "try/turn": [213.18, 213.92, "Your turn.", []]
+  "explog/ex": [0.7, 11.691, "e to the x is special: it is its own derivative. At every point its slope equals its height: at x equals one, both are two point seven two.", [[2.4, 2.91], [4.41, 4.98], [5.89, 6.07], [7.76, 8.29], [9.51, 9.83]]],
+  "explog/eax": [12.071, 23.79, "Now put a three in the power. Each step in x moves the power three times as far, and the measured slope of e to the three x at zero is three, where its height is one.", [[13.881, 14.441], [17.871, 18.321], [22.021, 22.401]]],
+  "explog/one": [24.17, 32.441, "At x equals one, the height is twenty point oh nine, and the slope is about sixty point three: three times the height again.", [[25.62, 25.85], [27.9, 28.21], [30.5, 30.96]]],
+  "explog/rule": [32.821, 45.543, "So the three comes out in front: e to the three x becomes three e to the three x. For any number a, e to the a x becomes a times e to the a x.", [[34.891, 35.511], [37.231, 37.381], [39.101, 39.691], [40.941, 41.351], [43.111, 43.281], [45.331, 45.531]]],
+  "explog/ln": [45.923, 56.1, "And ln x has derivative one over x: steep near zero, flatter as x grows. At x equals two, its slope is a half.", [[49.093, 49.623], [50.773, 51.043], [52.683, 53.233], [54.493, 54.743]]],
+  "try/p1": [57.9, 68.402, "Try a mix: f of x equals two x cubed, plus four e to the minus two x, minus three ln x. Take it one term at a time.", [[58.77, 59.33], [61.54, 61.79], [63.95, 64.18], [65.89, 66.55], [68.17, 68.37]]],
+  "try/t1": [68.782, 76.065, "Two x cubed: the three comes down, and three times two is six. Six x squared.", [[70.002, 70.622], [71.862, 72.152], [74.102, 74.652]]],
+  "try/t2": [76.445, 88.204, "Four e to the minus two x: the minus two in the power comes out in front. Four times minus two is minus eight, so minus eight e to the minus two x.", [[78.595, 79.155], [81.725, 82.265], [84.685, 85.015], [85.385, 85.555], [86.355, 86.515]]],
+  "try/t3": [88.584, 97.798, "Three ln x has derivative three over x. It is subtracted, so its derivative is too: minus three over x.", [[92.134, 92.684], [93.664, 93.914], [95.634, 96.114]]],
+  "try/sum": [98.178, 106.114, "Together, f prime of x is six x squared, minus eight e to the minus two x, minus three over x.", [[98.748, 99.018], [101.508, 101.808], [104.238, 104.438]]],
+  "try/p2": [106.494, 114.958, "Now a slope at one point. For f of x equals x squared plus six ln x, what is f prime of two?", [[108.264, 108.924], [112.744, 113.224]]],
+  "try/a2": [115.338, 123.97, "Differentiate first: two x, plus six over x. Then put in two: four plus three, seven.", [[116.768, 117.308], [117.898, 118.098], [119.588, 120.178], [121.408, 121.948], [123.038, 123.448]]],
+  "try/turn": [124.35, 125.091, "Your turn.", []]
  }
 }

@@ -3,8 +3,8 @@ import type { ConceptMeta } from '../../../mastery/domain/types';
 export const meta: ConceptMeta = {
   id: 'adam',
   title: 'Adam',
-  blurb: 'Momentum, plus a step size per parameter from the running size of its gradients, with a bias correction.',
-  prereqs: ['momentum'],
+  blurb: 'Correct the running averages for their zero start, then step by the average gradient over its typical size: about η per parameter.',
+  prereqs: ['adam-moments'],
   mastery: { streak: 4, seconds: 45 },
   deeper: [{ chapter: 'nn-learning', section: 'updates' }],
 };

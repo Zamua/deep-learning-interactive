@@ -1,29 +1,22 @@
 {
- "duration": 201.338,
+ "duration": 132.738,
  "scenes": {
-  "block": [0.0, 47.901],
-  "match": [47.901, 124.411],
-  "gradient": [124.411, 201.338]
+  "gradient": [0.0, 87.379],
+  "try": [87.379, 132.738]
  },
  "beats": {
-  "block/plain": [0.7, 9.128, "A plain layer replaces its input with something new. A residual block keeps its input, x, and adds a change to it.", [[3.93, 4.52], [5.55, 5.7], [6.69, 6.9], [7.31, 7.6]]],
-  "block/add": [9.508, 27.918, "The layers inside, a conv, a ReLU and another conv, compute a function of x, written F of x. Here F names that function, not a filter size. A shortcut carries x around them, and the two are added: y equals x plus F of x.", [[10.688, 10.998], [11.598, 11.848], [13.538, 13.888], [15.438, 15.708], [16.068, 16.258], [16.988, 17.488], [17.848, 18.028], [19.518, 19.768], [20.918, 21.498], [23.548, 23.798], [24.898, 25.338], [26.628, 26.788]]],
-  "block/example": [28.298, 38.613, "If x is two, minus one and three, and F gives a half, a half and minus one, then y is two and a half, minus a half, and two.", [[31.048, 31.438], [34.498, 34.958], [36.708, 36.918], [37.768, 37.978]]],
-  "block/zero": [38.993, 46.801, "To leave its input alone, a block only has to make F zero. So an extra block need not make the network worse.", [[40.503, 40.803], [42.953, 43.533]]],
-  "match/need": [48.601, 58.335, "The sum needs x and F of x in the same shape. Take an x with sixty four channels, eight by eight: sixty four by eight by eight.", [[51.871, 52.521], [54.731, 54.941], [55.761, 56.191]]],
-  "match/keep": [58.715, 68.025, "If F's convs have sixty four filters, stride one and padding one, F of x has that shape too, and the shortcut is x itself.", [[61.295, 61.535], [63.275, 63.735], [65.555, 65.945]]],
-  "match/first": [68.405, 77.499, "Now give F's first conv a hundred and twenty eight filters, and stride two. A hundred and twenty eight filters make a hundred and twenty eight channels.", [[71.955, 72.135], [73.075, 73.695]]],
-  "match/round": [77.879, 89.289, "Its width: eight minus three, plus two for the padding, over two, plus one. That is four and a half. It is not whole, so it rounds down: four.", [[78.549, 79.089], [80.249, 80.549], [81.869, 82.219], [82.879, 83.129], [83.779, 84.309], [85.759, 86.219], [87.139, 87.329], [88.399, 88.819]]],
-  "match/second": [89.669, 100.893, "The second conv, stride one and padding one, keeps four by four. So F of x is a hundred and twenty eight by four by four, and x cannot be added to it.", [[90.719, 91.019], [92.719, 92.979], [94.169, 94.709], [98.539, 98.979]]],
-  "match/cut": [101.273, 109.312, "So the shortcut becomes a one by one conv, with F's channels, a hundred and twenty eight filters, and F's stride, two.", [[104.153, 104.443], [105.493, 105.753], [107.303, 107.563], [108.653, 108.923]]],
-  "match/check": [109.692, 123.311, "Its width, with no padding: eight minus one, over two, plus one, is four and a half again, so four. The shortcut gives a hundred and twenty eight by four by four, and the sum works.", [[110.432, 110.612], [111.482, 111.942], [113.002, 113.222], [113.952, 114.112], [114.752, 115.082], [116.432, 116.712], [117.592, 118.232], [121.782, 122.152]]],
-  "gradient/split": [125.111, 132.894, "Going backward, the sum is an add gate: it hands the gradient arriving at y, g, to both of its inputs.", [[126.051, 126.331], [127.781, 128.281], [130.551, 130.851], [131.281, 131.531]]],
-  "gradient/paths": [133.274, 141.246, "Along the shortcut, g reaches x unchanged. Through F, it gets multiplied by F's slope, F prime.", [[134.334, 134.614], [136.664, 137.184], [137.864, 138.114], [140.164, 140.474]]],
-  "gradient/formula": [141.626, 150.893, "The two paths add up at x: g times one plus F prime. With g equal to two and a slope of a half, that is three.", [[143.636, 144.106], [146.416, 146.966], [149.756, 150.086]]],
-  "gradient/stack": [151.273, 161.44, "Now stack two blocks. The first turns x into h, through layers F one. The second turns h into y, through layers F two.", [[152.833, 153.313], [155.493, 155.703], [157.043, 157.623], [159.813, 160.063]]],
-  "gradient/back2": [161.82, 174.519, "Walking back, each block multiplies the gradient by one plus its slope. Say g is one, and F two prime is one: block two hands h one times two, which is two.", [[162.65, 162.99], [166.56, 167.08], [168.45, 168.74], [170.36, 170.9], [173.54, 173.8]]],
-  "gradient/back1": [174.899, 185.637, "Block one, with F one prime at minus a half, hands x two times a half: one. The blocks are in a chain, so their factors multiply.", [[175.639, 176.089], [178.429, 178.759], [180.669, 181.189], [181.589, 182.219], [183.559, 183.789], [185.379, 185.609]]],
-  "gradient/deep": [186.017, 199.118, "Now stack fifty layers. If each one halves the gradient, almost nothing reaches the first. With shortcuts, each block multiplies by one plus a slope, so the gradient arrives intact.", [[187.747, 188.277], [190.067, 190.377], [192.297, 192.937], [193.777, 194.027], [196.847, 197.187]]],
-  "gradient/turn": [199.498, 200.238, "Your turn.", []]
+  "gradient/recap": [0.7, 11.893, "A residual block adds a change to its input: y equals x plus F of x. With x at two and F of x at a half, y is two and a half.", [[3.44, 4.03], [6.53, 7.05], [8.2, 8.38], [9.98, 10.4]]],
+  "gradient/split": [12.273, 20.055, "Going backward, the sum is an add gate: it hands the gradient arriving at y, g, to both of its inputs.", [[13.213, 13.493], [14.943, 15.443], [17.713, 18.013], [18.443, 18.693]]],
+  "gradient/paths": [20.435, 28.407, "Along the shortcut, g reaches x unchanged. Through F, it gets multiplied by F's slope, F prime.", [[21.495, 21.775], [23.825, 24.345], [25.025, 25.275], [27.325, 27.635]]],
+  "gradient/formula": [28.787, 38.054, "The two paths add up at x: g times one plus F prime. With g equal to two and a slope of a half, that is three.", [[30.797, 31.267], [33.577, 34.127], [36.917, 37.247]]],
+  "gradient/stack": [38.434, 48.602, "Now stack two blocks. The first turns x into h, through layers F one. The second turns h into y, through layers F two.", [[39.994, 40.474], [42.654, 42.864], [44.204, 44.784], [46.974, 47.224]]],
+  "gradient/back2": [48.982, 61.681, "Walking back, each block multiplies the gradient by one plus its slope. Say g is one, and F two prime is one: block two hands h one times two, which is two.", [[49.812, 50.152], [53.722, 54.242], [55.612, 55.902], [57.522, 58.062], [60.702, 60.962]]],
+  "gradient/back1": [62.061, 72.798, "Block one, with F one prime at minus a half, hands x two times a half: one. The blocks are in a chain, so their factors multiply.", [[62.801, 63.251], [65.591, 65.921], [67.831, 68.351], [68.751, 69.381], [70.721, 70.951], [72.541, 72.771]]],
+  "gradient/deep": [73.178, 86.279, "Now stack fifty layers. If each one halves the gradient, almost nothing reaches the first. With shortcuts, each block multiplies by one plus a slope, so the gradient arrives intact.", [[74.908, 75.438], [77.228, 77.538], [79.458, 80.098], [80.938, 81.188], [84.008, 84.348]]],
+  "try/p1": [88.079, 98.406, "Try one: at the current value, F prime of x is three, and the gradient arriving at y, g, is two. What gradient reaches x?", [[88.659, 89.299], [90.339, 90.609], [92.329, 92.749], [94.549, 94.789], [95.219, 95.459], [96.049, 96.599]]],
+  "try/a1": [98.786, 109.036, "The shortcut hands x two, unchanged. Through F, it is two times three: six. The paths add: two plus six, eight.", [[100.686, 101.016], [101.776, 102.346], [103.056, 103.306], [104.656, 104.986], [105.536, 105.976], [106.946, 107.416], [108.356, 108.636]]],
+  "try/p2": [109.416, 119.034, "Now two stacked blocks: F one prime is one, F two prime is minus a half, and g is four. What reaches x?", [[111.036, 111.596], [113.116, 113.586], [115.626, 115.986], [117.196, 117.776]]],
+  "try/a2": [119.414, 130.517, "Block two hands h four times one minus a half: two. Block one hands x two times one plus one: four.", [[120.234, 120.724], [121.654, 121.984], [124.004, 124.514], [124.814, 125.564], [126.304, 126.724], [127.624, 127.884], [129.504, 130.054]]],
+  "try/turn": [130.897, 131.638, "Your turn.", []]
  }
 }

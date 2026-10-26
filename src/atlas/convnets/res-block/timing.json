@@ -1,0 +1,21 @@
+{
+ "duration": 125.531,
+ "scenes": {
+  "block": [0.0, 47.901],
+  "match": [47.901, 125.531]
+ },
+ "beats": {
+  "block/plain": [0.7, 9.128, "A plain layer replaces its input with something new. A residual block keeps its input, x, and adds a change to it.", [[3.93, 4.52], [5.55, 5.7], [6.69, 6.9], [7.31, 7.6]]],
+  "block/add": [9.508, 27.918, "The layers inside, a conv, a ReLU and another conv, compute a function of x, written F of x. Here F names that function, not a filter size. A shortcut carries x around them, and the two are added: y equals x plus F of x.", [[10.688, 10.998], [11.598, 11.848], [13.538, 13.888], [15.438, 15.708], [16.068, 16.258], [16.988, 17.488], [17.848, 18.028], [19.518, 19.768], [20.918, 21.498], [23.548, 23.798], [24.898, 25.338], [26.628, 26.788]]],
+  "block/example": [28.298, 38.613, "If x is two, minus one and three, and F gives a half, a half and minus one, then y is two and a half, minus a half, and two.", [[31.048, 31.438], [34.498, 34.958], [36.708, 36.918], [37.768, 37.978]]],
+  "block/zero": [38.993, 46.801, "To leave its input alone, a block only has to make F zero. So an extra block need not make the network worse.", [[40.503, 40.803], [42.953, 43.533]]],
+  "match/need": [48.601, 58.335, "The sum needs x and F of x in the same shape. Take an x with sixty four channels, eight by eight: sixty four by eight by eight.", [[51.871, 52.521], [54.731, 54.941], [55.761, 56.191]]],
+  "match/keep": [58.715, 68.025, "If F's convs have sixty four filters, stride one and padding one, F of x has that shape too, and the shortcut is x itself.", [[61.295, 61.535], [63.275, 63.735], [65.555, 65.945]]],
+  "match/first": [68.405, 77.499, "Now give F's first conv a hundred and twenty eight filters, and stride two. A hundred and twenty eight filters make a hundred and twenty eight channels.", [[71.955, 72.135], [73.075, 73.695]]],
+  "match/round": [77.879, 89.289, "Its width: eight minus three, plus two for the padding, over two, plus one. That is four and a half. It is not whole, so it rounds down: four.", [[78.549, 79.089], [80.249, 80.549], [81.869, 82.219], [82.879, 83.129], [83.779, 84.309], [85.759, 86.219], [87.139, 87.329], [88.399, 88.819]]],
+  "match/second": [89.669, 100.893, "The second conv, stride one and padding one, keeps four by four. So F of x is a hundred and twenty eight by four by four, and x cannot be added to it.", [[90.719, 91.019], [92.719, 92.979], [94.169, 94.709], [98.539, 98.979]]],
+  "match/cut": [101.273, 109.312, "So the shortcut becomes a one by one conv, with F's channels, a hundred and twenty eight filters, and F's stride, two.", [[104.153, 104.443], [105.493, 105.753], [107.303, 107.563], [108.653, 108.923]]],
+  "match/check": [109.692, 123.311, "Its width, with no padding: eight minus one, over two, plus one, is four and a half again, so four. The shortcut gives a hundred and twenty eight by four by four, and the sum works.", [[110.432, 110.612], [111.482, 111.942], [113.002, 113.222], [113.952, 114.112], [114.752, 115.082], [116.432, 116.712], [117.592, 118.232], [121.782, 122.152]]],
+  "match/turn": [123.691, 124.431, "Your turn.", []]
+ }
+}

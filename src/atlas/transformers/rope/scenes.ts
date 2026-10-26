@@ -1,5 +1,5 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { lerp, smooth } from '../../../lecture/scene';
+import { lerp } from '../../../lecture/scene';
 import { rich, type Ink } from '../draw';
 
 const RAD = Math.PI / 180;
@@ -52,128 +52,6 @@ function arc(s: Scene, F: Plane, r: number, a0: number, a1: number, k: Ink, labe
 
 const f2 = (v: number) => (Math.abs(v) < 0.005 ? '0' : v.toFixed(2).replace(/\.?0+$/, '').replace('-', '−'));
 
-/** The unit arrow's angle: swept to 60° as it is introduced, then up to 90° and back while cos and sin are read off. */
-function unitAngle(s: Scene): number {
-  const cp = s.prog('cossin');
-  return 60 * s.ease('unit', 1.4, 1.5) + 30 * smooth((cp - 0.04) / 0.1) - 30 * smooth((cp - 0.48) / 0.1);
-}
-
-const turn: SceneDef = {
-  marks: {
-    rule: { tex: String.raw`[a,\ b] \;\to\; [\,a\cos{} - b\sin{},\ \ a\sin{} + b\cos{}\,]`, x: 0.5, y: 0.5, size: 4 },
-  },
-  draw(s) {
-    const u = s.u;
-    const tall = s.tall;
-    const six = s.ease('sixty', 0.7);
-    const unit = s.win('unit', 'check');
-    const cx = tall ? s.w / 2 : s.w * 0.27;
-    const cy = tall ? s.h * 0.27 : s.h * 0.58;
-    s.alpha(1 - unit, () => {
-      const box: [number, number, number, number] = [-2, 2.7, -0.4, 2.7];
-      const k = tall ? 14.5 * u : Math.min(15 * u, (0.5 * s.w) / 4.7);
-      const F = plane(s, cx, cy, k, box);
-      const q0 = angOf(Q);
-      // q: a ghost where it started, and the arrow sweeping a quarter turn.
-      s.alpha(1 - six, () => {
-        const sw = s.ease('turn', 1.4, 0.6);
-        s.alpha(s.ease('turn', 0.5), () => {
-          ray(s, F, lenOf(Q), q0, '--ink-3', undefined, { width: 0.4 });
-          arc(s, F, 0.8, q0, q0 + 90 * sw, 'slate', sw > 0.9 ? '90°' : undefined);
-        });
-        const a = q0 + 90 * sw;
-        const tip = sw < 0.5 ? '[2, 1]' : sw > 0.95 ? '[−1, 2]' : undefined;
-        s.alpha(s.ease('pair', 0.6), () => ray(s, F, lenOf(Q), a, 'teal', tip, { push: 0.5 }));
-        s.alpha(s.ease('pair', 0.6, 0.6) * (1 - s.ease('turn', 0.4)), () => s.text('q', ...F.P(1.0, 0.75), { size: 4, font: 'mono', weight: 650, color: s.c('teal'), halo: true }));
-      });
-      // k: one, one, turned sixty degrees.
-      s.alpha(six, () => {
-        const sw = s.ease('sixty', 1.4, 0.8);
-        const k0 = angOf(K);
-        ray(s, F, lenOf(K), k0, '--ink-3', undefined, { width: 0.4 });
-        arc(s, F, 0.55, k0, k0 + 60 * sw, 'slate', sw > 0.9 ? '60°' : undefined);
-        ray(s, F, lenOf(K), k0 + 60 * sw, 'purple', sw < 0.5 ? '[1, 1]' : sw > 0.95 ? '[−0.37, 1.37]' : undefined, { push: 0.5 });
-      });
-    });
-
-    // An arrow of length one: its tip is (cos, sin); then [1, 0] and [0, 1] turned together.
-    s.alpha(unit, () => {
-      const k1 = tall ? 26 * u : Math.min(26 * u, (0.5 * s.w) / 2.8);
-      const F = plane(s, tall ? cx : s.w * 0.3, cy, k1, [-1.25, 1.35, -0.3, 1.3]);
-      const [ox, oy] = F.P(0, 0);
-      const c = s.ctx;
-      c.save();
-      c.setLineDash([0.8 * u, 0.8 * u]);
-      c.beginPath();
-      c.arc(ox, oy, k1, -Math.PI, 0);
-      c.strokeStyle = s.tint('--ink-3', 0.35);
-      c.lineWidth = 0.25 * u;
-      c.stroke();
-      c.restore();
-      const a = unitAngle(s);
-      const ca = Math.cos(a * RAD);
-      const sa = Math.sin(a * RAD);
-      const basis = s.ease('basis', 0.6);
-      const lab = { size: 3, font: 'mono' as const, weight: 650, halo: true };
-      s.alpha(1 - basis, () => {
-        s.line(...F.P(ca, sa), ...F.P(ca, 0), s.tint('teal', 0.7), 0.3, [0.8, 0.8]);
-        s.line(...F.P(ca, sa), ...F.P(0, sa), s.tint('gold', 0.7), 0.3, [0.8, 0.8]);
-        s.text('cos', ...F.P(ca, -0.15), { ...lab, color: s.c('teal') });
-        s.text('sin', ...F.P(-0.08, sa), { ...lab, align: 'right', color: s.c('gold') });
-        arc(s, F, 0.32, 0, a, 'slate', a > 5 ? `${Math.round(a)}°` : undefined);
-      });
-      s.alpha(basis, () => {
-        ray(s, F, 1, 0, '--ink-3', undefined, { width: 0.4 });
-        ray(s, F, 1, 90, '--ink-3', undefined, { width: 0.4 });
-        s.text('[1, 0]', ...F.P(1.12, -0.14), { ...lab, color: s.c('--ink-2') });
-        s.text('[0, 1]', ...F.P(-0.08, 1.12), { ...lab, align: 'right', color: s.c('--ink-2') });
-        const b = s.ease('basis', 1.4, 1.5);
-        arc(s, F, 0.32, 90, 90 + 60 * b, 'slate', b > 0.9 ? '60°' : undefined);
-        ray(s, F, 1, 90 + 60 * b, 'purple');
-        s.alpha(smooth((b - 0.9) / 0.1), () => s.text('[−sin, cos]', ...F.P(-1.15, 0.74), { ...lab, align: 'left', color: s.c('purple') }));
-      });
-      ray(s, F, 1, a, 'teal', s.ease('basis', 0.6) > 0.5 ? '[cos, sin]' : undefined, { size: 3, push: 0.45 });
-    });
-
-    // The arithmetic: a table of cosines and sines, the rule built from the two turned arrows, and each case worked out.
-    const px = tall ? s.w / 2 : s.w * 0.75;
-    const ty = tall ? s.h * 0.58 : s.h * 0.27;
-    const o = { size: 3.3, font: 'mono' as const, weight: 600 };
-    const cp = s.prog('cossin');
-    const up = s.ease('cossin', 0.6) * (1 - smooth((cp - 0.48) / 0.1));
-    s.alpha(s.ease('cossin', 0.6) * (1 - s.win('rule', 'check')), () => {
-      const cols = [-14, 2, 16].map((d) => px + d * u);
-      const head: [string, Ink][] = [['angle', '--ink-3'], ['cos', '--ink-3'], ['sin', '--ink-3']];
-      head.forEach(([t, kk], i) => s.text(t, cols[i]!, ty, { ...o, color: s.c(kk) }));
-      const rows: [string, string, string, number][] = [
-        ['90°', '0', '1', up + s.win('check', 'sixty')],
-        ['60°', '0.5', '0.87', s.ease('cossin', 0.6) * smooth((cp - 0.48) / 0.1) * (1 - s.ease('rule', 0.6)) + s.ease('sixty', 0.6, 0.3)],
-      ];
-      rows.forEach(([a, c, sn, on], r) => {
-        const y = ty + (r + 1) * 5.4 * u;
-        [a, c, sn].forEach((t, i) => s.text(t, cols[i]!, y, { ...o, color: s.c(on > 0.5 ? '--ink' : '--ink-2') }));
-      });
-    });
-    s.alpha(s.win('rule', 'check'), () => {
-      const ro = { ...o, size: tall ? 3.3 : 3.1 };
-      const rx = tall ? px : px - 4 * u;
-      rich(s, [['[a, b] = a·[1, 0] + b·[0, 1]', '--ink-2']], rx, ty + 2 * u, ro);
-      s.alpha(s.ease('rule', 0.6, 2.5), () => rich(s, [['→ a·', '--ink-2'], ['[cos, sin]', 'teal'], [' + b·', '--ink-2'], ['[−sin, cos]', 'purple']], rx, ty + 8.5 * u, ro));
-    });
-    s.show('rule', s.ease('rule', 0.6, 5), tall ? { x: 0.5, y: 0.78 } : { x: 0.5, y: 0.09 });
-    const ly = tall ? s.h * 0.87 : s.h * 0.6;
-    const gap = 6 * u;
-    s.alpha(s.ease('check', 0.6) * (1 - six), () => {
-      rich(s, [['2×0 − 1×1 = ', '--ink-2'], ['−1', 'teal']], px, ly, o);
-      rich(s, [['2×1 + 1×0 = ', '--ink-2'], ['2', 'teal']], px, ly + gap, o);
-    });
-    s.alpha(s.ease('sixty', 0.6, 2.2), () => {
-      rich(s, [['1×0.5 − 1×0.87 ≈ ', '--ink-2'], ['−0.37', 'purple']], px, ly, o);
-      rich(s, [['1×0.87 + 1×0.5 ≈ ', '--ink-2'], ['1.37', 'purple']], px, ly + gap, o);
-    });
-  },
-};
-
 const POS = [0, 1, 2, 3, 4];
 
 /** A dial: a circle with an arrow turned to angle `a` (degrees), centered on (x, y), radius `r` px. */
@@ -186,7 +64,12 @@ function dial(s: Scene, x: number, y: number, r: number, a: number, k: Ink, base
 }
 
 const position: SceneDef = {
+  marks: {
+    recap: { tex: String.raw`[a,\ b] \;\to\; [\,a\cos{} - b\sin{},\ \ a\sin{} + b\cos{}\,]`, x: 0.5, y: 0.36, size: 4 },
+  },
   draw(s) {
+    s.show('recap', s.win('recap', 'idea'));
+    s.alpha(s.ease('recap', 0.6, 4) * (1 - s.ease('idea', 0.6)), () => rich(s, [['90°: ', 'slate'], ['[2, 1]', 'teal'], [' → ', '--ink-2'], ['[−1, 2]', 'teal']], s.w / 2, s.h * 0.52, { size: 3.8, weight: 650 }));
     const u = s.u;
     const pitch = (s.tall ? 19 : 24) * u;
     const r = (s.tall ? 7 : 8) * u;
@@ -304,4 +187,4 @@ const relative: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { turn, position, relative };
+export const scenes: Record<string, SceneDef> = { position, relative };

@@ -1,0 +1,20 @@
+{
+ "duration": 110.829,
+ "scenes": {
+  "vote": [0.0, 50.812],
+  "try": [50.812, 110.829]
+ },
+ "beats": {
+  "vote/paths": [0.7, 10.115, "Sample a chain of thought at a temperature above zero, and every run takes a different path. Ask for seventeen times twenty four, five times.", [[3.75, 4.05], [6.17, 6.77], [9.03, 9.23]]],
+  "vote/answers": [10.495, 19.0, "Most paths reach four hundred and eight, by different routes. One slips to three hundred and ninety eight, another to four hundred and eighteen.", [[12.775, 12.965], [13.915, 14.455], [16.585, 16.965]]],
+  "vote/vote": [19.38, 28.005, "Self-consistency ignores the paths and counts the final answers. Four hundred and eight has three votes of five, so it wins.", [[23.64, 24.22], [26.84, 27.17]]],
+  "vote/greedy": [28.385, 38.94, "This needs real sampling. As the temperature goes to zero, greedy decoding writes the same path every time, and five copies of one answer add nothing.", [[30.135, 30.715], [32.415, 32.785], [35.945, 36.295]]],
+  "vote/compare": [39.32, 49.712, "And the vote needs answers that can be compared: a number, a letter, yes or no. Five stories never match word for word, so there is nothing to count.", [[41.81, 42.25], [42.83, 43.02], [43.6, 43.88], [44.82, 45.42], [47.8, 48.08], [49.49, 49.68]]],
+  "try/p1": [51.512, 67.428, "Try one. Asked for fifteen percent of eighty, a model samples seven chains of thought. Their final answers are fifteen, twelve, twelve, eight, twelve, fifteen and twelve. What does self-consistency return?", [[52.142, 52.722], [54.792, 55.082], [57.482, 58.042], [59.882, 60.152], [60.632, 60.912], [61.432, 61.762], [62.072, 62.392], [62.882, 63.202], [63.812, 64.022], [64.712, 65.332]]],
+  "try/a1": [67.808, 79.475, "Count each answer: twelve four times, fifteen twice, and eight once. Twelve has the most votes, four of seven, so twelve is returned.", [[69.008, 69.558], [70.958, 71.348], [72.588, 72.948], [73.488, 73.688], [74.178, 74.838], [76.328, 76.628], [77.618, 78.008]]],
+  "try/not": [79.855, 89.292, "Not the first path's fifteen: that is one path. And not the average, about twelve point two nine: a number no path reached.", [[81.755, 82.235], [83.445, 83.975], [85.225, 85.515], [87.135, 87.575]]],
+  "try/p2": [89.672, 98.801, "Now each of five replies to a multiple-choice question ends in a letter, A to D. Can the vote pick a better reply than one sample?", [[92.882, 93.062], [94.052, 94.462], [95.272, 95.962]]],
+  "try/a2": [99.181, 108.609, "Yes. Different paths often end on the same letter, so letters can be counted. Here three of the five end in B, so B wins.", [[99.681, 100.081], [102.591, 102.931], [104.391, 104.911], [107.061, 107.381]]],
+  "try/turn": [108.989, 109.729, "Your turn.", []]
+ }
+}

@@ -1,31 +1,24 @@
 {
- "duration": 223.59,
+ "duration": 158.65,
  "scenes": {
-  "factor": [0.0, 75.3],
-  "race": [75.3, 112.151],
-  "limit": [112.151, 164.669],
-  "try": [164.669, 223.59]
+  "limit": [0.0, 67.341],
+  "slide": [67.341, 104.552],
+  "try": [104.552, 158.65]
  },
  "beats": {
-  "factor/bowl": [0.7, 16.917, "Take the simplest function to walk down, a bowl: f of x equals a x squared, where a, a positive number, sets how steep it is. Its minimum is at zero. Here a is one, and x starts at one.", [[2.12, 2.43], [3.19, 3.54], [4.04, 4.67], [7.08, 7.5], [8.19, 8.4], [9.33, 9.6], [10.93, 11.48], [12.96, 13.51], [13.91, 14.08], [15.0, 15.3]]],
-  "factor/grad": [17.297, 29.138, "Its gradient is two a x. So one step takes x to x, minus eta times two a x. That step size, eta, is called the learning rate.", [[19.597, 20.037], [25.277, 25.727], [27.317, 27.567], [28.927, 29.107]]],
-  "factor/factor": [29.518, 41.117, "Pull out the x, and every step just multiplies x by the same factor: one minus two a eta. With eta at zero point three, that is zero point four.", [[30.558, 30.818], [34.368, 34.768], [36.718, 37.288], [39.108, 39.418]]],
-  "factor/shift": [41.497, 56.42, "Now slide the bowl so its bottom sits at three: f of x equals a times x minus three, squared. Each slope is the old one at the same distance from the bottom, so the gradient is two a, times x minus three.", [[44.477, 44.957], [48.687, 49.317], [50.877, 51.027], [52.747, 53.057], [54.777, 54.997]]],
-  "factor/dist": [56.8, 74.2, "From x equals four, with eta at zero point three, the distance x minus three goes one, zero point four, zero point one six: the same factor, one minus two a eta, every step. Sliding the bowl moves the minimum, and nothing else.", [[58.38, 58.63], [60.46, 60.8], [63.33, 63.58], [64.58, 64.78], [66.09, 66.54], [67.52, 67.81], [69.63, 69.81], [70.53, 71.07], [72.98, 73.24]]],
-  "race/small": [76.0, 85.327, "With a learning rate of zero point zero five, the factor is zero point nine. Each step keeps ninety percent of x, and the ball creeps.", [[78.65, 78.94], [80.85, 81.43], [83.83, 84.09]]],
-  "race/good": [85.707, 92.505, "With zero point three, the factor is zero point four. x shrinks fast and slides straight in.", [[87.067, 87.307], [89.187, 89.697]]],
-  "race/zig": [92.885, 102.768, "With zero point eight, the factor is minus zero point six. Each step overshoots to the other side, but lands closer: it zigzags in.", [[94.175, 94.425], [96.915, 97.455], [99.725, 99.955], [101.045, 101.555]]],
-  "race/big": [103.148, 111.051, "With one point one, the factor is minus one point two. Every overshoot lands farther out, and the steps blow up.", [[104.358, 104.588], [106.788, 107.378], [109.498, 109.748]]],
-  "limit/line": [112.851, 119.381, "Plot the factor against eta. It starts at one and falls in a straight line as eta grows.", [[114.691, 115.241], [116.381, 116.581]]],
-  "limit/half": [119.761, 126.074, "At eta equals one over two a, it is zero: a single step lands right on the minimum.", [[122.071, 122.351], [123.121, 123.661]]],
-  "limit/edge": [126.454, 134.757, "At one over a, it reaches minus one, and x bounces between two points forever. Any larger, and it blows up.", [[127.694, 127.904], [129.264, 129.624], [132.334, 132.844], [133.604, 133.834]]],
-  "limit/solve": [135.137, 148.014, "Why one over a? Set the factor to minus one: one minus two a eta equals minus one. Then two a eta is two, and eta is one over a.", [[136.857, 137.547], [139.297, 139.807], [141.737, 141.917], [143.107, 143.727], [144.097, 144.317], [145.877, 146.247]]],
-  "limit/steep": [148.394, 163.569, "A steeper bowl, a bigger a, makes the line fall faster, so it reaches minus one sooner: at a half, when a is two. The largest learning rate that does not diverge, written eta max, is one over a.", [[149.384, 149.644], [150.484, 150.794], [152.434, 152.784], [154.774, 155.224], [155.984, 156.204], [157.344, 157.984], [160.584, 160.814], [162.074, 162.314]]],
-  "try/p1": [165.369, 174.24, "Try one: f of x is four x squared, x is three, and eta is zero point one. Where does one step land?", [[165.979, 166.559], [168.519, 168.959], [169.969, 170.269], [172.149, 172.689]]],
-  "try/a1": [174.62, 186.654, "The gradient is two times four times three: twenty-four. The step is zero point one times that, two point four. So x goes from three to zero point six.", [[177.35, 177.85], [178.54, 179.15], [181.66, 182.07], [182.91, 183.4], [185.2, 185.35]]],
-  "try/check": [187.034, 197.331, "Check with the factor: one minus two times four times zero point one is zero point two, and zero point two times three is zero point six.", [[188.164, 188.814], [192.074, 192.304], [193.444, 193.874], [195.864, 196.044]]],
-  "try/p2": [197.711, 207.023, "Now slide that bowl to three: f is four times x minus three, squared. What is the largest eta that does not diverge?", [[199.561, 200.181], [203.501, 204.081]]],
-  "try/a2": [207.403, 221.37, "Sliding moves only the minimum, so a is still four. Set the factor to minus one: one minus eight eta is minus one, so eight eta is two, and eta is zero point two five.", [[209.293, 209.583], [211.343, 211.943], [213.773, 214.313], [216.743, 217.033], [218.773, 219.093]]],
-  "try/turn": [221.75, 222.49, "Your turn.", []]
+  "limit/recap": [0.7, 15.142, "On the bowl a x squared, every step multiplies x by one minus two a eta. With a at one and a learning rate of zero point eight, that is minus zero point six, and x zigzags in.", [[1.4, 1.59], [2.74, 3.19], [7.25, 7.76], [10.98, 11.25], [13.12, 13.46]]],
+  "limit/line": [15.522, 22.053, "Plot the factor against eta. It starts at one and falls in a straight line as eta grows.", [[17.362, 17.912], [19.052, 19.252]]],
+  "limit/half": [22.433, 28.746, "At eta equals one over two a, it is zero: a single step lands right on the minimum.", [[24.743, 25.023], [25.793, 26.333]]],
+  "limit/edge": [29.126, 37.429, "At one over a, it reaches minus one, and x bounces between two points forever. Any larger, and it blows up.", [[30.366, 30.576], [31.936, 32.296], [35.006, 35.516], [36.276, 36.506]]],
+  "limit/solve": [37.809, 50.686, "Why one over a? Set the factor to minus one: one minus two a eta equals minus one. Then two a eta is two, and eta is one over a.", [[39.529, 40.219], [41.969, 42.479], [44.409, 44.589], [45.779, 46.399], [46.769, 46.989], [48.549, 48.919]]],
+  "limit/steep": [51.066, 66.241, "A steeper bowl, a bigger a, makes the line fall faster, so it reaches minus one sooner: at a half, when a is two. The largest learning rate that does not diverge, written eta max, is one over a.", [[52.056, 52.316], [53.156, 53.466], [55.106, 55.456], [57.446, 57.896], [58.656, 58.876], [60.016, 60.656], [63.256, 63.486], [64.746, 64.986]]],
+  "slide/shift": [68.041, 82.964, "Now slide the bowl so its bottom sits at three: f of x equals a times x minus three, squared. Each slope is the old one at the same distance from the bottom, so the gradient is two a, times x minus three.", [[71.021, 71.501], [75.231, 75.861], [77.421, 77.571], [79.291, 79.601], [81.321, 81.541]]],
+  "slide/dist": [83.344, 103.452, "From x equals four, with eta at zero point three, the distance x minus three goes one, zero point four, zero point one six: the same factor, one minus two a eta, every step. Sliding the bowl moves the minimum, and nothing else: the limit is still one over a.", [[84.884, 85.094], [86.944, 87.294], [89.054, 89.204], [90.064, 90.284], [91.314, 91.554], [92.944, 93.434], [94.374, 94.614], [96.334, 96.504], [97.234, 97.874], [99.834, 100.024], [100.924, 101.404]]],
+  "try/p1": [105.252, 113.751, "Try one: f of x is four times x minus three, squared. What is the largest eta that does not diverge?", [[105.862, 106.432], [110.032, 110.642]]],
+  "try/a1": [114.131, 128.098, "Sliding moves only the minimum, so a is still four. Set the factor to minus one: one minus eight eta is minus one, so eight eta is two, and eta is zero point two five.", [[116.021, 116.311], [118.071, 118.671], [120.501, 121.041], [123.471, 123.761], [125.501, 125.821]]],
+  "try/p2": [128.478, 131.573, "Which eta lands on the minimum in a single step?", []],
+  "try/a2": [131.953, 142.971, "Set the factor to zero instead: one minus eight eta is zero, so eight eta is one, and eta is one eighth, zero point one two five.", [[134.033, 134.583], [136.803, 137.093], [138.803, 139.273], [140.733, 141.133]]],
+  "try/p3": [143.351, 156.43, "And what does x do with eta at zero point two? The factor is one minus eight times zero point two: minus zero point six, between minus one and zero. x zigzags in.", [[146.471, 147.071], [150.251, 150.801], [152.371, 152.701], [154.441, 154.961]]],
+  "try/turn": [156.81, 157.55, "Your turn.", []]
  }
 }

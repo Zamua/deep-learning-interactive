@@ -1,0 +1,23 @@
+{
+ "duration": 168.276,
+ "scenes": {
+  "sample": [0.0, 52.473],
+  "trick": [52.473, 141.633],
+  "try": [141.633, 168.276]
+ },
+ "beats": {
+  "sample/ask": [0.7, 15.464, "A model answers a question by sampling. Asked seven times eight, it says fifty six half the time, fifty four three times in ten, and sixty four the rest: its probabilities, written with the Greek letter pi.", [[3.05, 3.7], [5.25, 5.52], [7.52, 7.89], [9.87, 10.22], [11.72, 12.18], [13.26, 13.58]]],
+  "sample/reward": [15.844, 26.411, "A checker scores each answer: a reward, R, of one when it is right and zero when it is wrong. It is just a number, with nothing to differentiate.", [[17.714, 18.264], [18.914, 19.204], [19.584, 19.844], [21.254, 21.504], [22.994, 23.554], [24.614, 24.894]]],
+  "sample/goal": [26.791, 44.509, "Training should raise the expected reward, J: each answer's probability times its R, added up. Here zero point five times one, plus zeros: zero point five. Its gradient would say how to change the model's parameters, written theta.", [[29.161, 29.691], [30.051, 30.571], [33.131, 33.361], [33.931, 34.461], [34.811, 34.981], [36.791, 37.071], [37.871, 38.281], [39.391, 39.991], [43.171, 43.491]]],
+  "sample/stuck": [44.889, 51.373, "But theta reaches the reward only through which answer gets sampled, and a random draw has no slope.", [[46.609, 46.799], [48.949, 49.289]]],
+  "trick/sum": [53.173, 66.89, "Write J as a sum over every answer y: pi of y times R of y. Only the probabilities depend on theta, so the gradient of J is each reward times the gradient of its probability.", [[56.413, 56.953], [59.103, 59.763], [62.053, 62.423]]],
+  "trick/one": [67.27, 81.197, "Take one answer and one parameter. Here theta is three scores, one per answer, through a softmax. theta zero is the first, the score of fifty six, whose probability is zero point five.", [[69.49, 70.02], [70.39, 70.57], [72.16, 72.47], [73.39, 73.71], [74.72, 75.29], [76.97, 77.26], [78.57, 78.84]]],
+  "trick/nudge": [81.577, 95.347, "Nudge theta zero up by zero point zero one, and pi of fifty six rises to zero point five oh two five: a slope of zero point two five, written partial pi, partial theta zero.", [[84.947, 85.377], [89.667, 90.147], [92.187, 92.517], [93.887, 94.057]]],
+  "trick/chain": [95.727, 119.807, "Now the slope of its log. ln pi is ln u, with pi as the inside, u. The slope of ln u is one over u, so by the chain rule, partial ln pi, partial theta zero is partial pi, partial theta zero divided by pi: zero point two five over zero point five, which is zero point five.", [[97.247, 97.867], [99.737, 100.137], [101.677, 101.987], [102.307, 103.007], [105.517, 105.947], [107.277, 107.637], [108.987, 109.147], [110.387, 110.767], [114.387, 114.927], [117.657, 118.037], [118.487, 118.707]]],
+  "trick/back": [120.187, 130.588, "Run it backwards: the slope of pi is pi times the slope of its log. zero point five times zero point five gives back zero point two five.", [[121.247, 121.877], [125.227, 125.837], [128.327, 128.547]]],
+  "trick/trick": [130.968, 140.533, "That holds for every answer and every parameter: the gradient of pi is pi times the gradient of ln pi. This is the log trick.", [[133.988, 134.498], [138.608, 139.118]]],
+  "try/p1": [142.333, 158.475, "Try one. For one parameter, theta zero, an answer y has pi of y of zero point two, and partial pi, partial theta zero of zero point one six. What is partial ln pi, partial theta zero?", [[142.953, 143.523], [144.573, 144.773], [145.643, 146.013], [147.433, 147.703], [149.833, 150.173], [152.763, 153.053], [154.613, 155.173]]],
+  "try/a1": [158.855, 166.056, "Divide the slope of pi by pi: zero point one six over zero point two is zero point eight.", [[161.095, 161.695], [164.515, 164.775]]],
+  "try/turn": [166.436, 167.176, "Your turn.", []]
+ }
+}

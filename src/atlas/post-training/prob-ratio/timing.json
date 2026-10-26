@@ -1,0 +1,22 @@
+{
+ "duration": 137.652,
+ "scenes": {
+  "ratio": [0.0, 82.01],
+  "try": [82.01, 137.652]
+ },
+ "beats": {
+  "ratio/batch": [0.7, 11.067, "Sampling is slow, so PPO samples a batch of answers once, then steps theta along the estimate several times on it. Each step is an update.", [[2.0, 2.34], [5.36, 5.7], [8.97, 9.51]]],
+  "ratio/old": [11.447, 21.281, "Call the model that sampled it pi old. It stays fixed for the whole batch, while the model being trained, pi, moves away from it with every update.", [[12.977, 13.147], [13.987, 14.537], [16.437, 16.777], [18.217, 18.437], [18.857, 19.157]]],
+  "ratio/next": [21.661, 27.72, "When the batch is used up, the trained model samples the next batch, and becomes the new pi old.", [[22.961, 23.301], [25.571, 25.751]]],
+  "ratio/rho": [28.1, 40.654, "So each sampled token is weighed by its new probability over its old one, pi over pi old: a ratio, written with the Greek letter rho. Before any update, it is one.", [[32.73, 33.15], [34.67, 35.18], [35.84, 36.16], [37.99, 38.6], [39.72, 39.9]]],
+  "ratio/eg": [41.034, 49.098, "If pi old gave a token zero point two and pi now gives it zero point three, its ratio is one point five.", [[43.404, 43.554], [43.964, 44.254], [46.624, 47.064]]],
+  "ratio/logs": [49.478, 60.888, "An answer's probability is tiny, so code keeps logs. Say ln pi old was minus twelve point four, and ln pi is now minus twelve point seven.", [[51.678, 52.028], [53.468, 54.038], [57.408, 57.798]]],
+  "ratio/lognum": [61.268, 71.342, "The log of a quotient is a difference of logs, so ln rho is minus zero point three, and rho is e to that: about zero point seven four.", [[63.808, 64.108], [67.268, 67.628], [69.088, 69.508]]],
+  "ratio/obj": [71.722, 80.91, "The objective is the ratio times the advantage: raising it pushes tokens with a positive advantage up, and those with a negative one down.", [[74.762, 75.282], [75.882, 76.042], [78.502, 78.882], [80.262, 80.432]]],
+  "try/p1": [82.71, 95.043, "Try one. For a sampled answer, ln pi old is minus fifteen point two, and after a few updates ln pi is minus fifteen point four. What is the ratio?", [[83.29, 83.86], [85.06, 85.58], [88.68, 89.07], [90.67, 90.96], [93.47, 93.97]]],
+  "try/a1": [95.423, 111.437, "Subtract the logs: minus fifteen point four, minus minus fifteen point two, is minus zero point two. Then rho is e to the minus zero point two: about zero point eight two. The answer became less likely.", [[96.663, 97.123], [98.763, 99.053], [101.133, 101.493], [103.283, 103.883], [107.073, 107.473], [109.153, 109.713]]],
+  "try/p2": [111.817, 122.781, "Now a token had pi old of zero point four, after one update pi is zero point six, and its advantage is minus two. What is its term in the objective?", [[114.897, 115.307], [116.307, 116.487], [118.117, 118.447], [120.367, 120.907]]],
+  "try/a2": [123.161, 135.431, "Its ratio is zero point six over zero point four: one point five. Times minus two, the term is minus three. Raising the objective pushes this token back down.", [[126.691, 127.111], [128.071, 128.571], [129.891, 130.191], [131.751, 132.301]]],
+  "try/turn": [135.811, 136.552, "Your turn.", []]
+ }
+}

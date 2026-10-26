@@ -1,96 +1,82 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
 import { int, num, pick, round, vec } from '../../kit';
-import { ADV, BASE, choose, clean, minus, paren, PI, R, sumTex, TH, traps, vtraps } from '../kit';
+import { BASE, choose, clean, paren, PI, R, sumTex, TH, traps } from '../kit';
 
 const GLP = `\\nabla \\ln ${PI}(y)`;
+const DL = `\\dfrac{\\partial \\ln ${PI}(y)}{\\partial ${TH}_0}`;
+const DP = `\\dfrac{\\partial ${PI}(y)}{\\partial ${TH}_0}`;
 
-/** Rewards for `n` sampled answers: tenths in [0, 1], harder with negatives and more of them. */
-function rewards(rng: Rng, n: number, d: number): number[] {
-  for (;;) {
-    const r = Array.from({ length: n }, () => (d < 0.7 ? int(rng, 0, 10) / 10 : int(rng, -10, 10) / 10));
-    if (new Set(r).size > 1) return r;
-  }
+/** `n` probabilities in tenths, each at least 0.1, adding up to 1. */
+function tenths(rng: Rng, n: number): number[] {
+  const cuts = rng.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, n - 1).sort((x, y) => x - y);
+  return [...cuts, 10].map((c, i) => clean((c - (i ? cuts[i - 1]! : 0)) / 10));
+}
+
+/** `$0.4$ for answer 0 and $-1$ for answer 1`: every value but the missing one at `k`. */
+function given(vals: number[], k: number): string {
+  const xs = vals.map((v, i) => (i === k ? '' : `$${num(v)}$ for answer ${i}`)).filter(Boolean);
+  return `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`;
 }
 
 export const generators: Generator[] = [
   {
-    id: 'compute',
+    id: 'missing',
     make(rng, d) {
-      const n = d < 0.35 ? 3 : d < 0.7 ? 4 : 5;
-      const own = d >= 0.35;
-      let r = rewards(rng, n, d);
-      // Keep the mean a clean decimal so the advantages print exactly.
-      while (own && Math.abs(round((r.reduce((a, b) => a + b, 0) / n) * 100, 6) % 1) > 1e-6) r = rewards(rng, n, d);
-      const mean = clean(r.reduce((a, b) => a + b, 0) / n);
-      const b = own ? mean : pick(rng, [0.5, 0.4, 0.6, 0.3, 0.7]);
-      const v = r.map((x) => clean(x - b));
-      return {
-        prompt: own
-          ? `A model samples ${n} answers to one question and they get rewards $${R} = ${vec(r)}$. Using their mean as the baseline $${BASE}$, what are the advantages $${ADV}$?`
-          : `A model samples ${n} answers to one question and they get rewards $${R} = ${vec(r)}$. The baseline is $${BASE} = ${num(b)}$. What are the advantages $${ADV}$?`,
-        answer: { kind: 'vector', value: v },
-        traps: vtraps(v, [
-          { value: r, why: 'Those are the rewards themselves. Subtract the baseline from each.' },
-          { value: v.map((x) => clean(-x)), why: `That is $${BASE} - ${R}$, the wrong way round. A reward above the baseline gives a positive advantage.` },
-        ]),
-        solution: [
-          ...(own ? [`The baseline is the mean reward: $(${sumTex(r)}) / ${n} = ${num(mean)}$.`] : []),
-          `The advantage is $${ADV} = ${R} - ${BASE}$, so subtract the baseline from each reward: ${r.map((x, i) => `$${minus(x, b)} = ${num(v[i]!)}$`).join(', ')}.`,
-          `So $${ADV} = ${vec(v)}$: positive for answers better than expected, negative for worse.`,
-        ],
-      };
+      const n = d < 0.7 ? 3 : 4;
+      const G = d < 0.35 ? [0.5, -0.5, 1, -1, 2] : [0.5, -0.5, 1, -1, 2, -2, 0.4, -0.4, 0.2, -0.6, 1.5];
+      for (;;) {
+        const p = tenths(rng, n);
+        const k = d < 0.35 ? n - 1 : rng.int(n);
+        const g = p.map((_, i) => (i === k ? 0 : pick(rng, G)));
+        const terms = p.map((q, i) => clean(q * g[i]!));
+        const rest = clean(terms.reduce((x, y) => x + y, 0));
+        const x = clean(-rest / p[k]!);
+        if (rest === 0 || Math.abs(x) > 5 || Math.abs(round(x, 2) - x) > 1e-9) continue;
+        const known = terms.filter((_, i) => i !== k);
+        return {
+          prompt: `A model's ${n} answers have probabilities $${PI} = ${vec(p)}$, counting from 0. For one parameter $${TH}_0$, $${DL}$ is ${given(g, k)}. What is it for answer ${k}?`,
+          answer: { kind: 'number', value: x },
+          traps: traps(x, [
+            { value: clean(-rest), why: `That is answer ${k}'s weighted term, its probability times its slope. Divide by its probability, $${num(p[k]!)}$.` },
+            { value: clean(rest / p[k]!), why: 'That has the wrong sign. The weighted terms cancel, so this one is minus the others\' total.' },
+            { value: clean(-g.reduce((u, v) => u + v, 0)), why: 'That makes the plain slopes add up to zero. They cancel only once each is weighted by its probability.' },
+          ]),
+          solution: [
+            `Weighted by probability, the slopes of $\\ln ${PI}$ add up to zero: $\\sum_y ${PI}(y)\\,${DL} = 0$.`,
+            `The known terms: ${p.map((q, i) => (i === k ? '' : `$${num(q)} \\times ${paren(g[i]!)} = ${num(terms[i]!)}$`)).filter(Boolean).join(', ')}. Together: $${sumTex(known)} = ${num(rest)}$.`,
+            `So answer ${k}'s term must be $${num(clean(-rest))}$, to bring the total to zero.`,
+            `Divide by its probability: $${num(clean(-rest))} / ${num(p[k]!)} = ${num(x)}$.`,
+          ],
+        };
+      }
     },
   },
   {
-    id: 'estimate',
+    id: 'grad-sum',
     make(rng, d) {
-      const Rv = d < 0.35 ? pick(rng, [1, 0, 0.5]) : d < 0.7 ? int(rng, 0, 10) / 10 : int(rng, -10, 10) / 10;
-      let b = pick(rng, [0.2, 0.4, 0.5, 0.6, 0.8]);
-      if (b === Rv) b = clean(b - 0.1);
-      const g = d < 0.35 ? pick(rng, [0.5, 1, 2]) : pick(rng, [0.5, -0.5, 0.8, -0.6, 0.4, 2, -1]);
-      const a = clean(Rv - b);
-      const v = clean(a * g);
-      const DL = `\\dfrac{\\partial \\ln ${PI}(y)}{\\partial ${TH}_0}`;
-      return {
-        prompt: `For one parameter $${TH}_0$, a sampled answer $y$ gets reward $${R} = ${num(Rv)}$ and has $${DL} = ${num(g)}$. With the baseline $${BASE} = ${num(b)}$, what is the policy-gradient estimate's entry for $${TH}_0$?`,
-        answer: { kind: 'number', value: v },
-        traps: traps(v, [
-          { value: clean(Rv * g), why: `That leaves out the baseline: it uses $${R}$, not the advantage $${R} - ${BASE}$.` },
-          { value: clean(-v), why: `That uses $${BASE} - ${R}$, the wrong way round. The advantage is $${R} - ${BASE}$.` },
-          { value: a, why: `That is the advantage alone. Multiply it by the gradient of the log-probability.` },
-        ]),
-        solution: [
-          `The advantage: $${ADV} = ${R} - ${BASE} = ${minus(Rv, b)} = ${num(a)}$.`,
-          `The estimate is $${ADV}\\,${GLP}$, so its entry for $${TH}_0$ is $${num(a)} \\times ${paren(g)} = ${num(v)}$.`,
-          a > 0 ? 'The answer beat the baseline, so this pushes it up.' : 'The answer fell short of the baseline, so this pushes it down.',
-        ],
-      };
-    },
-  },
-  {
-    id: 'push',
-    make(rng, d) {
-      const b = pick(rng, d < 0.5 ? [0.5, 0.6, 0.7, 0.8] : [0.3, 0.45, 0.55, 0.65, 0.75, 0.9]);
-      const kind = rng.int(5);
-      // Mostly a positive reward below the baseline: the case a baseline changes.
-      const Rv = kind < 2 ? clean(b - pick(rng, [0.1, 0.2, 0.3])) : kind < 4 ? clean(b + pick(rng, [0.1, 0.2])) : b;
-      const a = clean(Rv - b);
-      const correct = a > 0 ? 0 : a < 0 ? 1 : 2;
-      const why: (string | null)[] = [
-        a < 0 ? `The answer scored below the baseline: $${ADV} = ${minus(Rv, b)} = ${num(a)} < 0$, so it is pushed down${Rv > 0 ? ', even though its reward is positive' : ''}.` : `$${ADV} = 0$: the estimate is zero, so it is not pushed.`,
-        a > 0 ? `The reward beats the baseline: $${ADV} = ${minus(Rv, b)} = ${num(a)} > 0$, so it is pushed up.` : `$${ADV} = 0$: the estimate is zero, so it is not pushed.`,
-        `Only an advantage of zero leaves it alone. Here $${ADV} = ${minus(Rv, b)} = ${num(a)}$.`,
-      ];
-      why[correct] = null;
-      return {
-        prompt: `On a question with baseline $${BASE} = ${num(b)}$, a model samples an answer with reward $${R} = ${num(Rv)}$. After a small step along the policy-gradient estimate with this baseline, how does that answer's probability change?`,
-        answer: { kind: 'choice', options: ['It goes up: the answer is pushed up', 'It goes down: the answer is pushed down', 'It stays the same: the answer is not pushed'], correct, why },
-        solution: [
-          `The advantage is $${ADV} = ${R} - ${BASE} = ${minus(Rv, b)} = ${num(a)}$.`,
-          a > 0 ? 'Better than usual, so the step raises its probability.' : a < 0 ? `Worse than usual, so the step lowers its probability${Rv > 0 ? ', even though the reward itself is above zero' : ''}.` : 'Exactly as expected, so the estimate is zero and nothing moves.',
-        ],
-      };
+      const n = d < 0.5 ? 3 : 4;
+      for (;;) {
+        const k = d < 0.35 ? n - 1 : rng.int(n);
+        const vals = Array.from({ length: n }, (_, i) => (i === k ? 0 : d < 0.35 ? int(rng, -9, 9) / 10 : int(rng, -30, 30) / 100));
+        const known = vals.filter((_, i) => i !== k);
+        const rest = clean(known.reduce((x, y) => x + y, 0));
+        const x = clean(-rest);
+        if (x === 0 || known.some((v) => v === 0)) continue;
+        return {
+          prompt: `A model has ${n} possible answers, counting from 0. For one parameter $${TH}_0$, $${DP}$ is ${given(vals, k)}. What is it for answer ${k}?`,
+          answer: { kind: 'number', value: x },
+          traps: traps(x, [
+            { value: rest, why: 'That has the wrong sign. The slopes cancel, so this one is minus the others\' total.' },
+            { value: clean(1 - rest), why: 'That makes the slopes add up to 1. The probabilities add up to 1, so their slopes add up to the slope of 1, which is 0.' },
+          ]),
+          solution: [
+            `The probabilities add up to 1 whatever $${TH}$ is, so their slopes add up to the slope of a constant: 0.`,
+            `The known slopes add up to $${sumTex(known)} = ${num(rest)}$.`,
+            `So answer ${k}'s slope must cancel them: $${num(x)}$.`,
+          ],
+        };
+      }
     },
   },
   {

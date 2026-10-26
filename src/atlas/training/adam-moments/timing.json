@@ -1,0 +1,22 @@
+{
+ "duration": 164.097,
+ "scenes": {
+  "moments": [0.0, 68.58],
+  "start": [68.58, 135.664],
+  "try": [135.664, 164.097]
+ },
+ "beats": {
+  "moments/m": [0.7, 21.103, "Adam, an optimizer built on momentum, keeps two running averages for every parameter. The first, m, averages the gradient: each step, m gets beta one times m, plus one minus beta one times the gradient, where beta one, read \u201cbeta one\u201d, is the share of m kept.", [[1.14, 1.43], [3.36, 3.63], [6.23, 6.79], [7.38, 7.63], [7.98, 8.23], [9.46, 10.0], [10.67, 11.07], [13.17, 13.43], [16.16, 16.59], [17.59, 17.9], [19.11, 19.46]]],
+  "moments/mnum": [21.483, 30.621, "Beta one is usually zero point nine. So each step, m keeps nine tenths of itself and takes one tenth of the new gradient.", [[24.213, 24.753], [25.823, 26.213], [28.143, 28.403]]],
+  "moments/mom": [31.001, 45.626, "That looks like momentum's velocity, with two differences: no eta inside, and the gradient is weighted by one minus beta one. So m is not a step: it is an average gradient, in the gradient's own units.", [[33.051, 33.381], [34.551, 35.021], [36.401, 36.671], [39.641, 40.111], [41.891, 42.261], [43.721, 44.001]]],
+  "moments/v": [46.006, 57.661, "The second, v, here not a velocity, averages the squared gradient the same way, keeping a share beta two. It tracks how big this parameter's gradients usually are.", [[46.716, 46.996], [47.416, 47.806], [49.146, 49.536], [51.956, 52.256], [53.846, 54.316]]],
+  "moments/vnum": [58.041, 67.48, "Beta two is usually zero point nine nine nine: v keeps almost all of itself, and takes a thousandth of each new squared gradient.", [[61.561, 62.181], [64.141, 64.411]]],
+  "start/zero": [69.28, 83.153, "Both start at zero. After a first gradient of two, m is a tenth of two, zero point two, and v is a thousandth of four, zero point zero zero four. Both are far too small.", [[70.78, 71.38], [73.28, 73.61], [75.07, 75.38], [76.39, 76.76], [78.84, 79.14], [81.0, 81.53]]],
+  "start/two": [83.533, 105.173, "Then the gradient is minus four. m keeps nine tenths of zero point two, zero point one eight, and adds a tenth of minus four: minus zero point two two. v keeps zero point nine nine nine of zero point zero zero four, and adds a thousandth of sixteen: about zero point zero two.", [[85.453, 86.263], [88.993, 89.323], [90.513, 90.863], [92.793, 93.203], [95.103, 95.753], [100.503, 100.863], [102.883, 103.263]]],
+  "start/steady": [105.553, 118.002, "Feed m the same gradient, three, step after step, and it levels off at three: nine tenths of three plus a tenth of three is three again. v levels off at nine, the square.", [[107.093, 107.313], [107.763, 108.013], [109.173, 109.523], [110.953, 111.393], [114.833, 115.373], [117.063, 117.343]]],
+  "start/flip": [118.382, 134.564, "Now let the gradient flip between three and minus three. Each push undoes the last inside m, which stays near zero. But every square is nine, so v still heads to nine. m tracks the direction; v tracks the size.", [[121.672, 122.232], [125.012, 125.222], [126.482, 127.042], [128.622, 128.872], [130.712, 131.262], [132.642, 133.012]]],
+  "try/p1": [136.364, 146.426, "Try one: m is zero point five, beta one is zero point nine, and the new gradient is three. What is m after the update?", [[136.934, 137.564], [139.334, 139.904], [141.914, 142.324], [144.004, 144.564]]],
+  "try/a1": [146.806, 161.876, "Keep nine tenths of zero point five: zero point four five. Take a tenth of three: zero point three. So m is zero point seven five, a tenth of the way from zero point five toward three.", [[149.306, 149.936], [151.336, 151.986], [153.316, 153.896], [154.936, 155.536], [158.186, 158.526], [160.836, 160.996]]],
+  "try/turn": [162.256, 162.997, "Your turn.", []]
+ }
+}
