@@ -4,6 +4,7 @@ import { domainOf, GRAPH, loadExplainer } from '../../atlas/index';
 import { h } from '../../core/dom';
 import { Learner } from '../learner';
 import { renderConcept } from './concept';
+import { notationIn } from './lookup';
 import { renderHome, renderMap } from './map';
 import { renderPlacement } from './placement';
 import { renderSession } from './session';
@@ -39,6 +40,7 @@ export async function renderAtlas(main: HTMLElement, parts: string[], current: (
     poster: [domainOf(c).title, 'Explainer'],
     artist: `Atlas: ${c.title}`,
     noun: 'explainer',
+    notes: (marks, said) => notationIn(a, marks, said),
     // A locked concept cannot be practiced yet, so its explainer ends on what to master first.
     end: locked
       ? { kicker: 'Not yet', title: `Master ${missing} first`, action: 'See the map', href: '#/atlas' }

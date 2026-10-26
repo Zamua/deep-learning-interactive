@@ -13,6 +13,16 @@ export interface Term {
   key: string;
 }
 
+/** A mark of notation, explained by the course hosting the lecture. */
+export interface Note {
+  /** Rendered TeX. */
+  glyph: string;
+  name: string;
+  about: string;
+  /** Where it was first explained, when that was earlier. */
+  from?: string;
+}
+
 export interface LookupHost {
   root: HTMLElement;
   /** Taps on symbols and calls in here open their card. */
@@ -25,6 +35,8 @@ export interface LookupHost {
   scenes: { title: string; start: number; beats: { start: number; code?: Beat['code'] }[] }[];
   symbols: SymbolMap;
   glossary: Glossary;
+  /** The notation scene `i` uses. */
+  notes?(i: number): Note[];
   scene(): number;
   time(): number;
   playing(): boolean;
@@ -162,6 +174,16 @@ export function mountLookup(host: LookupHost): { showScene(): void; tick(t: numb
     show([head, ...body], t.kind === 'sym' ? plainName(host.symbols[t.key]!.name) : t.key);
   }
 
+  function noteCard(n: Note, from: number): void {
+    const head = h('div', { class: 'lk-head' },
+      h('button', { class: 'lk-back', type: 'button', 'aria-label': 'Back to the list', html: icon('arrowLeft'), onclick: () => list(from) }),
+      h('span', { class: 'lk-tok', html: n.glyph }),
+      closeBtn());
+    const body = [h('p', { class: 'lk-lead' }, sentence(n.name)), h('p', {}, n.about)];
+    if (n.from) body.push(h('p', { class: 'lk-from' }, `First explained in ${n.from}.`));
+    show([head, ...body], n.name);
+  }
+
   function list(i: number): void {
     const ts = terms(i);
     const rows = (kind: Term['kind']) => ts.filter((t) => t.kind === kind).map((t) => h('button', { class: 'lk-row', type: 'button', onclick: () => card(t, i) },
@@ -169,10 +191,14 @@ export function mountLookup(host: LookupHost): { showScene(): void; tick(t: numb
       h('span', { class: 'lk-what' }, t.kind === 'sym' ? plainName(host.symbols[t.key]!.name) : entry(t)!.is)));
     const syms = rows('sym');
     const fns = rows('fn');
+    const notes = (host.notes?.(i) ?? []).map((n) => h('button', { class: 'lk-row', type: 'button', onclick: () => noteCard(n, i) },
+      h('span', { class: 'lk-tok', html: n.glyph }),
+      h('span', { class: 'lk-what' }, n.name)));
     const content: HTMLElement[] = [h('div', { class: 'lk-head' }, h('span', { class: 'lk-title' }, 'In this scene'), h('span', { class: 'lk-tag' }, host.scenes[i]!.title), closeBtn())];
+    if (notes.length) content.push(h('div', { class: 'lk-sec' }, 'Notation'), h('div', { class: 'lk-list' }, ...notes));
     if (syms.length) content.push(h('div', { class: 'lk-sec' }, 'Symbols'), h('div', { class: 'lk-list' }, ...syms));
     if (fns.length) content.push(h('div', { class: 'lk-sec' }, 'Functions'), h('div', { class: 'lk-list' }, ...fns));
-    if (!syms.length && !fns.length) content.push(h('p', { class: 'lk-lead' }, 'Nothing to look up in this scene.'));
+    if (!notes.length && !syms.length && !fns.length) content.push(h('p', { class: 'lk-lead' }, 'Nothing to look up in this scene.'));
     show(content, `In this scene: ${host.scenes[i]!.title}`);
   }
 

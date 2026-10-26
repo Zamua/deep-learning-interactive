@@ -7,7 +7,7 @@ import { setMacros, tex } from '../core/math';
 import { Plot } from '../core/plot';
 import { codeIndex, linkSymbols, symbolMacros, type SymbolMap } from '../core/symbols';
 import type { Glossary } from './glossary';
-import { mountLookup } from './lookup';
+import { mountLookup, type Note } from './lookup';
 import { Scene, type SceneDef, clamp01 } from './scene';
 import { type Beat, GAP, type LectureScript, type Timing, shownText, spokenText } from './types';
 
@@ -34,6 +34,8 @@ export interface LectureFrame {
   /** What to call it in messages: "lecture" or "explainer". */
   noun: string;
   end: { kicker: string; title: string; action: string; href: string };
+  /** The notation in a scene's marks and captions, for the lookup sheet. */
+  notes?(marks: HTMLElement[], said: string): Note[];
 }
 
 interface TBeat {
@@ -800,6 +802,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
     scenes,
     symbols: def.symbols,
     glossary: def.glossary ?? {},
+    notes: frame.notes && ((i) => frame.notes!([...markEls[i]!.values()], def.script.scenes[i]!.beats.map((b) => shownText(b.say)).join('\n'))),
     scene: () => Math.max(0, cur),
     time: () => clock.time(),
     playing: () => !clock.paused,

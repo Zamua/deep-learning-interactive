@@ -118,6 +118,22 @@ function card(t: Term, concept: string): Card | null {
 
 const keyOf = (t: Term) => `${t.kind}:${t.key}`;
 
+/** The notation an explainer scene of `concept` uses in its marks or captions, as cards. */
+export function notationIn(concept: string, marks: Element[], said: string): Card[] {
+  const keys = new Set<string>();
+  for (const m of marks) {
+    // On a copy: the tags would otherwise pick up practice's underline styles on the stage.
+    const c = m.cloneNode(true) as HTMLElement;
+    markNotation(c, concept);
+    for (const el of c.querySelectorAll('.nt')) {
+      const t = termOf(el);
+      if (t?.[0].kind === 'nt') keys.add(t[0].key);
+    }
+  }
+  for (const [k, n] of Object.entries(NOTATION)) if (n.shown.test(said)) keys.add(k);
+  return Object.keys(NOTATION).filter((k) => keys.has(k)).map((k) => card({ kind: 'nt', key: k }, concept)!);
+}
+
 /**
  * Wires symbol lookup into a practice frame: a tap on a symbol in `body` opens its card, and
  * `button` opens a sheet of every symbol on screen. `body.dataset.concept` picks scoped meanings.
