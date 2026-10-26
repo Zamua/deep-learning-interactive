@@ -1,21 +1,34 @@
 {
- "duration": 118.924,
+ "duration": 230.113,
  "scenes": {
-  "chain": [0.0, 36.583],
-  "local": [36.583, 83.693],
-  "back": [83.693, 118.924]
+  "chain": [0.0, 46.929],
+  "local": [46.929, 99.008],
+  "formula": [99.008, 164.901],
+  "back": [164.901, 230.113]
  },
  "beats": {
   "chain/chain": [0.7, 8.742, "Often one function feeds another. Here x goes in and u comes out, where u is three x plus one.", [[1.19, 1.34], [2.94, 3.5], [3.88, 4.06], [4.95, 5.1], [6.28, 6.59]]],
   "chain/feed": [9.122, 13.631, "Then u feeds a second function: z is u squared.", [[11.472, 11.952]]],
-  "chain/vals": [14.011, 35.483, "At x equals one, u is four, and z is sixteen. How fast does z change when x is nudged? That rate is written d z, d x, read \u201cd z, d x\u201d: the derivative of z with respect to x, a tiny change in z over the tiny change in x that caused it.", [[15.421, 15.741], [16.761, 17.011], [18.401, 18.991], [21.901, 22.561], [25.391, 25.901], [26.221, 26.451], [27.051, 27.231], [27.881, 28.391], [30.951, 31.421], [32.851, 33.051]]],
-  "local/du": [37.283, 48.074, "Each link has its own local slope. u is three x plus one, so u moves three times as fast as x: d u, d x is three.", [[39.533, 40.043], [41.963, 42.323], [45.293, 45.733], [46.423, 46.723]]],
-  "local/dz": [48.454, 56.125, "z is u squared, whose slope is two u. At u equals four, d z, d u is eight.", [[50.084, 50.344], [51.784, 52.354], [53.704, 54.024]]],
-  "local/nudge": [56.505, 67.677, "Now nudge x by zero point zero one. u moves three times that, zero point zero three. And z moves eight times that, zero point two four.", [[59.395, 59.945], [61.565, 61.915], [63.435, 63.965], [65.875, 66.235]]],
-  "local/mult": [68.057, 82.593, "So z moves three times eight, twenty four times as fast as x. That is the chain rule: multiply the local slopes, d z, d x equals d z, d u times d u, d x.", [[70.277, 70.577], [72.977, 73.547], [74.827, 75.257], [76.927, 77.207], [77.807, 77.967]]],
-  "back/longer": [84.393, 95.33, "A chain can be as long as you like. Here x feeds u, u feeds v, and v feeds a last function, L. Each link has a local slope.", [[86.263, 86.903], [87.283, 87.453], [88.563, 88.933], [90.063, 90.383], [92.293, 92.493], [92.843, 93.463]]],
-  "back/back": [95.71, 105.465, "Start at the end and walk backwards, multiplying as you go: a half, times minus two is minus one, times three is minus three.", [[97.88, 98.19], [99.52, 100.08], [100.66, 100.87], [103.06, 103.47], [104.24, 104.44]]],
-  "back/backprop": [105.845, 116.703, "So a nudge to x moves L minus three times as much. And the walk finds more on the way: the slope of L with respect to v and to u as well.", [[110.055, 110.695], [112.605, 113.095], [115.195, 115.405]]],
-  "back/turn": [117.083, 117.824, "Your turn.", []]
+  "chain/nest": [14.011, 23.977, "In one line, z is three x plus one, squared. Three x plus one is the inside. The squaring wrapped around it is the outside.", [[14.831, 15.131], [18.011, 18.601], [20.861, 21.371], [22.881, 23.031]]],
+  "chain/vals": [24.357, 45.829, "At x equals one, u is four, and z is sixteen. How fast does z change when x is nudged? That rate is written d z, d x, read \u201cd z, d x\u201d: the derivative of z with respect to x, a tiny change in z over the tiny change in x that caused it.", [[25.767, 26.087], [27.107, 27.357], [28.747, 29.337], [32.247, 32.907], [35.737, 36.247], [36.567, 36.797], [37.397, 37.577], [38.227, 38.737], [41.297, 41.767], [43.197, 43.397]]],
+  "local/du": [47.629, 59.063, "Each link has its own local slope. The inside, u equals three x plus one, moves three times as fast as x: d u, d x is three.", [[49.899, 50.489], [51.289, 51.619], [53.669, 54.009], [56.239, 56.819], [57.499, 57.709]]],
+  "local/dz": [59.443, 71.441, "The outside, z equals u squared, has slope two u. At u equals four, d z, d u is eight, also written z prime of four is eight.", [[60.303, 60.633], [62.273, 62.573], [63.153, 63.313], [63.883, 64.553], [65.893, 66.223], [68.193, 68.593], [69.283, 69.503]]],
+  "local/nudge": [71.821, 82.993, "Now nudge x by zero point zero one. u moves three times that, zero point zero three. And z moves eight times that, zero point two four.", [[74.711, 75.261], [76.881, 77.231], [78.751, 79.281], [81.191, 81.551]]],
+  "local/mult": [83.373, 97.908, "So z moves three times eight, twenty four times as fast as x. That is the chain rule: multiply the local slopes, d z, d x equals d z, d u times d u, d x.", [[85.593, 85.893], [88.293, 88.863], [90.143, 90.573], [92.243, 92.523], [93.123, 93.283]]],
+  "formula/letter": [99.708, 110.523, "That was the slope at one point. To get it at every x, keep u as a letter. The inside, three x plus one, has slope three wherever x is.", [[101.538, 102.088], [103.488, 103.758], [105.128, 105.688], [106.458, 106.688], [107.878, 108.198]]],
+  "formula/outer": [110.903, 116.519, "The outside, u squared, has slope two u. Leave it written in u.", [[111.783, 112.103], [112.933, 113.263], [114.583, 115.133]]],
+  "formula/times": [116.899, 120.877, "Multiply them: two u times three is six u.", [[117.759, 118.309], [119.829, 119.979]]],
+  "formula/sub": [121.257, 132.951, "Six u is still in u. Put the inside back in for u, and d z, d x is six times, three x plus one: a formula in x.", [[123.277, 123.867], [125.867, 126.277], [127.287, 127.597], [129.457, 129.767], [131.047, 131.557]]],
+  "formula/check": [133.331, 140.638, "At x equals one, the inside is four, and six times four is twenty four: the slope found before.", [[134.761, 135.021], [136.301, 136.691], [138.861, 139.271]]],
+  "formula/curve": [141.018, 153.082, "The inside need not be a line. In e to the x squared, the inside is x squared, with slope two x. The outside, e to the u, is its own derivative.", [[143.138, 143.718], [145.368, 145.638], [147.398, 147.688], [149.058, 149.578], [150.348, 150.608], [151.428, 151.698]]],
+  "formula/curve2": [153.462, 163.801, "Multiply, e to the u times two x, and put x squared back in for u: d z, d x is two x, e to the x squared.", [[154.172, 154.562], [156.702, 157.082], [159.332, 159.882], [162.122, 162.422]]],
+  "back/longer": [165.601, 176.601, "A chain can be as long as you like. Here x feeds u, u feeds v, and v feeds z, with local slopes three, minus two, and a half.", [[167.511, 168.041], [169.631, 169.961], [171.111, 171.371], [172.701, 173.131], [174.671, 174.951], [175.711, 175.901]]],
+  "back/back": [176.981, 186.736, "Start at the end and walk backwards, multiplying as you go: a half, times minus two is minus one, times three is minus three.", [[179.151, 179.461], [180.791, 181.351], [181.931, 182.141], [184.331, 184.741], [185.511, 185.711]]],
+  "back/backprop": [187.116, 196.444, "So d z, d x is minus three. On the way, the walk also found the slope of z with respect to v and to u.", [[188.366, 188.816], [190.606, 191.296], [191.936, 192.216]]],
+  "back/p1": [196.824, 205.25, "Now one as a formula. What is the derivative of ln of two x plus three with respect to x? Call it z.", [[198.324, 199.024], [202.464, 202.664], [203.904, 204.364]]],
+  "back/in1": [205.63, 210.473, "The inside is u equals two x plus three, with slope two.", [[209.06, 209.41]]],
+  "back/out1": [210.853, 215.344, "The outside is ln u, whose slope is one over u.", [[213.123, 213.513]]],
+  "back/a1": [215.724, 227.893, "Multiply: one over u, times two, is two over u. Put the inside back in for u: d z, d x is two over, two x plus three.", [[216.424, 216.984], [218.054, 218.304], [219.054, 219.324], [220.424, 221.134], [223.044, 223.634], [224.344, 224.654], [226.404, 226.674]]],
+  "back/turn": [228.273, 229.013, "Your turn.", []]
  }
 }

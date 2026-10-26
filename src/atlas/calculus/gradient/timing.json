@@ -1,21 +1,33 @@
 {
- "duration": 123.291,
+ "duration": 266.946,
  "scenes": {
-  "partials": [0.0, 59.246],
-  "uphill": [59.246, 81.575],
-  "shape": [81.575, 123.291]
+  "partials": [0.0, 76.594],
+  "uphill": [76.594, 98.923],
+  "shape": [98.923, 139.519],
+  "mixed": [139.519, 266.946]
  },
  "beats": {
   "partials/two": [0.7, 12.251, "Many functions take more than one input. Here f of u and v is u squared plus two v squared: a bowl, seen from above as rings of equal height.", [[3.16, 3.71], [4.08, 4.34], [5.76, 5.95], [8.33, 8.89], [9.45, 9.74]]],
-  "partials/du": [12.631, 35.466, "Hold v fixed and move only u. Along that line f is an ordinary curve, and its slope is the partial derivative in u, written partial f, partial u. The curly d, read \u201cpartial\u201d, means only u moves, with v held still. Here it is two u: two, at the point one, one.", [[13.941, 14.141], [15.461, 16.181], [18.761, 19.121], [21.811, 22.081], [22.451, 22.681], [23.431, 23.631], [24.411, 25.101], [26.061, 26.321], [26.591, 26.741], [27.281, 27.581], [29.121, 29.341], [30.641, 31.261], [32.521, 32.991], [33.391, 33.581], [34.161, 34.341], [34.731, 35.041]]],
-  "partials/dv": [35.846, 43.344, "Hold u fixed instead, and the slope in v, partial f, partial v, is four v, which is four here.", [[37.336, 37.676], [38.886, 39.136], [40.686, 40.986], [41.886, 42.266]]],
-  "partials/grad": [43.724, 58.146, "Stack the partials into a vector, and you have the gradient of f. It is written nabla f, read \u201cnabla f\u201d after the upside-down triangle, called nabla. Here the gradient of f is two, four.", [[45.604, 45.864], [47.464, 48.034], [49.634, 50.064], [50.384, 50.614], [51.424, 51.774], [53.564, 53.784], [54.664, 55.234], [57.474, 57.674]]],
-  "uphill/up": [59.946, 65.677, "The gradient points the way f climbs fastest: straight up the bowl, across the rings.", [[62.836, 63.246], [64.296, 64.546]]],
-  "uphill/down": [66.057, 72.431, "To make f smaller, step the other way, against the gradient: along minus nabla f.", [[67.367, 67.657], [68.797, 69.017], [70.177, 70.567]]],
-  "uphill/small": [72.811, 80.475, "A small step, a tenth of the gradient, lands on a lower ring: f drops from three to one point three six.", [[73.751, 74.121], [75.381, 75.631], [76.941, 77.471]]],
-  "shape/loss": [82.275, 93.365, "A function can take a whole grid of numbers as its input. Here W has three rows and four columns, twelve numbers in all, and f turns them into a single number.", [[85.515, 86.115], [89.115, 89.435], [90.545, 90.915]]],
-  "shape/g": [93.745, 110.029, "So the gradient nabla f has twelve partials, one per entry of W, laid out exactly like W: three by four. Since it holds the slopes of f in the entries of W, it is also written partial f, partial W.", [[97.085, 97.495], [99.105, 99.425], [101.265, 101.695], [102.645, 103.335], [106.505, 106.815], [107.835, 108.035], [108.825, 109.055]]],
-  "shape/entry": [110.409, 121.071, "Each entry says how f moves when that one number in W is nudged: the gradient at row one, column two belongs to W at row one, column two.", [[115.059, 115.609], [118.039, 118.299]]],
-  "shape/turn": [121.451, 122.191, "Your turn.", []]
+  "partials/du": [12.631, 30.605, "Hold v fixed and move only u. Along that line f is an ordinary curve, and its slope is the partial derivative in u, written partial f, partial u. The curly d, read \u201cpartial\u201d, means only u moves, with v held still.", [[13.901, 14.061], [15.381, 16.011], [18.541, 18.881], [21.521, 21.871], [22.241, 22.431], [23.191, 23.381], [24.171, 24.841], [25.831, 26.111], [26.401, 26.581], [27.111, 27.481], [28.991, 29.241]]],
+  "partials/terms": [30.985, 47.536, "Take f term by term. u squared gives two u. Two v squared does not change while v is held, so it is a constant, and gives zero. So partial f, partial u is two u: two, at the point one, one.", [[31.725, 31.895], [32.875, 33.405], [35.175, 35.775], [38.745, 39.005], [40.285, 40.455], [41.335, 41.865], [44.905, 45.395], [45.755, 46.065], [46.655, 46.805]]],
+  "partials/dv": [47.916, 60.692, "Hold u fixed instead. Now u squared is the constant, and gives zero, while two v squared gives four v. So partial f, partial v is four v: four here.", [[49.356, 50.006], [52.126, 52.286], [53.146, 53.596], [55.786, 56.316], [58.536, 58.686], [59.466, 59.926]]],
+  "partials/grad": [61.072, 75.494, "Stack the partials into a vector, and you have the gradient of f. It is written nabla f, read \u201cnabla f\u201d after the upside-down triangle, called nabla. Here the gradient of f is two, four.", [[62.952, 63.212], [64.812, 65.382], [66.982, 67.412], [67.732, 67.962], [68.772, 69.122], [70.912, 71.132], [72.012, 72.582], [74.822, 75.022]]],
+  "uphill/up": [77.294, 83.025, "The gradient points the way f climbs fastest: straight up the bowl, across the rings.", [[80.184, 80.594], [81.644, 81.894]]],
+  "uphill/down": [83.405, 89.779, "To make f smaller, step the other way, against the gradient: along minus nabla f.", [[84.715, 85.005], [86.145, 86.365], [87.525, 87.915]]],
+  "uphill/small": [90.159, 97.823, "A small step, a tenth of the gradient, lands on a lower ring: f drops from three to one point three six.", [[91.099, 91.469], [92.729, 92.979], [94.289, 94.819]]],
+  "shape/loss": [99.623, 110.712, "A function can take a whole grid of numbers as its input. Here W has three rows and four columns, twelve numbers in all, and f turns them into a single number.", [[102.863, 103.463], [106.463, 106.783], [107.893, 108.263]]],
+  "shape/g": [111.092, 127.377, "So the gradient nabla f has twelve partials, one per entry of W, laid out exactly like W: three by four. Since it holds the slopes of f in the entries of W, it is also written partial f, partial W.", [[114.432, 114.842], [116.452, 116.772], [118.612, 119.042], [119.992, 120.682], [123.852, 124.162], [125.182, 125.382], [126.172, 126.402]]],
+  "shape/entry": [127.757, 138.419, "Each entry says how f moves when that one number in W is nudged: the gradient at row one, column two belongs to W at row one, column two.", [[132.407, 132.957], [135.387, 135.647]]],
+  "mixed/mix": [140.219, 150.662, "Some terms mix the inputs. Take f of u and v is u squared plus three u v, at the point u equals one, v equals two.", [[142.109, 142.619], [142.919, 143.069], [144.429, 144.589], [147.049, 147.429], [149.169, 149.429]]],
+  "mixed/held": [151.042, 164.788, "For the partial in u, hold v at two. Then three u v is three times two times u: six u, a line in u with slope six. And six is three times v.", [[152.462, 152.792], [154.132, 154.692], [156.292, 156.472], [158.602, 159.132], [159.792, 160.192], [162.272, 162.782]]],
+  "mixed/pu": [165.168, 180.856, "So a held v acts as a number multiplying u, and three u v gives three v. With u squared giving two u, partial f, partial u is two u plus three v: two plus six, eight.", [[168.898, 169.248], [170.588, 170.748], [171.638, 172.298], [174.378, 174.768], [176.558, 176.748], [178.678, 179.218], [180.138, 180.468]]],
+  "mixed/pv": [181.236, 196.707, "For the partial in v, hold u at one. u squared is a constant, giving zero. Three u v is three v, giving three, which is three u. So partial f, partial v is three u: three.", [[182.626, 182.936], [184.296, 184.886], [186.476, 186.726], [187.506, 188.056], [190.046, 190.316], [191.066, 191.296], [192.306, 192.796], [194.896, 195.066], [195.866, 196.266]]],
+  "mixed/both": [197.087, 202.453, "Stack them: at one, two, the gradient is eight, three.", [[197.787, 198.307], [198.947, 199.457], [199.867, 200.367], [201.587, 201.987]]],
+  "mixed/p1": [202.833, 212.014, "Try one. f of u and v is two u squared, plus u v, plus four v. What is nabla f at one, two?", [[203.423, 203.973], [206.893, 207.143], [208.033, 208.223], [209.073, 209.633]]],
+  "mixed/a1u": [212.394, 223.385, "In u, with v held: two u squared gives four u, u v gives v, and four v gives zero. Four plus two is six.", [[213.064, 213.514], [214.434, 214.994], [217.084, 217.574], [219.004, 219.414], [221.044, 221.564]]],
+  "mixed/a1v": [223.765, 236.942, "In v, with u held: two u squared gives zero, u v gives u, and four v gives four. One plus four is five. So nabla f is six, five.", [[224.455, 224.785], [225.665, 226.165], [228.115, 228.625], [230.045, 230.385], [231.915, 232.485], [234.045, 234.575]]],
+  "mixed/p2": [237.322, 248.521, "One more. f of u and v is u squared v, plus two v squared, plus three u. What is partial f, partial u at two, one?", [[237.872, 238.512], [241.542, 241.782], [243.072, 243.292], [244.302, 244.952], [247.222, 247.402]]],
+  "mixed/a2": [248.901, 264.726, "Hold v. u squared v is v times u squared, so it gives v times two u: two u v. Two v squared gives zero, and three u gives three. Two times two times one, plus three: seven.", [[251.011, 251.221], [252.851, 253.271], [255.251, 255.681], [256.601, 257.161], [258.861, 259.211], [260.731, 261.251], [262.951, 263.181], [263.791, 264.231]]],
+  "mixed/turn": [265.106, 265.846, "Your turn.", []]
  }
 }

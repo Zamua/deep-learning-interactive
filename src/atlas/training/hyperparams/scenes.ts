@@ -18,6 +18,18 @@ function logAxis(s: Scene) {
   return { l, r, X: (lg: number) => l + ((lg + 5) / 4) * (r - l) };
 }
 
+/** The range on a plain scale, 0 to 0.1 across `l..r`: the stretch from 0.01 up is nine tenths of it. */
+function ruler(s: Scene, l: number, r: number, y: number): void {
+  const X = (v: number) => l + (v / 0.1) * (r - l);
+  const h = 3.2 * s.u;
+  s.text('plain scale', l, y - h / 2 - 7.5 * s.u, { size: 3.2, font: 'mono', weight: 600, align: 'left', color: s.c('--ink-2') });
+  s.rrect(l, y - h / 2, X(0.01) - l, h, 0.5, { fill: s.tint('--ink-3', 0.45) });
+  s.rrect(X(0.01), y - h / 2, r - X(0.01), h, 0.5, { fill: s.tint('red', 0.55) });
+  s.text('0.1 − 0.01 = 0.09', (X(0.01) + r) / 2, y - h / 2 - 3 * s.u, { size: 3.2, font: 'mono', color: s.c('red'), halo: true });
+  for (const [v, t] of [[0, '0'], [0.01, '0.01'], [0.1, '0.1']] as const) s.text(t, X(v), y + h / 2 + 3 * s.u, { size: 3, font: 'mono', color: s.c('--ink-3'), halo: true });
+  s.text('whole range: about 0.1', s.w / 2, y + h / 2 + 8 * s.u, { size: 3.2, font: 'mono', color: s.c('--ink-2'), halo: true });
+}
+
 const log: SceneDef = {
   draw(s) {
     const A = logAxis(s);
@@ -44,6 +56,7 @@ const log: SceneDef = {
       s.line(A.X(-2), y1 + 5.5 * s.u, A.X(-1), y1 + 5.5 * s.u, s.c('red'), 0.35);
       s.text('9 in 10 here', (A.X(-2) + A.X(-1)) / 2, y1 + 9 * s.u, { size: 3, font: 'mono', color: s.c('red'), halo: true });
     });
+    s.alpha(s.win('share', 'log'), () => ruler(s, A.l, A.r, y2));
     s.alpha(s.ease('log', 0.6), () => s.text('η = 10ᵘ, u uniform', A.l, y2 - 7.5 * s.u, { size: 3.4, font: 'mono', weight: 600, align: 'left', color: s.c('green') }));
     dots(LOGU, y2, 'log', 'green');
     s.alpha(s.ease('even', 0.6), () => {

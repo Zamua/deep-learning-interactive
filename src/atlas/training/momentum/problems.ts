@@ -125,9 +125,10 @@ export const generators: Generator[] = [
             { value: 1 - mu, why: 'That is the share of velocity lost each step. Its reciprocal, $1/(1-\\mu)$, is the speed-up.' },
           ]),
           solution: [
-            'The velocity stops changing when $\\symv = \\mu\\symv - \\symeta\\symg$.',
-            'Solve: $\\symv(1 - \\mu) = -\\symeta\\symg$, so $\\symv = -\\symeta\\symg / (1 - \\mu)$.',
-            `That is $1/(1 - ${num(mu)}) = ${num(factor)}$ times a plain step.`,
+            'The velocity stops changing when a step gives back the same $\\symv$: $\\symv = \\mu\\symv - \\symeta\\symg$.',
+            'Take $\\mu\\symv$ from both sides: $(1 - \\mu)\\symv = -\\symeta\\symg$.',
+            'Divide by $1 - \\mu$: $\\symv = -\\symeta\\symg / (1 - \\mu)$, which is $1/(1 - \\mu)$ times a plain step $-\\symeta\\symg$.',
+            `Here $1 - \\mu = 1 - ${num(mu)} = ${num(clean(1 - mu))}$, and $1 / ${num(clean(1 - mu))} = ${num(factor)}$.`,
           ],
         };
       }
@@ -143,8 +144,10 @@ export const generators: Generator[] = [
           { value: (-eta * g) / mu, why: 'That divides by $\\mu$. The steady state $\\symv = \\mu\\symv - \\symeta\\symg$ gives $\\symv = -\\symeta\\symg / (1 - \\mu)$.' },
         ]),
         solution: [
-          'The velocity stops changing when $\\symv = \\mu\\symv - \\symeta\\symg$, so $\\symv = -\\symeta\\symg / (1 - \\mu)$.',
-          `Here: $-${num(eta)} \\times ${paren(g)} / (1 - ${num(mu)}) = ${num(clean(-eta * g))} / ${num(clean(1 - mu))} = ${num(v)}$.`,
+          'The velocity stops changing when a step gives back the same $\\symv$: $\\symv = \\mu\\symv - \\symeta\\symg$.',
+          'Take $\\mu\\symv$ from both sides: $(1 - \\mu)\\symv = -\\symeta\\symg$, so $\\symv = -\\symeta\\symg / (1 - \\mu)$.',
+          `The plain step: $-\\symeta\\symg = -${num(eta)} \\times ${paren(g)} = ${num(clean(-eta * g))}$.`,
+          `Divide by $1 - \\mu = ${num(clean(1 - mu))}$: $${num(clean(-eta * g))} / ${num(clean(1 - mu))} = ${num(v)}$.`,
           `That is $${num(factor)}$ times a plain step.`,
         ],
       };

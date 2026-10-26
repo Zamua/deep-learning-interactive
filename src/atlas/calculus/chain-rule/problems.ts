@@ -27,13 +27,24 @@ export const generators: Generator[] = [
         { value: outer, why: `That is only the last link's slope. The earlier link${three ? 's scale' : ' scales'} the nudge first.` },
       ];
       if (s1 !== 0 && !three) traps.push({ value: round(s2 / s1, 4), why: 'That divides the slopes. Each link multiplies the nudge it receives, so the slopes multiply.' });
+      const mid = round(s3 * s2, 4);
+      const work = three
+        ? [
+            `Walk back from $z$, multiplying the local slopes: $${D('z', '\\symx')} = ${D('z', 'v')} \\cdot ${D('v', 'u')} \\cdot ${D('u', '\\symx')}$.`,
+            `Start at the end: $${D('z', 'v')} = ${num(s3)}$.`,
+            `Times $${D('v', 'u')}$: $${num(s3)} \\times ${paren(num(s2))} = ${num(mid)}$, which is $${D('z', 'u')}$.`,
+            `Times $${D('u', '\\symx')}$: $${num(mid)} \\times ${paren(num(s1))} = ${num(v)}$, which is $${D('z', '\\symx')}$.`,
+          ]
+        : [
+            `Multiply the local slopes along the chain: $${D('z', '\\symx')} = ${D('z', 'u')} \\cdot ${D('u', '\\symx')}$.`,
+            `$= ${num(s2)} \\times ${paren(num(s1))} = ${num(v)}$.`,
+          ];
       return {
         prompt: `$\\symx$ feeds $${names[0]}$${three ? ', $u$ feeds $v$,' : ','} and $${names[names.length - 2]}$ feeds $z$. At the current point, ${shown.map(([n, s]) => `$${n} = ${num(s)}$`).join(three ? ', ' : ' and ').replace(/, ([^,]*)$/, ' and $1')}. What is $${D('z', '\\symx')}$?`,
         answer: { kind: 'number', value: v },
         traps: cleanTraps(traps, v),
         solution: [
-          `Multiply the local slopes along the chain: $${D('z', '\\symx')} = ${links.slice().reverse().map(([n]) => n).join(' \\cdot ')}$.`,
-          `$= ${links.slice().reverse().map(([, s]) => paren(num(s))).join(' \\times ')} = ${num(v)}$.`,
+          ...work,
           `A nudge of $0.01$ in $\\symx$ moves $z$ by about $${num(round(v * 0.01, 6))}$: ${num(v)} times as much.`,
         ],
       };
@@ -46,20 +57,24 @@ export const generators: Generator[] = [
       const a = d < 0.3 ? int(rng, 2, 4) : int(rng, 2, 5) * (d >= 0.65 && rng.int(3) === 0 ? -1 : 1);
       const b = d < 0.3 ? int(rng, 1, 5) : int(rng, 1, 7) * (d >= 0.65 ? pick(rng, [1, -1]) : 1);
       const ins = inner(a, b);
-      const steps = (outerTex: string, dOuter: string, dIn: string, result: string) => [
-        `The inside is $u = ${outerTex}$, with $${D('u', '\\symx')} = ${dIn}$.`,
-        `The outside's slope is $${D('z', 'u')} = ${dOuter}$.`,
-        `Multiply: $${D('z', '\\symx')} = ${D('z', 'u')} \\cdot ${D('u', '\\symx')} = ${result}$.`,
+      /** Name the inside, take each slope, multiply, then put the inside back in for u. */
+      const steps = (inTex: string, zOfU: string, dIn: string, dOut: string, product: string, back: string) => [
+        `Call it $z$ and name the inside $u = ${inTex}$. Then $z = ${zOfU}$.`,
+        `The inside's slope: $${D('u', '\\symx')} = ${dIn}$.`,
+        `The outside's slope: $${D('z', 'u')} = ${dOut}$.`,
+        `Multiply them: $${D('z', '\\symx')} = ${product}$.`,
+        `Put the inside back in for $u$: $${D('z', '\\symx')} = ${back}$.`,
       ];
       if (form === 'pow') {
         const n = d < 0.3 ? int(rng, 2, 3) : int(rng, 2, 5);
         const k = n * a;
+        const uPow = n - 1 === 1 ? 'u' : `u^{${n - 1}}`;
         const rest = n - 1 === 1 ? `(${ins.tex})` : `(${ins.tex})^{${n - 1}}`;
         const restExpr = n - 1 === 1 ? `(${ins.expr})` : `(${ins.expr})^${n - 1}`;
         return {
           prompt: `What is the derivative of $(${ins.tex})^{${n}}$ with respect to $\\symx$?`,
           answer: { kind: 'expr', value: `${k}${restExpr}`, vars: ['x'] },
-          solution: steps(ins.tex, `${n}u${n - 1 === 1 ? '' : `^{${n - 1}}`}`, String(a), `${n}${rest} \\cdot ${paren(a)} = ${k}${rest}`),
+          solution: steps(ins.tex, `u^{${n}}`, String(a), `${n}${uPow}`, `${n}${uPow} \\cdot ${paren(a)} = ${k}${uPow}`, `${k}${rest}`),
         };
       }
       if (form === 'exp') {
@@ -67,20 +82,17 @@ export const generators: Generator[] = [
         const pw = polyTex([{ c, n: 2 }]);
         const pwE = polyExpr([{ c, n: 2 }]);
         const k = 2 * c;
+        const kx = polyTex([{ c: k, n: 1 }]);
         return {
           prompt: `What is the derivative of $e^{${pw}}$ with respect to $\\symx$?`,
           answer: { kind: 'expr', value: `${k}x e^(${pwE})`, vars: ['x'] },
-          solution: [
-            `The inside is $u = ${pw}$, with $${D('u', '\\symx')} = ${polyTex([{ c: k, n: 1 }])}$.`,
-            `The outside is $e^{u}$, its own derivative: $${D('z', 'u')} = e^{u}$.`,
-            `Multiply: $${D('z', '\\symx')} = e^{${pw}} \\cdot ${polyTex([{ c: k, n: 1 }])} = ${polyTex([{ c: k, n: 1 }])}\\, e^{${pw}}$.`,
-          ],
+          solution: steps(pw, 'e^{u}', kx, 'e^{u}', `e^{u} \\cdot ${k < 0 ? `(${kx})` : kx}`, `${kx}\\, e^{${pw}}`),
         };
       }
       return {
         prompt: `What is the derivative of $\\ln(${ins.tex})$ with respect to $\\symx$?`,
         answer: { kind: 'expr', value: `${a}/(${ins.expr})`, vars: ['x'] },
-        solution: steps(ins.tex, '\\dfrac{1}{u}', String(a), `\\dfrac{1}{${ins.tex}} \\cdot ${paren(a)} = \\dfrac{${a}}{${ins.tex}}`),
+        solution: steps(ins.tex, '\\ln u', String(a), '\\dfrac{1}{u}', `\\dfrac{1}{u} \\cdot ${paren(a)} = \\dfrac{${a}}{u}`, `\\dfrac{${a}}{${ins.tex}}`),
       };
     },
   },

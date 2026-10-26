@@ -1,22 +1,23 @@
 {
- "duration": 98.537,
+ "duration": 113.038,
  "scenes": {
-  "log": [0.0, 52.439],
-  "random": [52.439, 77.769],
-  "judge": [77.769, 98.537]
+  "log": [0.0, 66.94],
+  "random": [66.94, 92.27],
+  "judge": [92.27, 113.038]
  },
  "beats": {
   "log/range": [0.7, 8.595, "A good learning rate could be anywhere from ten to the minus five to ten to the minus one: a range of four factors of ten.", [[4.36, 4.54], [5.95, 6.48]]],
   "log/uniform": [8.975, 19.281, "Draw uniformly across that range, and nine draws in ten land between zero point zero one and zero point one. The small rates are barely tried.", [[11.195, 11.435], [15.225, 15.485], [16.695, 17.275]]],
-  "log/log": [19.661, 28.072, "Instead, draw the exponent: u uniform between minus five and minus one, and set the rate to ten to the u.", [[20.241, 20.511], [21.631, 22.071], [25.621, 25.981]]],
-  "log/even": [28.452, 34.95, "Now every decade, every factor of ten, gets the same share of the draws: a quarter each.", [[29.852, 30.172], [31.522, 31.772], [33.592, 33.952]]],
-  "log/ex": [35.33, 51.339, "A u of minus three gives zero point zero zero one. Minus two point five gives ten to the zero point five, about three point one six, times zero point zero zero one: about zero point zero zero three two.", [[39.39, 40.05], [41.47, 41.63], [43.74, 44.03], [45.59, 45.91], [48.32, 48.74]]],
-  "random/grid": [53.139, 62.761, "Say the learning rate matters a lot, and a second hyperparameter, like the batch size, barely matters. A three by three grid runs nine trainings.", [[55.169, 55.519], [57.129, 57.289], [58.309, 58.489], [59.419, 59.989]]],
-  "random/waste": [63.141, 67.195, "But it tries only three learning rates, each three times over.", [[65.421, 65.741]]],
-  "random/random": [67.575, 76.669, "Nine random trials try nine different learning rates. When one hyperparameter matters most, random search explores it far better.", [[71.015, 71.555], [73.795, 74.145]]],
-  "judge/train": [78.469, 83.316, "Each trial is trained on the training split, and judged on the validation split.", [[80.989, 81.219]]],
-  "judge/pick": [83.696, 90.485, "Keep the one with the lowest validation loss. Not the lowest training loss: that only rewards memorizing.", [[86.226, 86.616], [88.216, 88.536]]],
-  "judge/test": [90.865, 96.316, "And leave the test split alone until the very end, so its one number stays honest.", [[93.875, 94.195]]],
-  "judge/turn": [96.696, 97.437, "Your turn.", []]
+  "log/share": [19.661, 33.782, "Why? Measured plainly, that one stretch is zero point zero nine long, out of about zero point one for the whole range: nine tenths of it. Everything below zero point zero one shares the last tenth.", [[20.131, 20.711], [21.711, 21.971], [24.951, 25.221], [27.941, 28.381], [29.471, 29.951]]],
+  "log/log": [34.162, 42.573, "Instead, draw the exponent: u uniform between minus five and minus one, and set the rate to ten to the u.", [[34.742, 35.012], [36.132, 36.572], [40.122, 40.482]]],
+  "log/even": [42.953, 49.451, "Now every decade, every factor of ten, gets the same share of the draws: a quarter each.", [[44.353, 44.673], [46.023, 46.273], [48.093, 48.453]]],
+  "log/ex": [49.831, 65.84, "A u of minus three gives zero point zero zero one. Minus two point five gives ten to the zero point five, about three point one six, times zero point zero zero one: about zero point zero zero three two.", [[53.891, 54.551], [55.971, 56.131], [58.241, 58.531], [60.091, 60.411], [62.821, 63.241]]],
+  "random/grid": [67.64, 77.262, "Say the learning rate matters a lot, and a second hyperparameter, like the batch size, barely matters. A three by three grid runs nine trainings.", [[69.67, 70.02], [71.63, 71.79], [72.81, 72.99], [73.92, 74.49]]],
+  "random/waste": [77.642, 81.696, "But it tries only three learning rates, each three times over.", [[79.922, 80.242]]],
+  "random/random": [82.076, 91.17, "Nine random trials try nine different learning rates. When one hyperparameter matters most, random search explores it far better.", [[85.516, 86.056], [88.296, 88.646]]],
+  "judge/train": [92.97, 97.817, "Each trial is trained on the training split, and judged on the validation split.", [[95.49, 95.72]]],
+  "judge/pick": [98.197, 104.986, "Keep the one with the lowest validation loss. Not the lowest training loss: that only rewards memorizing.", [[100.727, 101.117], [102.717, 103.037]]],
+  "judge/test": [105.366, 110.817, "And leave the test split alone until the very end, so its one number stays honest.", [[108.376, 108.696]]],
+  "judge/turn": [111.197, 111.938, "Your turn.", []]
  }
 }

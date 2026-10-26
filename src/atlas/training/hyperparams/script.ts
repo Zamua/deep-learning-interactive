@@ -13,6 +13,7 @@ export const script: LectureScript = {
       codeTitle: 'search.py',
       code: `
         lr = np.random.uniform(1e-5, 1e-1)   # bad   #@uniform
+        # 0.1 - 0.01 = 0.09 of a range ~0.1 long     #@share
         u = np.random.uniform(-5, -1)                #@log
         lr = 10 ** u                                 #@log
         # u = -3: 0.001,  u = -2.5: about 0.0032     #@ex
@@ -20,6 +21,7 @@ export const script: LectureScript = {
       beats: [
         { id: 'range', say: 'A good learning rate could be anywhere from {10⁻⁵|ten to the minus five} to {10⁻¹|ten to the minus one}: a range of four factors of ten.' },
         { id: 'uniform', say: 'Draw uniformly across that range, and nine draws in ten land between {0.01|zero point zero one} and {0.1|zero point one}. The small rates are barely tried.', code: 'uniform' },
+        { id: 'share', say: 'Why? Measured plainly, that one stretch is {0.09|zero point zero nine} long, out of about {0.1|zero point one} for the whole range: nine tenths of it. Everything below {0.01|zero point zero one} shares the last tenth.', code: 'share' },
         { id: 'log', say: 'Instead, draw the exponent: u uniform between minus five and minus one, and set the rate to ten to the u.', code: 'log' },
         { id: 'even', say: 'Now every decade, every factor of ten, gets the same share of the draws: a quarter each.', code: 'log' },
         { id: 'ex', say: 'A u of minus three gives {0.001|zero point zero zero one}. Minus {2.5|two point five} gives ten to the {0.5|zero point five}, about {3.16|three point one six}, times {0.001|zero point zero zero one}: about {0.0032|zero point zero zero three two}.', code: 'ex' },

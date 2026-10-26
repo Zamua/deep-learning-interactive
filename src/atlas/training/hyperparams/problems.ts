@@ -104,8 +104,10 @@ export const generators: Generator[] = [
         solution: logu
           ? [`$u$ is uniform on an interval of length ${decades}, and each decade is a stretch of length 1.`, `So each decade gets about $1/${decades}$ of the samples: about ${num(round(N / decades, 1))} of ${N}.`]
           : [
-              `The top decade, $${p10(hi - 1)}$ to $${p10(hi)}$, is 90% of the range's length, so it gets about 90% of uniform samples.`,
-              `Every lower decade shares the last 10%: the small learning rates are barely tried. Drawing the exponent fixes that.`,
+              `Measured plainly, the top decade is $${num(dec(hi))} - ${num(dec(hi - 1))} = ${num(clean(dec(hi) - dec(hi - 1)))}$ long.`,
+              `The whole range is $${num(dec(hi))} - ${num(dec(lo))} = ${num(clean(dec(hi) - dec(lo)))}$ long: about $${num(dec(hi))}$.`,
+              `So the top decade is about 90% of the range, and gets about 90% of uniform samples.`,
+              `${decades === 2 ? 'The lower decade gets' : 'Every lower decade shares'} the last 10%: the small learning rates are barely tried. Drawing the exponent fixes that.`,
             ],
       };
     },

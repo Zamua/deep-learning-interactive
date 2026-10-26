@@ -1,9 +1,9 @@
 {
- "duration": 126.367,
+ "duration": 154.592,
  "scenes": {
   "ravine": [0.0, 38.596],
   "rule": [38.596, 92.519],
-  "build": [92.519, 126.367]
+  "build": [92.519, 154.592]
  },
  "beats": {
   "ravine/valley": [0.7, 12.438, "Here is a loss, L, the function training makes small. It is shaped like a long, narrow valley, seen from above: steep across, and nearly flat along its length.", [[1.87, 2.25], [2.59, 3.09], [4.9, 5.5], [7.9, 8.07], [9.04, 9.5], [10.39, 10.58]]],
@@ -13,9 +13,11 @@
   "rule/mu": [57.069, 64.342, "Mu, often zero point nine, is how much velocity survives a step: think of one minus friction.", [[57.569, 57.879], [59.299, 59.669], [61.939, 62.499]]],
   "rule/first": [64.722, 76.837, "From rest, with eta at zero point one and a gradient of two, the first velocity is minus zero point two: just a plain step. w goes from one to zero point eight.", [[65.532, 65.732], [68.902, 69.272], [71.992, 72.452], [73.522, 74.112], [75.482, 75.652]]],
   "rule/second": [77.217, 91.419, "If the gradient is two again, the velocity becomes zero point nine times minus zero point two, minus another zero point two: minus zero point three eight. So w moves to zero point four two.", [[78.867, 79.147], [83.527, 83.767], [85.667, 86.127], [87.967, 88.467]]],
-  "build/steady": [93.219, 99.438, "When the gradient keeps pointing the same way, the pushes pile up in v, step after step.", [[95.609, 95.909], [97.699, 98.039], [98.459, 98.619]]],
-  "build/limit": [99.818, 114.828, "The velocity levels off where the decay balances the push: v approaches minus eta g over one minus mu, the arrow read \u201capproaches\u201d. With mu at zero point nine, that is ten times a plain step.", [[103.498, 104.028], [107.788, 108.288], [109.078, 109.298], [110.048, 110.598], [112.468, 112.768]]],
-  "build/flip": [115.208, 124.147, "When the gradient flips sign every step, each push undoes the last one inside v, and the steps shrink. The zigzag is damped.", [[117.598, 117.988], [120.818, 121.048], [122.148, 122.678]]],
-  "build/turn": [124.527, 125.267, "Your turn.", []]
+  "build/steady": [93.219, 111.375, "When the gradient keeps pointing the same way, the pushes pile up in v. Keep the gradient at two: v goes minus zero point two, minus zero point three eight, then about minus zero point five four and minus zero point six nine, each step adding a little less.", [[95.539, 95.819], [97.549, 98.219], [99.649, 100.189], [102.309, 102.579], [104.159, 104.509], [106.889, 107.139], [109.099, 109.529]]],
+  "build/settle": [111.755, 119.238, "It levels off where a step no longer changes it: where v equals zero point nine v, minus zero point two.", [[114.685, 115.155]]],
+  "build/solve": [119.618, 130.264, "Take zero point nine v from both sides: zero point one v is minus zero point two. So v is minus two: ten plain steps.", [[122.368, 122.888], [126.048, 126.498], [128.458, 128.948]]],
+  "build/limit": [130.644, 143.053, "The same steps, with any mu, give v approaches minus eta g over one minus mu, the arrow read \u201capproaches\u201d: one over one minus mu times a plain step.", [[131.634, 131.844], [132.684, 133.004], [133.274, 133.444], [134.454, 134.654], [137.284, 137.804], [138.614, 138.814], [139.564, 140.024], [141.754, 141.904]]],
+  "build/flip": [143.433, 152.372, "When the gradient flips sign every step, each push undoes the last one inside v, and the steps shrink. The zigzag is damped.", [[145.823, 146.213], [149.043, 149.273], [150.373, 150.903]]],
+  "build/turn": [152.752, 153.492, "Your turn.", []]
  }
 }

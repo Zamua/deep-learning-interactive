@@ -1,6 +1,10 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
+import { smooth } from '../../../lecture/scene';
 import { cells, columns } from '../../draw';
 import { axes, clipped, frame, key, series, xTicks, yTicks, type Frame } from '../draw';
+
+/** Eased 0 -> 1 from a fraction `f` of the way through beat `id`, so it tracks the voice at any pace. */
+const after = (s: Scene, id: string, f: number, dur = 0.5) => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
 
 // The valley L = 0.5 (A w0^2 + w1^2), long along w0.
 const A = 0.05;
@@ -117,14 +121,25 @@ const FLIP_MOM: [number, number][] = [[0, 0]];
   }
 }
 
+const CLIMB = ['−0.2', '−0.38', '−0.54', '−0.69', '…'];
+
 const build: SceneDef = {
   marks: {
-    lim: { tex: String.raw`\symv \to \dfrac{-\symeta\,\symg}{1 - \symmu}`, x: 0.7, y: 0.45, size: 5.4 },
+    eq: { tex: String.raw`\symv = 0.9\,\symv - 0.2`, x: 0.5, y: 0.1, size: 5 },
+    sol: { tex: String.raw`0.1\,\symv = -0.2,\qquad \symv = -2`, x: 0.5, y: 0.21, size: 5 },
+    lim: { tex: String.raw`\symv \to \dfrac{-\symeta\,\symg}{1 - \symmu}`, x: 0.5, y: 0.15, size: 5.4 },
   },
   draw(s) {
     const flip = s.ease('flip', 0.8);
+    s.alpha(s.ease('steady', 0.6) * (1 - s.ease('settle', 0.5)), () => {
+      const xs = columns(s, 5, s.tall ? 19 : 20);
+      CLIMB.forEach((t, i) => s.alpha(after(s, 'steady', 0.38 + 0.11 * i), () => cells(s, [xs[i]!], s.h * 0.14, [t], 'orange', { w: 15, h: 8, size: 3.4 })));
+    });
+    s.show('eq', s.win('settle', 'limit'));
+    s.show('sol', after(s, 'solve', 0.3) * (1 - s.ease('limit', 0.5)));
+    s.show('lim', s.ease('limit', 0.6) * (1 - flip));
     s.alpha(1 - flip, () => {
-      const F = frame(14 * s.u, s.h * 0.1, s.w - 6 * s.u, s.h - 9 * s.u, [0, 25], [-2.3, 0.3]);
+      const F = frame(14 * s.u, s.h * 0.32, s.w - 6 * s.u, s.h - 9 * s.u, [0, 25], [-2.3, 0.3]);
       axes(s, F, 'step', '', { x: '--ink-3', y: 'orange' });
       s.line(F.l, F.Y(0), F.r, F.Y(0), s.c('--axis'), 0.3);
       yTicks(s, F, [0, -1, -2], (y) => String(y).replace('-', '−'));
@@ -134,12 +149,11 @@ const build: SceneDef = {
       s.text('plain step −ηg = −0.2', F.r, F.Y(-0.2) - 3 * s.u, { size: 3, font: 'mono', align: 'right', color: s.c('slate'), halo: true });
       const up = Math.max(0, Math.min(1, (s.since('steady') - 0.3) / 5));
       series(s, F, STEADY, 'orange', { upto: up, dots: 0.6 });
-      s.alpha(s.ease('limit', 0.6), () => {
+      s.alpha(after(s, 'solve', 0.6), () => {
         s.line(F.l, F.Y(-2), F.r, F.Y(-2), s.tint('orange', 0.8), 0.3, [1.2, 1]);
         s.text('−2: ten plain steps', F.r, F.Y(-2) + 3.6 * s.u, { size: 3, font: 'mono', align: 'right', color: s.c('orange'), halo: true });
       });
     });
-    s.show('lim', s.ease('limit', 0.6) * (1 - flip));
     s.alpha(flip, () => {
       const F = frame(14 * s.u, s.h * 0.16, s.w - 6 * s.u, s.h - 9 * s.u, [0, 14], [-0.3, 0.3]);
       axes(s, F, 'step', '', { x: '--ink-3', y: 'orange' });

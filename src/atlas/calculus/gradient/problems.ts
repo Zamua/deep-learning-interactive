@@ -6,6 +6,8 @@ const P = (v: string) => `\\frac{\\partial \\symf}{\\partial ${v}}`;
 
 /** `3u^2`, `-uv`, `5v`: a coefficient (1 hidden) times a monomial. */
 const mono = (c: number, body: string) => ({ neg: c < 0, body: Math.abs(c) === 1 && body ? body : `${Math.abs(c)}${body}` });
+/** One signed term as TeX: `-2uv`. */
+const term = (c: number, body: string) => joinSigned([mono(c, body)]);
 
 export const generators: Generator[] = [
   {
@@ -24,12 +26,26 @@ export const generators: Generator[] = [
       const duTex = joinSigned([mono(2 * a, 'u'), mono(b, 'v')]);
       const dvTex = joinSigned([mono(b, 'u'), { neg: c < 0, body: String(Math.abs(c)) }, ...(e ? [mono(2 * e, 'v')] : [])]);
       const sub = (parts: [number, number | null][]) => parts.map(([k, x], i) => `${i ? (k < 0 ? ' - ' : ' + ') : k < 0 ? '-' : ''}${Math.abs(k)}${x === null ? '' : ` \\cdot ${paren(x)}`}`).join('');
+      const noU = e ? `$${term(c, 'v')}$ and $${term(e, 'v^2')}$ have no $u$, so they give 0.` : `$${term(c, 'v')}$ has no $u$, so it gives 0.`;
+      const traps = [
+        { value: [2 * a * u, fv], why: `That leaves out what $${term(b, 'uv')}$ gives in $u$. With $v$ held, it is $${term(b, 'v')}$ times $u$, so it gives $${term(b, 'v')}$.` },
+        { value: [fu, c + 2 * e * v], why: `That leaves out what $${term(b, 'uv')}$ gives in $v$. With $u$ held, it is $${term(b, 'u')}$ times $v$, so it gives $${term(b, 'u')}$.` },
+        { value: [fv, fu], why: `That swaps the entries. $\\nabla \\symf$ lists $${P('u')}$ first, then $${P('v')}$.` },
+      ];
       return {
-        prompt: `For $\\symf(u, v) = ${fTex}$, what is the gradient $[${P('u')},\\ ${P('v')}]$ at $(u, v) = (${u}, ${v})$?`,
+        prompt: `For $\\symf(u, v) = ${fTex}$, what is $\\nabla \\symf$ at $(u, v) = (${u}, ${v})$?`,
         answer: { kind: 'vector', value: [fu, fv] },
+        traps: traps.filter((t, i) => t.value.join() !== [fu, fv].join() && traps.findIndex((o) => o.value.join() === t.value.join()) === i),
         solution: [
-          `Partial in $u$, holding $v$ fixed: $${P('u')} = ${duTex} = ${sub([[2 * a, u], [b, v]])} = ${fu}$.`,
-          `Partial in $v$, holding $u$ fixed: $${P('v')} = ${dvTex} = ${sub([[b, u], [c, null], ...(e ? [[2 * e, v] as [number, number]] : [])])} = ${fv}$.`,
+          `For $${P('u')}$, hold $v$ fixed. $${term(a, 'u^2')}$ gives $${term(2 * a, 'u')}$.`,
+          `$${term(b, 'uv')}$ is $${term(b, 'v')}$ times $u$, with $v$ held, so it gives $${term(b, 'v')}$.`,
+          noU,
+          `So $${P('u')} = ${duTex} = ${sub([[2 * a, u], [b, v]])} = ${fu}$.`,
+          `For $${P('v')}$, hold $u$ fixed. $${term(a, 'u^2')}$ has no $v$, so it gives 0.`,
+          `$${term(b, 'uv')}$ is $${term(b, 'u')}$ times $v$, with $u$ held, so it gives $${term(b, 'u')}$.`,
+          `$${term(c, 'v')}$ gives $${c}$.`,
+          ...(e ? [`$${term(e, 'v^2')}$ gives $${term(2 * e, 'v')}$.`] : []),
+          `So $${P('v')} = ${dvTex} = ${sub([[b, u], [c, null], ...(e ? [[2 * e, v] as [number, number]] : [])])} = ${fv}$.`,
           `Stack them: $\\nabla \\symf = ${vec([fu, fv])}$.`,
         ],
       };
@@ -63,11 +79,17 @@ export const generators: Generator[] = [
         traps: cleanTraps(traps, want),
         solution: inU
           ? [
-              `Hold $v$ fixed and differentiate in $u$: $${P('u')} = ${joinSigned([mono(2 * a, 'uv'), mono(k, '')])}$. The $${joinSigned([mono(c, 'v^2')])}$ term has no $u$, so it drops out.`,
+              `Hold $v$ fixed. $${term(a, 'u^2 v')}$ is $${term(a, 'v')}$ times $u^2$, so it gives $${term(a, 'v')} \\cdot 2u = ${term(2 * a, 'uv')}$.`,
+              `$${term(c, 'v^2')}$ has no $u$, so it gives 0.`,
+              `$${term(k, 'u')}$ gives $${k}$.`,
+              `So $${P('u')} = ${joinSigned([mono(2 * a, 'uv'), mono(k, '')])}$.`,
               `At $(${u}, ${v})$: $${2 * a} \\cdot ${paren(u)} \\cdot ${paren(v)} ${k < 0 ? '-' : '+'} ${Math.abs(k)} = ${du}$.`,
             ]
           : [
-              `Hold $u$ fixed and differentiate in $v$: $${P('v')} = ${joinSigned([mono(a, 'u^2'), mono(2 * c, 'v')])}$. The $${joinSigned([mono(k, 'u')])}$ term has no $v$, so it drops out.`,
+              `Hold $u$ fixed. $${term(a, 'u^2 v')}$ is $${term(a, 'u^2')}$ times $v$, so it gives $${term(a, 'u^2')}$.`,
+              `$${term(c, 'v^2')}$ gives $${term(2 * c, 'v')}$.`,
+              `$${term(k, 'u')}$ has no $v$, so it gives 0.`,
+              `So $${P('v')} = ${joinSigned([mono(a, 'u^2'), mono(2 * c, 'v')])}$.`,
               `At $(${u}, ${v})$: $${a} \\cdot ${paren(u)}^{2} + ${2 * c} \\cdot ${paren(v)} = ${dv}$.`,
             ],
       };

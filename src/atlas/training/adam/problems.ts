@@ -45,7 +45,8 @@ export const generators: Generator[] = [
           : [
               `The update: $${V_RULE}$.`,
               `$\\symg^2 = ${num(clean(g * g))}$.`,
-              `$v = ${num(b2)} \\times ${num(v0)} + ${num(clean(1 - b2))} \\times ${num(clean(g * g))} = ${num(clean(b2 * v0))} + ${num(clean((1 - b2) * g * g))} = ${num(v)}$.`,
+              `$v = ${num(b2)} \\times ${num(v0)} + ${num(clean(1 - b2))} \\times ${num(clean(g * g))}$.`,
+              `$= ${num(clean(b2 * v0))} + ${num(clean((1 - b2) * g * g))} = ${num(v)}$.`,
               fresh ? 'Starting from 0, $v$ is far below $\\symg^2$: biased toward 0, which the bias correction fixes.' : '$v$ tracks how large this parameter\'s gradients usually are, whatever their sign.',
             ],
       };
@@ -73,7 +74,7 @@ export const generators: Generator[] = [
           ]),
           solution: [
             askM ? 'The bias correction: $\\hat m = m / (1 - \\beta_1^t)$.' : 'The bias correction: $\\hat v = v / (1 - \\beta_2^t)$.',
-            `At $t = 1$: $1 - ${askM ? '\\beta_1' : '\\beta_2'} = ${num(c)}$.`,
+            `At $t = 1$: $1 - ${askM ? '\\beta_1' : '\\beta_2'}^1 = 1 - ${askM ? '0.9' : '0.999'} = ${num(c)}$.`,
             `${askM ? '$\\hat m' : '$\\hat v'} = ${num(raw)} / ${num(c)} = ${num(ans)}$.`,
             askM ? `That is exactly the gradient, $${num(g)}$: at the first step the corrected average is the one gradient seen.` : `That is exactly $\\symg^2$: at the first step the corrected average is the one squared gradient seen.`,
           ],
@@ -93,9 +94,10 @@ export const generators: Generator[] = [
           { value: round((g1 + g2) / 2, 2), why: 'That is the plain mean of the two gradients. The running average weighs the newer one more: $0.1$ against $0.09$.' },
         ].filter((t) => Math.abs(t.value - ans) >= 0.01)),
         solution: [
-          `Step 1: $m = 0.1 \\times ${paren(g1)} = ${num(m1)}$.`,
-          `Step 2: $m = 0.9 \\times ${paren(m1)} + 0.1 \\times ${paren(g2)} = ${num(m2)}$.`,
-          `Correct it: $\\hat m = m / (1 - \\beta_1^2) = ${num(m2)} / 0.19 \\approx ${num(ans, 2)}$.`,
+          `Step 1, from $m = 0$: $m = 0.9 \\times 0 + 0.1 \\times ${paren(g1)} = ${num(m1)}$.`,
+          `Step 2: $m = 0.9 \\times ${paren(m1)} + 0.1 \\times ${paren(g2)} = ${num(clean(0.9 * m1))} ${g2 < 0 ? '-' : '+'} ${num(clean(Math.abs(0.1 * g2)))} = ${num(m2)}$.`,
+          'The correction at $t = 2$: $\\beta_1^2 = 0.9^2 = 0.81$, so $1 - \\beta_1^2 = 1 - 0.81 = 0.19$.',
+          `$\\hat m = m / 0.19 = ${num(m2)} / 0.19 \\approx ${num(ans, 2)}$.`,
         ],
       };
     },

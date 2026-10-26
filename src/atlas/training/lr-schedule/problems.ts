@@ -83,6 +83,10 @@ export const generators: Generator[] = [
       const span = clean(hi - lo);
       const v = round(lo + 0.5 * span * (1 + cos), 4);
       const r4 = (x: number) => round(x, 4);
+      const exact = cos === 0 || Math.abs(cos) === 0.5;
+      const eq = exact ? '=' : '\\approx';
+      const prod = r4(0.5 * span * (1 + cos));
+      const prodEq = clean(0.5 * span * (1 + cos)) === prod ? '=' : '\\approx';
       return {
         prompt: `Cosine decay runs from $\\symeta_{\\max} = ${num(hi)}$ to $\\symeta_{\\min} = ${num(lo)}$ over $T = ${big(T)}$ steps. What is the learning rate at step $t = ${big(t)}$? Use $\\cos\\big(\\pi \\cdot ${label}\\big) ${cos === 0 || cos === 0.5 || cos === -0.5 ? '=' : '\\approx'} ${num(cos)}$, and round to four decimals.`,
         answer: { kind: 'number', value: v, places: 4 },
@@ -93,10 +97,14 @@ export const generators: Generator[] = [
           ...(lo > 0 ? [{ value: r4(0.5 * span * (1 + cos)), why: 'That leaves out $\\symeta_{\\min}$: the cosine part sits on top of it.' }] : []),
         ].filter((x) => Math.abs(x.value - v) >= 0.0001)),
         solution: [
-          `$${COSINE}$.`,
-          `$t / T = ${big(t)} / ${big(T)} = ${label}$, and $\\cos(\\pi \\cdot ${label}) ${cos === 0 || Math.abs(cos) === 0.5 ? '=' : '\\approx'} ${num(cos)}$.`,
-          `$1 + \\cos = ${num(clean(1 + cos))}$, and half the span is $\\tfrac{1}{2}(${num(hi)} - ${num(lo)}) = ${num(clean(span / 2))}$.`,
-          `$\\symeta_t = ${num(lo)} + ${num(clean(span / 2))} \\times ${num(clean(1 + cos))} \\approx ${num(v, 4)}$.`,
+          `The schedule: $${COSINE}$.`,
+          `$t / T = ${big(t)} / ${big(T)} = ${label}$, so $\\cos\\big(\\pi \\cdot ${label}\\big) ${eq} ${num(cos)}$.`,
+          `Add 1: $1 + ${cos < 0 ? `(${num(cos)})` : num(cos)} = ${num(clean(1 + cos))}$.`,
+          `Half the gap: $\\tfrac{1}{2}(${num(hi)} - ${num(lo)}) = ${num(clean(span / 2))}$.`,
+          lo > 0
+            ? `Times $1 + \\cos$: $${num(clean(span / 2))} \\times ${num(clean(1 + cos))} ${prodEq} ${num(prod, 4)}$.`
+            : `Times $1 + \\cos$: $\\symeta_t = ${num(clean(span / 2))} \\times ${num(clean(1 + cos))} ${prodEq} ${num(v, 4)}$.`,
+          ...(lo > 0 ? [`Add the bottom: $\\symeta_t ${prodEq} ${num(lo)} + ${num(prod, 4)} = ${num(v, 4)}$.`] : []),
         ],
       };
     },
@@ -108,8 +116,8 @@ export const generators: Generator[] = [
       if (rng.next() < 0.25) {
         const k = pick(rng, [500, 1000, 2000, 4000]);
         const opts = [
-          'Early gradients are large and erratic, and full-size steps on them can overshoot',
-          'Small steps make the loss fall fastest at the start, while it is still high',
+          'Early gradients are large, and the full rate times them makes steps that can overshoot',
+          'Small steps make the fastest progress at the start, while far from the minimum',
           'The first steps search for the best learning rate, and the ramp is that search',
           'Steps with a small learning rate cost less to compute, so the early steps are cheaper',
         ];
@@ -123,9 +131,10 @@ export const generators: Generator[] = [
           prompt: `A run warms its learning rate up linearly from near 0 to its peak, $${num(peak)}$, over the first ${commas(k)} steps, and only then lets it decay. Why warm up at all?`,
           answer: { kind: 'choice', options: opts, correct: 0, why: whys(4, 0, (i) => reasons[i]!) },
           solution: [
-            'At the start, far from any minimum, the gradients are at their largest and least steady.',
-            'A step is the learning rate times the gradient, so a full-size rate on them can overshoot, and the loss can blow up.',
-            'Warmup keeps the first steps small and lets the rate grow once the steps have settled.',
+            'At the start, far from any minimum, the slopes are steep: the gradients are at their largest.',
+            'A step is the learning rate times the gradient, so the full rate times a large gradient makes a huge step.',
+            'A step that large can overshoot the minimum and blow up, as too large a learning rate does.',
+            'Warmup keeps the first steps small, and lets the rate grow as the gradients shrink.',
           ],
         };
       }

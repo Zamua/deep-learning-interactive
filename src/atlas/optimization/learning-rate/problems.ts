@@ -99,6 +99,8 @@ export const generators: Generator[] = [
       const a = d < 0.35 ? pick(rng, [0.5, 1, 2, 4, 5]) : pick(rng, [0.25, 0.5, 1.25, 2, 2.5, 4, 5, 8, 10, 20]);
       const m = d >= 0.5 && rng.next() < 0.5 ? nonzero(rng, -3, 3) : 0;
       const v = clean(1 / a);
+      const two = clean(2 * a);
+      const k = two === 1 ? '' : num(two);
       return {
         prompt: `For $\\symf(\\symx) = ${bowl(a, m)}$, what is the largest $\\symeta$ for which gradient descent does not diverge?`,
         answer: { kind: 'number', value: v },
@@ -108,10 +110,11 @@ export const generators: Generator[] = [
           { value: a, why: 'That is $a$ itself. A steeper bowl needs a smaller step: the limit is $1/a$.' },
         ]),
         solution: [
-          ...(m === 0 ? [] : [`The shift only moves the minimum to $\\symx = ${num(m)}$. The gradient is $2a(\\symx ${m > 0 ? '-' : '+'} ${num(Math.abs(m))})$, so the distance to the minimum shrinks exactly as $\\symx$ does for $a\\symx^2$.`]),
-          'With $a$ the number in front of the square, each step multiplies the distance to the minimum by $1 - 2a\\symeta$.',
-          'It does not grow while that factor is at least $-1$, which means $\\symeta$ is at most $1/a$.',
-          `Here $a = ${num(a)}$, so the largest $\\symeta$ is $1/${num(a)} = ${num(v)}$. At exactly that rate $\\symx$ bounces between two points forever; any larger and it blows up.`,
+          ...(m === 0 ? [] : [`Sliding the bowl only moves the minimum, to $\\symx = ${num(m)}$: the distance $\\symx ${m > 0 ? '-' : '+'} ${num(Math.abs(m))}$ shrinks exactly as $\\symx$ does on $${bowl(a)}$.`]),
+          `Here $a = ${num(a)}$, the number in front of the square, so each step multiplies the distance to the minimum by $1 - 2a\\symeta = 1 - ${k}\\symeta$.`,
+          `The distance stops shrinking where that factor reaches $-1$: $1 - ${k}\\symeta = -1$.`,
+          two === 1 ? 'So $\\symeta = 2$.' : `So $${k}\\symeta = 2$, and $\\symeta = 2 / ${num(two)} = ${num(v)}$.`,
+          'At exactly that rate $\\symx$ bounces between two points forever; any larger and it blows up.',
         ],
       };
     },

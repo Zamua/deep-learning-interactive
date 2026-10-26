@@ -46,12 +46,17 @@ export const script: LectureScript = {
       codeTitle: 'velocity.py',
       code: `
         # same gradient every step: pushes add up    #@steady
-        v_limit = -lr * g / (1 - mu)   # -2.0, 10x   #@limit
+        # v: -0.2, -0.38, -0.54, -0.69, ...          #@steady
+        # it settles where v == 0.9 * v - 0.2        #@settle
+        # 0.1 * v == -0.2, so v == -2.0              #@solve
+        v_limit = -lr * g / (1 - mu)   # 10x a step  #@limit
         # gradient flips every step: pushes cancel   #@flip
       `,
       beats: [
-        { id: 'steady', say: 'When the gradient keeps pointing the same way, the pushes pile up in v, step after step.', code: 'steady' },
-        { id: 'limit', say: 'The velocity levels off where the decay balances the push: {v → −ηg / (1 − μ)|v approaches minus eta g over one minus mu}, the arrow read “approaches”. With {μ|mu} at {0.9|zero point nine}, that is ten times a plain step.', code: 'limit' },
+        { id: 'steady', say: 'When the gradient keeps pointing the same way, the pushes pile up in v. Keep the gradient at two: v goes minus {0.2|zero point two}, minus {0.38|zero point three eight}, then about minus {0.54|zero point five four} and minus {0.69|zero point six nine}, each step adding a little less.', code: 'steady' },
+        { id: 'settle', say: 'It levels off where a step no longer changes it: where v equals {0.9|zero point nine} v, minus {0.2|zero point two}.', code: 'settle' },
+        { id: 'solve', say: 'Take {0.9|zero point nine} v from both sides: {0.1|zero point one} v is minus {0.2|zero point two}. So v is minus two: ten plain steps.', code: 'solve' },
+        { id: 'limit', say: 'The same steps, with any {μ|mu}, give {v → −ηg / (1 − μ)|v approaches minus eta g over one minus mu}, the arrow read “approaches”: one over one minus {μ|mu} times a plain step.', code: 'limit' },
         { id: 'flip', say: 'When the gradient flips sign every step, each push undoes the last one inside v, and the steps shrink. The zigzag is damped.', code: 'flip' },
         { id: 'turn', say: 'Your turn.' },
       ],
