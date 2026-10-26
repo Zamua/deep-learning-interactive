@@ -959,6 +959,51 @@ body.at-on .side {
 .at-intro .at-small {
   margin: 0;
 }
+.at-reviews {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0 18px;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-ui);
+}
+.at-reviews li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--card);
+}
+.at-reviews li > .ico {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+}
+.at-reviews li.ok > .ico {
+  color: var(--ok);
+}
+.at-reviews li.wait > .ico {
+  color: var(--ink-3);
+}
+.at-reviews li.bad > .ico {
+  color: var(--bad);
+}
+.at-reviews b {
+  font-weight: 600;
+  color: var(--ink);
+}
+.at-reviews small {
+  display: block;
+  margin-top: 1px;
+  font-size: 0.86rem;
+  color: var(--ink-3);
+}
+.at-next {
+  margin-top: 6px;
+}
 .at-choice.right {
   border-color: var(--ok);
   background: linear-gradient(color-mix(in srgb, var(--ok) 9%, transparent), color-mix(in srgb, var(--ok) 9%, transparent)), var(--card);

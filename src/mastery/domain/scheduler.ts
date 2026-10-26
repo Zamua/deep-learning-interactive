@@ -22,11 +22,14 @@ export interface SessionState {
   now: number;
   /** The concept of the previous problem. */
   last?: string;
-  rand: () => number;
+  /** The concept the session opened on: practiced until mastered before anything else comes up. */
+  focus?: string;
+  /** Concepts reviewed this session: one that needed help stays due, for the next session. */
+  reviewed?: ReadonlySet<string>;
+  /** Only what to learn next: no reviews and no slipped concepts. */
+  learnOnly?: boolean;
 }
 
-/** Share of picks that go to due reviews, between problems on the concept in progress. */
-export const REVIEW_SHARE = 0.3;
 /** Misses among a concept's last few answers that send the learner back to a prerequisite. */
 const STUCK = { misses: 3, of: 4 };
 const DIFFICULTY = { slipping: 0.4, review: 0.7, refresh: 0.5 };
@@ -47,40 +50,43 @@ export function statuses(graph: ConceptGraph, records: Records, now: number): Ma
 }
 
 /**
- * The next problem's concept, or null when nothing is due and nothing is left to learn.
- * One concept is learned at a time, until mastered; reviews of mastered concepts are mixed in.
+ * The next problem's concept, or null when nothing is due and nothing is left to learn. A fixed order, so a session
+ * reads as blocks: concepts that slipped on a review, then every due review (foundations first), then the concept in
+ * progress until mastered, then a new one. A session opened on a concept stays on it until it is mastered.
  */
 export function pickNext(s: SessionState): Pick | null {
   const { graph, records, now } = s;
   const st = statuses(graph, records, now);
   const ids = (want: Status) => graph.order.filter((c) => st.get(c.id) === want).map((c) => c.id);
   const recent = (a: string, b: string) => (records[b]?.last ?? 0) - (records[a]?.last ?? 0);
-  const overdue = (id: string) => {
-    const r = records[id]!.review!;
-    return (now - r.due) / (r.interval * DAY);
-  };
-  const due = ids('due').sort((a, b) => overdue(b) - overdue(a)).filter((id) => id !== s.last);
-  const review = (): Pick | null => (due.length ? { concept: due[0]!, reason: 'review', difficulty: DIFFICULTY.review } : null);
 
-  // The concept in progress: a slipping or learning one, the most recently practiced first.
-  const slipping = ids('slipping').sort(recent);
-  if (slipping.length) return { concept: slipping[0]!, reason: 'slipping', difficulty: DIFFICULTY.slipping };
-  const focus = ids('learning').sort(recent)[0];
-  if (focus) {
-    const rec = records[focus]!;
+  /** A problem on a concept being learned, or on a prerequisite when the last few went wrong. */
+  const learn = (id: string): Pick => {
+    const rec = records[id] ?? emptyRecord();
     const lastFew = rec.recent.slice(-STUCK.of);
-    if (s.last === focus && lastFew.length === STUCK.of && lastFew.filter((a) => !a.ok).length >= STUCK.misses) {
-      const pre = graph.get(focus)!.prereqs.filter((p) => p !== s.last).sort((a, b) => streak(records[a]!) - streak(records[b]!))[0];
-      if (pre) return { concept: pre, reason: 'refresh', difficulty: DIFFICULTY.refresh, for: focus };
+    if (s.last === id && lastFew.length === STUCK.of && lastFew.filter((a) => !a.ok).length >= STUCK.misses) {
+      const pre = graph.get(id)!.prereqs.filter((p) => p !== s.last).sort((a, b) => streak(records[a]!) - streak(records[b]!))[0];
+      if (pre) return { concept: pre, reason: 'refresh', difficulty: DIFFICULTY.refresh, for: id };
     }
-    if (due.length && s.rand() < REVIEW_SHARE) return review();
-    return { concept: focus, reason: 'learning', difficulty: Math.min(1, streak(rec) / graph.get(focus)!.mastery.streak) };
+    return rec.attempts
+      ? { concept: id, reason: 'learning', difficulty: Math.min(1, streak(rec) / graph.get(id)!.mastery.streak) }
+      : { concept: id, reason: 'new', difficulty: 0 };
+  };
+
+  const fs = s.focus ? st.get(s.focus) : undefined;
+  if (fs === 'learning' || fs === 'new') return learn(s.focus!);
+  if (!s.learnOnly) {
+    const slipping = ids('slipping').sort(recent);
+    if (slipping.length) return { concept: slipping[0]!, reason: 'slipping', difficulty: DIFFICULTY.slipping };
+    const due = ids('due').filter((id) => !s.reviewed?.has(id));
+    if (due.length) return { concept: due[0]!, reason: 'review', difficulty: DIFFICULTY.review };
   }
+  const focus = ids('learning').sort(recent)[0];
+  if (focus) return learn(focus);
 
   // Nothing in progress: start a new concept, preferring what the latest mastery unlocked, then its domain.
   const fresh = ids('new');
-  if (!fresh.length || (due.length && s.rand() < REVIEW_SHARE)) return review() ?? (fresh.length ? start(fresh) : null);
-  return start(fresh);
+  return fresh.length ? start(fresh) : null;
 
   function start(cands: string[]): Pick {
     const latest = graph.order.filter((c) => records[c.id]?.attempts).map((c) => c.id).sort(recent)[0];

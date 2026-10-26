@@ -141,16 +141,22 @@ Watching an explainer does not count toward mastery; only answers do.
 
 ## Sessions
 
-`#/atlas/learn` runs a session: about 15 minutes, problem after problem, with no separate
-review mode. After every answer the scheduler picks the next problem:
+`#/atlas/learn` runs a session: about 15 minutes, problem after problem. The scheduler picks each
+problem in a fixed order, so a session reads as blocks:
 
-1. Slipping concepts first.
-2. Otherwise a due review roughly 30% of the time when any are due, ordered by how overdue
-   they are relative to their interval.
-3. Otherwise the frontier: concepts that are new or learning. At most three concepts are in
-   learning at once, so practice interleaves between a few ideas instead of spreading thin.
-   New concepts enter by depth in the graph, then by how many concepts they unlock.
-4. The same concept never twice in a row, unless it is the only candidate.
+1. Concepts that slipped on a review, until won back (a recovery streak, half the bar).
+2. Every due review, one problem each, foundations first (prerequisites before what builds on
+   them). A review that needed the worked example stays due for the next session.
+3. The concept in progress, until mastered; three misses in four send the learner to a
+   prerequisite for one problem first.
+4. A new concept: what the latest mastery unlocked, then its domain, then by depth and by how
+   many concepts it unlocks.
+
+The first two are the review block. Its header counts "Review 2 of 5", and it ends on a
+"Reviews done" screen that lists how each review went and names what comes next; a new concept
+leads to its explainer from there. A session opened on a concept (its page, or the end of its
+explainer) stays on that concept until it is mastered, and the reviews follow. The home pages
+lead with due reviews whenever there are any.
 
 A concept's first problem comes after its explainer, which the learner may skip.
 

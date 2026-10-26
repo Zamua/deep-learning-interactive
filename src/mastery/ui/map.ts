@@ -24,27 +24,35 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
   const altBtn = (label: string, href: string, ic: string) => h('a', { class: 'lead-alt', href, html: `${icon(ic)} ${label}` });
   const opens = d.opens?.length ? ` · then ${d.opens.map(title).join(', ')} opens` : '';
   if (d.kind === 'start') root.append(lead('Start here', c!.title, 'The first concept: a short explainer, then practice.', goBtn('Start'), altBtn('Placement test', '#/atlas/place', 'compass')));
+  else if (d.kind === 'learning' && d.slipping) root.append(lead('Win it back', c!.title, `Slipped on a review: ${d.need} right in a row win it back. ${d.streak} so far.`, goBtn('Practice')));
   else if (d.kind === 'learning') root.append(lead('In progress', c!.title, `${d.streak} of ${d.need} right in a row${opens}`, goBtn('Practice')));
   else if (d.kind === 'new') root.append(lead('Up next', c!.title, `${c!.blurb}`, goBtn('Start'), hasExplainerLink(c!.id)));
-  else if (d.kind === 'review') root.append(lead('Review', `${plural(d.due, 'concept')} due`, 'Mastered concepts come back before they fade.', goBtn('Review')));
+  else if (d.kind === 'review') root.append(lead('Review', `${plural(d.due, 'concept')} due`, `${reviewTime(learner)}${d.after ? ` Then ${title(d.after)}.` : ''}`, goBtn('Start reviews')));
   else root.append(lead('All caught up', 'Nothing is due', d.nextReview ? `Next review ${whenDue(d.nextReview)}.` : 'Everything here is mastered.', altBtn('See the map', '#/atlas/graph', 'graph')));
-  if (d.due && d.kind !== 'review') root.append(h('p', { class: 'at-small at-due' }, `${plural(d.due, 'review')} due, mixed into your practice.`));
+  if (d.due && d.kind !== 'review') root.append(h('p', { class: 'at-small at-due' }, `Then ${plural(d.due, 'review')}, before anything new.`));
 
   // The path: the last two mastered, where you are, and what opens next.
   const done = graph.order.filter((x) => learner.record(x.id).mastered).map((x) => x.id).sort((p, q) => learner.record(p).last - learner.record(q).last).slice(-2);
-  const now = d.kind === 'learning' || d.kind === 'new' || d.kind === 'start' ? d.concept : undefined;
+  const now = d.kind === 'learning' || d.kind === 'new' || d.kind === 'start' ? d.concept : d.kind === 'review' ? d.after : undefined;
   const next = now ? [...(d.opens ?? []), ...graph.dependents.get(now)!.filter((x) => !(d.opens ?? []).includes(x))].slice(0, 2) : [];
   if (done.length || now) {
     const step = (id: string, cls: string, sub: string) => h('a', { class: `at-step-p ${cls}`, href: `#/atlas/${id}` }, h('span', { class: 'at-step-t' }, title(id)), h('small', {}, sub));
     root.append(h('div', { class: 'home-lbl' }, 'Your path'), h('div', { class: 'at-path' },
       ...done.map((id) => step(id, 'done', learner.record(id).review ? `mastered · review ${whenDue(learner.record(id).review!.due)}` : 'mastered')),
-      ...(now ? [step(now, 'now', d.kind === 'learning' ? `in progress · ${d.streak} of ${d.need}` : 'next to learn')] : []),
+      ...(now ? [step(now, 'now', d.kind === 'learning' ? `in progress · ${d.streak} of ${d.need}` : d.kind === 'review' ? 'after the reviews' : 'next to learn')] : []),
       ...next.map((id, i) => step(id, 'lock', i === 0 ? `opens after ${title(now!)}` : 'then this'))));
   }
   const st = [...learner.statuses().values()];
   const mastered = st.filter((x) => x === 'mastered' || x === 'due' || x === 'slipping').length;
   root.append(h('a', { class: 'at-maplink', href: '#/atlas/graph', html: `${icon('graph')} <span>The whole map</span><small>${mastered} of ${st.length} mastered</small>${icon('arrowRight')}` }));
   void syncReminders(learner);
+}
+
+/** What the due reviews take: one problem each, at about the pace a concept's bar asks for. */
+export function reviewTime(learner: Learner): string {
+  const due = learner.graph.order.filter((c) => learner.status(c.id) === 'due');
+  const min = Math.max(1, Math.round(due.reduce((a, c) => a + c.mastery.seconds * 1.5, 0) / 60));
+  return `One problem each, about ${min} min.`;
 }
 
 function hasExplainerLink(id: string): HTMLElement | undefined {

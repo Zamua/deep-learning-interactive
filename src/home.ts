@@ -94,11 +94,12 @@ export function atlasLead(d: Today): Lead | null {
     case 'start':
       return null;
     case 'learning':
+      if (d.slipping) return { kicker: 'Atlas · win it back', title: title(d.concept!), sub: `Slipped on a review: ${d.need} right in a row win it back`, href: '#/atlas/learn', action: 'Practice', icon: 'playFill', t: d.t };
       return { kicker: 'Atlas · in progress', title: title(d.concept!), sub: `${d.streak} of ${d.need} right in a row${d.opens?.length ? ` · then ${d.opens.map(title).join(', ')} opens` : ''}`, href: '#/atlas/learn', action: 'Practice', icon: 'playFill', t: d.t };
     case 'new':
       return { kicker: 'Atlas · up next', title: title(d.concept!), sub: 'A new concept: explainer, then practice', href: '#/atlas/learn', action: 'Start', icon: 'playFill', t: d.t };
     case 'review':
-      return { kicker: 'Atlas · review', title: `${d.due} ${d.due === 1 ? 'review' : 'reviews'} due`, sub: 'Mastered concepts coming back before they fade', href: '#/atlas/learn', action: 'Review', icon: 'playFill', t: d.t };
+      return { kicker: 'Atlas · review', title: `${d.due} ${d.due === 1 ? 'review' : 'reviews'} due`, sub: `One problem each, before anything new${d.after ? `; then ${title(d.after)}` : ''}`, href: '#/atlas/learn', action: 'Start reviews', icon: 'playFill', t: d.t };
     case 'done':
       return null;
   }
