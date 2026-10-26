@@ -14,7 +14,7 @@ for DL26 chapters.
 
     npm run dev                          vite on 127.0.0.1:5340
     npm run build                        tsc --noEmit && vite build -> dist/
-    npm test                             Vitest (src/**/*.test.ts): mastery domain + every Atlas generator
+    npm test                             Vitest (src/**/*.test.ts): mastery domain, sync model, every Atlas generator
     node tools/shot.mjs <route> <name> [w h mobile full]   Playwright + system Chrome screenshot
                                          (prints page errors; env SCROLL='.fig:2', THEME=dark)
     node tools/lecture/build.mjs <id> [--check]   synthesize a lecture's narration (ElevenLabs via OpenRouter, or Kokoro);
@@ -28,8 +28,8 @@ for DL26 chapters.
   `code.ts` (Python highlighter + CodePanel with `{{slots}}` and `#@labels`), `math.ts`
   (KaTeX + the small markdown dialect), `symbols.ts` (color-linked symbols and hover linking),
   `plot.ts` (HiDPI canvas with data coordinates), `controls.ts`, `data.ts` (2-D toy sets,
-  CIFAR loader), `nn.ts` (small trainable MLP), `rand.ts`, `progress.ts` (per-device progress in
-  localStorage: each lecture's resume point and heard time, each chapter's reading depth).
+  CIFAR loader), `nn.ts` (small trainable MLP), `rand.ts`, `progress.ts` (each lecture's resume point and heard
+  time, each chapter's reading depth, kept in the synced progress store).
 - `src/chapters/index.ts`: `COURSES` (code, title, parts) and chapter metadata and order,
   each chapter tagged with its `course`; chapter modules are found by
   `import.meta.glob`, so a missing file shows as "still being written".
@@ -41,10 +41,15 @@ for DL26 chapters.
   `src/lectures/<id>/`: one lecture per chapter. `docs/LECTURES.md` is the authoring guide.
 - `src/mastery/`: the Atlas engine. `domain/` is pure and unit tested (concept graph, student
   model, scheduler, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
-  learner's records in localStorage; `ui/` renders the map, concept pages, sessions and
+  learner's records in the synced progress store; `ui/` renders the map, concept pages, sessions and
   placement. `src/atlas/<domain>/<concept>/` holds each concept: `meta.ts`, `problems.ts`, and
   an explainer (`script.ts`, `scenes.ts`, `explainer.ts`) played by the lecture player.
   `docs/MASTERY.md` is the design and the authoring contract.
+- `src/sync/`: progress sync on hearthsync (`docs/SYNC.md`). `model.ts` holds the records and
+  their merges (pure, tested), `cloud.ts` the store and engine, `ui.ts` the account page
+  (`#/account`, `#/link/<code>`). Only `mastery/store.ts` and `core/progress.ts` edit the store.
+  Changing a record's shape needs a new `Model.version` (see hearthsync's README), never a quiet
+  edit: older builds on the same account would write the old shape back.
 
 ## Invariants
 

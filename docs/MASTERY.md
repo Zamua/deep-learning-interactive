@@ -116,7 +116,7 @@ export type Answer =
 
 ## The student model
 
-Per concept, per device:
+Per concept, synced across the learner's devices (`docs/SYNC.md`):
 
 | state | meaning |
 | --- | --- |
@@ -163,14 +163,13 @@ lowers a concept's state.
 
 ## Storage
 
-`localStorage`, like the rest of the site, with export and import as a JSON file:
+- Per concept `{ attempts, correct, recent, mastered, slipping, review: { due, interval, ease, passed }, last }`,
+  in the synced progress store (`docs/SYNC.md`); the status is derived from it and the graph,
+  never stored.
+- `atlas.log` in localStorage, on the device only: one row per answer
+  `[t, concept, generator, correct, ms, help?]`, capped at the most recent 5,000.
 
-- `atlas.records`: per concept `{ attempts, correct, recent, mastered, slipping, review: { due, interval, ease, passed }, last }`;
-  the status is derived from it and the graph, never stored.
-- `atlas.log`: one row per answer `[t, concept, generator, correct, ms, help?]`, capped at the
-  most recent 5,000.
-
-Sync across devices is out of scope for now; the log is the format a sync would carry.
+The account page (`#/account`) also saves both to a JSON file and loads one back.
 
 ## Screens
 
@@ -186,7 +185,7 @@ Sync across devices is out of scope for now; the log is the format a sync would 
 
 - `src/mastery/domain/`: pure, no DOM, unit tested: the graph and its checks, the student
   model, the scheduler, placement, the graders and the expression parser.
-- `src/mastery/learner.ts` and `store.ts`: the learner's records and their localStorage.
+- `src/mastery/learner.ts` and `store.ts`: the learner's records, through the progress store.
 - `src/mastery/ui/`: the map, concept page, session runner, placement and answer pads.
 - `src/atlas/`: the content, one folder per concept.
 - `src/atlas/atlas.test.ts`: fails on a cycle, a missing prerequisite or a misnamed folder,

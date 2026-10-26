@@ -11,7 +11,10 @@ most chapters open with a narrated lecture. Unofficial and unaffiliated.
   `docs/DL26.md`.
 - **Atlas**: AI by mastery. A graph of small concepts, each with a short voiced explainer and
   generated problems; mastering a concept unlocks the ones built on it, and mastered concepts
-  come back as spaced reviews. Progress stays in the browser. Design in `docs/MASTERY.md`.
+  come back as spaced reviews. Design in `docs/MASTERY.md`.
+
+Progress (Atlas mastery, lectures heard, chapters read) is kept in the browser and syncs between
+devices through a short account code, with no sign-up. See `docs/SYNC.md`.
 
 ## Run
 
@@ -21,7 +24,9 @@ most chapters open with a narrated lecture. Unofficial and unaffiliated.
     npm test           # Vitest: the mastery engine, and every Atlas problem generator
 
 `dist/` is a plain static site (hash routing, relative asset paths) and can be served from
-any static host.
+any static host. Sync needs the host to also serve
+[hearthsync](https://github.com/Zamua/hearthsync)'s rooms API at `/api/rooms`; without it,
+progress stays on each device. The dev server serves one in memory.
 
 ## Data
 
