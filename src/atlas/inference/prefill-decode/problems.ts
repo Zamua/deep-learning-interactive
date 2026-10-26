@@ -106,7 +106,7 @@ export const generators: Generator[] = [
         prompt: `A GPU does ${gpu[0]} arithmetic operations per second and reads ${gpu[1]} GB of memory per second. It decodes one token at a time for a ${params}-billion-parameter model stored at 2 bytes per weight. What limits how fast each decode pass runs?`,
         answer: choice([
           { text: 'Reading every weight from memory, to use each in just one multiply and add', why: null },
-          { text: `The arithmetic: ${2 * params} billion operations is a lot of work per token`, why: `At ${gpu[0]} per second, ${2 * params} billion operations take a tiny fraction of a millisecond. Reading the ${2 * params} GB of 16-bit weights takes far longer.` },
+          { text: `The arithmetic: ${2 * params} billion operations is a lot of work per token`, why: `At ${gpu[0]} per second, ${2 * params} billion operations take a tiny fraction of a millisecond. Reading the ${2 * params} GB of weights, at 2 bytes each, takes far longer.` },
           { text: 'Recomputing the keys and values of every earlier token at every pass', why: 'The KV cache stores those. Each pass computes keys and values only for its one new token.' },
           { text: 'Sampling the next token from the probabilities over the vocabulary', why: 'Sampling is one small softmax and a draw: tiny next to reading every weight of the model.' },
         ]),

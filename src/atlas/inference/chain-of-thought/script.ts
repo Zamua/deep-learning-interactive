@@ -38,11 +38,15 @@ export const script: LectureScript = {
         at_once * ms         # 40 ms      #@t
         with_steps * ms      # 640 ms     #@t
         2000 * ms / 1000     # 40 s       #@long
+        fit = 2000 // ms     # 100 tokens #@budget
+        fit - 20             # 80 steps   #@left
       `,
       beats: [
         { id: 'tokens', say: 'The price is tokens. Answering at once took two. With its steps, the model wrote thirty more before the same two-token answer.', code: ['once', 'steps'] },
         { id: 'time', say: 'Every token is one more pass. At twenty milliseconds a token, that is forty milliseconds against six hundred and forty: sixteen times as long.', code: ['ms', 't'] },
         { id: 'long', say: 'A long chain of two thousand tokens takes forty seconds before the answer even begins.', code: 'long' },
+        { id: 'budget', say: 'Turn it around: say the reply must be done within two seconds. That is two thousand milliseconds, and at twenty a token, two thousand over twenty is a hundred tokens.', code: 'budget' },
+        { id: 'left', say: 'If the answer takes twenty of those hundred, the steps get at most eighty.', code: 'left' },
         { id: 'helps', say: 'So the steps pay off when the answer is built from steps: arithmetic, a word problem, anything where each step needs the one before.' },
         { id: 'recall', say: 'Ask for the capital of France, and there is nothing to build on. The model knows it or it does not, and the steps only cost time.' },
         { id: 'turn', say: 'Your turn.' },

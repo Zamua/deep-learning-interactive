@@ -102,7 +102,8 @@ export const generators: Generator[] = [
           { value: X * t - A, why: `That multiplies the seconds by the time per token. Divide instead: $${big(X * 1000)}\\text{ ms} / ${t}\\text{ ms}$ is the number of tokens that fit.` },
         ]),
         solution: [
-          `${X} seconds is $${big(X * 1000)}$ ms, and each token takes ${t} ms, so $${big(X * 1000)} / ${t} = ${big(all)}$ tokens fit in all.`,
+          `${X} seconds is $${X} \\times 1{,}000 = ${big(X * 1000)}$ ms.`,
+          `Each token takes ${t} ms, so $${big(X * 1000)} / ${t} = ${big(all)}$ tokens fit in all.`,
           `The answer needs ${A} of them, which leaves $${big(all)} - ${A} = ${big(v)}$ for the steps.`,
         ],
       };

@@ -1,8 +1,8 @@
 {
- "duration": 116.204,
+ "duration": 143.968,
  "scenes": {
   "check": [0.0, 56.064],
-  "count": [56.064, 116.204]
+  "count": [56.064, 143.968]
  },
  "beats": {
   "check/slow": [0.7, 7.459, "Decoding writes one token per pass of the large model, and each of those passes mostly waits on memory.", [[4.17, 4.57]]],
@@ -14,7 +14,9 @@
   "count/all": [68.975, 76.547, "When all four guesses are accepted, the extra pick after the last one comes free: five tokens from a single pass.", [[70.935, 71.245], [73.895, 74.345]]],
   "count/speed": [76.927, 87.165, "Say four passes yield three, five, one and three tokens. Twelve tokens took four large passes instead of twelve: three times fewer.", [[78.997, 79.197], [79.727, 79.927], [81.547, 82.127], [85.597, 86.017]]],
   "count/same": [87.545, 95.517, "And the text is still the large model's own. With greedy decoding, every kept token is exactly the one it would have picked.", [[90.165, 90.735], [92.065, 92.355]]],
-  "count/sample": [95.897, 113.983, "With sampling, it keeps each guess with a chance set by how much it agrees: the large model's probability for that token over the small model's, capped at one. After a rejection it draws from what is left. Every token then comes out with exactly the large model's probabilities.", [[96.727, 96.977], [100.647, 101.107], [104.757, 105.067], [105.997, 106.587], [107.687, 107.877], [109.317, 109.907]]],
-  "count/turn": [114.363, 115.104, "Your turn.", []]
+  "count/sample": [95.897, 112.82, "With sampling, there is no single pick to match. Take the guess red: say the draft gave it a probability of zero point six, and the large model gives it zero point three. Red is kept with chance zero point three over zero point six: one half.", [[96.687, 96.907], [98.847, 99.457], [100.537, 101.037], [104.257, 104.577], [107.007, 107.597], [111.717, 112.137]]],
+  "count/cap": [113.2, 126.15, "In general, a guess is kept with chance the smaller of one, and the large model's probability over the small model's. When the large model likes a guess at least as much as the draft does, it is always kept.", [[113.92, 114.15], [116.82, 117.14], [120.22, 120.88], [124.59, 124.91]]],
+  "count/resid": [126.53, 141.747, "After a rejection, the large model draws a replacement from what is left over: its own probabilities, with the share the draft already offered taken out. Balanced that way, every token comes out with exactly the large model's probabilities.", [[127.77, 127.99], [131.03, 131.53], [132.88, 133.21], [135.81, 136.48], [137.53, 137.84]]],
+  "count/turn": [142.127, 142.868, "Your turn.", []]
  }
 }

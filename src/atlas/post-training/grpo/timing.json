@@ -1,20 +1,27 @@
 {
- "duration": 103.552,
+ "duration": 183.073,
  "scenes": {
-  "group": [0.0, 53.225],
-  "agree": [53.225, 103.552]
+  "group": [0.0, 81.166],
+  "agree": [81.166, 130.372],
+  "try": [130.372, 183.073]
  },
  "beats": {
   "group/value": [0.7, 12.404, "A good baseline is the reward you expect for this very question. One way to get it is to train a second model to predict it: a value model, a whole second network to train.", [[4.53, 5.16], [8.45, 8.96], [9.85, 10.23]]],
   "group/group": [12.784, 26.423, "GRPO does without it. For each question, sample a group of G answers, here eight, and check each one: a reward, r, of one if it is right, zero if it is wrong.", [[14.854, 15.454], [16.394, 16.644], [18.544, 18.854], [19.604, 19.974], [21.164, 21.714], [22.374, 22.644], [22.994, 23.204], [24.604, 24.994]]],
   "group/mean": [26.803, 33.874, "The group's mean reward is the baseline. Three of the eight are right, so it is zero point three seven five.", [[29.123, 29.643], [31.043, 31.313]]],
-  "group/std": [34.254, 45.889, "Then divide by the group's standard deviation, how spread out its rewards are: here about zero point four eight. That puts every question's advantages on a similar scale.", [[34.704, 34.914], [37.324, 37.694], [39.514, 40.004], [42.024, 42.554]]],
-  "group/adv": [46.269, 52.125, "Right answers get one point two nine, and wrong ones minus zero point seven seven.", [[48.659, 49.039], [49.849, 50.019]]],
-  "agree/hard": [53.925, 67.594, "A right answer to a hard question, where only one of eight succeeds, earns a big push: two point six five. On an easy one, where seven of eight do, each right answer gets only zero point three eight.", [[56.065, 56.295], [58.265, 58.515], [59.745, 60.115], [61.395, 61.965], [62.935, 63.095], [64.275, 64.575]]],
-  "agree/easy": [67.974, 74.409, "If every answer in the group is right, each reward equals the mean, and every advantage is zero.", [[70.034, 70.384], [72.134, 72.474]]],
-  "agree/none": [74.789, 87.601, "Such a group teaches nothing, and the same goes when every answer is wrong. The standard deviation is zero then, so code adds a tiny number to it, and zero divided by that stays zero.", [[76.559, 76.939], [79.299, 79.949], [82.119, 82.449], [84.609, 84.969], [86.499, 86.649]]],
-  "agree/sum": [87.981, 95.02, "Within any group, the advantages add up to zero: probability moves from the worse answers to the better ones.", [[89.021, 89.271], [91.151, 91.721]]],
-  "agree/cost": [95.4, 101.331, "There is no value model to train. The price is sampling several answers for every question.", [[97.4, 97.92]]],
-  "agree/turn": [101.711, 102.452, "Your turn.", []]
+  "group/sub": [34.254, 47.551, "Subtract it, as with any baseline. A right answer is one minus zero point three seven five: zero point six two five above it. A wrong one is zero point three seven five below.", [[35.084, 35.384], [36.704, 37.304], [41.144, 41.584], [43.704, 44.184]]],
+  "group/std": [47.931, 59.683, "Then divide by the group's standard deviation, how spread out its rewards are: here about zero point four eight four. That puts every question's advantages on a similar scale.", [[48.371, 48.551], [50.951, 51.251], [53.011, 53.511], [55.791, 56.311]]],
+  "group/adv": [60.063, 80.066, "Right answers get zero point six two five over zero point four eight four: one point two nine. Wrong ones get minus zero point three seven five over zero point four eight four: minus zero point seven seven. Each advantage is r minus the mean, over the standard deviation.", [[64.763, 65.293], [66.583, 67.173], [70.483, 70.653], [72.423, 72.933], [74.923, 75.603], [78.243, 78.443]]],
+  "agree/hard": [81.866, 95.534, "A right answer to a hard question, where only one of eight succeeds, earns a big push: two point six five. On an easy one, where seven of eight do, each right answer gets only zero point three eight.", [[84.006, 84.236], [86.206, 86.456], [87.686, 88.056], [89.336, 89.906], [90.876, 91.036], [92.216, 92.516]]],
+  "agree/easy": [95.914, 102.349, "If every answer in the group is right, each reward equals the mean, and every advantage is zero.", [[97.974, 98.324], [100.074, 100.414]]],
+  "agree/none": [102.729, 115.542, "Such a group teaches nothing, and the same goes when every answer is wrong. The standard deviation is zero then, so code adds a tiny number to it, and zero divided by that stays zero.", [[104.499, 104.879], [107.239, 107.889], [110.059, 110.389], [112.549, 112.909], [114.439, 114.589]]],
+  "agree/sum": [115.922, 122.96, "Within any group, the advantages add up to zero: probability moves from the worse answers to the better ones.", [[116.962, 117.212], [119.092, 119.662]]],
+  "agree/cost": [123.34, 129.272, "There is no value model to train. The price is sampling several answers for every question.", [[125.34, 125.86]]],
+  "try/p1": [131.072, 146.882, "Try one. GRPO samples five answers, with rewards zero, one, zero, zero and zero, and a standard deviation of zero point four. What is the advantage of answer one, counting from zero?", [[131.702, 132.312], [135.352, 135.702], [136.452, 136.652], [137.192, 137.372], [137.782, 138.002], [138.962, 139.152], [139.762, 140.082], [142.692, 143.412], [145.432, 145.792]]],
+  "try/mean": [147.262, 152.367, "One of the five is right, so the mean is one fifth: zero point two.", [[148.732, 149.052], [150.712, 151.242]]],
+  "try/sub": [152.747, 158.711, "Answer one got a reward of one: one minus zero point two is zero point eight.", [[154.857, 155.447], [157.297, 157.487]]],
+  "try/div": [159.091, 165.007, "Divide by the standard deviation: zero point eight over zero point four is two.", [[161.191, 161.711], [164.201, 164.351]]],
+  "try/all": [165.387, 180.852, "Each wrong answer gets zero minus zero point two, over zero point four: minus zero point five. So the whole group's advantages are minus zero point five, two, then minus zero point five three more times.", [[168.937, 169.257], [170.617, 171.027], [172.707, 173.207], [176.677, 176.947], [177.337, 177.677]]],
+  "try/turn": [181.232, 181.973, "Your turn.", []]
  }
 }

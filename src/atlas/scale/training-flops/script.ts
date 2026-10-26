@@ -34,14 +34,16 @@ export const script: LectureScript = {
       code: `
         z = W @ x              # 2 per weight  #@fwd
         dx = W.T @ dz          # 2 per weight  #@dx
-        dW = np.outer(dz, x)   # 2 per weight  #@dW
+        dW += np.outer(dz, x)  # 2 per weight  #@dW
+        # dW[i,j] += dz[i] * x[j]: one *, one + #@acc
         # 6 per parameter per token            #@six
         flops = 6 * n_params * n_tokens        #@nd
       `,
       beats: [
         { id: 'back', say: 'Backpropagation through the same layer needs two more products, each as big as the forward one.', code: ['dx', 'dW'] },
         { id: 'dx', say: '{Wᵀ|W transpose} times {dz|d z} passes the gradient down to x, for the layer below: two FLOPs per weight.', code: 'dx' },
-        { id: 'dW', say: 'And the outer product of {dz|d z} and x gives every weight its own gradient: two more.', code: 'dW' },
+        { id: 'dW', say: 'And the outer product of {dz|d z} and x gives every weight its own gradient: the weight in row i, column j gets {dz|d z} entry i, times x entry j. That is one multiply per weight.', code: ['dW', 'acc'] },
+        { id: 'acc', say: 'Training reads many tokens, and each token\'s product is added into the weight\'s running gradient: one add. So the outer product costs two FLOPs per weight per token, the same as the forward pass.', code: 'acc' },
         { id: 'six', say: 'Two forward and four backward: six FLOPs per parameter, for every token.', code: 'six' },
         { id: 'nd', say: 'Write D for the number of training tokens. Then the whole run costs about six N D FLOPs. Call it C, the training compute.', code: 'nd' },
       ],
@@ -55,16 +57,17 @@ export const script: LectureScript = {
         n_tokens = 4e10                   #@nd
         flops = 6 * n_params * n_tokens   #@C
         # 7.2e20                          #@C
-        per_second = 100 * 1e14  # 100 GPUs  #@rate
-        seconds = flops / per_second   # 72,000  #@time
-        hours = seconds / 3600         # 20      #@time
+        per_second = 100 * 2e14  # 2e16      #@rate
+        seconds = flops / per_second   # 36,000  #@time
+        hours = seconds / 3600         # 10      #@hours
         forward = 2 * n_params         # 6e9     #@fwd
       `,
       beats: [
         { id: 'model', say: 'Take a model with three billion parameters, trained on forty billion tokens.', code: 'nd' },
         { id: 'mult', say: 'Six times three times four is seventy two, and the powers of ten add, nine and ten. That is {72 × 10¹⁹|seventy two times ten to the nineteen}, or {7.2 × 10²⁰|seven point two times ten to the twenty} FLOPs.', code: 'C' },
-        { id: 'rate', say: 'A GPU might sustain {10¹⁴|ten to the fourteen} FLOPs per second. A hundred of them together: {10¹⁶|ten to the sixteen}.', code: 'rate' },
-        { id: 'time', say: 'Divide, and the run takes {7.2 × 10⁴|seven point two times ten to the four} seconds: seventy two thousand seconds, or twenty hours.', code: 'time' },
+        { id: 'rate', say: 'A GPU might sustain {2 × 10¹⁴|two times ten to the fourteen} FLOPs per second. A hundred of them together: {2 × 10¹⁶|two times ten to the sixteen}.', code: 'rate' },
+        { id: 'time', say: 'Divide in two parts. The leading numbers: {7.2|seven point two} over two is {3.6|three point six}. Dividing powers of ten subtracts them: twenty minus sixteen is four. So {3.6 × 10⁴|three point six times ten to the four} seconds.', code: 'time' },
+        { id: 'hours', say: 'That is thirty six thousand seconds. An hour is {3,600|three thousand six hundred} seconds, so the run takes ten hours.', code: 'hours' },
         { id: 'fwd', say: 'Once it is trained, reading one token forward costs only two N: six billion FLOPs, a third of what training on it cost.', code: 'fwd' },
         { id: 'turn', say: 'Your turn.' },
       ],

@@ -1,6 +1,6 @@
-import type { SceneDef } from '../../../lecture/scene';
+import type { Scene, SceneDef } from '../../../lecture/scene';
 import { columns } from '../../draw';
-import { mark, word } from '../draw';
+import { mark, word, type Ink } from '../draw';
 
 const PASS = [false, false, true, false];
 const P = 0.3;
@@ -52,6 +52,43 @@ const HIT = NS.map((n) => 1 - (1 - P) ** n);
 /** Fooled by 1 wrong answer in 5: a kept answer is right with 0.3 / (0.3 + 0.14). */
 const FOOL = NS.map((n) => (P / (P + 0.14)) * (1 - (1 - P - 0.14) ** n));
 
+/** A hundred samples at p = 0.3, through a checker fooled by 1 wrong answer in 5. */
+const POOL: [string, Ink, number, string, number][] = [
+  ['100 samples, p = 0.3', '--ink-2', 500, 'pool', 0.3],
+  ['30 right: all passed', 'green', 600, 'pool', 2.5],
+  ['70 wrong: 1 in 5 passed = 14', 'red', 600, 'pool', 5],
+  ['passed: 30 + 14 = 44', '--ink-2', 600, 'share', 0.3],
+  ['kept is right: 30 / 44 ≈ 0.68', 'gold', 700, 'share', 2],
+  ['the same mix for any n', '--ink-3', 500, 'share', 6],
+];
+
+function drawPool(s: Scene): void {
+  const c = (s.tall ? 4 : 4.6) * s.u;
+  const size = s.tall ? 3.1 : 3;
+  const textW = Math.max(...POOL.map(([t]) => s.measure(t, { size, font: 'mono', weight: 700 })));
+  const gap = 7 * s.u;
+  const gx = s.tall ? s.w / 2 - 5 * c : s.w / 2 - (10 * c + gap + textW) / 2;
+  const gy = s.tall ? s.h * 0.08 : s.h / 2 - 5 * c;
+  const sort = s.ease('pool', 0.6, 5);
+  for (let k = 0; k < 100; k++) {
+    const x = gx + (k % 10) * c + c / 2;
+    const y = gy + Math.floor(k / 10) * c + c / 2;
+    const right = k < 30;
+    const passed = k < 44;
+    const a = s.ease('pool', 0.4, 0.3 + 0.02 * k);
+    s.alpha(a * (passed ? 1 : 1 - 0.7 * sort), () => s.circle(x, y, c * 0.36, { fill: s.tint(right ? 'green' : 'red', right || !passed ? 0.55 : 0.55 + 0.35 * sort), stroke: s.c(right ? 'green' : 'red'), lw: 0.2 }));
+  }
+  // The passed answers, ringed: the pool the kept one comes from.
+  s.alpha(s.ease('share', 0.6, 0.3), () => {
+    for (let k = 0; k < 44; k++) s.circle(gx + (k % 10) * c + c / 2, gy + Math.floor(k / 10) * c + c / 2, c * 0.48, { stroke: s.c('gold'), lw: 0.3 });
+  });
+  const tx = s.tall ? s.w / 2 : gx + 10 * c + gap;
+  const ty = (i: number) => (s.tall ? gy + 10 * c + (5.5 + 5.6 * i) * s.u : gy + (0.8 + [0, 1.4, 2.4, 4.4, 5.4, 6.8][i]!) * c);
+  POOL.forEach(([t, k, w, beat, delay], i) =>
+    s.alpha(s.ease(beat, 0.6, delay), () => s.text(t, tx, ty(i), { size, font: 'mono', weight: w, align: s.tall ? 'center' : 'left', color: s.c(k) })),
+  );
+}
+
 const enough: SceneDef = {
   draw(s) {
     const half = Math.min(50, s.w / s.u / 2 - 12);
@@ -63,7 +100,8 @@ const enough: SceneDef = {
     const Y = (v: number) => b - v * (b - t);
     const bw = ((r - l) / NS.length) * 0.56;
     const rare = s.win('rare', 'fooled');
-    s.alpha(1 - rare, () => {
+    const pool = s.win('pool', 'strict');
+    s.alpha(1 - rare - pool, () => {
       s.line(l, b, r, b, s.c('--axis'), 0.35);
       s.text('chance best-of-n succeeds, p = 0.3', s.w / 2, s.h * 0.08, { size: 3.1, font: 'mono', color: s.c('--ink-2') });
       // The 90% target.
@@ -97,6 +135,7 @@ const enough: SceneDef = {
       });
       s.alpha(s.ease('strict', 0.6), () => s.text('it must reject wrong answers', s.w / 2, s.h * 0.92, { size: 3.4, font: 'mono', weight: 650, color: s.c('green') }));
     });
+    s.alpha(pool, () => drawPool(s));
     s.alpha(rare, () => {
       s.text('p = 0.1: one sample in ten is right', s.w / 2, s.h * 0.3, { size: 3.4, font: 'mono', color: s.c('--ink-2') });
       s.text('too few to win a vote', s.w / 2, s.h * 0.4, { size: 3.2, font: 'mono', color: s.c('red') });

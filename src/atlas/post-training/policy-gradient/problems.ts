@@ -73,7 +73,8 @@ export const generators: Generator[] = [
         solution: [
           `First sample: $${num(Rv)} \\times ${vec(g)} = ${vec(g.map((x) => clean(Rv * x)))}$.`,
           `Second sample: $${num(R2)} \\times ${vec(g2)} = ${vec(g2.map((x) => clean(R2 * x)))}$.`,
-          `Average them, entry by entry: $${vec(v)}$.`,
+          `Add the two estimates entry by entry: $${vec(g.map((x, i) => clean(Rv * x + R2 * g2[i]!)))}$.`,
+          `Halve each entry to average them: $${vec(v)}$.`,
         ],
       };
     },

@@ -35,13 +35,17 @@ export const script: LectureScript = {
         # all 4 accepted: 4 + 1 = 5               #@all
         yields = [3, 5, 1, 3]   # 12 tokens       #@speed
         sum(yields) / len(yields)  # 3x fewer     #@speed
+        # sampled, red: keep with chance 0.3 / 0.6 #@red
+        # keep: min(1, p_large / p_small)         #@cap
       `,
       beats: [
         { id: 'rule', say: 'So every pass yields its accepted prefix, plus one token of the large model\'s own. Even when the first guess is wrong, the pass still writes one token, as plain decoding would.', code: 'rule' },
         { id: 'all', say: 'When all four guesses are accepted, the extra pick after the last one comes free: five tokens from a single pass.', code: 'all' },
         { id: 'speed', say: 'Say four passes yield three, five, one and three tokens. Twelve tokens took four large passes instead of twelve: three times fewer.', code: 'speed' },
         { id: 'same', say: 'And the text is still the large model\'s own. With greedy decoding, every kept token is exactly the one it would have picked.' },
-        { id: 'sample', say: 'With sampling, it keeps each guess with a chance set by how much it agrees: the large model\'s probability for that token over the small model\'s, capped at one. After a rejection it draws from what is left. Every token then comes out with exactly the large model\'s probabilities.' },
+        { id: 'sample', say: 'With sampling, there is no single pick to match. Take the guess red: say the draft gave it a probability of {0.6|zero point six}, and the large model gives it {0.3|zero point three}. Red is kept with chance {0.3 / 0.6|zero point three over zero point six}: one half.', code: 'red' },
+        { id: 'cap', say: 'In general, a guess is kept with chance {min(1, p_large / p_small)|the smaller of one, and the large model\'s probability over the small model\'s}. When the large model likes a guess at least as much as the draft does, it is always kept.', code: 'cap' },
+        { id: 'resid', say: 'After a rejection, the large model draws a replacement from what is left over: its own probabilities, with the share the draft already offered taken out. Balanced that way, every token comes out with exactly the large model\'s probabilities.' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

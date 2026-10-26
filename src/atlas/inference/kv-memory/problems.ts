@@ -64,7 +64,8 @@ export const generators: Generator[] = [
           ]),
           solution: [
             `One token costs $2 \\times ${m.layers} \\times ${big(m.d)} \\times ${m.bytes} = ${big(per)}$ bytes: a key and a value of $d$ numbers at every layer.`,
-            `${free} GB is $${big(free * 1e9)}$ bytes, and $${big(free * 1e9)} / ${big(per)} = ${big(n)}$ tokens.`,
+            `A gigabyte is a billion bytes, so ${free} GB is $${big(free * 1e9)}$ bytes.`,
+            `Divide the free bytes by the bytes per token: $${big(free * 1e9)} / ${big(per)} = ${big(n)}$ tokens, shared by every sequence.`,
           ],
         };
       }

@@ -1,8 +1,8 @@
 {
- "duration": 78.335,
+ "duration": 109.375,
  "scenes": {
   "prompt": [0.0, 38.354],
-  "frozen": [38.354, 78.335]
+  "frozen": [38.354, 109.375]
  },
  "beats": {
   "prompt/zero": [0.7, 12.678, "A pretrained model continues whatever text it is given. So write a task as text: an instruction, English to French, then a new input, cheese, and an arrow.", [[3.98, 4.53], [6.57, 6.99], [7.77, 8.15], [9.11, 9.56], [10.71, 11.08], [11.58, 11.94]]],
@@ -13,6 +13,8 @@
   "frozen/tokens": [46.221, 56.727, "The examples are just tokens in the context. Attention reads them like any earlier tokens, and to predict what follows such a pattern, the model has to work out the task.", [[48.831, 49.361], [51.991, 52.361], [54.471, 54.751]]],
   "frozen/gone": [57.107, 65.026, "So nothing is kept. Send a new prompt without the examples, and the model starts from the same weights, with no trace of them.", [[58.547, 59.087], [61.347, 61.657], [63.677, 63.887]]],
   "frozen/cost": [65.406, 76.115, "They do cost room in the context. An instruction of five tokens, two examples of four, and an input of three make sixteen tokens to read before the answer.", [[67.656, 68.216], [70.006, 70.256], [71.536, 71.766], [73.026, 73.206]]],
-  "frozen/turn": [76.495, 77.235, "Your turn.", []]
+  "frozen/room": [76.495, 90.033, "The context also has a limit. Say it holds at most one thousand and twenty four tokens, with an instruction of twelve and an input of three. Those fifteen leave one thousand and nine tokens for the examples.", [[78.345, 78.945], [82.315, 82.615], [84.045, 84.255], [85.445, 86.075]]],
+  "frozen/fit": [90.413, 107.155, "At six tokens an example, one thousand and nine over six is about a hundred and sixty eight point two. Only whole examples fit, so round down: a hundred and sixty eight take one thousand and eight tokens, and one more would need one thousand and fourteen.", [[92.153, 92.503], [96.863, 97.383], [98.963, 99.233], [100.403, 100.863], [104.103, 104.453]]],
+  "frozen/turn": [107.535, 108.275, "Your turn.", []]
  }
 }

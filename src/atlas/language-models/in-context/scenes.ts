@@ -1,5 +1,6 @@
 import { lerp, type Scene, type SceneDef } from '../../../lecture/scene';
 import type { Ink } from '../draw';
+import { verdict } from '../../draw';
 import { note, rich, spread } from '../draw';
 
 /** A line of the prompt in a soft box, left-aligned at x. */
@@ -79,7 +80,8 @@ const frozen: SceneDef = {
     const gx = s.w / 2;
     const gy = s.h * 0.2;
     const c = 3.6 * s.u;
-    const fz = 1 - s.ease('cost', 0.6) * 0.6;
+    const room = s.ease('room', 0.6);
+    const fz = (1 - s.ease('cost', 0.6) * 0.6) * (1 - room);
     s.alpha(fz, () => {
       for (let i = 0; i < 4; i++) for (let j = 0; j < 8; j++) {
         const v = Math.sin(i * 3.1 + j * 1.7) * 0.5 + 0.5;
@@ -91,7 +93,7 @@ const frozen: SceneDef = {
     const y = s.h * 0.52;
     const gone = s.ease('gone', 0.7, 0.4);
     const back = s.ease('cost', 0.6);
-    const xs = tokens(s, y, s.ease('frozen', 0.6, 0.6), (g) => (g === 1 || g === 2 ? 1 - gone * (1 - back) * 0.85 : 1));
+    const xs = tokens(s, y, s.ease('frozen', 0.6, 0.6) * (1 - room), (g) => (g === 1 || g === 2 ? 1 - gone * (1 - back) * 0.85 : 1));
     s.alpha(s.ease('frozen', 0.6, 1.2) * (1 - s.ease('tokens', 0.5)), () => note(s, 'the prompt, as tokens', s.w / 2, y + 8 * s.u, '--ink-3', 3));
     s.alpha(s.ease('tokens', 0.6, 1) * (1 - gone), () => {
       const last = xs[xs.length - 1]!;
@@ -109,9 +111,22 @@ const frozen: SceneDef = {
       note(s, 'the last position attends back over the examples', s.w / 2, y + 8 * s.u, 'gold', 3);
     });
     s.alpha(gone * (1 - s.ease('cost', 0.5)), () => note(s, 'a new prompt: the examples are gone, nothing kept', s.w / 2, y + 8 * s.u, '--ink-2', 3));
-    s.alpha(s.ease('cost', 0.6), () => {
+    s.alpha(s.ease('cost', 0.6) * (1 - room), () => {
       rich(s, [['5', 'slate'], [' + ', '--ink-3'], ['2 × 4', 'blue'], [' + ', '--ink-3'], ['3', 'orange'], [' = 16 tokens', '--ink-2']], s.w / 2, s.h * 0.72, { size: 3.8, weight: 650 });
       note(s, 'instruction, examples and input all fill the context', s.w / 2, s.h * 0.81, '--ink-3', 3);
+    });
+    // How many examples fit: what is left after the instruction and the input, in whole examples.
+    const sz = s.tall ? 3.4 : 3.6;
+    s.alpha(s.ease('room', 0.6, 0.3), () => {
+      note(s, 'the context holds at most 1,024 tokens', s.w / 2, s.h * 0.16, '--ink-2', 3.2);
+      s.alpha(s.ease('room', 0.6, 3), () => rich(s, [['12', 'slate'], [' instruction + ', '--ink-3'], ['3', 'orange'], [' input = 15', '--ink-3']], s.w / 2, s.h * 0.27, { size: sz, weight: 650 }));
+      s.alpha(s.ease('room', 0.6, 5.5), () => rich(s, [['1,024 − 15 = ', '--ink-2'], ['1,009', 'blue'], [' left', '--ink-2']], s.w / 2, s.h * 0.37, { size: sz, weight: 650 }));
+    });
+    s.alpha(s.ease('fit', 0.6, 0.3), () => {
+      rich(s, [['1,009 / ', '--ink-2'], ['6', 'blue'], [' per example ≈ 168.2', '--ink-2']], s.w / 2, s.h * 0.52, { size: sz, weight: 650 });
+      const vx = s.w / 2 - (s.tall ? 33 : 30) * s.u;
+      s.alpha(s.ease('fit', 0.6, 5), () => verdict(s, true, '168 examples: 168 × 6 = 1,008', vx, s.h * 0.65, 3.4));
+      s.alpha(s.ease('fit', 0.6, 8), () => verdict(s, false, 'a 169th: 169 × 6 = 1,014, too many', vx, s.h * 0.75, 3.4));
     });
   },
 };

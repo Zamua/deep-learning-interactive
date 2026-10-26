@@ -23,7 +23,13 @@ export const generators: Generator[] = [
         ]),
         solution: cached
           ? ['The keys of earlier tokens are kept in the cache, so each step computes only the newest token\'s key.', `One key per step: ${commas(T)} in all, one per token.`]
-          : [`Without a cache, step $t$ computes keys for all $t$ tokens: $1 + 2 + \\dots + ${big(T)}$.`, `That sum is $T(T + 1) / 2 = ${big(T)} \\times ${big(T + 1)} / 2 = ${big(tri)}$.`, `With a cache it would be ${commas(T)}: about $${big(Math.round((T + 1) / 2))}$ times less work.`],
+          : [
+              `Without a cache, step $t$ computes keys for all $t$ tokens: $1 + 2 + \\dots + ${big(T)}$.`,
+              `Pair the first term with the last, the second with the second-last, and so on: each pair adds to $1 + ${big(T)} = ${big(T + 1)}$.`,
+              T % 2 === 0
+                ? `There are $${big(T)} / 2 = ${big(T / 2)}$ pairs: $${big(T / 2)} \\times ${big(T + 1)} = ${big(tri)}$.`
+                : `The middle term, $${(T + 1) / 2}$, is half a pair, so there are $${T} / 2$ pairs: $T(T + 1) / 2 = ${T} \\times ${T + 1} / 2 = ${tri}$.`,
+            ],
       };
     },
   },

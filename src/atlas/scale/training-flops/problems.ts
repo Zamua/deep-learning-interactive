@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import { num, pick } from '../../kit';
-import { C, D, N, big, clean, sci, sciOf, traps, whys, words } from '../kit';
+import { C, D, N, big, clean, norm, sci, sciOf, traps, whys, words } from '../kit';
 
 /** The power of ten that brings a positive mantissa into [1, 10). */
 const shiftOf = (x: number): number => (x >= 100 ? 2 : x >= 10 ? 1 : 0);
@@ -67,6 +67,8 @@ export const generators: Generator[] = [
         const rate = clean(g * r);
         const cluster = g === 1 ? `One GPU sustains $${sci(r, 14)}$ FLOPs per second.` : `The run uses ${words(g)} GPUs, each sustaining $${sci(r, 14)}$ FLOPs per second.`;
         const totalTex = `${flops} \\times 10^{${p + q}}`;
+        const rn = norm(rate * 1e14);
+        const lead = clean(flops / rn.m);
         return {
           prompt: `A model with $${N} = ${sci(a, p)}$ parameters trains on $${D} = ${sci(b, q)}$ tokens. ${cluster} How many ${unit} does training take?`,
           answer: { kind: 'number', value: v },
@@ -76,10 +78,13 @@ export const generators: Generator[] = [
             inHours ? { value: sec, why: 'That is the time in seconds. Divide by 3,600 for hours.' } : { value: v / 6, why: 'That leaves out the 6: training costs 6 FLOPs per parameter per token, not 1.' },
           ]),
           solution: [
-            `Compute: $${C} \\approx 6${N}${D} = 6 \\times ${sci(a, p)} \\times ${sci(b, q)} = ${totalTex}$ FLOPs.`,
+            `Compute: $${C} \\approx 6${N}${D} = 6 \\times ${sci(a, p)} \\times ${sci(b, q)}$.`,
+            `Multiply the leading numbers, $6 \\times ${a} \\times ${b} = ${flops}$, and add the powers, $${p} + ${q} = ${p + q}$: $${totalTex}$ FLOPs.`,
             g === 1 ? `The GPU does $${sci(r, 14)}$ FLOPs per second.` : `Together the GPUs do $${big(g)} \\times ${sci(r, 14)} = ${sciOf(rate * 1e14)}$ FLOPs per second.`,
-            `Divide: $${totalTex} \\,/\\, ${sciOf(rate * 1e14)} = ${big(sec)}$ seconds.`,
-            ...(inHours ? [`In hours: $${big(sec)} / 3{,}600 = ${num(v)}$.`] : []),
+            `Divide the leading numbers: $${flops} / ${num(rn.m)} = ${num(lead)}$.`,
+            `Subtract the powers: $10^{${p + q}} / 10^{${rn.e}} = 10^{${p + q - rn.e}}$.`,
+            `So $${num(lead)} \\times 10^{${p + q - rn.e}} = ${big(sec)}$ seconds.`,
+            ...(inHours ? [`An hour is $3{,}600$ seconds: $${big(sec)} / 3{,}600 = ${big(v)}$ hours.`] : []),
           ],
         };
       }

@@ -82,12 +82,29 @@ const cost: SceneDef = {
       });
       const x0 = s.w * (s.tall ? 0.12 : 0.22);
       const full = s.w * (s.tall ? 0.62 : 0.5);
-      s.alpha(s.ease('time', 0.6), () => {
+      const bud = s.ease('budget', 0.6);
+      s.alpha(s.ease('time', 0.6) * (1 - bud), () => {
         lab('time: one pass per token, 20 ms each', s.h * 0.5);
         hbar(s, x0, s.h * 0.58, (full * 40) / 640, 'gold', '40 ms');
         hbar(s, x0, s.h * 0.67, full * s.ease('time', 1.2, 0.8), 'slate', '640 ms');
       });
-      s.alpha(s.ease('long', 0.6), () => s.text('2,000 tokens × 20 ms = 40 s', s.w / 2, s.h * 0.82, { size: 3.8, font: 'mono', weight: 650, color: s.c('red') }));
+      s.alpha(s.ease('long', 0.6) * (1 - bud), () => s.text('2,000 tokens × 20 ms = 40 s', s.w / 2, s.h * 0.82, { size: 3.8, font: 'mono', weight: 650, color: s.c('red') }));
+      // The budget run backwards: tokens that fit in 2 s, less the answer's.
+      s.alpha(s.ease('budget', 0.6, 0.3), () => {
+        lab('within 2 s: 2,000 ms / 20 ms = 100 tokens', s.h * 0.5);
+        const bw = s.tall ? full : s.w * 0.64;
+        const L = s.w / 2 - bw / 2;
+        const hb = 7 * s.u;
+        const y = s.h * 0.62;
+        const split = L + bw * 0.8;
+        s.rrect(L, y - hb / 2, bw, hb, 1, { fill: s.tint('slate', 0.3), stroke: s.c('slate'), lw: 0.3 });
+        s.text('100 tokens', L + bw / 2, y + 0.2 * s.u, { size: 3, font: 'mono', weight: 600, color: s.c('--ink'), halo: true });
+        s.alpha(s.ease('left', 0.6, 0.4), () => {
+          s.rrect(split, y - hb / 2, L + bw - split, hb, 1, { fill: s.tint('gold', 0.45), stroke: s.c('gold'), lw: 0.3 });
+          s.text('answer: 20', L + bw, y + 8 * s.u, { size: 3.1, font: 'mono', weight: 650, align: 'right', color: s.c('gold') });
+          s.text('steps: 100 − 20 = 80', L, y + 8 * s.u, { size: 3.1, font: 'mono', weight: 650, align: 'left', color: s.c('--ink-2') });
+        });
+      });
     });
     const vx = s.w / 2 - (s.tall ? 40 : 36) * s.u;
     s.alpha(s.ease('helps', 0.6, 0.3), () => {

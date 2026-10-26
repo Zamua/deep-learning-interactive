@@ -4,6 +4,7 @@ import { chips, rich, row, rowWidth, type Ink } from '../draw';
 
 const USER = ['<user>', 'capital', 'of', 'peru', '?'];
 const ASST = ['<asst>', 'lima', '.', '<end>'];
+const SYS = ['<sys>', 'be', 'brief', '.'];
 /** The probability the model gives each token, predicting it from the ones before. */
 const P_USER = [NaN, 0.1, 0.4, 0.05, 0.6];
 const P_ASST = [0.9, 0.5, 0.8, 0.9];
@@ -77,6 +78,14 @@ const mask: SceneDef = {
       rowLabel(s, 'm', L.x0 - 2.5 * s.u, L.yA + 8.5 * s.u, 'gold', 3.4);
     });
     s.alpha(ctx, () => s.text('read as context, not graded', L.x0, L.yU + 16 * s.u, { size: 3, align: 'left', color: s.c('orange') }));
+    // A system prompt, when there is one: context, so all zeros.
+    s.alpha(s.win('system', 'nll'), () => {
+      const y = s.h * (s.tall ? 0.68 : 0.66);
+      const r = row(s, SYS, s.w / 2 - rowWidth(s, SYS) / 2);
+      s.text('a system prompt, before <user>: mask 0', s.w / 2, y - 7.5 * s.u, { size: 3, color: s.c('purple') });
+      chips(s, SYS, r, y, (i) => (i === 0 ? 'slate' : 'purple'));
+      s.alpha(s.ease('system', 0.6, 2), () => SYS.forEach((_, i) => cell(r.xs[i]!, y + 8.5 * s.u, 0, 0)));
+    });
     // The graded tokens' losses.
     const nl = s.ease('nll', 0.8, 1);
     s.alpha(nl, () => {

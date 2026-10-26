@@ -1,7 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { cells, columns, rowLabel } from '../../draw';
 import { ball } from '../../optimization/draw';
-import { axes, curve, fmt, frame, rich } from '../draw';
+import { after } from '../../backprop/draw';
+import { axes, curve, fmt, frame, type Ink, rich } from '../draw';
 
 const TOK = ['sure', 'thing', '!'];
 const PI = [0.6, 0.5, 0.37];
@@ -33,48 +34,73 @@ const drift: SceneDef = {
   draw(s) {
     const xs = columns(s, 3, 26);
     const ref = s.ease('ref', 0.8, 0.6);
-    pairs(s, xs, { ref, hi: [s.win('value', 'neg'), 0, s.ease('neg', 0.6)] });
+    const most = s.ease('most', 0.6);
+    const on = [s.win('value', 'neg'), most, s.win('neg', 'most')];
+    pairs(s, xs, { ref, hi: on });
     const y = s.h * 0.66;
     s.alpha(s.ease('ratio', 0.6, 1), () => {
       rowLabel(s, 'ln π/π_ref', xs[0]! - 9 * s.u, y, 'red', 2.8);
-      const on = [s.ease('value', 0.6), 0, s.ease('neg', 0.6)];
       cells(s, xs, y, LR.map((v) => fmt(v)), 'red', { w: 13, h: 7, on });
     });
-    s.alpha(s.win('value', 'neg'), () => rich(s, [['ln(0.6 / 0.3) = ln 2 ≈ ', '--ink-2'], ['0.69', 'red']], s.w / 2, s.h * 0.8, { size: 3.3 }));
-    s.alpha(s.ease('neg', 0.6, 0.8), () => rich(s, [['ln(0.37 / 0.5) ≈ ', '--ink-2'], ['−0.30', 'red'], [': liked less', '--ink-3']], s.w / 2, s.h * 0.8, { size: 3.3 }));
-    s.alpha(s.ease('drift', 0.6, 1.5) * (1 - ref), () => s.text('the model being trained', s.w / 2, s.h * 0.8, { size: 3.2, color: s.c('teal') }));
-    s.alpha(ref * (1 - s.ease('value', 0.5)), () => s.text('beside the frozen reference', s.w / 2, s.h * 0.8, { size: 3.2, color: s.c('slate') }));
+    const y1 = s.h * 0.8;
+    const y2 = s.h * 0.88;
+    const line = (runs: [string, Ink][], at: number, a: number) => s.alpha(a, () => rich(s, runs, s.w / 2, at, { size: 3.2 }));
+    line([['ln(0.6 / 0.3) = ln 2 ≈ ', '--ink-2'], ['0.69', 'red']], y1, s.win('value', 'neg'));
+    line([['ln 0.6 − ln 0.3 = −0.51 + 1.20 = ', '--ink-2'], ['0.69', 'red']], y2, s.win('diff', 'neg'));
+    line([['ln(0.37 / 0.5) ≈ ', '--ink-2'], ['−0.30', 'red'], [': liked less', '--ink-3']], y1, s.win('neg', 'most'));
+    line([['ln 0.37 − ln 0.5 = −0.99 + 0.69 = ', '--ink-2'], ['−0.30', 'red']], y2, s.ease('neg', 0.6, 1.5) * (1 - s.ease('most', 0.6)));
+    line([['thing: 0.5 / 0.1 = ', '--ink-2'], ['5', 'red'], ['   sure: 0.6 / 0.3 = 2', '--ink-3']], y1, most);
+    line([['largest ratio, largest log: ', '--ink-2'], ['1.61', 'red']], y2, s.ease('most', 0.6, 2));
+    s.alpha(s.ease('drift', 0.6, 1.5) * (1 - ref), () => s.text('the model being trained', s.w / 2, y1, { size: 3.2, color: s.c('teal') }));
+    s.alpha(ref * (1 - s.ease('value', 0.5)), () => s.text('beside the frozen reference', s.w / 2, y1, { size: 3.2, color: s.c('slate') }));
   },
 };
 
+const LP = PI.map((p) => Math.round(Math.log(p) * 100) / 100);
+const LQ = REF.map((p) => Math.round(Math.log(p) * 100) / 100);
+const LD = LP.map((a, i) => Math.round((a - LQ[i]!) * 100) / 100);
+
 const sum: SceneDef = {
   marks: {
-    f: { tex: String.raw`\sym{R}{R} - \sym{beta}{\beta} \sum_t \ln\frac{\sym{pi}{\pi}(y_t)}{\sym{piref}{\pi_{\text{ref}}}(y_t)}`, x: 0.5, y: 0.52, size: 4.6 },
+    f: { tex: String.raw`\sym{R}{R} - \sym{beta}{\beta} \sum_t \ln\dfrac{\sym{pi}{\pi}(y_t)}{\sym{piref}{\pi_{\text{ref}}}(y_t)}`, x: 0.5, y: 0.645, size: 4.2 },
   },
   draw(s) {
-    const xs = columns(s, 3, 22);
-    const y = s.h * 0.2;
-    TOK.forEach((t, i) => s.text(t, xs[i]!, y - 7 * s.u, { size: 3, font: 'mono', color: s.c('--ink-3') }));
-    rowLabel(s, 'ln π/π_ref', xs[0]! - 8 * s.u, y, 'red', 2.8);
-    cells(s, xs, y, LR.map((v) => fmt(v)), 'red', { w: 13, h: 7, on: LR.map(() => s.win('sum', 'never') * 0.6) });
-    s.alpha(s.ease('sum', 0.6, 1), () => rich(s, [['sum = 0.69 + 1.61 − 0.30 = ', '--ink-2'], [fmt(SUM), 'red']], s.w / 2, y + 9 * s.u, { size: 3.3, weight: 600 }));
+    // The listing: each token's two log-probabilities, and their difference.
+    const cx = s.w / 2;
+    const X = [-34, -13, 8, 31].map((d) => cx + d * s.u);
+    const ys = [0.18, 0.27, 0.36].map((f) => s.h * f);
+    const head = (t: string, i: number, k: Ink) => s.text(t, X[i]!, s.h * 0.095, { size: 3, font: 'mono', weight: 600, color: s.c(k) });
+    head('token', 0, '--ink-3');
+    head('ln π', 1, 'teal');
+    head('ln π_ref', 2, 'slate');
+    s.alpha(after(s, 'logs', 0.3), () => head('log-ratio', 3, 'red'));
+    const hot = s.win('logs', 'sum');
+    TOK.forEach((t, i) => {
+      const y = ys[i]!;
+      const on = i === 0 ? hot : 0;
+      s.text(t, X[0]!, y, { size: 3.2, font: 'mono', color: s.c('--ink-2') });
+      s.cell(X[1]! - 7 * s.u, y - 3.5 * s.u, 14 * s.u, 7 * s.u, fmt(LP[i]!), 'teal', { on, size: 3.2 });
+      s.cell(X[2]! - 7 * s.u, y - 3.5 * s.u, 14 * s.u, 7 * s.u, fmt(LQ[i]!), 'slate', { on, size: 3.2 });
+      s.alpha(after(s, 'logs', i === 0 ? 0.6 : 0.85), () => s.cell(X[3]! - 7 * s.u, y - 3.5 * s.u, 14 * s.u, 7 * s.u, fmt(LD[i]!), 'red', { on: on + s.win('sum', 'never') * 0.6, size: 3.2 }));
+    });
+    s.alpha(s.ease('sum', 0.6, 1), () => rich(s, [['sum = 0.69 + 1.61 − 0.30 = ', '--ink-2'], [fmt(LD.reduce((a, b) => a + b, 0)), 'red']], cx, s.h * 0.44, { size: 3.3, weight: 600 }));
     s.alpha(s.ease('never', 0.6), () => {
-      s.text('one sample: can be below 0', s.w / 2, y + 16 * s.u, { size: 3, color: s.c('--ink-3') });
-      s.text('average over samples: never', s.w / 2, y + 20.5 * s.u, { size: 3, color: s.c('--ink-3') });
+      s.text('one sample: can be below 0', cx, s.h * 0.5, { size: 3, color: s.c('--ink-3') });
+      s.text('average over samples: never', cx, s.h * 0.545, { size: 3, color: s.c('--ink-3') });
     });
     s.show('f', s.ease('pen', 0.6));
     // The reward, with the penalty cut from its end.
     const eg = s.ease('eg', 0.8, 0.6);
     s.alpha(s.ease('eg', 0.6), () => {
-      const x0 = s.w / 2 - 30 * s.u;
+      const x0 = cx - 30 * s.u;
       const len = 60 * s.u;
-      const yb = s.h * 0.72;
+      const yb = s.h * 0.8;
       s.rrect(x0, yb - 2.5 * s.u, len * (1 - 0.2 * eg), 5 * s.u, 0.8, { fill: s.tint('gold', 0.45), stroke: s.tint('gold', 0.9), lw: 0.25 });
       s.alpha(eg, () => s.rrect(x0 + len * 0.8, yb - 2.5 * s.u, len * 0.2, 5 * s.u, 0.8, { fill: s.tint('red', 0.25), stroke: s.tint('red', 0.8), lw: 0.25 }));
       s.text('R = 1', x0, yb - 5.5 * s.u, { size: 3, font: 'mono', align: 'left', color: s.c('gold') });
       s.alpha(eg, () => {
         s.text('0.1 × 2 = 0.2', x0 + len, yb - 5.5 * s.u, { size: 3, font: 'mono', align: 'right', color: s.c('red') });
-        rich(s, [['trains on ', '--ink-2'], ['1 − 0.2 = 0.8', 'gold']], s.w / 2, yb + 8 * s.u, { size: 3.4, weight: 600 });
+        rich(s, [['trains on ', '--ink-2'], ['1 − 0.2 = 0.8', 'gold']], cx, yb + 8 * s.u, { size: 3.4, weight: 600 });
       });
     });
   },

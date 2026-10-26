@@ -79,4 +79,45 @@ const grow: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { token, grow };
+/** Memory after the weights load: the free part fills with 512,000-byte token slots. */
+const fit: SceneDef = {
+  draw(s) {
+    const W = (s.tall ? 84 : 104) * s.u;
+    const x0 = s.w / 2 - W / 2;
+    const y = s.h * 0.24;
+    const h = 8 * s.u;
+    const ww = (W * 14) / 30;
+    const fx = x0 + ww + 0.8 * s.u;
+    const fw = W - ww - 0.8 * s.u;
+    const mono = (t: string, x: number, yy: number, k: 'gold' | 'green' | 'slate' | '--ink-2' | '--ink-3', size = 3.2, weight = 600) => s.text(t, x, yy, { size, font: 'mono', weight, color: s.c(k) });
+    s.rrect(x0, y - h / 2, ww, h, 1, { fill: s.tint('slate', 0.3), stroke: s.c('slate'), lw: 0.3 });
+    mono('weights', x0 + ww / 2, y, '--ink-2', 3);
+    s.alpha(s.ease('free', 0.6), () => {
+      s.rrect(fx, y - h / 2, fw, h, 1, { fill: s.tint('green', 0.12), stroke: s.c('green'), lw: 0.3 });
+      mono('16 GB left', fx + fw / 2, y - h / 2 - 3.5 * s.u, 'green', 3.2, 650);
+    });
+    s.alpha(s.ease('free', 0.6, 2), () => mono('= 16,000,000,000 bytes', fx + fw / 2, y + h / 2 + 4 * s.u, 'green', 2.8));
+    const n = 32;
+    const grow = s.ease('per', 1.6, 1.2);
+    for (let i = 0; i < n * grow; i++) s.rrect(fx + (i * fw) / n + 0.2 * s.u, y - h / 2 + 1 * s.u, fw / n - 0.4 * s.u, h - 2 * s.u, 0.3, { fill: s.tint('gold', 0.55) });
+    s.alpha(s.ease('per', 0.6), () => {
+      const cy = s.h * 0.44;
+      s.rrect(s.w / 2 - 22 * s.u, cy - 3 * s.u, 1.6 * s.u, 6 * s.u, 0.3, { fill: s.tint('gold', 0.55) });
+      s.text('one token = 512,000 bytes', s.w / 2 - 18 * s.u, cy, { size: 3.2, font: 'mono', weight: 600, align: 'left', color: s.c('gold') });
+    });
+    s.alpha(s.ease('fit', 0.6), () => mono('16,000,000,000 ÷ 512,000', s.w / 2, s.h * 0.57, '--ink-2', 3.3));
+    s.alpha(s.ease('fit', 0.6, 2), () => mono('= 16,000,000 ÷ 512', s.w / 2, s.h * 0.65, '--ink-2', 3.3));
+    s.alpha(s.ease('fit', 0.6, 4), () => mono('= 31,250 tokens', s.w / 2, s.h * 0.74, 'gold', 3.9, 700));
+    // Eight sequences splitting the same slots.
+    s.alpha(s.ease('share', 0.6, 2.5), () => {
+      for (let j = 1; j < 8; j++) {
+        const x = fx + (j * fw) / 8;
+        s.line(x, y - h / 2 - 0.8 * s.u, x, y + h / 2 + 0.8 * s.u, s.c('--ink-2'), 0.45);
+      }
+    });
+    s.alpha(s.ease('share', 0.6), () => mono('shared: 1 sequence of 31,250 tokens', s.w / 2, s.h * 0.85, '--ink-3', 3));
+    s.alpha(s.ease('share', 0.6, 2.5), () => mono('or 8 sequences of about 3,900', s.w / 2, s.h * 0.91, '--ink-3', 3));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { token, grow, fit };

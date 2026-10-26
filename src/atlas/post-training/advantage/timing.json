@@ -1,9 +1,10 @@
 {
- "duration": 119.071,
+ "duration": 224.743,
  "scenes": {
   "allup": [0.0, 30.941],
   "baseline": [30.941, 71.835],
-  "same": [71.835, 119.071]
+  "same": [71.835, 174.286],
+  "try": [174.286, 224.743]
  },
  "beats": {
   "allup/rewards": [0.7, 11.874, "A grader scores four answers a model sampled for one question, from zero to one: zero point nine, zero point six, zero point five and zero point two.", [[4.64, 4.99], [6.16, 6.74], [7.73, 8.07], [9.09, 9.41], [10.41, 10.68]]],
@@ -13,10 +14,17 @@
   "baseline/A": [40.534, 53.479, "What is left is the advantage, A, equal to R minus b: zero point three five, zero point zero five, minus zero point zero five and minus zero point three five.", [[42.434, 42.904], [43.254, 43.614], [45.304, 45.724], [47.134, 47.454], [48.904, 49.224], [51.134, 51.424]]],
   "baseline/signs": [53.859, 61.559, "Use A in place of R. Now the answers that beat expectations are pushed up, and the rest are pushed down.", [[55.859, 56.499], [57.499, 57.669], [59.599, 59.929]]],
   "baseline/third": [61.939, 70.735, "Look at the third answer. Its reward, zero point five, is positive, but below what was expected, so now it gets pushed down.", [[63.209, 63.749], [64.519, 64.739], [65.759, 65.979], [66.779, 67.029], [68.609, 68.949]]],
-  "same/sum": [72.535, 82.227, "Why is this allowed? Average the gradient of log pi over the model's answers. pi times the gradient of its log is just the gradient of pi.", [[73.765, 74.305], [77.855, 78.365], [80.325, 80.575]]],
-  "same/one": [82.607, 89.919, "And the probabilities always add up to one, so their gradients add up to zero: they cannot all rise at once.", [[85.127, 85.497], [87.507, 87.977]]],
-  "same/zero": [90.299, 107.162, "So the baseline's share of the estimate, b times the gradient of log pi, averages to zero. That average over the model's answers is written E, for expected value: with or without b, it points the same way, and only the noise drops.", [[92.659, 92.989], [95.309, 95.659], [96.859, 97.389], [100.039, 100.189], [100.519, 100.809], [102.019, 102.509], [103.759, 104.029], [105.329, 105.639]]],
-  "same/best": [107.542, 116.851, "The best baseline is the reward you expect for that very question: a running average of past rewards works, or a second model trained to predict it.", [[111.382, 111.922], [114.282, 114.592]]],
-  "same/turn": [117.231, 117.971, "Your turn.", []]
+  "same/sum": [72.535, 86.047, "Why is this allowed? Subtracting b takes b times the gradient of ln pi off every estimate. Averaged over the model's answers, that part comes to zero. Check it on the seven times eight model.", [[73.795, 74.445], [79.455, 79.995], [81.785, 82.105], [83.565, 84.125]]],
+  "same/check": [86.427, 99.852, "Its answers have probabilities zero point five, zero point three and zero point two, and each has its own gradient of ln pi: one row each, for fifty six, fifty four and sixty four.", [[88.177, 88.337], [89.447, 89.677], [90.737, 90.977], [92.137, 92.667], [95.337, 95.827], [96.737, 97.017], [97.897, 98.097], [98.787, 98.957]]],
+  "same/weigh": [100.232, 125.71, "Weight each row by its probability, and add down the columns. The first: zero point five times zero point five, plus zero point three times minus zero point five, plus zero point two times minus zero point five. That is zero point two five, minus zero point one five, minus zero point one: zero. The other columns cancel too.", [[102.342, 102.552], [104.002, 104.722], [105.322, 105.822], [108.482, 108.752], [112.252, 112.602], [116.062, 116.612], [117.102, 117.372], [118.722, 118.992], [120.712, 120.982], [122.402, 122.902], [123.392, 124.062]]],
+  "same/why": [126.09, 139.37, "That is no accident. pi times the gradient of its log is just the gradient of pi. And the probabilities always add up to one, so their gradients add up to zero: they cannot all rise at once.", [[127.68, 128.21], [131.93, 132.43], [134.84, 135.15], [137.08, 137.49]]],
+  "same/zero": [139.75, 151.963, "So b times the gradient of ln pi averages to zero, whatever b is. With or without b, the estimates point the same way on average, and each one swings less.", [[140.6, 140.79], [142.7, 142.88], [144.13, 144.4], [145.43, 145.95], [147.22, 147.52], [149.97, 150.28]]],
+  "same/E": [152.343, 163.497, "An average over the model's answers like this is written with a double-struck E, E, for expected value. With b or without, the expected estimate is the same.", [[154.853, 155.083], [156.533, 156.693], [157.013, 157.413], [157.733, 158.043], [159.283, 159.903], [161.243, 161.493]]],
+  "same/best": [163.877, 173.186, "The best baseline is the reward you expect for that very question: a running average of past rewards works, or a second model trained to predict it.", [[167.717, 168.257], [170.617, 170.927]]],
+  "try/p1": [174.986, 186.194, "Try one. Three answers to a question get rewards one, zero point four and zero point one. With their mean as the baseline, what are the advantages?", [[175.616, 176.266], [178.746, 179.176], [179.556, 179.876], [180.976, 181.226], [182.346, 182.966], [184.616, 184.946]]],
+  "try/a1": [186.574, 197.923, "The mean is one point five over three: zero point five. Subtract it from each reward: zero point five, minus zero point one, and minus zero point four.", [[189.084, 189.494], [190.534, 191.074], [192.784, 193.334], [194.444, 194.654], [196.044, 196.284]]],
+  "try/p2": [198.303, 209.45, "Now one parameter, theta zero. The second answer has partial ln pi, partial theta zero of two. What is its estimate's entry for theta zero?", [[199.633, 199.983], [200.893, 201.513], [204.103, 204.293], [206.233, 206.803]]],
+  "try/a2": [209.83, 222.522, "Use its advantage in place of R: minus zero point one, times two, is minus zero point two. Its reward is positive, but below the baseline, so it is pushed down.", [[212.13, 212.74], [214.25, 214.5], [215.23, 215.5], [217.11, 217.73], [219.22, 219.5], [220.77, 221.06]]],
+  "try/turn": [222.902, 223.643, "Your turn.", []]
  }
 }

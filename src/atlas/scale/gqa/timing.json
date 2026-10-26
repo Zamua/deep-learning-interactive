@@ -1,20 +1,28 @@
 {
- "duration": 103.519,
+ "duration": 187.244,
  "scenes": {
-  "heads": [0.0, 33.953],
-  "share": [33.953, 67.271],
-  "extremes": [67.271, 103.519]
+  "heads": [0.0, 38.495],
+  "share": [38.495, 89.065],
+  "extremes": [89.065, 124.193],
+  "try": [124.193, 187.244]
  },
  "beats": {
   "heads/mha": [0.7, 11.004, "In multi-head attention, each of h query heads has its own key head and value head. Here h is eight, each head sixty four numbers wide.", [[2.1, 2.46], [6.37, 6.91], [7.28, 7.44], [8.33, 8.74]]],
   "heads/cache": [11.384, 24.4, "While generating, the KV cache keeps every earlier token's keys and values. Per token and layer, that is two, times h, times the head width: one thousand and twenty four numbers.", [[12.404, 12.674], [16.544, 17.114], [18.394, 18.654], [19.454, 19.774], [20.574, 20.834], [21.904, 22.324]]],
-  "heads/big": [24.78, 32.853, "Across every layer and every token of a long context, that adds up to gigabytes, all read again for every new token.", [[28.27, 28.58], [30.04, 30.45]]],
-  "share/group": [34.653, 48.235, "Grouped-query attention keeps all eight query heads, but only g key-value heads, each a key head and a value head shared by one group of query heads. With g at two, each is shared by four.", [[37.863, 38.143], [40.143, 40.593], [44.853, 45.373], [46.403, 46.723]]],
-  "share/attend": [48.615, 55.421, "Each query head still makes its own scores and its own mix. It just reads the keys and values of its group.", [[52.375, 52.815]]],
-  "share/shrink": [55.801, 66.171, "The cache now holds two times g times sixty four: two hundred and fifty six numbers per token, four times smaller. It shrinks by h over g.", [[59.181, 59.611], [62.081, 62.461], [63.711, 64.171]]],
-  "extremes/mha": [67.971, 78.251, "At one extreme, g equals h: every query head has its own key and value head. That is ordinary multi-head attention, with the largest cache.", [[68.961, 69.261], [70.551, 71.081], [74.011, 74.521], [76.671, 76.961]]],
-  "extremes/mqa": [78.631, 91.784, "At the other, g is one: all the query heads share a single key head and value head, and the cache is h times smaller. That is multi-query attention, and it can cost some quality.", [[79.401, 79.691], [80.791, 81.361], [84.711, 85.151], [87.251, 87.791], [89.721, 90.041]]],
-  "extremes/between": [92.164, 101.299, "Grouped-query attention sits in between, close to multi-head quality at a fraction of the cache. Many large models keep eight key-value heads.", [[94.534, 94.854], [97.804, 98.364]]],
-  "extremes/turn": [101.679, 102.419, "Your turn.", []]
+  "heads/big": [24.78, 37.395, "Every layer keeps its own, so across thirty two layers, that is thirty two thousand seven hundred sixty eight numbers for every token of the context, all read again for every new token.", [[26.48, 26.88], [28.82, 29.09], [32.67, 32.82], [34.65, 35.02]]],
+  "share/group": [39.195, 52.777, "Grouped-query attention keeps all eight query heads, but only g key-value heads, each a key head and a value head shared by one group of query heads. With g at two, each is shared by four.", [[42.405, 42.685], [44.685, 45.135], [49.395, 49.915], [50.945, 51.265]]],
+  "share/attend": [53.157, 59.963, "Each query head still makes its own scores and its own mix. It just reads the keys and values of its group.", [[56.917, 57.357]]],
+  "share/shape": [60.343, 77.215, "Stack each kind into one array, head first. For T tokens, the queries are eight heads of T by sixty four: shape eight, by T, by sixty four. The keys are only two, by T, by sixty four, and the values the same.", [[62.443, 62.763], [63.473, 64.053], [65.013, 65.293], [68.313, 68.793], [69.503, 69.763], [70.403, 70.623], [71.553, 72.153], [73.613, 73.883], [75.533, 75.903]]],
+  "share/shrink": [77.595, 87.965, "The cache now holds two times g times sixty four: two hundred and fifty six numbers per token, four times smaller. It shrinks by h over g.", [[80.975, 81.405], [83.875, 84.255], [85.505, 85.965]]],
+  "extremes/mha": [89.765, 100.045, "At one extreme, g equals h: every query head has its own key and value head. That is ordinary multi-head attention, with the largest cache.", [[90.755, 91.055], [92.345, 92.875], [95.805, 96.315], [98.465, 98.755]]],
+  "extremes/mqa": [100.425, 113.578, "At the other, g is one: all the query heads share a single key head and value head, and the cache is h times smaller. That is multi-query attention, and it can cost some quality.", [[101.195, 101.485], [102.585, 103.155], [106.505, 106.945], [109.045, 109.585], [111.515, 111.835]]],
+  "extremes/between": [113.958, 123.093, "Grouped-query attention sits in between, close to multi-head quality at a fraction of the cache. Many large models keep eight key-value heads.", [[116.328, 116.648], [119.598, 120.158]]],
+  "try/p": [124.893, 134.302, "Try one. A model has thirty two layers, each with eight query heads and two key-value heads, each head sixty four numbers wide.", [[125.503, 126.083], [128.003, 128.343], [131.593, 132.033]]],
+  "try/ask": [134.682, 147.315, "Memory is counted in bytes, and this model stores each number in two. How many kilobytes, or KB, of one thousand and twenty four bytes each, does its cache take per token?", [[136.622, 136.982], [139.432, 140.102], [142.442, 142.672], [145.112, 145.392]]],
+  "try/one": [147.695, 159.263, "One layer stores a key and a value for each of the two key-value heads: two times two times sixty four, two hundred fifty six numbers. The query heads add nothing.", [[152.205, 152.675], [154.805, 155.245], [157.095, 157.595]]],
+  "try/all": [159.643, 168.0, "Every layer keeps its own: thirty two times two hundred fifty six is eight thousand one hundred ninety two numbers per token.", [[161.303, 161.803], [164.203, 164.363]]],
+  "try/bytes": [168.38, 173.603, "At two bytes each, that is sixteen thousand three hundred eighty four bytes.", [[169.66, 169.91]]],
+  "try/kb": [173.983, 185.023, "Divide by one thousand and twenty four bytes per kilobyte: sixteen KB per token. With every query head keeping its own key and value, it would be sixty four.", [[177.343, 177.803], [179.653, 180.273], [183.353, 183.743]]],
+  "try/turn": [185.403, 186.144, "Your turn.", []]
  }
 }

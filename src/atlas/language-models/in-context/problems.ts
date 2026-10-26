@@ -1,5 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
+import { int, num, pick, round } from '../../kit';
 import { big, commas, lit, traps } from '../kit';
 
 /** Tasks a prompt can teach by example: an instruction and input => output pairs. */
@@ -89,7 +89,14 @@ export const generators: Generator[] = [
             { value: Math.floor(C / m), why: 'That leaves no room for the instruction and the new input, which share the same context.' },
             { value: Math.ceil((C - a - q) / m), why: 'That rounds up, and the last example would not fit. Round down.' },
           ]),
-          solution: [`The instruction and the input take $${a} + ${q} = ${a + q}$ tokens, leaving $${big(C)} - ${a + q} = ${big(C - a - q)}$.`, `Each example takes ${m}, and only whole examples fit: ${fit} of them take $${fit} \\times ${m} = ${big(fit * m)}$, and one more would need $${big((fit + 1) * m)}$.`],
+          solution: [
+            `The instruction and the input take $${a} + ${q} = ${a + q}$ tokens.`,
+            `That leaves $${big(C)} - ${a + q} = ${big(C - a - q)}$ tokens for the examples.`,
+            (C - a - q) % m === 0
+              ? `Each example takes ${m}: $${big(C - a - q)} / ${m} = ${fit}$.`
+              : `Each example takes ${m}: $${big(C - a - q)} / ${m} \\approx ${num(round((C - a - q) / m, 1))}$.`,
+            `Only whole examples fit, so round down: ${fit} of them take $${fit} \\times ${m} = ${big(fit * m)}$, and one more would need $${big((fit + 1) * m)}$.`,
+          ],
         };
       }
       const v = a + k * m + q;

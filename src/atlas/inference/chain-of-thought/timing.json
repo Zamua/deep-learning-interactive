@@ -1,8 +1,8 @@
 {
- "duration": 103.271,
+ "duration": 120.081,
  "scenes": {
   "depth": [0.0, 57.238],
-  "cost": [57.238, 103.271]
+  "cost": [57.238, 120.081]
  },
  "beats": {
   "depth/pass": [0.7, 12.22, "A language model writes one token per pass, and every pass runs through the same fixed stack of layers. So one pass can take only so many steps, one after another.", [[3.55, 3.87], [7.37, 7.9], [10.73, 10.97]]],
@@ -13,8 +13,10 @@
   "cost/tokens": [57.938, 66.992, "The price is tokens. Answering at once took two. With its steps, the model wrote thirty more before the same two-token answer.", [[59.478, 59.958], [61.698, 62.278], [63.108, 63.338]]],
   "cost/time": [67.372, 77.402, "Every token is one more pass. At twenty milliseconds a token, that is forty milliseconds against six hundred and forty: sixteen times as long.", [[69.462, 69.912], [71.742, 72.092], [75.162, 75.562]]],
   "cost/long": [77.782, 83.42, "A long chain of two thousand tokens takes forty seconds before the answer even begins.", []],
-  "cost/helps": [83.8, 92.664, "So the steps pay off when the answer is built from steps: arithmetic, a word problem, anything where each step needs the one before.", [[87.28, 87.81], [88.52, 88.77], [89.66, 90.0]]],
-  "cost/recall": [93.044, 101.051, "Ask for the capital of France, and there is nothing to build on. The model knows it or it does not, and the steps only cost time.", [[94.794, 95.044], [96.474, 96.974], [98.834, 99.184]]],
-  "cost/turn": [101.431, 102.171, "Your turn.", []]
+  "cost/budget": [83.8, 95.382, "Turn it around: say the reply must be done within two seconds. That is two thousand milliseconds, and at twenty a token, two thousand over twenty is a hundred tokens.", [[84.71, 85.3], [88.15, 88.51], [90.52, 90.84], [92.2, 92.57], [93.97, 94.13]]],
+  "cost/left": [95.762, 100.23, "If the answer takes twenty of those hundred, the steps get at most eighty.", [[98.002, 98.352]]],
+  "cost/helps": [100.61, 109.475, "So the steps pay off when the answer is built from steps: arithmetic, a word problem, anything where each step needs the one before.", [[104.09, 104.62], [105.33, 105.58], [106.47, 106.81]]],
+  "cost/recall": [109.855, 117.861, "Ask for the capital of France, and there is nothing to build on. The model knows it or it does not, and the steps only cost time.", [[111.605, 111.855], [113.285, 113.785], [115.645, 115.995]]],
+  "cost/turn": [118.241, 118.981, "Your turn.", []]
  }
 }

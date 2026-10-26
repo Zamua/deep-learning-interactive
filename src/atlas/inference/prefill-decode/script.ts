@@ -37,12 +37,16 @@ export const script: LectureScript = {
             out, cache = model([tok], cache)   #@loop
             tok = sample(out[-1])              #@loop
         # 4 new tokens: 1 prefill + 3 decode   #@count
+        # 100 tokens: 40 ms + 99 * 25 ms       #@time
+        # = 2,515 ms = 2.515 s                 #@total
       `,
       beats: [
         { id: 'one', say: 'After that, each new token depends on the one just before it, so each needs a pass of its own. Feed in mat, and one pass gives one token: and.', code: 'loop' },
         { id: 'cache', say: 'A decode pass holds one token. It reads the earlier keys and values from the cache, adds its own, and writes the next: it, then slept.', code: 'loop' },
         { id: 'count', say: 'Four new tokens took four passes: the prefill, which wrote the first, then three decode passes. A hundred new tokens take one prefill and ninety nine decode passes.', code: 'count' },
         { id: 'wait', say: 'The prefill sets how long you wait for the first token. The decode passes set how fast the rest stream in.', code: ['prefill', 'loop'] },
+        { id: 'time', say: 'Put numbers on it. Say the prefill takes forty milliseconds, thousandths of a second, and each decode pass twenty five. A hundred new tokens need ninety nine decode passes: ninety nine times twenty five is {2,475|two thousand four hundred seventy five} milliseconds.', code: 'time' },
+        { id: 'total', say: 'Add the prefill: forty plus {2,475|two thousand four hundred seventy five} is {2,515|two thousand five hundred fifteen} milliseconds. Divide by a thousand for seconds: {2.515|two point five one five}.', code: 'total' },
       ],
     },
     {
@@ -57,7 +61,7 @@ export const script: LectureScript = {
         2 * 8e9 / 1000e12        # 0.016 ms   #@math
       `,
       beats: [
-        { id: 'bytes', say: 'How long does a decode pass take? A model of eight billion parameters at two bytes each holds sixteen gigabytes of weights, and every pass must read all of them.', code: 'bytes' },
+        { id: 'bytes', say: 'How long does a decode pass take? Memory is counted in bytes, and a model of eight billion parameters, stored at two bytes each, holds sixteen billion bytes of weights. A gigabyte, or GB, is a billion bytes: sixteen gigabytes, and every pass must read all of them.', code: 'bytes' },
         { id: 'bw', say: 'A GPU reads its memory at about {3,200|three thousand two hundred} gigabytes per second. Sixteen gigabytes take five milliseconds, so two hundred tokens per second at best.', code: ['bw', 'time'] },
         { id: 'math', say: 'The arithmetic is tiny by comparison: one multiply and one add per weight, sixteen billion operations, at a thousand trillion per second. {0.016|Zero point zero one six} milliseconds.', code: 'math' },
         { id: 'bound', say: 'So decoding spends its time waiting on memory: tokens per second is the memory speed over the model\'s bytes. Faster arithmetic would barely help.', code: 'time' },

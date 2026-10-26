@@ -77,10 +77,13 @@ const decode: SceneDef = {
     const fed = 5 + step(0) + step(1) + step(2);
     cacheRow(s, s.h * 0.84, fed, 8, 1 - s.ease('wait', 0.5));
     s.alpha(s.ease('count', 0.6), () => s.text('4 new tokens = 1 prefill + 3 decode passes', s.w / 2, s.h * 0.05, { size: 3.1, font: 'mono', weight: 650, color: s.c('--ink-2') }));
-    s.alpha(s.ease('wait', 0.6, 0.3), () => {
+    s.alpha(s.ease('wait', 0.6, 0.3) * (1 - s.ease('time', 0.5)), () => {
       s.text('wait for token 1', px, s.h * 0.84, { size: 2.9, font: 'mono', weight: 650, color: s.c('orange') });
       s.text('then how fast the rest come', dx[1]!, s.h * 0.84, { size: 2.9, font: 'mono', weight: 650, color: s.c('gold') });
     });
+    s.alpha(s.ease('time', 0.6, 0.6), () => s.text('prefill: 40 ms', px, s.h * 0.84, { size: 2.9, font: 'mono', weight: 650, color: s.c('orange') }));
+    s.alpha(s.ease('time', 0.6, 3.5), () => s.text('99 × 25 = 2,475 ms', dx[1]!, s.h * 0.84, { size: 2.9, font: 'mono', weight: 650, color: s.c('gold') }));
+    s.alpha(s.ease('total', 0.6), () => s.text('40 + 2,475 = 2,515 ms = 2.515 s', s.w / 2, s.h * 0.92, { size: 3.2, font: 'mono', weight: 650, color: s.c('--ink-2') }));
   },
 };
 
@@ -88,7 +91,8 @@ const memory: SceneDef = {
   draw(s) {
     const x0 = s.w / 2 - (s.tall ? 40 : 44) * s.u;
     const full = (s.tall ? 62 : 68) * s.u;
-    s.alpha(s.ease('bytes', 0.6), () => s.text('8 billion weights × 2 bytes = 16 GB', s.w / 2, s.h * 0.1, { size: 3.4, font: 'mono', weight: 650, color: s.c('blue') }));
+    s.alpha(s.ease('bytes', 0.6), () => s.text('8 billion weights × 2 bytes', s.w / 2, s.h * 0.08, { size: 3.4, font: 'mono', weight: 650, color: s.c('blue') }));
+    s.alpha(s.ease('bytes', 0.6, 3), () => s.text('= 16 billion bytes = 16 GB', s.w / 2, s.h * 0.15, { size: 3.4, font: 'mono', weight: 650, color: s.c('blue') }));
     const lab = (t: string, y: number) => s.text(t, x0, y, { size: 2.9, font: 'mono', align: 'left', color: s.c('--ink-3') });
     s.alpha(s.ease('bw', 0.6), () => {
       lab('read 16 GB at 3,200 GB/s', s.h * 0.26);

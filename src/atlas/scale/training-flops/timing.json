@@ -1,9 +1,9 @@
 {
- "duration": 124.974,
+ "duration": 165.661,
  "scenes": {
   "forward": [0.0, 40.509],
-  "backward": [40.509, 77.106],
-  "run": [77.106, 124.974]
+  "backward": [40.509, 99.428],
+  "run": [99.428, 165.661]
  },
  "beats": {
   "forward/layer": [0.7, 8.015, "Count the arithmetic in one layer. W holds twelve weights, and x is the vector for one token.", [[2.72, 3.45], [5.3, 5.62]]],
@@ -12,14 +12,16 @@
   "forward/model": [29.177, 39.409, "Twelve weights make twenty four FLOPs. Write N for a model's number of parameters: it spends about two N FLOPs on every token it reads forward.", [[31.607, 32.467], [35.137, 35.547]]],
   "backward/back": [41.209, 46.966, "Backpropagation through the same layer needs two more products, each as big as the forward one.", [[44.789, 45.139]]],
   "backward/dx": [47.346, 54.611, "W transpose times d z passes the gradient down to x, for the layer below: two FLOPs per weight.", [[49.426, 49.656], [51.616, 51.816], [52.796, 53.306]]],
-  "backward/dW": [54.991, 60.765, "And the outer product of d z and x gives every weight its own gradient: two more.", [[57.451, 57.641], [59.721, 60.131]]],
-  "backward/six": [61.145, 66.679, "Two forward and four backward: six FLOPs per parameter, for every token.", [[61.945, 62.095], [63.135, 63.655], [65.265, 65.595]]],
-  "backward/nd": [67.059, 76.006, "Write D for the number of training tokens. Then the whole run costs about six N D FLOPs. Call it C, the training compute.", [[69.729, 70.249], [73.449, 73.839], [74.659, 74.959]]],
-  "run/model": [77.806, 82.974, "Take a model with three billion parameters, trained on forty billion tokens.", [[80.326, 80.636]]],
-  "run/mult": [83.354, 96.678, "Six times three times four is seventy two, and the powers of ten add, nine and ten. That is seventy two times ten to the nineteen, or seven point two times ten to the twenty FLOPs.", [[86.374, 86.764], [88.234, 88.474], [89.514, 90.014], [92.884, 93.234]]],
-  "run/rate": [97.058, 104.625, "A GPU might sustain ten to the fourteen FLOPs per second. A hundred of them together: ten to the sixteen.", [[101.208, 101.728], [102.968, 103.418]]],
-  "run/time": [105.005, 113.467, "Divide, and the run takes seven point two times ten to the four seconds: seventy two thousand seconds, or twenty hours.", [[105.635, 105.945], [109.605, 110.055], [111.935, 112.155]]],
-  "run/fwd": [113.847, 122.754, "Once it is trained, reading one token forward costs only two N: six billion FLOPs, a third of what training on it cost.", [[114.977, 115.377], [118.517, 118.917], [120.427, 120.757]]],
-  "run/turn": [123.134, 123.874, "Your turn.", []]
+  "backward/dW": [54.991, 69.348, "And the outer product of d z and x gives every weight its own gradient: the weight in row i, column j gets d z entry i, times x entry j. That is one multiply per weight.", [[57.541, 57.731], [59.761, 60.311], [61.621, 61.791], [62.581, 62.861], [64.631, 64.861], [66.531, 67.021], [67.461, 67.661]]],
+  "backward/acc": [69.728, 83.087, "Training reads many tokens, and each token's product is added into the weight's running gradient: one add. So the outer product costs two FLOPs per weight per token, the same as the forward pass.", [[71.528, 71.788], [75.348, 75.728], [76.498, 77.028], [80.958, 81.358], [82.838, 83.068]]],
+  "backward/six": [83.467, 89.001, "Two forward and four backward: six FLOPs per parameter, for every token.", [[84.267, 84.417], [85.457, 85.977], [87.587, 87.917]]],
+  "backward/nd": [89.381, 98.328, "Write D for the number of training tokens. Then the whole run costs about six N D FLOPs. Call it C, the training compute.", [[92.051, 92.571], [95.771, 96.161], [96.981, 97.281]]],
+  "run/model": [100.128, 105.296, "Take a model with three billion parameters, trained on forty billion tokens.", [[102.648, 102.958]]],
+  "run/mult": [105.676, 119.0, "Six times three times four is seventy two, and the powers of ten add, nine and ten. That is seventy two times ten to the nineteen, or seven point two times ten to the twenty FLOPs.", [[108.696, 109.086], [110.556, 110.796], [111.836, 112.336], [115.206, 115.556]]],
+  "run/rate": [119.38, 128.514, "A GPU might sustain two times ten to the fourteen FLOPs per second. A hundred of them together: two times ten to the sixteen.", [[124.27, 124.78], [126.08, 126.56]]],
+  "run/time": [128.894, 145.637, "Divide in two parts. The leading numbers: seven point two over two is three point six. Dividing powers of ten subtracts them: twenty minus sixteen is four. So three point six times ten to the four seconds.", [[130.524, 131.154], [132.144, 132.654], [134.414, 134.594], [135.844, 136.494], [138.824, 139.364], [141.544, 142.104]]],
+  "run/hours": [146.017, 154.155, "That is thirty six thousand seconds. An hour is three thousand six hundred seconds, so the run takes ten hours.", [[148.697, 149.227], [152.027, 152.397]]],
+  "run/fwd": [154.535, 163.441, "Once it is trained, reading one token forward costs only two N: six billion FLOPs, a third of what training on it cost.", [[155.665, 156.065], [159.205, 159.605], [161.115, 161.445]]],
+  "run/turn": [163.821, 164.561, "Your turn.", []]
  }
 }

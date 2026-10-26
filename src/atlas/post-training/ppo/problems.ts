@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick } from '../../kit';
-import { ADV, choose, clean, E2, EPS, OLD, PI, RHO, traps } from '../kit';
+import { num, pick, round } from '../../kit';
+import { ADV, choose, clean, E2, EPS, OLD, paren, PI, RHO, traps } from '../kit';
 
 const clip = (x: number, e: number) => Math.min(1 + e, Math.max(1 - e, x));
 
@@ -31,7 +31,11 @@ export const generators: Generator[] = [
             ],
             2,
           ),
-          solution: [`$${RHO} = ${PI} / ${OLD} = ${num(pn)} / ${num(po)} \\approx ${num(v, 2)}$.`, v > 1 ? 'Above 1: the update made this token more likely.' : 'Below 1: the update made this token less likely.'],
+          solution: [
+            `$${RHO} = ${PI} / ${OLD}$: the new probability over the old one.`,
+            `$${RHO} = ${num(pn)} / ${num(po)} ${round(v, 2) === v ? '=' : '\\approx'} ${num(v, 2)}$.`,
+            v > 1 ? 'Above 1: the update made this token more likely.' : 'Below 1: the update made this token less likely.',
+          ],
         };
       }
       const delta = pick(rng, [0.1, 0.2, 0.3, -0.1, -0.2, -0.3, 0.5, -0.5]);
@@ -50,7 +54,11 @@ export const generators: Generator[] = [
           ],
           2,
         ),
-        solution: [`$${RHO} = ${PI} / ${OLD}$, and a ratio is the exponential of a difference of logs: $${RHO} = e^{\\ln ${PI} - \\ln ${OLD}}$.`, `$\\ln ${PI} - \\ln ${OLD} = ${num(ln)} - (${num(lo)}) = ${num(delta)}$.`, `$${RHO} = e^{${num(delta)}} \\approx ${num(v, 2)}$.`],
+        solution: [
+          `$${RHO} = ${PI} / ${OLD}$, and the log of a quotient is a difference of logs: $\\ln ${RHO} = \\ln ${PI} - \\ln ${OLD}$.`,
+          `$\\ln ${RHO} = ${num(ln)} - (${num(lo)}) = ${num(delta)}$.`,
+          `$${RHO} = e^{${num(delta)}} \\approx ${num(v, 2)}$.`,
+        ],
       };
     },
   },
@@ -59,24 +67,30 @@ export const generators: Generator[] = [
     make(rng, d) {
       const { rho, a, e } = setup(rng, d);
       const raw = clean(rho * a);
-      const cl = clean(clip(rho, e) * a);
+      const c = clip(rho, e);
+      const cl = clean(c * a);
       const v = Math.min(raw, cl);
-      const hit = clip(rho, e) !== rho;
-      const other = clean((rho > 1 ? 1 - e : 1 + e) * a);
+      const hit = c !== rho;
+      const lo = clean(1 - e);
+      const hi = clean(1 + e);
+      const other = clean((rho > 1 ? lo : hi) * a);
       return {
         prompt: `A token has $${RHO} = ${num(rho)}$ and $${ADV} = ${num(a)}$, with $${EPS} = ${num(e)}$. What is its term in PPO's clipped objective?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
-          ...(raw !== v ? [{ value: raw, why: `That is $${RHO}${ADV}$ unclipped. The ratio is outside $${num(clean(1 - e))}$ to $${num(clean(1 + e))}$, and the clipped term is smaller here.` }] : []),
-          ...(cl !== v ? [{ value: cl, why: `That is the clipped term, but the objective takes the smaller of the two, and here that is $${RHO}${ADV}$.` }] : []),
-          { value: other, why: `That clips to the wrong end. A ratio of $${num(rho)}$ is ${rho > 1 ? 'above 1, so its bound is' : 'below 1, so its bound is'} $${num(clean(rho > 1 ? 1 + e : 1 - e))}$.` },
+          ...(raw !== v ? [{ value: raw, why: `That is $${RHO}${ADV}$ unclipped. The clipped term, $${num(cl)}$, is smaller here, and the objective takes the smaller.` }] : []),
+          ...(cl !== v ? [{ value: cl, why: `That is the clipped term, but the objective takes the smaller of the two, and here that is $${RHO}${ADV} = ${num(raw)}$.` }] : []),
+          ...(hit ? [{ value: other, why: `That clips to the wrong end. $${num(rho)}$ is ${rho > 1 ? 'above' : 'below'} the range, so it becomes $${num(c)}$.` }] : []),
           { value: a, why: `That is the advantage alone. Multiply it by the ratio${hit ? ', clipped or not, whichever gives less' : ''}.` },
         ]),
         solution: [
-          `The term is the smaller of $${RHO}${ADV}$ and $${ADV}$ times $${RHO}$ clipped to between $1 - ${EPS}$ and $1 + ${EPS}$.`,
-          `Unclipped: $${RHO}${ADV} = ${num(rho)} \\times ${a < 0 ? `(${num(a)})` : num(a)} = ${num(raw)}$.`,
-          hit ? `Clipped: $${num(rho)}$ lies outside $${num(clean(1 - e))}$ to $${num(clean(1 + e))}$, so it becomes $${num(clip(rho, e))}$, giving $${num(cl)}$.` : `$${num(rho)}$ lies inside $${num(clean(1 - e))}$ to $${num(clean(1 + e))}$, so clipping changes nothing.`,
-          `The smaller of the two: $${num(v)}$.${hit && v === cl ? ' The clip took away the reward for moving further.' : hit ? ' Clipping only ever removes a reward, so the unclipped term stays when it is lower.' : ''}`,
+          `The clip range is $1 - ${EPS} = ${num(lo)}$ to $1 + ${EPS} = ${num(hi)}$.`,
+          `Unclipped: $${RHO}${ADV} = ${num(rho)} \\times ${paren(a)} = ${num(raw)}$.`,
+          hit
+            ? `Clipped: $${num(rho)}$ is ${rho > hi ? 'above' : 'below'} the range, so it becomes $${num(c)}$, and $${num(c)} \\times ${paren(a)} = ${num(cl)}$.`
+            : `Clipped: $${num(rho)}$ is inside the range, so it stays, and the clipped term is $${num(cl)}$ too.`,
+          hit ? `The term is the smaller of $${num(raw)}$ and $${num(cl)}$: $${num(v)}$.` : `Both terms are the same, so the term is $${num(v)}$.`,
+          ...(hit ? [v === cl ? 'The clip took away the reward for moving further.' : 'The ratio moved the wrong way, so the unclipped term is the lower one and stays: clipping only ever removes a reward.'] : []),
         ],
       };
     },
@@ -91,6 +105,7 @@ export const generators: Generator[] = [
       // Out of range on the side the advantage pushes toward: clipped flat. Otherwise still pushed.
       const rho = out ? clean(pos ? 1 + e + pick(rng, [0.05, 0.1, 0.3]) : 1 - e - pick(rng, [0.05, 0.1, 0.2])) : pick(rng, [clean(1 + e * 0.5), clean(1 - e * 0.5), 1, clean(pos ? 1 - e - 0.1 : 1 + e + 0.1)]);
       const flat = (pos && rho > 1 + e) || (!pos && rho < 1 - e);
+      const bound = clean(pos ? 1 + e : 1 - e);
       const correct = flat ? 2 : pos ? 0 : 1;
       const why: (string | null)[] = [
         pos ? `Past $1 + ${EPS} = ${num(clean(1 + e))}$ the clipped term is flat, and the smaller term is that one: no push.` : `The advantage is negative, so the objective rewards making this token less likely, not more.`,
@@ -102,8 +117,11 @@ export const generators: Generator[] = [
         prompt: `A token has $${ADV} = ${num(a)}$, and after a few updates $${RHO} = ${num(rho)}$. With $${EPS} = ${num(e)}$, does PPO's clipped objective still push its probability, and which way?`,
         answer: { kind: 'choice', options: ['Yes, up: higher probability still raises the objective', 'Yes, down: lower probability still raises the objective', 'No: the objective is flat here, so there is no push'], correct, why },
         solution: [
-          `With $${ADV} ${pos ? '> 0' : '< 0'}$, the objective wants the ratio ${pos ? 'up' : 'down'}, but the clip stops paying past $${num(clean(pos ? 1 + e : 1 - e))}$.`,
-          flat ? `$${RHO} = ${num(rho)}$ is already past it: the smaller term is the flat clipped one, so this token gets no push.` : `$${RHO} = ${num(rho)}$ has not passed it, so the smaller term is $${RHO}${ADV}$ and the token is still pushed ${pos ? 'up' : 'down'}.`,
+          pos ? `$${ADV} = ${num(a)}$ is positive, so a higher $${RHO}$ raises the objective: any push is up.` : `$${ADV} = ${num(a)}$ is negative, so a lower $${RHO}$ raises the objective: any push is down.`,
+          `The clip stops paying ${pos ? 'past' : 'below'} $1 ${pos ? '+' : '-'} ${EPS} = ${num(bound)}$.`,
+          flat
+            ? `$${RHO} = ${num(rho)}$ is already ${pos ? 'past' : 'below'} it, so the smaller term is the flat clipped one: no push.`
+            : `$${RHO} = ${num(rho)}$ has not ${pos ? 'passed' : 'gone below'} it, so the smaller term is $${RHO}${ADV}$, which still changes with $${RHO}$: pushed ${pos ? 'up' : 'down'}.`,
         ],
       };
     },

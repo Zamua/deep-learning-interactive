@@ -26,7 +26,9 @@ export const generators: Generator[] = [
         ]).filter((t) => Math.abs(t.value - v) >= 0.005),
         solution: [
           `With a perfect checker, best-of-n fails only when every sample is wrong. One sample is wrong with probability $1 - ${num(p)} = ${num(q)}$.`,
-          `${n === 2 ? 'Both' : `All ${n}`} are wrong with probability $${powTex(q, n)}$, since they are independent.`,
+          n <= 4
+            ? `Each sample is wrong independently, so multiply: ${n === 2 ? 'both' : `all ${n}`} are wrong with $${Array(n).fill(num(q)).join(' \\times ')} = ${powTex(q, n)}$.`
+            : `Each sample is wrong independently, so multiply ${n} factors of $${num(q)}$: all ${n} are wrong with $${powTex(q, n)}$.`,
           `Best-of-n fails only then, so it succeeds with $1 - ${num(miss)} \\approx ${num(v, 2)}$.`,
         ],
       };
@@ -70,6 +72,8 @@ export const generators: Generator[] = [
       const p = pick(rng, [0.1, 0.2, 0.3, 0.4]);
       const k = pick(rng, [5, 10, 20, 50]);
       const m = pick(rng, [2, 3, 4]);
+      const fool = clean((1 - p) / k);
+      const share = p / (p + fool);
       const what =
         kind === 'perfect'
           ? 'accepts every right answer and rejects every wrong one'
@@ -92,9 +96,10 @@ export const generators: Generator[] = [
             ? ['With a perfect checker, best-of-n fails only when every sample is wrong: $(1 - p)^n$.', 'That shrinks toward 0 as $n$ grows, so success, $1 - (1 - p)^n$, climbs toward 1.']
             : kind === 'fooled'
               ? [
-                  'The formula $1 - (1 - p)^n$ assumes the checker never accepts a wrong answer.',
-                  'This one sometimes does, and more samples give it more wrong answers to be fooled by, so the share of wrong answers it keeps stays the same however large $n$ gets.',
-                  'Success levels off below 1. The checker must above all reject wrong answers.',
+                  `Per sample, the checker passes a right answer with probability $p = ${num(p)}$.`,
+                  `A sample is wrong with probability $${num(clean(1 - p))}$, and 1 in ${k} of those gets passed: $${num(clean(1 - p))} / ${k} = ${num(fool)}$.`,
+                  `So an answer it passes is right $${num(p)} / (${num(p)} + ${num(fool)}) \\approx ${num(share, 2)}$ of the time.`,
+                  'More samples add right and wrong answers in that same mix, so success levels off near that share, below 1. The checker must above all reject wrong answers.',
                 ]
               : [
                   'This checker never keeps a wrong answer, so best-of-n is only ever right or empty-handed.',

@@ -1,8 +1,9 @@
 {
- "duration": 75.037,
+ "duration": 114.587,
  "scenes": {
   "token": [0.0, 36.752],
-  "grow": [36.752, 75.037]
+  "grow": [36.752, 73.916],
+  "fit": [73.916, 114.587]
  },
  "beats": {
   "token/grid": [0.7, 6.981, "The KV cache keeps, for every token seen so far, a key and a value at every layer.", [[2.23, 2.43], [4.36, 4.66]]],
@@ -13,6 +14,10 @@
   "grow/double": [53.012, 57.483, "It grows in a straight line. Twice the context, twice the cache.", [[54.662, 55.172], [56.232, 56.492]]],
   "grow/batch": [57.863, 64.918, "And every sequence being served keeps a cache of its own. Sixteen at once need about thirty three gigabytes.", [[61.143, 61.683]]],
   "grow/weights": [65.298, 72.816, "That is more than the model's own weights: about seven billion parameters, fourteen gigabytes at two bytes each.", [[67.548, 67.928], [69.918, 70.298]]],
-  "grow/turn": [73.196, 73.937, "Your turn.", []]
+  "fit/free": [74.616, 83.036, "Now run it backward. Say that after loading the weights, sixteen gigabytes are left for the cache: sixteen billion bytes.", [[75.796, 76.326], [78.076, 78.346], [80.736, 81.226]]],
+  "fit/per": [83.416, 91.373, "Each token costs five hundred and twelve thousand bytes. So the question is how many of those fit into sixteen billion.", [[86.896, 87.396], [88.326, 88.616]]],
+  "fit/fit": [91.753, 101.438, "Divide. Cancel three zeros from each, and it is sixteen million over five hundred twelve: thirty one thousand, two hundred and fifty tokens.", [[92.403, 92.973], [94.813, 95.073], [97.903, 98.403], [99.503, 99.663]]],
+  "fit/share": [101.818, 112.367, "That budget is shared by every sequence at once: one sequence of thirty one thousand, two hundred and fifty tokens, or eight of about three thousand nine hundred each.", [[104.738, 105.228], [108.918, 109.338]]],
+  "fit/turn": [112.747, 113.487, "Your turn.", []]
  }
 }

@@ -68,7 +68,10 @@ export const generators: Generator[] = [
       const p = d < 0.35 ? pick(rng, [0.5, 0.8, 0.9]) : pick(rng, [0.3, 0.4, 0.6, 0.7, 0.8, 0.9]);
       const p2 = power(p, 2).v;
       const p3 = power(p, 3).v;
-      const v = clean(p3 + 3 * p2 * (1 - p));
+      const q = clean(1 - p);
+      const one = clean(p2 * q);
+      const two = clean(3 * one);
+      const v = clean(p3 + two);
       const askWrong = d >= 0.7 && rng.next() < 0.5;
       const ans = askWrong ? clean(1 - v) : v;
       const flip = (x: number) => (askWrong ? clean(1 - x) : x);
@@ -82,9 +85,10 @@ export const generators: Generator[] = [
           { value: flip(p), why: 'That is the chance for a single sample. Work out the vote over all three.' },
         ]).filter((t) => Math.abs(t.value - ans) >= 0.0005),
         solution: [
-          `All three right: $p^3 = ${num(p3)}$.`,
-          `Exactly two right: the wrong one can be any of the 3 samples, so $3\\,p^2(1 - p) = 3 \\times ${num(p2)} \\times ${num(clean(1 - p))} = ${num(clean(3 * p2 * (1 - p)))}$.`,
-          `The vote is right with probability $${num(p3)} + ${num(clean(3 * p2 * (1 - p)))} = ${num(v)}$${askWrong ? `, so wrong with $1 - ${num(v)} = ${num(ans)}$` : ''}.`,
+          `Each sample is right independently, so multiply: all three right is $${num(p)} \\times ${num(p)} \\times ${num(p)} = ${num(p)}^{3} = ${num(p3)}$.`,
+          `Exactly two right, with the third sample the wrong one: $${num(p)} \\times ${num(p)} \\times ${num(q)} = ${num(p2)} \\times ${num(q)} = ${num(one)}$.`,
+          `The wrong one could be any of the 3 samples, so exactly two right is $3 \\times ${num(one)} = ${num(two)}$.`,
+          `The vote is right with probability $${num(p3)} + ${num(two)} = ${num(v)}$${askWrong ? `, so wrong with $1 - ${num(v)} = ${num(ans)}$` : ''}.`,
           v > p ? `That beats one sample's $${num(p)}$: when a sample is usually right, the majority is right even more often.` : v < p ? `That is below one sample's $${num(p)}$: when a sample is usually wrong, the majority is wrong even more often.` : `That equals one sample's $${num(p)}$: at one half, voting neither helps nor hurts.`,
         ],
       };

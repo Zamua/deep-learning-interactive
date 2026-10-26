@@ -1,8 +1,8 @@
 {
- "duration": 108.912,
+ "duration": 123.85,
  "scenes": {
   "chat": [0.0, 39.669],
-  "mask": [39.669, 108.912]
+  "mask": [39.669, 123.85]
  },
  "beats": {
   "chat/model": [0.7, 6.876, "Start from a pretrained language model: at every position of a text, it predicts the next token.", [[2.93, 3.4], [5.04, 5.27]]],
@@ -13,9 +13,10 @@
   "mask/mask": [40.369, 49.41, "So give every token a mask, m: one on the tokens the assistant wrote, and zero on everything else, both markers included.", [[42.459, 42.839], [43.209, 43.839], [45.839, 46.099], [47.849, 48.069]]],
   "mask/end": [49.79, 56.899, "The end token gets a one too. It is part of the reply, and predicting it is how the model learns when to stop.", [[51.82, 52.29], [53.63, 53.88]]],
   "mask/context": [57.279, 64.53, "The masked tokens stay in the input. The model still reads the question; it is just not graded on predicting it.", [[59.569, 60.069], [61.879, 62.359]]],
-  "mask/nll": [64.91, 82.585, "Each graded token adds minus the log of the probability the model gave it. Lima got zero point five, the full stop zero point eight, and the end token zero point nine: losses of zero point six nine, zero point two two and zero point one one.", [[69.4, 70.07], [71.89, 72.33], [72.98, 73.13], [74.11, 74.5], [75.48, 75.64], [76.79, 77.26], [79.26, 79.51], [80.79, 81.09]]],
-  "mask/mean": [82.965, 98.198, "The loss, L, is their average: add up m t times minus log p t over every position t, and divide by the number of ones in the mask, three, not by all nine tokens: zero point three four.", [[83.625, 83.895], [84.255, 84.535], [85.485, 86.065], [90.795, 91.085], [93.425, 93.745], [94.125, 94.525], [96.385, 96.785]]],
-  "mask/lr": [98.578, 106.692, "Then train as when fine-tuning any pretrained network, with a small learning rate, so the model keeps what it already knows.", [[99.028, 99.198], [99.688, 99.878], [102.468, 102.828], [104.148, 104.388]]],
-  "mask/turn": [107.072, 107.812, "Your turn.", []]
+  "mask/system": [64.91, 79.467, "Some conversations open with a system prompt: instructions for the assistant, such as be brief, written before the first user turn. It is context too, so like the user's words, its tokens get a zero.", [[67.51, 68.0], [69.52, 69.77], [70.3, 70.55], [71.24, 71.66], [73.69, 74.26], [75.6, 75.93], [77.64, 77.92]]],
+  "mask/nll": [79.847, 97.522, "Each graded token adds minus the log of the probability the model gave it. Lima got zero point five, the full stop zero point eight, and the end token zero point nine: losses of zero point six nine, zero point two two and zero point one one.", [[84.337, 85.007], [86.827, 87.267], [87.917, 88.067], [89.047, 89.437], [90.417, 90.577], [91.727, 92.197], [94.197, 94.447], [95.727, 96.027]]],
+  "mask/mean": [97.902, 113.135, "The loss, L, is their average: add up m t times minus log p t over every position t, and divide by the number of ones in the mask, three, not by all nine tokens: zero point three four.", [[98.562, 98.832], [99.192, 99.472], [100.422, 101.002], [105.732, 106.022], [108.362, 108.682], [109.062, 109.462], [111.322, 111.722]]],
+  "mask/lr": [113.515, 121.629, "Then train as when fine-tuning any pretrained network, with a small learning rate, so the model keeps what it already knows.", [[113.965, 114.135], [114.625, 114.815], [117.405, 117.765], [119.085, 119.325]]],
+  "mask/turn": [122.009, 122.75, "Your turn.", []]
  }
 }

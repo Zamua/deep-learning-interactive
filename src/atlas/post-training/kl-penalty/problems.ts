@@ -144,16 +144,27 @@ export const generators: Generator[] = [
         const pq = toks.map(() => rng.shuffle(P.slice()).slice(0, 2) as [number, number]);
         const lr = pq.map(([p, q]) => round(Math.log(p / q), 2));
         const top = lr.indexOf(Math.max(...lr));
-        const topP = pq.map(([p]) => p).indexOf(Math.max(...pq.map(([p]) => p)));
-        if (new Set(lr).size < 3 || (d >= 0.3 && topP === top)) continue;
+        const ps = pq.map(([p]) => p);
+        const maxP = Math.max(...ps);
+        if (new Set(lr).size < 3 || (d >= 0.3 && ps[top] === maxP)) continue;
+        // The one token with the largest π, if no other ties it.
+        const topP = ps.filter((p) => p === maxP).length === 1 ? ps.indexOf(maxP) : -1;
         const opt = (i: number) => `\`${toks[i]}\`: $${PI} = ${num(pq[i]![0])}$, $${REF} = ${num(pq[i]![1])}$`;
-        const why = lr.map((x, i) => (i === top ? null : `Its log-ratio is $\\ln(${num(pq[i]![0])} / ${num(pq[i]![1])}) \\approx ${num(x, 2)}$, below \`${toks[top]}\`'s $${num(lr[top]!, 2)}$.${i === topP ? ` It has the largest $${PI}$, but the charge depends on the ratio to $${REF}$.` : ''}`));
+        /** `0.5 / 0.3 \approx 1.67`, or `= 2` when exact. */
+        const ratio = (i: number) => {
+          const [p, q] = pq[i]!;
+          const r = round(p / q, 2);
+          return `${num(p)} / ${num(q)} ${Math.abs(r - p / q) < 1e-9 ? '=' : '\\approx'} ${num(r)}`;
+        };
+        const why = lr.map((_, i) => (i === top ? null : `Its ratio is $${ratio(i)}$, below \`${toks[top]}\`'s $${ratio(top)}$, so its log-ratio is smaller.${i === topP ? ` It has the largest $${PI}$, but the charge depends on the ratio to $${REF}$.` : ''}`));
         return {
           prompt: `A sampled answer contains the tokens ${toks.map((t) => `\`${t}\``).join(', ')}. Which token adds the most to the KL penalty?`,
           answer: { kind: 'choice', options: toks.map((_, i) => opt(i)), correct: top, why },
           solution: [
-            `Each token is charged $${BETA}$ times its log-ratio $\\ln(${PI} / ${REF})$: ${toks.map((t, i) => `\`${t}\` $\\approx ${num(lr[i]!, 2)}$`).join(', ')}.`,
-            `The largest is \`${toks[top]}\`: the model has moved furthest from the reference on it.`,
+            `Each token is charged $${BETA}$ times its log-ratio $\\ln(${PI} / ${REF})$, and $\\ln$ grows with its input, so the largest ratio $${PI} / ${REF}$ is charged most.`,
+            `The ratios: ${toks.map((t, i) => `\`${t}\` $${ratio(i)}$`).join(', ')}.`,
+            `The largest is \`${toks[top]}\`'s, so its log-ratio is the largest: ${toks.map((t, i) => `\`${t}\` $\\approx ${num(lr[i]!, 2)}$`).join(', ')}.`,
+            `The model has moved furthest from the reference on \`${toks[top]}\`.`,
           ],
         };
       }

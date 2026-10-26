@@ -1,9 +1,9 @@
 {
- "duration": 133.861,
+ "duration": 173.782,
  "scenes": {
   "prefill": [0.0, 32.633],
-  "decode": [32.633, 75.045],
-  "memory": [75.045, 133.861]
+  "decode": [32.633, 105.894],
+  "memory": [105.894, 173.782]
  },
  "beats": {
   "prefill/prompt": [0.7, 8.79, "Text is written in two phases. First, the prompt: here five tokens, all known before the model starts.", [[2.81, 3.31], [3.8, 4.03], [4.59, 5.08], [6.46, 6.74]]],
@@ -13,11 +13,13 @@
   "decode/cache": [44.091, 53.842, "A decode pass holds one token. It reads the earlier keys and values from the cache, adds its own, and writes the next: it, then slept.", [[46.271, 46.781], [49.631, 49.941], [50.711, 50.961], [51.961, 52.511], [52.771, 53.101]]],
   "decode/count": [54.222, 66.091, "Four new tokens took four passes: the prefill, which wrote the first, then three decode passes. A hundred new tokens take one prefill and ninety nine decode passes.", [[56.532, 57.022], [57.702, 57.882], [58.842, 59.132], [60.942, 61.472], [63.792, 63.972]]],
   "decode/wait": [66.471, 73.945, "The prefill sets how long you wait for the first token. The decode passes set how fast the rest stream in.", [[69.721, 70.311]]],
-  "memory/bytes": [75.745, 86.665, "How long does a decode pass take? A model of eight billion parameters at two bytes each holds sixteen gigabytes of weights, and every pass must read all of them.", [[77.855, 78.375], [81.695, 81.915], [84.015, 84.355]]],
-  "memory/bw": [87.045, 98.612, "A GPU reads its memory at about three thousand two hundred gigabytes per second. Sixteen gigabytes take five milliseconds, so two hundred tokens per second at best.", [[92.225, 92.755], [95.395, 95.705]]],
-  "memory/math": [98.992, 112.216, "The arithmetic is tiny by comparison: one multiply and one add per weight, sixteen billion operations, at a thousand trillion per second. Zero point zero one six milliseconds.", [[101.442, 101.962], [104.382, 104.752], [106.722, 107.032], [109.002, 109.482]]],
-  "memory/bound": [112.596, 122.286, "So decoding spends its time waiting on memory: tokens per second is the memory speed over the model's bytes. Faster arithmetic would barely help.", [[115.606, 116.096], [119.636, 120.086]]],
-  "memory/pre": [122.666, 131.641, "Prefill is different. Each weight it reads is used for every prompt token at once, so five hundred tokens share one read of the weights.", [[123.956, 124.476], [127.976, 128.356]]],
-  "memory/turn": [132.021, 132.761, "Your turn.", []]
+  "decode/time": [74.325, 91.872, "Put numbers on it. Say the prefill takes forty milliseconds, thousandths of a second, and each decode pass twenty five. A hundred new tokens need ninety nine decode passes: ninety nine times twenty five is two thousand four hundred seventy five milliseconds.", [[75.355, 75.895], [78.295, 78.615], [79.855, 80.255], [82.455, 83.005], [86.275, 86.765], [88.485, 88.735]]],
+  "decode/total": [92.252, 104.794, "Add the prefill: forty plus two thousand four hundred seventy five is two thousand five hundred fifteen milliseconds. Divide by a thousand for seconds: two point five one five.", [[93.272, 93.902], [96.792, 97.092], [100.012, 100.562], [102.612, 103.092]]],
+  "memory/bytes": [106.594, 126.586, "How long does a decode pass take? Memory is counted in bytes, and a model of eight billion parameters, stored at two bytes each, holds sixteen billion bytes of weights. A gigabyte, or GB, is a billion bytes: sixteen gigabytes, and every pass must read all of them.", [[108.674, 109.524], [111.274, 111.524], [113.664, 113.844], [115.314, 115.604], [118.124, 118.774], [119.514, 119.704], [120.574, 120.824], [121.994, 122.404], [123.764, 124.204]]],
+  "memory/bw": [126.966, 138.533, "A GPU reads its memory at about three thousand two hundred gigabytes per second. Sixteen gigabytes take five milliseconds, so two hundred tokens per second at best.", [[132.146, 132.676], [135.316, 135.626]]],
+  "memory/math": [138.913, 152.137, "The arithmetic is tiny by comparison: one multiply and one add per weight, sixteen billion operations, at a thousand trillion per second. Zero point zero one six milliseconds.", [[141.363, 141.883], [144.303, 144.673], [146.643, 146.953], [148.923, 149.403]]],
+  "memory/bound": [152.517, 162.207, "So decoding spends its time waiting on memory: tokens per second is the memory speed over the model's bytes. Faster arithmetic would barely help.", [[155.527, 156.017], [159.557, 160.007]]],
+  "memory/pre": [162.587, 171.562, "Prefill is different. Each weight it reads is used for every prompt token at once, so five hundred tokens share one read of the weights.", [[163.877, 164.397], [167.897, 168.277]]],
+  "memory/turn": [171.942, 172.682, "Your turn.", []]
  }
 }

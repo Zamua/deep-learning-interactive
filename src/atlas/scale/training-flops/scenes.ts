@@ -70,9 +70,15 @@ const backward: SceneDef = {
       s.alpha(a, () => {
         mono(s, r.name, lx, y - 2.4 * s.u, { size: 3.2, k: '--ink-3', align: 'right' });
         mono(s, r.code, lx, y + 2.4 * s.u, { size: 3.8, k: KS[i]!, align: 'right', weight: 650 });
-        stack(s, bx + 2 * i * unit * s.u, y, unit, 7.4, [{ n: 2, k: KS[i]!, label: '2' }], { grow: i === 0 ? 1 : s.ease(r.beat, 0.8, 0.3), size: 3.4 });
+        // The outer product's two FLOPs arrive one beat each: the multiply, then the add across tokens.
+        const parts = i === 2 ? [{ n: 1, k: KS[i]!, label: '×' }, { n: 1, k: KS[i]!, label: '+' }] : [{ n: 2, k: KS[i]!, label: '2' }];
+        const grow = i === 0 ? 1 : i === 2 ? 0.5 * s.ease('dW', 0.8, 0.3) + 0.5 * s.ease('acc', 0.8, 0.3) : s.ease(r.beat, 0.8, 0.3);
+        stack(s, bx + 2 * i * unit * s.u, y, unit, 7.4, parts, { grow, size: 3.4 });
       });
     });
+    const ya = s.h * 0.5;
+    s.alpha(s.win('dW', 'acc'), () => mono(s, 'dW[i, j] = dz[i] × x[j]: one ×', s.w / 2, ya, { size: 3.2, k: '--ink-2' }));
+    s.alpha(s.win('acc', 'six'), () => mono(s, 'dW[i, j] += dz[i] × x[j]: × then +', s.w / 2, ya, { size: 3.2, k: '--ink-2' }));
     const ty = s.h * 0.6;
     s.alpha(s.ease('six', 0.6), () => {
       mono(s, 'per parameter,', lx, ty - 2.4 * s.u, { size: 3.2, k: '--ink-3', align: 'right' });
@@ -93,8 +99,8 @@ const LINES: { beat: string; label: string; value: string; k: 'blue' | 'orange' 
   { beat: 'model', label: 'N', value: '3 × 10⁹ parameters', k: 'blue' },
   { beat: 'model', label: 'D', value: '4 × 10¹⁰ tokens', k: 'orange' },
   { beat: 'mult', label: 'C = 6ND', value: '7.2 × 10²⁰ FLOPs', k: 'purple' },
-  { beat: 'rate', label: '100 GPUs', value: '10¹⁶ FLOPs per second', k: 'slate' },
-  { beat: 'time', label: 'time', value: '7.2 × 10⁴ s = 20 hours', k: 'green' },
+  { beat: 'rate', label: '100 GPUs', value: '2 × 10¹⁶ FLOPs per second', k: 'slate' },
+  { beat: 'time', label: 'time', value: '3.6 × 10⁴ s', k: 'green' },
   { beat: 'fwd', label: 'forward', value: '2N = 6 × 10⁹ per token', k: 'teal' },
 ];
 
@@ -106,11 +112,14 @@ const run: SceneDef = {
       const a = s.ease(l.beat, 0.6, l.beat === 'model' && i === 1 ? 1.2 : 0);
       s.alpha(a, () => {
         mono(s, l.label, lx - 2 * s.u, y, { size: 4, k: l.k, align: 'right', weight: 650 });
-        mono(s, l.value, lx + 2 * s.u, y, { size: s.tall ? 3.6 : 4, align: 'left' });
+        const hrs = l.beat === 'time' ? s.ease('hours', 0.6) : 0;
+        s.alpha(1 - hrs, () => mono(s, l.value, lx + 2 * s.u, y, { size: s.tall ? 3.6 : 4, align: 'left' }));
+        s.alpha(hrs, () => mono(s, '3.6 × 10⁴ s = 10 hours', lx + 2 * s.u, y, { size: s.tall ? 3.6 : 4, align: 'left' }));
       });
     });
     s.alpha(s.ease('mult', 0.6, 0.8) * (1 - s.ease('rate', 0.5)), () => mono(s, '6 × 3 × 4 = 72,  10⁹ × 10¹⁰ = 10¹⁹', s.w / 2, s.h * 0.4 + 5.5 * s.u, { size: 3, k: '--ink-3' }));
-    s.alpha(s.ease('time', 0.6, 0.8) * (1 - s.ease('fwd', 0.5)), () => mono(s, '7.2 × 10²⁰ / 10¹⁶', s.w / 2, s.h * 0.68 + 5.5 * s.u, { size: 3, k: '--ink-3' }));
+    s.alpha(s.ease('time', 0.6, 0.4) * (1 - s.ease('hours', 0.5)), () => mono(s, '7.2 / 2 = 3.6,  10²⁰ / 10¹⁶ = 10⁴', s.w / 2, s.h * 0.68 + 5.5 * s.u, { size: 3, k: '--ink-3' }));
+    s.alpha(s.ease('hours', 0.6, 0.4) * (1 - s.ease('fwd', 0.5)), () => mono(s, '36,000 s / 3,600 = 10 hours', s.w / 2, s.h * 0.68 + 5.5 * s.u, { size: 3, k: '--ink-3' }));
   },
 };
 

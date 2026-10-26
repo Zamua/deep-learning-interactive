@@ -35,12 +35,16 @@ export const script: LectureScript = {
         # weights == before, every entry          #@frozen
         # the examples: tokens to attend to      #@tokens
         5 + 2 * 4 + 3           # 16 tokens       #@cost
+        1024 - 12 - 3           # 1009 left       #@room
+        1009 // 6               # 168 examples    #@fit
       `,
       beats: [
         { id: 'frozen', say: 'No gradient step happened. The model only ran forward, and every weight is exactly what it was before.', code: 'frozen' },
         { id: 'tokens', say: 'The examples are just tokens in the context. Attention reads them like any earlier tokens, and to predict what follows such a pattern, the model has to work out the task.', code: 'tokens' },
         { id: 'gone', say: 'So nothing is kept. Send a new prompt without the examples, and the model starts from the same weights, with no trace of them.', code: 'tokens' },
         { id: 'cost', say: 'They do cost room in the context. An instruction of five tokens, two examples of four, and an input of three make sixteen tokens to read before the answer.', code: 'cost' },
+        { id: 'room', say: 'The context also has a limit. Say it holds at most {1,024|one thousand and twenty four} tokens, with an instruction of twelve and an input of three. Those fifteen leave {1,009|one thousand and nine} tokens for the examples.', code: 'room' },
+        { id: 'fit', say: 'At six tokens an example, {1,009|one thousand and nine} over six is about a hundred and sixty eight point two. Only whole examples fit, so round down: {168|a hundred and sixty eight} take {1,008|one thousand and eight} tokens, and one more would need {1,014|one thousand and fourteen}.', code: 'fit' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

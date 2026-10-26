@@ -1,5 +1,6 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { cells, columns } from '../../draw';
+import { after } from '../../backprop/draw';
+import { cells, columns, rowLabel } from '../../draw';
 import { fmt, rich } from '../draw';
 
 const MAIN = [1, 0, 0, 1, 0, 0, 1, 0];
@@ -52,8 +53,21 @@ const groupScene: SceneDef = {
     s.alpha(g, () => group(s, MAIN, { reward: s.ease('group', 0.6, 1.2), adv: s.ease('adv', 1, 0.3) }));
     const y = s.h * 0.31;
     s.alpha(s.ease('mean', 0.6), () => rich(s, [['mean = 3 / 8 = ', '--ink-2'], [st.mean.toFixed(3), 'gold']], s.w / 2, y, { size: 3.4, weight: 600 }));
-    s.alpha(s.ease('std', 0.6), () => rich(s, [['std ≈ ', '--ink-2'], [st.sd.toFixed(2), 'gold']], s.w / 2, y + 5.5 * s.u, { size: 3.4, weight: 600 }));
-    s.alpha(s.ease('adv', 0.6, 1.5), () => rich(s, [['right ', '--ink-3'], [fmt(st.adv[0]!), 'green'], ['   wrong ', '--ink-3'], [fmt(st.adv[1]!), 'red']], s.w / 2, s.h * 0.92, { size: 3.4, weight: 600 }));
+    s.alpha(s.ease('std', 0.6), () => rich(s, [['std ≈ ', '--ink-2'], [st.sd.toFixed(3), 'gold']], s.w / 2, y + 5.5 * s.u, { size: 3.4, weight: 600 }));
+    // Right and wrong answers: first minus the mean, then over the std.
+    const sub = s.ease('sub', 0.6) * (1 - s.ease('adv', 0.5));
+    const div = s.ease('adv', 0.6, 0.3);
+    const y1 = s.h * 0.84;
+    const y2 = s.h * 0.92;
+    const sd = st.sd.toFixed(3);
+    s.alpha(sub, () => {
+      rich(s, [['right: 1 − 0.375 = ', '--ink-2'], ['0.625', 'green']], s.w / 2, y1, { size: 3.2, weight: 600 });
+      rich(s, [['wrong: 0 − 0.375 = ', '--ink-2'], ['−0.375', 'red']], s.w / 2, y2, { size: 3.2, weight: 600 });
+    });
+    s.alpha(div, () => {
+      rich(s, [[`right: 0.625 / ${sd} ≈ `, '--ink-2'], [fmt(st.adv[0]!), 'green']], s.w / 2, y1, { size: 3.2, weight: 600 });
+      rich(s, [[`wrong: −0.375 / ${sd} ≈ `, '--ink-2'], [fmt(st.adv[1]!), 'red']], s.w / 2, y2, { size: 3.2, weight: 600 });
+    });
   },
 };
 
@@ -69,7 +83,7 @@ const agree: SceneDef = {
     s.alpha(0.4 + 0.6 * enter, () => group(s, r, { reward: 1, adv: enter, caption: false, hi: r.map((x, i) => (phase < 2 && (phase === 0 ? x === 1 : x === 1 && i === 0) ? 1 : 0)) }));
     const y = s.h * 0.34;
     const label = phase === 0 ? 'hard: 1 of 8 right' : phase === 1 ? 'easy: 7 of 8 right' : phase === 2 ? 'every answer right' : '3 of 8 right';
-    rich(s, [[label, '--ink-2'], [`   mean ${st.mean.toFixed(3)}  std ${st.sd.toFixed(2)}`, 'gold']], s.w / 2, y, { size: 3.1, weight: 600 });
+    rich(s, [[label, '--ink-2'], [`   mean ${st.mean.toFixed(3)}  std ${st.sd.toFixed(3)}`, 'gold']], s.w / 2, y, { size: 3.1, weight: 600 });
     const cap = (t: string, k: 'green' | 'red' | '--ink-2', a: number) => s.alpha(a, () => s.text(t, s.w / 2, s.h * 0.94, { size: 3.2, color: s.c(k) }));
     cap(phase === 0 ? 'the one right answer: a big push' : 'each right answer: a small push', 'green', s.since('easy') < 0 ? 1 : 0);
     cap('every advantage 0: nothing learned', '--ink-2', s.win('easy', 'none'));
@@ -79,4 +93,35 @@ const agree: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { group: groupScene, agree };
+// The worked problem: five answers, one right, std 0.4.
+const TRY = [0, 1, 0, 0, 0];
+const TA = TRY.map((r) => (r - 0.2) / 0.4);
+const t1 = (v: number) => (v < 0 ? `−${-v}` : String(v));
+
+const tryIt: SceneDef = {
+  draw(s) {
+    const xs = columns(s, 5, 14);
+    const lx = xs[0]! - 9 * s.u;
+    const k = 1;
+    s.alpha(s.ease('p1', 0.6, 0.3), () => {
+      rich(s, [['G = 5', '--ink-2'], ['   std = 0.4', 'gold']], s.w / 2, s.h * 0.08, { size: 3.4, weight: 600 });
+      TRY.forEach((r, i) => {
+        s.text(String(i), xs[i]!, s.h * 0.15, { size: 2.6, font: 'mono', color: s.c('--ink-3') });
+        s.cell(xs[i]! - 5 * s.u, s.h * 0.21 - 4 * s.u, 10 * s.u, 8 * s.u, r ? '✓' : '✗', r ? 'green' : 'red', { on: i === k ? s.ease('sub', 0.6) : 0, size: 3.6 });
+      });
+      rowLabel(s, 'r', lx, s.h * 0.31, 'gold', 3.6);
+      cells(s, xs, s.h * 0.31, TRY.map(String), 'gold', { w: 9, h: 6.5, on: TRY.map((_, i) => (i === k ? s.win('sub', 'all') : 0)) });
+    });
+    s.alpha(s.ease('mean', 0.6, 0.4), () => rich(s, [['mean = 1 / 5 = ', '--ink-2'], ['0.2', 'gold']], s.w / 2, s.h * 0.42, { size: 3.3, weight: 600 }));
+    s.alpha(s.ease('sub', 0.6, 0.4), () => rich(s, [['answer 1: 1 − 0.2 = ', '--ink-2'], ['0.8', 'green']], s.w / 2, s.h * 0.5, { size: 3.3, weight: 600 }));
+    s.alpha(s.ease('div', 0.6, 0.4), () => rich(s, [['0.8 / 0.4 = ', '--ink-2'], ['2', 'green']], s.w / 2, s.h * 0.58, { size: 3.3, weight: 600 }));
+    s.alpha(s.ease('div', 0.6, 1), () => {
+      rowLabel(s, 'A', lx, s.h * 0.7, 'green', 3.6);
+      const all = after(s, 'all', 0.4);
+      cells(s, xs, s.h * 0.7, TA.map((v, i) => (i === k || all > 0.5 ? t1(v) : '')), 'green', { w: 9, h: 6.5, on: TA.map((_, i) => (i === k ? 1 - all : 0)) });
+    });
+    s.alpha(after(s, 'all', 0.1), () => rich(s, [['wrong: (0 − 0.2) / 0.4 = ', '--ink-2'], ['−0.5', 'red']], s.w / 2, s.h * 0.81, { size: 3.3, weight: 600 }));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { group: groupScene, agree, try: tryIt };

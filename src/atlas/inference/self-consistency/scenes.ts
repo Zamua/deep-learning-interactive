@@ -65,6 +65,66 @@ const vote: SceneDef = {
   },
 };
 
+/** What each block of the grid is worth, one line per row of text. */
+const WORTH: [string, number, 'green' | 'gold' | 'teal' | '--ink-2', number, string, number][] = [
+  ['both right: 7 × 7 = 49 of 100', 0, 'green', 600, 'both', 2.4],
+  ['0.7 × 0.7 = 0.49', 1, 'green', 700, 'both', 4],
+  ['right, then wrong: 7 × 3 = 21', 2, 'gold', 600, 'mixed', 4],
+  ['0.7 × 0.3 = 0.21', 3, 'gold', 700, 'mixed', 5.5],
+  ['independent: multiply the chances', 4, 'teal', 650, 'rule', 0.5],
+  ['all three right: 0.49 × 0.7 = 0.343', 5, '--ink-2', 650, 'third', 1],
+];
+
+/** Two samples at p = 0.7 as 100 equally likely pairs: the first across, the second down. */
+const both: SceneDef = {
+  draw(s) {
+    const c = (s.tall ? 4.2 : 4.4) * s.u;
+    const strip = 1.5 * c;
+    const side = 5.5 * s.u;
+    const size = s.tall ? 3.1 : 2.9;
+    const textW = Math.max(...WORTH.map(([t]) => s.measure(t, { size, font: 'mono', weight: 700 })));
+    const gap = 6 * s.u;
+    const x0 = s.tall ? s.w / 2 - (side + strip + 10 * c) / 2 : s.w / 2 - (side + strip + 10 * c + gap + textW) / 2;
+    const gx = x0 + side + strip;
+    const gy = s.h * (s.tall ? 0.17 : 0.24);
+    const two = s.ease('two', 0.8);
+    const cell = (x: number, y: number, ok: boolean, a = 1) =>
+      s.alpha(a, () => s.rrect(x + 0.35 * s.u, y + 0.35 * s.u, c - 0.7 * s.u, c - 0.7 * s.u, 0.6, { fill: s.tint(ok ? 'green' : 'red', 0.5), stroke: s.c(ok ? 'green' : 'red'), lw: 0.2 }));
+    // The first sample: one strip of ten runs, seven right.
+    s.alpha(s.ease('one', 0.6), () => {
+      for (let j = 0; j < 10; j++) cell(gx + j * c, gy - strip, j < 7, s.ease('one', 0.4, 0.6 + 0.12 * j));
+      s.alpha(1 - two, () => s.text('one sample, 10 runs: 7 right, 3 wrong', s.tall ? s.w / 2 : gx + 5 * c, gy + 2 * c, { size: 3, font: 'mono', color: s.c('--ink-2') }));
+      s.alpha(two, () => s.text('first sample', gx + 5 * c, gy - strip - 4 * s.u, { size: 3, font: 'mono', weight: 600, color: s.c('--ink-2') }));
+    });
+    // The second sample down the side, and the grid of pairs.
+    s.alpha(two, () => {
+      for (let i = 0; i < 10; i++) cell(gx - strip, gy + i * c, i < 7, s.ease('two', 0.4, 0.6 + 0.1 * i));
+      const ctx = s.ctx;
+      ctx.save();
+      ctx.translate(gx - strip - 2.6 * s.u, gy + 5 * c);
+      ctx.rotate(-Math.PI / 2);
+      s.text('second sample', 0, 0, { size: 3, font: 'mono', weight: 600, color: s.c('--ink-2') });
+      ctx.restore();
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+          const x = gx + j * c + 0.35 * s.u;
+          const y = gy + i * c + 0.35 * s.u;
+          const hit = j < 7 && i < 7 ? s.ease('both', 0.5, 1 + 0.15 * j) : 0;
+          const mix = j < 7 && i >= 7 ? s.ease('mixed', 0.5, 2.5 + 0.15 * j) : 0;
+          s.rrect(x, y, c - 0.7 * s.u, c - 0.7 * s.u, 0.6, { fill: s.tint('--ink-3', 0.12), stroke: s.tint('--ink-3', 0.3), lw: 0.15 });
+          s.alpha(hit, () => s.rrect(x, y, c - 0.7 * s.u, c - 0.7 * s.u, 0.6, { fill: s.tint('green', 0.42) }));
+          s.alpha(mix, () => s.rrect(x, y, c - 0.7 * s.u, c - 0.7 * s.u, 0.6, { fill: s.tint('gold', 0.5) }));
+        }
+      }
+    });
+    const tx = s.tall ? s.w / 2 : gx + 10 * c + gap;
+    const ty = (k: number) => (s.tall ? gy + 10 * c + (6 + 5.4 * k) * s.u : gy + [0.6, 1.3, 2.8, 3.5, 5, 6.5][k]! * 1.5 * c);
+    WORTH.forEach(([t, k, col, w, beat, delay]) =>
+      s.alpha(s.ease(beat, 0.6, delay), () => s.text(t, tx, ty(k), { size, font: 'mono', weight: w, align: s.tall ? 'center' : 'left', color: s.c(col) })),
+    );
+  },
+};
+
 /** The winning outcomes of three samples at p = 0.7, and what each is worth. */
 const WINS: [boolean[], string][] = [
   [[true, true, true], '0.7 × 0.7 × 0.7 = 0.343'],
@@ -79,7 +139,7 @@ const odds: SceneDef = {
   },
   draw(s) {
     const cmp = s.ease('compare', 0.7);
-    s.show('f', s.ease('two', 0.6, 2) * (1 - cmp));
+    s.show('f', s.ease('sum', 0.6, 1) * (1 - cmp));
     const mx = s.tall ? s.w / 2 - 36 * s.u : 5 * s.u;
     const rowY = (i: number) => s.h * (s.tall ? 0.25 + i * 0.07 : 0.3 + i * 0.1);
     s.alpha(1 - cmp, () => {
@@ -89,13 +149,13 @@ const odds: SceneDef = {
       });
       WINS.forEach(([ms, val], i) => {
         const y = rowY(i);
-        const a = i === 0 ? s.ease('three', 0.6) : s.ease('two', 0.5, 0.4 + 0.5 * (i - 1));
+        const a = i === 0 ? s.ease('three', 0.6) : i === 1 ? s.ease('two', 0.5, 0.4) : s.ease('ways', 0.5, 0.8 + 0.5 * (i - 2));
         s.alpha(a, () => {
           ms.forEach((ok, j) => mark(s, ok, mx + j * 5 * s.u, y, 3.6));
           s.text(val, mx + 15 * s.u, y, { size: 3.1, font: 'mono', align: 'left', color: s.c(i === 0 ? 'green' : 'teal') });
         });
       });
-      s.alpha(s.ease('two', 0.6, 2.4), () => s.text('3 ways: 3 × 0.147 = 0.441', mx + 15 * s.u, rowY(4) - (s.tall ? 0.01 : 0.02) * s.h, { size: 3.1, font: 'mono', weight: 650, align: 'left', color: s.c('teal') }));
+      s.alpha(s.ease('ways', 0.6, 2.4), () => s.text('3 ways: 3 × 0.147 = 0.441', mx + 15 * s.u, rowY(4) - (s.tall ? 0.01 : 0.02) * s.h, { size: 3.1, font: 'mono', weight: 650, align: 'left', color: s.c('teal') }));
       // One sample against the vote of three, for p = 0.7 and then p = 0.4.
       const base = s.h * (s.tall ? 0.93 : 0.84);
       const hgt = s.h * (s.tall ? 0.2 : 0.5);
@@ -132,4 +192,4 @@ const odds: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { vote, odds };
+export const scenes: Record<string, SceneDef> = { vote, both, odds };

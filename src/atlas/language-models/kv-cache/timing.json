@@ -1,19 +1,23 @@
 {
- "duration": 97.978,
+ "duration": 149.672,
  "scenes": {
-  "again": [0.0, 49.935],
-  "cache": [49.935, 97.978]
+  "again": [0.0, 71.003],
+  "cache": [71.003, 149.672]
  },
  "beats": {
   "again/loop": [0.7, 9.86, "A language model writes text one token at a time: run the model on the sequence so far, pick the next token, append it, and run again.", [[3.83, 4.4], [6.45, 6.9], [7.9, 8.21], [8.78, 9.05]]],
   "again/redo": [10.24, 20.004, "Done plainly, every step runs the whole sequence, so every block computes every token's key and value again, though only one token is new.", [[11.2, 11.52], [13.71, 14.05], [17.85, 18.23]]],
   "again/same": [20.384, 30.797, "And the old ones come out the same every time. With the causal mask, an earlier token never attends to a later one, so adding a token changes nothing before it.", [[23.034, 23.614], [24.754, 24.994], [27.724, 28.134]]],
-  "again/count": [31.177, 48.835, "Over T steps, step one computes one key, step two computes two, and step T computes T. That sum, one plus two, and so on up to T, is T times T plus one, over two: for ten steps, fifty-five.", [[32.267, 32.677], [34.527, 34.987], [36.677, 37.037], [39.037, 39.657], [40.387, 40.647], [43.007, 43.347], [45.327, 45.667], [46.327, 46.867], [47.747, 47.987]]],
-  "cache/keep": [50.635, 57.751, "So keep them. The KV cache stores the keys and values of every token so far, in every block.", [[51.545, 52.105], [56.465, 56.695]]],
-  "cache/step": [58.131, 67.932, "Each step now computes a query, key and value for the newest token only, adds its key and value to the cache, and attends over everything stored.", [[60.261, 60.521], [63.191, 63.621], [65.611, 65.891]]],
-  "cache/work": [68.312, 76.16, "Ten steps compute ten keys instead of fifty-five. For a thousand tokens, a thousand instead of half a million.", [[71.672, 72.232], [73.572, 73.852], [74.582, 74.792]]],
-  "cache/shape": [76.54, 88.096, "In one block, at step t, the cached keys form a t by d array, one row per token so far, and the values another. Each grows by one row per step.", [[77.39, 77.6], [78.53, 78.82], [81.57, 82.02], [83.79, 84.11], [85.34, 85.9]]],
-  "cache/memory": [88.476, 95.757, "The price is memory: two times the blocks, times T, times d numbers, for every sequence being written.", [[89.896, 90.376], [91.496, 91.706], [92.476, 92.756], [93.836, 94.006]]],
-  "cache/turn": [96.137, 96.878, "Your turn.", []]
+  "again/count": [31.177, 41.893, "Count the keys. Step one computes one, step two computes two, and step ten computes ten: one plus two, and so on up to ten.", [[32.247, 32.837], [34.447, 34.837], [36.527, 36.877], [38.667, 39.187], [40.217, 40.507]]],
+  "again/pair": [42.273, 53.875, "To add that up, pair the ends. One plus ten is eleven, two plus nine is eleven, and so on to five plus six. Five pairs of eleven: fifty-five.", [[43.183, 43.523], [44.493, 45.003], [46.653, 47.023], [48.543, 48.863], [50.783, 51.253], [52.533, 52.993]]],
+  "again/formula": [54.255, 69.903, "Over T steps, there are T over two pairs, each adding to T plus one: T times T plus one, over two. For a thousand steps, five hundred times one thousand and one: five hundred thousand, five hundred.", [[55.335, 55.515], [57.465, 57.905], [59.735, 60.255], [61.865, 62.035], [62.645, 63.385], [64.545, 64.885], [67.245, 67.765], [68.905, 69.105]]],
+  "cache/keep": [71.703, 78.819, "So keep them. The KV cache stores the keys and values of every token so far, in every block.", [[72.613, 73.173], [77.533, 77.763]]],
+  "cache/step": [79.199, 89.0, "Each step now computes a query, key and value for the newest token only, adds its key and value to the cache, and attends over everything stored.", [[81.329, 81.589], [84.259, 84.689], [86.679, 86.959]]],
+  "cache/work": [89.38, 97.228, "Ten steps compute ten keys instead of fifty-five. For a thousand tokens, a thousand instead of half a million.", [[92.74, 93.3], [94.64, 94.92], [95.65, 95.86]]],
+  "cache/shape": [97.608, 109.165, "In one block, at step t, the cached keys form a t by d array, one row per token so far, and the values another. Each grows by one row per step.", [[98.458, 98.668], [99.598, 99.888], [102.638, 103.088], [104.858, 105.178], [106.408, 106.968]]],
+  "cache/stack": [109.545, 121.123, "Every block keeps a cache of its own. Stack the key caches of four blocks, block first, and they make one array of shape four, by t, by d. The values make another.", [[111.705, 112.315], [114.415, 114.655], [115.405, 115.695], [117.745, 117.975], [118.505, 118.695], [119.235, 119.815]]],
+  "cache/memory": [121.503, 135.742, "The price is memory. This block holds seven tokens, with d at six: seven rows of six numbers for the keys, and as many for the values. Two times seven times six: eighty-four numbers.", [[122.993, 123.723], [125.613, 125.833], [127.123, 127.613], [129.943, 130.173], [131.603, 132.123], [133.993, 134.403], [135.543, 135.713]]],
+  "cache/total": [136.122, 147.452, "Four blocks hold four times that: three hundred thirty-six. In general, two, times the blocks, times T, times d numbers, for every sequence being written.", [[138.312, 138.752], [140.232, 140.762], [141.392, 141.712], [142.122, 142.352], [143.252, 143.432], [144.182, 144.412], [145.512, 145.722]]],
+  "cache/turn": [147.832, 148.572, "Your turn.", []]
  }
 }

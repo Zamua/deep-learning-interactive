@@ -1,6 +1,6 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { columns } from '../../draw';
-import { mark, pass, word } from '../draw';
+import { hbar, mark, pass, word } from '../draw';
 
 const GUESS = ['on', 'the', 'red', 'mat'];
 const PICKS = ['on', 'the', 'soft', 'rug', '.'];
@@ -77,7 +77,7 @@ const YIELDS = [3, 5, 1, 3];
 
 const count: SceneDef = {
   marks: {
-    acc: { tex: String.raw`\text{keep with chance } \min\!\left(1,\ \dfrac{p_{\text{large}}}{p_{\text{small}}}\right)`, x: 0.5, y: 0.8, size: 4.4 },
+    acc: { tex: String.raw`\text{keep with chance } \min\!\left(1,\ \dfrac{p_{\text{large}}}{p_{\text{small}}}\right)`, x: 0.5, y: 0.62, size: 4.4 },
   },
   draw(s) {
     const top = 1 - s.ease('speed', 0.6);
@@ -88,7 +88,7 @@ const count: SceneDef = {
       s.alpha(s.ease('all', 0.6, 1), () => s.text('all accepted: the extra pick is free', s.w / 2, s.h * 0.58, { size: 3, font: 'mono', color: s.c('gold') }));
     });
     // Twelve tokens: twelve plain passes, or four speculative ones.
-    s.alpha(s.ease('speed', 0.6) * (1 - 0.6 * s.ease('same', 0.6)), () => {
+    s.alpha(s.ease('speed', 0.6) * (1 - 0.6 * s.ease('same', 0.6)) * (1 - s.ease('sample', 0.5)), () => {
       const l = s.w / 2 - 40 * s.u;
       const cw = 80 / 12;
       s.text('plain decoding: 12 passes', l, s.h * 0.14, { size: 3, font: 'mono', align: 'left', color: s.c('--ink-3') });
@@ -101,11 +101,28 @@ const count: SceneDef = {
       });
       s.alpha(s.ease('speed', 0.6, 3), () => s.text('12 ÷ 4 = 3 times fewer large passes', s.w / 2, s.h * 0.55, { size: 3.4, font: 'mono', weight: 650, color: s.c('gold') }));
     });
-    s.alpha(s.ease('same', 0.6), () => {
+    s.alpha(s.win('same', 'sample'), () => {
       s.text('greedy: each kept token is the large model\'s pick', s.w / 2, s.h * 0.68, { size: 3, font: 'mono', color: s.c('blue') });
     });
-    s.show('acc', s.ease('sample', 0.6, 1));
-    s.alpha(s.ease('sample', 0.6, 2.5), () => s.text('on a rejection, draw from what is left', s.w / 2, s.h * 0.92, { size: 3, font: 'mono', color: s.c('blue') }));
+    // One sampled guess: the draft's and the large model's probability for it.
+    s.alpha(s.ease('sample', 0.6, 0.4), () => {
+      const x0 = s.w / 2 - 16 * s.u;
+      const full = 50 * s.u;
+      s.text('sampling: is the guess red kept?', s.w / 2, s.h * 0.12, { size: 3.1, font: 'mono', weight: 600, color: s.c('--ink-2') });
+      s.alpha(s.ease('sample', 0.6, 2.2), () => {
+        s.text('draft p(red)', x0 - 2 * s.u, s.h * 0.23, { size: 2.9, font: 'mono', align: 'right', color: s.c('purple') });
+        hbar(s, x0, s.h * 0.23, full * 0.6 * s.ease('sample', 0.8, 2.4), 'purple', '0.6');
+      });
+      s.alpha(s.ease('sample', 0.6, 4.2), () => {
+        s.text('large p(red)', x0 - 2 * s.u, s.h * 0.33, { size: 2.9, font: 'mono', align: 'right', color: s.c('blue') });
+        hbar(s, x0, s.h * 0.33, full * 0.3 * s.ease('sample', 0.8, 4.4), 'blue', '0.3');
+      });
+      s.alpha(s.ease('sample', 0.6, 6.5), () => s.text('kept with chance 0.3 / 0.6 = 0.5', s.w / 2, s.h * 0.45, { size: 3.4, font: 'mono', weight: 650, color: s.c('gold') }));
+    });
+    s.show('acc', s.ease('cap', 0.6, 0.4));
+    s.alpha(s.ease('cap', 0.6, 4), () => s.text('large ≥ draft: always kept', s.w / 2, s.h * 0.73, { size: 3, font: 'mono', color: s.c('--ink-3') }));
+    s.alpha(s.ease('resid', 0.6, 0.4), () => s.text('on a rejection, draw from what is left', s.w / 2, s.h * 0.83, { size: 3, font: 'mono', color: s.c('blue') }));
+    s.alpha(s.ease('resid', 0.6, 4), () => s.text('every token: the large model\'s probabilities', s.w / 2, s.h * 0.9, { size: 3, font: 'mono', weight: 650, color: s.c('gold') }));
   },
 };
 

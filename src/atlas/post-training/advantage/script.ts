@@ -44,15 +44,42 @@ export const script: LectureScript = {
       title: 'Same direction, less noise',
       codeTitle: 'baseline.py',
       code: `
-        # sum_y pi(y) * grad log pi(y)          #@sum
-        #   = grad of sum_y pi(y) = grad 1 = 0  #@one
-        # so baseline * grad log pi averages 0  #@zero
+        # (R - b) * g = R * g - b * g           #@sum
+        pi = np.array([0.5, 0.3, 0.2])          #@check
+        g = np.array([[0.5, -0.3, -0.2],  # 56  #@check
+                      [-0.5, 0.7, -0.2],  # 54  #@check
+                      [-0.5, -0.3, 0.8]]) # 64  #@check
+        pi @ g      # [0, 0, 0]                 #@weigh
+        # pi * grad log pi = grad pi            #@why
+        # sum of grad pi = grad 1 = 0           #@why
+        # so b * grad log pi averages to 0      #@zero
       `,
       beats: [
-        { id: 'sum', say: 'Why is this allowed? Average the gradient of log {π|pi} over the model\'s answers. {π|pi} times the gradient of its log is just the gradient of {π|pi}.', code: 'sum' },
-        { id: 'one', say: 'And the probabilities always add up to one, so their gradients add up to zero: they cannot all rise at once.', code: 'one' },
-        { id: 'zero', say: 'So the baseline\'s share of the estimate, b times the gradient of log {π|pi}, averages to zero. That average over the model\'s answers is written {𝔼|E}, for expected value: with or without b, it points the same way, and only the noise drops.', code: 'zero' },
+        { id: 'sum', say: 'Why is this allowed? Subtracting b takes b times the gradient of ln {π|pi} off every estimate. Averaged over the model\'s answers, that part comes to zero. Check it on the seven times eight model.', code: 'sum' },
+        { id: 'check', say: 'Its answers have probabilities {0.5|zero point five}, {0.3|zero point three} and {0.2|zero point two}, and each has its own gradient of ln {π|pi}: one row each, for fifty six, fifty four and sixty four.', code: 'check' },
+        { id: 'weigh', say: 'Weight each row by its probability, and add down the columns. The first: {0.5|zero point five} times {0.5|zero point five}, plus {0.3|zero point three} times minus {0.5|zero point five}, plus {0.2|zero point two} times minus {0.5|zero point five}. That is {0.25|zero point two five}, minus {0.15|zero point one five}, minus {0.1|zero point one}: zero. The other columns cancel too.', code: 'weigh' },
+        { id: 'why', say: 'That is no accident. {π|pi} times the gradient of its log is just the gradient of {π|pi}. And the probabilities always add up to one, so their gradients add up to zero: they cannot all rise at once.', code: 'why' },
+        { id: 'zero', say: 'So b times the gradient of ln {π|pi} averages to zero, whatever b is. With or without b, the estimates point the same way on average, and each one swings less.', code: 'zero' },
+        { id: 'E', say: 'An average over the model\'s answers like this is written with a double-struck E, {𝔼|E}, for expected value. With b or without, the expected estimate is the same.', code: 'zero' },
         { id: 'best', say: 'The best baseline is the reward you expect for that very question: a running average of past rewards works, or a second model trained to predict it.' },
+      ],
+    },
+    {
+      id: 'try',
+      title: 'Try one',
+      codeTitle: 'advantage.py',
+      code: `
+        R = np.array([1, 0.4, 0.1])             #@p1
+        b = R.mean()       # 1.5 / 3 = 0.5      #@a1
+        A = R - b          # [0.5, -0.1, -0.4]  #@a1
+        dlogp = 2          # answer 1, theta 0  #@p2
+        A[1] * dlogp       # -0.1 * 2 = -0.2    #@a2
+      `,
+      beats: [
+        { id: 'p1', say: 'Try one. Three answers to a question get rewards one, {0.4|zero point four} and {0.1|zero point one}. With their mean as the baseline, what are the advantages?', code: 'p1' },
+        { id: 'a1', say: 'The mean is {1.5|one point five} over three: {0.5|zero point five}. Subtract it from each reward: {0.5|zero point five}, minus {0.1|zero point one}, and minus {0.4|zero point four}.', code: 'a1' },
+        { id: 'p2', say: 'Now one parameter, {θ₀|theta zero}. The second answer has {∂ln π/∂θ₀|partial ln pi, partial theta zero} of two. What is its estimate\'s entry for {θ₀|theta zero}?', code: 'p2' },
+        { id: 'a2', say: 'Use its advantage in place of R: minus {0.1|zero point one}, times two, is minus {0.2|zero point two}. Its reward is positive, but below the baseline, so it is pushed down.', code: 'a2' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

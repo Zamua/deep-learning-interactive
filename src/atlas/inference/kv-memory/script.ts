@@ -40,6 +40,24 @@ export const script: LectureScript = {
         { id: 'double', say: 'It grows in a straight line. Twice the context, twice the cache.', code: 'double' },
         { id: 'batch', say: 'And every sequence being served keeps a cache of its own. Sixteen at once need about thirty three gigabytes.', code: 'batch' },
         { id: 'weights', say: 'That is more than the model\'s own weights: about seven billion parameters, fourteen gigabytes at two bytes each.', code: 'weights' },
+      ],
+    },
+    {
+      id: 'fit',
+      title: 'How many tokens fit',
+      codeTitle: 'kv_fit.py',
+      code: `
+        free = 16e9           # bytes left        #@free
+        per_token = 512_000   # bytes             #@per
+        free / per_token      # 31,250 tokens     #@fit
+        # = 16,000,000 / 512                      #@fit
+        # shared: 8 sequences of ~3,900 tokens    #@share
+      `,
+      beats: [
+        { id: 'free', say: 'Now run it backward. Say that after loading the weights, sixteen gigabytes are left for the cache: sixteen billion bytes.', code: 'free' },
+        { id: 'per', say: 'Each token costs {512,000|five hundred and twelve thousand} bytes. So the question is how many of those fit into sixteen billion.', code: 'per' },
+        { id: 'fit', say: 'Divide. Cancel three zeros from each, and it is sixteen million over five hundred twelve: {31,250|thirty one thousand, two hundred and fifty} tokens.', code: 'fit' },
+        { id: 'share', say: 'That budget is shared by every sequence at once: one sequence of {31,250|thirty one thousand, two hundred and fifty} tokens, or eight of about {3,900|three thousand nine hundred} each.', code: 'share' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },
