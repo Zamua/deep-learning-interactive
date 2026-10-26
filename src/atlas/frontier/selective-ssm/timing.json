@@ -1,0 +1,29 @@
+{
+ "duration": 173.085,
+ "scenes": {
+  "select": [0.0, 46.309],
+  "run": [46.309, 84.751],
+  "memory": [84.751, 127.801],
+  "try": [127.801, 173.085]
+ },
+ "beats": {
+  "select/fixed": [0.7, 7.757, "A linear recurrence fades every input by the same a: a name and a comma are forgotten at the same rate.", [[4.28, 4.79]]],
+  "select/select": [8.137, 17.569, "Mamba, a selective state space model from 2023, lets each input set its own decay: a t equals e to the minus delta t.", [[8.677, 8.997], [11.867, 12.177], [14.417, 14.817]]],
+  "select/delta": [17.949, 24.791, "Delta t, the step size, comes from x t through a small learned layer, and is always positive.", [[18.849, 19.159], [20.039, 20.319], [23.109, 23.349]]],
+  "select/big": [25.171, 34.495, "A big step forgets: \u0394 of three gives e to the minus three, about zero point zero five, and the old state is nearly wiped.", [[26.671, 27.201], [29.871, 30.181], [32.091, 32.471]]],
+  "select/small": [34.875, 45.209, "A small step keeps: \u0394 of zero point one gives about zero point nine, and the state carries on, like an LSTM's forget gate set by the token.", [[36.305, 36.775], [40.155, 40.565], [41.875, 42.185]]],
+  "run/h1": [47.009, 54.882, "With b at one, from zero: step one has nothing to fade, so h one is the input, four.", [[48.249, 48.719], [49.419, 49.989], [51.899, 52.229], [54.099, 54.429]]],
+  "run/h2": [55.262, 61.669, "Step two keeps: zero point nine times four, plus two, is five point six.", [[56.452, 57.032], [58.982, 59.232], [59.942, 60.282]]],
+  "run/h3": [62.049, 74.893, "Step three forgets: zero point zero five times five point six is about zero point two eight; add six, and h three is six point two eight, almost all new input.", [[62.889, 63.249], [63.899, 64.449], [67.369, 67.569], [69.279, 69.839], [70.529, 70.809], [72.909, 73.329]]],
+  "run/more": [75.273, 83.651, "Mamba also lets \u0394 scale the input, and computes b and c from the input too: the token decides what the state keeps.", [[77.883, 78.123], [80.833, 81.293]]],
+  "memory/cache": [85.451, 96.438, "While generating, a transformer's KV cache holds two, times the layers, times the tokens, times d, times the bytes: it grows with every token.", [[86.511, 86.801], [89.331, 89.751], [90.661, 90.921], [91.921, 92.201], [92.931, 93.221], [94.191, 94.601]]],
+  "memory/state": [96.818, 106.654, "This model keeps only its state, a fixed set of numbers per layer, updated in place: a summary of the past, where the cache keeps every token.", [[98.898, 99.268], [101.278, 101.478], [102.728, 103.158], [104.478, 104.718]]],
+  "memory/size": [107.034, 116.37, "Take thirty two layers, d at four thousand, and two bytes per number. At four thousand tokens, the cache is about two gigabytes.", [[108.524, 108.934], [110.384, 110.714], [112.124, 112.684], [114.124, 114.374]]],
+  "memory/ratio": [116.75, 126.701, "Give each layer a state of a hundred and twenty eight thousand numbers: about eight megabytes, at any length. The cache is two hundred and fifty times that.", [[120.54, 120.96], [122.27, 122.55], [123.38, 123.98]]],
+  "try/p1": [128.501, 141.44, "Try one: b is one, from zero. Inputs three, five, two; decays zero point five, zero point nine, zero point one. What is h three?", [[129.081, 129.671], [130.741, 131.111], [131.831, 132.431], [134.021, 134.221], [134.551, 135.101], [135.641, 135.841], [136.981, 137.211], [138.271, 138.481], [139.521, 140.151]]],
+  "try/a1": [141.82, 153.612, "Three: a one has nothing to fade. Then two point seven plus five, seven point seven. Then zero point seven seven plus two: two point seven seven.", [[142.28, 142.8], [144.62, 145.17], [147.32, 147.57], [148.67, 149.18], [151.86, 152.25]]],
+  "try/p2": [153.992, 160.153, "Now both models at eight thousand tokens. How many times the state's memory does the cache take?", [[156.752, 157.292]]],
+  "try/a2": [160.533, 170.865, "Per layer, the cache holds two times eight thousand times four thousand numbers; the state, a hundred and twenty eight thousand. Divide: five hundred.", [[161.243, 161.533], [165.513, 166.023], [166.553, 166.793], [168.513, 169.113], [169.643, 170.053]]],
+  "try/turn": [171.245, 171.985, "Your turn.", []]
+ }
+}

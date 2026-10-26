@@ -1,0 +1,29 @@
+{
+ "duration": 154.472,
+ "scenes": {
+  "write": [0.0, 37.923],
+  "run": [37.923, 88.121],
+  "learn": [88.121, 115.302],
+  "try": [115.302, 154.472]
+ },
+ "beats": {
+  "write/ask": [0.7, 11.757, "A language model only writes text, one predicted token at a time. Ask it for today's weather in Paris, and its weights cannot know: they were fixed when training ended.", [[2.9, 3.25], [5.19, 5.73], [7.69, 7.98], [9.44, 9.91]]],
+  "write/tool": [12.137, 19.173, "So the program that runs the model offers it a tool: a function, weather, that looks up a city's forecast.", [[15.237, 15.637], [16.307, 16.637], [17.017, 17.327]]],
+  "write/call": [19.553, 26.672, "To use it, the model writes a call, as text: weather, then Paris in quotes and brackets.", [[20.243, 20.503], [21.853, 22.063], [22.783, 23.323], [23.753, 24.053], [24.403, 24.613]]],
+  "write/markers": [27.052, 36.823, "Around the call go two marker tokens, call and end call, so the program can find it. Six tokens in all, each predicted like any other.", [[29.512, 29.862], [30.262, 30.412], [31.342, 31.652], [33.072, 33.552], [34.742, 35.082]]],
+  "run/spot": [38.623, 45.81, "The program reads every token the model writes. When it sees the end marker, it stops the model and reads the call.", [[41.393, 41.903], [43.363, 43.603], [45.613, 45.793]]],
+  "run/run": [46.19, 52.346, "It runs weather of Paris itself, outside the model, and gets back eighteen degrees, sunny.", [[48.29, 48.61], [49.55, 49.85], [51.59, 51.89]]],
+  "run/paste": [52.726, 61.232, "Then it pastes that result into the context, between result markers: five more tokens, written by the program, not the model.", [[55.486, 55.766], [57.076, 57.556], [58.766, 59.056], [60.216, 60.446]]],
+  "run/resume": [61.612, 69.595, "And it lets the model write on. With the forecast in view, the next tokens come easily: it is eighteen degrees and sunny.", [[63.352, 63.922], [65.242, 65.502], [67.102, 67.602]]],
+  "run/attend": [69.975, 77.914, "The model reads the result the way it reads any earlier token, through attention. No weight changed: only the context did.", [[73.365, 73.685], [74.515, 75.045], [76.145, 76.575]]],
+  "run/steps": [78.294, 87.021, "Five steps, then. The model writes the call, the program spots it, runs it and pastes the result, and the model writes on.", [[79.354, 79.944], [81.294, 81.724], [82.864, 83.214], [85.044, 85.474], [85.754, 85.924]]],
+  "learn/shots": [88.821, 98.873, "How does the model know this format? It can pick it up in context: the prompt first shows a solved exchange, with a call, its result and the answer.", [[90.801, 91.301], [93.021, 93.501], [96.051, 96.321], [96.951, 97.191], [97.871, 98.071]]],
+  "learn/new": [99.253, 104.548, "Then comes the new question, and the likeliest continuation is a call of the same shape.", [[100.833, 101.193]]],
+  "learn/train": [104.928, 114.202, "Or it is trained on many such transcripts, with gradient steps, so the format is in its weights. Toolformer did this in 2023.", [[105.328, 105.488], [107.758, 108.018], [109.218, 109.478], [111.248, 111.788]]],
+  "try/count": [116.002, 127.693, "Now count. The question took seven tokens, the call six, and the result five: seven plus six plus five is eighteen tokens in view when the model writes on.", [[116.892, 117.412], [119.282, 119.612], [120.672, 120.962], [122.212, 122.692]]],
+  "try/wrote": [128.073, 138.627, "Of the final context, the model wrote the call and the answer, six tokens each: twelve. The question came in from outside, and the program wrote the result.", [[129.443, 129.673], [131.893, 132.283], [133.463, 133.903], [134.383, 134.983], [136.813, 137.023]]],
+  "try/p1": [139.007, 148.437, "Try one: a prompt of twelve tokens, a call of seven, and a result of four. How many tokens are in the context when the model writes on?", [[139.647, 140.187], [141.837, 142.127], [143.167, 143.457], [144.657, 145.217]]],
+  "try/a1": [148.817, 152.252, "Twelve plus seven plus four: twenty-three.", [[150.887, 151.457]]],
+  "try/turn": [152.632, 153.372, "Your turn.", []]
+ }
+}

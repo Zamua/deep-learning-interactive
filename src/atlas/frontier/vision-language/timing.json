@@ -1,0 +1,29 @@
+{
+ "duration": 166.899,
+ "scenes": {
+  "patches": [0.0, 38.818],
+  "project": [38.818, 97.447],
+  "train": [97.447, 131.442],
+  "try": [131.442, 166.899]
+ },
+ "beats": {
+  "patches/img": [0.7, 11.242, "A language model reads one vector per token. To show it a picture, make the picture vectors too. Take an image of three thirty six by three thirty six pixels.", [[3.59, 4.07], [5.1, 5.42], [7.01, 7.55]]],
+  "patches/count": [11.622, 23.107, "Cut it into patches of fourteen pixels: three thirty six over fourteen is twenty four per side, and twenty four times twenty four is five hundred and seventy six patches.", [[14.102, 14.632], [16.602, 16.752], [18.212, 18.552], [20.622, 20.782]]],
+  "patches/vit": [23.487, 31.28, "A vision transformer, already trained, turns each patch into a vector, here of one thousand and twenty four numbers.", [[24.797, 25.077], [26.017, 26.297], [28.207, 28.557]]],
+  "patches/drop": [31.66, 37.718, "Keep only the patch vectors, all five hundred and seventy six, and leave out the class token.", [[33.46, 33.81], [35.64, 36.03]]],
+  "project/width": [39.518, 49.022, "The language model has its own width, d: here four thousand and ninety six. Its word vectors are that long, and the patch vectors are not.", [[41.618, 41.908], [42.278, 42.768], [44.868, 45.328], [47.158, 47.458]]],
+  "project/W": [49.402, 59.682, "So a projection maps each one across: a learned matrix, W, of one thousand and twenty four by four thousand and ninety six, plus a bias.", [[52.042, 52.492], [53.622, 53.772], [54.252, 54.532], [58.212, 58.572]]],
+  "project/count": [60.062, 71.628, "Every patch shares it: one thousand and twenty four times four thousand and ninety six weights, plus four thousand and ninety six biases. About four point two million parameters.", [[61.432, 61.972], [65.742, 66.082], [68.632, 69.162]]],
+  "project/mlp": [72.008, 79.558, "Some models use a small MLP instead, two maps with an activation between, counted like any MLP.", [[74.898, 75.418], [77.558, 77.888]]],
+  "project/prompt": [79.938, 86.619, "The projected vectors are the image tokens. They go into the prompt first, and the text's embeddings follow.", [[82.468, 82.948], [84.548, 84.828]]],
+  "project/read": [86.999, 96.347, "From there it is a plain decoder-only model. Each text token attends back to every image token, and the reply comes one token at a time.", [[89.799, 90.369], [93.489, 93.869]]],
+  "train/s1": [98.147, 107.358, "Training comes in two stages. In stage one, both models are frozen, and only the projection learns, on images paired with captions.", [[100.087, 100.547], [101.467, 101.687], [103.147, 103.417], [105.187, 105.477]]],
+  "train/loss": [107.738, 119.262, "The language model must predict each caption from the image tokens, with the usual cross-entropy. Only W can move, so it learns to make vectors the language model already understands.", [[111.358, 111.618], [113.198, 113.798], [115.248, 115.518]]],
+  "train/s2": [119.642, 130.342, "In stage two, the language model trains with the projection, on instructions: an image, a question, and a good answer. The vision transformer stays frozen.", [[120.702, 120.972], [123.242, 123.502], [124.452, 124.942], [125.562, 125.762], [126.402, 126.602], [127.522, 128.082]]],
+  "try/window": [132.142, 142.309, "Image tokens take room. If the model reads at most T max tokens, say twenty forty eight, this image leaves fourteen seventy two for text.", [[133.852, 134.442], [137.202, 137.362], [138.752, 139.222]]],
+  "try/p1": [142.689, 151.196, "Try one. A two twenty four by two twenty four image comes in fourteen pixel patches. How many image tokens does it give?", [[143.279, 143.859], [148.609, 149.159]]],
+  "try/a1": [151.576, 159.152, "Two twenty four over fourteen is sixteen per side, and sixteen times sixteen is two hundred and fifty six.", [[155.066, 155.476], [157.236, 157.416]]],
+  "try/a2": [159.532, 164.678, "With twenty forty eight at most, that leaves seventeen ninety two tokens for text.", [[161.372, 161.642]]],
+  "try/turn": [165.058, 165.799, "Your turn.", []]
+ }
+}

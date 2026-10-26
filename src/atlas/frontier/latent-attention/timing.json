@@ -1,0 +1,28 @@
+{
+ "duration": 174.772,
+ "scenes": {
+  "cache": [0.0, 34.605],
+  "latent": [34.605, 109.805],
+  "real": [109.805, 138.206],
+  "try": [138.206, 174.772]
+ },
+ "beats": {
+  "cache/mha": [0.7, 14.4, "While generating, each layer caches a key and a value per head for every token. With h of four heads, each eight numbers wide, that is two times four times eight: sixty four numbers per token.", [[1.78, 2.06], [5.98, 6.49], [7.88, 8.11], [9.52, 9.8], [10.17, 10.34], [12.03, 12.43]]],
+  "cache/gqa": [14.78, 24.524, "Grouped-query attention, with g of two key-value heads, halves that to thirty two, but heads in a group then read the very same keys and values.", [[16.27, 16.51], [18.53, 18.91], [20.46, 20.85]]],
+  "cache/own": [24.904, 33.505, "Latent attention, from DeepSeek in 2024, makes the cache smaller still, while every head keeps keys and values of its own.", [[26.064, 26.314], [28.284, 28.524], [30.194, 30.554]]],
+  "latent/down": [35.305, 46.0, "It sends each token's vector, x, of d numbers, through one matrix, W D K V: D for down, K V for keys and values.", [[37.215, 37.425], [37.885, 38.045], [38.935, 39.175], [40.305, 40.535], [42.025, 42.515], [43.535, 43.805]]],
+  "latent/latent": [46.38, 60.781, "Out comes a short vector, c, the latent, of d c numbers: here sixteen. A row per number it makes, a column per entry of x: W D K V is d c by d.", [[47.9, 48.17], [48.61, 48.9], [49.53, 49.9], [51.24, 51.64], [52.74, 53.31], [54.96, 55.23], [57.06, 57.57], [59.12, 59.3]]],
+  "latent/store": [61.161, 66.091, "Only c goes into the cache: sixteen numbers per token, per layer.", [[63.031, 63.491], [65.231, 65.431]]],
+  "latent/up": [66.471, 82.643, "When attention runs, head i rebuilds its key from c with its part of an up-projection, W U K, U for up: d head by d c, eight by sixteen. Its part of W U V rebuilds its value.", [[67.731, 68.091], [68.451, 68.611], [70.521, 70.741], [72.411, 72.831], [73.981, 74.371], [75.221, 75.821], [77.441, 77.811], [78.981, 79.481], [81.261, 81.421]]],
+  "latent/own": [83.023, 96.125, "Each head has its own part, so each still gets its own key and value. Stacked, the four parts make W U K h times d head by d c: thirty two by sixteen.", [[84.793, 85.173], [87.873, 88.373], [88.913, 89.213], [92.733, 92.893], [94.073, 94.543]]],
+  "latent/count": [96.505, 108.705, "These matrices are weights, stored once, not per token. So per token and layer: sixty four numbers, then thirty two, and now only d c, sixteen.", [[98.225, 98.475], [99.385, 99.595], [100.645, 101.195], [101.515, 101.815], [103.045, 103.475], [104.645, 104.875], [105.885, 106.165], [107.695, 107.955]]],
+  "real/big": [110.505, 122.843, "DeepSeek-V2 has a hundred and twenty eight heads, each a hundred and twenty eight wide. Multi-head attention would cache thirty two thousand seven hundred sixty eight numbers per token, per layer.", [[113.655, 114.015], [115.895, 116.465], [121.925, 122.115]]],
+  "real/small": [123.223, 134.234, "Its latent has five hundred twelve numbers, plus one small key of sixty four, shared by every head, that carries the token's position: five hundred seventy six in all.", [[125.803, 126.073], [128.293, 128.523], [129.863, 130.133], [131.783, 132.273]]],
+  "real/ratio": [134.614, 137.106, "About fifty seven times smaller.", []],
+  "try/p": [138.906, 150.877, "Try one: sixteen heads, each sixty four wide, and a latent of d c two hundred fifty six. How many numbers per token are cached, against multi-head attention?", [[139.516, 140.076], [141.186, 141.486], [143.046, 143.346], [146.256, 146.856], [149.056, 149.226]]],
+  "try/mha": [151.257, 157.263, "Multi-head would cache two times sixteen times sixty four: two thousand and forty eight.", [[155.157, 155.707]]],
+  "try/lat": [157.643, 163.631, "Latent attention caches only c, two hundred fifty six: eight times smaller.", [[160.083, 160.573], [161.843, 162.333]]],
+  "try/shape": [164.011, 172.552, "And one head's part of W U K makes sixty four numbers from two hundred fifty six: sixty four by two hundred fifty six.", [[166.351, 166.511], [169.571, 170.071]]],
+  "try/turn": [172.932, 173.672, "Your turn.", []]
+ }
+}

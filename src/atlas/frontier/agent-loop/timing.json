@@ -1,0 +1,29 @@
+{
+ "duration": 167.844,
+ "scenes": {
+  "loop": [0.0, 51.158],
+  "grow": [51.158, 81.632],
+  "reread": [81.632, 141.47],
+  "try": [141.47, 167.844]
+ },
+ "beats": {
+  "loop/need": [0.7, 8.48, "Some questions take more than one call. Ask for the weather in the capital of Peru, and the model must first find the capital.", [[2.97, 3.59], [5.83, 6.13]]],
+  "loop/first": [8.86, 18.139, "So it writes a call: search for the capital of Peru. The program runs it and appends the result, Lima. That was turn one.", [[10.23, 10.78], [12.57, 13.15], [14.19, 14.34], [15.51, 15.92], [16.32, 16.92]]],
+  "loop/second": [18.519, 28.399, "Then the program runs the model again. With Lima in view, turn two's call is weather of Lima, and back comes nineteen degrees, cloudy.", [[20.629, 21.169], [22.329, 22.609], [23.889, 24.079], [25.059, 25.459], [26.259, 26.529], [27.599, 27.869]]],
+  "loop/answer": [28.779, 37.196, "On turn three the model writes no call, only the answer. A turn that ends in an answer instead of a call ends the loop.", [[29.809, 29.969], [31.659, 31.979], [32.969, 33.489], [36.219, 36.409]]],
+  "loop/limit": [37.576, 50.058, "In case the model never stops calling, the program also sets a step limit, here ten turns. A model run in this loop is an agent; the ReAct paper described it in 2022.", [[39.666, 39.986], [42.156, 42.596], [42.916, 43.076], [43.846, 44.436], [46.666, 47.196]]],
+  "grow/p": [51.858, 59.7, "Every turn makes the context longer. Say the prompt, the question with the tools it may use, takes thirty tokens.", [[54.188, 54.718], [55.568, 55.848], [58.028, 58.318]]],
+  "grow/t1": [60.08, 68.696, "Turn one adds a call of five tokens and a result of fifteen: fifty. Turn two adds twenty more: seventy.", [[64.25, 64.67], [65.15, 65.79], [67.62, 68.02]]],
+  "grow/gen": [69.076, 80.532, "Nothing is removed. After any turn, call it turn t, the context is the prompt plus every call and result so far: thirty plus twenty times t.", [[70.356, 70.936], [71.986, 72.256], [73.516, 73.966], [75.446, 75.636], [77.946, 78.466]]],
+  "reread/prefill": [82.332, 88.629, "Each turn starts with a prefill: one pass that reads the whole context before the model writes.", [[84.352, 84.922]]],
+  "reread/plain": [89.009, 99.699, "Done plainly, every turn prefills from scratch: thirty tokens on turn one, fifty on turn two, and seventy on turn three, where it writes the answer.", [[89.919, 90.289], [92.409, 92.899], [94.509, 94.849], [96.189, 96.499], [98.189, 98.419]]],
+  "reread/sum": [100.079, 108.262, "That is a hundred and fifty tokens, a sum of lengths that each grow. Every extra turn costs more than the one before.", [[102.299, 102.629], [104.639, 105.129]]],
+  "reread/same": [108.642, 118.72, "But appending tokens never changes the keys and values of the tokens before them: the causal mask sees to that. So keep them, as the KV cache does.", [[113.252, 113.742], [115.542, 116.112], [116.872, 117.202]]],
+  "reread/new": [119.1, 129.828, "Then each turn prefills only what is new. The call's keys and values were stored as the model wrote it, so only the result is new: fifteen tokens.", [[119.54, 119.74], [122.24, 122.9], [126.16, 126.53], [128.07, 128.59]]],
+  "reread/cache": [130.208, 140.37, "Thirty, then fifteen, then fifteen: sixty instead of a hundred and fifty. Keeping the earlier context like this is called prefix caching.", [[130.738, 131.138], [132.048, 132.318], [133.138, 133.698], [134.298, 134.448], [135.898, 136.508]]],
+  "try/p1": [142.17, 153.11, "Try one: a prompt of forty tokens, then two calls of five, each with a result of ten, then the answer. How many tokens are prefilled without a cache?", [[142.83, 143.38], [145.0, 145.26], [146.85, 147.12], [148.56, 148.93], [149.77, 150.34]]],
+  "try/a1": [153.49, 160.022, "The three turns read forty, then fifty-five, then seventy: a hundred and sixty-five.", [[155.33, 155.65], [156.68, 157.02], [157.91, 158.44]]],
+  "try/a2": [160.402, 165.624, "With the cached prefix, they read forty, then ten, then ten: sixty.", [[161.692, 161.872], [162.822, 163.052], [163.682, 163.952], [164.582, 165.022]]],
+  "try/turn": [166.004, 166.744, "Your turn.", []]
+ }
+}

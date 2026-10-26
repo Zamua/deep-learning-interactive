@@ -37,6 +37,7 @@ export const DOMAINS: Domain[] = [
   { id: 'post-training', title: 'Post-training', color: 'red' },
   { id: 'inference', title: 'Reasoning and inference', color: 'orange' },
   { id: 'interpretability', title: 'Interpretability', color: 'slate' },
+  { id: 'frontier', title: 'Frontier', color: 'purple' },
 ];
 
 const metas = import.meta.glob<ConceptMeta>('./*/*/meta.ts', { eager: true, import: 'meta' });
