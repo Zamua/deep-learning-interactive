@@ -1,7 +1,10 @@
-// The learner's mastery data in localStorage: one record per concept, and an answer log.
+// The learner's mastery data: one record per concept, kept in the synced progress store, and an answer log kept on
+// this device.
+import { editProgress, progressStore } from '../sync/cloud';
+import { conceptFrom, concepts, putConcepts } from '../sync/model';
 import type { ConceptRecord } from './domain/model';
 
-const KEY = { records: 'atlas.records', log: 'atlas.log' };
+const LOG_KEY = 'atlas.log';
 /** Log rows kept; older ones are dropped first. */
 const LOG_CAP = 5000;
 
@@ -25,43 +28,47 @@ const write = (k: string, v: unknown): void => {
   try {
     localStorage.setItem(k, JSON.stringify(v));
   } catch {
-    /* private mode or full: progress lives for this page only */
+    /* private mode or full: the log lives for this page only */
   }
 };
 
-const isRecord = (r: unknown): r is ConceptRecord =>
-  !!r && typeof r === 'object' && typeof (r as ConceptRecord).attempts === 'number' && Array.isArray((r as ConceptRecord).recent);
-
 function cleanRecords(v: unknown): Record<string, ConceptRecord> {
   if (!v || typeof v !== 'object') return {};
-  return Object.fromEntries(Object.entries(v).filter(([, r]) => isRecord(r))) as Record<string, ConceptRecord>;
+  const out: Record<string, ConceptRecord> = {};
+  for (const [id, raw] of Object.entries(v)) {
+    const r = conceptFrom(raw);
+    if (r) out[id] = r;
+  }
+  return out;
 }
 
+/** Every concept's record; the same object until one changes. */
 export function loadRecords(): Record<string, ConceptRecord> {
-  return cleanRecords(read(KEY.records));
+  return concepts(progressStore().store);
 }
 
+/** Saves these concepts' records; the others are left as they are. */
 export function saveRecords(records: Record<string, ConceptRecord>): void {
-  write(KEY.records, records);
+  if (Object.keys(records).length) editProgress((s, now) => putConcepts(s, now, records));
 }
 
 export function loadLog(): LogRow[] {
-  const v = read(KEY.log);
+  const v = read(LOG_KEY);
   return Array.isArray(v) ? (v as LogRow[]) : [];
 }
 
 export function appendLog(row: LogRow): void {
-  write(KEY.log, [...loadLog(), row].slice(-LOG_CAP));
+  write(LOG_KEY, [...loadLog(), row].slice(-LOG_CAP));
 }
 
 export function exportSnapshot(): Snapshot {
   return { version: 1, records: loadRecords(), log: loadLog() };
 }
 
-/** Replaces this device's progress with a snapshot; throws on anything that is not one. */
+/** Adds a snapshot's records as this device's latest edits, and takes its log; throws on anything that is not one. */
 export function importSnapshot(json: string): void {
   const s = JSON.parse(json) as Partial<Snapshot>;
   if (s.version !== 1 || !s.records || !Array.isArray(s.log)) throw new Error('not an Atlas progress file');
   saveRecords(cleanRecords(s.records));
-  write(KEY.log, s.log.slice(-LOG_CAP));
+  write(LOG_KEY, s.log.slice(-LOG_CAP));
 }

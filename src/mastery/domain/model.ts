@@ -68,7 +68,8 @@ export function status(rec: ConceptRecord | undefined, unlocked: boolean, now: n
 
 /** The record after one answer. Pure: returns a new record. */
 export function applyAnswer(rec: ConceptRecord, bar: MasteryBar, a: { ok: boolean; seconds: number; help?: boolean }, now: number): ConceptRecord {
-  const att: Attempt = { ok: a.ok, t: Math.min(a.seconds, 3 * bar.seconds), ...(a.help ? { help: true } : {}) };
+  // Tenths of a second: finer adds nothing to the bar's average and only weighs down what syncs.
+  const att: Attempt = { ok: a.ok, t: Math.round(Math.min(a.seconds, 3 * bar.seconds) * 10) / 10, ...(a.help ? { help: true } : {}) };
   const next: ConceptRecord = {
     ...rec,
     attempts: rec.attempts + 1,
