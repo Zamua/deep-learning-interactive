@@ -1,5 +1,6 @@
 // The moment a concept is mastered: the whole map, a zoom onto it, what it just unlocked and what
 // comes next. Continue (or a tap anywhere) skips it at any point.
+import { hasExplainer } from '../../atlas/index';
 import { icon } from '../../core/controls';
 import { h, onDispose } from '../../core/dom';
 import type { Learner } from '../learner';
@@ -31,7 +32,11 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
   const view = h('div', { class: 'at-cm-view' }, stage);
   const here = h('div', { class: 'at-cm-here' });
   const done = [...learner.statuses().values()].filter((s) => s === 'mastered' || s === 'due').length;
-  const go = h('button', { type: 'button', class: 'at-cm-go' }, next ? `Next: ${graph.get(next)!.title}` : 'Continue');
+  // A new concept opens on its explainer, never straight into its practice.
+  const watch = !!next && hasExplainer(next);
+  const go = h('button', { type: 'button', class: 'at-cm-go' },
+    watch ? h('span', { class: 'at-cm-play', html: icon('playFill') }) : '',
+    next ? `Next: ${graph.get(next)!.title}` : 'Continue');
   const stay = next ? h('button', { type: 'button', class: 'at-cm-stay' }, 'Back to this session') : '';
   const el = h('div', { class: 'at-cm', role: 'dialog', 'aria-label': `${c.title} mastered` },
     h('div', { class: 'at-cm-title', html: `${icon('sparkle')} ${c.title} mastered` }),
@@ -63,7 +68,7 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
   };
   go.addEventListener('click', () => {
     close();
-    if (next) location.hash = `#/atlas/learn/${next}`;
+    if (next) location.hash = watch ? `#/atlas/${next}/watch` : `#/atlas/${next}`;
   });
   if (stay) stay.addEventListener('click', close);
   onDispose(close);

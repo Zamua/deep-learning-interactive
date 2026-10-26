@@ -1231,6 +1231,15 @@ body.at-on .side {
   background: var(--accent);
   color: #fff;
   font: 600 1rem var(--font-ui);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.at-cm-play .ico {
+  display: block;
+  width: 16px;
+  height: 16px;
 }
 .at-node.cm-pre {
   border-color: var(--accent);
