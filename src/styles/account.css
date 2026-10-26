@@ -74,10 +74,8 @@
   color: var(--bad);
 }
 .ac-code {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  padding: 14px 16px;
+  position: relative;
+  padding: 14px 56px 14px 16px;
   border-radius: 12px;
   background: var(--paper-2);
   font-family: var(--font-mono);
@@ -85,7 +83,21 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   color: var(--ink);
+}
+.ac-code-t {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
   user-select: all;
+}
+.ac-code.masked .ac-code-t {
+  color: var(--ink-3);
+  user-select: none;
+}
+.ac-eye.ac-code-eye {
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
 }
 .ac-actions {
   display: flex;
@@ -194,6 +206,9 @@
 }
 .ac-note.ok {
   color: var(--ok);
+}
+.ac-note.bad {
+  color: var(--bad);
 }
 .ac-input {
   flex: 1;

@@ -116,7 +116,7 @@ export function renderAccount(main: HTMLElement, typed?: string): void {
     });
     copy.addEventListener('click', () => void navigator.clipboard.writeText(formatCode(code)).then(() => flash(copy, 'Copied'), () => flash(copy, 'Copy failed')));
     codeBody.append(
-      h('div', { class: 'ac-code', 'aria-label': formatCode(code) }, ...formatCode(code).split(' ').map((g) => h('span', {}, g))),
+      codeBox(code),
       h('div', { class: 'ac-actions' }, share, copy),
       keeper(code, st.tag),
       h('p', { class: 'ac-note' }, 'Open the link on your other device, or fill the code there from your password manager. Anyone with it can see and change your progress, so keep it to yourself.'));
@@ -135,42 +135,71 @@ export function renderAccount(main: HTMLElement, typed?: string): void {
   root.append(h('h2', { class: 'ac-h2' }, 'A copy in a file'), fileCopy());
 }
 
+/** The code, hidden until asked for so it is not read over a shoulder, and hidden again with the same button. */
+function codeBox(code: string): HTMLElement {
+  const groups = formatCode(code).split(' ');
+  const text = h('div', { class: 'ac-code-t' });
+  const eye = h('button', { type: 'button', class: 'ac-eye ac-code-eye' });
+  const box = h('div', { class: 'ac-code masked' }, text, eye);
+  const draw = (shown: boolean) => {
+    box.classList.toggle('masked', !shown);
+    text.innerHTML = '';
+    text.append(...groups.map((g) => h('span', {}, shown ? g : '•'.repeat(g.length))));
+    text.setAttribute('aria-label', shown ? formatCode(code) : 'Code hidden');
+    eye.innerHTML = icon(shown ? 'eye-slash' : 'eye');
+    eye.setAttribute('aria-label', shown ? 'Hide the code' : 'Show the code');
+    eye.setAttribute('aria-pressed', String(shown));
+  };
+  eye.addEventListener('click', () => draw(box.classList.contains('masked')));
+  draw(false);
+  return box;
+}
+
 /** The account as a password manager sees it: a login whose password is the code. */
 const loginName = (tag: string | null): string => `Deep learning sync${tag ? ` #${tag}` : ''}`;
 const loginCode = (code: string): string => formatCode(code).replace(/ /g, '-');
-type PasswordCredentialCtor = new (d: { id: string; password: string; name: string }) => Credential;
 
 /**
- * The code as a login for this site, in a form a password manager saves when it is submitted: Chrome through the
- * Credential Management API, Safari and the extensions from the submitted form. The fields are on screen because
- * managers skip hidden ones.
+ * The code as a login for this site, in a form that really submits (into a hidden frame, so the page stays): the
+ * browser's own password manager and extensions such as 1Password offer to save a login when its form is submitted.
+ * The fields are on screen and editable because managers skip hidden and read-only ones; a code changed by hand is
+ * put back before anything is saved. `current-password`, not `new-password`, so no manager offers to replace the code
+ * with a generated password.
  */
 function keeper(code: string, tag: string | null): HTMLElement {
   const pass = loginCode(code);
-  const name = h('input', { class: 'ac-input ac-kname', type: 'text', name: 'username', autocomplete: 'username', value: loginName(tag), 'aria-label': 'Name to save it under' }) as HTMLInputElement;
-  const secret = h('input', { class: 'ac-input', type: 'password', name: 'password', autocomplete: 'new-password', value: pass, readonly: true, 'aria-label': 'Your code' });
+  const frame = `pm-${Math.random().toString(36).slice(2)}`;
+  const name = h('input', { id: 'sync-save-name', class: 'ac-input ac-kname', type: 'text', name: 'username', autocomplete: 'username', value: loginName(tag) }) as HTMLInputElement;
+  const secret = h('input', { id: 'sync-save-code', class: 'ac-input', type: 'password', name: 'password', autocomplete: 'current-password', value: pass }) as HTMLInputElement;
   const save = h('button', { type: 'submit', class: 'btn', html: `${icon('key')} Save` });
   const note = h('p', { class: 'ac-note' }, 'Save the code as a login for this site, and your other devices can fill it in.');
-  const form = h('form', { method: 'post', action: '' }, h('div', { class: 'ac-krow' }, name, secret, save), note);
+  const form = h('form', { id: 'sync-save', method: 'post', action: 'about:blank', target: frame },
+    h('label', { class: 'ac-sr', for: 'sync-save-name' }, 'Name to save it under'),
+    h('label', { class: 'ac-sr', for: 'sync-save-code' }, 'Your code'),
+    h('div', { class: 'ac-krow' }, name, secret, save), note);
+  const sink = h('iframe', { name: frame, title: 'Password manager', hidden: true, tabindex: '-1' });
   form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const user = name.value.trim() || loginName(tag);
-    const Cred = (window as unknown as { PasswordCredential?: PasswordCredentialCtor }).PasswordCredential;
-    if (Cred) void navigator.credentials.store(new Cred({ id: user, password: pass, name: user })).catch(() => {});
+    if (codeSymbols(secret.value) !== codeSymbols(pass)) {
+      e.preventDefault();
+      secret.value = pass;
+      note.className = 'ac-note bad';
+      note.textContent = 'That field holds your code, so it is put back as it was. Change the name above if you like, then Save.';
+      return;
+    }
     note.className = 'ac-note ok';
-    note.textContent = 'If your password manager offered to save it, it is ready to fill on your other devices. If it did not, use Copy code and add it there by hand.';
+    note.textContent = 'If your password manager offered to save it, it is ready to fill on your other devices. If it did not: in 1Password, right-click its toolbar icon and choose Save, then Login, while these fields are filled.';
   });
-  return h('div', { class: 'ac-pm' }, h('div', { class: 'ac-pm-k', html: `${icon('key')} Your password manager` }), form);
+  return h('div', { class: 'ac-pm' }, h('div', { class: 'ac-pm-k', html: `${icon('key')} Your password manager` }), form, sink);
 }
 
 /** The code field, what that code holds, and the link itself. */
 function linker(typed?: string): HTMLElement {
   const sync = syncEngine();
   // A login form too, so a password manager fills the code it saved on the other device.
-  const user = h('input', { class: 'ac-sr', type: 'text', name: 'username', autocomplete: 'username', tabindex: '-1', 'aria-hidden': 'true' });
+  const user = h('input', { id: 'sync-link-name', class: 'ac-sr', type: 'text', name: 'username', autocomplete: 'username', tabindex: '-1', 'aria-hidden': 'true' });
   const input = h('input', {
-    class: 'ac-input', type: 'password', name: 'password', autocomplete: 'current-password', autocapitalize: 'characters', spellcheck: 'false',
-    placeholder: 'XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXX', 'aria-label': 'Code from another device',
+    id: 'sync-link-code', class: 'ac-input', type: 'password', name: 'password', autocomplete: 'current-password', autocapitalize: 'characters', spellcheck: 'false',
+    placeholder: 'XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXX',
   }) as HTMLInputElement;
   const eye = h('button', { type: 'button', class: 'ac-eye', 'aria-label': 'Show the code', 'aria-pressed': 'false', html: icon('eye') });
   eye.addEventListener('click', () => {
@@ -183,7 +212,9 @@ function linker(typed?: string): HTMLElement {
   const go = h('button', { type: 'submit', class: 'btn btn-primary' }, 'Continue') as HTMLButtonElement;
   const hint = h('p', { class: 'ac-hint' });
   const peek = h('div', { class: 'ac-peek', hidden: true });
-  const form = h('form', { class: 'ac-form', method: 'post', action: '' }, user, h('div', { class: 'ac-row' }, h('div', { class: 'ac-field' }, input, eye), go), hint, peek);
+  const form = h('form', { id: 'sync-link', class: 'ac-form', method: 'post', action: '' }, user,
+    h('label', { class: 'ac-sr', for: 'sync-link-code' }, 'Code from another device'),
+    h('div', { class: 'ac-row' }, h('div', { class: 'ac-field' }, input, eye), go), hint, peek);
   const say = (tone: '' | 'ok' | 'bad', text: string) => {
     hint.className = `ac-hint ${tone}`;
     hint.textContent = text;
