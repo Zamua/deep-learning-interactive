@@ -87,6 +87,8 @@ export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { con
         solutionList(w.solution));
       stuck.remove();
       fitMath(workedBox);
+      // On a phone the keypad covers the lower half, where the steps land.
+      workedBox.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     });
     if (opts.note) frame.body.append(h('div', { class: 'at-transition' }, opts.note));
     frame.body.append(opts.tag, h('div', { class: 'at-prompt', html: render(p.prompt) }));
