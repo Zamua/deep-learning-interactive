@@ -319,7 +319,8 @@ button {
   width: 15px;
   height: 15px;
 }
-.side-mark svg {
+/* The progress ring starts at 12 o'clock; icons keep their own orientation. */
+.side-mark svg:not(.ico) {
   width: 13px;
   height: 13px;
   transform: rotate(-90deg);
