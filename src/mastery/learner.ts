@@ -2,7 +2,7 @@
 // answer changes them. Persists through the store, which other devices of the account sync into.
 import type { ConceptGraph } from './domain/graph';
 import { applyAnswer, emptyRecord, placeMastered, recoveryStreak, status, streak, type ConceptRecord, type Status } from './domain/model';
-import { inheritSplits, isUnlocked, pickNext, statuses, type Pick } from './domain/scheduler';
+import { inheritSplits, isUnlocked, newChoices, pickNext, statuses, type NewChoices, type Pick } from './domain/scheduler';
 
 /** What the learner would do next, for a page to lead with. */
 export interface Today {
@@ -25,7 +25,7 @@ export interface Today {
   /** Epoch ms of the latest answer; 0 before any. */
   t: number;
 }
-import { appendLog, loadRecords, saveRecords, type LogRow } from './store';
+import { appendLog, loadPace, loadRecords, saveRecords, type LogRow } from './store';
 
 export class Learner {
   constructor(readonly graph: ConceptGraph, private readonly clock: () => number = Date.now) {
@@ -52,12 +52,17 @@ export class Learner {
   }
 
   next(last?: string, session: { focus?: string; reviewed?: ReadonlySet<string> } = {}): Pick | null {
-    return pickNext({ graph: this.graph, records: this.records, now: this.clock(), last, ...session });
+    return pickNext({ graph: this.graph, records: this.records, now: this.clock(), last, pace: loadPace(), ...session });
+  }
+
+  /** The ways to go on to something new, and every concept open to start. */
+  choices(): NewChoices {
+    return newChoices(this.graph, this.records, this.clock());
   }
 
   /** The concept to learn next, leaving reviews aside: what a mastery leads on to. */
   nextToLearn(last?: string): string | undefined {
-    return pickNext({ graph: this.graph, records: this.records, now: this.clock(), last, learnOnly: true })?.concept;
+    return pickNext({ graph: this.graph, records: this.records, now: this.clock(), last, pace: loadPace(), learnOnly: true })?.concept;
   }
 
   answer(id: string, generator: string, a: { ok: boolean; seconds: number; help?: boolean }): ConceptRecord {
@@ -74,7 +79,7 @@ export class Learner {
     const st = this.statuses();
     const due = [...st.values()].filter((s) => s === 'due' || s === 'slipping').length;
     const t = Math.max(0, ...Object.values(this.records).map((r) => r.last));
-    const pick = pickNext({ graph: this.graph, records: this.records, now: this.clock() });
+    const pick = pickNext({ graph: this.graph, records: this.records, now: this.clock(), pace: loadPace() });
     if (!pick) {
       const next = Math.min(...Object.values(this.records).map((r) => r.review?.due ?? Infinity));
       return { kind: 'done', due, t, nextReview: Number.isFinite(next) ? next : undefined };

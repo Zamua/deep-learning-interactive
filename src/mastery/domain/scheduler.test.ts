@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ConceptGraph } from './graph';
 import { applyAnswer, DAY, emptyRecord, type ConceptRecord } from './model';
-import { inheritSplits, isUnlocked, pickNext, type Records, type SessionState } from './scheduler';
+import { inheritSplits, isUnlocked, newChoices, pickNext, rankNew, type Records, type SessionState } from './scheduler';
 import type { Concept } from './types';
 
 const bar = { streak: 3, seconds: 20 };
@@ -87,6 +87,27 @@ describe('pickNext', () => {
 
   it('returns null when everything is mastered and nothing is due', () => {
     expect(pickNext(S(new ConceptGraph([c('a')]), { a: mastered(T0) }))).toBeNull();
+  });
+});
+
+describe('choosing a new concept', () => {
+  // Domain A: a unlocks a2 and a3; domain B: b; domain C: c, practiced long ago.
+  const g = new ConceptGraph([c('a', [], 'A'), c('b', [], 'B'), c('c', [], 'C'), c('a2', ['a'], 'A'), c('a3', ['a'], 'A'), c('c2', ['c'], 'C')]);
+  const recs = { c: mastered(T0 - 10 * DAY), a: mastered(T0 - 10) };
+
+  it('deep follows the chain just mastered', () => {
+    expect(rankNew(g, recs, ['b', 'a2', 'c2'], 'deep')[0]).toBe('a2');
+    expect(pickNext(S(g, recs, { learnOnly: true }))).toMatchObject({ concept: 'a2', reason: 'new' });
+  });
+
+  it('broad turns to a domain never practiced, then the one left longest', () => {
+    expect(rankNew(g, recs, ['a2', 'b', 'c2'], 'broad')).toEqual(['b', 'c2', 'a2']);
+    expect(rankNew(g, { ...recs, b: mastered(T0 - 5) }, ['a2', 'c2'], 'broad')[0]).toBe('c2');
+    expect(pickNext(S(g, recs, { pace: 'broad', learnOnly: true }))).toMatchObject({ concept: 'b', reason: 'new' });
+  });
+
+  it('offers the next step along the chain, a start somewhere else, and everything open', () => {
+    expect(newChoices(g, recs, T0)).toEqual({ deeper: 'a2', different: 'b', open: ['b', 'a2', 'a3', 'c2'] });
   });
 });
 

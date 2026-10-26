@@ -1,4 +1,5 @@
 import { ALL_SYMBOLS, SCOPED } from '../../atlas/symbols';
+import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
 import { md, setMacros } from '../../core/math';
 import { codeIndex, linkSymbols, symbolMacros } from '../../core/symbols';
@@ -47,3 +48,10 @@ export function whenDue(due: number, now = Date.now()): string {
 }
 
 export const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+
+/** A way to the page that lists every concept open to start. */
+export function pickLink(text: string): HTMLElement {
+  const a = h('a', { class: 'at-pick-link', href: '#/atlas/next', html: icon('compass') });
+  a.append(h('span', {}, text));
+  return a;
+}

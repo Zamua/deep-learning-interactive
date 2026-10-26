@@ -1,4 +1,5 @@
-// Routes under #/atlas: the map, its graph view, a session, the placement test, a concept and its explainer.
+// Routes under #/atlas: the map, its graph view, a session, the placement test, what to learn next, a concept and its
+// explainer.
 import '../../styles/atlas.css';
 import { domainOf, GRAPH, loadExplainer } from '../../atlas/index';
 import { h } from '../../core/dom';
@@ -6,6 +7,7 @@ import { Learner } from '../learner';
 import { renderConcept } from './concept';
 import { notationIn } from './lookup';
 import { renderHome, renderMap } from './map';
+import { renderNext } from './next';
 import { renderPlacement } from './placement';
 import { renderSession } from './session';
 
@@ -16,6 +18,7 @@ export async function renderAtlas(main: HTMLElement, parts: string[], current: (
   if (a === 'graph' || a === 'list') return renderMap(main, learner, a);
   if (a === 'learn') return renderSession(main, learner, b || undefined);
   if (a === 'place') return renderPlacement(main, learner);
+  if (a === 'next') return renderNext(main, learner);
   const c = GRAPH.get(a);
   if (!c) {
     location.replace('#/atlas');

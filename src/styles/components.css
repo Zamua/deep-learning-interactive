@@ -1409,6 +1409,9 @@ a.btn {
   border-radius: 10px;
   background: var(--paper-2);
 }
+.set-seg.two {
+  grid-template-columns: repeat(2, 1fr);
+}
 .set-seg button {
   padding: 8px 0;
   border: 0;

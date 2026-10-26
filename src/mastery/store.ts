@@ -1,8 +1,9 @@
 // The learner's mastery data: one record per concept, kept in the synced progress store, and an answer log kept on
 // this device.
 import { editProgress, progressStore } from '../sync/cloud';
-import { conceptFrom, concepts, putConcepts } from '../sync/model';
+import { conceptFrom, concepts, paceOf, putConcepts, putPace } from '../sync/model';
 import type { ConceptRecord } from './domain/model';
+import type { Pace } from './domain/scheduler';
 
 const LOG_KEY = 'atlas.log';
 /** Log rows kept; older ones are dropped first. */
@@ -50,6 +51,13 @@ export function loadRecords(): Record<string, ConceptRecord> {
 /** Saves these concepts' records; the others are left as they are. */
 export function saveRecords(records: Record<string, ConceptRecord>): void {
   if (Object.keys(records).length) editProgress((s, now) => putConcepts(s, now, records));
+}
+
+/** How new concepts are chosen, as the learner set it on any of their devices. */
+export const loadPace = (): Pace => paceOf(progressStore().store);
+
+export function savePace(pace: Pace): void {
+  if (pace !== loadPace()) editProgress((s, now) => putPace(s, now, pace));
 }
 
 export function loadLog(): LogRow[] {

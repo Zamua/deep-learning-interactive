@@ -3,7 +3,7 @@ import { Local, canon, codeFromRoom, makeRng, memoryStorage, type Kind } from 'h
 import { device, fakeWorld } from 'hearthsync/testing';
 import { emptyRecord, type ConceptRecord } from '../mastery/domain/model';
 import {
-  LAST_KEY, MODEL, READING_KEY, concepts, lastSeen, laterConcept, lecture, lectureKey, masteryKey, model, orBits, putConcepts, putLast, putLecture, putReading,
+  LAST_KEY, MODEL, PREFS_KEY, READING_KEY, concepts, lastSeen, laterConcept, lecture, lectureKey, masteryKey, model, orBits, paceOf, putConcepts, putLast, putLecture, putPace, putReading,
   readEntry, type Rec,
 } from './model';
 
@@ -20,12 +20,13 @@ function randomRec(key: string, rng: () => number): Rec {
     return { c: Object.fromEntries(ids.filter(() => rng() < 0.7).map((id) => [id, { t: t(), r: rng() < 0.5 ? mastered(t()) : rec({ attempts: pick([1, 2]), last: t() }) }])) };
   if (key.startsWith('lectures/'))
     return { l: Object.fromEntries(ids.filter(() => rng() < 0.7).map((id) => [id, { pos: { val: { at: pick([0, 12]), dur: pick([60, 90]) }, t: t() }, heard: { [pick(['60', '90'])]: pick(['AQ==', 'Ag==', 'BAE=']) } }])) };
+  if (key === PREFS_KEY) return rng() < 0.2 ? {} : { pace: { val: pick(['deep', 'broad'] as const), t: t() } };
   if (key === READING_KEY) return { ch: Object.fromEntries(ids.filter(() => rng() < 0.7).map((id) => [id, { max: pick([0.2, 0.5]), at: { val: pick(['x', 'y']), t: t() } }])) };
   return { at: { val: rng() < 0.3 ? null : { kind: 'chapter', id: pick(ids), t: t() }, t: t() } };
 }
 
 describe('the progress records', () => {
-  for (const key of ['mastery/0', 'lectures/0', READING_KEY, LAST_KEY]) {
+  for (const key of ['mastery/0', 'lectures/0', READING_KEY, LAST_KEY, PREFS_KEY]) {
     it(`${key} merges commutatively, associatively and idempotently`, () => {
       const kind = MODEL.kind(key) as Kind<Rec>;
       const rng = makeRng(7).next;
@@ -81,6 +82,9 @@ describe('the progress records', () => {
     expect(readEntry(l.store, 'backprop')).toMatchObject({ max: 0.6, at: { val: 'intro' } });
     l.edit((s, now) => putLast(s, now, { kind: 'chapter', id: 'backprop', t: 1 }));
     expect(lastSeen(l.store)).toEqual({ kind: 'chapter', id: 'backprop', t: 1 });
+    expect(paceOf(l.store)).toBe('deep');
+    l.edit((s, now) => putPace(s, now, 'broad'));
+    expect(paceOf(l.store)).toBe('broad');
   });
 });
 

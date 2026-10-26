@@ -3,6 +3,9 @@ import { DAY, emptyRecord, placeMastered, status, streak, type ConceptRecord, ty
 
 export type Records = Readonly<Record<string, ConceptRecord>>;
 
+/** How new concepts are chosen: `deep` follows the chain just mastered, `broad` turns to the area left longest. */
+export type Pace = 'deep' | 'broad';
+
 export interface Pick {
   concept: string;
   /**
@@ -28,6 +31,8 @@ export interface SessionState {
   reviewed?: ReadonlySet<string>;
   /** Only what to learn next: no reviews and no slipped concepts. */
   learnOnly?: boolean;
+  /** `deep` by default. */
+  pace?: Pace;
 }
 
 /** Misses among a concept's last few answers that send the learner back to a prerequisite. */
@@ -84,19 +89,46 @@ export function pickNext(s: SessionState): Pick | null {
   const focus = ids('learning').sort(recent)[0];
   if (focus) return learn(focus);
 
-  // Nothing in progress: start a new concept, preferring what the latest mastery unlocked, then its domain.
+  // Nothing in progress: start a new concept.
   const fresh = ids('new');
-  return fresh.length ? start(fresh) : null;
+  return fresh.length ? { concept: rankNew(graph, records, fresh, s.pace ?? 'deep')[0]!, reason: 'new', difficulty: 0 } : null;
+}
 
-  function start(cands: string[]): Pick {
-    const latest = graph.order.filter((c) => records[c.id]?.attempts).map((c) => c.id).sort(recent)[0];
-    const latestMastered = graph.order.filter((c) => records[c.id]?.mastered).map((c) => c.id).sort(recent)[0];
-    const domain = latest ? graph.get(latest)!.domain : undefined;
-    const unlockedBy = (id: string) => (latestMastered && graph.get(id)!.prereqs.includes(latestMastered) ? 0 : 1);
-    const sameDomain = (id: string) => (graph.get(id)!.domain === domain ? 0 : 1);
-    const depth = (id: string) => graph.depth.get(id)!;
-    const reach = (id: string) => graph.dependents.get(id)!.length;
-    const best = [...cands].sort((a, b) => unlockedBy(a) - unlockedBy(b) || sameDomain(a) - sameDomain(b) || depth(a) - depth(b) || reach(b) - reach(a))[0]!;
-    return { concept: best, reason: 'new', difficulty: 0 };
-  }
+/**
+ * Concepts not yet started, best first for the pace. Deep: what the latest mastery unlocked, then the domain of the
+ * latest practice. Broad: the domain practiced longest ago, never practiced first. Then the shallowest, then the one
+ * that unlocks the most.
+ */
+export function rankNew(graph: ConceptGraph, records: Records, cands: readonly string[], pace: Pace): string[] {
+  const recent = (a: string, b: string) => (records[b]?.last ?? 0) - (records[a]?.last ?? 0);
+  const practiced = graph.order.filter((c) => records[c.id]?.attempts).map((c) => c.id).sort(recent);
+  const latestMastered = graph.order.filter((c) => records[c.id]?.mastered).map((c) => c.id).sort(recent)[0];
+  const domain = practiced[0] ? graph.get(practiced[0])!.domain : undefined;
+  const lastIn = new Map<string, number>();
+  for (const id of practiced) lastIn.set(graph.get(id)!.domain, Math.max(lastIn.get(graph.get(id)!.domain) ?? 0, records[id]!.last));
+  const unlockedBy = (id: string) => (latestMastered && graph.get(id)!.prereqs.includes(latestMastered) ? 0 : 1);
+  const sameDomain = (id: string) => (graph.get(id)!.domain === domain ? 0 : 1);
+  const left = (id: string) => lastIn.get(graph.get(id)!.domain) ?? 0;
+  const depth = (id: string) => graph.depth.get(id)!;
+  const reach = (id: string) => graph.dependents.get(id)!.length;
+  const tail = (a: string, b: string) => depth(a) - depth(b) || reach(b) - reach(a);
+  return [...cands].sort(pace === 'deep' ? (a, b) => unlockedBy(a) - unlockedBy(b) || sameDomain(a) - sameDomain(b) || tail(a, b) : (a, b) => left(a) - left(b) || tail(a, b));
+}
+
+export interface NewChoices {
+  /** The next step along the chain in progress. */
+  deeper?: string;
+  /** The best start in another domain than `deeper`'s. */
+  different?: string;
+  /** Every concept open and not yet started, in graph order. */
+  open: string[];
+}
+
+/** What a learner could start now: the two ways to go on, and all of it. */
+export function newChoices(graph: ConceptGraph, records: Records, now: number): NewChoices {
+  const st = statuses(graph, records, now);
+  const open = graph.order.filter((c) => st.get(c.id) === 'new').map((c) => c.id);
+  const deeper = rankNew(graph, records, open, 'deep')[0];
+  const different = rankNew(graph, records, open, 'broad').find((id) => !deeper || graph.get(id)!.domain !== graph.get(deeper)!.domain);
+  return { deeper, different, open };
 }

@@ -1,8 +1,9 @@
 // The learner's progress as account records: mastery, lecture and explainer playback, how far each chapter was read,
 // and what was open last. Each merges as a CRDT, so devices converge whatever order their edits arrive in. Pure: the
 // store and the network are hearthsync's.
-import { UNTIMED, canon, hash, importRecords, isObj, isStamp, lww, putRecord, type Fold, type Kind, type LocalStore, type Model, type Reg, type Stamp } from 'hearthsync';
+import { UNTIMED, canon, hash, importRecords, isObj, isStamp, lww, lwwOpt, putRecord, regFrom, type Fold, type Kind, type LocalStore, type Model, type Reg, type Stamp } from 'hearthsync';
 import type { Attempt, ConceptRecord, Review } from '../mastery/domain/model';
+import type { Pace } from '../mastery/domain/scheduler';
 
 /** A concept's record and the stamp of its last edit. */
 export interface ConceptEntry { t: Stamp; r: ConceptRecord }
@@ -21,13 +22,17 @@ export interface Reading { ch: Readonly<Record<string, ReadEntry>> }
 export interface Seen { kind: 'lecture' | 'chapter'; id: string; t: number }
 export interface LastSeen { at: Reg<Seen | null> }
 
-export type Rec = MasteryBucket | LectureBucket | Reading | LastSeen;
+/** The learner's choices that follow them across devices. */
+export interface Prefs { pace?: Reg<Pace> }
+
+export type Rec = MasteryBucket | LectureBucket | Reading | LastSeen | Prefs;
 
 /** Records spread over a few keys, so an upload carries a slice of them and a room stays far under its key cap. */
 const MASTERY_KEYS = 8;
 const LECTURE_KEYS = 4;
 export const READING_KEY = 'reading';
 export const LAST_KEY = 'last';
+export const PREFS_KEY = 'prefs';
 
 /** FNV-1a: a stable slot for an id, whatever build or device computes it. */
 function slot(id: string, n: number): number {
@@ -174,6 +179,21 @@ const last: Kind<Rec> = {
   stamp: (r) => (r as LastSeen).at.t,
 };
 
+const isPace = (x: unknown): x is Pace => x === 'deep' || x === 'broad';
+
+const prefs: Kind<Rec> = {
+  from: (raw) => {
+    if (!isObj(raw)) return null;
+    const pace = regFrom(raw.pace, isPace);
+    return pace ? { pace } : {};
+  },
+  merge: (a, b) => {
+    const pace = lwwOpt((a as Prefs).pace, (b as Prefs).pace);
+    return pace ? { pace } : {};
+  },
+  stamp: (r) => (r as Prefs).pace?.t ?? 0,
+};
+
 const MASTERY_KEY = /^mastery\/\d$/;
 const LECTURE_KEY = /^lectures\/\d$/;
 
@@ -182,7 +202,7 @@ export const MODEL: Model<Rec> = {
   prefix: 'progress.v2.',
   salt: 'deep-learning-interactive/public/',
   qrPrefix: 'DLI',
-  kind: (key) => (MASTERY_KEY.test(key) ? mastery : LECTURE_KEY.test(key) ? lectures : key === READING_KEY ? reading : key === LAST_KEY ? last : null),
+  kind: (key) => (MASTERY_KEY.test(key) ? mastery : LECTURE_KEY.test(key) ? lectures : key === READING_KEY ? reading : key === LAST_KEY ? last : key === PREFS_KEY ? prefs : null),
 };
 
 export type Store = LocalStore<Rec>;
@@ -247,6 +267,11 @@ export function putReading(s: Store, now: number, id: string, max: number, at: s
 export const lastSeen = (s: Store): Seen | null => (s.records[LAST_KEY] as LastSeen | undefined)?.at.val ?? null;
 
 export const putLast = (s: Store, now: number, seen: Seen): Store => putRecord(MODEL, s, LAST_KEY, now, (_, t) => ({ at: { val: seen, t } })).store;
+
+export const paceOf = (s: Store): Pace => (s.records[PREFS_KEY] as Prefs | undefined)?.pace?.val ?? 'deep';
+
+export const putPace = (s: Store, now: number, pace: Pace): Store =>
+  putRecord(MODEL, s, PREFS_KEY, now, (held, t) => ({ ...(held as Prefs | null), pace: { val: pace, t } })).store;
 
 // What builds before sync kept, one localStorage key per item.
 

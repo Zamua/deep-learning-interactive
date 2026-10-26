@@ -1,8 +1,10 @@
-// The settings menu behind the top bar's gear: the color theme, syncing progress, and Atlas's daily reminder.
+// The settings menu behind the top bar's gear: the color theme, syncing progress, how Atlas picks new concepts, and
+// Atlas's daily reminder.
 import { GRAPH } from './atlas/index';
 import { icon } from './core/controls';
 import { h } from './core/dom';
 import { Learner } from './mastery/learner';
+import { paceSwitch } from './mastery/ui/pace';
 import { remindersPanel } from './mastery/ui/reminders';
 import { syncEngine } from './sync/cloud';
 import { statusLine } from './sync/status';
@@ -86,6 +88,8 @@ function open(btn: HTMLElement, closed: () => void): () => void {
     h('div', { class: 'set-sec' }, 'Appearance'),
     themeSwitch(),
     ...(sync ? [h('div', { class: 'set-sec' }, 'Sync'), sync.el] : []),
+    h('div', { class: 'set-sec' }, 'New concepts in Atlas'),
+    paceSwitch(),
     ...(reminders ? [h('div', { class: 'set-sec' }, 'Daily reminder'), reminders] : []));
   const onKey = (e: KeyboardEvent) => {
     if (e.key === 'Escape') close();

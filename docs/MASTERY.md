@@ -149,14 +149,20 @@ problem in a fixed order, so a session reads as blocks:
    them). A review that needed the worked example stays due for the next session.
 3. The concept in progress, until mastered; three misses in four send the learner to a
    prerequisite for one problem first.
-4. A new concept: what the latest mastery unlocked, then its domain, then by depth and by how
-   many concepts it unlocks.
+4. A new concept, by the learner's pace (a synced setting, deep by default). Deep: what the
+   latest mastery unlocked, then the domain of the latest practice. Broad: the domain practiced
+   longest ago, never practiced first. Then by depth, then by how many concepts it unlocks.
 
 The first two are the review block. Its header counts "Review 2 of 5", and it ends on a
 "Reviews done" screen that lists how each review went and names what comes next; a new concept
 leads to its explainer from there. A session opened on a concept (its page, or the end of its
 explainer) stays on that concept until it is mastered, and the reviews follow. The home pages
 lead with due reviews whenever there are any.
+
+The learner can also choose: `#/atlas/next` ("What next?") offers the next step along the chain
+(Go deeper), the best start in another domain (Something different), and every concept open to
+start, each opening on its explainer, with the deep or broad switch. The Atlas home, the mastery
+moment, the Reviews done screen and a new concept's intro all link to it.
 
 A concept's first problem comes after its explainer, which the learner may skip.
 

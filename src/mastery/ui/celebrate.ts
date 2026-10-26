@@ -38,6 +38,8 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
     watch ? h('span', { class: 'at-cm-play', html: icon('playFill') }) : '',
     next ? `Next: ${graph.get(next)!.title}` : 'Continue');
   const stay = next ? h('button', { type: 'button', class: 'at-cm-stay' }, 'Back to this session') : '';
+  // Where the next new concept is Atlas's pick, the learner may prefer another.
+  const other = next && learner.status(next) === 'new' && learner.choices().open.length > 1 ? h('a', { class: 'at-cm-stay', href: '#/atlas/next' }, 'Choose something else') : '';
   const el = h('div', { class: 'at-cm', role: 'dialog', 'aria-label': `${c.title} mastered` },
     h('div', { class: 'at-cm-title', html: `${icon('sparkle')} ${c.title} mastered` }),
     view,
@@ -46,6 +48,7 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
       `${done} of ${graph.order.length} concepts mastered`,
       unlocked.length ? ` · ${unlocked.length} unlocked` : ''),
     go,
+    other,
     stay);
   host.append(el);
   haptic();

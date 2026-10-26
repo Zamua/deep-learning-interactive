@@ -5,7 +5,7 @@ import { h } from '../../core/dom';
 import { streak, type Status } from '../domain/model';
 import type { Learner } from '../learner';
 import { syncReminders } from '../push';
-import { atlasRoot, dots, plural, whenDue } from './common';
+import { atlasRoot, dots, pickLink, plural, whenDue } from './common';
 import { graphView } from './graph-view';
 
 /** The Atlas front page: today's concept, the short path around it, and a way into the whole map. */
@@ -26,7 +26,7 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
   if (d.kind === 'start') root.append(lead('Start here', c!.title, 'The first concept: a short explainer, then practice.', goBtn('Start'), altBtn('Placement test', '#/atlas/place', 'compass')));
   else if (d.kind === 'learning' && d.slipping) root.append(lead('Win it back', c!.title, `Slipped on a review: ${d.need} right in a row win it back. ${d.streak} so far.`, goBtn('Practice')));
   else if (d.kind === 'learning') root.append(lead('In progress', c!.title, `${d.streak} of ${d.need} right in a row${opens}`, goBtn('Practice')));
-  else if (d.kind === 'new') root.append(lead('Up next', c!.title, `${c!.blurb}`, goBtn('Start'), hasExplainerLink(c!.id)));
+  else if (d.kind === 'new') root.append(lead('Up next', c!.title, `${c!.blurb}`, goBtn('Start'), hasExplainerLink(c!.id)), pickLink('Or choose what to learn next'));
   else if (d.kind === 'review') root.append(lead('Review', `${plural(d.due, 'concept')} due`, `${reviewTime(learner)}${d.after ? ` Then ${title(d.after)}.` : ''}`, goBtn('Start reviews')));
   else root.append(lead('All caught up', 'Nothing is due', d.nextReview ? `Next review ${whenDue(d.nextReview)}.` : 'Everything here is mastered.', altBtn('See the map', '#/atlas/graph', 'graph')));
   if (d.due && d.kind !== 'review') root.append(h('p', { class: 'at-small at-due' }, `Then ${plural(d.due, 'review')}, before anything new.`));

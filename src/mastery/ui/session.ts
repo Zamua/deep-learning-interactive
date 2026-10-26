@@ -11,7 +11,7 @@ import { recoveryStreak, streak, type ConceptRecord } from '../domain/model';
 import type { Pick } from '../domain/scheduler';
 import type { Answer, Concept, Generator, Problem } from '../domain/types';
 import type { Learner } from '../learner';
-import { atlasRoot, dots, plural, render } from './common';
+import { atlasRoot, dots, pickLink, plural, render } from './common';
 import { explainerId } from './concept';
 import { celebrate } from './celebrate';
 import { wireLookup } from './lookup';
@@ -412,7 +412,8 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         h('div', { class: 'at-kicker' }, 'Reviews done'),
         h('h1', { class: 'at-title' }, `${kept()} of ${reviews.size} kept`),
         reviewList(),
-        h('p', { class: 'at-lede at-next' }, what)));
+        h('p', { class: 'at-lede at-next' }, what),
+        next?.reason === 'new' && learner.choices().open.length > 1 ? pickLink('Or choose something else') : ''));
       if (!c) {
         frame.dock.append(h('a', { class: 'at-check', href: '#/atlas' }, 'Back to the map'));
         resolve(false);
@@ -455,7 +456,8 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         h('p', { class: 'at-lede' }, c.blurb),
         h('p', { class: 'at-why' }, whyNew(c.id, last)),
         h('p', { class: 'at-small' }, `You will practice it until ${c.mastery.streak} in a row are right, about ${c.mastery.seconds} s each. Then the next concept opens.`),
-        example));
+        example,
+        learner.choices().open.length > 1 ? pickLink('Not this one? Choose another') : ''));
       if (hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-check', href: `#/atlas/${c.id}/watch`, html: `${icon('playFill')} Watch the explainer` }));
       frame.dock.append(start);
     });
