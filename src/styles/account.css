@@ -111,6 +111,90 @@
   display: flex;
   gap: 8px;
 }
+.ac-field {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+.ac-field .ac-input {
+  padding-right: 46px;
+}
+.ac-eye {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: none;
+  color: var(--ink-3);
+  cursor: pointer;
+}
+.ac-eye .ico {
+  width: 20px;
+  height: 20px;
+}
+/* A field for password managers only, off screen but still in the form. */
+.ac-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.ac-pm {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--card);
+}
+.ac-pm-k {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.ac-pm-k .ico {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+}
+.ac-krow {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+}
+@media (max-width: 560px) {
+  .ac-krow {
+    grid-template-columns: 1fr auto;
+  }
+  .ac-kname {
+    grid-column: 1 / -1;
+  }
+}
+.ac-input.ac-kname {
+  font-family: var(--font-ui);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.ac-krow .btn {
+  height: 46px;
+  padding: 0 16px;
+  font-size: 0.98rem;
+}
+.ac-note.ok {
+  color: var(--ok);
+}
 .ac-input {
   flex: 1;
   min-width: 0;

@@ -118,7 +118,8 @@ export function renderAccount(main: HTMLElement, typed?: string): void {
     codeBody.append(
       h('div', { class: 'ac-code', 'aria-label': formatCode(code) }, ...formatCode(code).split(' ').map((g) => h('span', {}, g))),
       h('div', { class: 'ac-actions' }, share, copy),
-      h('p', { class: 'ac-note' }, 'Open the link on your other device, or type the code below there. Anyone with it can see and change your progress, so keep it to yourself.'));
+      keeper(code, st.tag),
+      h('p', { class: 'ac-note' }, 'Open the link on your other device, or fill the code there from your password manager. Anyone with it can see and change your progress, so keep it to yourself.'));
   };
   if (sync) {
     draw(sync.status);
@@ -134,17 +135,55 @@ export function renderAccount(main: HTMLElement, typed?: string): void {
   root.append(h('h2', { class: 'ac-h2' }, 'A copy in a file'), fileCopy());
 }
 
+/** The account as a password manager sees it: a login whose password is the code. */
+const loginName = (tag: string | null): string => `Deep learning sync${tag ? ` #${tag}` : ''}`;
+const loginCode = (code: string): string => formatCode(code).replace(/ /g, '-');
+type PasswordCredentialCtor = new (d: { id: string; password: string; name: string }) => Credential;
+
+/**
+ * The code as a login for this site, in a form a password manager saves when it is submitted: Chrome through the
+ * Credential Management API, Safari and the extensions from the submitted form. The fields are on screen because
+ * managers skip hidden ones.
+ */
+function keeper(code: string, tag: string | null): HTMLElement {
+  const pass = loginCode(code);
+  const name = h('input', { class: 'ac-input ac-kname', type: 'text', name: 'username', autocomplete: 'username', value: loginName(tag), 'aria-label': 'Name to save it under' }) as HTMLInputElement;
+  const secret = h('input', { class: 'ac-input', type: 'password', name: 'password', autocomplete: 'new-password', value: pass, readonly: true, 'aria-label': 'Your code' });
+  const save = h('button', { type: 'submit', class: 'btn', html: `${icon('key')} Save` });
+  const note = h('p', { class: 'ac-note' }, 'Save the code as a login for this site, and your other devices can fill it in.');
+  const form = h('form', { method: 'post', action: '' }, h('div', { class: 'ac-krow' }, name, secret, save), note);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const user = name.value.trim() || loginName(tag);
+    const Cred = (window as unknown as { PasswordCredential?: PasswordCredentialCtor }).PasswordCredential;
+    if (Cred) void navigator.credentials.store(new Cred({ id: user, password: pass, name: user })).catch(() => {});
+    note.className = 'ac-note ok';
+    note.textContent = 'If your password manager offered to save it, it is ready to fill on your other devices. If it did not, use Copy code and add it there by hand.';
+  });
+  return h('div', { class: 'ac-pm' }, h('div', { class: 'ac-pm-k', html: `${icon('key')} Your password manager` }), form);
+}
+
 /** The code field, what that code holds, and the link itself. */
 function linker(typed?: string): HTMLElement {
   const sync = syncEngine();
+  // A login form too, so a password manager fills the code it saved on the other device.
+  const user = h('input', { class: 'ac-sr', type: 'text', name: 'username', autocomplete: 'username', tabindex: '-1', 'aria-hidden': 'true' });
   const input = h('input', {
-    class: 'ac-input', type: 'text', inputmode: 'text', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false',
-    placeholder: 'XXXX XXXX XXXX XXXX XXXX XXXX XXX', 'aria-label': 'Code from another device',
+    class: 'ac-input', type: 'password', name: 'password', autocomplete: 'current-password', autocapitalize: 'characters', spellcheck: 'false',
+    placeholder: 'XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXX', 'aria-label': 'Code from another device',
   }) as HTMLInputElement;
+  const eye = h('button', { type: 'button', class: 'ac-eye', 'aria-label': 'Show the code', 'aria-pressed': 'false', html: icon('eye') });
+  eye.addEventListener('click', () => {
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    eye.setAttribute('aria-pressed', String(show));
+    eye.setAttribute('aria-label', show ? 'Hide the code' : 'Show the code');
+    eye.innerHTML = icon(show ? 'eye-slash' : 'eye');
+  });
   const go = h('button', { type: 'submit', class: 'btn btn-primary' }, 'Continue') as HTMLButtonElement;
   const hint = h('p', { class: 'ac-hint' });
   const peek = h('div', { class: 'ac-peek', hidden: true });
-  const form = h('form', { class: 'ac-form' }, h('div', { class: 'ac-row' }, input, go), hint, peek);
+  const form = h('form', { class: 'ac-form', method: 'post', action: '' }, user, h('div', { class: 'ac-row' }, h('div', { class: 'ac-field' }, input, eye), go), hint, peek);
   const say = (tone: '' | 'ok' | 'bad', text: string) => {
     hint.className = `ac-hint ${tone}`;
     hint.textContent = text;
@@ -188,7 +227,7 @@ function linker(typed?: string): HTMLElement {
     }, (err: unknown) => say('bad', failText(err))).finally(() => (go.disabled = false));
   });
   if (typed) {
-    input.value = formatCode(codeSymbols(typed));
+    input.value = loginCode(codeSymbols(typed));
     queueMicrotask(() => form.requestSubmit());
   }
   return form;
