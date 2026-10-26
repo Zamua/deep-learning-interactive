@@ -5,7 +5,6 @@ import { h } from '../../core/dom';
 import { streak, type Status } from '../domain/model';
 import type { Learner } from '../learner';
 import { syncReminders } from '../push';
-import { exportSnapshot, importSnapshot } from '../store';
 import { atlasRoot, dots, plural, whenDue } from './common';
 import { graphView } from './graph-view';
 
@@ -104,7 +103,7 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
       ? folded('mastered', `Mastered · ${count('mastered')}`, ids('mastered'), (id) => mastered(id, false))
       : section(`Mastered · ${count('mastered')}`, ids('mastered').map((id) => mastered(id, true)))),
   );
-  root.append(progressFile());
+  root.append(h('a', { class: 'at-maplink', href: '#/account', html: `${icon('devices')} <span>Sync across devices</span><small>your code, and a file copy</small>${icon('arrowRight')}` }));
 }
 
 /** A section longer than this is folded by domain. */
@@ -144,31 +143,3 @@ function fold(key: string, title: string, color: string, n: number, rows: HTMLEl
   return h('div', {}, head, body);
 }
 
-/** Progress lives in this browser; a file carries it to another one. */
-function progressFile(): HTMLElement {
-  const save = h('button', { type: 'button', class: 'btn' }, 'Save progress to a file');
-  save.addEventListener('click', () => {
-    const url = URL.createObjectURL(new Blob([JSON.stringify(exportSnapshot())], { type: 'application/json' }));
-    const a = h('a', { href: url, download: `atlas-progress-${new Date().toISOString().slice(0, 10)}.json` });
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  });
-  const input = h('input', { type: 'file', accept: 'application/json,.json', hidden: true });
-  const load = h('button', { type: 'button', class: 'btn' }, 'Load progress from a file');
-  const msg = h('span', { class: 'at-small' });
-  load.addEventListener('click', () => input.click());
-  input.addEventListener('change', async () => {
-    const f = input.files?.[0];
-    if (!f) return;
-    try {
-      importSnapshot(await f.text());
-      location.reload();
-    } catch (e) {
-      msg.textContent = (e as Error).message;
-    }
-  });
-  return h('div', { class: 'at-file' },
-    h('h2', { class: 'at-h2' }, 'Your progress'),
-    h('p', { class: 'at-small' }, 'Kept in this browser only. Save it to a file to move it to another device; loading a file replaces what is here.'),
-    h('div', { class: 'at-actions' }, save, load, input), msg);
-}

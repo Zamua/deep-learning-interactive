@@ -1,9 +1,11 @@
-// The settings menu behind the top bar's gear: the color theme and Atlas's daily reminder.
+// The settings menu behind the top bar's gear: the color theme, syncing progress, and Atlas's daily reminder.
 import { GRAPH } from './atlas/index';
 import { icon } from './core/controls';
 import { h } from './core/dom';
 import { Learner } from './mastery/learner';
 import { remindersPanel } from './mastery/ui/reminders';
+import { syncEngine } from './sync/cloud';
+import { statusLine } from './sync/status';
 
 type Theme = 'system' | 'light' | 'dark';
 const THEME_KEY = 'cs231n.theme';
@@ -61,17 +63,35 @@ export function settingsButton(): HTMLElement {
   return btn;
 }
 
+/** The sync status as one row leading to the account page; it follows the status while the menu is open. */
+function syncRow(): { el: HTMLElement; stop: () => void } | null {
+  const sync = syncEngine();
+  if (!sync) return null;
+  const el = h('a', { class: 'set-sync', href: '#/account' });
+  const draw = () => {
+    const line = statusLine(sync.status);
+    el.className = `set-sync ${line.tone}`;
+    el.innerHTML = `<span class="set-sync-i">${icon(line.icon)}</span><span class="set-sync-t"><b></b><small>Your code and other devices</small></span>${icon('caret-right')}`;
+    el.querySelector('b')!.textContent = line.title;
+  };
+  draw();
+  return { el, stop: sync.on('status', draw) };
+}
+
 function open(btn: HTMLElement, closed: () => void): () => void {
   const catcher = h('div', { class: 'set-catch' });
   const reminders = remindersPanel(new Learner(GRAPH));
+  const sync = syncRow();
   const menu = h('div', { class: 'set-menu', role: 'dialog', 'aria-label': 'Settings' },
     h('div', { class: 'set-sec' }, 'Appearance'),
     themeSwitch(),
+    ...(sync ? [h('div', { class: 'set-sec' }, 'Sync'), sync.el] : []),
     ...(reminders ? [h('div', { class: 'set-sec' }, 'Daily reminder'), reminders] : []));
   const onKey = (e: KeyboardEvent) => {
     if (e.key === 'Escape') close();
   };
   const close = () => {
+    sync?.stop();
     catcher.remove();
     menu.remove();
     document.removeEventListener('keydown', onKey);

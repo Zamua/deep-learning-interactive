@@ -1476,3 +1476,52 @@ a.btn {
 .set-test[hidden] {
   display: none;
 }
+.set-sync {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  text-decoration: none;
+}
+.set-sync:hover {
+  border-color: var(--accent);
+}
+.set-sync-i .ico {
+  width: 22px;
+  height: 22px;
+}
+.set-sync.ok .set-sync-i {
+  color: var(--c-green);
+}
+.set-sync.wait .set-sync-i {
+  color: var(--accent);
+}
+.set-sync.off .set-sync-i {
+  color: var(--ink-3);
+}
+.set-sync.bad .set-sync-i {
+  color: var(--c-red);
+}
+.set-sync-t {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.set-sync-t b {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.set-sync-t small {
+  font-size: 0.82rem;
+  color: var(--ink-3);
+}
+.set-sync > .ico {
+  width: 16px;
+  height: 16px;
+  color: var(--ink-3);
+}

@@ -1,0 +1,168 @@
+/* ---------- the account page: sync status, the code, linking a device ---------- */
+
+.ac {
+  --ok: var(--c-green);
+  --bad: var(--c-red);
+  --warn: var(--c-gold);
+  font-family: var(--font-ui);
+}
+.ac-lede {
+  margin: 0 0 22px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.ac-h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 30px 0 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.ac-h2::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+.ac-status {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--card);
+}
+.ac-status > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.ac-status b {
+  font-weight: 650;
+  color: var(--ink);
+}
+.ac-status > span:last-child > span {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--ink-3);
+}
+.ac-status-i .ico {
+  width: 26px;
+  height: 26px;
+}
+.ac-status.ok .ac-status-i {
+  color: var(--ok);
+}
+.ac-status.wait .ac-status-i {
+  color: var(--accent);
+}
+.ac-status.off .ac-status-i {
+  color: var(--ink-3);
+}
+.ac-status.bad {
+  border-color: color-mix(in srgb, var(--bad) 45%, var(--rule));
+}
+.ac-status.bad .ac-status-i {
+  color: var(--bad);
+}
+.ac-code {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--paper-2);
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 4.6vw, 1.25rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  user-select: all;
+}
+.ac-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.ac-actions .btn {
+  padding: 10px 16px;
+  font-size: 0.98rem;
+}
+.ac-actions .btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.ac-note {
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+.ac-row {
+  display: flex;
+  gap: 8px;
+}
+.ac-input {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.ac-input::placeholder {
+  color: var(--ink-3);
+  opacity: 0.6;
+  letter-spacing: 0.02em;
+}
+.ac-input:focus {
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 1px;
+}
+.ac-row .btn {
+  height: 46px;
+  padding: 0 16px;
+  font-size: 0.98rem;
+}
+.ac-hint {
+  min-height: 1.3em;
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-3);
+}
+.ac-hint.ok {
+  color: var(--ok);
+}
+.ac-hint.bad {
+  color: var(--bad);
+}
+.ac-peek {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--rule));
+  border-radius: 14px;
+  background: var(--card);
+}
+.ac-peek[hidden] {
+  display: none;
+}
+.ac-peek p {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--ink-2);
+}

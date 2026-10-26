@@ -17,10 +17,12 @@ import { hasLecture, loadLecture } from './lectures/index';
 import { ATLAS_COURSE, DOMAINS, GRAPH } from './atlas/index';
 import { Learner } from './mastery/learner';
 import { applyTheme, settingsButton } from './settings';
+import { progressStore, startSync } from './sync/cloud';
 
 const mmss = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
 
 applyTheme();
+startSync();
 
 const app = document.getElementById('app')!;
 const main = h('main', { class: 'main', id: 'main' });
@@ -161,6 +163,10 @@ async function route(): Promise<void> {
     await routeAtlas();
     return;
   }
+  if (id === 'account' || id === 'link') {
+    await routeAccount(id === 'link' ? section : undefined);
+    return;
+  }
   const key = id === 'watch' ? `watch/${section}` : id;
   if (key === currentId && currentId) {
     if (section && id !== 'watch') document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -262,6 +268,48 @@ async function routeAtlas(): Promise<void> {
     main.innerHTML = '';
     main.append(h('div', { class: 'fig-error' }, `This page failed to load: ${(e as Error).message}`));
   }
+}
+
+async function routeAccount(code?: string): Promise<void> {
+  const token = ++renderToken;
+  disposeAll();
+  currentId = code ? `link/${code}` : 'account';
+  main.innerHTML = '';
+  setBrand(null);
+  buildNav(null, '');
+  document.title = 'Sync across devices · interactive';
+  window.scrollTo(0, 0);
+  // The code has done its job once read: keep it out of the history and of anything that shares this page.
+  if (code) history.replaceState(null, '', '#/account');
+  try {
+    const { renderAccount } = await import('./sync/ui');
+    if (token !== renderToken) return;
+    renderAccount(main, code);
+  } catch (e) {
+    console.error(e);
+    if (await reloadIfStale()) return;
+    main.append(h('div', { class: 'fig-error' }, `This page failed to load: ${(e as Error).message}`));
+  }
+}
+
+/**
+ * Another device's progress arrived (or another tab's, or a link brought an account's): pages that only show progress
+ * draw again where they were. Sessions, players, chapters and the account page keep running as they are.
+ */
+function redrawOnRemoteProgress(): void {
+  let due = 0;
+  progressStore().on((next, prev, source) => {
+    if (source === 'app' || next.records === prev.records) return;
+    window.clearTimeout(due);
+    due = window.setTimeout(() => {
+      const [, a = '', b = '', c = ''] = location.hash.replace(/^#\/?/, '#').split(/[#/]/);
+      const busy = a === 'watch' || a === 'account' || a === 'link' || (a === 'atlas' && (b === 'learn' || b === 'place' || c === 'watch')) || CHAPTERS.some((x) => x.id === a);
+      if (busy) return;
+      const y = scrollY;
+      currentId = '';
+      void route().then(() => window.scrollTo(0, y));
+    }, 150);
+  });
 }
 
 function buildAtlasNav(active: string): void {
@@ -394,6 +442,7 @@ window.addEventListener('scroll', () => {
   const max = document.documentElement.scrollHeight - innerHeight;
   progress.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`;
 }, { passive: true });
+redrawOnRemoteProgress();
 void route().then(() => {
   (window as unknown as { __ready: boolean }).__ready = true;
 });
