@@ -70,12 +70,13 @@ function captionChunks(text: string, max = 92): string[] {
 }
 
 /**
- * Lays the script out in time. Uses the synthesized timing when every beat's text still matches
- * it; otherwise estimates from text length (and the player runs silent), so an edited script
- * stays watchable before its narration is rebuilt.
+ * Lays the script out in time. Uses the synthesized timing when it holds exactly the script's
+ * beats, each with its text unchanged; otherwise estimates from text length (and the player runs
+ * silent), so an edited script stays watchable before its narration is rebuilt.
  */
 function layout(script: LectureScript, timing: Timing | null): { scenes: TScene[]; duration: number; exact: boolean } {
-  const exact = !!timing && script.scenes.every((s) => s.beats.every((b) => timing.beats[`${s.id}/${b.id}`]?.[2] === spokenText(b.say)));
+  const beats = script.scenes.flatMap((s) => s.beats.map((b) => [`${s.id}/${b.id}`, spokenText(b.say)] as const));
+  const exact = !!timing && Object.keys(timing.beats).length === beats.length && beats.every(([k, said]) => timing.beats[k]?.[2] === said);
   let t = 0;
   const scenes = script.scenes.map((s) => {
     const start = exact ? timing!.scenes[s.id]![0] : t;
