@@ -31,11 +31,10 @@ const look: SceneDef = {
     const xs = columns(s, 3, 28);
     const sc = s.ease('score', 0.6);
     const w = s.ease('weights', 0.6);
-    const lit = (j: number) => (j === 0 ? s.win('context', undefined) : 0);
     rowLabel(s, 'h', xs[0]! - 9 * s.u, s.h * 0.2, 'gold', 3.6);
     SRC.forEach((t, j) => {
       s.text(t, xs[j]!, s.h * 0.07, { size: 3.4, font: 'mono', weight: 600, color: s.c('orange') });
-      stack(s, xs[j]!, s.h * 0.2, ENC[j]!.map(String), 'gold', { gap: 8, w: 10, h: 6.5, on: [lit(j), lit(j)] });
+      stack(s, xs[j]!, s.h * 0.2, ENC[j]!.map(String), 'gold', { gap: 8, w: 10, h: 6.5 });
     });
     s.alpha(s.ease('keep', 0.6, 2.5) * (1 - sc), () => s.text('one encoder state per input word', s.w / 2, s.h * 0.34, { size: 3.2, color: s.c('--ink-3') }));
     s.alpha(sc, () => {
@@ -46,10 +45,40 @@ const look: SceneDef = {
     s.alpha(w, () => {
       const base = s.h * 0.68;
       rowLabel(s, 'α', xs[0]! - 9 * s.u, base - 4 * s.u, 'teal', 3.8);
-      bars(s, xs, base, A, 'teal', { max: 1, height: 20, w: 9, fmt: f2, grow: s.ease('weights', 1, 0.3), hi: [lit(0), 0, 0] });
+      bars(s, xs, base, A, 'teal', { max: 1, height: 20, w: 9, fmt: f2, grow: s.ease('weights', 1, 0.3) });
     });
+  },
+};
+
+const A2 = [0.67, 0.09, 0.24];
+const SCALED = ENC.map((h, j) => h.map((v) => Math.round(A2[j]! * v * 100) / 100));
+const fv = (v: number) => (v === 0 ? '0' : f2(v));
+
+const mix: SceneDef = {
+  draw(s) {
+    const u = s.u;
+    const xs = columns(s, 3, 28);
+    const seq = (j: number) => s.ease('scale', 0.6, 0.4 + 2.6 * j);
+    rowLabel(s, 'h', xs[0]! - 11 * u, s.h * 0.19, 'gold', 3.6);
+    SRC.forEach((t, j) => {
+      s.text(t, xs[j]!, s.h * 0.06, { size: 3.4, font: 'mono', weight: 600, color: s.c('orange') });
+      stack(s, xs[j]!, s.h * 0.19, ENC[j]!.map(String), 'gold', { gap: 8, w: 10, h: 6.5, on: [s.win('scale', 'add') * seq(j), s.win('scale', 'add') * seq(j)] });
+      s.alpha(s.ease('context', 0.6, 0.8 + 0.3 * j), () => s.text(`× ${f2(A2[j]!)}`, xs[j]!, s.h * 0.315, { size: 3.3, font: 'mono', weight: 650, color: s.c('teal'), halo: true }));
+      s.alpha(seq(j), () => {
+        s.arrow(xs[j]!, s.h * 0.345, xs[j]!, s.h * 0.37, s.c('--ink-3'), 0.35, 1.6);
+        stack(s, xs[j]!, s.h * 0.45, SCALED[j]!.map(fv), 'slate', { gap: 8, w: 11, h: 6.5, on: [s.win('add', 'use'), s.win('add', 'use')] });
+      });
+    });
+    s.alpha(s.ease('context', 0.6, 0.8), () => rowLabel(s, 'α', xs[0]! - 11 * u, s.h * 0.315, 'teal', 3.6));
+    s.alpha(seq(0), () => rowLabel(s, 'αh', xs[0]! - 11 * u, s.h * 0.45, 'slate', 3.4));
+    s.alpha(s.ease('add', 0.6), () => [0, 1].forEach((j) => s.text('+', (xs[j]! + xs[j + 1]!) / 2, s.h * 0.45, { size: 4, font: 'mono', weight: 600, color: s.c('--ink-2') })));
+    const o = { size: 3.2, weight: 600 };
+    s.alpha(s.ease('add', 0.6, 1), () => rich(s, [[`${fv(SCALED[0]![0]!)} + ${fv(SCALED[1]![0]!)} + ${fv(SCALED[2]![0]!)} = `, '--ink-2'], [f2(CTX[0]!), 'gold']], s.w / 2, s.h * 0.6, o));
+    s.alpha(s.ease('add', 0.6, 3.5), () => rich(s, [[`${fv(SCALED[0]![1]!)} + ${fv(SCALED[1]![1]!)} + ${fv(SCALED[2]![1]!)} = `, '--ink-2'], [f2(CTX[1]!), 'gold']], s.w / 2, s.h * 0.67, o));
     s.alpha(s.ease('context', 0.6), () => {
-      rich(s, [['context = Σ αⱼ hⱼ = ', '--ink-2'], [`[${CTX.map(f2).join(', ')}]`, 'gold']], s.w / 2, s.h * 0.79, { size: 3.4, weight: 600 });
+      const v = s.ease('add', 0.8, 5);
+      s.alpha(1 - v, () => rich(s, [['context = Σ αⱼ hⱼ', '--ink-2']], s.w / 2, s.h * 0.78, { size: 3.4, weight: 600 }));
+      s.alpha(v, () => rich(s, [['context = Σ αⱼ hⱼ = ', '--ink-2'], [`[${CTX.map(f2).join(', ')}]`, 'gold']], s.w / 2, s.h * 0.78, { size: 3.4, weight: 600 }));
     });
     s.alpha(s.ease('use', 0.6), () => {
       rich(s, [['decoder state + context  →  ', '--ink-3'], ['I', 'gold']], s.w / 2, s.h * 0.88, { size: 3.2, weight: 600 });
@@ -80,4 +109,4 @@ const every: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { look, every };
+export const scenes: Record<string, SceneDef> = { look, mix, every };

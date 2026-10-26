@@ -1,24 +1,26 @@
 {
- "duration": 146.093,
+ "duration": 176.44,
  "scenes": {
-  "patches": [0.0, 46.857],
-  "flatten": [46.857, 102.612],
-  "sequence": [102.612, 146.093]
+  "patches": [0.0, 67.177],
+  "flatten": [67.177, 122.932],
+  "sequence": [122.932, 176.44]
  },
  "beats": {
   "patches/seq": [0.7, 11.422, "A transformer reads a sequence of vectors, one per token. An image is a grid of pixels: here thirty two by thirty two, with three color values each.", [[3.3, 3.61], [4.67, 5.25], [7.09, 7.44], [9.39, 9.7]]],
   "patches/cut": [11.802, 20.924, "To make it a sequence, cut it into squares of P by P pixels, the patches, with P for patch size. Here P is eight.", [[12.972, 13.252], [16.042, 16.342], [17.002, 17.362], [18.922, 19.422], [19.742, 19.972]]],
   "patches/count": [21.304, 31.171, "Thirty two over eight is four patches along each side, so four times four: sixteen patches, read in order like words on a page.", [[24.904, 25.314], [26.764, 27.274], [28.454, 28.864]]],
   "patches/formula": [31.551, 45.757, "In general, an H by H image gives N patches, where N is H over P, squared. Two hundred and twenty four pixels in patches of sixteen gives fourteen squared: one hundred and ninety six.", [[32.261, 32.481], [35.371, 35.721], [37.601, 37.751], [38.321, 38.921], [42.181, 42.461], [43.751, 44.231]]],
-  "flatten/one": [47.557, 58.267, "Take one patch. It is eight by eight pixels, and each pixel has three color values: eight times eight times three is one hundred and ninety two numbers.", [[48.677, 49.187], [50.897, 51.227], [53.517, 53.987], [55.877, 56.117]]],
-  "flatten/flat": [58.647, 65.956, "Lay them out in one row: a vector of P squared times C numbers, where C is the number of color channels.", [[60.137, 60.587], [63.367, 63.747]]],
-  "flatten/embed": [66.336, 77.646, "A learned linear map, a weight matrix and a bias, turns that row into a token of d numbers, the width the transformer works in. Here d is sixty four.", [[67.696, 68.056], [69.906, 70.226], [72.886, 73.306], [75.156, 75.706], [76.086, 76.236]]],
-  "flatten/shared": [78.026, 91.5, "Every patch goes through the same map, so there is one set of weights: one hundred ninety two times sixty four, plus sixty four biases. Twelve thousand three hundred and fifty two, whatever the size of the image.", [[80.106, 80.406], [82.066, 82.556], [84.886, 85.166], [86.946, 87.406], [89.666, 89.976]]],
-  "flatten/conv": [91.88, 101.512, "That is a convolution: sixty four filters of P by P, with a stride of P, so each one lands on whole patches and never overlaps.", [[93.34, 93.82], [96.17, 96.39], [97.55, 97.92], [100.09, 100.24]]],
-  "sequence/tokens": [103.312, 113.24, "Do that for all sixteen patches, and the image is a sequence: sixteen tokens of sixty four numbers, a sixteen by sixty four matrix.", [[105.542, 105.782], [107.332, 107.812], [110.362, 110.722]]],
-  "sequence/cls": [113.62, 125.534, "One more token goes in front: the class token. It is learned, it comes from no patch, and it is the same for every image. Now the sequence is seventeen by sixty four.", [[115.43, 115.86], [116.86, 117.45], [118.21, 118.56], [119.84, 120.15], [122.11, 122.73]]],
-  "sequence/blocks": [125.914, 136.54, "From here it is a plain transformer. Each block keeps the shape, seventeen tokens in and seventeen out, and attention lets every patch look at every other.", [[128.194, 128.694], [130.174, 130.584], [133.164, 133.684]]],
-  "sequence/read": [136.92, 143.873, "After the last block, the class token has gathered what it needs from all the patches, and a linear classifier scores it.", [[138.11, 138.41], [141.56, 141.85]]],
-  "sequence/turn": [144.253, 144.993, "Your turn.", []]
+  "patches/rect": [46.137, 66.077, "A rectangle counts each side on its own. A hundred and twenty eight by hundred and ninety two image, in patches of sixteen, is eight patches down and twelve across: eight times twelve, ninety six. So an image H pixels high and W wide gives H over P, times W over P.", [[48.677, 49.237], [52.147, 52.397], [53.717, 53.977], [56.407, 56.917], [57.887, 58.197], [59.007, 59.507], [62.817, 63.117], [64.417, 64.647]]],
+  "flatten/one": [67.877, 78.587, "Take one patch. It is eight by eight pixels, and each pixel has three color values: eight times eight times three is one hundred and ninety two numbers.", [[68.997, 69.507], [71.217, 71.547], [73.837, 74.307], [76.197, 76.437]]],
+  "flatten/flat": [78.967, 86.276, "Lay them out in one row: a vector of P squared times C numbers, where C is the number of color channels.", [[80.457, 80.907], [83.687, 84.067]]],
+  "flatten/embed": [86.656, 97.966, "A learned linear map, a weight matrix and a bias, turns that row into a token of d numbers, the width the transformer works in. Here d is sixty four.", [[88.016, 88.376], [90.226, 90.546], [93.206, 93.626], [95.476, 96.026], [96.406, 96.556]]],
+  "flatten/shared": [98.346, 111.82, "Every patch goes through the same map, so there is one set of weights: one hundred ninety two times sixty four, plus sixty four biases. Twelve thousand three hundred and fifty two, whatever the size of the image.", [[100.426, 100.726], [102.386, 102.876], [105.206, 105.486], [107.266, 107.726], [109.986, 110.296]]],
+  "flatten/conv": [112.2, 121.832, "That is a convolution: sixty four filters of P by P, with a stride of P, so each one lands on whole patches and never overlaps.", [[113.66, 114.14], [116.49, 116.71], [117.87, 118.24], [120.41, 120.56]]],
+  "sequence/stack": [123.632, 131.42, "Flatten all sixteen patches and stack them, one row per patch: a sixteen by one hundred and ninety two matrix.", [[126.402, 126.712], [127.992, 128.452]]],
+  "sequence/tokens": [131.8, 143.587, "The embedding maps every row at once, to sixty four numbers. Now the image is a sequence: sixteen tokens of sixty four numbers, a sixteen by sixty four matrix.", [[134.13, 134.38], [135.76, 136.32], [137.98, 138.41], [140.87, 141.29]]],
+  "sequence/cls": [143.967, 155.881, "One more token goes in front: the class token. It is learned, it comes from no patch, and it is the same for every image. Now the sequence is seventeen by sixty four.", [[145.777, 146.207], [147.207, 147.797], [148.557, 148.907], [150.187, 150.497], [152.457, 153.077]]],
+  "sequence/blocks": [156.261, 166.887, "From here it is a plain transformer. Each block keeps the shape, seventeen tokens in and seventeen out, and attention lets every patch look at every other.", [[158.541, 159.041], [160.521, 160.931], [163.511, 164.031]]],
+  "sequence/read": [167.267, 174.22, "After the last block, the class token has gathered what it needs from all the patches, and a linear classifier scores it.", [[168.457, 168.757], [171.907, 172.197]]],
+  "sequence/turn": [174.6, 175.34, "Your turn.", []]
  }
 }

@@ -44,6 +44,19 @@ function pair(rng: Rng, lo: number, hi: number): number[] {
 /** `a × b` for TeX, negatives in parentheses. */
 const times = (a: number, b: number) => `${par(a)} \\times ${par(b)}`;
 
+/** Solution lines turning pair `p` (named `sym`) by 90° per position, entry by entry. */
+function turnSteps(name: string, sym: string, p: readonly number[], pos: number): string[] {
+  if (pos === 0) return [`The ${name} at position 0 does not turn: $${sym}$ stays $${vecT(p)}$.`];
+  const a = 90 * pos;
+  const [c, s] = TRIG[a]!;
+  const r = rot(p, a);
+  return [
+    `The ${name} at position ${pos} turns by $${pos} \\times 90^\\circ = ${deg(a)}$, with $\\cos = ${num(c)}$ and $\\sin = ${num(s)}$.`,
+    `First entry: $${times(p[0]!, c)} - ${times(p[1]!, s)} = ${num(r[0]!)}$.`,
+    `Second entry: $${times(p[0]!, s)} + ${times(p[1]!, c)} = ${num(r[1]!)}$, so $${sym}$ turns to $${vecT(r)}$.`,
+  ];
+}
+
 export const generators: Generator[] = [
   {
     id: 'rotate',
@@ -177,8 +190,8 @@ export const generators: Generator[] = [
             ...(m > 0 ? [{ value: dot(qv, kr), why: `That turns only the key. The query at position ${m} turns too, by $${deg(90 * m)}$.` }] : []),
           ]),
           solution: [
-            `The query turns by $${m} \\times 90^\\circ = ${deg(90 * m)}$: $${vecT(qv)} \\to ${vecT(qr)}$.`,
-            `The key turns by $${n} \\times 90^\\circ = ${deg(90 * n)}$: $${vecT(kv)} \\to ${vecT(kr)}$.`,
+            ...turnSteps('query', q, qv, m),
+            ...turnSteps('key', k, kv, n),
             `Their dot product: $${times(qr[0]!, kr[0]!)} + ${times(qr[1]!, kr[1]!)} = ${num(v)}$.`,
           ],
         };

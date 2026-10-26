@@ -59,8 +59,9 @@ export const generators: Generator[] = [
           answer: { kind: 'number', value: k },
           traps: traps(k, ts),
           solution: [
-            `Score each class $c$ as $\\symw_c \\cdot \\symh${d < 0.3 ? '' : ' + \\symb_c'}$: ${s.map((v, c) => `class ${c} gets $${v}$`).join(', ')}.`,
-            `The largest is class ${k}, ${TENSES[k]}.`,
+            `Score each class $c$ as $\\symw_c \\cdot \\symh${d < 0.3 ? '' : ' + \\symb_c'}$.`,
+            ...W.map((r, c) => `Class ${c}, ${TENSES[c]}: $${prods(r, h)}${d < 0.3 ? '' : ` ${b[c]! < 0 ? '-' : '+'} ${Math.abs(b[c]!)}`} = ${s[c]}$.`),
+            `The largest score is $${m}$: class ${k}, ${TENSES[k]}.`,
           ],
         };
       }

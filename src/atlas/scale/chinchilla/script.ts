@@ -34,13 +34,18 @@ export const script: LectureScript = {
         # n_tokens = 20 * n_params            #@sub
         # budget = 6 * n * 20 * n = 120 * n**2  #@sub
         n_params = np.sqrt(budget / 120)      #@root
-        # sqrt(1e20) = 1e10                   #@ex
+        # 1.2e22 / 1.2e2 = 1e20               #@divide
+        # 1e9 * 1e9 = 1e18: a billion squared #@billion
+        # 1e20 = 100 * 1e18                   #@billion
+        # sqrt: 10 * 1e9, ten billion         #@ex
         n_tokens = 20 * n_params   # 2e11     #@ex
       `,
       beats: [
         { id: 'sub', say: 'Put D equals twenty N into C equals six N D. Six N times twenty N: C is a hundred and twenty N squared.', code: 'sub' },
         { id: 'root', say: 'So N is the square root of C over a hundred and twenty.', code: 'root' },
-        { id: 'ex', say: 'For our budget, C over a hundred and twenty is {10²⁰|ten to the twenty}, and its square root is {10¹⁰|ten to the ten}: ten billion parameters, trained on twenty times that, two hundred billion tokens.', code: 'ex' },
+        { id: 'divide', say: 'For our budget, write a hundred and twenty as {1.2 × 10²|one point two times ten squared}. Divide the leading numbers: {1.2|one point two} over {1.2|one point two} is one. Divide the powers of ten by taking two from twenty two: {10²⁰|ten to the twenty}.', code: 'divide' },
+        { id: 'billion', say: 'A billion is {10⁹|ten to the nine}, and a billion times a billion is {10¹⁸|ten to the eighteen}, since the powers add. So write {N²|N squared} in billions squared: {10²⁰|ten to the twenty} is a hundred times {10¹⁸|ten to the eighteen}.', code: 'billion' },
+        { id: 'ex', say: 'Take the square root of each part: the root of a hundred is ten, and the root of {10¹⁸|ten to the eighteen} is a billion. So N is ten billion parameters, trained on twenty times that: two hundred billion tokens.', code: 'ex' },
         { id: 'grow', say: 'N grows as the square root of C. So four times the budget buys twice the parameters and twice the tokens: they grow together.' },
       ],
     },
@@ -59,6 +64,32 @@ export const script: LectureScript = {
         { id: 'under', say: 'A hundred and seventy five billion parameters on three hundred billion tokens is under two per parameter: badly under-trained. A smaller model, on more tokens, would have reached a lower loss for the same compute.', code: 'under' },
         { id: 'opt', say: 'Seventy billion parameters on {1.4|one point four} trillion tokens is twenty per parameter: compute-optimal.', code: 'opt' },
         { id: 'over', say: 'Eight billion on fifteen trillion is nearly two thousand per parameter, far past compute-optimal. That costs extra training, but every forward pass afterwards is cheaper, at two N FLOPs per token.', code: 'over' },
+      ],
+    },
+    {
+      id: 'try',
+      title: 'Two budgets, worked',
+      codeTitle: 'try.py',
+      code: `
+        budget = 4.8e22                         #@p1
+        # 4.8 / 1.2 = 4, 1e22 / 1e2 = 1e20      #@d1
+        # 4e20 = 400 * 1e18                     #@e1
+        # sqrt(400) = 20: 20 billion params     #@r1
+        budget = 1.92e23                        #@p2
+        # 1.92 / 1.2 = 1.6, 1e23 / 1e2 = 1e21   #@d2
+        # 1.6e21 = 1600 * 1e18                  #@e2
+        # sqrt(1600) = 40: 40 billion params    #@r2
+        # tokens: 20 * 40 = 800 billion         #@r2
+      `,
+      beats: [
+        { id: 'p1', say: 'Try one. The budget is {4.8 × 10²²|four point eight times ten to the twenty two} FLOPs. How many billion parameters should a compute-optimal model have?', code: 'p1' },
+        { id: 'd1', say: 'Divide by a hundred and twenty. {4.8|Four point eight} over {1.2|one point two} is four, and twenty two minus two leaves {10²⁰|ten to the twenty}. So {N²|N squared} is {4 × 10²⁰|four times ten to the twenty}.', code: 'd1' },
+        { id: 'e1', say: 'In billions squared, {10²⁰|ten to the twenty} is a hundred times {10¹⁸|ten to the eighteen}, so {N²|N squared} is four hundred times {10¹⁸|ten to the eighteen}.', code: 'e1' },
+        { id: 'r1', say: 'The root of four hundred is twenty, and the root of {10¹⁸|ten to the eighteen} is a billion: twenty billion parameters.', code: 'r1' },
+        { id: 'p2', say: 'Now the budget is {1.92 × 10²³|one point nine two times ten to the twenty three} FLOPs. How many billion tokens should the model see?', code: 'p2' },
+        { id: 'd2', say: '{1.92|One point nine two} over {1.2|one point two} is {1.6|one point six}, and twenty three minus two leaves {10²¹|ten to the twenty one}.', code: 'd2' },
+        { id: 'e2', say: 'In billions squared, {10²¹|ten to the twenty one} is a thousand times {10¹⁸|ten to the eighteen}, so {N²|N squared} is sixteen hundred times {10¹⁸|ten to the eighteen}.', code: 'e2' },
+        { id: 'r2', say: 'The root of sixteen hundred is forty: forty billion parameters. At twenty tokens each, that is eight hundred billion tokens.', code: 'r2' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

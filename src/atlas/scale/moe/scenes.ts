@@ -114,4 +114,31 @@ const balance: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { router, params, balance };
+const RUN = [2, 5];
+
+const model: SceneDef = {
+  draw(s) {
+    const u = s.u;
+    const cx = s.w / 2;
+    const pitch = s.tall ? 9.5 : 10.5;
+    const xs = columns(s, 8, pitch).map((x) => x + 5 * u);
+    const ys = [0.3, 0.39, 0.48, 0.57].map((f) => s.h * f);
+    const act = s.ease('active', 0.6);
+    const tot = s.ease('total', 0.6);
+    ys.forEach((y, l) =>
+      s.alpha(s.ease('layers', 0.5, 0.3 + 0.5 * l), () => {
+        s.text(`layer ${l}`, xs[0]! - 6.5 * u, y, { size: 2.8, font: 'mono', weight: 600, align: 'right', color: s.c('--ink-2') });
+        xs.forEach((x, i) => {
+          const run = RUN.includes(i);
+          s.alpha(run ? 1 : 1 - 0.6 * act * (1 - tot), () => box(s, x, y, '100M', 'green', { w: pitch - 1.5, h: 7, size: 2.3, on: run ? act * (1 - tot) + tot : tot }));
+        });
+      }),
+    );
+    s.alpha(s.ease('shared', 0.6), () => box(s, cx + 5 * u, s.h * 0.14, 'shared 500M: attention, embeddings', 'purple', { w: 8 * pitch - 1.5, h: 8, size: s.tall ? 2.8 : 3.1, on: 0.5 }));
+    const o = { size: s.tall ? 3.1 : 3.5, weight: 600 };
+    s.alpha(act, () => rich(s, [['active: 4 × 2 × 100M + 500M = ', '--ink-2'], ['1,300M', 'green']], cx, s.h * 0.73, o));
+    s.alpha(tot, () => rich(s, [['total: 4 × 8 × 100M + 500M = ', '--ink-2'], ['3,700M', 'slate']], cx, s.h * 0.83, o));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { router, balance, params, model };

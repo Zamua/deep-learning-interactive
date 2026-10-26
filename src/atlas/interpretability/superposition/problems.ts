@@ -8,7 +8,7 @@ const DIRS = [
   [-0.5, 0.87],
   [-0.5, -0.87],
 ];
-const SETUP = 'Three features share a 2-dimensional stream along unit directions 120 degrees apart, so any two of them have dot product $\\cos 120^\\circ = -0.5$.';
+const SETUP = 'Three features share a 2-dimensional stream along directions of length 1, 120 degrees apart, so any two of them have dot product $-0.5$.';
 const fi = (i: number) => `${F}_{${i}}`;
 
 export const generators: Generator[] = [
@@ -35,6 +35,7 @@ export const generators: Generator[] = [
       const raw = clean(f[k]! + leak);
       const ans = relu ? Math.max(0, raw) : raw;
       const active = [0, 1, 2].filter((i) => f[i] !== 0);
+      const on = others.filter((i) => f[i] !== 0);
       const off = [0, 1, 2].filter((i) => f[i] === 0);
       return {
         prompt: `${SETUP} The active features are ${active.map((i) => `$${fi(i)} = ${num(f[i]!)}$`).join(', ')}${off.length ? `; ${off.map((i) => `$${fi(i)}$`).join(' and ')} ${off.length > 1 ? 'are' : 'is'} off` : ''}. What does reading feature ${k} give${relu ? ' after a ReLU' : ''}?`,
@@ -46,10 +47,11 @@ export const generators: Generator[] = [
           ...(relu ? [{ value: raw, why: 'That is the reading before the ReLU, which clips negative values to 0.' }] : []),
         ]),
         solution: [
-          `The stream is each value times its direction, added up. Reading feature ${k} dots it with feature ${k}'s direction: its own value times 1, plus every other value times $-0.5$.`,
-          `$${num(f[k]!)} ${others.map((i) => `- 0.5 \\times ${num(f[i]!)}`).join(' ')} = ${num(raw)}$.`,
+          `Reading feature ${k} gives its own value, plus $-0.5$ times each other value that is on.`,
+          `Its own value: $${fi(k)} = ${num(f[k]!)}$${f[k] === 0 ? ', since it is off' : ''}.`,
+          ...on.map((i) => `Feature ${i} leaks in: $-0.5 \\times ${num(f[i]!)} = ${num(clean(-0.5 * f[i]!))}$.`),
+          `Add them: $${num(f[k]!)}${on.map((i) => ` - ${num(clean(0.5 * f[i]!))}`).join('')} = ${num(raw)}$.`,
           ...(relu ? [raw < 0 ? `The ReLU clips the negative reading to 0: the leak disappears.` : `The ReLU leaves a positive reading as it is: $${num(ans)}$.`] : []),
-          leak === 0 ? 'No other feature is on, so the reading is clean.' : `The $${num(leak)}$ is interference from the other active features.`,
         ],
       };
     },
@@ -74,8 +76,8 @@ export const generators: Generator[] = [
         solution: [
           'The stream is each value times its direction, added up.',
           ...[0, 1, 2].filter((i) => f[i]).map((i) => `$${num(f[i]!)} \\times ${vec(DIRS[i]!)} = ${vec(DIRS[i]!.map((v) => clean(f[i]! * v)))}$.`),
-          `Add them: $${vec(ans)}$.`,
-          `Three values live in two numbers, so reading one back picks up the others: that is the interference.`,
+          ...[0, 1].map((c) => `${c === 0 ? 'First' : 'Second'} entries: $${[0, 1, 2].filter((i) => f[i]).map((i) => num(clean(f[i]! * DIRS[i]![c]!))).join(' + ').replace(/\+ -/g, '- ')} = ${num(ans[c]!)}$.`),
+          `So the stream is $${vec(ans)}$.`,
         ],
       };
     },

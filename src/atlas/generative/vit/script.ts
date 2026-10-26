@@ -17,12 +17,14 @@ export const script: LectureScript = {
         per_side = 32 // size   # 4       #@count
         n = per_side ** 2       # 16      #@count
         (224 // 16) ** 2        # 196     #@big
+        (128 // 16) * (192 // 16)  # 96   #@rect
       `,
       beats: [
         { id: 'seq', say: 'A transformer reads a sequence of vectors, one per token. An image is a grid of pixels: here thirty two by thirty two, with three color values each.', code: 'img' },
         { id: 'cut', say: 'To make it a sequence, cut it into squares of P by P pixels, the patches, with P for patch size. Here P is eight.', code: 'cut' },
         { id: 'count', say: 'Thirty two over eight is four patches along each side, so four times four: sixteen patches, read in order like words on a page.', code: 'count' },
         { id: 'formula', say: 'In general, an H by H image gives N patches, where N is H over P, squared. Two hundred and twenty four pixels in patches of sixteen gives fourteen squared: one hundred and ninety six.', code: 'big' },
+        { id: 'rect', say: 'A rectangle counts each side on its own. A {128 × 192|hundred and twenty eight by hundred and ninety two} image, in patches of sixteen, is eight patches down and twelve across: eight times twelve, ninety six. So an image H pixels high and W wide gives H over P, times W over P.', code: 'rect' },
       ],
     },
     {
@@ -51,6 +53,7 @@ export const script: LectureScript = {
       title: 'The sequence',
       codeTitle: 'vit.py',
       code: `
+        patches.shape                # (16, 192) #@stack
         tokens = patches @ E + bias  # (16, 64)  #@tokens
         cls = np.random.randn(1, 64)             #@cls
         z = np.vstack([cls, tokens]) # (17, 64)  #@cls
@@ -59,7 +62,8 @@ export const script: LectureScript = {
         scores = W @ z[0] + b                    #@read
       `,
       beats: [
-        { id: 'tokens', say: 'Do that for all sixteen patches, and the image is a sequence: sixteen tokens of sixty four numbers, a sixteen by sixty four matrix.', code: 'tokens' },
+        { id: 'stack', say: 'Flatten all sixteen patches and stack them, one row per patch: a sixteen by one hundred and ninety two matrix.', code: 'stack' },
+        { id: 'tokens', say: 'The embedding maps every row at once, to sixty four numbers. Now the image is a sequence: sixteen tokens of sixty four numbers, a sixteen by sixty four matrix.', code: 'tokens' },
         { id: 'cls', say: 'One more token goes in front: the class token. It is learned, it comes from no patch, and it is the same for every image. Now the sequence is seventeen by sixty four.', code: 'cls' },
         { id: 'blocks', say: 'From here it is a plain transformer. Each block keeps the shape, seventeen tokens in and seventeen out, and attention lets every patch look at every other.', code: 'blocks' },
         { id: 'read', say: 'After the last block, the class token has gathered what it needs from all the patches, and a linear classifier scores it.', code: 'read' },

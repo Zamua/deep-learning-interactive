@@ -60,6 +60,7 @@ export const generators: Generator[] = [
         const hs = Array.from({ length: n }, () => ints(rng, 2, d < 0.35 ? 0 : -2, 3));
         if (new Set(hs.map(String)).size < n) continue;
         const ctx = [0, 1].map((k) => clean(sumOf(hs.map((h, j) => a[j]! * h[k]!))));
+        const scaled = hs.map((h, j) => h.map((v) => clean(a[j]! * v)));
         const top = argmax(a);
         return {
           prompt: `The encoder states are ${states(hs)}, and the attention weights on them are $\\alpha = ${vec(a)}$. What is the context vector? Round to two decimals.`,
@@ -71,9 +72,10 @@ export const generators: Generator[] = [
           ]),
           solution: [
             'The context vector is the weighted sum of the states: $\\sum_j \\alpha_j \\symh_j$.',
-            `Scale each state by its weight: ${hs.map((h, j) => `$${num(a[j]!)} \\times ${vec(h)} = ${vec(h.map((v) => clean(a[j]! * v)))}$`).join(', ')}.`,
-            `Add them entry by entry: $${vec(ctx)}$.`,
-            'The context is a weighted average of the encoder states, pulled toward the ones the decoder attends to.',
+            ...hs.map((h, j) => `Scale $\\symh_{${j}}$ by its weight: $${num(a[j]!)} \\times ${vec(h)} = ${vec(scaled[j]!)}$.`),
+            `Add the first entries: $${scaled.map((v) => num(v[0]!)).join(' + ').replace(/\+ -/g, '- ')} = ${num(ctx[0]!)}$.`,
+            `Add the second entries: $${scaled.map((v) => num(v[1]!)).join(' + ').replace(/\+ -/g, '- ')} = ${num(ctx[1]!)}$.`,
+            `So the context vector is $${vec(ctx)}$.`,
           ],
         };
       }

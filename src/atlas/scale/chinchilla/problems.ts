@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import { num, pick } from '../../kit';
-import { C, D, N, big, clean, sci, sciOf, traps, whys, words } from '../kit';
+import { C, D, N, big, clean, norm, sci, sciOf, traps, whys, words } from '../kit';
 
 /** Model sizes in billions whose compute-optimal budget, 120 N², has a clean square root. */
 const SIZES = [[1, 10, 100], [2, 3, 5, 20, 30, 50], [4, 6, 7, 8, 40, 60, 70]];
@@ -9,13 +9,25 @@ const sizes = (d: number) => SIZES[d < 0.35 ? 0 : d < 0.7 ? 1 : 2]!;
 /** The budget for an m-billion-parameter model trained on 20 tokens per parameter. */
 const budget = (m: number): number => 120 * (m * 1e9) ** 2;
 
+/** C / 120 one part at a time, rewritten in billions squared, then the root of each part. */
 const steps = (m: number): string[] => {
-  const c = budget(m);
-  const pure = m === 1 || m === 10 || m === 100;
+  const c = norm(budget(m));
+  const q = clean(c.m / 1.2);
+  const e = c.e - 2;
+  const sq = m * m;
+  const k = 10 ** (e - 18);
   return [
-    `Compute-optimal means $${D} = 20${N}$, so $${C} = 6${N}${D} = 120${N}^2$.`,
-    `So $${N} = \\sqrt{${C} / 120}$: $${sciOf(c)} / 120 = ${pure ? sciOf(c / 120) : `${big(m * m)} \\times 10^{18}`}$.`,
-    `Its square root is $${pure ? sciOf(m * 1e9) : `${m} \\times 10^{9}`}$: ${words(m * 1e9)} parameters.`,
+    `Compute-optimal means $${D} = 20${N}$, so $${C} = 6${N}${D} = 120${N}^2$, and $${N}^2 = ${C} / 120$.`,
+    `Write 120 as $1.2 \\times 10^{2}$. Leading numbers: $${num(c.m)} / 1.2 = ${num(q)}$. Powers: $10^{${c.e}} / 10^{2} = 10^{${e}}$.`,
+    ...(e === 18
+      ? [`So $${N}^2 = ${sci(q, e)}$, already in billions squared: $10^{9} \\times 10^{9} = 10^{18}$.`]
+      : [
+          `So $${N}^2 = ${sci(q, e)}$. A billion squared is $10^{18}$, and $10^{${e}} = ${big(k)} \\times 10^{18}$.`,
+          `So $${N}^2 = ${q === 1 ? '' : `${num(q)} \\times `}${big(k)} \\times 10^{18}${q === 1 ? '' : ` = ${big(sq)} \\times 10^{18}`}$.`,
+        ]),
+    sq === 1
+      ? `Its root is $10^{9}$: ${words(m * 1e9)} parameters.`
+      : `Root of each part: $\\sqrt{${big(sq)}} = ${m}$ and $\\sqrt{10^{18}} = 10^{9}$, a billion. So $${N} = ${m}$ billion parameters.`,
   ];
 };
 
@@ -49,7 +61,7 @@ export const generators: Generator[] = [
         prompt: `A training budget is $${C} = ${sciOf(budget(m))}$ FLOPs. How many billion tokens should a compute-optimal model see?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [{ value: m, why: `That is $${N}$, the parameters. The tokens are about 20 times as many: $${D} = 20${N}$.` }]),
-        solution: [...steps(m), `Then $${D} = 20${N} = 20 \\times ${sci(m, 9)} = ${sciOf(v * 1e9)}$: ${v.toLocaleString('en-US')} billion tokens.`],
+        solution: [...steps(m), `Then $${D} = 20${N} = 20 \\times ${m}$ billion $= ${big(v)}$ billion tokens.`],
       };
     },
   },

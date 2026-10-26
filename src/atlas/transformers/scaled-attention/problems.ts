@@ -111,7 +111,11 @@ export const generators: Generator[] = [
             { value: 0, why: `That is the average over many draws. One score is a sum of coin flips that rarely cancel exactly: typically $\\sqrt{${DK}}$ from 0.` },
             { value: 1, why: `That is the typical size after dividing by $\\sqrt{${DK}}$. Unscaled, it is $\\sqrt{${DK}}$.` },
           ]),
-          solution: [`$${q} \\cdot ${k}$ adds up ${dk} products, each $+1$ or $-1$ at random; they partly cancel.`, `A sum of $${DK}$ such terms is typically about $\\sqrt{${DK}}$ from 0: $\\sqrt{${dk}} = ${r}$.`],
+          solution: [
+            `$${q} \\cdot ${k}$ adds up ${dk} products, each $+1$ or $-1$ at random; they partly cancel.`,
+            `Square the sum and average over every way the signs can land: the average square is $${DK} = ${dk}$.`,
+            `A typical size is the square root of that average square: $\\sqrt{${dk}} = ${r}$.`,
+          ],
         };
       }
       const a = pick(rng, [4, 9, 16, 25]);
@@ -124,7 +128,11 @@ export const generators: Generator[] = [
           { value: f, why: `That is how much $${DK}$ grows. The typical size grows like $\\sqrt{${DK}}$: $\\sqrt{${f}} = ${ratio}$.` },
           { value: 1, why: `The entries keep their size, but more of them are added up: the sum spreads out like $\\sqrt{${DK}}$.` },
         ]),
-        solution: [`A sum of $${DK}$ products, each $+1$ or $-1$ at random, is typically about $\\sqrt{${DK}}$ from 0.`, `$\\sqrt{${a}} = ${Math.sqrt(a)}$ and $\\sqrt{${a * f}} = ${Math.sqrt(a * f)}$: $${ratio}$ times larger.`],
+        solution: [
+          `A sum of $${DK}$ products, each $+1$ or $-1$ at random, has average square $${DK}$, so its typical size is $\\sqrt{${DK}}$.`,
+          `Before: $\\sqrt{${a}} = ${Math.sqrt(a)}$. After: $\\sqrt{${a * f}} = ${Math.sqrt(a * f)}$.`,
+          `Divide: $${Math.sqrt(a * f)} / ${Math.sqrt(a)} = ${ratio}$ times larger.`,
+        ],
       };
     },
   },

@@ -1,8 +1,8 @@
 {
- "duration": 91.452,
+ "duration": 122.982,
  "scenes": {
   "peek": [0.0, 48.346],
-  "renorm": [48.346, 91.452]
+  "renorm": [48.346, 122.982]
  },
  "beats": {
   "peek/predict": [0.7, 13.669, "A model that writes text predicts each next token from the ones before it. Trained on cats like fresh fish, position zero should predict like, position one should predict fresh, and so on.", [[5.14, 5.76], [7.83, 8.17], [10.3, 10.77], [12.75, 13.03]]],
@@ -13,7 +13,9 @@
   "renorm/row": [49.046, 58.74, "Take row one, like. Its scores are two, zero, three and one, but the last two belong to fresh and fish, which come later.", [[50.126, 50.476], [50.866, 51.376], [52.696, 52.886], [53.436, 53.626], [54.736, 55.226], [57.656, 57.896]]],
   "renorm/hide": [59.12, 66.021, "Both become minus infinity, and e to the minus infinity is zero, so they get no weight at all.", [[61.02, 61.4], [63.89, 64.28]]],
   "renorm/weights": [66.401, 78.577, "The softmax shares everything among what is left: e squared over e squared plus one is zero point eight eight, and the other gets zero point one two. They still add up to one.", [[69.411, 69.951], [72.241, 72.411], [73.941, 74.301], [76.581, 77.151]]],
-  "renorm/count": [78.957, 89.232, "How many entries survive? One, plus two, plus three, up to T: T times T plus one, over two. Ten of the sixteen here.", [[80.587, 81.157], [81.557, 81.777], [83.267, 83.517], [84.247, 84.777], [86.417, 86.607], [87.217, 87.747]]],
-  "renorm/turn": [89.612, 90.352, "Your turn.", []]
+  "renorm/count": [78.957, 92.256, "How many scores survive? Row zero keeps one, row one keeps two, and so on up to T, here four. One plus two plus three plus four: ten of the sixteen.", [[80.557, 81.087], [82.577, 83.047], [84.447, 84.767], [86.187, 86.527], [87.317, 87.967], [90.497, 91.017]]],
+  "renorm/pairs": [92.636, 106.788, "To add them fast, pair the rows from the ends: one plus four is five, and two plus three is five. That is T over two pairs of T plus one: T times T plus one, over two.", [[93.746, 94.006], [95.556, 96.026], [97.706, 98.056], [99.966, 100.506], [100.996, 101.226], [103.736, 104.186], [105.876, 106.086]]],
+  "renorm/hidden": [107.168, 120.761, "The rest are hidden: sixteen minus ten, six, everything above the diagonal. In general that is T squared minus the kept ones, which comes to T times T minus one, over two.", [[108.318, 108.868], [110.268, 110.588], [111.098, 111.448], [112.918, 113.508], [114.678, 114.848], [116.938, 117.238], [119.868, 120.048]]],
+  "renorm/turn": [121.141, 121.882, "Your turn.", []]
  }
 }

@@ -56,6 +56,39 @@ const probe: SceneDef = {
   },
 };
 
+/** A three-class probe for tense on h = [1, 2]: one weight row and one bias per class. */
+const TENSE: [string, string, string, string, number][] = [
+  ['past', '[1, 0]', '0', '1 × 1 + 0 × 2 + 0', 1],
+  ['present', '[−1, 2]', '−1', '(−1) × 1 + 2 × 2 − 1', 2],
+  ['future', '[2, −1]', '1', '2 × 1 + (−1) × 2 + 1', 1],
+];
+
+const classes: SceneDef = {
+  draw(s) {
+    const size = s.tall ? 3.3 : 3.7;
+    const o = { size, font: 'mono' } as const;
+    const left = (lines: string[]) => s.w / 2 - Math.max(...lines.map((l) => s.measure(l, o))) / 2;
+    s.alpha(s.ease('rows', 0.6), () => rich(s, [['h = ', '--ink-2'], ['[1, 2]', 'gold']], s.w / 2, s.h * 0.1, { size: size + 0.3 }));
+    const defs = TENSE.map(([name, w, b], c) => [`${name.padEnd(9)}w${'₀₁₂'[c]} = ${w.padEnd(9)}b${'₀₁₂'[c]} = ${b}`, c] as const);
+    const dx = left(defs.map(([t]) => t));
+    defs.forEach(([t, c]) => {
+      s.alpha(s.ease('rows', 0.5, 2.5 + c * 1.8), () => s.text(t, dx, s.h * (0.24 + c * 0.09), { ...o, align: 'left', color: s.c('--ink-2') }));
+    });
+    const sums = TENSE.map(([name, , , work, v]) => `${name.padEnd(9)}${work} = ${v}`);
+    const sx = left(sums);
+    const win = s.ease('wins', 0.6);
+    TENSE.forEach(([name, , , work, v], c) => {
+      const y = s.h * (0.56 + c * 0.09);
+      const hi = c === 1 ? win : 0;
+      s.alpha(s.ease('scores', 0.5, 2.6 + c * 3.4), () => {
+        if (hi > 0) s.alpha(hi, () => s.rrect(sx - 2 * s.u, y - 3.6 * s.u, s.measure(sums[c]!, o) + 4 * s.u, 7.2 * s.u, 1.2, { fill: s.tint('green', 0.14), stroke: s.c('green'), lw: 0.3 }));
+        rich(s, [[`${name.padEnd(9)}${work} = `, '--ink-2'], [String(v), c === 1 ? 'green' : '--ink']], sx, y, { ...o, align: 'left' });
+      });
+    });
+    s.alpha(win, () => s.text('highest score: present', s.w / 2, s.h * 0.88, { size, weight: 600, color: s.c('green') }));
+  },
+};
+
 const SCORES = [1.8, -0.6, 0.4, 2.1, -1.5, 0.7, -0.2, -1.1];
 const LABELS = [1, 0, 0, 1, 0, 1, 1, 0];
 const PREDS = SCORES.map((v) => (v > 0 ? 1 : 0));
@@ -100,4 +133,4 @@ const meaning: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { probe, test, meaning };
+export const scenes: Record<string, SceneDef> = { probe, classes, test, meaning };

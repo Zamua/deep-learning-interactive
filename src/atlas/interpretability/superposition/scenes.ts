@@ -1,6 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { cells, columns, frame, type Frame, num, rich } from '../draw';
+import type { Ink } from '../../linear-algebra/draw';
+import { cells, columns, frame, type Frame, rich } from '../draw';
 
 const DIRS: [number, number][] = [
   [1, 0],
@@ -23,12 +24,12 @@ function ring(s: Scene, F: Frame): void {
   s.circle(F.X(0), F.Y(0), F.X(1) - F.X(0), { stroke: s.tint('--ink-3', 0.5), lw: 0.25 });
 }
 
-/** Feature directions as arrows from the origin, each labelled f0, f1, f2 past its tip. */
-function features(s: Scene, F: Frame, a: number, grow = 1): void {
+/** Feature directions as arrows from the origin, each labelled W[i] past its tip. */
+function features(s: Scene, F: Frame, a: number, grow = 1, labels = true): void {
   s.alpha(a, () => {
     DIRS.forEach(([x, y], i) => {
       s.arrow(F.X(0), F.Y(0), F.X(x * grow), F.Y(y * grow), s.c(KS[i]!), 0.5, 2.4);
-      s.text(`f${i}`, F.X(x * 1.2), F.Y(y * 1.2), { size: 3.4, font: 'mono', weight: 650, color: s.c(KS[i]!), halo: true });
+      if (labels) s.text(`W[${i}]`, F.X(x * 1.25), F.Y(y * 1.22), { size: 3.4, font: 'mono', weight: 650, color: s.c(KS[i]!), halo: true });
     });
   });
 }
@@ -38,6 +39,7 @@ const room: SceneDef = {
     const F = plot(s);
     ring(s, F);
     const three = s.ease('three', 0.8);
+    const size = s.tall ? 3.4 : 3.8;
     s.alpha(s.ease('perp', 0.6) * (1 - three), () => {
       s.arrow(F.X(0), F.Y(0), F.X(1), F.Y(0), s.c('purple'), 0.5, 2.4);
       s.arrow(F.X(0), F.Y(0), F.X(0), F.Y(1), s.c('teal'), 0.5, 2.4);
@@ -47,40 +49,83 @@ const room: SceneDef = {
       s.text('2 features, exactly perpendicular', s.w / 2, s.h * 0.78, { size: 3.4, color: s.c('--ink-2') });
     });
     features(s, F, three, three);
-    s.alpha(s.ease('three', 0.6, 1.5) * (1 - s.ease('cos', 0.6)), () => s.text('3 features, 120° apart', s.w / 2, s.h * 0.78, { size: 3.4, color: s.c('--ink-2') }));
-    s.alpha(s.ease('cos', 0.6), () => {
+    s.alpha(s.ease('three', 0.6, 1.5), () => {
       const c = s.ctx;
       c.beginPath();
-      c.arc(F.X(0), F.Y(0), (F.X(0.3) - F.X(0)), -(2 * Math.PI) / 3, 0);
+      c.arc(F.X(0), F.Y(0), F.X(0.3) - F.X(0), -(2 * Math.PI) / 3, 0);
       c.strokeStyle = s.c('--ink-2');
       c.lineWidth = 0.3 * s.u;
       c.stroke();
       s.text('120°', F.X(0.32), F.Y(0.32), { size: 3, font: 'mono', align: 'left', color: s.c('--ink-2'), halo: true });
-      rich(s, [['f0 · f1', '--ink'], [' = cos 120° = ', '--ink-2'], ['−0.5', 'red']], s.w / 2, s.h * 0.78, { size: s.tall ? 3.4 : 3.8 });
     });
+    s.alpha(s.ease('three', 0.6, 1.5) * (1 - s.ease('rows', 0.6)), () => s.text('3 features, 120° apart', s.w / 2, s.h * 0.78, { size: 3.4, color: s.c('--ink-2') }));
+    s.alpha(s.win('rows', 'self'), () => {
+      const rows = ['[1, 0]', '[−0.5, 0.87]', '[−0.5, −0.87]'];
+      rows.forEach((r, i) => s.alpha(s.ease('rows', 0.5, 0.6 + i * 1.6), () => rich(s, [[`W[${i}] = `, KS[i]!], [r, '--ink']], s.w / 2, s.h * (0.74 + i * 0.08), { size })));
+    });
+    s.alpha(s.ease('self', 0.6), () => rich(s, [['W[0] · W[0]', 'purple'], [' = 1 × 1 + 0 × 0 = ', '--ink-2'], ['1', 'green']], s.w / 2, s.h * 0.76, { size }));
+    s.alpha(s.ease('pair', 0.6), () => rich(s, [['W[0] · W[1]', 'purple'], [' = 1 × (−0.5) + 0 × 0.87 = ', '--ink-2'], ['−0.5', 'red']], s.w / 2, s.h * 0.87, { size }));
   },
 };
 
+/** The stored values f = [3, 0, 2] and the stream they make, 3 W[0] + 2 W[2]. */
+const X = [2, -1.74];
+
+/** A plot wide enough for the stream [2, -1.74], in the top part of the stage. */
+function wide(s: Scene): Frame {
+  const xr: [number, number] = [-1.2, 3.6];
+  const yr: [number, number] = [-2.3, 1.3];
+  const hgt = Math.min(s.h * 0.45, (s.w * 0.8 * (yr[1] - yr[0])) / (xr[1] - xr[0]));
+  const wid = (hgt * (xr[1] - xr[0])) / (yr[1] - yr[0]);
+  const top = s.h * 0.03;
+  return frame(s.w / 2 - wid / 2, top, s.w / 2 + wid / 2, top + hgt, xr, yr);
+}
+
 const read: SceneDef = {
   draw(s) {
-    const F = plot(s, 0.58);
-    ring(s, F);
-    features(s, F, 0.45);
-    const both = s.ease('both', 1);
-    const x = [1 - 0.5 * both, (Math.sqrt(3) / 2) * both];
-    s.alpha(s.ease('store', 0.6), () => {
-      s.arrow(F.X(0), F.Y(0), F.X(x[0]!), F.Y(x[1]!), s.c('orange'), 0.8, 2.8);
-      s.text('x', F.X(x[0]! * 0.55) + 2 * s.u, F.Y(x[1]! * 0.55) + 3 * s.u, { size: 3.6, font: 'mono', weight: 700, color: s.c('orange'), halo: true });
+    const F = wide(s);
+    s.line(F.X(-1.2), F.Y(0), F.X(3.6), F.Y(0), s.c('--axis'), 0.25);
+    s.line(F.X(0), F.Y(-2.3), F.X(0), F.Y(1.3), s.c('--axis'), 0.25);
+    s.circle(F.X(0), F.Y(0), F.X(1) - F.X(0), { stroke: s.tint('--ink-3', 0.5), lw: 0.25 });
+    features(s, F, 0.4, 1, false);
+    const rd = s.ease('read', 0.6);
+    const o = { size: 3.2, font: 'mono', weight: 650, halo: true } as const;
+    // 3 W[0], then 2 W[2] from its tip, then their sum.
+    const a3 = s.ease('scale', 0.8);
+    s.alpha(a3, () => {
+      s.arrow(F.X(0), F.Y(0), F.X(3 * a3), F.Y(0), s.c('purple'), 0.6, 2.6);
+      s.alpha(1 - rd, () => s.text('3 × W[0]', F.X(1.5), F.Y(0.3), { ...o, color: s.c('purple') }));
     });
-    const reads = DIRS.map(([a, b]) => a * x[0]! + b * x[1]!);
-    const xs = columns(s, 3, s.tall ? 20 : 22);
-    const y = s.h * 0.78;
-    s.alpha(s.ease('read', 0.6), () => {
-      xs.forEach((cx, i) => s.text(`f${i} reads`, cx, y - 7 * s.u, { size: 3, font: 'mono', color: s.c(KS[i]!) }));
-      cells(s, xs, y, reads.map((v) => num(Math.round(v * 100) / 100)), 'slate', { w: 14, h: 8, on: [0, 1, 2].map((i) => (i === 0 ? both : s.win('read', 'both'))) });
+    const a2 = s.ease('scale', 0.8, 1.6);
+    s.alpha(a2 * (1 - 0.6 * rd), () => {
+      s.arrow(F.X(3), F.Y(0), F.X(3 - 1 * a2), F.Y(-1.74 * a2), s.c('gold'), 0.6, 2.6);
+      s.text('2 × W[2]', F.X(2.75), F.Y(-0.85), { ...o, align: 'left', color: s.c('gold') });
     });
-    s.alpha(s.ease('read', 0.6, 2.5) * (1 - both), () => s.text('interference', xs[1]!, y + 7.5 * s.u, { size: 3, color: s.c('red') }));
-    s.alpha(s.ease('both', 0.6, 2), () => s.text('half the signal lost', xs[0]!, y + 7.5 * s.u, { size: 3, color: s.c('red') }));
+    s.alpha(s.ease('sum', 0.6), () => {
+      s.arrow(F.X(0), F.Y(0), F.X(X[0]!), F.Y(X[1]!), s.c('orange'), 0.8, 2.8);
+      s.text('x', F.X(0.8), F.Y(-1.0), { ...o, size: 3.6, color: s.c('orange') });
+    });
+    s.alpha(rd, () => {
+      s.line(F.X(X[0]!), F.Y(X[1]!), F.X(X[0]!), F.Y(0), s.c('green'), 0.35, [1, 0.8]);
+      s.circle(F.X(X[0]!), F.Y(0), 1.1 * s.u, { fill: s.c('green') });
+      s.text('reads 2', F.X(X[0]!), F.Y(0.32), { ...o, color: s.c('green') });
+    });
+
+    const size = s.tall ? 3.2 : 3.6;
+    const Y = [0.56, 0.645, 0.73, 0.815, 0.9].map((f) => s.h * f);
+    const line = (a: number, runs: [string, Ink][], y: number) => s.alpha(a, () => rich(s, runs, s.w / 2, y, { size }));
+    line(s.ease('store', 0.6), [['f = ', '--ink-2'], ['[3, 0, 2]', 'blue']], Y[0]!);
+    line(s.win('scale', 'read'), [['3 × [1, 0] = ', '--ink-2'], ['[3, 0]', 'purple']], Y[1]!);
+    line(s.ease('scale', 0.6, 1.6) * (1 - rd), [['2 × [−0.5, −0.87] = ', '--ink-2'], ['[−1, −1.74]', 'gold']], Y[2]!);
+    line(s.win('sum', 'read'), [['x = [3 − 1, 0 − 1.74] = ', '--ink-2'], ['[2, −1.74]', 'orange']], Y[3]!);
+    const rule = s.ease('rule', 0.6);
+    line(rd, [['x = ', '--ink-2'], ['[2, −1.74]', 'orange']], Y[1]!);
+    line(rd * (1 - rule), [['x · W[0] = 2 × 1 + (−1.74) × 0 = ', '--ink-2'], ['2', 'green']], Y[2]!);
+    line(s.ease('split', 0.6) * (1 - rule), [['= 3 × (W[0] · W[0]) + 2 × (W[2] · W[0])', '--ink-2']], Y[3]!);
+    line(s.ease('split', 0.6, 2.5) * (1 - rule), [['= 3 × 1 + 2 × (−0.5) = 3 − 1 = ', '--ink-2'], ['2', 'green']], Y[4]!);
+    line(rule, [['reading = own value + (−0.5) × each other', '--ink']], Y[2]!);
+    line(s.ease('rule', 0.6, 1.2), [['feature 0: 3 + (−0.5) × 2 = ', '--ink-2'], ['2', 'green']], Y[3]!);
+    line(s.ease('rule', 0.6, 3.5), [['the leak, ', '--ink-2'], ['−1', 'red'], [', is interference', '--ink-2']], Y[4]!);
   },
 };
 
@@ -127,4 +172,31 @@ const sparse: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { room, read, sparse };
+/** Two worked readings: f = [2, 1, 3] read at feature 1, then f = [0.5, 2, 1] at feature 0 through a ReLU. */
+const tryIt: SceneDef = {
+  draw(s) {
+    const size = s.tall ? 3.4 : 3.8;
+    const two = s.ease('p2', 0.8);
+    const xs = columns(s, 3, s.tall ? 20 : 22);
+    const vals = two < 0.5 ? ['2', '1', '3'] : ['0.5', '2', '1'];
+    const k = two < 0.5 ? 1 : 0;
+    const flip = Math.abs(two - 0.5) * 2;
+    const y = s.h * 0.2;
+    s.alpha(s.ease('p1', 0.6), () => {
+      xs.forEach((x, i) => s.text(`f${i}`, x, y - 8 * s.u, { size: 3.2, font: 'mono', weight: 650, color: s.c(KS[i]!) }));
+      s.alpha(flip, () => {
+        cells(s, xs, y, vals, 'slate', { w: 14, h: 9, on: xs.map((_, i) => (i === k ? 1 : 0)) });
+        s.text(k === 1 ? 'read feature 1' : 'read feature 0, then a ReLU', s.w / 2, s.h * 0.35, { size, color: s.c('--ink-2') });
+      });
+    });
+    const L = [0.5, 0.6, 0.7].map((f) => s.h * f);
+    const one = 1 - two;
+    s.alpha(s.ease('own', 0.6) * one, () => rich(s, [['own value: ', '--ink-2'], ['1', 'teal']], s.w / 2, L[0]!, { size }));
+    s.alpha(s.ease('own', 0.6, 2.2) * one, () => rich(s, [['leaks: ', '--ink-2'], ['(−0.5) × 2 = −1', 'red'], [',  ', '--ink-2'], ['(−0.5) × 3 = −1.5', 'red']], s.w / 2, L[1]!, { size }));
+    s.alpha(s.ease('a1', 0.6) * one, () => rich(s, [['1 − 1 − 1.5 = ', '--ink-2'], ['−1.5', 'green']], s.w / 2, L[2]!, { size: size + 0.4, weight: 650 }));
+    s.alpha(s.ease('a2', 0.6), () => rich(s, [['0.5 + (−0.5) × 2 + (−0.5) × 1 = ', '--ink-2'], ['−1', 'red']], s.w / 2, L[0]!, { size }));
+    s.alpha(s.ease('a2', 0.6, 2.5), () => rich(s, [['ReLU(−1) = ', '--ink-2'], ['0', 'green']], s.w / 2, L[1]!, { size: size + 0.4, weight: 650 }));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { room, read, sparse, try: tryIt };

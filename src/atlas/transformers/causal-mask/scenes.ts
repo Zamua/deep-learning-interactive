@@ -88,11 +88,23 @@ const renorm: SceneDef = {
     s.alpha(count, () => {
       const c = 11;
       const x0 = s.w / 2 - 1.5 * c * u + 2 * u;
-      const y0 = s.h * 0.2;
+      const y0 = s.h * 0.16;
       grid(s, x0, y0, c, 1);
-      [1, 2, 3, 4].forEach((n, i) => s.text(`${n}`, x0 + 3.5 * c * u + 2 * u, y0 + i * c * u, { size: 3.2, font: 'mono', weight: 600, align: 'left', color: s.c('green') }));
-      s.alpha(s.ease('count', 0.6, 2), () => rich(s, [['1 + 2 + 3 + 4 = ', '--ink-2'], ['10', 'green'], [' of 16', '--ink-3']], s.w / 2, s.h * 0.72, { size: 3.6, weight: 600 }));
-      s.alpha(s.ease('count', 0.6, 4), () => s.text('kept: T(T + 1) / 2', s.w / 2, s.h * 0.83, { size: 3.6, font: 'mono', weight: 600, color: s.c('green') }));
+      const kx = x0 + 3.5 * c * u + 3.5 * u;
+      const hx = kx + 9 * u;
+      const hy = y0 - c * 0.5 * u - 3 * u;
+      [1, 2, 3, 4].forEach((n, i) => s.text(`${n}`, kx, y0 + i * c * u, { size: 3.2, font: 'mono', weight: 600, color: s.c('green') }));
+      s.text('kept', kx, hy, { size: 2.6, font: 'mono', color: s.c('green') });
+      s.alpha(s.ease('hidden', 0.6), () => {
+        [3, 2, 1, 0].forEach((n, i) => s.text(`${n}`, hx, y0 + i * c * u, { size: 3.2, font: 'mono', weight: 600, color: s.c('red') }));
+        s.text('hidden', hx, hy, { size: 2.6, font: 'mono', color: s.c('red') });
+      });
+      const o = { size: s.tall ? 3.2 : 3.6, weight: 600 };
+      s.alpha(s.ease('count', 0.6, 2) * (1 - s.ease('pairs', 0.6)), () => rich(s, [['1 + 2 + 3 + 4 = ', '--ink-2'], ['10', 'green'], [' of 16', '--ink-3']], s.w / 2, s.h * 0.64, o));
+      s.alpha(s.ease('pairs', 0.6), () => rich(s, [['(1 + 4) + (2 + 3) = 5 + 5 = ', '--ink-2'], ['10', 'green']], s.w / 2, s.h * 0.64, o));
+      s.alpha(s.ease('pairs', 0.6, 4), () => rich(s, [['kept: T(T + 1) / 2 = 4 × 5 / 2 = ', '--ink-2'], ['10', 'green']], s.w / 2, s.h * 0.72, o));
+      s.alpha(s.ease('hidden', 0.6, 0.8), () => rich(s, [['hidden: T² − kept = 16 − 10 = ', '--ink-2'], ['6', 'red']], s.w / 2, s.h * 0.8, o));
+      s.alpha(s.ease('hidden', 0.6, 5), () => rich(s, [['T² − T(T + 1) / 2 = ', '--ink-2'], ['T(T − 1) / 2', 'red']], s.w / 2, s.h * 0.88, o));
     });
   },
 };

@@ -68,8 +68,18 @@ export const generators: Generator[] = [
           { value: n * n, why: 'That is every entry. The mask hides the ones above the diagonal.' },
         ]),
         solution: masked
-          ? [`Row $i$ hides the keys after it: ${n - 1} in row 0, ${n - 2} in row 1, down to 0 in the last row.`, `$0 + 1 + \\dots + ${big(n - 1)} = ${T}(${T} - 1)/2 = ${big(n)} \\times ${big(n - 1)} / 2 = ${big(hidden)}$.`]
-          : [`Row $i$ keeps tokens 0 to $i$: 1 entry in row 0, 2 in row 1, up to ${bigText(n)} in the last.`, `$1 + 2 + \\dots + ${big(n)} = ${T}(${T} + 1)/2 = ${big(n)} \\times ${big(n + 1)} / 2 = ${big(kept)}$.`],
+          ? [
+              `The grid has one score per query and key: $${T}^2 = ${big(n)} \\times ${big(n)} = ${big(n * n)}$.`,
+              `The mask keeps the diagonal and below: $1 + 2 + \\dots + ${big(n)} = ${T}(${T} + 1)/2$.`,
+              `That is $${big(n)} \\times ${big(n + 1)} / 2 = ${big(kept)}$ kept.`,
+              `It hides the rest: $${big(n * n)} - ${big(kept)} = ${big(hidden)}$.`,
+              `The same in one step: $${T}(${T} - 1)/2 = ${big(n)} \\times ${big(n - 1)} / 2 = ${big(hidden)}$.`,
+            ]
+          : [
+              `Row $i$ keeps tokens 0 to $i$: 1 entry in row 0, 2 in row 1, up to ${bigText(n)} in the last.`,
+              `$1 + 2 + \\dots + ${big(n)} = ${T}(${T} + 1)/2$: pair the rows from the ends, each pair adding to $${T} + 1$.`,
+              `$${big(n)} \\times ${big(n + 1)} = ${big(n * (n + 1))}$, and half of that is $${big(kept)}$.`,
+            ],
       };
     },
   },

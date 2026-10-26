@@ -1,9 +1,10 @@
 {
- "duration": 122.815,
+ "duration": 234.537,
  "scenes": {
   "valley": [0.0, 39.396],
-  "solve": [39.396, 78.687],
-  "ratio": [78.687, 122.815]
+  "solve": [39.396, 111.684],
+  "ratio": [111.684, 154.692],
+  "try": [154.692, 234.537]
  },
  "beats": {
   "valley/budget": [0.7, 11.218, "Fix a budget of one point two times ten to the twenty two FLOPs. Compute is six N D, so the bigger the model, the fewer tokens it can afford to read.", [[4.8, 5.39], [7.13, 7.52], [8.8, 9.06]]],
@@ -13,12 +14,22 @@
   "valley/best": [30.295, 38.296, "The bottom of the valley is the compute-optimal size. Measured across many budgets, it sits at about twenty tokens per parameter.", [[33.275, 33.825], [35.365, 35.635]]],
   "solve/sub": [40.096, 49.922, "Put D equals twenty N into C equals six N D. Six N times twenty N: C is a hundred and twenty N squared.", [[44.356, 44.966], [46.806, 47.356]]],
   "solve/root": [50.302, 54.403, "So N is the square root of C over a hundred and twenty.", []],
-  "solve/ex": [54.783, 68.056, "For our budget, C over a hundred and twenty is ten to the twenty, and its square root is ten to the ten: ten billion parameters, trained on twenty times that, two hundred billion tokens.", [[55.693, 55.923], [59.103, 59.513], [61.713, 62.183], [63.703, 64.023], [65.683, 66.103]]],
-  "solve/grow": [68.436, 77.587, "N grows as the square root of C. So four times the budget buys twice the parameters and twice the tokens: they grow together.", [[70.736, 71.246], [74.526, 74.706], [76.016, 76.456]]],
-  "ratio/ratio": [79.387, 85.008, "To judge a trained model, divide its tokens by its parameters, and compare with twenty.", [[80.777, 81.127], [83.277, 83.537]]],
-  "ratio/under": [85.388, 99.036, "A hundred and seventy five billion parameters on three hundred billion tokens is under two per parameter: badly under-trained. A smaller model, on more tokens, would have reached a lower loss for the same compute.", [[89.928, 90.208], [91.828, 92.348], [93.698, 94.268], [95.158, 95.328], [96.258, 96.478]]],
-  "ratio/opt": [99.416, 106.57, "Seventy billion parameters on one point four trillion tokens is twenty per parameter: compute-optimal.", [[103.276, 103.436], [105.006, 105.456]]],
-  "ratio/over": [106.95, 120.595, "Eight billion on fifteen trillion is nearly two thousand per parameter, far past compute-optimal. That costs extra training, but every forward pass afterwards is cheaper, at two N FLOPs per token.", [[111.42, 111.75], [113.42, 113.99], [115.53, 115.93], [118.46, 118.74]]],
-  "ratio/turn": [120.975, 121.715, "Your turn.", []]
+  "solve/divide": [54.783, 71.451, "For our budget, write a hundred and twenty as one point two times ten squared. Divide the leading numbers: one point two over one point two is one. Divide the powers of ten by taking two from twenty two: ten to the twenty.", [[55.723, 56.043], [57.523, 57.673], [60.223, 60.853], [62.333, 62.843], [65.673, 66.303], [69.793, 70.293]]],
+  "solve/billion": [71.831, 86.014, "A billion is ten to the nine, and a billion times a billion is ten to the eighteen, since the powers add. So write N squared in billions squared: ten to the twenty is a hundred times ten to the eighteen.", [[73.711, 74.101], [75.671, 75.851], [77.201, 77.501], [78.671, 79.251], [81.931, 82.511], [83.511, 83.701]]],
+  "solve/ex": [86.394, 101.053, "Take the square root of each part: the root of a hundred is ten, and the root of ten to the eighteen is a billion. So N is ten billion parameters, trained on twenty times that: two hundred billion tokens.", [[88.424, 88.954], [90.664, 91.034], [93.604, 94.174], [96.674, 96.994], [98.724, 99.154]]],
+  "solve/grow": [101.433, 110.584, "N grows as the square root of C. So four times the budget buys twice the parameters and twice the tokens: they grow together.", [[103.733, 104.243], [107.523, 107.703], [109.013, 109.453]]],
+  "ratio/ratio": [112.384, 118.005, "To judge a trained model, divide its tokens by its parameters, and compare with twenty.", [[113.774, 114.124], [116.274, 116.534]]],
+  "ratio/under": [118.385, 132.034, "A hundred and seventy five billion parameters on three hundred billion tokens is under two per parameter: badly under-trained. A smaller model, on more tokens, would have reached a lower loss for the same compute.", [[122.925, 123.205], [124.825, 125.345], [126.695, 127.265], [128.155, 128.325], [129.255, 129.475]]],
+  "ratio/opt": [132.414, 139.568, "Seventy billion parameters on one point four trillion tokens is twenty per parameter: compute-optimal.", [[136.274, 136.434], [138.004, 138.454]]],
+  "ratio/over": [139.948, 153.592, "Eight billion on fifteen trillion is nearly two thousand per parameter, far past compute-optimal. That costs extra training, but every forward pass afterwards is cheaper, at two N FLOPs per token.", [[144.418, 144.748], [146.418, 146.988], [148.528, 148.928], [151.458, 151.738]]],
+  "try/p1": [155.392, 164.514, "Try one. The budget is four point eight times ten to the twenty two FLOPs. How many billion parameters should a compute-optimal model have?", [[155.982, 156.552], [160.372, 160.842]]],
+  "try/d1": [164.894, 177.81, "Divide by a hundred and twenty. Four point eight over one point two is four, and twenty two minus two leaves ten to the twenty. So N squared is four times ten to the twenty.", [[166.744, 167.314], [170.194, 170.664], [172.524, 172.674], [174.074, 174.554]]],
+  "try/e1": [178.19, 187.483, "In billions squared, ten to the twenty is a hundred times ten to the eighteen, so N squared is four hundred times ten to the eighteen.", [[179.6, 179.98], [183.35, 183.78]]],
+  "try/r1": [187.863, 195.581, "The root of four hundred is twenty, and the root of ten to the eighteen is a billion: twenty billion parameters.", [[189.983, 190.413], [193.153, 193.683]]],
+  "try/p2": [195.961, 203.822, "Now the budget is one point nine two times ten to the twenty three FLOPs. How many billion tokens should the model see?", [[200.751, 201.291]]],
+  "try/d2": [204.202, 212.341, "One point nine two over one point two is one point six, and twenty three minus two leaves ten to the twenty one.", [[206.842, 207.002], [208.162, 208.582], [210.442, 210.592]]],
+  "try/e2": [212.721, 222.675, "In billions squared, ten to the twenty one is a thousand times ten to the eighteen, so N squared is sixteen hundred times ten to the eighteen.", [[214.071, 214.451], [215.691, 215.851], [218.241, 218.641], [219.821, 219.981]]],
+  "try/r2": [223.055, 232.316, "The root of sixteen hundred is forty: forty billion parameters. At twenty tokens each, that is eight hundred billion tokens.", [[225.415, 225.855], [227.735, 228.225], [229.615, 229.915], [231.055, 231.205]]],
+  "try/turn": [232.696, 233.437, "Your turn.", []]
  }
 }

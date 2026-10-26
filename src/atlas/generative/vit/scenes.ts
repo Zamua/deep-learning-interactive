@@ -24,6 +24,10 @@ const IMG = RGB32.map((r) => r.map(css));
 const PATCH = RGB32.slice(0, 8).map((r) => r.slice(16, 24));
 const CHANNEL = (k: 0 | 1 | 2) => PATCH.map((r) => r.map((p) => p[k] / 255));
 const ROW: number[] = PATCH.flat().flatMap((p) => [p[0] / 255, p[1] / 255, p[2] / 255]);
+/** Every patch flattened to its 192 values, in reading order. */
+const ROWS: number[][] = Array.from({ length: 16 }, (_, k) =>
+  RGB32.slice(Math.floor(k / 4) * 8, Math.floor(k / 4) * 8 + 8).flatMap((r) => r.slice((k % 4) * 8, (k % 4) * 8 + 8).flatMap((p) => [p[0] / 255, p[1] / 255, p[2] / 255])),
+);
 /** Each patch's mean color, for the token swatches. */
 const MEAN: string[] = Array.from({ length: 16 }, (_, k) => {
   const r0 = Math.floor(k / 4) * 8;
@@ -36,38 +40,68 @@ const MEAN: string[] = Array.from({ length: 16 }, (_, k) => {
 const patches: SceneDef = {
   marks: {
     f: { tex: String.raw`N = \left(\frac{H}{P}\right)^{2}`, x: 0.5, y: 0.88, size: 5 },
+    g: { tex: String.raw`N = \frac{H}{P} \cdot \frac{W}{P}`, x: 0.5, y: 0.86, size: 5 },
   },
   draw(s) {
-    const u = s.u;
-    const px = 1.75;
-    const cx = s.w / 2;
-    const cy = s.h * 0.33;
-    const g = picture(s, cx, cy, px, IMG);
-    const side = 32 * g.p;
-    const cut = s.ease('cut', 0.8);
-    s.alpha(cut, () => {
-      for (let k = 1; k < 4; k++) {
-        s.line(g.l + k * 8 * g.p, g.t, g.l + k * 8 * g.p, g.t + side, s.c('--card'), 0.7);
-        s.line(g.l, g.t + k * 8 * g.p, g.l + side, g.t + k * 8 * g.p, s.c('--card'), 0.7);
-      }
-    });
-    s.rrect(g.l, g.t, side, side, 0.4, { stroke: s.c('--ink-3'), lw: 0.3 });
-    // Patch numbers appear in reading order.
-    for (let k = 0; k < 16; k++) {
-      const a = s.ease('count', 0.3, 0.6 + k * 0.18);
-      s.alpha(a, () => s.text(String(k), g.l + ((k % 4) + 0.5) * 8 * g.p, g.t + (Math.floor(k / 4) + 0.5) * 8 * g.p, { size: 3.4, font: 'mono', weight: 700, color: s.c('--ink'), halo: true }));
-    }
-    const tx = s.w / 2;
-    const ty = [g.t + side + 6 * u, g.t + side + 13 * u, g.t + side + 20 * u];
-    const o = { size: 3.8, font: 'mono', weight: 600, halo: true } as const;
-    s.text('32 × 32 pixels, 3 colors', tx, ty[0]!, { ...o, color: s.c('orange') });
-    s.alpha(cut, () => s.text('patch: P × P, P = 8', tx, ty[1]!, { ...o, color: s.c('slate') }));
-    s.alpha(s.ease('count', 0.6, 0.3), () => s.text('32 / 8 = 4 per side: 16', tx, ty[2]!, { ...o, color: s.c('blue') }));
-    const fa = s.ease('formula', 0.6);
-    s.show('f', fa, { x: 0.5 - 22 / (s.w / u), y: 0.9 });
-    s.alpha(fa, () => s.text('(224 / 16)² = 196', s.w / 2 + 18 * u, s.h * 0.9, { ...o, color: s.c('blue') }));
+    const rect = s.ease('rect', 0.7);
+    s.alpha(1 - rect, () => square(s, 1 - rect));
+    s.alpha(rect, () => rectangle(s));
+    s.show('g', s.ease('rect', 0.6, 6));
   },
 };
+
+/** The 32 by 32 picture cut into 16 patches, numbered, with the count and the formula. */
+function square(s: Scene, vis: number): void {
+  const u = s.u;
+  const px = 1.75;
+  const cx = s.w / 2;
+  const cy = s.h * 0.33;
+  const g = picture(s, cx, cy, px, IMG);
+  const side = 32 * g.p;
+  const cut = s.ease('cut', 0.8);
+  s.alpha(cut, () => {
+    for (let k = 1; k < 4; k++) {
+      s.line(g.l + k * 8 * g.p, g.t, g.l + k * 8 * g.p, g.t + side, s.c('--card'), 0.7);
+      s.line(g.l, g.t + k * 8 * g.p, g.l + side, g.t + k * 8 * g.p, s.c('--card'), 0.7);
+    }
+  });
+  s.rrect(g.l, g.t, side, side, 0.4, { stroke: s.c('--ink-3'), lw: 0.3 });
+  // Patch numbers appear in reading order.
+  for (let k = 0; k < 16; k++) {
+    const a = s.ease('count', 0.3, 0.6 + k * 0.18);
+    s.alpha(a, () => s.text(String(k), g.l + ((k % 4) + 0.5) * 8 * g.p, g.t + (Math.floor(k / 4) + 0.5) * 8 * g.p, { size: 3.4, font: 'mono', weight: 700, color: s.c('--ink'), halo: true }));
+  }
+  const tx = s.w / 2;
+  const ty = [g.t + side + 6 * u, g.t + side + 13 * u, g.t + side + 20 * u];
+  const o = { size: 3.8, font: 'mono', weight: 600, halo: true } as const;
+  s.text('32 × 32 pixels, 3 colors', tx, ty[0]!, { ...o, color: s.c('orange') });
+  s.alpha(cut, () => s.text('patch: P × P, P = 8', tx, ty[1]!, { ...o, color: s.c('slate') }));
+  s.alpha(s.ease('count', 0.6, 0.3), () => s.text('32 / 8 = 4 per side: 16', tx, ty[2]!, { ...o, color: s.c('blue') }));
+  const fa = s.ease('formula', 0.6);
+  s.show('f', fa * vis, { x: 0.5 - 22 / (s.w / u), y: 0.9 });
+  s.alpha(fa, () => s.text('(224 / 16)² = 196', s.w / 2 + 18 * u, s.h * 0.9, { ...o, color: s.c('blue') }));
+}
+
+/** A 128 by 192 image as its grid of 16-pixel patches: 8 down, 12 across. */
+function rectangle(s: Scene): void {
+  const u = s.u;
+  const cell = 4.4 * u;
+  const l = s.w / 2 - 6 * cell;
+  const t = s.h * 0.1;
+  const o = { size: 3.4, font: 'mono', weight: 600, halo: true } as const;
+  const shown = Math.floor(96 * s.ease('rect', 2.2, 2.4));
+  for (let k = 0; k < 96; k++) {
+    const i = Math.floor(k / 12);
+    const j = k % 12;
+    s.rrect(l + j * cell, t + i * cell, cell, cell, 0.2, { fill: s.tint(k < shown ? 'blue' : 'slate', k < shown ? 0.3 : 0.12), stroke: s.tint('--ink-3', 0.6), lw: 0.2 });
+  }
+  s.text('192 px', s.w / 2, t - 3 * u, { ...o, color: s.c('orange') });
+  s.text('128 px', l - 2 * u, t + 4 * cell, { ...o, align: 'right', color: s.c('orange') });
+  const y = t + 8 * cell;
+  s.alpha(s.ease('rect', 0.6, 2.4), () => s.text('down: 128 / 16 = 8', s.w / 2, y + 6 * u, { ...o, color: s.c('slate') }));
+  s.alpha(s.ease('rect', 0.6, 3.6), () => s.text('across: 192 / 16 = 12', s.w / 2, y + 13 * u, { ...o, color: s.c('slate') }));
+  s.alpha(s.ease('rect', 0.6, 4.8), () => s.text('8 × 12 = 96 patches', s.w / 2, y + 20 * u, { ...o, color: s.c('blue') }));
+}
 
 /** A strip of `vals.length` thin segments, `w` stage units wide, tinted by channel in turn. */
 function strip(s: Scene, cx: number, cy: number, w: number, h: number, vals: number[], inks: ('red' | 'green' | 'blue' | 'gold')[], upto = 1): void {
@@ -132,20 +166,23 @@ const sequence: SceneDef = {
     const sx = s.w / 2 - 8 * u;
     const top = s.h * 0.12;
     const pitch = 3 * u;
-    const rw = 34 * u;
+    const emb = s.ease('tokens', 1);
+    const wide = 60;
+    const rw = (wide + (34 - wide) * emb) * u;
     const rh = pitch * 0.7;
     const cls = s.ease('cls', 0.8);
     const shift = cls * pitch;
     const rowAt = (k: number) => top + shift + k * pitch;
-    const grow = s.ease('tokens', 1.2);
-    // The 16 patch tokens, each with its patch's mean color as a swatch.
+    const grow = s.ease('stack', 1.2);
+    // The 16 flattened patches, then the 16 tokens they embed to, each with its patch's mean color as a swatch.
     for (let k = 0; k < 16; k++) {
       const a = clamp01(grow * 16 - k);
       s.alpha(a, () => {
         const y = rowAt(k);
         s.ctx.fillStyle = MEAN[k]!;
         s.ctx.fillRect(sx - rw / 2 - rh - 1.2 * u, y - rh / 2, rh, rh);
-        s.rrect(sx - rw / 2, y - rh / 2, rw, rh, 0.4, { fill: s.tint('gold', 0.22), stroke: s.tint('gold', 0.6), lw: 0.25 });
+        s.alpha(1 - emb, () => strip(s, sx, y, rw / u, rh / u, ROWS[k]!, ['red', 'green', 'blue']));
+        s.alpha(emb, () => s.rrect(sx - rw / 2, y - rh / 2, rw, rh, 0.4, { fill: s.tint('gold', 0.22), stroke: s.tint('gold', 0.6), lw: 0.25 }));
       });
     }
     s.alpha(cls, () => {
@@ -156,9 +193,11 @@ const sequence: SceneDef = {
     const bottom = rowAt(15) + rh / 2;
     const o = { size: 3.6, font: 'mono', weight: 650, halo: true } as const;
     const lx = sx + rw / 2 + 3 * u;
-    s.alpha(grow * (1 - cls), () => s.text('(16, 64)', lx, (top + bottom) / 2, { ...o, align: 'left', color: s.c('gold') }));
+    s.alpha(grow * (1 - emb), () => s.text('(16, 192)', lx, (top + bottom) / 2, { ...o, align: 'left', color: s.c('orange') }));
+    s.alpha(emb * (1 - cls), () => s.text('(16, 64)', lx, (top + bottom) / 2, { ...o, align: 'left', color: s.c('gold') }));
     s.alpha(cls, () => s.text('(17, 64)', lx, (top + bottom) / 2, { ...o, align: 'left', color: s.c('purple') }));
-    s.text('64 numbers per token', sx, top - pitch * 1.1, { size: 3, font: 'mono', color: s.c('--ink-3') });
+    s.alpha(grow * (1 - emb), () => s.text('192 numbers per patch', sx, top - pitch * 1.1, { size: 3, font: 'mono', color: s.c('--ink-3') }));
+    s.alpha(emb, () => s.text('64 numbers per token', sx, top - pitch * 1.1, { size: 3, font: 'mono', color: s.c('--ink-3') }));
     // Transformer blocks, then the classifier on the class token.
     const bA = s.ease('blocks', 0.6);
     const by = bottom + 11 * u;

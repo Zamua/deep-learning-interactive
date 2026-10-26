@@ -61,9 +61,11 @@ export const generators: Generator[] = [
           { value: S + (total ? n : k) * p, why: `That counts one layer's experts; every one of the ${L} layers has its own.` },
         ]),
         solution: [
-          `Experts per layer: $${total ? `${E} = ${n}` : `${K} = ${k}`}$, so $${L} \\times ${total ? n : k} \\times ${p} = ${big(ans - S)}$ million in experts.`,
-          `Add the shared ${commas(S)} million: $${big(ans - S)} + ${big(S)} = ${big(ans)}$ million.`,
-          total ? 'The total sets the memory needed to hold the model.' : 'The active count sets the compute per token.',
+          total
+            ? `Each layer stores all $${E} = ${n}$ of its experts: $${n} \\times ${p} = ${big(n * p)}$ million.`
+            : `Each layer runs $${K} = ${k}$ of its experts for one token: $${k} \\times ${p} = ${big(k * p)}$ million.`,
+          `Every one of the ${L} layers has its own experts: $${L} \\times ${big((total ? n : k) * p)} = ${big(ans - S)}$ million in experts.`,
+          `Add the shared ${commas(S)} million, which every token uses: $${big(ans - S)} + ${big(S)} = ${big(ans)}$ million.`,
         ],
       };
     },

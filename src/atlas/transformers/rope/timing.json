@@ -1,27 +1,32 @@
 {
- "duration": 142.254,
+ "duration": 225.58,
  "scenes": {
-  "turn": [0.0, 62.054],
-  "position": [62.054, 103.273],
-  "relative": [103.273, 142.254]
+  "turn": [0.0, 111.553],
+  "position": [111.553, 152.772],
+  "relative": [152.772, 225.58]
  },
  "beats": {
   "turn/pair": [0.7, 7.656, "Draw a pair of numbers as an arrow from the origin. Here is a query, q: two, one.", [[3.68, 4.29], [5.22, 5.64], [6.0, 6.51], [6.89, 7.2]]],
   "turn/turn": [8.036, 17.096, "Rotating turns the arrow about the origin, keeping its length: a quarter turn, ninety degrees, carries it to minus one, two.", [[10.736, 11.076], [12.016, 12.566], [13.426, 13.676], [14.526, 14.866], [16.376, 16.716]]],
-  "turn/cossin": [17.476, 30.252, "Each angle comes with two numbers, its cosine and its sine, written cos, for cosine, and sine. They are looked up like e to a power: zero and one for ninety degrees.", [[19.536, 19.926], [21.676, 22.046], [22.976, 23.166], [23.916, 24.166], [24.816, 25.456], [27.446, 27.996]]],
-  "turn/rule": [30.632, 39.572, "Then a, b turns to a cos minus b sin, and a sin plus b cos: a matrix times the pair.", [[31.092, 31.312], [31.682, 31.872], [34.742, 35.062], [35.412, 35.572], [37.462, 37.922]]],
-  "turn/check": [39.952, 49.241, "For ninety degrees: two times zero minus one times one is minus one, and two times one plus one times zero is two.", [[41.192, 41.782], [44.402, 44.552], [45.442, 45.822], [48.472, 48.662]]],
-  "turn/sixty": [49.621, 60.954, "At sixty degrees, with cosine one half and sine about zero point eight seven, the key one, one turns to about minus zero point three seven and one point three seven.", [[50.851, 51.101], [54.921, 55.271], [59.351, 59.511]]],
-  "position/idea": [62.754, 69.637, "Rotary positions mark where a token sits by turning each query and key, instead of adding a position vector.", [[67.374, 67.704]]],
-  "position/angle": [70.017, 80.269, "Each pair turns by a fixed angle per position, written theta, the Greek letter theta. At position m, it has turned by m times theta.", [[73.087, 73.447], [74.367, 74.737], [76.057, 76.637], [77.787, 78.047]]],
-  "position/example": [80.649, 87.267, "With theta of thirty degrees, position zero is not turned, and position three turns by ninety.", [[82.409, 82.689], [84.569, 84.959]]],
-  "position/pairs": [87.647, 95.506, "A query of d k entries makes d k over two pairs, each with its own theta, some fast and some slow.", [[91.547, 91.937], [93.337, 93.707]]],
-  "position/only": [95.886, 102.173, "Nothing is learned or added to the token: only queries and keys turn, just before scoring.", [[98.256, 98.736], [100.676, 100.966]]],
-  "relative/both": [103.973, 110.568, "Turn a query and a key by the same angle, and they move together: their dot product stays the same.", [[106.653, 106.923], [108.013, 108.513]]],
-  "relative/numbers": [110.948, 118.428, "Two, one dotted with one, one is three. Turned ninety degrees each, they still give three.", [[111.338, 111.808], [113.158, 113.558], [114.628, 115.208], [116.878, 117.138]]],
-  "relative/apart": [118.808, 125.396, "Now a query at position five turns by five theta, and a key at position two by two theta.", [[122.298, 122.738], [124.288, 124.448]]],
-  "relative/shift": [125.776, 134.218, "Move both four places later, to nine and six. Each turns four theta more, together, so the score stays the same.", [[127.736, 127.986], [129.246, 129.746], [131.576, 131.756], [132.236, 132.546]]],
-  "relative/distance": [134.598, 140.034, "So the score depends only on how far apart the tokens are, and which comes first.", [[138.318, 138.588]]],
-  "relative/turn": [140.414, 141.154, "Your turn.", []]
+  "turn/unit": [17.476, 33.119, "To turn any pair, start from an arrow of length one, pointing right, and turn it by the angle. Its tip lands at two numbers: across, the angle's cosine, written cos, and up, its sine, written sine.", [[18.686, 18.996], [20.976, 21.256], [21.986, 22.306], [23.716, 24.286], [26.186, 26.696], [27.316, 27.596], [28.796, 29.036], [29.856, 30.256], [30.786, 31.096], [31.826, 32.126]]],
+  "turn/cossin": [33.499, 49.865, "At ninety degrees the arrow points straight up: cos is zero and sin is one. At sixty degrees it lands one half across and about zero point eight seven up. Like e to a power, they are looked up, not worked out by hand.", [[34.579, 34.729], [36.249, 36.769], [37.899, 38.099], [39.299, 39.859], [40.949, 41.129], [42.749, 42.989], [45.089, 45.709], [46.979, 47.249], [48.119, 48.389]]],
+  "turn/basis": [50.245, 69.913, "So one, zero turns to cos, sin. And zero, one is one, zero already turned a quarter, so it lands a quarter turn past cos, sin. A quarter turn swaps the entries and flips the first sign, as two, one became minus one, two: minus sin, cos.", [[51.115, 51.505], [53.005, 53.155], [53.615, 54.115], [55.245, 55.455], [56.085, 56.335], [58.205, 58.465], [61.115, 61.685], [65.025, 65.325], [66.205, 66.395], [67.825, 68.285]]],
+  "turn/rule": [70.293, 89.071, "Any pair a, b is a times one, zero, plus b times zero, one. Turning moves both pieces, so it lands at a times cos, sin, plus b times minus sin, cos: a cos minus b sin, and a sin plus b cos.", [[71.693, 71.863], [72.503, 72.663], [73.373, 73.543], [74.043, 74.383], [75.053, 75.203], [76.433, 77.063], [78.613, 78.863], [81.603, 81.853], [84.133, 84.653], [86.563, 86.903]]],
+  "turn/check": [89.451, 98.74, "For ninety degrees: two times zero minus one times one is minus one, and two times one plus one times zero is two.", [[90.691, 91.281], [93.901, 94.051], [94.941, 95.321], [97.971, 98.161]]],
+  "turn/sixty": [99.12, 110.453, "At sixty degrees, with cosine one half and sine about zero point eight seven, the key one, one turns to about minus zero point three seven and one point three seven.", [[100.35, 100.6], [104.42, 104.77], [108.85, 109.01]]],
+  "position/idea": [112.253, 119.136, "Rotary positions mark where a token sits by turning each query and key, instead of adding a position vector.", [[116.873, 117.203]]],
+  "position/angle": [119.516, 129.768, "Each pair turns by a fixed angle per position, written theta, the Greek letter theta. At position m, it has turned by m times theta.", [[122.586, 122.946], [123.866, 124.236], [125.556, 126.136], [127.286, 127.546]]],
+  "position/example": [130.148, 136.766, "With theta of thirty degrees, position zero is not turned, and position three turns by ninety.", [[131.908, 132.188], [134.068, 134.458]]],
+  "position/pairs": [137.146, 145.005, "A query of d k entries makes d k over two pairs, each with its own theta, some fast and some slow.", [[141.046, 141.436], [142.836, 143.206]]],
+  "position/only": [145.385, 151.672, "Nothing is learned or added to the token: only queries and keys turn, just before scoring.", [[147.755, 148.235], [150.175, 150.465]]],
+  "relative/both": [153.472, 160.067, "Turn a query and a key by the same angle, and they move together: their dot product stays the same.", [[156.152, 156.422], [157.512, 158.012]]],
+  "relative/numbers": [160.447, 167.927, "Two, one dotted with one, one is three. Turned ninety degrees each, they still give three.", [[160.837, 161.307], [162.657, 163.057], [164.127, 164.707], [166.377, 166.637]]],
+  "relative/apart": [168.307, 174.895, "Now a query at position five turns by five theta, and a key at position two by two theta.", [[171.797, 172.237], [173.787, 173.947]]],
+  "relative/shift": [175.275, 183.717, "Move both four places later, to nine and six. Each turns four theta more, together, so the score stays the same.", [[177.235, 177.485], [178.745, 179.245], [181.075, 181.255], [181.735, 182.045]]],
+  "relative/distance": [184.097, 189.533, "So the score depends only on how far apart the tokens are, and which comes first.", [[187.817, 188.087]]],
+  "relative/try": [189.913, 199.058, "Try one, with theta of ninety degrees: the query two, one at position one, and the key one, one at position zero.", [[190.633, 191.023], [192.783, 193.343], [194.383, 194.713], [196.153, 196.463]]],
+  "relative/tq": [199.438, 214.616, "The query turns by one times ninety degrees: two times zero minus one times one is minus one, and two times one plus one times zero is two. The key, at position zero, does not turn.", [[202.428, 202.998], [206.778, 207.208], [207.538, 207.708], [210.058, 210.208], [210.738, 211.398], [211.958, 212.168], [213.288, 213.488]]],
+  "relative/tdot": [214.996, 223.36, "Dot them: minus one times one, plus two times one. The score is one, where the unturned pair gave three.", [[215.576, 216.156], [217.686, 218.016], [219.336, 219.906], [221.056, 221.376]]],
+  "relative/turn": [223.74, 224.48, "Your turn.", []]
  }
 }

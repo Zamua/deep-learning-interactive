@@ -27,6 +27,22 @@ export const script: LectureScript = {
       ],
     },
     {
+      id: 'balance',
+      title: 'Keep the load even',
+      codeTitle: 'balance.py',
+      code: `
+        share = counts / counts.sum()  # per expert  #@share
+        # even load: every share is 1 / E            #@even
+        loss = task_loss + 0.01 * balance_loss       #@loss
+      `,
+      beats: [
+        { id: 'favor', say: 'One danger. Early in training, the router may happen to favor one expert.', code: 'share' },
+        { id: 'feed', say: 'That expert gets more tokens, so more gradient, so it improves fastest, and the router favors it even more.', code: 'share' },
+        { id: 'collapse', say: 'Soon one expert does most of the work. The others sit idle: parameters stored and paid for, barely trained. And the busy one makes the whole layer wait.' },
+        { id: 'fix', say: 'The fix is a small extra loss that is lowest when every expert gets an equal share of the tokens: one over E each.', code: ['even', 'loss'] },
+      ],
+    },
+    {
       id: 'params',
       title: 'Total versus active',
       codeTitle: 'moe_params.py',
@@ -44,19 +60,21 @@ export const script: LectureScript = {
       ],
     },
     {
-      id: 'balance',
-      title: 'Keep the load even',
-      codeTitle: 'balance.py',
+      id: 'model',
+      title: 'A whole model',
+      codeTitle: 'model_params.py',
       code: `
-        share = counts / counts.sum()  # per expert  #@share
-        # even load: every share is 1 / E            #@even
-        loss = task_loss + 0.01 * balance_loss       #@loss
+        layers, E, k = 4, 8, 2                     #@layers
+        expert = 100_000_000                       #@layers
+        shared = 500_000_000   # attention, ...    #@shared
+        active = layers * k * expert + shared  # 1,300M  #@active
+        total = layers * E * expert + shared   # 3,700M  #@total
       `,
       beats: [
-        { id: 'favor', say: 'One danger. Early in training, the router may happen to favor one expert.', code: 'share' },
-        { id: 'feed', say: 'That expert gets more tokens, so more gradient, so it improves fastest, and the router favors it even more.', code: 'share' },
-        { id: 'collapse', say: 'Soon one expert does most of the work. The others sit idle: parameters stored and paid for, barely trained. And the busy one makes the whole layer wait.' },
-        { id: 'fix', say: 'The fix is a small extra loss that is lowest when every expert gets an equal share of the tokens: one over E each.', code: ['even', 'loss'] },
+        { id: 'layers', say: 'A whole model stacks many such layers, each with its own experts. Say four layers, each with eight experts of a hundred million, and k still two.', code: 'layers' },
+        { id: 'shared', say: 'Everything else, attention, embeddings and the rest, is shared: every token uses it, and it is stored once. Say five hundred million.', code: 'shared' },
+        { id: 'active', say: 'One token runs two experts in each of four layers: four times two times a hundred million, eight hundred million. Add the shared five hundred: {1,300|thirteen hundred} million active.', code: 'active' },
+        { id: 'total', say: 'The model stores all eight in every layer: four times eight times a hundred million, {3,200|thirty two hundred} million. Plus the shared five hundred: {3,700|thirty seven hundred} million in total.', code: 'total' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

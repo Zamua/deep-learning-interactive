@@ -1,20 +1,31 @@
 {
- "duration": 109.218,
+ "duration": 200.66,
  "scenes": {
-  "room": [0.0, 35.185],
-  "read": [35.185, 75.343],
-  "sparse": [75.343, 109.218]
+  "room": [0.0, 54.873],
+  "read": [54.873, 122.26],
+  "sparse": [122.26, 155.015],
+  "try": [155.015, 200.66]
  },
  "beats": {
   "room/perp": [0.7, 9.563, "A stream of d numbers has room for only d directions at exact right angles. In two dimensions, two features fit perfectly.", [[5.85, 6.4], [7.44, 7.78], [8.66, 8.81]]],
   "room/three": [9.943, 16.18, "Three features? Give up exact right angles, and spread them a hundred and twenty degrees apart.", [[10.923, 11.453], [13.273, 13.533]]],
-  "room/cos": [16.56, 34.085, "Now every pair overlaps. For unit directions, arrows of length one, the dot product is the cosine of the angle between them: one when they point the same way, zero at a right angle. Here it is the cosine of a hundred and twenty degrees, minus a half.", [[18.49, 19.13], [20.33, 20.6], [21.86, 22.24], [25.24, 25.79], [27.52, 27.87], [29.27, 29.91], [32.86, 33.05]]],
-  "read/store": [35.885, 50.597, "Store values by adding up each feature's value times its direction. Here the values, f, are one, zero, zero: feature zero alone, at one. The stream is its direction, one, zero.", [[40.145, 40.805], [42.355, 42.525], [43.135, 43.355], [44.475, 44.895], [46.215, 46.495], [47.055, 47.605], [49.185, 49.515], [49.895, 50.045]]],
-  "read/read": [50.977, 63.194, "Read each feature back with a dot product. Feature zero reads one, exactly right. Feature one reads minus a half: a leak, called interference.", [[53.457, 54.097], [55.497, 55.737], [56.137, 56.497], [57.527, 58.167], [59.407, 59.647], [60.687, 61.117], [61.607, 61.907]]],
-  "read/both": [63.574, 74.243, "Now turn on features zero and one together. Reading feature zero gives one, minus a half: only a half. The leak has eaten half the signal.", [[66.364, 66.924], [68.954, 69.354], [70.364, 70.794], [71.714, 72.214]]],
-  "sparse/rare": [76.043, 86.567, "Interference only happens between features that are on at the same time. If each feature is rare, on for one token in a hundred, two at once are rarer still.", [[80.203, 80.763], [82.213, 82.543], [84.263, 84.713]]],
-  "sparse/clip": [86.947, 94.691, "Most of the time one feature is on alone. Its neighbors read small negative leaks, and a ReLU clips them to zero.", [[89.647, 90.137], [92.487, 92.727]]],
-  "sparse/more": [95.071, 106.998, "In many dimensions, far more than d directions can be nearly perpendicular. So a model can store many more sparse features than it has dimensions. That is superposition.", [[96.291, 96.591], [99.991, 100.511], [104.891, 105.411]]],
-  "sparse/turn": [107.378, 108.118, "Your turn.", []]
+  "room/rows": [16.56, 30.765, "Each feature's direction is a row of W, an arrow of length one. Feature zero points along one, zero. Features one and two point to minus a half, and plus or minus zero point eight seven.", [[19.13, 19.54], [20.96, 21.61], [24.28, 24.85], [26.19, 26.4], [27.75, 28.05]]],
+  "room/self": [31.145, 38.874, "Dot a direction with itself, and you get one. For feature zero: one times one, plus zero times zero.", [[32.895, 33.085], [33.865, 34.465], [35.515, 36.065], [37.045, 37.275]]],
+  "room/pair": [39.254, 53.773, "Dot two different directions, and you get minus a half: one times minus a half, plus zero times zero point eight seven. Every pair, a hundred and twenty degrees apart, overlaps by that same minus a half.", [[41.024, 41.224], [42.654, 43.174], [44.784, 45.064], [47.704, 48.234], [49.004, 49.184], [50.984, 51.214]]],
+  "read/store": [55.573, 66.525, "Store values by adding up each feature's value times its direction. Say the values, f, are three, zero and two: features zero and two are on.", [[59.743, 60.303], [61.613, 61.763], [62.413, 62.643], [63.773, 64.283]]],
+  "read/scale": [66.905, 76.308, "Three times feature zero's direction is three, zero. Two times feature two's is minus one, minus one point seven four.", [[69.995, 70.305], [70.785, 71.375], [74.065, 74.455]]],
+  "read/sum": [76.688, 85.245, "Add them: the stream, x, is two, minus one point seven four. Three values, packed into two numbers.", [[77.218, 77.718], [78.398, 78.608], [79.038, 79.218], [79.868, 80.188], [81.998, 82.568], [83.468, 83.728]]],
+  "read/read": [85.625, 95.016, "Read feature zero back with a dot product: two times one, plus minus one point seven four times zero. Two, not three.", [[88.215, 88.735], [89.705, 90.005], [92.955, 93.485], [93.865, 94.205]]],
+  "read/split": [95.396, 108.085, "Why two? The stream is three of feature zero's direction plus two of feature two's, so the dot product splits into pieces: three times one, plus two times minus a half.", [[96.256, 96.826], [99.616, 99.796], [101.536, 101.936], [104.156, 104.636], [105.686, 106.006]]],
+  "read/rule": [108.465, 121.16, "So a reading is the feature's own value, plus minus a half times each other value that is on. The minus one is the leak, called interference, and it grows with the other feature's value.", [[111.195, 111.485], [114.875, 115.495], [117.045, 117.315], [118.525, 118.855]]],
+  "sparse/rare": [122.96, 133.484, "Interference only happens between features that are on at the same time. If each feature is rare, on for one token in a hundred, two at once are rarer still.", [[127.12, 127.68], [129.13, 129.46], [131.18, 131.63]]],
+  "sparse/clip": [133.864, 141.608, "Most of the time one feature is on alone. Its neighbors read small negative leaks, and a ReLU clips them to zero.", [[136.564, 137.054], [139.404, 139.644]]],
+  "sparse/more": [141.988, 153.915, "In many dimensions, far more than d directions can be nearly perpendicular. So a model can store many more sparse features than it has dimensions. That is superposition.", [[143.208, 143.508], [146.908, 147.428], [151.808, 152.328]]],
+  "try/p1": [155.715, 163.534, "Try one. The same three directions hold the values two, one and three. What does reading feature one give?", [[156.265, 156.855], [159.595, 159.805], [160.875, 161.465]]],
+  "try/own": [163.914, 176.724, "Start from its own value, one. Each other value leaks in at minus a half: minus a half times two is minus one, and minus a half times three is minus one and a half.", [[165.464, 165.864], [166.274, 166.794], [169.664, 170.194], [172.764, 173.184]]],
+  "try/a1": [177.104, 183.602, "Add them: one, minus one, minus one and a half. Minus one and a half.", [[177.624, 178.224], [178.614, 179.014], [179.804, 180.204], [181.564, 182.224]]],
+  "try/p2": [183.982, 191.116, "Now the values are a half, two and one, and a ReLU follows the reading. Read feature zero.", [[185.822, 186.112], [187.102, 187.522], [189.182, 189.802]]],
+  "try/a2": [191.496, 198.44, "A half, minus one, minus a half: minus one. The ReLU clips it to zero.", [[192.096, 192.616], [193.406, 193.726], [194.656, 195.216], [195.946, 196.506]]],
+  "try/turn": [198.82, 199.56, "Your turn.", []]
  }
 }

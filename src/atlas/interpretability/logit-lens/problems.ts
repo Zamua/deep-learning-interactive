@@ -81,7 +81,8 @@ export const generators: Generator[] = [
           answer: { kind: 'choice', options: words.map((w) => `$${tok(w)}$`), correct: k, why },
           solution: [
             `After block 0 the stream is $${vec(x0)} + ${vec(w0)} = ${vec(x1)}$.`,
-            `Scores, row by row: ${words.map((w, j) => `$${tok(w)}$: $${s1[j]}$`).join(', ')}.`,
+            `Score each token by dotting its row with $${vec(x1)}$.`,
+            ...words.map((w, j) => `$${tok(w)}$: $${prods(U[j]!, x1)} = ${s1[j]}$.`),
             `The largest is $${tok(words[k]!)}$, so that is the lens's prediction after block 0${two ? `; block 1's write later moves the top to $${tok(words[k2]!)}$` : ''}.`,
           ],
         };

@@ -23,6 +23,25 @@ export const script: LectureScript = {
       ],
     },
     {
+      id: 'classes',
+      title: 'More than two answers',
+      codeTitle: 'tense.py',
+      code: `
+        h = np.array([1, 2])                 #@h
+        W = np.array([[1, 0],     # past     #@W
+                      [-1, 2],    # present  #@W
+                      [2, -1]])   # future   #@W
+        b = np.array([0, -1, 1])             #@W
+        s = W @ h + b    # [1, 2, 1]         #@s
+        s.max()          # 2: present        #@max
+      `,
+      beats: [
+        { id: 'rows', say: 'A probe can also decode more than yes or no, like a sentence\'s tense. Then it is a linear classifier with one weight row and one bias per class: {w₀|w zero} and {b₀|b zero} for past, {w₁|w one} and {b₁|b one} for present, {w₂|w two} and {b₂|b two} for future.', code: ['h', 'W'] },
+        { id: 'scores', say: 'Here h is one, two. Past scores one times one, plus zero times two, plus zero: one. Present scores minus one, plus four, minus one: two. Future scores two, minus two, plus one: one.', code: 's' },
+        { id: 'wins', say: 'As in any linear classifier, the highest score wins: the probe says present.', code: 'max' },
+      ],
+    },
+    {
       id: 'test',
       title: 'Test on held-out words',
       codeTitle: 'accuracy.py',

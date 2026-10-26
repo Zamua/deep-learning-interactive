@@ -53,51 +53,76 @@ const scale: SceneDef = {
   },
 };
 
-// A fixed draw of 16 coin-flip products, summing to +2.
-const COINS = [1, -1, 1, 1, -1, 1, -1, -1, 1, 1, -1, 1, 1, -1, -1, 1];
+const sharp: SceneDef = {
+  draw(s) {
+    const u = s.u;
+    const gx = s.tall ? 25 : 30;
+    const base = s.h * 0.7;
+    [
+      [SC, A, 'scores'],
+      [SC.map((v) => 4 * v), A4, 'four times bigger'],
+    ].forEach(([sc, p, cap], g) => {
+      const gxs = columns(s, 3, 12).map((x) => x + (g === 0 ? -gx : gx) * u);
+      s.alpha(g === 0 ? s.ease('sharp', 0.6) : s.ease('bigger', 0.6), () => {
+        s.text(cap as string, gxs[1]!, s.h * 0.2, { size: 3.2, font: 'mono', color: s.c('--ink-2') });
+        s.text(`[${(sc as number[]).join(', ')}]`, gxs[1]!, s.h * 0.28, { size: 3.4, font: 'mono', weight: 600, color: s.c('slate') });
+        bars(s, gxs, base, p as number[], 'green', { max: 1, height: 30, w: 7.5, fmt: f2, grow: s.ease(g === 0 ? 'sharp' : 'bigger', 1, 0.6) });
+      });
+    });
+    s.alpha(s.ease('bigger', 0.6), () => s.text('× 4', s.w / 2, s.h * 0.28, { size: 3.4, font: 'mono', weight: 600, color: s.c('--ink-3') }));
+    s.alpha(s.ease('bigger', 0.6, 4), () => s.text('all or nothing', s.w / 2 + gx * u, base + 5 * u, { size: 3.2, font: 'mono', color: s.c('--ink-2') }));
+    s.alpha(s.ease('stuck', 0.6), () => s.text('one weight near 1: a nudged score barely moves it', s.w / 2, s.h * 0.88, { size: s.tall ? 2.9 : 3.2, color: s.c('red') }));
+  },
+};
+
+// One draw of four coin-flip products, summing to +2.
+const COINS = [1, -1, 1, 1];
+// d_k = 4: every possible sum, how many of the 16 sign patterns give it, and its square.
+const SUMS = [-4, -2, 0, 2, 4];
+const WAYS = [1, 4, 6, 4, 1];
 const DKS = [4, 16, 64, 256];
+const fmtS = (v: number) => (v < 0 ? `−${-v}` : String(v));
 
 const why: SceneDef = {
   draw(s) {
     const cx = s.w / 2;
     const u = s.u;
-    const lit = s.win('coin', 'sum');
-    COINS.forEach((c, i) => {
-      const x = cx - 38 * u + (i % 8) * 8 * u;
-      const y = s.h * (0.09 + Math.floor(i / 8) * 0.1);
-      s.alpha(s.ease('coin', 0.4, 0.8 + 0.08 * i), () => s.cell(x - 3.5 * u, y - 3.5 * u, 7 * u, 7 * u, c > 0 ? '+1' : '−1', c > 0 ? 'teal' : 'red', { on: lit, size: 2.8 }));
-    });
-    s.alpha(s.ease('coin', 0.6, 2.4), () => {
-      s.text('16 products', cx + 30 * u, s.h * 0.09, { size: 3.2, font: 'mono', align: 'left', color: s.c('--ink-3') });
-      s.text('sum = +2', cx + 30 * u, s.h * 0.19, { size: 3.4, font: 'mono', weight: 600, align: 'left', color: s.c('--ink') });
+    const lit = s.win('coin', 'count');
+    const hist = 1 - s.ease('sum', 0.6);
+    s.alpha(hist, () => {
+      const cxs = columns(s, 4, 9).map((x) => x - 10 * u);
+      COINS.forEach((c, i) => s.alpha(s.ease('coin', 0.4, 0.8 + 0.15 * i), () => s.cell(cxs[i]! - 3.5 * u, s.h * 0.09 - 3.5 * u, 7 * u, 7 * u, c > 0 ? '+1' : '−1', c > 0 ? 'teal' : 'red', { on: lit, size: 2.8 })));
+      s.alpha(s.ease('coin', 0.6, 1.6), () => s.text('sum = +2', cxs[3]! + 7 * u, s.h * 0.09, { size: 3.4, font: 'mono', weight: 600, align: 'left', color: s.c('--ink') }));
+
+      const xs = columns(s, 5, s.tall ? 15 : 16);
+      const base = s.h * 0.52;
+      s.alpha(s.ease('count', 0.6), () => {
+        s.text('16 ways for 4 flips to land', cx, s.h * 0.19, { size: 3.2, color: s.c('--ink-2') });
+        bars(s, xs, base, WAYS, 'slate', { max: 6, height: 22, w: 9, fmt: (v) => `${v}×`, grow: s.ease('count', 2.4, 1.2) });
+        rowLabel(s, 'sum', xs[0]! - 8 * u, base + 4 * u, '--ink-2', 3.2);
+        SUMS.forEach((v, i) => s.text(fmtS(v), xs[i]!, base + 4 * u, { size: 3.2, font: 'mono', weight: 600, color: s.c('--ink') }));
+      });
+      s.alpha(s.ease('square', 0.6), () => {
+        rowLabel(s, 'sum²', xs[0]! - 8 * u, base + 10.5 * u, 'gold', 3.2);
+        SUMS.forEach((v, i) => s.text(String(v * v), xs[i]!, base + 10.5 * u, { size: 3.2, font: 'mono', weight: 600, color: s.c('gold') }));
+      });
+      const o = { size: s.tall ? 3.1 : 3.4, weight: 600 };
+      s.alpha(s.ease('square', 0.6, 1.5), () => rich(s, [['1·16 + 4·4 + 6·0 + 4·4 + 1·16 = ', '--ink-2'], ['64', 'gold']], cx, s.h * 0.75, o));
+      s.alpha(s.ease('square', 0.6, 3), () => rich(s, [['average square: 64 / 16 = ', '--ink-2'], ['4', 'gold']], cx, s.h * 0.82, o));
+      s.alpha(s.ease('square', 0.6, 5), () => rich(s, [['typical size: √4 = ', '--ink-2'], ['2', '--ink']], cx, s.h * 0.89, o));
     });
 
     const xs = columns(s, 4, 22);
     const base = s.h * 0.82;
     const fix = s.ease('fix', 1.2, 0.6);
     const typ = DKS.map((d) => lerp(Math.sqrt(d), 1, fix));
-    s.alpha(s.win('sum', 'sharp') + s.ease('fix', 0.6), () => {
+    s.alpha(s.ease('sum', 0.6, 0.4), () => {
       bars(s, xs, base, typ, fix > 0.5 ? 'green' : 'slate', { max: 16, height: 34, w: 9, fmt: (v) => (fix > 0.99 ? '≈ 1' : String(Math.round(v))), grow: s.since('fix') > 0 ? 1 : s.ease('sum', 1.2, 1) });
       DKS.forEach((d, i) => s.text(`dₖ = ${d}`, xs[i]!, base + 4 * u, { size: 3, font: 'mono', color: s.c('--ink-3') }));
-      s.text(fix > 0.5 ? 'typical |q · k| / √dₖ ≈ 1' : 'typical |q · k| ≈ √dₖ', cx, s.h * 0.33, { size: 3.4, font: 'mono', weight: 600, color: s.c(fix > 0.5 ? 'green' : '--ink-2') });
-    });
-
-    s.alpha(s.win('sharp', 'fix'), () => {
-      const gx = s.tall ? 25 : 30;
-      [
-        [SC, A, 'scores'],
-        [SC.map((v) => 4 * v), A4, 'four times bigger'],
-      ].forEach(([sc, p, cap], g) => {
-        const gxs = columns(s, 3, 12).map((x) => x + (g === 0 ? -gx : gx) * u);
-        s.alpha(g === 0 ? 1 : s.ease('sharp', 0.6, 4.5), () => {
-          s.text(cap as string, gxs[1]!, s.h * 0.42, { size: 3.2, font: 'mono', color: s.c('--ink-2') });
-          s.text(`[${(sc as number[]).join(', ')}]`, gxs[1]!, s.h * 0.49, { size: 3.4, font: 'mono', weight: 600, color: s.c('slate') });
-          bars(s, gxs, base, p as number[], 'green', { max: 1, height: 22, w: 7.5, fmt: f2 });
-        });
-      });
-      s.alpha(s.ease('stuck', 0.6), () => s.text('one weight near 1: a nudged score barely moves it', cx, s.h * 0.32, { size: 3.2, color: s.c('red') }));
+      s.text(fix > 0.5 ? 'typical |q · k| / √dₖ ≈ 1' : 'typical |q · k| ≈ √dₖ', cx, s.h * 0.2, { size: 3.4, font: 'mono', weight: 600, color: s.c(fix > 0.5 ? 'green' : '--ink-2') });
+      s.alpha(s.ease('sum', 0.6, 5) * (1 - fix), () => s.text('16 × the terms, 4 × the size', cx, s.h * 0.28, { size: 3.2, font: 'mono', color: s.c('--ink-3') }));
     });
   },
 };
 
-export const scenes: Record<string, SceneDef> = { scale, why };
+export const scenes: Record<string, SceneDef> = { sharp, why, scale };

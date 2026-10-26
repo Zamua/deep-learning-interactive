@@ -33,13 +33,17 @@ export const script: LectureScript = {
         e[1]               # [2, 0, 3, 1]: like's scores    #@row
         e[1, 2:] = -np.inf  # fresh and fish come later    #@hide
         softmax(e[1])      # [0.88, 0.12, 0, 0]             #@w
-        mask.sum()         # 10 = 4 * 5 / 2                 #@count
+        mask.sum()         # 10 = 1 + 2 + 3 + 4             #@count
+        # (1 + 4) + (2 + 3) = 2 pairs of 5 = 4 * 5 / 2      #@pairs
+        16 - mask.sum()    # 6 = 4 * 3 / 2: hidden         #@hidden
       `,
       beats: [
         { id: 'row', say: 'Take row one, like. Its scores are two, zero, three and one, but the last two belong to fresh and fish, which come later.', code: 'row' },
         { id: 'hide', say: 'Both become {−∞|minus infinity}, and {e to the −∞|e to the minus infinity} is zero, so they get no weight at all.', code: 'hide' },
         { id: 'weights', say: 'The softmax shares everything among what is left: e squared over e squared plus one is {0.88|zero point eight eight}, and the other gets {0.12|zero point one two}. They still add up to one.', code: 'w' },
-        { id: 'count', say: 'How many entries survive? One, plus two, plus three, up to T: {T(T + 1) / 2|T times T plus one, over two}. Ten of the sixteen here.', code: 'count' },
+        { id: 'count', say: 'How many scores survive? Row zero keeps one, row one keeps two, and so on up to T, here four. One plus two plus three plus four: ten of the sixteen.', code: 'count' },
+        { id: 'pairs', say: 'To add them fast, pair the rows from the ends: one plus four is five, and two plus three is five. That is T over two pairs of T plus one: {T(T + 1) / 2|T times T plus one, over two}.', code: 'pairs' },
+        { id: 'hidden', say: 'The rest are hidden: sixteen minus ten, six, everything above the diagonal. In general that is {T²|T squared} minus the kept ones, which comes to {T(T − 1) / 2|T times T minus one, over two}.', code: 'hidden' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },
