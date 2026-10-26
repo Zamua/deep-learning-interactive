@@ -291,7 +291,10 @@ const dif: SymbolMap = {
   eps: { color: 'slate', name: 'ε: the noise', tex: '\\epsilon', code: ['eps', 'noise'], about: 'Standard normal noise: mean 0, variance 1, one number per pixel.' },
   ab: { color: 'teal', name: 'ᾱ: the share of signal left', tex: '\\bar\\alpha', code: ['ab', 'alpha_bar'], about: 'The share of x_t\'s variance that is still image. It falls from near 1 to near 0 across the schedule.' },
   epshat: { color: 'red', name: 'ε̂: the network\'s noise guess', tex: '\\hat\\epsilon', code: ['eps_hat'], about: 'What the network predicts was added to the image.' },
+  tstep: { color: 'slate', name: 't: the noise step', tex: 't', code: [], about: 'Which step of the schedule: step 0 is the clean image, and each later step holds more noise.' },
 };
+
+const sig: SymbolDef = { color: 'teal', name: 'σ: the sigmoid', tex: '\\sigma', code: [], about: 'σ(z) = 1 / (1 + e⁻ᶻ) squashes any number into the range 0 to 1, with σ(0) = 0.5.' };
 
 /**
  * Where a concept needs a symbol to mean something else, or to say only what its prerequisites
@@ -343,6 +346,8 @@ export const SCOPED: Record<string, SymbolMap> = {
     gamma: { color: 'purple', name: 'γ: the learned scale', tex: '\\gamma', about: 'Layer norm multiplies each normalized feature by its own γ: one entry per feature.' },
     beta: { color: 'green', name: 'β: the learned shift', tex: '\\beta', about: 'Layer norm adds β after scaling: one entry per feature.' },
     epstiny: tiny,
+    mu: { color: 'orange', name: 'μ: the mean', tex: '\\mu', code: [], about: 'The average of one example\'s features.' },
+    sigma: { color: 'teal', name: 'σ: the standard deviation', tex: '\\sigma', code: [], about: 'How spread out one example\'s features are: the square root of their variance, σ².' },
   },
   'batch-norm': {
     mu: { color: 'orange', name: 'μ: the batch mean', tex: '\\mu', about: 'The average of one feature over the examples in the batch.' },
@@ -373,7 +378,7 @@ export const SCOPED: Record<string, SymbolMap> = {
     p: { color: 'teal', name: 'p: the router\'s probabilities', code: ['p', 'probs'], about: 'A softmax over the experts: how strongly the router favors each one for this token.' },
   },
   rmsnorm: { d: { color: 'slate', name: 'd: the number of features', about: 'How many numbers each vector has; the mean square is taken over them.' }, gamma: { color: 'purple', name: 'γ: the learned gain', tex: '\\gamma', about: 'One entry per feature, multiplied in after normalizing.' }, beta: { color: 'green', name: 'β: the learned shift', tex: '\\beta', about: 'Layer norm adds it after scaling; RMSNorm leaves it out.' } },
-  swiglu: { d: att.d!, h: { color: 'slate', name: 'h: the hidden width', code: ['h'], about: 'How wide the MLP is inside: each of its three matrices has d × h weights.' } },
+  swiglu: { d: att.d!, h: { color: 'slate', name: 'h: the hidden width', code: ['h'], about: 'How wide the MLP is inside: each of its three matrices has d × h weights.' }, sig },
   gqa: { ...pick(att, 'q k v d heads dhead'), kvheads: { color: 'slate', name: 'g: the number of key-value heads', tex: 'g', code: ['n_kv'], about: 'How many key and value heads the query heads share. The cache shrinks by h / g.' } },
   'residual-stream': { x: { color: 'orange', name: 'x: the residual stream', about: 'One running vector per token: the embedding x₀ plus everything each block has added.' }, d: att.d! },
   'logit-lens': { x: { color: 'orange', name: 'x: the residual stream', about: 'One running vector per token: the embedding x₀ plus everything each block has added.' }, s: { color: 'purple', name: 's: the scores', code: ['s', 'scores'], about: 'One per token in the vocabulary: W_U times the stream.' } },
@@ -402,7 +407,21 @@ export const SCOPED: Record<string, SymbolMap> = {
   },
   'policy-gradient': pick(rl, 'pi R theta'),
   advantage: { ...pick(rl, 'pi R theta A'), b: { color: 'gold', name: 'b: the baseline', code: ['baseline'], about: 'The reward expected before seeing the answer. A = R − b.' } },
-  'reward-model': { r: { color: 'gold', name: 'r: the reward model\'s score', about: 'One number per answer. Only differences between two answers\' scores matter.' } },
+  'sigmoid-grad': { sig },
+  activations: { sig },
+  gan: {
+    gen: { color: 'green', name: 'G: the generator', tex: 'G', code: [], about: 'G(z) is the fake image it makes from the noise z.' },
+    disc: { color: 'purple', name: 'D: the discriminator', tex: 'D', code: [], about: 'D(x) is its score for an image x: the probability it gives that x is real.' },
+    znoise: { color: 'slate', name: 'z: the noise', tex: 'z', code: [], about: 'A random draw that the generator turns into a fake. A new z gives a new fake.' },
+  },
+  lstm: {
+    cell: { color: 'teal', name: 'c: the cell state', tex: 'c', code: [], about: 'The LSTM\'s second memory, carried from step to step. c_t is its value at step t.' },
+    fgate: { color: 'red', name: 'f: the forget gate', tex: 'f', code: [], about: 'A sigmoid, between 0 and 1: how much of the old cell state to keep.' },
+    igate: { color: 'green', name: 'i: the input gate', tex: 'i', code: [], about: 'A sigmoid, between 0 and 1: how much of the candidate to add to the cell.' },
+    ogate: { color: 'purple', name: 'o: the output gate', tex: 'o', code: [], about: 'A sigmoid, between 0 and 1: how much of the cell, through a tanh, to show as h.' },
+    cand: { color: 'gold', name: 'g: the candidate', tex: 'g', code: [], about: 'A tanh, between −1 and 1: the new content proposed for the cell.' },
+  },
+  'reward-model': { r: { color: 'gold', name: 'r: the reward model\'s score', about: 'One number per answer. Only differences between two answers\' scores matter.' }, sig },
   'kl-penalty': pick(rl, 'pi R theta piref beta'),
   distillation: {
     s: { ...scores, name: 's: the teacher\'s scores', about: 'The large network\'s scores for one input, one per class.' },
@@ -411,7 +430,7 @@ export const SCOPED: Record<string, SymbolMap> = {
     L: { ...loss, name: 'L: the distillation loss', about: 'Cross-entropy against the soft targets: −Σ q ln p.' },
   },
   ppo: { ...pick(rl, 'pi piold A'), rho: { color: 'purple', name: 'ρ: the probability ratio', tex: '\\rho', code: ['rho', 'ratio'], about: 'π / π_old: how much more likely the answer has become since it was sampled.' }, eps: { color: 'slate', name: 'ε: the clip range', tex: '\\epsilon', code: ['eps'], about: 'How far ρ may move from 1 before the objective stops rewarding it, often 0.2.' } },
-  dpo: { ...pick(rl, 'pi piref beta'), yw: { color: 'green', name: 'y_w: the chosen answer', tex: 'y_w', about: 'The answer people preferred.' }, yl: { color: 'red', name: 'y_l: the rejected answer', tex: 'y_l', about: 'The answer people passed over.' } },
+  dpo: { ...pick(rl, 'pi piref beta'), yw: { color: 'green', name: 'y_w: the chosen answer', tex: 'y_w', about: 'The answer people preferred.' }, yl: { color: 'red', name: 'y_l: the rejected answer', tex: 'y_l', about: 'The answer people passed over.' }, sig },
   grpo: { A: rl.A!, G: { color: 'slate', name: 'G: the group size', about: 'How many answers are sampled for one prompt.' }, r: { color: 'gold', name: 'r: an answer\'s reward', about: '1 when the answer checks out, 0 when it does not.' } },
   unembedding: {
     h: { color: 'gold', name: 'h: the last vector at one position', code: ['h'], about: 'What the model has computed for this position: d numbers, about to be scored against every token.' },
@@ -437,8 +456,8 @@ export const SCOPED: Record<string, SymbolMap> = {
     s: { color: 'purple', name: 's: the row\'s scores', code: ['s', 'scores'], about: 'Each similarity divided by τ: one per candidate in the row.' },
   },
   clip: { N: { color: 'slate', name: 'N: the pairs in the batch', about: 'N images and their N captions. Each row has 1 right caption and N − 1 wrong ones.' } },
-  'diffusion-noise': pick(dif, 'x0 xt eps ab'),
-  'diffusion-loss': pick(dif, 'x0 xt eps ab epshat'),
+  'diffusion-noise': pick(dif, 'x0 xt eps ab tstep'),
+  'diffusion-loss': pick(dif, 'x0 xt eps ab epshat tstep'),
   rope: {
     ...pick(att, 'q k dk'),
     theta: { color: 'orange', name: 'θ: the turn per position', tex: '\\theta', code: ['theta'], about: 'The angle a pair turns for each step of position: at position m it turns by mθ. Each pair has its own θ.' },
@@ -455,7 +474,7 @@ export const SCOPED: Record<string, SymbolMap> = {
   saliency: { g: { ...grad, name: 'g: the gradient of one class score', about: 'One partial derivative per pixel: how fast s_c moves when that pixel is nudged. Its absolute value is the saliency map.' } },
   upsampling: { w: { color: 'blue', name: 'w: the filter\'s weights', about: 'F weights. Each input value stamps a copy of them, scaled by that value, into the output.' } },
   'ddpm-sampling': {
-    ...pick(dif, 'xt eps epshat'),
+    ...pick(dif, 'xt eps epshat tstep'),
     x0: { ...dif.x0!, name: 'x̂₀: the clean-image estimate', tex: '\\hat x_0', code: ['x0_hat', 'x0'], about: 'What the image would be if the noise guess were exactly right: (x_t − √(1 − ᾱ_t) ε̂) / √ᾱ_t.' },
     ab: { ...dif.ab!, code: ['ab', 'ab_prev', 'alpha_bar'] },
     sigma: { color: 'slate', name: 'σ: the fresh-noise scale', tex: '\\sigma', code: ['sigma', 's2'], about: 'How much new noise each step adds back; σ² is the share of variance set aside for it. It is 0 at the last step.' },
@@ -463,11 +482,12 @@ export const SCOPED: Record<string, SymbolMap> = {
   },
   'flow-matching': {
     ...pick(dif, 'x0 xt eps'),
+    ttime: { color: 'slate', name: 't: the time', tex: 't', code: [], about: 'How far along the line from the image to the noise: x_t is the image at t = 0 and pure noise at t = 1.' },
     v: { color: 'green', name: 'v: the velocity', code: ['v'], about: 'ε − x₀: the direction and speed along the straight line from the image to the noise. It is the same at every t.' },
     vhat: { color: 'red', name: 'v̂: the network\'s velocity guess', tex: '\\hat v', code: ['v_hat'], about: 'What the network predicts the velocity is, from x_t and t. Training makes it match ε − x₀.' },
   },
   'latent-diffusion': {
-    ...pick(dif, 'eps epshat ab'),
+    ...pick(dif, 'eps epshat ab tstep'),
     z: { color: 'green', name: 'z: the latent', code: ['z'], about: 'The encoder\'s small version of the image. Diffusion runs on it instead of on the pixels.' },
     zt: { color: 'purple', name: 'z_t: the noised latent', tex: 'z_t', code: ['zt', 'z_t'], about: 'The latent blended with noise at step t, as x_t was for an image.' },
   },
