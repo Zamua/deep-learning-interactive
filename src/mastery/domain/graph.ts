@@ -13,6 +13,7 @@ export function graphIssues(concepts: readonly Concept[]): string[] {
       if (p === c.id) issues.push(`${c.id} lists itself as a prerequisite`);
       else if (!ids.has(p)) issues.push(`${c.id} needs ${p}, which does not exist`);
     }
+    if (c.from && !ids.has(c.from)) issues.push(`${c.id} was split from ${c.from}, which does not exist`);
   }
   const cycle = findCycle(concepts);
   if (cycle) issues.push(`cycle: ${cycle.join(' needs ')}`);

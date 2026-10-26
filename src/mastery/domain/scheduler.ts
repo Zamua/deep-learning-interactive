@@ -1,5 +1,5 @@
 import type { ConceptGraph } from './graph';
-import { DAY, status, streak, type ConceptRecord, type Status } from './model';
+import { DAY, emptyRecord, placeMastered, status, streak, type ConceptRecord, type Status } from './model';
 
 export type Records = Readonly<Record<string, ConceptRecord>>;
 
@@ -34,6 +34,12 @@ const DIFFICULTY = { slipping: 0.4, review: 0.7, refresh: 0.5 };
 /** Unlocked for good once every prerequisite has been mastered at least once. */
 export function isUnlocked(graph: ConceptGraph, records: Records, id: string): boolean {
   return graph.get(id)!.prereqs.every((p) => records[p]?.mastered);
+}
+
+/** Records with every concept split off a mastered one, and not yet started, placed as mastered. */
+export function inheritSplits(graph: ConceptGraph, records: Records, now: number): Records {
+  const heirs = graph.order.filter((c) => c.from && !records[c.id] && records[c.from]?.mastered);
+  return heirs.length ? { ...records, ...Object.fromEntries(heirs.map((c) => [c.id, placeMastered(emptyRecord(), now)])) } : records;
 }
 
 export function statuses(graph: ConceptGraph, records: Records, now: number): Map<string, Status> {

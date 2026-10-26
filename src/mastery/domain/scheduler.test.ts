@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ConceptGraph } from './graph';
 import { applyAnswer, DAY, emptyRecord, type ConceptRecord } from './model';
-import { isUnlocked, pickNext, type Records, type SessionState } from './scheduler';
+import { inheritSplits, isUnlocked, pickNext, type Records, type SessionState } from './scheduler';
 import type { Concept } from './types';
 
 const bar = { streak: 3, seconds: 20 };
@@ -80,5 +80,24 @@ describe('isUnlocked', () => {
   it('stays unlocked when a prerequisite slips', () => {
     expect(isUnlocked(G, { a: slipping() }, 'c')).toBe(true);
     expect(isUnlocked(G, { a: learning(T0) }, 'c')).toBe(false);
+  });
+});
+
+describe('inheritSplits', () => {
+  const S2 = new ConceptGraph([c('a'), { ...c('a0'), from: 'b' }, c('b', ['a0'])]);
+
+  it('places a split-off concept mastered when its origin is', () => {
+    const r = inheritSplits(S2, { b: mastered() }, T0);
+    expect(r.a0?.mastered).toBe(true);
+    expect(r.a0?.review?.due).toBe(T0 + DAY);
+    expect(isUnlocked(S2, r, 'b')).toBe(true);
+  });
+
+  it('leaves it alone when the origin is not mastered or it has a record of its own', () => {
+    const own = learning(T0);
+    expect(inheritSplits(S2, { b: learning(T0) }, T0).a0).toBeUndefined();
+    expect(inheritSplits(S2, { b: mastered(), a0: own }, T0).a0).toBe(own);
+    const none = { a: mastered() };
+    expect(inheritSplits(S2, none, T0)).toBe(none);
   });
 });

@@ -2,7 +2,7 @@
 // answer changes them. Persists through the store.
 import type { ConceptGraph } from './domain/graph';
 import { applyAnswer, emptyRecord, placeMastered, recoveryStreak, status, streak, type ConceptRecord, type Status } from './domain/model';
-import { isUnlocked, pickNext, statuses, type Pick } from './domain/scheduler';
+import { inheritSplits, isUnlocked, pickNext, statuses, type Pick } from './domain/scheduler';
 
 /** What the learner would do next, for a page to lead with. */
 export interface Today {
@@ -27,7 +27,9 @@ export class Learner {
   records: Record<string, ConceptRecord>;
 
   constructor(readonly graph: ConceptGraph, private readonly clock: () => number = Date.now) {
-    this.records = loadRecords();
+    const loaded = loadRecords();
+    this.records = inheritSplits(graph, loaded, clock());
+    if (this.records !== loaded) saveRecords(this.records);
   }
 
   status(id: string): Status {

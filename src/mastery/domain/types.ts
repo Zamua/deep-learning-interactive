@@ -16,6 +16,8 @@ export interface ConceptMeta {
   blurb: string;
   prereqs: string[];
   mastery: MasteryBar;
+  /** The concept this one was split off from: a learner who mastered that has mastered this. */
+  from?: string;
   /** Chapters of the other courses that go deeper. */
   deeper?: { chapter: string; section?: string }[];
 }
