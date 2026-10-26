@@ -173,6 +173,8 @@ function linker(typed?: string): HTMLElement {
           mine ? `This device's progress (${mine === 1 ? '1 concept' : `${mine} concepts`} mastered) joins it, and from then on the two stay in step.` : 'Linking brings it here, and from then on the two stay in step.'),
         h('div', { class: 'ac-actions' }, link, cancel));
       peek.hidden = false;
+      // On a phone the question lands below the fold; a link from another device opens straight onto it.
+      peek.scrollIntoView({ behavior: 'smooth', block: 'center' });
       cancel.addEventListener('click', () => (peek.hidden = true));
       link.addEventListener('click', () => {
         link.disabled = true;
