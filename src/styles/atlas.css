@@ -534,6 +534,9 @@ body.at-on .side {
   font-size: 0.85rem;
   color: var(--ink-3);
 }
+.at-run-end .at-run-top {
+  visibility: hidden;
+}
 .at-run-x {
   display: grid;
   place-items: center;

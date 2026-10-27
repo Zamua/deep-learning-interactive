@@ -265,6 +265,8 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
     frame.setProgress(done, n, `Review ${Math.min(n, done + 1)} of ${n}`);
   };
   showProgress();
+  /** An end screen has no progress to show. */
+  const end = (on: boolean) => frame.root.classList.toggle('at-run-end', on);
 
   const firstPick = (): Pick | null => {
     if (!focus || !learner.graph.get(focus) || learner.status(focus) === 'locked') return null;
@@ -289,11 +291,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       const reviewing = !!pick && (pick.reason === 'review' || pick.reason === 'slipping');
       // Reviews run as one block; leaving it is a stop of its own, never a silent slide into new material.
       if (reviewing && !inReviews) openReviews();
-      if (!reviewing && inReviews) {
-        inReviews = false;
-        showProgress();
-        if (!(await reviewsDone(pick))) return;
-      }
+      if (!reviewing && inReviews) return reviewsDone();
       if (!pick) return caughtUp();
       if (reviewing && !reviews.has(pick.concept)) reviews.set(pick.concept, pick.reason === 'review' ? 'due' : 'slipped');
       showProgress();
@@ -395,42 +393,18 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
 
   const kept = () => [...reviews.values()].filter((v) => v === 'passed' || v === 'recovered').length;
 
-  /**
-   * The stop between the reviews and what comes next. Resolves true to go on in this session; a new concept leads to its
-   * explainer instead, and with nothing left the session ends here.
-   */
-  const reviewsDone = (next: Pick | null): Promise<boolean> =>
-    new Promise((resolve) => {
-      frame.body.innerHTML = '';
-      frame.dock.innerHTML = '';
-      const c = next ? learner.graph.get(next.concept)! : null;
-      const rec = c ? learner.record(c.id) : null;
-      const what = !c ? 'Nothing new to learn right now. Come back tomorrow for the next reviews.'
-        : next!.reason === 'new' ? `Next: ${c.title}, a new concept. ${whyNew(c.id)}`
-        : `Next: back to ${c.title}, ${streak(rec!)} of ${c.mastery.streak} right in a row so far.`;
-      frame.body.append(h('div', { class: 'at-done' },
-        h('div', { class: 'at-kicker' }, 'Reviews done'),
-        h('h1', { class: 'at-title' }, `${kept()} of ${reviews.size} kept`),
-        reviewList(),
-        h('p', { class: 'at-lede at-next' }, what),
-        next?.reason === 'new' && learner.choices().open.length > 1 ? pickLink('Or choose something else') : ''));
-      if (!c) {
-        frame.dock.append(h('a', { class: 'at-check', href: '#/atlas' }, 'Back to the map'));
-        resolve(false);
-        return;
-      }
-      const go = (label: string, cls = 'at-check') => {
-        const b = h('button', { type: 'button', class: cls }, label);
-        b.addEventListener('click', () => resolve(true));
-        return b;
-      };
-      if (next!.reason === 'new') introduced.add(c.id);
-      if (next!.reason === 'new' && hasExplainer(c.id) && (lectureState(explainerId(c.id))?.heard ?? 0) < 0.5) {
-        frame.dock.append(go('Practice it now', 'at-ghost'), h('a', { class: 'at-check', href: `#/atlas/${c.id}/watch`, html: `${icon('playFill')} Watch the explainer` }));
-      } else {
-        frame.dock.append(h('a', { class: 'at-ghost', href: '#/atlas' }, 'Back to the map'), go(`Continue: ${c.title}`));
-      }
-    });
+  /** The end of the review block ends the session too: the home page offers what comes next. */
+  const reviewsDone = () => {
+    end(true);
+    frame.body.innerHTML = '';
+    frame.dock.innerHTML = '';
+    frame.body.append(h('div', { class: 'at-done' },
+      h('div', { class: 'at-kicker' }, 'Reviews done'),
+      h('h1', { class: 'at-title' }, 'Nice work'),
+      h('p', { class: 'at-lede' }, `${kept()} of ${reviews.size} kept.`),
+      reviewList()));
+    frame.dock.append(h('a', { class: 'at-check', href: '#/atlas' }, 'Done'));
+  };
 
   const intro = (c: Concept, pick: Pick): Promise<void> =>
     new Promise((resolve) => {
@@ -463,6 +437,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
     });
 
   const summary = () => {
+    end(true);
     const right = results.filter((r) => r.ok).length;
     frame.body.innerHTML = '';
     frame.dock.innerHTML = '';
@@ -473,6 +448,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       reviews.size ? h('p', { class: 'at-small' }, `Reviews: ${kept()} of ${reviews.size} kept.`) : ''));
     const again = h('button', { type: 'button', class: 'at-ghost' }, 'Keep going');
     again.addEventListener('click', () => {
+      end(false);
       results.length = 0;
       masteredNow.length = 0;
       showProgress();
@@ -482,6 +458,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
   };
 
   const caughtUp = () => {
+    end(true);
     frame.body.innerHTML = '';
     frame.dock.innerHTML = '';
     frame.body.append(h('div', { class: 'at-done' },
