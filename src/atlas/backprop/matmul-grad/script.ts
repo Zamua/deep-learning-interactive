@@ -28,7 +28,7 @@ export const script: LectureScript = {
         { id: 'feeds', say: 'Now x. Each entry of x feeds every entry of z: {x₁|x one} meets {W₀₁|W zero one} on the way to {z₀|z zero}, and {W₁₁|W one one} on the way to {z₁|z one}.', code: 'feeds' },
         { id: 'sum', say: 'Each multiply swaps, so {x₁|x one} gets two times two, and one times minus one. A value used twice adds its gradients: {∂f/∂x₁|partial f, partial x one} is three.', code: 'sum' },
         { id: 'col', say: 'In general, {∂f/∂xⱼ|partial f, partial x j} is column j of W, dotted with {dz|d z}. Columns zero and two give minus one and minus four.', code: 'col' },
-        { id: 'wt', say: 'Columns of W are rows of {Wᵀ|W transpose}, so {∂f/∂x|partial f, partial x} is {Wᵀ dz|W transpose d z}: three by two times two gives three, the shape of x.', code: 'dx' },
+        { id: 'wt', say: 'Columns of W are rows of {Wᵀ|W transpose}, so {∂f/∂x|partial f, partial x} is {Wᵀ dz|W transpose d z}. {dz|d z} is written across, but like x in {Wx|W x}, it stands as a column: three by two, times two, gives three, the shape of x.', code: 'dx' },
       ],
     },
     {

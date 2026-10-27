@@ -1,8 +1,9 @@
 {
- "duration": 86.714,
+ "duration": 122.603,
  "scenes": {
   "rows": [0.0, 39.63],
-  "shapes": [39.63, 86.714]
+  "shapes": [39.63, 85.594],
+  "paper": [85.594, 122.603]
  },
  "beats": {
   "rows/setup": [0.7, 15.115, "Multiplying a matrix W by a vector x is written W x, the two side by side, and it is a stack of dot products. Here W has two rows of three, and x has three entries.", [[3.89, 4.05], [4.6, 4.75], [5.76, 6.11], [7.6, 7.98], [10.1, 10.64], [13.12, 13.42]]],
@@ -13,6 +14,9 @@
   "shapes/out": [50.243, 67.805, "And there is one dot product per row, so the result has one entry per row of W. A two by three matrix turns three numbers into two: two by three, times three, gives two, where the at sign is the product and the arrow points to what comes out.", [[52.503, 52.893], [55.923, 56.563], [59.853, 60.463], [61.293, 61.493], [62.233, 62.463], [63.113, 63.613], [65.473, 65.763]]],
   "shapes/big": [68.185, 77.425, "The sizes can be anything. A ten by three thousand and seventy two W turns an image of three thousand and seventy two numbers into ten.", [[69.765, 70.285], [73.195, 73.445]]],
   "shapes/fail": [77.805, 84.494, "Give it a vector of the wrong length, and a column of W has no partner: the product is not defined.", [[79.625, 79.925], [82.185, 82.725]]],
-  "shapes/turn": [84.874, 85.614, "Your turn.", []]
+  "paper/flat": [86.294, 96.776, "In code, a vector is only a list. x has shape three: no rows, no columns. Pages write it across, like this, to save space.", [[86.974, 87.244], [88.934, 89.484], [90.864, 91.304], [91.994, 92.214], [93.004, 93.544], [95.614, 95.834]]],
+  "paper/stand": [97.156, 108.974, "But in W x, x stands as a column, three tall, so each row of W lies across it. Books call that column three by one, and the result two by one.", [[98.506, 98.806], [100.306, 100.596], [101.416, 101.846], [104.086, 104.646], [106.976, 107.276], [107.926, 108.186]]],
+  "paper/first": [109.354, 120.383, "Put a vector first instead, as in v times W, and it lies as a row: v is dotted with each column of W. Two numbers in, three out.", [[111.144, 111.424], [111.844, 112.074], [113.324, 113.764], [114.954, 115.504], [117.944, 118.444], [119.304, 119.684]]],
+  "paper/turn": [120.763, 121.503, "Your turn.", []]
  }
 }

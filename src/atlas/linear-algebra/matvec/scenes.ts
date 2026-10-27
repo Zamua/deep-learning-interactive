@@ -69,4 +69,57 @@ const shapes: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { rows, shapes };
+const V = [1, -1];
+
+/** x written across, then stood up beside W as the column W x needs; then v, lying as a row, times W. */
+const paper: SceneDef = {
+  draw(s) {
+    const up = s.ease('stand', 1.2, 0.4);
+    const away = s.ease('first', 0.6);
+    const cw = 12 * s.u;
+    const ch = 8.5 * s.u;
+    // Both pictures are 85 units wide, centered with room for the label on the left.
+    const x0 = s.w / 2 - 39.5 * s.u;
+    s.alpha(1 - away, () => {
+      const g = grid(s, x0 + 22.5 * s.u, s.h * 0.5, 2, 3);
+      const flat = grid(s, s.w / 2, s.h * 0.2, 1, 3);
+      const col = grid(s, g.r + 12 * s.u, s.h * 0.5, 3, 1);
+      const out = grid(s, col.x(0) + 22 * s.u, s.h * 0.5, 2, 1);
+      const lerp = (a: number, b: number) => a + (b - a) * up;
+      rowLabel(s, 'x', lerp(flat.l - 4 * s.u, col.l - 2 * s.u), lerp(flat.y(0), col.t - 3 * s.u), 'orange');
+      X.forEach((v, j) => s.cell(lerp(flat.x(j), col.x(0)) - cw / 2, lerp(flat.y(0), col.y(j)) - ch / 2, cw, ch, fmt(v), 'orange', { on: 0.4 * up }));
+      s.alpha(s.ease('flat', 0.6, 0.8) * (1 - up), () => s.text('(3,)', flat.x(1), flat.b + 5 * s.u, { size: 3.6, font: 'mono', color: s.c('--ink-2') }));
+      s.alpha(s.ease('stand', 0.6), () => {
+        rowLabel(s, 'W', g.l - 4 * s.u, s.h * 0.5, 'blue');
+        matrix(s, g, W.map((r) => r.map(fmt)), 'blue');
+      });
+      s.alpha(s.ease('stand', 0.6, 2), () => {
+        s.text('=', (col.r + out.l) / 2, s.h * 0.5, { size: 4.6, font: 'mono', color: s.c('--ink-3') });
+        W.forEach((r, i) => s.cell(out.x(0) - cw / 2, out.y(i) - ch / 2, cw, ch, fmt(dot(r, X)), 'gold'));
+      });
+      s.alpha(s.ease('stand', 0.6, 3), () => {
+        const y = col.b + 6 * s.u;
+        s.text('(2, 3)', g.x(1), y, { size: 3.4, font: 'mono', color: s.c('blue') });
+        s.text('(3, 1)', col.x(0), y, { size: 3.4, font: 'mono', color: s.c('orange') });
+        s.text('(2, 1)', out.x(0), y, { size: 3.4, font: 'mono', color: s.c('gold') });
+      });
+    });
+    s.alpha(away, () => {
+      const row = grid(s, x0 + 15 * s.u, s.h * 0.4, 1, 2);
+      const g = grid(s, row.r + 32.5 * s.u, s.h * 0.4, 2, 3);
+      const res = grid(s, g.x(1), g.b + 14 * s.u, 1, 3);
+      rowLabel(s, 'v', row.l - 3 * s.u, row.y(0), 'orange');
+      V.forEach((v, j) => s.cell(row.x(j) - cw / 2, row.y(0) - ch / 2, cw, ch, fmt(v), 'orange'));
+      rowLabel(s, 'W', g.l - 3 * s.u, g.t - 3 * s.u, 'blue');
+      const lit = (j: number) => s.ease('first', 0.4, 1.6 + j * 0.8) * (1 - s.ease('first', 0.4, 2.4 + j * 0.8));
+      for (let j = 0; j < 3; j++) band(s, g, 'col', j, 'blue', lit(j));
+      matrix(s, g, W.map((r) => r.map(fmt)), 'blue', { on: (_, j) => lit(j) });
+      W[0]!.forEach((_, j) => s.alpha(s.ease('first', 0.5, 1.8 + j * 0.8), () => {
+        s.cell(res.x(j) - cw / 2, res.y(0) - ch / 2, cw, ch, fmt(dot(V, W.map((r) => r[j]!))), 'gold', { on: lit(j) });
+      }));
+      s.alpha(s.ease('first', 0.6, 4.4), () => rich(s, [['(2,)', 'orange'], [' @ ', '--ink-3'], ['(2, 3)', 'blue'], [' → ', '--ink-3'], ['(3,)', 'gold']], s.w / 2, s.h * 0.86, { size: 3.8, weight: 600 }));
+    });
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { rows, shapes, paper };

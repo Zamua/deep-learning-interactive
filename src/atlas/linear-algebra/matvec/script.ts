@@ -42,6 +42,22 @@ export const script: LectureScript = {
         { id: 'out', say: 'And there is one dot product per row, so the result has one entry per row of W. A two by three matrix turns three numbers into two: {(2, 3) @ (3,) → (2,)|two by three, times three, gives two}, where {@|the at sign} is the product and the arrow points to what comes out.', code: 'out' },
         { id: 'big', say: 'The sizes can be anything. A ten by {3,072|three thousand and seventy two} W turns an image of {3,072|three thousand and seventy two} numbers into ten.', code: 'big' },
         { id: 'fail', say: 'Give it a vector of the wrong length, and a column of W has no partner: the product is not defined.', code: 'fail' },
+      ],
+    },
+    {
+      id: 'paper',
+      title: 'Rows and columns',
+      codeTitle: 'layout.py',
+      code: `
+        x = np.array([2, 1, 3])  # (3,): no rows, no columns     #@flat
+        W @ x    # [4, 11]: x stands as a column                   #@stand
+        v = np.array([1, -1])                                      #@first
+        v @ W    # [-2, 3, -2]: v lies as a row                    #@first
+      `,
+      beats: [
+        { id: 'flat', say: 'In code, a vector is only a list. x has shape {(3,)|three}: no rows, no columns. Pages write it across, like this, to save space.', code: 'flat' },
+        { id: 'stand', say: 'But in {Wx|W x}, x stands as a column, three tall, so each row of W lies across it. Books call that column three by one, and the result two by one.', code: 'stand' },
+        { id: 'first', say: 'Put a vector first instead, as in v times W, and it lies as a row: v is dotted with each column of W. Two numbers in, three out.', code: 'first' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

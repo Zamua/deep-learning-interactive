@@ -1,20 +1,20 @@
 {
- "duration": 125.774,
+ "duration": 132.337,
  "scenes": {
-  "input": [0.0, 68.795],
-  "try": [68.795, 125.774]
+  "input": [0.0, 75.358],
+  "try": [75.358, 132.337]
  },
  "beats": {
   "input/node": [0.7, 17.524, "Back to z equals W times x, with x three, four, one, and d z two, minus one. Each weight got its row's gradient times its column's input, so partial f, partial W was d z, x transpose.", [[3.37, 3.63], [5.82, 6.2], [7.0, 7.23], [8.4, 8.95], [12.39, 12.75], [14.93, 15.21], [16.02, 16.24]]],
   "input/feeds": [17.904, 30.304, "Now x. Each entry of x feeds every entry of z: x one meets W zero one on the way to z zero, and W one one on the way to z one.", [[18.964, 19.584], [22.694, 23.374], [27.164, 27.574], [28.814, 28.994]]],
   "input/sum": [30.684, 43.384, "Each multiply swaps, so x one gets two times two, and one times minus one. A value used twice adds its gradients: partial f, partial x one is three.", [[32.234, 32.604], [34.994, 35.234], [36.894, 37.554], [40.104, 40.544], [41.314, 41.494]]],
   "input/col": [43.764, 54.902, "In general, partial f, partial x j is column j of W, dotted with d z. Columns zero and two give minus one and minus four.", [[44.524, 44.794], [45.684, 45.934], [47.204, 47.444], [49.044, 49.304], [50.524, 51.064], [52.644, 52.794]]],
-  "input/wt": [55.282, 67.695, "Columns of W are rows of W transpose, so partial f, partial x is W transpose d z: three by two times two gives three, the shape of x.", [[58.512, 58.922], [60.162, 60.322], [61.202, 61.382], [63.462, 63.962], [66.342, 66.712]]],
-  "try/aid": [69.495, 79.448, "Shapes check the answer: a gradient has the shape of what it is the gradient of, and only one product of d z with x, or W, has it.", [[70.975, 71.595], [74.705, 75.085], [77.865, 78.035], [78.725, 78.965]]],
-  "try/p1": [79.828, 91.599, "Try one: W has rows one, four and two, minus three, and d z is three, minus one. What is entry one of partial f, partial x?", [[80.448, 81.098], [82.738, 82.888], [84.968, 85.338], [87.658, 88.258]]],
-  "try/a1": [91.979, 105.207, "Entry one meets column one of W: four and minus three. Dot it with d z: four times three, plus minus three times minus one. Twelve plus three is fifteen.", [[94.509, 94.989], [96.499, 97.119], [98.459, 98.929], [100.079, 100.329], [102.639, 103.209]]],
-  "try/p2": [105.587, 110.73, "Now all of partial f, partial x, for the same W and d z.", [[107.337, 107.557], [108.477, 108.677]]],
-  "try/a2": [111.11, 123.553, "Column zero is one and two: one times three, plus two times minus one, is one. With column one's fifteen, partial f, partial x is one, fifteen.", [[113.21, 113.82], [114.95, 115.19], [116.95, 117.19], [117.76, 118.33], [119.86, 120.25], [121.09, 121.25]]],
-  "try/turn": [123.933, 124.674, "Your turn.", []]
+  "input/wt": [55.282, 74.258, "Columns of W are rows of W transpose, so partial f, partial x is W transpose d z. d z is written across, but like x in W x, it stands as a column: three by two, times two, gives three, the shape of x.", [[58.672, 59.102], [61.292, 61.512], [63.562, 64.292], [66.032, 66.312], [68.142, 68.402], [69.612, 70.102], [71.022, 71.242], [72.002, 72.212], [72.852, 73.172]]],
+  "try/aid": [76.058, 86.011, "Shapes check the answer: a gradient has the shape of what it is the gradient of, and only one product of d z with x, or W, has it.", [[77.538, 78.158], [81.268, 81.648], [84.428, 84.598], [85.288, 85.528]]],
+  "try/p1": [86.391, 98.162, "Try one: W has rows one, four and two, minus three, and d z is three, minus one. What is entry one of partial f, partial x?", [[87.011, 87.661], [89.301, 89.451], [91.531, 91.901], [94.221, 94.821]]],
+  "try/a1": [98.542, 111.77, "Entry one meets column one of W: four and minus three. Dot it with d z: four times three, plus minus three times minus one. Twelve plus three is fifteen.", [[101.072, 101.552], [103.062, 103.682], [105.022, 105.492], [106.642, 106.892], [109.202, 109.772]]],
+  "try/p2": [112.15, 117.293, "Now all of partial f, partial x, for the same W and d z.", [[113.9, 114.12], [115.04, 115.24]]],
+  "try/a2": [117.673, 130.116, "Column zero is one and two: one times three, plus two times minus one, is one. With column one's fifteen, partial f, partial x is one, fifteen.", [[119.773, 120.383], [121.513, 121.753], [123.513, 123.753], [124.323, 124.893], [126.423, 126.813], [127.653, 127.813]]],
+  "try/turn": [130.496, 131.237, "Your turn.", []]
  }
 }
