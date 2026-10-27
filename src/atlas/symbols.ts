@@ -25,7 +25,7 @@ export const ATLAS_SYMBOLS: SymbolMap = {
   W: {
     color: 'blue',
     name: 'W: a matrix of weights',
-    about: 'A grid of numbers in rows and columns. W times x takes one dot product per row, so it has one column per entry of x.',
+    about: 'A grid of numbers in rows and columns. W times x takes one dot product per row, so it has one column per entry of x. Vectors are written across the page, but the vector a matrix multiplies counts as a column.',
   },
   b: {
     color: 'green',
@@ -132,7 +132,7 @@ export const ATLAS_SYMBOLS: SymbolMap = {
   v: {
     color: 'orange',
     name: 'v: a vector',
-    about: 'A list of numbers in a fixed order, like [3, -1, 2].',
+    about: 'A list of numbers in a fixed order, like [3, -1, 2]. Written across the page, but a matrix that multiplies it treats it as a column.',
   },
   gamma: {
     color: 'purple',

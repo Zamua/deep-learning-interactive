@@ -93,7 +93,7 @@ export const NOTATION: Record<string, Notation> = {
     tex: /\^\{?(\\top|T)\}?(?![\w{])/,
     shown: /ᵀ/,
     name: 'transpose',
-    about: 'Wᵀ, read “W transpose”: W with its rows turned into columns. Code writes W.T.',
+    about: 'Wᵀ, read “W transpose”: W with its rows turned into columns, so Wᵀ times a vector dots each column of W with it. Code writes W.T.',
     glyph: String.raw`W^\top`,
     from: ['matrix-shape'],
   },
