@@ -1,6 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
+import { smooth } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
 import { cells, rowLabel, verdict } from '../../draw';
+import { after, Frame, rich } from '../../networks/draw';
 
 interface Spec {
   x: number[];
@@ -138,4 +140,111 @@ const bias: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { rows, bias };
+// ---- the line: two features, cats and ships, and the line w · x + b = 0 between them
+
+const CATS: [number, number][] = [[0.8, 1.6], [1.4, 0.9], [1.1, 1.3], [1.7, 1.4], [0.7, 0.9], [1.4, 1.9], [1, 1]];
+const SHIPS: [number, number][] = [[2.7, 3.3], [3.4, 2.5], [3.1, 3.6], [3.7, 3.1], [2.6, 2.8], [3.5, 3.7], [3, 3]];
+/** The final line: w = (1, 1), b = -4, so x₀ + x₁ = 4. */
+const WB = { w: [1, 1], b: -4 };
+
+/** The equation goes under the plane unless the stage is wide enough to hold it beside. */
+const stacked = (s: Scene) => s.tall || s.w / s.h < 1.45;
+
+/** The feature plane, square: at the top of a narrow stage, at the left of a wide one. */
+function plane(s: Scene): Frame {
+  const side = stacked(s) ? Math.min(s.w - 20 * s.u, s.h * 0.64) : Math.min(s.h * 0.84, s.w * 0.5);
+  const l = stacked(s) ? s.w / 2 - side / 2 : s.w * 0.05;
+  const t = stacked(s) ? s.h * 0.04 : (s.h - side) / 2;
+  return new Frame(s, l, t, l + side, t + side, [-0.5, 4.5], [-0.5, 4.5]);
+}
+
+/** The line n · x = c, across the window. */
+function lineAt(F: Frame, n: [number, number], c: number, k: Color, width = 0.7) {
+  const len = Math.hypot(n[0], n[1]);
+  const [nx, ny] = [n[0] / len, n[1] / len];
+  const p0 = [nx * (c / len), ny * (c / len)];
+  F.clip(() => F.seg(p0[0]! - ny * 12, p0[1]! + nx * 12, p0[0]! + ny * 12, p0[1]! - nx * 12, k, width));
+}
+
+const line: SceneDef = {
+  draw(s) {
+    const F = plane(s);
+    const u = s.u;
+    const side = s.ease('side', 0.8);
+    // The two sides, once the score has a sign.
+    s.alpha(side, () => F.clip(() => {
+      const g = s.ctx;
+      g.fillStyle = s.tint('teal', 0.12);
+      g.beginPath();
+      g.moveTo(F.X(4.5), F.Y(-0.5));
+      g.lineTo(F.X(4.5), F.Y(4.5));
+      g.lineTo(F.X(-0.5), F.Y(4.5));
+      g.closePath();
+      g.fill();
+      g.fillStyle = s.tint('gold', 0.12);
+      g.beginPath();
+      g.moveTo(F.X(-0.5), F.Y(4.5));
+      g.lineTo(F.X(-0.5), F.Y(-0.5));
+      g.lineTo(F.X(4.5), F.Y(-0.5));
+      g.closePath();
+      g.fill();
+    }));
+    s.rrect(F.l, F.t, F.r - F.l, F.b - F.t, 1, { stroke: s.c('--axis'), lw: 0.3 });
+    F.axes();
+    const ax = { size: 3.2, font: 'mono', weight: 600, color: s.c('orange'), halo: true } as const;
+    s.text('x₀', F.r - 3.5 * u, F.Y(0) - 3 * u, ax);
+    s.text('x₁', F.X(0) + 3.5 * u, F.t + 3.5 * u, ax);
+
+    const pts = s.ease('points', 0.8);
+    CATS.forEach(([a, b], i) => s.alpha(pts * after(s, 'points', 0.35 + i * 0.04), () => F.dot(a, b, 'gold', 1.3)));
+    SHIPS.forEach(([a, b], i) => s.alpha(pts * after(s, 'points', 0.6 + i * 0.04), () => F.dot(a, b, 'teal', 1.3)));
+    s.alpha(s.win('points', 'line'), () => {
+      s.text('cats', F.X(0.55), F.Y(2.4), { size: 3.4, font: 'mono', weight: 650, color: s.c('gold'), halo: true });
+      s.text('ships', F.X(3.15), F.Y(4.15), { size: 3.4, font: 'mono', weight: 650, color: s.c('teal'), halo: true });
+    });
+
+    // The line: in place, then turned, then slid back to the corner and out again.
+    const rot = s.since('rotate') >= 0 && s.since('slide') < 0 ? Math.sin(s.prog('rotate') * Math.PI * 2) * 0.5 : 0;
+    const sp = s.prog('slide');
+    const toZero = smooth((sp - 0.32) / 0.14);
+    const outAgain = smooth((sp - 0.8) / 0.14);
+    const wiggle = sp < 0.3 ? Math.sin((sp / 0.3) * Math.PI) * 0.9 : 0;
+    const bNow = s.since('slide') >= 0 && s.since('side') < 0 ? WB.b + wiggle + 4 * toZero * (1 - outAgain) : WB.b;
+    const th = Math.PI / 4 + rot;
+    const n: [number, number] = [Math.cos(th), Math.sin(th)];
+    // Turning keeps the line through (2, 2); sliding keeps w = (1, 1).
+    s.alpha(s.ease('line', 0.8, 0.6), () => (rot ? lineAt(F, n, n[0] * 2 + n[1] * 2, 'purple', 0.8) : lineAt(F, [1, 1], -bNow, 'purple', 0.8)));
+    const pinned = s.since('slide') >= 0 && s.since('side') < 0 ? toZero * (1 - outAgain) : 0;
+    s.alpha(pinned, () => {
+      F.dot(0, 0, 'green', 1.2);
+      s.text('b = 0', F.X(0) + 7 * u, F.Y(0) - 3.5 * u, { size: 3.2, font: 'mono', weight: 650, color: s.c('green'), halo: true });
+    });
+
+    // The scores of one ship and one cat.
+    s.alpha(side, () => {
+      F.dot(3, 3, 'teal', 1.9);
+      F.dot(1, 1, 'gold', 1.9);
+    });
+    const lab = { size: 3.2, font: 'mono', weight: 650, halo: true } as const;
+    s.alpha(after(s, 'side', 0.2), () => s.text('3 + 3 − 4 = 2', F.X(3.1), F.Y(4.2), { ...lab, color: s.c('purple') }));
+    s.alpha(after(s, 'side', 0.45), () => s.text('1 + 1 − 4 = −2', F.X(1.2), F.Y(0.3), { ...lab, color: s.c('purple') }));
+
+    // The equation, beside the plane on a wide stage and under it on a phone.
+    const st = stacked(s);
+    const ex = st ? s.w / 2 : (F.r + s.w) / 2;
+    const ey = st ? F.b + 9 * u : s.h * 0.4;
+    const eq = { size: st ? 4.6 : 5, weight: 650 } as const;
+    const school = s.win('line', 'rewrite');
+    s.alpha(school, () => rich(s, [['y = mx + ', '--ink-2'], ['b', 'green']], ex, ey, eq));
+    s.alpha(s.ease('rewrite', 0.6, 0.4), () => rich(s, [['w', 'blue'], [' · ', '--ink-2'], ['x', 'orange'], [' + ', '--ink-2'], ['b', 'green'], [' = 0', '--ink-2']], ex, ey, eq));
+    const cy = ey + (st ? 7.5 : 9) * u;
+    const cap = { size: st ? 3.4 : 3.6, font: 'mono', color: s.c('--ink-2'), halo: true } as const;
+    s.alpha(s.win('line', 'rewrite') * after(s, 'line', 0.6), () => s.text('m tilts it, b slides it', ex, cy, cap));
+    s.alpha(s.win('rotate', 'slide'), () => s.text('change w: the line turns', ex, cy, { ...cap, color: s.c('blue') }));
+    s.alpha(s.win('slide', 'side'), () => s.text('change b: it slides', ex, cy, { ...cap, color: s.c('green') }));
+    s.alpha(s.win('side', 'linear'), () => s.text('score = w · x + b', ex, cy, { ...cap, color: s.c('purple') }));
+    s.alpha(s.ease('linear', 0.6), () => s.text('a weighted sum: a straight line', ex, cy, cap));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { line, rows, bias };
