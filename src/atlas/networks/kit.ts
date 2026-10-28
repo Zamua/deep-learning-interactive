@@ -90,3 +90,10 @@ export function straps(answer: number[], ts: { value: number[]; why: string }[])
 
 /** Position words for 0-based indices: `ORD[0]` is "first". */
 export const ORD = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth'];
+
+/** A choice with options in random order; `why` follows the options, null for the right one. */
+export function shuffled(rng: Rng, opts: { text: string; why: string | null }[]): { kind: 'choice'; options: string[]; correct: number; why: (string | null)[] } {
+  const order = rng.shuffle(opts.map((_, i) => i));
+  const o = order.map((i) => opts[i]!);
+  return { kind: 'choice', options: o.map((x) => x.text), correct: o.findIndex((x) => x.why === null), why: o.map((x) => x.why) };
+}

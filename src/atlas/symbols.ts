@@ -738,6 +738,8 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
   'lr-schedule': { cosine: { is: 'the cosine schedule: the rate at step t of T, from hi down to lo' } },
   'res-block': { cut: { is: 'the shortcut: a 1 × 1 conv that matches x to F(x)\'s shape' } },
   residual: {
+    layer1: { is: 'the first linear layer inside F' },
+    layer2: { is: 'the second linear layer: its output is F(x)' },
     block1: { is: 'the first residual block: x + F₁(x)' },
     block2: { is: 'the second residual block: h + F₂(h)' },
   },

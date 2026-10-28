@@ -2,8 +2,8 @@ import type { LectureScript } from '../../../lecture/types';
 
 const code = `
   def block(x):
-      out = relu(conv1(x))                #@F
-      out = conv2(out)                    #@F
+      out = relu(layer1(x))               #@F
+      out = layer2(out)                   #@F
       return x + out    # y = x + F(x)    #@add
   # backward: x gets g * (1 + F')         #@grad
   h = block1(x); y = block2(h)            #@stack
@@ -12,18 +12,20 @@ const code = `
 
 export const script: LectureScript = {
   id: 'atlas-residual',
-  title: 'Residual gradients',
+  title: 'Residual connections',
   model: 'elevenlabs/eleven-v4',
   voice: 'george',
   speed: 1,
   scenes: [
     {
       id: 'gradient',
-      title: 'A direct path back',
+      title: 'Add the input back',
       codeTitle: 'block.py',
       code,
       beats: [
-        { id: 'recap', say: 'A residual block adds a change to its input: {y = x + F(x)|y equals x plus F of x}. With x at two and F of x at a half, y is two and a half.', code: 'add' },
+        { id: 'plain', say: 'A plain layer replaces its input with something new. A residual block keeps its input, x, and adds a change to it.', code: 'F' },
+        { id: 'add', say: 'The layers inside, a linear layer, a ReLU and another linear layer, compute a function of x, written {F(x)|F of x}. A shortcut carries x around them, and the two are added: {y = x + F(x)|y equals x plus F of x}.', code: 'add' },
+        { id: 'example', say: 'With x at two and F of x at a half, y is two and a half. And to leave its input alone, a block only has to make F zero, so an extra block need not make the network worse.', code: 'add' },
         { id: 'split', say: 'Going backward, the sum is an add gate: it hands the gradient arriving at y, g, to both of its inputs.', code: 'grad' },
         { id: 'paths', say: 'Along the shortcut, g reaches x unchanged. Through F, it gets multiplied by F\'s slope, {F′|F prime}.', code: 'grad' },
         { id: 'formula', say: 'The two paths add up at x: g times one plus F prime. With g equal to two and a slope of a half, that is three.', code: 'grad' },

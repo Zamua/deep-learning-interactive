@@ -1,10 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after } from '../../networks/draw';
-import { type Ink, rich } from '../draw';
+import { after, type Ink, rich } from '../draw';
 
 /** The block diagram: x, the box F, the sum and y on one row, with the shortcut arching above. */
-function diagram(s: Scene, o: { yD: number; cut: number; dim?: number; red?: { cut: number; box: number }; proj?: number }) {
+function diagram(s: Scene, o: { yD: number; cut: number; dim?: number; red?: { cut: number; box: number } }) {
   const xN = s.w * 0.1;
   const b0 = s.w * 0.26;
   const b1 = s.w * 0.56;
@@ -19,7 +18,7 @@ function diagram(s: Scene, o: { yD: number; cut: number; dim?: number; red?: { c
     s.arrow(xN + r, o.yD, b0 - 0.6 * s.u, o.yD, ink, 0.35, 2);
     s.rrect(b0, o.yD - 7 * s.u, b1 - b0, 14 * s.u, 1.6, { fill: s.tint('blue', 0.12), stroke: s.c('blue'), lw: 0.4 });
     s.text('F(x)', (b0 + b1) / 2, o.yD - 1.8 * s.u, { size: 4.2, font: 'mono', weight: 650, color: s.c('blue') });
-    s.text('conv, ReLU, conv', (b0 + b1) / 2, o.yD + 3.6 * s.u, { size: 2.6, font: 'mono', color: s.c('--ink-2') });
+    s.text('linear, ReLU, linear', (b0 + b1) / 2, o.yD + 3.6 * s.u, { size: 2.6, font: 'mono', color: s.c('--ink-2') });
     s.alpha(1 - o.cut, () => s.arrow(b1, o.yD, yN - r, o.yD, ink, 0.35, 2));
     s.alpha(o.cut, () => {
       s.arrow(b1, o.yD, pN - r, o.yD, ink, 0.35, 2);
@@ -27,9 +26,7 @@ function diagram(s: Scene, o: { yD: number; cut: number; dim?: number; red?: { c
       s.line(xN, o.yD - r, xN, top, s.c('orange'), 0.4);
       s.line(xN, top, pN, top, s.c('orange'), 0.4);
       s.arrow(pN, top, pN, o.yD - r, s.c('orange'), 0.4, 2);
-      const lab = { size: 3, font: 'mono', color: s.c('orange') } as const;
-      s.alpha(1 - (o.proj ?? 0), () => s.text('shortcut', (xN + pN) / 2, top - 3 * s.u, lab));
-      s.alpha(o.proj ?? 0, () => s.text('shortcut: 1 × 1 conv', (xN + pN) / 2, top - 3 * s.u, { ...lab, weight: 650 }));
+      s.text('shortcut', (xN + pN) / 2, top - 3 * s.u, { size: 3, font: 'mono', color: s.c('orange') });
       s.circle(pN, o.yD, r, { fill: s.tint('--ink', 0.06), stroke: s.c('--ink-2'), lw: 0.4 });
       s.text('+', pN, o.yD, { size: 5, font: 'mono', weight: 650, color: s.c('--ink') });
     });
@@ -84,8 +81,8 @@ function stack(s: Scene, yS: number, a: number, steps: [string, Spot, number][],
 }
 
 /** The one-block walk back: g at y, g along the shortcut, g F′ through F, and the sum at x. */
-function oneBlock(s: Scene, yD: number, o: { dim: number; split: number; g: string; through: string; sum: string; formula: string; at: [number, number, number, number] }): void {
-  const d = diagram(s, { yD, cut: 1, dim: o.dim, red: { cut: o.split, box: o.split } });
+function oneBlock(s: Scene, yD: number, o: { cut?: number; dim: number; split: number; g: string; through: string; sum: string; formula: string; at: [number, number, number, number] }): void {
+  const d = diagram(s, { yD, cut: o.cut ?? 1, dim: o.dim, red: { cut: o.split, box: o.split } });
   const red = (t: string, x: number, y: number, size = 3.3) => s.text(t, x, y, { size, font: 'mono', weight: 650, color: s.c('red'), halo: true });
   const [gA, cutA, fA, sumA] = o.at;
   s.alpha(gA, () => red(o.g, d.yN, yD - 7.5 * s.u));
@@ -102,7 +99,7 @@ const gradient: SceneDef = {
     const yD = s.h * 0.3;
     const split = s.ease('split', 0.6, 0.6);
     // The forward pass, in numbers, until the walk back starts.
-    s.alpha(s.ease('recap', 0.6, 1.2) * (1 - s.ease('split', 0.4)), () => {
+    s.alpha(s.ease('example', 0.6, 0.6) * (1 - s.ease('split', 0.4)), () => {
       const lab = (t: string, f: number, k: Ink) => s.text(t, s.w * f, yD + 11 * s.u, { size: 3.4, font: 'mono', weight: 650, color: s.c(k), halo: true });
       lab('x = 2', 0.1, 'orange');
       lab('F(x) = 0.5', 0.41, 'blue');
@@ -111,6 +108,7 @@ const gradient: SceneDef = {
     // The one-block example steps back while two stacked blocks use other numbers.
     s.alpha(1 - 0.6 * s.ease('stack', 0.6), () =>
       oneBlock(s, yD, {
+        cut: after(s, 'add', 0.45),
         dim: s.ease('split', 0.6),
         split,
         g: 'g = 2',

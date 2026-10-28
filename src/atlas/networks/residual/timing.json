@@ -1,22 +1,24 @@
 {
- "duration": 132.738,
+ "duration": 158.942,
  "scenes": {
-  "gradient": [0.0, 87.379],
-  "try": [87.379, 132.738]
+  "gradient": [0.0, 113.583],
+  "try": [113.583, 158.942]
  },
  "beats": {
-  "gradient/recap": [0.7, 11.893, "A residual block adds a change to its input: y equals x plus F of x. With x at two and F of x at a half, y is two and a half.", [[3.44, 4.03], [6.53, 7.05], [8.2, 8.38], [9.98, 10.4]]],
-  "gradient/split": [12.273, 20.055, "Going backward, the sum is an add gate: it hands the gradient arriving at y, g, to both of its inputs.", [[13.213, 13.493], [14.943, 15.443], [17.713, 18.013], [18.443, 18.693]]],
-  "gradient/paths": [20.435, 28.407, "Along the shortcut, g reaches x unchanged. Through F, it gets multiplied by F's slope, F prime.", [[21.495, 21.775], [23.825, 24.345], [25.025, 25.275], [27.325, 27.635]]],
-  "gradient/formula": [28.787, 38.054, "The two paths add up at x: g times one plus F prime. With g equal to two and a slope of a half, that is three.", [[30.797, 31.267], [33.577, 34.127], [36.917, 37.247]]],
-  "gradient/stack": [38.434, 48.602, "Now stack two blocks. The first turns x into h, through layers F one. The second turns h into y, through layers F two.", [[39.994, 40.474], [42.654, 42.864], [44.204, 44.784], [46.974, 47.224]]],
-  "gradient/back2": [48.982, 61.681, "Walking back, each block multiplies the gradient by one plus its slope. Say g is one, and F two prime is one: block two hands h one times two, which is two.", [[49.812, 50.152], [53.722, 54.242], [55.612, 55.902], [57.522, 58.062], [60.702, 60.962]]],
-  "gradient/back1": [62.061, 72.798, "Block one, with F one prime at minus a half, hands x two times a half: one. The blocks are in a chain, so their factors multiply.", [[62.801, 63.251], [65.591, 65.921], [67.831, 68.351], [68.751, 69.381], [70.721, 70.951], [72.541, 72.771]]],
-  "gradient/deep": [73.178, 86.279, "Now stack fifty layers. If each one halves the gradient, almost nothing reaches the first. With shortcuts, each block multiplies by one plus a slope, so the gradient arrives intact.", [[74.908, 75.438], [77.228, 77.538], [79.458, 80.098], [80.938, 81.188], [84.008, 84.348]]],
-  "try/p1": [88.079, 98.406, "Try one: at the current value, F prime of x is three, and the gradient arriving at y, g, is two. What gradient reaches x?", [[88.659, 89.299], [90.339, 90.609], [92.329, 92.749], [94.549, 94.789], [95.219, 95.459], [96.049, 96.599]]],
-  "try/a1": [98.786, 109.036, "The shortcut hands x two, unchanged. Through F, it is two times three: six. The paths add: two plus six, eight.", [[100.686, 101.016], [101.776, 102.346], [103.056, 103.306], [104.656, 104.986], [105.536, 105.976], [106.946, 107.416], [108.356, 108.636]]],
-  "try/p2": [109.416, 119.034, "Now two stacked blocks: F one prime is one, F two prime is minus a half, and g is four. What reaches x?", [[111.036, 111.596], [113.116, 113.586], [115.626, 115.986], [117.196, 117.776]]],
-  "try/a2": [119.414, 130.517, "Block two hands h four times one minus a half: two. Block one hands x two times one plus one: four.", [[120.234, 120.724], [121.654, 121.984], [124.004, 124.514], [124.814, 125.564], [126.304, 126.724], [127.624, 127.884], [129.504, 130.054]]],
-  "try/turn": [130.897, 131.638, "Your turn.", []]
+  "gradient/plain": [0.7, 9.128, "A plain layer replaces its input with something new. A residual block keeps its input, x, and adds a change to it.", [[3.93, 4.52], [5.55, 5.7], [6.69, 6.9], [7.31, 7.6]]],
+  "gradient/add": [9.508, 24.642, "The layers inside, a linear layer, a ReLU and another linear layer, compute a function of x, written F of x. A shortcut carries x around them, and the two are added: y equals x plus F of x.", [[10.758, 11.078], [11.898, 12.118], [12.748, 12.898], [14.218, 14.508], [16.078, 16.328], [16.668, 16.868], [17.598, 18.168], [20.238, 20.528], [21.648, 22.128]]],
+  "gradient/example": [25.022, 38.097, "With x at two and F of x at a half, y is two and a half. And to leave its input alone, a block only has to make F zero, so an extra block need not make the network worse.", [[26.182, 26.352], [27.982, 28.302], [29.682, 30.272], [31.892, 32.192], [34.462, 34.842]]],
+  "gradient/split": [38.477, 46.259, "Going backward, the sum is an add gate: it hands the gradient arriving at y, g, to both of its inputs.", [[39.417, 39.697], [41.147, 41.647], [43.917, 44.217], [44.647, 44.897]]],
+  "gradient/paths": [46.639, 54.611, "Along the shortcut, g reaches x unchanged. Through F, it gets multiplied by F's slope, F prime.", [[47.699, 47.979], [50.029, 50.549], [51.229, 51.479], [53.529, 53.839]]],
+  "gradient/formula": [54.991, 64.258, "The two paths add up at x: g times one plus F prime. With g equal to two and a slope of a half, that is three.", [[57.001, 57.471], [59.781, 60.331], [63.121, 63.451]]],
+  "gradient/stack": [64.638, 74.806, "Now stack two blocks. The first turns x into h, through layers F one. The second turns h into y, through layers F two.", [[66.198, 66.678], [68.858, 69.068], [70.408, 70.988], [73.178, 73.428]]],
+  "gradient/back2": [75.186, 87.885, "Walking back, each block multiplies the gradient by one plus its slope. Say g is one, and F two prime is one: block two hands h one times two, which is two.", [[76.016, 76.356], [79.926, 80.446], [81.816, 82.106], [83.726, 84.266], [86.906, 87.166]]],
+  "gradient/back1": [88.265, 99.002, "Block one, with F one prime at minus a half, hands x two times a half: one. The blocks are in a chain, so their factors multiply.", [[89.005, 89.455], [91.795, 92.125], [94.035, 94.555], [94.955, 95.585], [96.925, 97.155], [98.745, 98.975]]],
+  "gradient/deep": [99.382, 112.483, "Now stack fifty layers. If each one halves the gradient, almost nothing reaches the first. With shortcuts, each block multiplies by one plus a slope, so the gradient arrives intact.", [[101.112, 101.642], [103.432, 103.742], [105.662, 106.302], [107.142, 107.392], [110.212, 110.552]]],
+  "try/p1": [114.283, 124.61, "Try one: at the current value, F prime of x is three, and the gradient arriving at y, g, is two. What gradient reaches x?", [[114.863, 115.503], [116.543, 116.813], [118.533, 118.953], [120.753, 120.993], [121.423, 121.663], [122.253, 122.803]]],
+  "try/a1": [124.99, 135.24, "The shortcut hands x two, unchanged. Through F, it is two times three: six. The paths add: two plus six, eight.", [[126.89, 127.22], [127.98, 128.55], [129.26, 129.51], [130.86, 131.19], [131.74, 132.18], [133.15, 133.62], [134.56, 134.84]]],
+  "try/p2": [135.62, 145.238, "Now two stacked blocks: F one prime is one, F two prime is minus a half, and g is four. What reaches x?", [[137.24, 137.8], [139.32, 139.79], [141.83, 142.19], [143.4, 143.98]]],
+  "try/a2": [145.618, 156.721, "Block two hands h four times one minus a half: two. Block one hands x two times one plus one: four.", [[146.438, 146.928], [147.858, 148.188], [150.208, 150.718], [151.018, 151.768], [152.508, 152.928], [153.828, 154.088], [155.708, 156.258]]],
+  "try/turn": [157.101, 157.842, "Your turn.", []]
  }
 }
