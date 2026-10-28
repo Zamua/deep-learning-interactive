@@ -87,7 +87,7 @@ export const generators: Generator[] = [
         3: ['The training loss is falling fine; the problem is the gap to validation.', 'Training already fits well; bigger steps do not close the gap to validation.', 'A bigger batch changes how noisy each step is, not what the model memorizes: the gap stays.', ''],
       };
       const sol: Record<number, string> = {
-        0: 'The rate is too high: lower it, often by a factor of 3 to 10, or decay it.',
+        0: 'The rate is too high: lower it, often by a factor of 3 to 10.',
         1: 'The rate is too low: raise it, often by a factor of 3 to 10.',
         3: 'The model is overfitting: keep the weights from the epoch where validation loss was lowest, and stop training there.',
       };

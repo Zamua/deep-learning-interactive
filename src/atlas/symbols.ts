@@ -375,8 +375,13 @@ export const SCOPED: Record<string, SymbolMap> = {
   },
   'step-factor': { g: grad, eta: { ...ATLAS_SYMBOLS.eta!, name: 'η: the step size', about: 'How far each step goes, as a multiple of the gradient. On a bowl a x², it sets the step factor 1 − 2aη.' } },
   'learning-rate': lrEta,
+  'lr-decay': {
+    g: grad,
+    T: { color: 'slate', name: 'T: the length of the decay, in steps', about: 'How many steps the straight-line fall from ηₘₐₓ to ηₘᵢₙ takes; at step t the run is t / T of the way down.' },
+  },
   minibatch: { g: grad, N: { color: 'slate', name: 'N: the number of examples', about: 'How many examples the function averages over. One pass through all N is an epoch.' } },
   'param-count': {
+    h: { color: 'gold', name: 'h: the middle numbers', about: 'What the first map hands to the second: h = W1 x + b1, H numbers.' },
     D: { color: 'slate', name: 'D: the number of input features', about: 'How many numbers make up one input: 3,072 for a 32 by 32 color image. It is the number of columns of W.' },
     H: { color: 'slate', name: 'H: the size of the middle', about: 'How many numbers the first map hands to the second: a choice, not fixed by the data.' },
     W1: { color: 'blue', name: 'W1: the first map\'s weights', tex: 'W_1', about: 'Shape (H, D): one row per number in the middle.' },
@@ -522,7 +527,11 @@ export const SCOPED: Record<string, SymbolMap> = {
   clip: { N: { color: 'slate', name: 'N: the pairs in the batch', about: 'N images and their N captions. Each row has 1 right caption and N − 1 wrong ones.' } },
   'diffusion-noise': pick(dif, 'x0 xt eps ab tstep'),
   'diffusion-loss': pick(dif, 'x0 xt eps ab epshat tstep'),
-  rotation: pick(att, 'q k'),
+  rotation: {
+    ...pick(att, 'q k'),
+    b: { color: 'gold', name: 'b: the pair\'s second entry', about: 'How far up the pair goes. Turned, it adds b·[−sin, cos].' },
+    s: { color: 'gold', name: 's: the sine of the angle', about: 'How far up an arrow of length 1 lands when turned by the angle: sin 60° ≈ 0.87.' },
+  },
   rope: {
     ...pick(att, 'q k dk'),
     theta: { color: 'orange', name: 'θ: the turn per position', tex: '\\theta', code: ['theta'], about: 'The angle a pair turns for each step of position: at position m it turns by mθ. Each pair has its own θ.' },
@@ -717,7 +726,7 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
   },
   gpt: { block: { is: 'one causal transformer block: (T, d) in, (T, d) out' } },
   'in-context': { complete: { is: 'runs the model on a prompt and returns its continuation' } },
-  rotation: { rotate: { is: 'turns a pair by an angle in degrees: the rotation matrix times the pair' } },
+  rotation: { rotate: { is: 'turns a pair by an angle in degrees: [a cos − b sin, a sin + b cos]' } },
   rope: { rotate: { is: 'turns a pair by an angle in degrees: the rotation matrix times the pair' } },
   retrieval: {
     embed: { is: 'turns a text into a vector of length 1' },

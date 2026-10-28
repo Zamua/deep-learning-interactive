@@ -1,18 +1,31 @@
 {
- "duration": 93.664,
+ "duration": 196.193,
  "scenes": {
-  "split": [0.0, 49.637],
-  "join": [49.637, 93.664]
+  "blend": [0.0, 73.079],
+  "split": [73.079, 127.921],
+  "join": [127.921, 196.193]
  },
  "beats": {
-  "split/one": [0.7, 11.066, "A single attention gives each token one blend of the others. But a word may need several things at once: say, the noun it describes, and the word just before it.", [[4.27, 4.77], [7.12, 7.55], [9.24, 9.51]]],
-  "split/heads": [11.446, 22.015, "Multi-head attention runs several attentions side by side. Each is a head, with its own query, key and value matrices, so each can look somewhere different.", [[15.116, 15.686], [16.666, 16.946], [18.006, 18.206], [19.856, 20.196]]],
-  "split/width": [22.395, 37.91, "The heads share the width. Write h for the number of heads: with d of five hundred twelve and h of eight, each head works in d over h dimensions, sixty four. That is one head's width, d head.", [[23.935, 24.565], [26.545, 27.095], [29.045, 29.245], [30.305, 30.725], [33.625, 33.925], [34.715, 35.335], [36.945, 37.295]]],
-  "split/shapes": [38.29, 48.537, "So one head's W Q is sixty four by five hundred twelve, its queries are T by sixty four, and its weights are T by T, as before.", [[42.6, 43.08], [45.51, 45.86]]],
-  "join/concat": [50.337, 57.977, "Each head outputs T by sixty four. Joined side by side, the eight make T by five hundred twelve again.", [[52.997, 53.557], [54.957, 55.237]]],
-  "join/wo": [58.357, 65.68, "One more matrix, W O, d by d, mixes what the heads found into one output per token.", [[59.537, 59.847], [60.687, 61.007], [61.927, 62.317]]],
-  "join/count": [66.06, 82.01, "Now count the weights. Eight heads' W Qs of sixty four by five hundred twelve hold as many as one d by d matrix. The same goes for W K and W V, and W O adds a fourth: four d squared.", [[67.38, 67.89], [71.73, 71.99], [74.7, 75.3], [77.91, 78.36], [80.29, 80.7]]],
-  "join/same": [82.39, 91.444, "That is exactly what a single head of full width would hold. Splitting into heads changes what attention can look for, not how many weights it has.", [[85.78, 86.36], [89.56, 89.91]]],
-  "join/turn": [91.824, 92.564, "Your turn.", []]
+  "blend/one": [0.7, 11.88, "Self-attention gives each token one row of weights, and so one blend of the values. In cats like fish, the word like splits its row between cats and fish.", [[3.86, 4.1], [6.15, 6.72], [8.08, 8.35], [9.17, 9.32]]],
+  "blend/two": [12.26, 20.354, "But the word like needs two separate answers: who does the liking, cats, and what is liked, fish.", [[15.23, 15.85], [16.92, 17.26], [17.77, 18.19], [19.44, 19.85]]],
+  "blend/blur": [20.734, 29.786, "With one row of weights, it can only split between them, and its output smears the two values into a single blend. Neither comes through whole.", [[23.874, 24.254], [27.724, 28.244]]],
+  "blend/heads": [30.166, 42.941, "So run two attentions side by side, each with its own query, key and value matrices. One can learn to look for who likes, the other for what is liked, and each finds its word sharply.", [[32.566, 32.966], [34.326, 34.526], [36.166, 36.776], [38.576, 38.946], [40.486, 40.886]]],
+  "blend/name": [43.321, 51.05, "Each one is called a head: a separate attention, reading the same tokens. Together they make multi-head attention.", [[44.971, 45.451], [46.591, 46.851], [48.321, 48.791]]],
+  "blend/vaswani": [51.43, 62.562, "Ashish Vaswani and colleagues introduced it in 2017, in Attention Is All You Need. With a single attention head, they wrote, averaging gets in the way.", [[55.24, 55.49], [55.75, 55.98], [57.61, 58.24], [59.82, 60.02], [60.45, 60.93]]],
+  "blend/found": [62.942, 71.979, "And the heads of their trained model did take on different jobs. Two of them, looking out from the word its, seemed to find what that word referred to.", [[66.292, 66.822], [67.382, 67.642], [69.242, 69.562]]],
+  "split/h": [73.779, 83.629, "How wide is each head? Write h for the number of heads. Vaswani's model had eight, over tokens of five hundred and twelve numbers each.", [[75.289, 75.939], [77.939, 78.609], [80.229, 80.629]]],
+  "split/dhead": [84.009, 94.498, "The heads share that width. Each makes queries, keys and values of d over h numbers: sixty four here. That is one head's width, d head.", [[85.619, 86.149], [87.299, 87.509], [90.279, 90.669], [91.739, 92.219], [93.609, 93.929]]],
+  "split/dk": [94.878, 101.083, "It is why the queries in Vaswani's model had sixty four entries: each belongs to one head.", [[98.958, 99.438]]],
+  "split/wq": [101.463, 112.986, "Each head still reads the whole token, all five hundred and twelve numbers. So one head's W Q is sixty four by five hundred and twelve: a row per query entry.", [[103.823, 104.153], [106.153, 106.693], [110.943, 111.343]]],
+  "split/qkv": [113.366, 120.023, "Its queries, keys and values come out T by sixty four: one row per token, as before.", [[117.366, 117.846], [119.126, 119.286]]],
+  "split/A": [120.403, 126.821, "And its weights are T by T, whatever its width: every token still scores every token.", [[122.353, 122.603], [123.633, 124.193]]],
+  "join/concat": [128.621, 137.922, "Each head outputs T by sixty four. Set the eight side by side, and they make T by five hundred and twelve: the full width again.", [[131.221, 131.831], [133.541, 133.771], [136.171, 136.601]]],
+  "join/keep": [138.302, 146.133, "Side by side, not added up: each head keeps its own columns, so what it found stays apart from the rest.", [[139.362, 139.702], [140.622, 141.272], [143.222, 143.542]]],
+  "join/wo": [146.513, 154.984, "One more matrix, W O, the output weights, d by d, mixes what the heads found into one vector per token.", [[147.623, 147.903], [148.813, 149.143], [150.203, 150.403], [151.363, 151.683]]],
+  "join/stack": [155.364, 166.055, "Now count the weights. Stack the eight heads' W Q matrices, each sixty four by five hundred and twelve, and they fill exactly one d by d square.", [[156.684, 157.174], [159.884, 160.174], [162.644, 162.954]]],
+  "join/four": [166.435, 176.303, "W K and W V fill a square each as well, and W O is a fourth: four d squared weights in all, just over a million here.", [[169.905, 170.275], [172.125, 172.675], [174.445, 174.885]]],
+  "join/same": [176.683, 185.585, "That is exactly what one head of the full width would hold. Splitting into heads changes what attention can look for, not how many weights it has.", [[179.833, 180.413], [183.583, 184.023]]],
+  "join/tried": [185.965, 193.972, "Vaswani's team tried other head counts, with the same amount of computation. One head translated worse, and so did too many.", [[188.335, 188.515], [190.255, 190.825], [192.505, 192.755]]],
+  "join/turn": [194.352, 195.093, "Your turn.", []]
  }
 }

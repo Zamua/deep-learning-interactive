@@ -1,23 +1,33 @@
 {
- "duration": 149.604,
+ "duration": 236.101,
  "scenes": {
-  "sharp": [0.0, 36.749],
-  "why": [36.749, 101.492],
-  "scale": [101.492, 149.604]
+  "sharp": [0.0, 87.067],
+  "why": [87.067, 169.194],
+  "scale": [169.194, 236.101]
  },
  "beats": {
-  "sharp/sharp": [0.7, 15.594, "Attention turns a query's scores into weights with softmax. Scores of two, zero and one give zero point six seven, zero point zero nine and zero point two four: mostly the first key, some of the others.", [[4.55, 5.16], [6.18, 6.33], [7.37, 7.63], [9.16, 9.42], [10.82, 11.07], [12.51, 13.07], [14.35, 14.64]]],
-  "sharp/bigger": [15.974, 27.058, "Make the scores four times bigger, eight, zero and four, and the weights become zero point nine eight, zero and zero point zero two: all or nothing.", [[17.954, 18.384], [18.664, 18.814], [19.864, 20.284], [21.314, 21.464], [22.754, 22.964], [23.504, 23.754], [25.384, 25.864]]],
-  "sharp/stuck": [27.438, 35.649, "With one weight near one, nudging a score barely moves any weight, so the queries and keys get almost no gradient to learn from.", [[28.948, 29.278], [31.568, 31.958]]],
-  "why/coin": [37.449, 50.544, "And long vectors do give big scores. Picture a query and a key whose entries are plus or minus one, at random. Each product in their dot product is then plus or minus one, like a coin flip.", [[40.059, 40.649], [45.329, 45.799], [49.319, 49.599]]],
-  "why/count": [50.924, 65.618, "Take d k, their length, as four. Four flips can land sixteen ways, and their sums are minus four once, minus two four times, zero six times, two four times, and four once.", [[52.034, 52.304], [52.954, 53.144], [53.784, 54.364], [56.624, 57.004], [59.174, 59.504], [61.074, 61.444], [62.764, 63.124], [64.224, 64.514]]],
-  "why/square": [65.998, 77.647, "Plus and minus cancel, so measure size by squaring. The squares average sixty four over sixteen: four. Its square root, two, is a typical size.", [[67.658, 68.048], [69.868, 70.438], [73.198, 73.628], [74.068, 74.578], [75.538, 75.778], [76.148, 76.388]]],
-  "why/sum": [78.027, 93.39, "Count any length this way and the average square is d k itself, so a typical score lands about the square root of d k from zero. Sixty four terms give eight: sixteen times the terms, only four times the size.", [[79.607, 79.817], [82.287, 82.697], [86.877, 87.517], [89.317, 89.787], [91.397, 91.657]]],
-  "why/fix": [93.77, 100.392, "Dividing by the square root of d k brings a typical score back to about one, however long the vectors are.", [[96.11, 96.27], [98.62, 98.94]]],
-  "scale/formula": [102.192, 110.945, "That is scaled dot-product attention. Each score is the dot product of a query and a key, divided by the square root of d k.", [[104.662, 105.162], [108.332, 108.662]]],
-  "scale/example": [111.325, 125.044, "Here the vectors have four entries, so d k is four. The dot product is two plus zero plus zero plus two: four. The square root of four is two, so the score is two.", [[113.605, 113.925], [115.725, 116.345], [120.155, 120.585], [120.995, 121.605], [123.355, 123.695]]],
-  "scale/row": [125.424, 133.542, "Do the same for every key. Dot products of four, zero and two become scores of two, zero and one.", [[127.134, 127.724], [129.124, 129.334], [130.464, 130.774], [132.154, 132.384]]],
-  "scale/softmax": [133.922, 147.383, "Then softmax, as before. With e squared about seven point three nine and e about two point seven two, the weights are zero point six seven, zero point zero nine and zero point two four.", [[135.892, 136.512], [139.072, 139.282], [141.352, 141.752], [143.852, 144.112], [145.552, 145.822]]],
-  "scale/turn": [147.763, 148.504, "Your turn.", []]
+  "sharp/recall": [0.7, 13.341, "Back to cats like fish. Fish's query gave cats a score of two, like zero, and itself one. Softmax turned those into soft weights: mostly cats, some of the rest.", [[2.32, 2.93], [5.44, 5.7], [6.41, 6.74], [7.9, 8.53], [10.9, 11.31], [12.15, 12.41]]],
+  "sharp/long": [13.721, 25.306, "Those queries and keys had two entries each; Vaswani's had sixty four. A dot product adds one product per entry, so longer vectors tend to give bigger scores.", [[16.581, 17.071], [19.051, 19.641], [22.251, 22.541]]],
+  "sharp/bigger": [25.686, 37.444, "Make the scores four times bigger: eight, zero and four. Their gaps grow just as much, and softmax goes all or nothing: nearly all the weight lands on cats.", [[27.826, 28.316], [28.646, 28.846], [30.036, 30.626], [32.416, 32.786], [34.776, 35.236]]],
+  "sharp/nudge": [37.824, 45.39, "Now nudge fish's score up by a half, in both. The soft weights shift. The sharp ones barely move.", [[40.334, 40.664], [41.224, 41.824], [43.164, 43.604], [44.404, 44.554]]],
+  "sharp/flat": [45.77, 60.479, "How far the weights move for a nudge is their slope: the gradient that backprop carries to the queries and keys. Near zero, they have almost nothing to learn from. The softmax is saturated, like a sigmoid far from zero.", [[48.82, 49.3], [52.62, 53.22], [53.96, 54.17], [56.02, 56.49], [58.21, 58.51]]],
+  "sharp/britz": [60.859, 74.229, "In 2017, Denny Britz and colleagues found long vectors hurting translation. With queries and keys of a thousand and twenty four numbers, dot-product attention did much worse than with five hundred and twelve.", [[62.119, 62.409], [66.369, 66.959], [70.079, 70.369]]],
+  "sharp/vaswani": [74.609, 85.967, "Months later, Ashish Vaswani and colleagues suspected why: large dot products, they wrote, push the softmax into regions where it has extremely small gradients.", [[75.519, 75.829], [78.699, 79.339], [80.649, 80.799], [81.229, 81.569]]],
+  "why/coin": [87.767, 102.065, "Why do longer vectors give bigger scores? Picture a query and a key whose entries are plus or minus one, at random. Each product in their dot product is then also plus or minus one: a coin flip.", [[90.467, 91.367], [93.057, 93.257], [95.407, 95.567], [96.187, 96.857], [98.597, 98.817], [100.907, 101.317]]],
+  "why/walk": [102.445, 111.223, "Add the flips one at a time, and the running total takes a walk, up one or down one. Here are many walks of sixty four steps.", [[104.195, 104.495], [106.275, 106.665], [107.155, 107.345], [108.005, 108.595]]],
+  "why/cancel": [111.603, 122.174, "Ups and downs mostly cancel, but rarely exactly. The longer the walk, the farther from zero it tends to end, yet nowhere near the sixty four it could reach.", [[113.643, 113.893], [115.173, 115.793], [116.673, 116.903], [119.053, 119.463]]],
+  "why/count": [122.554, 132.301, "Now count exactly, with just four flips. They can land sixteen ways, and their sums run from minus four to four, zero most often.", [[123.954, 124.204], [125.474, 125.934], [127.624, 127.904], [130.614, 131.054]]],
+  "why/square": [132.681, 142.546, "Pluses and minuses would cancel in an average, so measure size by squaring. The sixteen squares average exactly four: d k itself.", [[135.341, 135.671], [137.411, 138.031], [140.741, 141.241]]],
+  "why/typical": [142.926, 149.505, "The square root of that, two, is a typical size: how far from zero a score usually lands.", [[144.186, 144.476], [144.876, 145.056], [146.216, 146.626]]],
+  "why/grow": [149.885, 164.031, "At any length, the average square is d k, so a typical score lands about the square root of d k from zero. Sixty four flips give about eight: sixteen times the flips, only four times the size.", [[150.785, 150.955], [152.885, 153.215], [157.625, 158.125], [160.145, 160.605], [162.105, 162.345]]],
+  "why/footnote": [164.411, 168.094, "Vaswani's paper makes this same argument, in a footnote.", [[167.041, 167.291]]],
+  "scale/fix": [169.894, 178.732, "So divide every score by the square root of d k. A typical score then lands about one from zero, however long the vectors.", [[173.444, 174.024], [177.084, 177.344]]],
+  "scale/root": [179.112, 189.667, "Why the square root, and not d k itself? Divide by d k, and long vectors' scores shrink toward zero, and every weight toward an equal share.", [[180.422, 180.672], [182.192, 182.812], [184.122, 184.302], [187.012, 187.322]]],
+  "scale/name": [190.047, 199.862, "Vaswani's team called this scaled dot-product attention, and the name is the recipe: a dot product, scaled down by the square root of d k.", [[193.687, 194.107], [195.527, 196.047], [196.897, 197.217]]],
+  "scale/dot": [200.242, 208.823, "Try it with four entries each. The dot product of these two is two, plus zero, plus zero, plus two: four.", [[202.152, 202.732], [204.912, 205.252], [205.992, 206.202], [206.952, 207.162], [207.802, 208.312]]],
+  "scale/divide": [209.203, 216.187, "Here d k is four, and its square root is two, so the score is four over two: two.", [[210.983, 211.253], [212.793, 213.273], [215.283, 215.803]]],
+  "scale/row": [216.567, 227.073, "Scale the dot products with all three keys the same way. Four, zero and two become two, zero and one: the soft scores we began with.", [[219.917, 220.757], [221.197, 221.677], [223.697, 223.847], [224.907, 225.337]]],
+  "scale/soft": [227.453, 233.881, "Softmax gives the soft weights again, about two thirds on the first key, and a nudge still moves them.", [[229.603, 229.943], [231.863, 232.233]]],
+  "scale/turn": [234.261, 235.001, "Your turn.", []]
  }
 }

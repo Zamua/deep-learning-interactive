@@ -1,22 +1,36 @@
 {
- "duration": 154.958,
+ "duration": 242.608,
  "scenes": {
-  "warmup": [0.0, 50.939],
-  "steps": [50.939, 96.073],
-  "try": [96.073, 154.958]
+  "settle": [0.0, 56.142],
+  "steps": [56.142, 120.611],
+  "linear": [120.611, 167.579],
+  "warmup": [167.579, 242.608]
  },
  "beats": {
-  "warmup/why": [0.7, 9.034, "The learning rate does not have to stay fixed. Big steps make fast progress early on, and small steps settle in at the end.", [[3.23, 3.71], [6.29, 6.61]]],
-  "warmup/ramp": [9.414, 22.935, "Many runs begin with a warmup: the rate climbs in a straight line from zero to its peak, written eta max, over the first k steps. So at step t it is the peak times t over k.", [[11.244, 11.784], [15.074, 15.364], [15.734, 15.884], [16.634, 16.914], [18.524, 19.024], [20.324, 20.584], [21.724, 21.884]]],
-  "warmup/ex": [23.315, 32.37, "With a peak of zero point one over a thousand steps, step two hundred and fifty runs at a quarter of the peak: zero point zero two five.", [[26.515, 26.925], [30.005, 30.455]]],
-  "warmup/reason": [32.75, 49.839, "Why bother? At the start, far from any minimum, the slopes are steep and the gradients large. The full rate times a large gradient makes a huge step, which can overshoot and blow up, just as too large a rate does. So warmup eases in.", [[33.6, 34.15], [34.94, 35.14], [36.56, 36.81], [37.91, 38.08], [39.41, 39.94], [43.3, 43.63], [45.33, 45.69], [47.37, 47.88], [48.86, 49.02]]],
-  "steps/rule": [51.639, 59.505, "The classic decay goes in steps: multiply the rate by a factor, often zero point one, every so many steps.", [[53.699, 54.299], [56.169, 56.419], [57.789, 58.109]]],
-  "steps/ex": [59.885, 71.927, "Start at zero point one and drop every ten thousand steps: step fifteen thousand runs at zero point zero one, and step twenty-five thousand at zero point zero zero one.", [[61.655, 61.845], [63.895, 64.415], [67.735, 68.095], [69.695, 69.845]]],
-  "steps/linear": [72.307, 94.973, "Linear decay goes in a straight line instead, from the top rate, eta max, down to the bottom one, eta min, over T steps: the same drop every step. From zero point one to zero, sampled four times along the way: zero point zero seven five, zero point zero five, zero point zero two five, zero.", [[75.057, 75.387], [76.287, 76.527], [77.277, 77.597], [78.697, 78.957], [79.627, 79.987], [81.137, 81.597], [82.387, 82.547], [83.267, 83.857], [85.717, 86.027], [87.937, 88.467], [90.287, 90.607], [92.127, 92.457], [94.127, 94.437]]],
-  "try/p1": [96.773, 109.097, "Try one: the rate starts at zero point one and is multiplied by zero point one every five thousand steps. Counting steps from zero, what is the rate at step ten thousand?", [[97.413, 97.973], [100.183, 100.383], [102.573, 102.753], [104.393, 105.013], [106.493, 106.833]]],
-  "try/a1": [109.477, 123.37, "The drops come at steps five thousand and ten thousand, and step ten thousand is one of them. So two drops have happened: zero point one times zero point one, twice, is zero point zero zero one.", [[112.597, 113.027], [115.047, 115.567], [117.157, 117.617], [120.007, 120.247], [120.747, 120.987], [123.147, 123.357]]],
-  "try/p2": [123.75, 132.562, "Now linear decay from zero point one down to zero point zero one over a thousand steps. What is the rate at step four hundred?", [[129.75, 130.33]]],
-  "try/a2": [132.942, 152.738, "The gap is zero point zero nine. Four hundred of a thousand steps is zero point four of the way, so the rate has dropped zero point four times zero point zero nine: zero point zero three six. And zero point one minus zero point zero three six is zero point zero six four.", [[135.282, 135.782], [137.672, 137.822], [139.642, 140.052], [144.082, 144.512], [146.412, 146.872], [150.432, 150.732]]],
-  "try/turn": [153.118, 153.858, "Your turn.", []]
+  "settle/valley": [0.7, 11.043, "Picture a valley: a long, even slope down to a narrow bottom. A ball walks down it, each step the learning rate, eta, times the slope.", [[1.7, 2.2], [5.23, 5.84], [7.16, 7.59], [8.18, 8.34], [9.18, 9.41], [9.85, 10.12]]],
+  "settle/small": [11.423, 17.427, "With a small rate, the ball creeps: after thirty steps it is still far from the bottom.", [[12.443, 12.643], [13.693, 14.233]]],
+  "settle/big": [17.807, 27.984, "With a big rate it races down. But this slope never flattens, so the steps never shrink, and at the bottom the ball bounces side to side forever.", [[20.047, 20.657], [22.417, 22.677], [24.147, 24.597], [25.357, 25.557]]],
+  "settle/both": [28.364, 37.397, "So start big, then lower the rate as the walk goes on: down the slope fast, then smaller and smaller bounces, until it settles.", [[29.484, 29.904], [32.124, 32.624], [33.834, 34.114], [36.064, 36.344]]],
+  "settle/name": [37.777, 48.126, "One whole walk, first step to last, is a run. Lowering the rate over a run is called decay: it decays, the way a sound fades.", [[38.947, 39.337], [40.517, 40.737], [41.347, 41.977], [44.947, 45.467], [46.377, 46.737]]],
+  "settle/schedule": [48.506, 55.042, "The rate planned for every step is the run's schedule: here, held high, then sloping down.", [[51.586, 52.096], [52.466, 52.716], [53.416, 53.726]]],
+  "steps/rule": [56.842, 68.106, "The classic schedule goes in steps: hold the rate, then multiply it by a factor, often zero point one or a half, every so many steps. It makes a staircase.", [[58.992, 59.512], [60.272, 60.562], [62.292, 62.582], [64.742, 65.022], [66.322, 66.822]]],
+  "steps/he": [68.486, 81.652, "In 2015, Kaiming Her and colleagues at Microsoft trained an image recognizer this way: zero point one, divided by ten at step thirty-two thousand, and again at forty-eight thousand.", [[69.656, 69.996], [72.306, 72.526], [74.566, 75.186], [76.246, 76.606], [79.396, 79.716]]],
+  "steps/one": [82.032, 95.282, "Say it starts at zero point one and drops every ten thousand steps. By step fifteen thousand, one drop has happened: zero point one times zero point one, or zero point zero one.", [[84.152, 84.312], [86.432, 87.022], [88.592, 88.822], [89.982, 90.502], [92.892, 93.262], [93.582, 93.752]]],
+  "steps/two": [95.662, 107.574, "By twenty-five thousand, two drops have, each one multiplying by zero point one again: zero point one times zero point one squared, zero point zero zero one.", [[97.222, 97.632], [98.472, 98.752], [101.662, 102.152], [105.082, 105.482]]],
+  "steps/edge": [107.954, 119.511, "The two slashes count the drops: t divided by ten thousand, with the remainder thrown away. At exactly step twenty thousand that is two: the drop there has happened.", [[109.884, 110.374], [112.264, 112.544], [114.074, 114.574], [116.644, 116.814], [117.564, 117.994]]],
+  "linear/top": [121.311, 131.153, "Linear decay slides the rate down in a straight line instead. It starts at the top rate, eta max: here, the largest rate the run uses.", [[125.161, 125.761], [127.141, 127.411], [128.181, 128.731], [129.091, 129.301]]],
+  "linear/bottom": [131.533, 134.293, "It ends at the bottom rate, eta min,", [[133.153, 133.523]]],
+  "linear/T": [134.673, 138.595, "T steps later, falling by the same amount every step.", [[135.823, 136.233], [137.643, 137.793]]],
+  "linear/gap": [138.975, 148.256, "Take zero point one down to zero point zero one over a thousand steps: the whole fall, the gap, is zero point zero nine.", [[142.425, 142.575], [144.015, 144.505], [145.395, 145.685], [146.155, 146.505]]],
+  "linear/frac": [148.636, 158.25, "At step four hundred, the run is zero point four of the way along, so the rate has fallen zero point four of the gap: zero point zero three six.", [[149.956, 150.216], [152.636, 153.036], [155.826, 156.256]]],
+  "linear/lr": [158.63, 166.479, "Take that from the top: zero point one minus zero point zero three six leaves zero point zero six four.", [[159.66, 160.25], [161.34, 161.53], [163.83, 164.08]]],
+  "warmup/wall": [168.279, 175.136, "The start has its own trouble. Far from the bottom, the walls are often steep, and the gradient is large.", [[170.019, 170.539], [171.619, 171.879], [173.359, 173.599]]],
+  "warmup/fly": [175.516, 185.806, "At the full rate, the first step flies past the bottom onto the far wall, higher and steeper still. The next is bigger again: the walk blows up.", [[176.446, 176.716], [180.116, 180.336], [181.936, 182.496], [184.056, 184.436]]],
+  "warmup/ramp": [186.186, 194.942, "So ramp the rate up instead: from zero, in a straight line, to eta max over the first k steps. That is warmup.", [[188.096, 188.576], [189.356, 189.516], [190.436, 190.726], [193.346, 193.816]]],
+  "warmup/grow": [195.322, 202.473, "The first steps stay small while the wall is steep, and by the time the ball reaches gentler ground, the rate has grown.", [[198.222, 198.662], [201.012, 201.332]]],
+  "warmup/formula": [202.853, 216.927, "At step t the rate is eta max times t over k. With eta max at zero point one and k a thousand, step two hundred and fifty is a quarter of the way: zero point zero two five.", [[203.843, 204.263], [207.213, 207.793], [209.843, 210.043], [211.293, 211.653], [214.463, 214.933]]],
+  "warmup/hold": [217.307, 225.06, "Once t reaches k, the rate holds at eta max: step fifteen hundred runs at the full zero point one.", [[218.907, 219.237], [220.977, 221.447]]],
+  "warmup/goyal": [225.44, 240.388, "In 2017, Priya Goyal and colleagues at Facebook needed a rate of three point two. Jumping to it from a low rate set the run back for good; ramping up in a straight line fixed it. They called it gradual warmup.", [[226.7, 227.02], [229.1, 229.28], [231.12, 231.71], [233.33, 233.52], [235.04, 235.65], [237.9, 238.43], [239.0, 239.21]]],
+  "warmup/turn": [240.768, 241.508, "Your turn.", []]
  }
 }
