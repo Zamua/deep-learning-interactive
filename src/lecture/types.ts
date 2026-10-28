@@ -57,7 +57,10 @@ export function shownText(say: string): string {
   return say.replace(PAIR, (_, shown: string) => shown.replaceAll('\\|', '|'));
 }
 
-/** Voice text for a beat: the `spoken` half of every `{shown|spoken}`. */
+/** Words the voice misreads from their spelling, and how they should sound. */
+const SAY_AS: [RegExp, string][] = [[/\btanh\b/gi, 'tan-aitch']];
+
+/** Voice text for a beat: the `spoken` half of every `{shown|spoken}`, with misread words respelled. */
 export function spokenText(say: string): string {
-  return say.replace(PAIR, '$2');
+  return SAY_AS.reduce((t, [word, as]) => t.replace(word, as), say.replace(PAIR, '$2'));
 }

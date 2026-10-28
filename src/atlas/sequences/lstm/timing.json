@@ -1,22 +1,22 @@
 {
- "duration": 129.603,
+ "duration": 129.916,
  "scenes": {
-  "gates": [0.0, 44.658],
-  "update": [44.658, 89.747],
-  "path": [89.747, 129.603]
+  "gates": [0.0, 44.566],
+  "update": [44.566, 89.845],
+  "path": [89.845, 129.916]
  },
  "beats": {
   "gates/cell": [0.7, 9.791, "An LSTM carries two things from step to step: the hidden state, h, and a second memory, the cell state, c.", [[3.99, 4.53], [5.39, 5.71], [6.13, 6.5], [7.78, 8.15], [8.99, 9.33]]],
   "gates/gates": [10.171, 22.91, "Three gates control the cell. Each is a sigmoid of z, the old h and the new input joined into one vector, so each is a number between zero and one: a dial for how much.", [[11.971, 12.541], [14.201, 14.641], [18.001, 18.481], [20.971, 21.431]]],
-  "gates/cand": [23.29, 29.844, "And a candidate, g, from a tanh, proposes new content between minus one and one.", [[24.34, 24.68], [25.13, 25.38], [26.14, 26.55]]],
-  "gates/roles": [30.224, 43.558, "The forget gate, f, scales the old cell. The input gate, i, scales the candidate before it is added. The output gate, o, scales what the cell shows as h.", [[31.234, 31.574], [31.944, 32.194], [33.634, 34.264], [35.234, 35.564], [35.964, 36.194], [38.574, 39.174], [40.174, 40.504], [40.874, 41.104]]],
-  "update/keep": [45.358, 53.932, "Here is one unit. The old cell holds two, and the forget gate is zero point three, so the cell keeps zero point six.", [[46.638, 47.198], [48.758, 49.118], [51.278, 51.648]]],
-  "update/write": [54.312, 61.029, "The candidate is zero point five and the input gate zero point eight, so it writes zero point four.", [[56.372, 56.612], [58.722, 59.102]]],
-  "update/add": [61.409, 75.024, "The new cell adds the two: zero point six plus zero point four, exactly one. In symbols, c t is f t times c t minus one, plus i t times g t.", [[62.999, 63.479], [66.009, 66.419], [67.469, 68.029], [68.769, 69.109], [72.679, 72.999]]],
-  "update/show": [75.404, 88.647, "Then h is the output gate times the tanh of the cell, h t is o t times the tanh of c t: zero point five times zero point seven six, about zero point three eight.", [[79.124, 79.574], [81.264, 81.464], [83.194, 83.794], [86.674, 87.024]]],
-  "path/path": [90.447, 105.086, "Now follow the gradient back along the cell. The new cell is f times the old one, plus new content, so one step back just multiplies by f: partial c t, partial c t minus one, is f t.", [[92.847, 93.427], [95.777, 95.957], [97.127, 97.447], [98.847, 99.037], [100.517, 101.007], [102.137, 102.417], [104.007, 104.257]]],
-  "path/lstm": [105.466, 115.424, "No weight matrix and no tanh slope in between. With the forget gate at zero point nine five, twenty steps back still keep about a third of the gradient.", [[108.656, 109.276], [111.786, 112.156]]],
-  "path/rnn": [115.804, 127.383, "A plain RNN that multiplies by a half at each step keeps one part in a million. The cell's update by addition carries memories, and their gradients, a long way.", [[119.674, 119.894], [121.594, 122.204], [123.944, 124.094], [125.084, 125.334], [126.344, 126.514]]],
-  "path/turn": [127.763, 128.503, "Your turn.", []]
+  "gates/cand": [23.29, 29.752, "And a candidate, g, from a tan-aitch, proposes new content between minus one and one.", [[24.2, 24.54], [25.0, 25.22], [26.19, 26.49]]],
+  "gates/roles": [30.132, 43.466, "The forget gate, f, scales the old cell. The input gate, i, scales the candidate before it is added. The output gate, o, scales what the cell shows as h.", [[31.142, 31.482], [31.852, 32.102], [33.542, 34.172], [35.142, 35.472], [35.872, 36.102], [38.482, 39.082], [40.082, 40.412], [40.782, 41.012]]],
+  "update/keep": [45.266, 53.84, "Here is one unit. The old cell holds two, and the forget gate is zero point three, so the cell keeps zero point six.", [[46.546, 47.106], [48.666, 49.026], [51.186, 51.556]]],
+  "update/write": [54.22, 60.937, "The candidate is zero point five and the input gate zero point eight, so it writes zero point four.", [[56.28, 56.52], [58.63, 59.01]]],
+  "update/add": [61.317, 74.932, "The new cell adds the two: zero point six plus zero point four, exactly one. In symbols, c t is f t times c t minus one, plus i t times g t.", [[62.907, 63.387], [65.917, 66.327], [67.377, 67.937], [68.677, 69.017], [72.587, 72.907]]],
+  "update/show": [75.312, 88.745, "Then h is the output gate times the tan-aitch of the cell, h t is o t times the tan-aitch of c t: zero point five times zero point seven six, about zero point three eight.", [[77.402, 77.572], [79.202, 79.702], [81.312, 81.462], [83.202, 83.762], [86.642, 87.032]]],
+  "path/path": [90.545, 105.184, "Now follow the gradient back along the cell. The new cell is f times the old one, plus new content, so one step back just multiplies by f: partial c t, partial c t minus one, is f t.", [[92.945, 93.525], [95.875, 96.055], [97.225, 97.545], [98.945, 99.135], [100.615, 101.105], [102.235, 102.515], [104.105, 104.355]]],
+  "path/lstm": [105.564, 115.737, "No weight matrix and no tan-aitch slope in between. With the forget gate at zero point nine five, twenty steps back still keep about a third of the gradient.", [[108.844, 109.444], [112.014, 112.414]]],
+  "path/rnn": [116.117, 127.695, "A plain RNN that multiplies by a half at each step keeps one part in a million. The cell's update by addition carries memories, and their gradients, a long way.", [[119.987, 120.207], [121.907, 122.517], [124.257, 124.407], [125.397, 125.647], [126.657, 126.827]]],
+  "path/turn": [128.075, 128.816, "Your turn.", []]
  }
 }

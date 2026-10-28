@@ -1,23 +1,23 @@
 {
- "duration": 138.322,
+ "duration": 138.613,
  "scenes": {
-  "unroll": [0.0, 44.702],
-  "products": [44.702, 88.708],
-  "clip": [88.708, 138.322]
+  "unroll": [0.0, 44.989],
+  "products": [44.989, 89.0],
+  "clip": [89.0, 138.613]
  },
  "beats": {
   "unroll/graph": [0.7, 15.149, "Unroll the loop, and an RNN is just a deep graph: one copy of the step for every token, all sharing the same weights. At the end sits a loss, L: one number that says how wrong the outputs are.", [[1.66, 2.11], [4.49, 5.04], [7.28, 7.61], [9.2, 9.83], [11.37, 11.63], [11.96, 12.55]]],
   "unroll/back": [15.529, 23.307, "Backprop runs through it as through any graph, from the loss back to the first step. That is backprop through time.", [[18.239, 18.649], [20.639, 21.169], [23.039, 23.279]]],
-  "unroll/factor": [23.687, 36.447, "Each step back multiplies the gradient by that step's local derivative, partial h t, partial h t minus one: W h h, times the slope of the tanh, tanh prime.", [[28.027, 28.407], [29.537, 29.797], [31.517, 31.887], [33.137, 33.447], [35.157, 35.487]]],
-  "unroll/sum": [36.827, 43.602, "And since W h h is used at every step, its gradient adds up one contribution from each of them.", [[39.987, 40.367]]],
-  "products/scalar": [45.402, 56.289, "Picture a single hidden unit, where each step back multiplies the gradient by the same number, a. Ten steps back, it has been multiplied by a to the tenth.", [[47.342, 47.712], [48.432, 48.582], [51.412, 51.682], [52.022, 52.682], [53.602, 53.842]]],
-  "products/slope": [56.669, 69.511, "For one unit, a is W h h times the slope of the tanh. Say W h h is two, and the slope is a quarter. Then a is two times a quarter: one half.", [[57.549, 57.869], [59.589, 59.749], [61.459, 61.959], [63.969, 64.229], [65.629, 66.169], [68.319, 68.799]]],
-  "products/vanish": [69.891, 79.566, "Ten steps back, that is one half to the tenth: about one thousandth. The gradient vanishes: the early steps get almost none of it.", [[70.941, 71.401], [73.351, 73.781], [75.101, 75.691], [77.091, 77.481]]],
-  "products/explode": [79.946, 87.608, "If a is two, it is over a thousand. The gradient explodes, and the numbers soon grow too large to use.", [[81.256, 81.536], [82.906, 83.426], [84.916, 85.086]]],
-  "clip/clip": [89.408, 99.608, "Exploding gradients have a blunt fix: clip them. Take a gradient, g, of three and four, and pick a threshold, c, say one.", [[91.758, 92.228], [92.818, 93.498], [94.348, 94.528], [94.958, 95.118], [96.318, 96.678], [97.738, 97.918], [98.338, 98.728]]],
-  "clip/check": [99.988, 113.183, "The norm of g, written the norm of g, is its length as an arrow: the square root of its squared entries added up. Here that is the root of three squared plus four squared: five.", [[101.108, 101.408], [101.808, 101.978], [103.048, 103.448], [104.928, 105.428], [108.108, 108.768], [112.078, 112.598]]],
-  "clip/scale": [113.563, 128.412, "Whenever the norm is over c, shrink the whole vector to length c: multiply it by c over the norm, here one fifth. That gives zero point six and zero point eight. Same direction, shorter length.", [[115.433, 115.813], [117.933, 118.523], [120.793, 121.173], [122.233, 122.823], [124.613, 124.763], [125.893, 126.383], [127.303, 127.553]]],
-  "clip/limit": [128.792, 136.101, "Clipping only ever shrinks: it tames a gradient that explodes, but it cannot bring back one that has vanished.", [[130.672, 131.162], [133.352, 133.722]]],
-  "clip/turn": [136.481, 137.222, "Your turn.", []]
+  "unroll/factor": [23.687, 36.734, "Each step back multiplies the gradient by that step's local derivative, partial h t, partial h t minus one: W h h, times the slope of the tan-aitch, tan-aitch prime.", [[24.267, 24.417], [28.107, 28.487], [29.577, 29.807], [31.497, 31.977], [33.187, 33.567], [35.387, 35.727]]],
+  "unroll/sum": [37.114, 43.889, "And since W h h is used at every step, its gradient adds up one contribution from each of them.", [[40.274, 40.654]]],
+  "products/scalar": [45.689, 56.576, "Picture a single hidden unit, where each step back multiplies the gradient by the same number, a. Ten steps back, it has been multiplied by a to the tenth.", [[47.629, 47.999], [48.719, 48.869], [51.699, 51.969], [52.309, 52.969], [53.889, 54.129]]],
+  "products/slope": [56.956, 69.803, "For one unit, a is W h h times the slope of the tan-aitch. Say W h h is two, and the slope is a quarter. Then a is two times a quarter: one half.", [[57.806, 58.066], [61.746, 62.286], [64.306, 64.526], [65.826, 66.346], [66.686, 66.846], [68.706, 69.096]]],
+  "products/vanish": [70.183, 79.858, "Ten steps back, that is one half to the tenth: about one thousandth. The gradient vanishes: the early steps get almost none of it.", [[71.233, 71.693], [73.643, 74.073], [75.393, 75.983], [77.383, 77.773]]],
+  "products/explode": [80.238, 87.9, "If a is two, it is over a thousand. The gradient explodes, and the numbers soon grow too large to use.", [[81.548, 81.828], [83.198, 83.718], [85.208, 85.378]]],
+  "clip/clip": [89.7, 99.9, "Exploding gradients have a blunt fix: clip them. Take a gradient, g, of three and four, and pick a threshold, c, say one.", [[92.05, 92.52], [93.11, 93.79], [94.64, 94.82], [95.25, 95.41], [96.61, 96.97], [98.03, 98.21], [98.63, 99.02]]],
+  "clip/check": [100.28, 113.475, "The norm of g, written the norm of g, is its length as an arrow: the square root of its squared entries added up. Here that is the root of three squared plus four squared: five.", [[101.4, 101.7], [102.1, 102.27], [103.34, 103.74], [105.22, 105.72], [108.4, 109.06], [112.37, 112.89]]],
+  "clip/scale": [113.855, 128.704, "Whenever the norm is over c, shrink the whole vector to length c: multiply it by c over the norm, here one fifth. That gives zero point six and zero point eight. Same direction, shorter length.", [[115.725, 116.105], [118.225, 118.815], [121.085, 121.465], [122.525, 123.115], [124.905, 125.055], [126.185, 126.675], [127.595, 127.845]]],
+  "clip/limit": [129.084, 136.393, "Clipping only ever shrinks: it tames a gradient that explodes, but it cannot bring back one that has vanished.", [[130.964, 131.454], [133.644, 134.014]]],
+  "clip/turn": [136.773, 137.513, "Your turn.", []]
  }
 }

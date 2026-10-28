@@ -1,8 +1,8 @@
 {
- "duration": 125.13,
+ "duration": 125.593,
  "scenes": {
-  "step": [0.0, 73.727],
-  "unroll": [73.727, 125.13]
+  "step": [0.0, 74.189],
+  "unroll": [74.189, 125.593]
  },
  "beats": {
   "step/carry": [0.7, 11.903, "A recurrent network reads a sequence one token at a time, and carries a memory from step to step: the hidden state, h. A subscript t numbers the steps.", [[4.36, 4.64], [6.78, 7.28], [8.18, 8.43], [8.85, 9.39]]],
@@ -10,11 +10,11 @@
   "step/mem": [22.646, 33.85, "W h h mixes the old memory. Its subscript reads h to h: the hidden-to-hidden weights. Here it gives zero point five and minus one.", [[25.386, 25.876], [27.036, 27.206], [28.196, 28.636], [30.176, 30.726]]],
   "step/inp": [34.23, 41.558, "W x h, the input-to-hidden weights, x to h, brings in the input: one and zero.", [[35.57, 35.98], [37.51, 37.72], [38.57, 38.85], [40.03, 40.4]]],
   "step/sum": [41.938, 52.229, "Add the two, and a bias b of minus zero point five and zero point five. That makes the pre-activation, z: one and minus zero point five.", [[42.678, 42.918], [46.978, 47.448], [49.028, 49.238], [49.648, 50.018]]],
-  "step/tanh": [52.609, 72.627, "Then tanh squashes each entry to between minus one and one: zero point seven six and minus zero point four six. That is the new memory: h of t is the tanh of W h h times h of t minus one, plus W x h times x of t, plus b.", [[56.779, 57.319], [58.749, 58.979], [61.089, 61.649], [63.029, 63.549], [68.359, 68.749], [70.369, 70.559], [71.619, 71.939]]],
-  "unroll/unroll": [74.427, 87.017, "To read a whole sequence, repeat the step. h one comes from h zero and x one, h two from h one and x two, and so on. h zero starts at all zeros.", [[75.877, 76.087], [76.947, 77.627], [80.267, 80.867], [83.207, 83.427], [84.007, 84.677]]],
-  "unroll/same": [87.397, 99.213, "Every step uses the same three weights: W h h, W x h, and b. Nothing is new per step, so one network reads a sequence of any length.", [[89.937, 90.367], [91.487, 91.847], [93.007, 93.277], [93.827, 94.437], [96.057, 96.377]]],
-  "unroll/memory": [99.593, 106.632, "And h is all that passes from step to step: everything read so far, squeezed into H numbers.", [[102.713, 103.253], [104.633, 104.883]]],
-  "unroll/shapes": [107.012, 122.91, "The shapes follow. W h h turns H numbers into H, so it is H by H. W x h turns an input of D numbers into H, so it is H by D. And b has H entries.", [[108.072, 108.722], [109.992, 110.142], [111.972, 112.302], [114.022, 114.662], [115.972, 116.142], [118.572, 118.882], [120.462, 121.012]]],
-  "unroll/turn": [123.29, 124.03, "Your turn.", []]
+  "step/tanh": [52.609, 73.089, "Then tan-aitch squashes each entry to between minus one and one: zero point seven six and minus zero point four six. That is the new memory: h of t is the tan-aitch of W h h times h of t minus one, plus W x h times x of t, plus b.", [[56.939, 57.539], [58.989, 59.209], [61.319, 61.879], [63.249, 63.809], [66.889, 67.069], [68.879, 69.209], [70.889, 71.069], [72.139, 72.419]]],
+  "unroll/unroll": [74.889, 87.48, "To read a whole sequence, repeat the step. h one comes from h zero and x one, h two from h one and x two, and so on. h zero starts at all zeros.", [[76.339, 76.549], [77.409, 78.089], [80.729, 81.329], [83.669, 83.889], [84.469, 85.139]]],
+  "unroll/same": [87.86, 99.675, "Every step uses the same three weights: W h h, W x h, and b. Nothing is new per step, so one network reads a sequence of any length.", [[90.4, 90.83], [91.95, 92.31], [93.47, 93.74], [94.29, 94.9], [96.52, 96.84]]],
+  "unroll/memory": [100.055, 107.094, "And h is all that passes from step to step: everything read so far, squeezed into H numbers.", [[103.175, 103.715], [105.095, 105.345]]],
+  "unroll/shapes": [107.474, 123.372, "The shapes follow. W h h turns H numbers into H, so it is H by H. W x h turns an input of D numbers into H, so it is H by D. And b has H entries.", [[108.534, 109.184], [110.454, 110.604], [112.434, 112.764], [114.484, 115.124], [116.434, 116.604], [119.034, 119.344], [120.924, 121.474]]],
+  "unroll/turn": [123.752, 124.493, "Your turn.", []]
  }
 }

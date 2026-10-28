@@ -1,23 +1,23 @@
 {
- "duration": 158.636,
+ "duration": 159.027,
  "scenes": {
   "symmetry": [0.0, 31.057],
-  "scale": [31.057, 135.403],
-  "try": [135.403, 158.636]
+  "scale": [31.057, 135.795],
+  "try": [135.795, 159.027]
  },
  "beats": {
   "symmetry/zero": [0.7, 9.592, "Before any weight is adjusted by its gradient, every weight needs a starting value. The obvious choice, all zeros, does not work.", [[3.44, 3.81], [5.77, 6.36], [7.37, 7.61], [8.46, 8.74]]],
   "symmetry/same": [9.972, 23.582, "If every hidden unit starts with the same weights, every unit computes the same output and backprop hands every unit the same gradient. Adjusted by the same gradient, they stay copies of one unit, forever.", [[12.752, 13.092], [15.242, 15.592], [18.442, 19.052], [20.682, 20.952], [22.722, 23.012]]],
   "symmetry/random": [23.962, 29.957, "So the weights start random, which breaks the tie. The question is how big to make them.", [[25.782, 26.022], [27.112, 27.682], [28.492, 28.652]]],
   "scale/recap": [31.757, 45.526, "A sum of n independent terms has n times their variance. Give a hundred inputs, each of variance one, weights of variance one, and z has variance a hundred: a standard deviation of ten.", [[35.917, 36.517], [37.767, 38.037], [39.327, 39.697], [40.997, 41.447], [43.277, 43.687]]],
-  "scale/flat": [45.906, 54.09, "Through a tanh, a value like ten sits far out on the flat end. The slope there is nearly zero, and so is the gradient.", [[46.846, 47.146], [50.256, 50.776], [52.596, 52.856]]],
-  "scale/small": [54.47, 83.481, "Too small is just as bad. With weights of standard deviation zero point zero one, z has variance a hundred times zero point zero zero zero one: zero point zero one, a standard deviation of zero point one. Near zero, tanh passes values almost unchanged, so layer after layer the signal shrinks: one, zero point one, zero point zero one, zero point zero zero one.", [[56.35, 56.98], [60.27, 60.67], [65.17, 65.62], [67.05, 67.51], [69.93, 70.61], [71.41, 71.66], [74.3, 74.73], [77.27, 77.84], [78.21, 78.65], [79.61, 79.95], [81.31, 81.66]]],
-  "scale/fanin": [83.861, 96.713, "The fix scales the weights by the fan-in, n: the number of inputs each unit adds up. The weight matrix has a row per unit and a column per input, so n is its number of columns.", [[86.371, 86.881], [87.241, 87.721], [90.121, 90.691], [92.811, 92.971], [94.281, 94.611]]],
-  "scale/xavier": [97.093, 109.847, "Give each weight a variance of one over n. Then the n terms add up to a variance of one. The standard deviation is one over root n: for a hundred inputs, zero point one.", [[99.973, 100.523], [103.503, 104.103], [106.833, 107.373], [108.483, 108.763]]],
-  "scale/he": [110.227, 125.433, "A ReLU zeroes about half of its inputs, which halves the variance. So for ReLU, double it: a variance of two over n. For fifty inputs, the standard deviation is the root of two over fifty: zero point two.", [[112.877, 113.167], [114.517, 114.987], [116.067, 116.357], [116.817, 117.247], [119.027, 119.577], [120.657, 120.857], [123.967, 124.387]]],
-  "scale/names": [125.813, 134.303, "The first is Xavier initialization, used with tanh. The second is Kaiming He initialization, used with ReLU.", [[128.243, 128.563], [129.673, 130.243], [132.913, 133.213]]],
-  "try/p1": [136.103, 145.952, "Try one: a ReLU layer with He initialization has a weight matrix of shape twenty by eight. What standard deviation should its weights have?", [[136.683, 137.203], [139.733, 139.983], [142.703, 143.313]]],
-  "try/a1": [146.332, 156.416, "One column per input, so the fan-in is eight, not twenty. He's variance is two over eight, a quarter, and its square root is a half.", [[147.812, 148.192], [149.782, 149.992], [150.732, 151.312], [153.302, 153.582], [154.162, 154.582]]],
-  "try/turn": [156.796, 157.536, "Your turn.", []]
+  "scale/flat": [45.906, 54.549, "Through a tan-aitch, a value like ten sits far out on the flat end. The slope there is nearly zero, and so is the gradient.", [[47.016, 47.406], [50.646, 51.206], [53.006, 53.346]]],
+  "scale/small": [54.929, 83.977, "Too small is just as bad. With weights of standard deviation zero point zero one, z has variance a hundred times zero point zero zero zero one: zero point zero one, a standard deviation of zero point one. Near zero, tan-aitch passes values almost unchanged, so layer after layer the signal shrinks: one, zero point one, zero point zero one, zero point zero zero one.", [[56.849, 57.449], [60.739, 61.179], [65.709, 66.229], [67.699, 68.119], [70.539, 71.349], [72.139, 72.409], [75.069, 75.429], [77.989, 78.539], [78.919, 79.249], [80.199, 80.499], [81.809, 82.159]]],
+  "scale/fanin": [84.357, 97.209, "The fix scales the weights by the fan-in, n: the number of inputs each unit adds up. The weight matrix has a row per unit and a column per input, so n is its number of columns.", [[86.867, 87.377], [87.737, 88.217], [90.617, 91.187], [93.307, 93.467], [94.777, 95.107]]],
+  "scale/xavier": [97.589, 110.343, "Give each weight a variance of one over n. Then the n terms add up to a variance of one. The standard deviation is one over root n: for a hundred inputs, zero point one.", [[100.469, 101.019], [103.999, 104.599], [107.329, 107.869], [108.979, 109.259]]],
+  "scale/he": [110.723, 125.929, "A ReLU zeroes about half of its inputs, which halves the variance. So for ReLU, double it: a variance of two over n. For fifty inputs, the standard deviation is the root of two over fifty: zero point two.", [[113.373, 113.663], [115.013, 115.483], [116.563, 116.853], [117.313, 117.743], [119.523, 120.073], [121.153, 121.353], [124.463, 124.883]]],
+  "scale/names": [126.309, 134.695, "The first is Xavier initialization, used with tan-aitch. The second is Kaiming He initialization, used with ReLU.", [[128.689, 128.959], [130.129, 130.729], [133.369, 133.669]]],
+  "try/p1": [136.495, 146.344, "Try one: a ReLU layer with He initialization has a weight matrix of shape twenty by eight. What standard deviation should its weights have?", [[137.075, 137.595], [140.125, 140.375], [143.095, 143.705]]],
+  "try/a1": [146.724, 156.807, "One column per input, so the fan-in is eight, not twenty. He's variance is two over eight, a quarter, and its square root is a half.", [[148.204, 148.584], [150.174, 150.384], [151.124, 151.704], [153.694, 153.974], [154.554, 154.974]]],
+  "try/turn": [157.187, 157.927, "Your turn.", []]
  }
 }
