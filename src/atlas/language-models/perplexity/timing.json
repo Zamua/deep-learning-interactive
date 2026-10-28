@@ -1,19 +1,31 @@
 {
- "duration": 95.332,
+ "duration": 223.714,
  "scenes": {
-  "undo": [0.0, 42.385],
-  "count": [42.385, 95.332]
+  "torn": [0.0, 107.501],
+  "uneven": [107.501, 159.646],
+  "scale": [159.646, 223.714]
  },
  "beats": {
-  "undo/probs": [0.7, 11.699, "A language model reads four tokens of text. At each step, it gave the right next token a probability of one half, then one quarter, one half, and one eighth.", [[3.42, 3.91], [4.68, 4.88], [8.2, 8.55], [9.7, 10.01], [10.61, 10.88]]],
-  "undo/losses": [12.079, 22.29, "Each step's loss is minus the log of that probability: zero point six nine, one point three nine, zero point six nine and two point zero eight.", [[15.419, 15.979], [17.339, 17.689], [18.849, 19.149], [20.429, 20.709]]],
-  "undo/mean": [22.67, 31.107, "Averaged over the four tokens, the loss, L, is about one point two one per token. True, but hard to picture.", [[24.49, 24.74], [25.33, 25.53], [25.88, 26.16], [28.48, 29.07], [29.58, 29.85]]],
-  "undo/exp": [31.487, 41.285, "Perplexity undoes the log: it is e to the L, e to the average loss. e to the one point two one is about three point three six.", [[33.387, 33.967], [35.297, 35.737], [37.177, 37.677]]],
-  "count/uniform": [43.085, 52.904, "Why that is a count: picture a model that spreads its probability evenly over four tokens. It gives the right one a quarter, every time.", [[44.575, 45.245], [49.445, 50.035], [51.735, 52.115]]],
-  "count/k": [53.284, 61.663, "Its loss is the log of four on every token, and e to the log of four is four. Its perplexity is exactly four.", [[56.214, 56.564], [58.804, 59.294]]],
-  "count/means": [62.043, 71.084, "So a perplexity of three point three six means the model is, on average, as unsure as a fair pick among about three point four tokens.", [[64.703, 64.903], [66.853, 67.123]]],
-  "count/bounds": [71.464, 82.005, "A model that is always sure and always right scores one, the best possible. One that spreads evenly over a vocabulary of V tokens scores V.", [[75.254, 75.674], [76.694, 77.334], [80.944, 81.144]]],
-  "count/compare": [82.385, 93.112, "Since e to the loss rises with the loss, lower perplexity means lower loss. On the same text and vocabulary, a model at twelve beats a model at thirty.", [[85.085, 85.465], [87.785, 88.405], [90.255, 90.555], [91.615, 91.785]]],
-  "count/turn": [93.492, 94.232, "Your turn.", []]
+  "torn/problem": [0.7, 12.227, "Train a language model, and its loss on a text, averaged over the tokens, comes out at, say, one point three nine. Is that good? On its own, the number is hard to picture.", [[1.97, 2.26], [3.68, 3.84], [5.18, 5.49], [8.11, 8.59], [9.23, 9.91], [10.6, 10.75]]],
+  "torn/even": [12.607, 23.204, "So take a model that is easy to picture. At every step, it spreads its bet evenly over four tokens, a quarter each, like rolling a fair four-sided die.", [[14.997, 15.527], [16.427, 16.617], [19.457, 19.777], [20.627, 20.977]]],
+  "torn/loss": [23.584, 36.139, "Whichever token is right got a quarter, so every step's loss is minus ln of a quarter. One over four flips the sign of the log: ln four, about one point three nine.", [[25.764, 26.184], [29.774, 30.434], [32.764, 33.244], [34.214, 34.584]]],
+  "torn/same": [36.519, 44.004, "That is our number. A loss of one point three nine per token is exactly as unsure as a fair pick among four.", [[37.679, 38.229], [40.629, 40.829]]],
+  "torn/undo": [44.384, 54.377, "To get the four back, undo the log: e to the one point three nine is four. That is the perplexity: e to the average loss, L.", [[45.604, 45.894], [46.824, 47.454], [49.944, 50.514], [51.884, 52.314], [53.774, 53.964]]],
+  "torn/k": [54.757, 66.367, "Spread the bet evenly over two tokens, and the perplexity is two. Over ten, it is ten. Perplexity counts the tokens a model is, in effect, torn between.", [[57.357, 57.637], [59.237, 59.867], [60.547, 60.727], [61.437, 62.087], [65.247, 65.467]]],
+  "torn/q": [66.747, 77.603, "Only the right token's share counts. Give it a tenth at every step, however the rest is spread, and the loss is ln ten each time: a perplexity of ten.", [[69.037, 69.547], [71.247, 71.507], [72.827, 73.197], [75.687, 76.077]]],
+  "torn/name": [77.983, 86.21, "Hence the name. To be perplexed is to be puzzled, torn between ways to go, and the perplexity says how many ways.", [[78.863, 79.423], [81.443, 81.773], [83.323, 83.723]]],
+  "torn/history": [86.59, 106.401, "Frederick Jelinek, Robert Mercer, Lalit Bahl and James Baker, at IBM, proposed it in 1977, to measure how hard a speech recognition task is. The size of the vocabulary, they showed, is not a fair measure; perplexity counts the equally likely choices a task amounts to.", [[87.63, 87.98], [88.81, 89.13], [92.08, 92.39], [94.44, 94.79], [97.72, 98.37], [100.5, 100.79], [101.96, 102.47]]],
+  "uneven/real": [108.201, 120.74, "A real model bets unevenly, and differently at every step. Reading four tokens of text, this one gave the right next token a half, then a quarter, a half, and an eighth.", [[110.211, 110.461], [112.351, 112.961], [114.751, 115.011], [117.551, 117.931], [118.731, 119.021], [119.611, 119.931]]],
+  "uneven/loss": [121.12, 129.953, "Each step's loss is minus ln of its share. The eighth costs the most: ln eight, about two point zero eight.", [[124.4, 124.95], [126.49, 126.92], [127.88, 128.26]]],
+  "uneven/mean": [130.333, 135.152, "Average the four losses, and L is about one point two one per token.", [[131.793, 132.003]]],
+  "uneven/exp": [135.532, 140.924, "Undo the log: e to the one point two one is about three point three six.", [[136.542, 137.142]]],
+  "uneven/means": [141.304, 147.099, "So on average, this model is as torn as a fair pick among about three and a third tokens.", []],
+  "uneven/order": [147.479, 158.546, "Average first, then undo the log. Undo it on the total loss instead, and you count the choices for the whole text at once: a number that grows the longer the text runs.", [[148.449, 148.689], [150.019, 150.579], [152.539, 152.809], [155.469, 155.899]]],
+  "scale/one": [160.346, 175.473, "Perplexity has a floor. A model that gives the right token all of its probability, every time, has a loss of minus ln one at each step: zero. And e to the zero is one: one choice, the right one.", [[161.926, 162.556], [165.636, 165.876], [166.646, 166.916], [169.906, 170.396], [170.866, 171.426], [173.216, 173.686], [174.416, 174.736]]],
+  "scale/V": [175.853, 187.267, "A model that has learned nothing spreads its bet evenly over its whole vocabulary of V tokens, so its perplexity is V: with fifty thousand tokens, fifty thousand.", [[181.743, 182.153], [183.943, 184.523], [185.973, 186.273]]],
+  "scale/back": [187.647, 196.626, "Read it backwards, and the loss is the log of the perplexity. A perplexity of twenty is an average loss of ln twenty, about three.", [[188.707, 188.937], [191.177, 191.777], [195.537, 195.867]]],
+  "scale/compare": [197.006, 210.843, "e to the loss climbs whenever the loss does, so the two always rank models the same way. On the same text and vocabulary, a model at twelve beats a model at thirty: it is torn between fewer tokens.", [[199.666, 200.086], [202.766, 203.416], [205.266, 205.566], [208.186, 208.666]]],
+  "scale/units": [211.223, 221.493, "To set a loss against a perplexity, put both in the same units first. A loss of two is a perplexity of e squared, about seven point three nine.", [[213.313, 213.673], [215.753, 216.373], [217.313, 217.473], [219.433, 219.743]]],
+  "scale/turn": [221.873, 222.614, "Your turn.", []]
  }
 }

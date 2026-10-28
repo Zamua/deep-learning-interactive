@@ -1,22 +1,31 @@
 {
- "duration": 106.055,
+ "duration": 206.078,
  "scenes": {
-  "into": [0.0, 34.17],
-  "through": [34.17, 61.82],
-  "out": [61.82, 106.055]
+  "job": [0.0, 93.057],
+  "stack": [93.057, 150.077],
+  "out": [150.077, 206.078]
  },
  "beats": {
-  "into/ids": [0.7, 12.575, "A decoder-only language model, the design behind GPT, reads a sequence of T token ids. Here T is four: the, cat, sat, on.", [[2.61, 2.86], [4.43, 4.8], [7.36, 7.85], [8.21, 8.39], [9.39, 9.87], [10.21, 10.64], [11.0, 11.33], [11.76, 12.15]]],
-  "into/embed": [12.955, 22.522, "First, each id is swapped for its row of the embedding table: T vectors of d numbers, an array, x, of T by d.", [[13.495, 13.765], [17.225, 17.755], [19.465, 19.895], [20.525, 20.745], [21.205, 21.355]]],
-  "into/pos": [22.902, 33.07, "Attention ignores order, so each position adds a vector of its own, from a table with one row per position. The shape stays T by d.", [[24.632, 25.042], [27.572, 27.922], [30.222, 30.792], [31.732, 31.922]]],
-  "through/blocks": [34.87, 44.396, "Then come the transformer blocks, N of them, one after another. Each takes T by d and hands back T by d, so they stack.", [[36.71, 37.09], [37.63, 37.92], [39.14, 39.64], [41.27, 41.47], [43.19, 43.55]]],
-  "through/causal": [44.776, 52.424, "Every block's attention is causal. Position two sees positions zero, one and two, and never three.", [[46.886, 47.466], [49.776, 49.936], [51.046, 51.306]]],
-  "through/why": [52.804, 60.72, "So no position can peek at the token it will be asked to predict, and all T positions still run at once, in one pass.", [[56.434, 56.834], [59.454, 59.724]]],
-  "out/unembed": [62.52, 70.901, "At the top, the unembedding scores every vocabulary token at every position: T by d becomes T by V.", [[63.23, 63.5], [67.46, 68.07], [69.71, 69.91]]],
-  "out/softmax": [71.281, 76.299, "A softmax on each row turns those scores into next-token probabilities.", []],
-  "out/shift": [76.679, 87.63, "Each row predicts the token after its position. Row zero has read the, and predicts cat. Row one predicts sat, and row two predicts on.", [[79.549, 80.089], [81.869, 82.109], [83.209, 83.759], [85.429, 85.769], [87.059, 87.209]]],
-  "out/last": [88.01, 94.938, "Row three has read the whole sequence, so it predicts the token after all of it: a word not written yet.", [[90.28, 90.62], [92.88, 93.36]]],
-  "out/count": [95.318, 103.835, "So T tokens give T predictions, all from one forward pass, and training adds up a cross-entropy loss at every position.", [[97.768, 98.118], [99.888, 100.238]]],
-  "out/turn": [104.215, 104.955, "Your turn.", []]
+  "job/job": [0.7, 7.853, "A language model reads text and predicts what comes next. Take the text cats like fresh fish daily.", [[4.21, 4.78], [5.54, 5.91]]],
+  "job/shift": [8.233, 16.392, "After cats comes like. After cats like comes fresh. The targets are the text itself, shifted by one.", [[9.943, 10.523], [12.433, 13.103], [15.013, 15.283]]],
+  "job/once": [16.772, 24.593, "A recurrent network worked through this one step at a time. This model makes all four predictions at once, in a single pass.", [[19.992, 20.522], [23.192, 23.352]]],
+  "job/peek": [24.973, 33.422, "But at once, the answers sit right there in the input. Position one, reading like, could simply look ahead at fresh and copy it.", [[25.813, 25.963], [28.183, 28.733], [29.563, 29.903], [30.583, 30.873]]],
+  "job/causal": [33.802, 45.652, "So each position may see only itself and what came before. That rule is called causal, as in cause and effect: a later token can never change what an earlier position says.", [[37.572, 38.172], [39.822, 40.172], [41.612, 42.092]]],
+  "job/decoder": [46.032, 61.803, "The Transformer, in 2017, was built for translation, with an encoder and a decoder like the recurrent ones before it. The encoder read the source sentence, and the decoder wrote the translation one token at a time, under exactly this rule.", [[48.272, 48.522], [49.912, 50.272], [53.852, 54.432], [56.392, 56.632], [60.032, 60.272]]],
+  "job/only": [62.183, 74.588, "A language model has no source sentence to read, so it keeps only the decoder. In 2018, Peter Liu and colleagues used such a decoder-only model to write Wikipedia articles.", [[64.963, 65.323], [67.053, 67.793], [68.853, 69.163], [72.563, 72.823]]],
+  "job/gpt": [74.968, 91.957, "That same year, Alec Radford and colleagues at OpenAI trained one on over seven thousand unpublished books. It came to be called GPT, for generative pre-trained transformer: a transformer, trained on plain text, that generates more of it.", [[75.998, 76.268], [78.578, 78.768], [82.118, 82.688], [84.648, 84.938], [87.378, 87.908], [88.778, 88.998], [90.358, 90.598]]],
+  "stack/ids": [93.757, 102.348, "Now build it, from the bottom up. The four tokens come in as ids: a list of T numbers, and here T is four.", [[94.657, 94.987], [95.857, 96.457], [98.687, 99.077], [100.367, 100.647], [101.167, 101.347]]],
+  "stack/embed": [102.728, 111.924, "Each id becomes its row of the embedding table, E. That gives x: T vectors of d numbers, T by d.", [[106.178, 106.478], [106.808, 107.428], [108.458, 108.968], [110.618, 111.038]]],
+  "stack/pos": [112.304, 120.954, "Attention cannot tell where a token sits, so each position adds a learned vector of its own. The shape stays T by d.", [[114.904, 115.314], [118.224, 118.734]]],
+  "stack/blocks": [121.334, 129.849, "Then come N transformer blocks, one after another. Each takes T by d and hands back T by d, so they stack.", [[123.414, 123.594], [124.784, 125.304], [126.894, 127.064], [128.664, 128.974]]],
+  "stack/causal": [130.229, 142.358, "In every block, attention is causal: the mask hides every later position. Position two looks back at zero and one, and at itself, but never ahead at three.", [[131.219, 131.509], [132.859, 133.379], [135.609, 136.319], [138.979, 139.239], [140.319, 140.689]]],
+  "stack/why": [142.738, 148.977, "So no position can see the token it must predict, and all T positions still run at once.", [[145.818, 146.178]]],
+  "out/unembed": [150.777, 159.157, "At the top, the unembedding scores every vocabulary token at every position: T by d becomes T by V.", [[151.487, 151.757], [155.717, 156.327], [157.967, 158.167]]],
+  "out/softmax": [159.537, 164.606, "A softmax on each row turns its scores into probabilities for the next token.", []],
+  "out/shift": [164.986, 173.686, "Row zero has read only cats, and puts the most on like. Row one puts it on fresh, and row two on fish.", [[166.366, 166.516], [167.426, 167.696], [169.266, 169.926], [171.746, 172.066]]],
+  "out/last": [174.066, 184.734, "Row three has read all four, so it predicts the token after fish: here, daily. At the end of a text, that last row is the next word to write.", [[176.006, 176.386], [178.546, 179.096], [179.436, 179.906], [180.306, 180.936], [182.066, 182.266]]],
+  "out/count": [185.114, 194.233, "So T tokens in give T predictions out, all from one pass through the model. A batch of B texts gives B times T.", [[188.384, 188.834], [190.654, 191.204], [192.654, 192.804]]],
+  "out/loss": [194.613, 203.858, "Every prediction has a target, so every one gets a cross-entropy loss. Training adds up all four: four lessons from a single pass.", [[196.343, 196.663], [199.043, 199.593], [201.253, 201.723]]],
+  "out/turn": [204.238, 204.978, "Your turn.", []]
  }
 }

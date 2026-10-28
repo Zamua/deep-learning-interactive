@@ -1,17 +1,26 @@
 {
- "duration": 81.802,
+ "duration": 166.061,
  "scenes": {
-  "idea": [0.0, 28.121],
-  "example": [28.121, 81.802]
+  "ask": [0.0, 100.161],
+  "example": [100.161, 166.061]
  },
  "beats": {
-  "idea/top": [0.7, 9.893, "At the top, the model scores every token by multiplying the final stream by the unembedding: one row per token, one dot product each.", [[1.4, 1.65], [6.21, 6.72], [7.99, 8.42]]],
-  "idea/sum": [10.273, 17.627, "But the final stream is just x zero plus every block's write, and a partial sum is the same kind of vector.", [[14.473, 14.913]]],
-  "idea/lens": [18.007, 27.021, "So multiply the stream partway up by the same unembedding. That is the logit lens: what the model would predict if it stopped there.", [[21.867, 22.447], [24.017, 24.457]]],
-  "example/setup": [28.821, 42.376, "A tiny model reads \"the capital of Italy is\". Its stream is two numbers wide, and three tokens matter: Paris, Rome, and \"the\". Here is each token's row of the unembedding.", [[30.201, 30.481], [32.271, 32.821], [34.811, 35.091], [36.511, 36.971], [37.471, 37.711], [38.171, 38.381], [39.101, 39.691]]],
-  "example/x0": [42.756, 54.048, "The stream starts at one, zero. Dot it with each row: Paris scores two, Rome zero, \"the\" one. The lens says Paris.", [[44.416, 44.776], [45.246, 45.776], [47.106, 47.626], [48.946, 49.346], [49.776, 49.926], [50.436, 50.906], [51.336, 51.556], [51.926, 52.516]]],
-  "example/x1": [54.428, 67.719, "Block zero writes minus one, two, so the stream becomes zero, two. Now Paris scores zero, Rome four, and \"the\" two. After block zero, the lens says Rome.", [[56.458, 56.638], [57.038, 57.438], [59.598, 60.168], [61.838, 62.098], [62.968, 63.208], [63.888, 64.058], [64.408, 65.058], [66.158, 66.388]]],
-  "example/story": [68.099, 79.582, "Read block by block, the lens shows the answer forming. Early blocks also write notes for later ones that the unembedding cannot read, so early guesses are often noisy.", [[69.499, 69.829], [71.799, 72.449], [75.109, 75.289], [77.019, 77.429]]],
-  "example/turn": [79.962, 80.702, "Your turn.", []]
+  "ask/read": [0.7, 13.931, "A language model reads \u201cthe capital of Italy is\u201d, and has to guess the next word. Follow the last word up through the model: its vector, the residual stream, rises past one block after another.", [[2.04, 2.3], [4.05, 4.38], [6.08, 6.63], [8.83, 9.28], [10.01, 10.18], [11.3, 11.54]]],
+  "ask/top": [14.311, 24.469, "Only at the very top does the model answer. The unembedding, W U, gives every token a score, its logit, and Rome's is the highest.", [[17.001, 17.641], [18.561, 18.861], [19.651, 19.931], [21.561, 21.881], [22.581, 22.921]]],
+  "ask/ask": [24.849, 35.437, "In between, the stream is just a list of numbers, with no labels on them. So ask a simpler question: if the model stopped halfway up, what would it say?", [[25.639, 25.919], [27.939, 28.219], [29.419, 30.019], [31.709, 32.269], [34.129, 34.539]]],
+  "ask/same": [35.817, 46.31, "The stream halfway up is the same kind of vector as at the top: x zero plus the writes so far, just as wide. Only the later blocks' writes are missing.", [[39.497, 40.097], [42.417, 42.707], [43.527, 44.087]]],
+  "ask/lens": [46.69, 54.501, "So read it with the same W U. Do that at every height, and you see the model's guess so far, block by block.", [[49.0, 49.56], [50.9, 51.18], [53.13, 53.49]]],
+  "ask/name": [54.881, 63.88, "This is the logit lens. Logit, because what it reads out is logits. A lens, because it is a way of looking inside the model.", [[56.561, 57.141], [57.651, 57.931], [60.041, 60.571], [61.231, 61.441]]],
+  "ask/borrow": [64.26, 70.028, "Nothing new is trained: the lens borrows the model's own W U, just as it is.", [[65.74, 66.19], [68.87, 69.11]]],
+  "ask/history": [70.408, 85.411, "A writer known online as nostalgebraist named it, in a 2020 post about G P T two, a model with forty-eight blocks. Read after its twelfth block, or its thirty-third, the stream already made sense as a guess.", [[73.798, 74.068], [76.678, 77.008], [78.748, 79.448], [81.198, 81.448], [82.608, 82.978]]],
+  "ask/forms": [85.791, 99.061, "The early guesses were generally wrong, but often sensible in some way, and they sharpened, block by block, toward the final answer. Here: a capital, then a city in Italy, then Rome.", [[87.971, 88.231], [90.101, 90.551], [91.471, 91.691], [92.591, 92.791], [94.211, 94.811], [95.131, 95.581], [96.231, 96.541], [97.931, 98.291]]],
+  "example/setup": [100.861, 114.463, "Now with numbers. A tiny model reads the same words. Its stream is two numbers wide, and three tokens matter: Paris, Milan and Rome. Here is each one's row of W U.", [[102.051, 102.611], [104.891, 105.381], [107.361, 107.671], [109.141, 109.581], [110.101, 110.261], [111.421, 111.961]]],
+  "example/x0": [114.843, 119.162, "At the bottom, the stream is x zero: one, zero.", [[115.623, 115.873], [117.573, 118.013], [118.413, 118.613]]],
+  "example/dot": [119.542, 128.378, "Paris's row is two, zero. Dotted with the stream: two times one, plus zero times zero, makes two.", [[121.292, 121.632], [122.142, 122.762], [124.062, 124.552], [125.602, 125.832], [127.392, 127.662]]],
+  "example/rest": [128.758, 137.131, "Milan scores one, and Rome zero. So at the bottom, the lens says Paris: a capital, but the wrong one.", [[130.068, 130.268], [131.618, 132.168], [133.258, 133.488], [134.878, 135.348], [136.008, 136.298]]],
+  "example/write": [137.511, 143.724, "Block zero writes minus one, two. Added in, the stream becomes zero, two.", [[139.651, 139.811], [140.131, 140.681], [141.291, 141.591]]],
+  "example/again": [144.104, 154.16, "Read it again with the same rows. Now Paris scores zero, Milan two, and Rome four. After block zero, the lens says Rome.", [[146.044, 146.584], [148.264, 148.574], [149.504, 149.754], [150.804, 151.324], [152.464, 152.734]]],
+  "example/later": [154.54, 163.841, "Every write still to come can change which token is on top. So a lens partway up shows the prediction so far, and only so far.", [[158.07, 158.59], [162.01, 162.39], [163.6, 163.81]]],
+  "example/turn": [164.221, 164.961, "Your turn.", []]
  }
 }

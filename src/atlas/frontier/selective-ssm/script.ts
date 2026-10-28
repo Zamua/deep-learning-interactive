@@ -6,23 +6,50 @@ export const script: LectureScript = {
   model: 'elevenlabs/eleven-v4',
   voice: 'george',
   speed: 1,
+  papers: [
+    { who: 'Gu & Dao', year: 2023, title: 'Mamba: Linear-Time Sequence Modeling with Selective State Spaces', url: 'https://arxiv.org/abs/2312.00752', scene: 'step' },
+  ],
   scenes: [
     {
-      id: 'select',
-      title: 'Each input sets its decay',
-      codeTitle: 'selective.py',
+      id: 'same',
+      title: 'One fade for every token',
+      codeTitle: 'fixed.py',
       code: `
-        x  = np.array([4, 2, 6])                #@x
-        dt = np.array([1.0, 0.1, 3.0])          #@dt
-        # dt: made from each x, always > 0      #@dt
-        a  = np.exp(-dt)   # [0.37, 0.9, 0.05]  #@a
+        h = a * h + b * x   # every token   #@rec
+        a = 0.6   # fixed: the same for all  #@a
+        a ** np.arange(4, -1, -1)            #@w
+        # 0.13 0.22 0.36 0.6 1: by age       #@w
+        # want: words keep, '.' forgets      #@want
       `,
       beats: [
-        { id: 'fixed', say: 'A linear recurrence fades every input by the same a: a name and a comma are forgotten at the same rate.', code: 'x' },
-        { id: 'select', say: 'Mamba, a selective state space model from 2023, lets each input set its own decay: {aₜ = e^(−Δₜ)|a t equals e to the minus delta t}.', code: 'a' },
-        { id: 'delta', say: '{Δₜ|Delta t}, the step size, comes from {xₜ|x t} through a small learned layer, and is always positive.', code: 'dt' },
-        { id: 'big', say: 'A big step forgets: Δ of three gives {e⁻³ ≈ 0.05|e to the minus three, about zero point zero five}, and the old state is nearly wiped.', code: 'a' },
-        { id: 'small', say: 'A small step keeps: Δ of {0.1|zero point one} gives about {0.9|zero point nine}, and the state carries on, like an LSTM\'s forget gate set by the token.', code: 'a' },
+        { id: 'recall', say: 'A linear recurrence keeps all it knows about the past in its state, h. At every token, it multiplies h by the decay, a, then adds the new input, times b.', code: 'rec' },
+        { id: 'name', say: 'A model like this, with an input, a state carrying the past, and an output read from it, is called a state space model. The state is its whole memory; the state space, every value it can take.', code: 'rec' },
+        { id: 'fixed', say: 'Here a is fixed at {0.6|zero point six} for every token, so each word\'s weight in the state is a to the power of its age: the older, the fainter, whatever the word.', code: ['a', 'w'] },
+        { id: 'want', say: 'But once a full stop ends a sentence, its words could go, while the next sentence\'s words should hold. That needs a decay set by each token, as an LSTM\'s forget gate is set by each input.', code: 'want' },
+      ],
+    },
+    {
+      id: 'step',
+      title: 'A step size per token',
+      codeTitle: 'step.py',
+      code: `
+        # the state drains as time passes    #@drain
+        np.exp(-1)   # one unit: 0.37 left   #@one
+        a = np.exp(-dt)   # a step of dt     #@a
+        np.exp(-3)    # long: 0.05, forget   #@big
+        np.exp(-0.1)  # short: 0.9, keep     #@small
+        # dt > 0, so 0 < a < 1               #@range
+        # dt: made from x by a learned layer #@dt
+      `,
+      beats: [
+        { id: 'drain', say: 'Here is a way to set it. Picture the state draining away as time passes: after one unit of time, e to the minus one is left, about {0.37|zero point three seven}.', code: 'drain' },
+        { id: 'delta', say: 'Now let each token say how much time passes while it is read: its step size, {Δ|delta}, the change in time.', code: 'a' },
+        { id: 'a', say: 'Over a step of {Δ|delta}, the state shrinks to e to the minus {Δ|delta} of itself. That is the decay: {aₜ = e^(−Δₜ)|a t equals e to the minus delta t}.', code: 'a' },
+        { id: 'big', say: 'A long step forgets: a step of three leaves e to the minus three, about {0.05|zero point zero five}, and the old state is nearly wiped.', code: 'big' },
+        { id: 'small', say: 'A short step keeps: a step of {0.1|zero point one} leaves about {0.9|zero point nine}, and the state carries on.', code: 'small' },
+        { id: 'range', say: '{Δ|delta} is always positive, so the decay lies between zero and one: it shrinks the state, but never grows it, and never quite wipes it.', code: 'range' },
+        { id: 'select', say: 'And {Δ|delta} is made from the token itself, by a small learned layer. Each token picks its own step, so the model selects what to keep: a selective state space model.', code: 'dt' },
+        { id: 'mamba', say: 'Albert Gu and {Tri Dao|Tree Dao} built this into their model, Mamba, in 2023. State space models had trailed attention on language, they found, since one decay for every token cannot pick out what to keep.', code: 'dt' },
       ],
     },
     {
@@ -30,16 +57,19 @@ export const script: LectureScript = {
       title: 'Keep, then forget',
       codeTitle: 'run.py',
       code: `
-        b, h = 1, 0                     #@init
-        for t in range(3):              #@loop
-            h = a[t] * h + b * x[t]     #@loop
-            # 4, then 5.6, then 6.28    #@vals
+        x  = [4, 2, 6]                   #@x
+        dt = [1, 0.1, 3]                 #@x
+        a  = [0.37, 0.9, 0.05]  # e**-dt #@x
+        b, h = 1, 0                      #@init
+        for t in range(3):               #@loop
+            h = a[t] * h + b * x[t]      #@loop
+            # 4, then 5.6, then 6.28     #@vals
       `,
       beats: [
-        { id: 'h1', say: 'With b at one, from zero: step one has nothing to fade, so {h₁|h one} is the input, four.', code: ['init', 'loop'] },
-        { id: 'h2', say: 'Step two keeps: {0.9|zero point nine} times four, plus two, is {5.6|five point six}.', code: 'vals' },
+        { id: 'set', say: 'Run it on numbers: inputs four, two and six, with steps of one, {0.1|zero point one} and three: decays of {0.37|zero point three seven}, {0.9|zero point nine} and {0.05|zero point zero five}.', code: 'x' },
+        { id: 'h1', say: 'With b at one, start the state at zero. Step one has nothing to fade, so {h₁|h one} is the input, four.', code: ['init', 'loop'] },
+        { id: 'h2', say: 'Step two\'s own decay, {0.9|zero point nine}, fades the four it finds; add two, and {h₂|h two} is {5.6|five point six}.', code: 'vals' },
         { id: 'h3', say: 'Step three forgets: {0.05|zero point zero five} times {5.6|five point six} is about {0.28|zero point two eight}; add six, and {h₃|h three} is {6.28|six point two eight}, almost all new input.', code: 'vals' },
-        { id: 'more', say: 'Mamba also lets Δ scale the input, and computes b and c from the input too: the token decides what the state keeps.', code: 'loop' },
       ],
     },
     {
@@ -47,38 +77,22 @@ export const script: LectureScript = {
       title: 'A state that never grows',
       codeTitle: 'memory.py',
       code: `
-        layers, d, nbytes = 32, 4000, 2                  #@model
-        tokens = 4000                                    #@cache
-        cache = 2 * layers * tokens * d * nbytes  # 2 GB #@cache
-        state_size = 128_000     # numbers per layer     #@state
-        state = layers * state_size * nbytes     # 8 MB #@state
-        cache / state                             # 250  #@ratio
+        layers, d, nbytes = 32, 4000, 2    #@model
+        tokens = 4000                      #@cache
+        2 * layers * tokens * d * nbytes   #@cache
+        # 2 GB, and growing                #@cache
+        state = 2 * d * 16   # 128,000     #@state
+        layers * state * nbytes   # 8 MB   #@mb
+        2 * tokens * d / state    # 250    #@ratio
       `,
       beats: [
-        { id: 'cache', say: 'While generating, a transformer\'s KV cache holds two, times the layers, times the tokens, times d, times the bytes: it grows with every token.', code: ['model', 'cache'] },
-        { id: 'state', say: 'This model keeps only its state, a fixed set of numbers per layer, updated in place: a summary of the past, where the cache keeps every token.', code: 'state' },
-        { id: 'size', say: 'Take thirty two layers, d at four thousand, and two bytes per number. At four thousand tokens, the cache is about two gigabytes.', code: ['model', 'cache'] },
-        { id: 'ratio', say: 'Give each layer a state of {128,000|a hundred and twenty eight thousand} numbers: about eight megabytes, at any length. The cache is two hundred and fifty times that.', code: ['state', 'ratio'] },
-      ],
-    },
-    {
-      id: 'try',
-      title: 'Try two',
-      codeTitle: 'try.py',
-      code: `
-        a = [0.5, 0.9, 0.1]           #@p1
-        b, h = 1, 0                   #@p1
-        for t, x in enumerate([3, 5, 2]):   #@a1
-            h = a[t] * h + b * x      #@a1
-        # 3, then 7.7, then 2.77      #@a1
-        tokens = 8000                 #@p2
-        2 * tokens * d / state_size   # 500  #@a2
-      `,
-      beats: [
-        { id: 'p1', say: 'Try one: b is one, from zero. Inputs three, five, two; decays {0.5|zero point five}, {0.9|zero point nine}, {0.1|zero point one}. What is {h₃|h three}?', code: 'p1' },
-        { id: 'a1', say: 'Three: {a₁|a one} has nothing to fade. Then {2.7|two point seven} plus five, {7.7|seven point seven}. Then {0.77|zero point seven seven} plus two: {2.77|two point seven seven}.', code: 'a1' },
-        { id: 'p2', say: 'Now both models at eight thousand tokens. How many times the state\'s memory does the cache take?', code: 'p2' },
-        { id: 'a2', say: 'Per layer, the cache holds two times eight thousand times four thousand numbers; the state, {128,000|a hundred and twenty eight thousand}. Divide: five hundred.', code: 'a2' },
+        { id: 'cache', say: 'Now the memory. While generating, a transformer\'s KV cache grows with every token: at thirty two layers and d of four thousand, four thousand tokens take about two gigabytes.', code: ['model', 'cache'] },
+        { id: 'state', say: 'A state space model keeps only its state, updated in place: a summary of the past, where the cache keeps every token whole.', code: 'state' },
+        { id: 'shape', say: 'A Mamba layer runs twice d of these recurrences side by side, eight thousand here, each keeping, typically, sixteen numbers: {128,000|a hundred and twenty eight thousand} numbers per layer.', code: 'state' },
+        { id: 'mb', say: 'Over thirty two layers, at two bytes each, that is about eight megabytes, at any length.', code: 'mb' },
+        { id: 'ratio', say: 'Compare one layer of each. The cache holds a key and a value of four thousand numbers for each of four thousand tokens: thirty two million numbers.', code: 'ratio' },
+        { id: 'times', say: 'That is two hundred and fifty times the state. Double the context, and the cache doubles; the state stays the same size.', code: 'ratio' },
+        { id: 'fast', say: 'With no cache to hold, a GPU can serve many more sequences at once: Gu and Dao measured four to five times as many tokens per second as a transformer of similar size.', code: 'mb' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

@@ -1,22 +1,37 @@
 {
- "duration": 143.22,
+ "duration": 252.078,
  "scenes": {
-  "line": [0.0, 54.693],
-  "train": [54.693, 81.941],
-  "sample": [81.941, 143.22]
+  "road": [0.0, 68.24],
+  "line": [68.24, 118.726],
+  "train": [118.726, 176.707],
+  "sample": [176.707, 252.078]
  },
  "beats": {
-  "line/arc": [0.7, 13.376, "Take a two pixel image, x zero, as a point in the plane, and its noise epsilon as another. As alpha bar falls, the diffusion blend travels from one to the other along a curve.", [[2.21, 2.46], [3.27, 3.5], [4.72, 5.07], [7.11, 7.71], [9.29, 9.58]]],
-  "line/line": [13.756, 26.994, "Flow matching takes the straight line instead. x t is one minus t, times x zero, plus t times epsilon, with t running from zero, the image, to one, pure noise.", [[16.286, 16.846], [18.966, 19.176], [20.286, 20.556], [22.166, 22.556], [24.236, 24.446], [24.986, 25.326], [25.846, 26.146]]],
-  "line/point": [27.374, 40.453, "Say x zero is one and zero, and epsilon is minus one and two. At t of a quarter, take three quarters of x zero plus a quarter of epsilon: a half, and a half.", [[29.884, 30.264], [32.584, 33.214], [34.394, 34.714], [36.664, 36.854], [38.364, 38.894], [39.454, 39.734]]],
-  "line/v": [40.833, 53.593, "Along the line, the point moves at a steady velocity, v: epsilon minus x zero, here minus two and two, for each unit of t. It is the same at every t.", [[41.703, 41.973], [44.103, 44.553], [44.963, 45.383], [47.203, 47.583], [47.943, 48.093], [49.483, 49.833], [51.193, 51.763]]],
-  "train/net": [55.393, 65.833, "Train the network as before, with a new target. It sees x t and t, and guesses the velocity: v hat, the hat marking a guess of v.", [[57.123, 57.283], [58.243, 58.873], [60.803, 61.143], [62.473, 62.823], [63.513, 63.963]]],
-  "train/loss": [66.213, 80.841, "The loss is the squared error against epsilon minus x zero, averaged. A guess of minus one and a half, and two, misses by a half and by zero: the loss is a quarter over two, zero point one two five.", [[70.143, 70.343], [70.943, 71.543], [73.403, 73.563], [74.203, 74.463], [76.463, 76.933], [78.783, 79.163]]],
-  "sample/start": [82.641, 88.691, "To make an image, start at t equals one, with pure noise, and walk back to zero.", [[83.601, 83.841], [85.701, 85.951], [86.941, 87.221]]],
-  "sample/euler": [89.071, 105.6, "Each Euler step asks the network for v hat at the current point, and moves against it: the new x t is the old one minus delta t times v hat, where delta t is the step's size in t. Then t drops by delta t.", [[93.081, 93.301], [94.431, 95.031], [96.211, 96.401], [99.641, 100.031], [102.801, 103.361], [103.741, 103.921]]],
-  "sample/ex": [105.98, 118.849, "Start from minus one and two, with delta t of a half. If the guess is minus two and two, the step adds one and takes away one: the point lands on zero and one, at t of a half.", [[108.04, 108.29], [109.8, 110.42], [112.4, 112.66], [115.01, 115.49], [117.49, 117.73]]],
-  "sample/exact": [119.229, 129.206, "A second step lands on one and zero: the image. On a straight line the velocity never changes, so even one long step would land exactly.", [[121.769, 122.169], [122.799, 123.389], [126.059, 126.359]]],
-  "sample/bend": [129.586, 141.0, "But the network never sees which image a noise came from, so its velocity is an average over every line through the point, and its paths bend a little. A few steps follow them well.", [[132.856, 133.206], [136.916, 137.246], [138.796, 139.346]]],
-  "sample/turn": [141.38, 142.12, "Your turn.", []]
+  "road/pair": [0.7, 7.911, "Take a two pixel image, x zero, as a point in the plane, and some noise, epsilon, as another.", [[2.28, 2.61], [3.42, 3.68], [4.93, 5.29], [6.27, 6.48], [7.07, 7.28]]],
+  "road/arc": [8.291, 17.263, "The diffusion blend joins them: as alpha bar falls, it slides from the image to the noise, and in this plane its path is a curve.", [[10.111, 10.671], [12.091, 12.331], [14.431, 14.781], [15.641, 15.811]]],
+  "road/back": [17.643, 26.679, "To make a new image, walk that path backwards: from the noise toward the image, each step the way the path points where you stand.", [[18.863, 19.143], [20.723, 21.213], [23.203, 23.623], [24.273, 24.443]]],
+  "road/drift": [27.059, 35.483, "On a curve, big steps go wrong: each heads off straight while the path bends away, and two of them end far from the image.", [[27.849, 28.089], [29.509, 30.009], [31.269, 31.449], [32.899, 33.259]]],
+  "road/many": [35.863, 40.321, "Small steps hug the curve, but then the walk takes many of them.", [[37.713, 38.183], [38.673, 38.843]]],
+  "road/straight": [40.701, 47.982, "A straight path has no bend to fall off. One step, the way it points, lands exactly on the image.", [[43.331, 43.921], [44.621, 44.951], [45.841, 46.121]]],
+  "road/liu": [48.362, 59.914, "That is the idea of rectified flow, from Shing-chow Liu and colleagues in 2022: rectified means made straight, since a straight path can be followed exactly.", [[50.812, 51.112], [54.102, 54.862], [56.912, 57.292]]],
+  "road/lipman": [60.294, 67.14, "A month later, Yaron Lipman and colleagues reached straight paths too, and named the method: flow matching.", [[61.174, 61.454], [64.404, 64.714], [65.714, 66.184]]],
+  "line/line": [68.94, 78.912, "Flow matching uses the straight line. Its point at time t, x t, is one minus t, times x zero, plus t times epsilon.", [[71.09, 71.6], [73.12, 73.39], [74.01, 74.35], [75.65, 75.85], [76.96, 77.23]]],
+  "line/t": [79.292, 84.326, "Here t runs from zero, the image, to one, pure noise.", [[81.352, 81.632], [82.212, 82.552], [83.072, 83.452]]],
+  "line/point": [84.706, 92.343, "At t of a quarter, take three quarters of x zero, plus a quarter of epsilon: a half, and a half.", [[86.026, 86.306], [88.406, 88.686], [90.266, 90.736], [91.306, 91.596]]],
+  "line/v": [92.723, 107.938, "As t grows, the point slides along at a steady pace. How far it moves per unit of t is its velocity, v. Over the whole line it travels from the image to the noise, so v is epsilon minus x zero.", [[93.823, 94.063], [96.463, 97.023], [99.173, 99.333], [100.283, 100.553], [100.943, 101.583], [104.693, 105.033]]],
+  "line/steady": [108.318, 117.626, "Here that is minus two and two, at every t. On the curve, the direction kept turning; on the line, it never does.", [[110.968, 111.288], [112.278, 112.968], [113.678, 113.918], [115.358, 115.828], [116.498, 116.718]]],
+  "train/net": [119.426, 129.767, "Train the network as for diffusion, with a new target. It sees x t and t, and guesses the velocity: v hat, the hat marking a guess.", [[121.526, 121.716], [122.736, 123.236], [125.126, 125.416], [126.746, 127.096], [127.796, 128.226]]],
+  "train/loss": [130.147, 144.775, "The loss is the squared error against epsilon minus x zero, averaged. A guess of minus one and a half, and two, misses by a half and by zero: the loss is a quarter over two, zero point one two five.", [[134.077, 134.277], [134.877, 135.477], [137.337, 137.497], [138.137, 138.397], [140.397, 140.867], [142.717, 143.097]]],
+  "train/cross": [145.155, 155.268, "Train on many images, each with its own noise, and their lines criss-cross. These two pass the same point at the same t, with different velocities.", [[146.715, 147.045], [148.465, 148.735], [150.205, 150.805], [153.625, 153.885]]],
+  "train/average": [155.648, 164.555, "The network sees only the point and t, not the line, so its best guess is their average: that is where the squared error is smallest.", [[158.118, 158.408], [159.198, 159.628], [161.658, 162.088]]],
+  "train/flow": [164.935, 175.607, "Arrows at every point, carrying points along like water in a stream, are called a flow. Training matches the network's flow to the lines: flow matching.", [[166.395, 166.805], [169.405, 169.695], [170.765, 171.395], [174.255, 174.725]]],
+  "sample/start": [177.407, 183.045, "To make an image, start at t of one, with fresh noise, and walk back to zero.", [[178.337, 178.577], [180.097, 180.347], [181.287, 181.587]]],
+  "sample/dt": [183.425, 192.505, "Pick a step size, delta t: the change in t per step. With delta t of a half, two steps get from one to zero.", [[184.535, 184.935], [185.715, 186.205], [187.905, 188.465], [190.035, 190.335]]],
+  "sample/rule": [192.885, 204.463, "Each step asks the network for v hat where the point is, and moves against it, back toward the image: the new x t is the old one, minus delta t times v hat.", [[196.335, 196.615], [197.705, 197.985], [199.255, 199.795], [201.915, 202.205]]],
+  "sample/ex": [204.843, 217.401, "Start from minus one and two, with a guess of minus two and two. Half the guess is minus one and one; take that away, and the point lands on zero and one, at t of a half.", [[206.903, 207.223], [209.283, 209.963], [212.233, 212.733], [213.503, 213.763], [215.803, 216.113]]],
+  "sample/exact": [217.781, 227.872, "A second step lands on one and zero: the image. With a velocity that never changes, one step of delta t equal to one would land there too.", [[220.321, 220.691], [221.371, 222.001], [223.901, 224.211], [226.571, 226.771]]],
+  "sample/euler": [228.252, 242.113, "Stepping the way an arrow points, then looking again, is Oiler's method, from Leonhard Oiler in 1768. Gradient descent steps the same way: w gets w minus eta g.", [[230.162, 230.372], [231.422, 231.692], [232.732, 233.282], [236.112, 236.752], [238.882, 239.412]]],
+  "sample/bend": [242.493, 249.857, "The network's arrows are averages, though, so its paths bend, and samplers take a few steps rather than one.", [[244.703, 245.033], [246.633, 247.013]]],
+  "sample/turn": [250.237, 250.978, "Your turn.", []]
  }
 }

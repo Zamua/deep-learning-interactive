@@ -349,7 +349,10 @@ export const SCOPED: Record<string, SymbolMap> = {
     W: { color: 'blue', name: 'W: a grid of numbers', about: 'Numbers in rows and columns, all of them inputs to f.' },
     w: { color: 'blue', name: 'w: a vector of inputs', about: 'Several numbers fed to f at once.' },
   },
-  'matmul-shapes': { B: { color: 'blue', name: 'B: a matrix', about: 'A second grid of numbers. The product AB needs A\'s columns to match B\'s rows.' } },
+  'matmul-shapes': {
+    B: { color: 'orange', name: 'B: a matrix', about: 'A second grid of numbers, whose columns are the vectors A multiplies. The product AB needs A\'s columns to match B\'s rows.' },
+    C: { color: 'teal', name: 'C: a third matrix', about: 'Four by five here: it turns five numbers into the four that B takes, so A B C is two by five.' },
+  },
   argmax: { s: scores, y: answer },
   softmax: { s: scores, p: probs },
   'cross-entropy': { s: scores, y: answer, p: probs, L: loss },
@@ -488,7 +491,7 @@ export const SCOPED: Record<string, SymbolMap> = {
   grpo: { A: rl.A!, G: { color: 'slate', name: 'G: the group size', about: 'How many answers are sampled for one prompt.' }, r: { color: 'gold', name: 'r: an answer\'s reward', about: '1 when the answer checks out, 0 when it does not.' } },
   unembedding: {
     h: { color: 'gold', name: 'h: the last vector at one position', code: ['h'], about: 'What the model has computed for this position: d numbers, about to be scored against every token.' },
-    s: { color: 'purple', name: 's: the scores', code: ['s', 'scores', 'logits'], about: 'One per token in the vocabulary, the logits: softmax turns them into next-token probabilities.' },
+    s: { color: 'purple', name: 's: the scores', code: ['s', 'scores', 'logits'], about: 'One per token in the vocabulary, the logits: the argmax, the position of the highest, names the token the model picks.' },
   },
   gpt: {
     ...pick(att, 'd T'),
@@ -525,7 +528,7 @@ export const SCOPED: Record<string, SymbolMap> = {
     o: { color: 'gold', name: 'o: the running output', code: ['o'], about: 'The values weighted by e^(s − m) so far, rescaled like ℓ. At the end, o / ℓ is attention\'s output.' },
     c: { color: 'slate', name: 'c: the rescale factor', code: ['c'], about: 'e^(old m − new m): what ℓ and o are multiplied by when a bigger score arrives.' },
   },
-  saliency: { g: { ...grad, name: 'g: the gradient of one class score', about: 'One partial derivative per pixel: how fast s_c moves when that pixel is nudged. Its absolute value is the saliency map.' } },
+  saliency: { g: { ...grad, name: 'g: the gradient of one class score', about: 'One partial derivative per pixel: how fast s_c moves when that pixel is nudged. Its absolute value is the saliency map.' }, s: { color: 'purple', name: 's: a class score', about: 'The number the classifier gives one class; the saliency map is the size of its gradient with respect to the pixels.' } },
   upsampling: { w: { color: 'blue', name: 'w: the filter\'s weights', about: 'F weights. Each input value stamps a copy of them, scaled by that value, into the output.' } },
   'ddpm-sampling': {
     ...pick(dif, 'xt eps epshat tstep'),

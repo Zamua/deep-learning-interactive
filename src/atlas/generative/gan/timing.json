@@ -1,22 +1,37 @@
 {
- "duration": 123.301,
+ "duration": 242.298,
  "scenes": {
-  "players": [0.0, 31.264],
-  "dstep": [31.264, 74.569],
-  "gstep": [74.569, 123.301]
+  "idea": [0.0, 64.501],
+  "dstep": [64.501, 131.168],
+  "gstep": [131.168, 194.535],
+  "collapse": [194.535, 242.298]
  },
  "beats": {
-  "players/gen": [0.7, 11.665, "A generative adversarial network, or GAN, is two networks. The generator, G, turns random noise, z, into an image: a fake.", [[2.87, 3.1], [3.85, 4.1], [5.24, 5.84], [6.65, 6.82], [7.25, 7.56], [8.85, 9.03], [9.48, 9.82], [10.7, 11.09]]],
-  "players/disc": [12.045, 21.559, "The discriminator, D, is a classifier with a sigmoid at the end. Its output is the probability that its input is a real image, not a fake.", [[13.075, 13.245], [13.695, 13.935], [16.245, 16.775], [20.555, 20.775]]],
-  "players/game": [21.939, 30.164, "They train against each other. D tries to tell real images from fakes, and G tries to make fakes that D calls real.", [[23.539, 24.149], [26.769, 27.069]]],
-  "dstep/labels": [31.964, 38.998, "D is trained like any binary classifier: real images are labeled one, and fakes are labeled zero.", [[34.684, 35.204], [36.964, 37.234]]],
-  "dstep/real": [39.378, 48.224, "Say D gives a real image zero point eight. Its cross-entropy is minus the log of zero point eight: zero point two two.", [[42.398, 42.948], [46.338, 46.848]]],
-  "dstep/fake": [48.604, 62.512, "And it gives a fake zero point three. A fake's right answer is zero, whose probability is one minus zero point three, zero point seven. Minus the log of zero point seven is zero point three six.", [[50.884, 51.434], [53.394, 53.684], [56.624, 56.964], [57.994, 58.494], [60.604, 60.814]]],
-  "dstep/sum": [62.892, 73.469, "D's loss is the two together: zero point five eight. Its step pushes the real score up and the fake score down, while G's weights stay fixed.", [[64.882, 65.332], [66.792, 67.332], [69.562, 69.812], [71.162, 71.552]]],
-  "gstep/flip": [75.269, 91.627, "Then it is G's turn. G is trained as if its fake were labeled real, so its loss is minus the log of D of G of z: D's score on the fake that G makes from z. At zero point three, that is one point two zero.", [[76.859, 77.479], [80.329, 80.699], [84.259, 84.819], [87.629, 88.229], [89.499, 89.759]]],
-  "gstep/back": [92.007, 100.923, "The gradient flows back through D, which is held fixed, and into G. G's step changes its fakes so that D's score on them rises.", [[94.027, 94.177], [95.237, 95.417], [96.257, 96.847]]],
-  "gstep/alternate": [101.303, 107.495, "The steps alternate, D then G, and each network keeps improving against the other.", [[102.493, 102.943], [103.353, 103.543], [104.163, 104.623]]],
-  "gstep/collapse": [107.875, 121.081, "One way it fails: G finds a few fakes that fool D, and makes only those, whatever z it is given. Each sample looks real, but the variety is gone. That is mode collapse.", [[109.075, 109.635], [112.195, 112.475], [113.725, 114.015], [115.345, 115.945], [117.355, 117.675], [119.035, 119.545]]],
-  "gstep/turn": [121.461, 122.201, "Your turn.", []]
+  "idea/want": [0.7, 6.367, "Say you want a network that draws new handwritten digits, not copies of the ones it has seen.", [[4.05, 4.36]]],
+  "idea/z": [6.747, 14.141, "Give it a list of random numbers, z, and let it turn them into a picture. Each new z gives a new picture.", [[8.647, 8.857], [9.257, 9.717], [11.427, 11.967]]],
+  "idea/stuck": [14.521, 22.995, "But training needs a loss, and a new digit has no right answer to compare with: there is no formula for how real a picture looks.", [[16.161, 16.501], [19.411, 19.911]]],
+  "idea/judge": [23.375, 30.26, "In 2014, Ian Goodfellow and colleagues found a way: train a second network to be the judge.", [[24.555, 24.895], [27.235, 27.825]]],
+  "idea/police": [30.64, 40.982, "Their paper compares it to counterfeiters printing fake money and police learning to spot it: the contest drives both to improve, until the fakes pass for real.", [[33.98, 34.24], [35.84, 36.44], [38.76, 39.14]]],
+  "idea/G": [41.362, 46.61, "The network that draws is the generator, G: it generates the pictures.", [[43.872, 44.162], [44.562, 45.052]]],
+  "idea/D": [46.99, 55.361, "The judge is the discriminator, D, from discriminate: to tell apart. It gives the probability that a picture is real.", [[48.83, 49.26], [49.63, 49.99], [51.04, 51.35], [52.17, 52.76]]],
+  "idea/name": [55.741, 63.401, "Two networks as adversaries, opponents in a contest: a generative adversarial network, or GAN.", [[57.751, 58.121], [59.561, 60.091], [62.251, 62.521]]],
+  "dstep/binary": [65.201, 72.941, "D sorts pictures into two classes, real and fake: a binary classifier, binary meaning of two.", [[67.641, 67.961], [69.071, 69.571], [70.931, 71.351]]],
+  "dstep/one": [73.321, 83.093, "So one number is enough: a sigmoid at the end gives the probability of real, between zero and one, and fake gets the rest, one minus it.", [[74.991, 75.551], [78.411, 78.671], [80.001, 80.431], [81.871, 82.191]]],
+  "dstep/labels": [83.473, 89.029, "Each picture's right answer, called its label, is one for real and zero for fake.", [[85.033, 85.263], [86.163, 86.523], [87.503, 87.713]]],
+  "dstep/real": [89.409, 102.132, "Say D gives a real image zero point eight. Its cross-entropy is minus the log of the probability on the right answer: minus the log of zero point eight, about zero point two two.", [[92.549, 93.139], [97.329, 97.879], [99.889, 100.279]]],
+  "dstep/fake": [102.512, 112.487, "And it gives a fake zero point three. A fake's right answer is fake, whose probability is one minus zero point three: zero point seven.", [[104.782, 105.362], [107.302, 107.662], [110.852, 111.382]]],
+  "dstep/fakeloss": [112.867, 118.729, "So its loss is minus the log of zero point seven: about zero point three six.", [[116.427, 116.847]]],
+  "dstep/sum": [119.109, 130.068, "D's loss is the two together: zero point five eight. Its gradient step pushes the real score up and the fake score down, while G's weights stay fixed.", [[121.089, 121.559], [123.009, 123.559], [126.219, 126.439], [127.759, 128.149]]],
+  "gstep/flip": [131.868, 144.011, "Then it is G's turn. G is trained as if its fake were labeled real: its loss is minus the log of D of G of z, D's score on the fake G makes from z.", [[133.438, 134.068], [136.908, 137.388], [140.758, 141.188]]],
+  "gstep/gnum": [144.391, 152.125, "At zero point three, that is about one point two zero: the lower D's score on the fake, the bigger G's loss.", [[145.771, 146.111], [148.201, 148.711], [150.431, 150.761]]],
+  "gstep/whynot": [152.505, 164.317, "Why not just have G push D's loss up? The 2014 paper explains: early on, D rejects the poor fakes with confidence, far out on its sigmoid's flat end.", [[155.035, 155.695], [157.835, 158.435], [159.045, 159.315], [161.795, 162.115]]],
+  "gstep/flat": [164.697, 175.21, "There, D's loss on a fake is flat, so G would get almost no gradient. Minus the log of D keeps a steady slope, so G learns from the start.", [[165.197, 165.457], [167.417, 167.767], [169.937, 170.567], [173.117, 173.437]]],
+  "gstep/back": [175.59, 186.847, "The gradient flows back through D, held fixed, into G. Only G's weights change, so D's scores on real images, which never pass through G, stay put.", [[177.63, 177.86], [178.63, 178.81], [179.49, 180.11], [181.75, 182.05], [184.1, 184.28], [185.71, 185.97], [186.61, 186.83]]],
+  "gstep/alternate": [187.227, 193.435, "The steps alternate, one for D, then one for G, so neither gets far ahead of the other.", [[188.437, 188.897], [189.637, 189.887], [190.997, 191.317]]],
+  "collapse/modes": [195.235, 207.884, "Real digits come in ten kinds: plot how often each kind turns up, and there are ten peaks. In statistics, the most common value is the mode, so ten peaks make ten modes.", [[197.365, 197.955], [200.025, 200.375], [201.605, 202.175], [203.025, 203.275], [205.155, 205.525]]],
+  "collapse/one": [208.264, 221.076, "Now say G finds one fake that fools D: a convincing seven. Its loss asks only that each fake fool D, not for variety, so it draws that seven for every z.", [[208.934, 209.264], [211.714, 212.214], [213.514, 214.054], [217.114, 217.374], [218.414, 218.704]]],
+  "collapse/name": [221.456, 229.542, "Each picture looks real, but the variety is gone: the output has collapsed onto one mode. That is mode collapse.", [[222.876, 223.226], [224.636, 225.096], [227.496, 227.936]]],
+  "collapse/warned": [229.922, 240.078, "The 2014 paper already warns of it: train G too much without updating D, and G collapses too many values of z onto the same picture.", [[232.542, 233.062], [235.822, 236.122]]],
+  "collapse/turn": [240.458, 241.198, "Your turn.", []]
  }
 }
