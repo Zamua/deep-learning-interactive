@@ -8,7 +8,8 @@ subject runs from vectors to post-training, and the graph is meant to keep growi
 Routes: `#/atlas` the home, where any unknown address lands; `#/atlas/graph` and
 `#/atlas/list` the whole map; `#/atlas/learn[/<concept-id>]` a session (optionally starting with
 that concept); `#/atlas/place` the placement test; `#/atlas/next` choosing what to learn next;
-`#/atlas/<concept-id>` a concept and `#/atlas/<concept-id>/watch` its explainer;
+`#/atlas/history` everything watched or practiced lately; `#/atlas/<concept-id>` a concept and
+`#/atlas/<concept-id>/watch` its explainer;
 `#/atlas/new-track[/<concept-id>]` picking a track's target, `#/atlas/track/<concept-id>` a
 track and `#/atlas/track/<concept-id>/map` its map. A session or an explainer followed from a
 track carries the track's target as a last part: `#/atlas/learn/<concept-id>/<target>`,
@@ -214,6 +215,9 @@ The account page (`#/account`) also saves both to a JSON file and loads one back
 
 - **Home** (`#/atlas`): due reviews first, then the tracks (or, with none, today's concept and
   the short path around it), and a way into the whole map.
+- **History** (`#/atlas/history`): explainers played and concepts practiced, latest first and
+  grouped by day, each with where it stopped; the home shows the last three explainers. Read
+  from the synced playback and mastery records, so it spans devices; nothing extra is stored.
 - **Map** (`#/atlas/graph`, `#/atlas/list`): every concept by domain, colored by state.
   Tapping a node opens its concept.
 - **Concept** (`#/atlas/<id>`): the explainer, the prerequisites and what it unlocks, the

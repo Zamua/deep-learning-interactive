@@ -128,6 +128,9 @@ function buildNav(active: string): void {
   nav.innerHTML = '';
   const st = new Learner(GRAPH).statuses();
   nav.append(h('a', { class: 'side-course', href: '#/atlas' }, h('span', { class: 'side-course-code' }, ATLAS_COURSE.code), h('span', { class: 'side-course-title' }, ATLAS_COURSE.title)));
+  const hist = h('a', { class: `side-link${active === 'history' ? ' on' : ''}`, href: '#/atlas/history' }, h('span', { class: 'side-num', html: icon('clock') }), h('span', { class: 'side-title' }, 'History'));
+  hist.addEventListener('click', () => setNav(false));
+  nav.append(h('ul', { class: 'side-list' }, h('li', {}, hist)));
   for (const d of DOMAINS) {
     nav.append(h('div', { class: 'side-part' }, d.title));
     const ul = h('ul', { class: 'side-list' });

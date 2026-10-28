@@ -256,6 +256,13 @@ export function putConcepts(s: Store, now: number, recs: Readonly<Record<string,
 
 export const lecture = (s: Store, id: string): LectureEntry | undefined => (s.records[lectureKey(id)] as LectureBucket | undefined)?.l[id];
 
+/** Every lecture's entry, whichever slot holds it. */
+export function lectureEntries(s: Store): Record<string, LectureEntry> {
+  const out: Record<string, LectureEntry> = {};
+  for (const [key, r] of Object.entries(s.records)) if (LECTURE_KEY.test(key)) Object.assign(out, (r as LectureBucket).l);
+  return out;
+}
+
 /** A lecture's resume point, and the stretches heard of narration `dur` seconds long (added to those held). */
 export function putLecture(s: Store, now: number, id: string, at: number, dur: number, bits: string): Store {
   return putRecord(MODEL, s, lectureKey(id), now, (held, t) => {

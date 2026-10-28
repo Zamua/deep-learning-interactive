@@ -3,7 +3,7 @@ import { Local, canon, codeFromRoom, makeRng, memoryStorage, type Kind } from 'h
 import { device, fakeWorld } from 'hearthsync/testing';
 import { emptyRecord, type ConceptRecord } from '../mastery/domain/model';
 import {
-  LAST_KEY, MODEL, PREFS_KEY, READING_KEY, TRACKS_KEY, concepts, lastSeen, laterConcept, lecture, lectureKey, masteryKey, model, orBits, paceOf, putConcepts, putLast, putLecture, putPace,
+  LAST_KEY, MODEL, PREFS_KEY, READING_KEY, TRACKS_KEY, concepts, lastSeen, laterConcept, lecture, lectureEntries, lectureKey, masteryKey, model, orBits, paceOf, putConcepts, putLast, putLecture, putPace,
   putReading, putTrack, readEntry, trackList, type Rec,
 } from './model';
 
@@ -90,6 +90,8 @@ describe('the progress records', () => {
     l.edit((s, now) => putLecture(s, now, 'atlas-slope', 30, 140, 'AQ=='));
     l.edit((s, now) => putLecture(s, now, 'atlas-slope', 50, 140, 'Ag=='));
     expect(lecture(l.store, 'atlas-slope')).toMatchObject({ pos: { val: { at: 50, dur: 140 } }, heard: { 140: 'Aw==' } });
+    l.edit((s, now) => putLecture(s, now, 'atlas-softmax', 10, 120, 'AQ=='));
+    expect(Object.keys(lectureEntries(l.store)).sort()).toEqual(['atlas-slope', 'atlas-softmax']);
     l.edit((s, now) => putReading(s, now, 'backprop', 0.6, 'chain'));
     l.edit((s, now) => putReading(s, now, 'backprop', 0.2, 'intro'));
     expect(readEntry(l.store, 'backprop')).toMatchObject({ max: 0.6, at: { val: 'intro' } });

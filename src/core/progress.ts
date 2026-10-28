@@ -1,6 +1,6 @@
 // Where each explainer stands and which parts of it were heard, kept in the synced progress store.
 import { editProgress, progressStore } from '../sync/cloud';
-import { lecture, putLecture } from '../sync/model';
+import { lecture, lectureEntries, putLecture } from '../sync/model';
 
 /** Seconds of narration per heard flag. */
 const BUCKET = 2;
@@ -58,4 +58,15 @@ export function lectureState(id: string): { pos: number; heard: number } | null 
   if (!e) return null;
   const { at, dur } = e.pos.val;
   return { pos: at, heard: dur ? new LectureLog(id, dur).heardIn() : 0 };
+}
+
+/** Stamps below this predate edit times: they came from storage that kept none. */
+const TIMED = 1e12;
+
+/** Every lecture played, latest first: when it was last played, where it stopped, its length and the share heard. */
+export function lectureHistory(): { id: string; t: number; pos: number; dur: number; heard: number }[] {
+  return Object.entries(lectureEntries(progressStore().store))
+    .filter(([, e]) => e.pos.t > TIMED && e.pos.val.dur > 0)
+    .map(([id, e]) => ({ id, t: e.pos.t, pos: e.pos.val.at, dur: e.pos.val.dur, heard: new LectureLog(id, e.pos.val.dur).heardIn() }))
+    .sort((a, b) => b.t - a.t);
 }

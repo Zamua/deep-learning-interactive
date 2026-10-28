@@ -8,6 +8,7 @@ import type { Learner } from '../learner';
 import { syncReminders } from '../push';
 import { atlasRoot, dots, pickLink, plural, whenDue } from './common';
 import { graphView } from './graph-view';
+import { recentSection } from './history';
 import { tracksSection } from './tracks';
 
 /**
@@ -39,7 +40,7 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
     if (d.kind === 'review') root.append(lead('Reviews', `${plural(d.due, 'concept')} due`, reviewTime(learner), goBtn('Start reviews')));
     else if (d.kind === 'learning' && d.slipping) root.append(lead('Win it back', c!.title, `Slipped on a review: ${d.need} right in a row win it back. ${d.streak} so far.`, goBtn('Practice')));
     else if (d.kind === 'learning' && !inTrack(c!.id)) root.append(lead('In progress', c!.title, `${d.streak} of ${d.need} right in a row${opens}`, goBtn('Practice', `#/atlas/learn/${c!.id}`)));
-    root.append(...tracksSection(learner), pickLink('Or choose something else to learn'), mapLink());
+    root.append(...tracksSection(learner), pickLink('Or choose something else to learn'), ...recentSection(learner), mapLink());
     return;
   }
 
@@ -62,6 +63,7 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
       ...(now ? [step(now, 'now', d.kind === 'learning' ? `in progress · ${d.streak} of ${d.need}` : d.kind === 'review' ? 'after the reviews' : 'next to learn')] : []),
       ...next.map((id, i) => step(id, 'lock', i === 0 ? `opens after ${title(now!)}` : 'then this'))));
   }
+  root.append(...recentSection(learner));
   root.append(h('a', { class: 'at-maplink', href: '#/atlas/new-track', html: `${icon('target')} <span>Start a track</span><small>aim at any concept</small>${icon('arrowRight')}` }));
   root.append(mapLink());
 }
