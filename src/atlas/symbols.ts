@@ -383,7 +383,7 @@ export const SCOPED: Record<string, SymbolMap> = {
     W2: { color: 'blue', name: 'W2: the second map\'s weights', tex: 'W_2', about: 'Shape (C, H): one row per class.' },
     b2: { color: 'green', name: 'b2: the second map\'s biases', tex: 'b_2', about: 'One per class.' },
   },
-  qkv: pick(att, 'q k v Wq Wk Wv d dk x'),
+  qkv: { ...pick(att, 'q k v Wq Wk Wv d dk x'), q: { ...att.q!, about: 'What is being looked for: first the decoder\'s state, then each token\'s own q = W_Q x. Its dot product with every key scores how well each matches.' } },
   'scaled-attention': pick(att, 'q k dk'),
   'self-attention': pick(att, 'q k v Q K V Wq Wk Wv d dk dv T A X x'),
   'causal-mask': pick(att, 'Q K dk T'),
@@ -690,7 +690,7 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
     enc: { is: 'the encoder: one vector per image' },
   },
   clip: {
-    unit: { is: 'scales each row to length 1, so dot products are cosines' },
+    unit: { is: 'scales each row to length 1, so a dot product compares only directions' },
     img_enc: { is: 'the image encoder: one vector per image' },
     txt_enc: { is: 'the text encoder: one vector per caption' },
     cross_entropy: { is: 'the average of −ln softmax(row)[right column] over the rows' },

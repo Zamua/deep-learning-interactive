@@ -1,22 +1,36 @@
 {
- "duration": 130.675,
+ "duration": 261.897,
  "scenes": {
-  "stack": [0.0, 53.049],
-  "shape": [53.049, 93.645],
-  "worked": [93.645, 130.675]
+  "uphill": [0.0, 107.747],
+  "down": [107.747, 158.558],
+  "shape": [158.558, 202.611],
+  "worked": [202.611, 261.897]
  },
  "beats": {
-  "stack/recap": [0.7, 16.238, "Take f of u and v is u squared plus two v squared, a bowl, at the point one, one. Its partial derivatives there are partial f, partial u is two and partial f, partial v is four.", [[5.26, 5.62], [6.17, 6.45], [7.78, 8.42], [10.38, 10.67], [13.18, 13.52]]],
-  "stack/grad": [16.618, 31.04, "Stack the partials into a vector, and you have the gradient of f. It is written nabla f, read \u201cnabla f\u201d after the upside-down triangle, called nabla. Here the gradient of f is two, four.", [[18.498, 18.758], [20.358, 20.928], [22.528, 22.958], [23.278, 23.508], [24.318, 24.668], [26.458, 26.678], [27.558, 28.128], [30.368, 30.568]]],
-  "stack/up": [31.42, 37.151, "The gradient points the way f climbs fastest: straight up the bowl, across the rings.", [[34.31, 34.72], [35.77, 36.02]]],
-  "stack/down": [37.531, 43.905, "To make f smaller, step the other way, against the gradient: along minus nabla f.", [[38.841, 39.131], [40.271, 40.491], [41.651, 42.041]]],
-  "stack/small": [44.285, 51.949, "A small step, a tenth of the gradient, lands on a lower ring: f drops from three to one point three six.", [[45.225, 45.595], [46.855, 47.105], [48.415, 48.945]]],
-  "shape/loss": [53.749, 64.839, "A function can take a whole grid of numbers as its input. Here W has three rows and four columns, twelve numbers in all, and f turns them into a single number.", [[56.989, 57.589], [60.589, 60.909], [62.019, 62.389]]],
-  "shape/g": [65.219, 81.503, "So the gradient nabla f has twelve partials, one per entry of W, laid out exactly like W: three by four. Since it holds the slopes of f in the entries of W, it is also written partial f, partial W.", [[68.559, 68.969], [70.579, 70.899], [72.739, 73.169], [74.119, 74.809], [77.979, 78.289], [79.309, 79.509], [80.299, 80.529]]],
-  "shape/entry": [81.883, 92.545, "Each entry says how f moves when that one number in W is nudged: the gradient at row one, column two belongs to W at row one, column two.", [[86.533, 87.083], [89.513, 89.773]]],
-  "worked/p": [94.345, 103.526, "Try one. f of u and v is two u squared, plus u v, plus four v. What is nabla f at one, two?", [[94.935, 95.485], [98.405, 98.655], [99.545, 99.735], [100.585, 101.145]]],
-  "worked/du": [103.906, 114.897, "In u, with v held: two u squared gives four u, u v gives v, and four v gives zero. Four plus two is six.", [[104.576, 105.026], [105.946, 106.506], [108.596, 109.086], [110.516, 110.926], [112.556, 113.076]]],
-  "worked/dv": [115.277, 128.454, "In v, with u held: two u squared gives zero, u v gives u, and four v gives four. One plus four is five. So nabla f is six, five.", [[115.967, 116.297], [117.177, 117.677], [119.627, 120.137], [121.557, 121.897], [123.427, 123.997], [125.557, 126.087]]],
-  "worked/turn": [128.834, 129.575, "Your turn.", []]
+  "uphill/bowl": [0.7, 14.737, "Here is the bowl from partial derivatives, f of u and v is u squared plus two v squared, seen from above as rings of equal height. Stand at the point one, one. Which way is straight uphill?", [[3.07, 3.42], [4.66, 4.85], [7.15, 7.53], [10.11, 10.76], [12.53, 13.12]]],
+  "uphill/any": [15.117, 24.824, "With one input, there are only two ways to go, and the slope's sign says which one climbs. With two inputs, you can set off in any direction at all.", [[16.097, 16.317], [17.937, 18.267], [20.807, 21.337], [22.337, 22.557]]],
+  "uphill/axes": [25.204, 35.356, "The partial derivatives answer only along the two axes. Along u, f climbs at a rate of two. Along v, at four: twice as steep.", [[28.674, 29.194], [29.964, 30.224], [31.914, 32.474], [33.224, 33.384], [34.004, 34.424]]],
+  "uphill/mix": [35.736, 45.786, "Set off at an angle, and the two climbs add up. A small step changes f by about two times its move in u, plus four times its move in v.", [[37.106, 37.296], [38.796, 39.406], [43.386, 43.706]]],
+  "uphill/sweep": [46.166, 57.431, "So swing a short step all the way round the point, and watch how much f rises. The climb is steepest in one direction: two along u for every four along v.", [[48.996, 49.246], [51.136, 51.746], [53.926, 54.396]]],
+  "uphill/grad": [57.811, 68.358, "That direction comes straight from the partials: stack them into one vector, two and four, and it points exactly that way. This vector is called the gradient of f.", [[60.221, 60.631], [62.111, 62.351], [63.281, 63.621], [65.381, 65.931]]],
+  "uphill/maxwell": [68.738, 85.388, "In 1873, James Clark Maxwell described it both ways: measure how fast f rises along each axis and combine them into one arrow, or find the direction in which it rises fastest. Either way, the same arrow.", [[70.238, 70.558], [73.198, 73.788], [76.988, 77.198], [78.988, 79.558], [79.908, 80.338], [83.068, 83.548], [84.168, 84.448]]],
+  "uphill/name": [85.768, 98.357, "Gradient is an everyday word for a slope, how steeply a road or a railway climbs. This slope has a direction too: it points the way up, and the longer it is, the steeper the climb.", [[88.308, 88.718], [91.348, 91.908], [93.818, 94.278], [95.538, 95.918], [96.908, 97.178]]],
+  "uphill/level": [98.737, 106.647, "Swing a quarter turn away from it, along the ring, and f barely changes. The gradient crosses the rings at right angles.", [[100.627, 100.837], [101.627, 101.807], [102.167, 102.427], [103.507, 104.027]]],
+  "down/nabla": [108.447, 119.057, "The gradient of f is written nabla f: f, with an upside-down triangle in front, called nabla. Here, nabla f is two and four.", [[111.357, 111.987], [112.357, 112.557], [114.657, 114.887], [115.757, 116.367], [116.707, 116.937]]],
+  "down/hamilton": [119.437, 131.317, "William Rowan Hamilton, who named the vector, wrote this triangle in 1846, lying on its side. Peter Guthrie Tate stood it upright in an 1867 textbook.", [[120.887, 121.047], [122.097, 122.457], [126.167, 126.847]]],
+  "down/smith": [131.697, 137.887, "William Robertson Smith suggested its name: nabla, after an ancient harp of that shape.", [[134.257, 134.777], [135.327, 135.747]]],
+  "down/down": [138.267, 149.386, "To make f smaller, step the opposite way, along minus nabla f: minus two and minus four. That is straight downhill, where f falls fastest.", [[139.577, 139.867], [141.207, 141.497], [143.177, 143.697], [145.527, 146.017], [147.457, 147.717]]],
+  "down/others": [149.766, 157.458, "A step along v alone still goes down, but more slowly. A step along the ring hardly changes f at all.", [[152.556, 152.816], [153.696, 154.286]]],
+  "shape/many": [159.258, 170.131, "Nothing limits this to two inputs. Here f takes a whole grid of numbers, W, with three rows and four columns: twelve inputs, and one number out.", [[161.418, 161.898], [164.318, 164.508], [165.018, 165.318], [167.318, 167.808], [168.698, 168.908]]],
+  "shape/g": [170.511, 182.627, "Twelve inputs make a bowl no one can draw, but the rule holds: one partial per input, so twelve partials. They are laid out exactly like W, three by four.", [[173.331, 173.791], [174.861, 175.331], [176.831, 177.171], [178.551, 179.141], [181.191, 181.591]]],
+  "shape/name": [183.007, 190.501, "Since it holds the slopes of f in the entries of W, the gradient is also written partial f, partial W.", [[186.377, 186.757], [188.367, 188.527], [189.327, 189.527]]],
+  "shape/vec": [190.881, 201.511, "A vector w of five numbers works the same way: its gradient is five numbers, shape five, comma. The gradient always has the shape of the input.", [[194.301, 194.771], [196.621, 196.951], [197.881, 198.141], [198.481, 199.031]]],
+  "worked/p": [203.311, 213.221, "Try one. f of u and v is two u squared, plus u v, plus four v. What is nabla f at the point one, two?", [[203.921, 204.521], [205.961, 206.171], [207.471, 207.691], [208.621, 208.841], [209.741, 210.391]]],
+  "worked/du": [213.601, 226.324, "For the first entry, hold v still. Two u squared gives four u. u v is v times u, so it gives v. Four v does not move, so it gives zero.", [[214.751, 215.011], [216.291, 216.931], [219.101, 219.681], [221.701, 221.941], [222.901, 223.481], [225.011, 225.221]]],
+  "worked/du-n": [226.704, 235.749, "So partial f, partial u is four u plus v. At one, two, that is four plus two: six.", [[228.034, 228.264], [229.134, 229.354], [231.034, 231.604], [232.204, 232.474], [232.834, 233.174], [234.764, 235.154]]],
+  "worked/dv": [236.129, 247.081, "For the second entry, hold u still. Two u squared gives zero. u v is u times v, so it gives u. And four v gives four.", [[237.289, 237.639], [238.649, 239.209], [241.159, 241.739], [243.699, 243.919], [244.869, 245.409]]],
+  "worked/dv-n": [247.461, 254.02, "So partial f, partial v is u plus four: one plus four, five.", [[248.811, 249.031], [249.891, 250.111], [251.631, 252.211], [253.121, 253.451]]],
+  "worked/stack": [254.4, 259.676, "Stack them in order, u first: nabla f is six and five.", [[255.55, 255.97], [256.87, 257.48]]],
+  "worked/turn": [260.056, 260.797, "Your turn.", []]
  }
 }

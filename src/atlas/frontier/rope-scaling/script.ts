@@ -6,23 +6,28 @@ export const script: LectureScript = {
   model: 'elevenlabs/eleven-v4',
   voice: 'george',
   speed: 1,
+  papers: [
+    { who: 'Chen, Wong, Chen & Tian', year: 2023, title: 'Extending Context Window of Large Language Models via Positional Interpolation', url: 'https://arxiv.org/abs/2306.15595', scene: 'squeeze' },
+  ],
   scenes: [
     {
       id: 'seen',
       title: 'Angles training never made',
       codeTitle: 'trained.py',
       code: `
-        train_len = 1000    # positions 0 to 999         #@train
-        theta = 0.1         # degrees per position       #@theta
-        999 * theta         # 99.9: the largest seen     #@theta
-        3000 * theta        # 300: never seen            #@past
+        # trained on texts of up to 1,000  #@train
+        theta = 0.1   # degrees per step   #@theta
+        999 * theta   # 99.9: the most     #@theta
+        3000 * theta  # 300: never seen    #@past
+        train_len = 1000                   #@L
       `,
       beats: [
-        { id: 'train', say: 'A model with rotary positions is trained on texts of up to a thousand tokens. Write {L_train|L train} for that trained length: every position it saw was below it, from zero to {999|nine hundred ninety nine}.', code: 'train' },
-        { id: 'slow', say: 'Follow one slow pair, with {θ|theta} of a tenth of a degree per position. At position m it turns by {mθ|m theta}, so in training its angle only ran from zero to {99.9°|ninety nine point nine degrees}.', code: 'theta' },
-        { id: 'past', say: 'Now give it a text of four thousand tokens. At position three thousand, the pair turns {300°|three hundred degrees}: an angle it never had in training.', code: 'past' },
-        { id: 'fail', say: 'Queries and keys arrive turned in ways the model never learned to read. The scores go wrong, and past the trained length, quality collapses.', code: 'past' },
-        { id: 'fast', say: 'Fast pairs are fine: they went round many times in training and met every angle. The slow ones are pushed somewhere new.', code: 'theta' },
+        { id: 'problem', say: 'A model with rotary positions learns from texts of up to a thousand tokens. Hand it one of four thousand, and past the first thousand, its predictions can get as bad as an untrained model\'s. Why?', code: 'train' },
+        { id: 'slow', say: 'Follow one slow pair, which turns a tenth of a degree per position. In all of training, its arrow only swept this shaded slice, between zero and {99.9°|ninety nine point nine degrees}.', code: 'theta' },
+        { id: 'past', say: 'At position three thousand it has turned {300°|three hundred degrees}, into a part of the circle training never showed it.', code: 'past' },
+        { id: 'fail', say: 'Queries and keys arrive turned in ways the model never learned to read, and the attention scores go wildly wrong.', code: 'past' },
+        { id: 'fast', say: 'Fast pairs are fine: they went round many times in training and met every angle. It is the slow ones that are pushed somewhere new.', code: 'theta' },
+        { id: 'L', say: 'Write {L_train|L train} for the trained length, here a thousand: every position training saw was below it.', code: 'L' },
       ],
     },
     {
@@ -30,19 +35,22 @@ export const script: LectureScript = {
       title: 'Divide every position',
       codeTitle: 'interpolate.py',
       code: `
-        new_len = 4000                                #@scale
-        scale = new_len / train_len    # s = 4        #@scale
-        3000 / scale * theta           # 75 degrees   #@angle
-        3999 / scale                   # 999.75       #@last
-        theta / scale        # 0.025 degrees per step #@close
+        new_len = 4000                    #@scale
+        scale = new_len / train_len  # 4  #@scale
+        3000 / scale * theta  # 75 deg    #@angle
+        3999 / scale          # 999.75    #@last
+        3001 / scale          # 750.25    #@between
+        theta / scale     # 0.025 apart   #@close
       `,
       beats: [
-        { id: 'idea', say: 'Position interpolation, from Chen and others at Meta in 2023, squeezes the long text into the trained range. It divides every position by s, the stretch: the new length over {L_train|L train}.', code: 'scale' },
-        { id: 'scale', say: 'Here s is four thousand over a thousand: four.', code: 'scale' },
+        { id: 'idea', say: 'In 2023, Shouyuan Chen and colleagues at Meta turned this around. Instead of letting positions run past the trained range, squeeze the long text into it: divide every position by the same number.', code: 'scale' },
+        { id: 's', say: 'That number is the stretch, s: the new length over {L_train|L train}. Here, four thousand over a thousand: four.', code: 'scale' },
         { id: 'angle', say: 'So position three thousand turns as if it sat at {750|seven hundred fifty}: {75°|seventy five degrees}, an angle training made.', code: 'angle' },
-        { id: 'last', say: 'Even the last token, at {3,999|three thousand nine hundred ninety nine}, turns as if at {999.75|nine hundred ninety nine point seven five}, below {L_train|L train}. Every angle stays in the trained range.', code: 'last' },
-        { id: 'close', say: 'The price: neighbors sit closer, turning {0.025°|zero point zero two five degrees} apart instead of a tenth. A short fine-tune on long texts teaches the model the finer spacing.', code: 'close' },
-        { id: 'llama', say: 'That is how LLaMA, trained on {2,048|two thousand and forty eight} tokens, was stretched to {32,768|thirty two thousand seven hundred sixty eight}: s of sixteen, with at most a thousand steps of fine-tuning.' },
+        { id: 'last', say: 'Even the last token, at {3,999|three thousand nine hundred ninety nine}, turns as if at {999.75|nine hundred ninety nine point seven five}: still below {L_train|L train}.', code: 'last' },
+        { id: 'between', say: 'Most positions now land between two whole ones: three thousand and one turns as if at {750.25|seven hundred fifty point two five}. Filling in between known points is called interpolation, which names the method: position interpolation. Running past them is extrapolation.', code: 'between' },
+        { id: 'close', say: 'The price: neighbors now sit a quarter step apart, turning {0.025°|zero point zero two five degrees} apart instead of a tenth. So the model gets a fine-tune: a short extra round of training, on long texts, to read the finer spacing.', code: 'close' },
+        { id: 'llama', say: 'That is how they stretched {LLaMA|Llama} models, trained on {2,048|two thousand and forty eight} tokens, to read up to {32,768|thirty two thousand seven hundred sixty eight}: an s of sixteen.' },
+        { id: 'steps', say: 'The fine-tune took at most a thousand steps.' },
       ],
     },
     {
@@ -50,11 +58,11 @@ export const script: LectureScript = {
       title: 'Try one',
       codeTitle: 'try.py',
       code: `
-        train_len, new_len = 2048, 8192         #@p
-        theta = 0.1                             #@p
-        scale = new_len / train_len   # 4       #@s
-        6000 * theta          # 600: unseen     #@raw
-        6000 / scale * theta  # 150             #@scaled
+        train_len, new_len = 2048, 8192   #@p
+        theta = 0.1                       #@p
+        scale = new_len / train_len  # 4  #@s
+        6000 * theta     # 600: unseen    #@raw
+        6000 / scale * theta  # 150       #@scaled
       `,
       beats: [
         { id: 'p', say: 'Try one. A model trained on {2,048|two thousand and forty eight} positions should read {8,192|eight thousand one hundred ninety two}. A pair turns a tenth of a degree per position. How far does it turn at position six thousand?', code: 'p' },

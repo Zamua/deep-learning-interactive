@@ -1,21 +1,36 @@
 {
- "duration": 124.444,
+ "duration": 225.414,
  "scenes": {
-  "three": [0.0, 74.429],
-  "match": [74.429, 124.444]
+  "jobs": [0.0, 47.04],
+  "lookup": [47.04, 94.867],
+  "make": [94.867, 169.237],
+  "match": [169.237, 225.414]
  },
  "beats": {
-  "three/two": [0.7, 9.7, "In attention over the encoder, each encoder state did two jobs. It was scored against the decoder's state, and it was what got averaged.", [[2.44, 2.81], [4.99, 5.49], [7.64, 7.93]]],
-  "three/split": [10.08, 22.553, "Queries, keys and values give every token, x, three separate vectors: one to ask with, one to be scored by, and one to be mixed. Each comes from its own matrix.", [[13.57, 13.75], [15.21, 15.79], [16.84, 17.24], [18.48, 18.81], [19.99, 20.59]]],
-  "three/query": [22.933, 33.145, "The query, q, is W Q times x: what this token is looking for. With x equal to two and one, q is three and one.", [[23.653, 23.833], [24.243, 24.503], [26.623, 27.093], [28.673, 29.263], [31.313, 31.663]]],
-  "three/key": [33.525, 42.505, "The key, k, is W K times x: what this token offers to a query that comes looking. Here, two and one.", [[34.135, 34.355], [34.745, 34.965], [36.905, 37.385], [40.325, 40.815], [41.155, 41.475]]],
-  "three/value": [42.885, 51.893, "The value, v, is W V times x: what this token hands over when it is chosen. Here, one and four.", [[43.595, 43.835], [44.245, 44.555], [44.825, 44.985], [46.745, 47.155], [49.625, 50.125], [50.475, 50.775]]],
-  "three/shape": [52.273, 73.329, "Each matrix has one row per entry of what it makes, and one column per entry of x. Write d for a token's length and d k for a query's: W Q is d k by d. With d of five hundred twelve and d k of sixty four, that is sixty four by five hundred twelve.", [[55.563, 55.863], [58.063, 58.693], [60.693, 60.953], [62.883, 63.473], [65.823, 66.413], [68.233, 68.443], [70.143, 70.503]]],
-  "match/ask": [75.129, 84.317, "Now three tokens: cats, like and fish. Token two, fish, asks with its query: one and one.", [[76.479, 76.989], [77.489, 77.809], [78.189, 78.499], [79.219, 79.769], [80.589, 80.819], [81.299, 81.539], [82.789, 83.159], [83.539, 83.689]]],
-  "match/score": [84.697, 92.459, "Its query is scored against every token's key, its own included, with a dot product: two, zero and one.", [[87.627, 87.897], [88.917, 89.227], [90.217, 90.587], [90.967, 91.247]]],
-  "match/weights": [92.839, 100.984, "Softmax turns the scores into weights: zero point six seven, zero point zero nine and zero point two four.", [[95.259, 95.799], [97.159, 97.499], [98.949, 99.249]]],
-  "match/mix": [101.364, 111.633, "Fish's output is the weighted sum of the values, mostly the value of cats, two and zero. It comes to one point five eight and zero point four two.", [[104.244, 104.544], [106.034, 106.364], [107.404, 107.964], [109.854, 110.024]]],
-  "match/roles": [112.013, 122.224, "So the keys decide how much each token counts, and the values decide what it brings. The three matrices are learned, and every token uses the same three.", [[114.983, 115.273], [117.323, 117.913], [119.593, 119.853]]],
-  "match/turn": [122.604, 123.344, "Your turn.", []]
+  "jobs/recall": [0.7, 11.136, "In attention over the encoder, the decoder's query, q, scored each encoder state with a dot product: how far that state's arrow reaches along q.", [[2.45, 2.76], [4.01, 4.2], [4.6, 4.88], [7.62, 8.07]]],
+  "jobs/blend": [11.516, 16.777, "Then the same arrows were shrunk by their weights and added up into the context vector.", [[11.936, 12.096], [14.396, 14.576]]],
+  "jobs/tug": [17.157, 25.818, "So each arrow has two jobs. Turn suis toward q, and its score climbs. But what suis hands over turns with it.", [[19.237, 19.717], [21.117, 21.417], [22.787, 23.237]]],
+  "jobs/clash": [26.198, 32.831, "What makes a word easy to find need not be what it should hand over. One arrow cannot serve both.", [[30.248, 30.778]]],
+  "jobs/daniluk": [33.211, 45.94, "In 2017, Micha\u0142 Daniluk and colleagues hit this in a language model: one vector had to predict the next word, be scored, and be handed over. One vector per job worked better.", [[34.461, 34.731], [37.911, 38.531], [40.861, 41.201], [41.801, 41.981], [43.141, 43.721]]],
+  "lookup/dict": [47.74, 56.238, "A Python dictionary keeps two such jobs apart: each entry pairs a key, to look it up by, with a value, to get back.", [[50.69, 51.31], [52.93, 53.18], [54.08, 54.43], [55.17, 55.49]]],
+  "lookup/exact": [56.618, 64.558, "Ask for cats, and the key cats matches: out comes its value, two, zero. The value can be anything.", [[57.708, 57.918], [59.478, 59.948], [61.058, 61.448], [61.768, 62.078], [62.558, 63.108]]],
+  "lookup/names": [64.938, 73.223, "Attention borrows the names. A query asks, the keys are what it is matched against, and the values are what come back.", [[66.818, 67.348], [68.458, 68.888], [70.978, 71.338]]],
+  "lookup/soft": [73.603, 81.979, "But the match is soft: every key matches a little, by its dot product with the query, and back comes a blend of all the values.", [[74.963, 75.503], [77.103, 77.353], [79.173, 79.543]]],
+  "lookup/vaswani": [82.359, 93.767, "In 2017, Ashish Vaswani and colleagues at Google defined attention in these terms: a query and key-value pairs, mapped to a weighted sum of the values.", [[83.609, 83.959], [86.329, 86.609], [88.559, 89.139], [91.069, 91.339]]],
+  "make/maps": [95.567, 107.138, "So give each token, x, three arrows of its own, each made by a learned matrix that every token shares: W, marked Q, K or V for its job.", [[97.497, 97.647], [99.087, 99.447], [102.867, 103.477], [103.977, 104.177], [105.017, 105.217]]],
+  "make/q": [107.518, 116.221, "The query is W Q times x, one dot product per row: three, one. The arrow turns and stretches.", [[110.088, 110.518], [112.098, 112.478], [112.878, 113.178], [113.528, 114.128]]],
+  "make/k": [116.601, 122.253, "The key, k, is W K times x: one, minus one.", [[117.241, 117.511], [117.911, 118.231], [120.181, 120.701], [121.061, 121.491]]],
+  "make/v": [122.633, 132.356, "And the value, v, is W V times x: minus one, two. Three arrows, each free to point its own way.", [[123.463, 123.733], [124.153, 124.443], [126.543, 126.943], [127.683, 127.983], [128.313, 129.003], [130.033, 130.403]]],
+  "make/rows": [132.736, 142.346, "Each row is dotted with x to make one entry. So a matrix has one row per entry it makes, and one column per entry of x.", [[135.916, 136.506], [136.916, 137.066], [139.856, 140.106]]],
+  "make/d": [142.726, 148.274, "Real tokens are much longer. Write d for how many numbers a token has.", [[144.646, 145.296], [146.156, 146.306]]],
+  "make/dk": [148.654, 158.36, "And d k for how many a query has. A key has as many, to be dotted with it. So W Q is d k by d.", [[149.694, 149.884], [151.614, 152.154], [153.574, 153.924], [154.874, 155.404]]],
+  "make/big": [158.74, 168.137, "Vaswani's model had a d of five hundred twelve and a d k of sixty four, so W Q is sixty four by five hundred twelve.", [[161.75, 162.0], [163.9, 164.33]]],
+  "match/ask": [169.937, 181.142, "Back to a sentence: cats like fish. Each token has its key, made by W K. Fish asks with its query: zero, one, straight up.", [[171.047, 171.617], [172.747, 173.367], [174.907, 175.177], [178.237, 178.787], [179.307, 179.637], [180.037, 180.407]]],
+  "match/score": [181.522, 192.134, "Its query is dotted with every key, its own included. As q points straight up, each score is how high a key reaches. Cats' key scores two.", [[183.872, 184.182], [185.212, 185.792], [187.352, 187.662], [190.032, 190.502]]],
+  "match/others": [192.514, 199.551, "Like's key lies at a right angle to q, so it scores zero. Fish's own key reaches one.", [[195.264, 195.574], [196.954, 197.514]]],
+  "match/weights": [199.931, 205.918, "Softmax turns the scores into weights that add up to one: cats gets about two thirds.", [[203.471, 204.031]]],
+  "match/mix": [206.298, 214.614, "Fish's output blends the values by those weights: shrink each, then add them tip to tail. It lands near cats' value.", [[209.368, 209.808], [210.578, 210.838], [212.428, 212.928]]],
+  "match/roles": [214.994, 223.194, "So the query and the keys decide how much each token counts, and the values what it brings: two jobs, two arrows.", [[218.874, 219.204], [220.944, 221.394], [222.054, 222.364]]],
+  "match/turn": [223.574, 224.314, "Your turn.", []]
  }
 }

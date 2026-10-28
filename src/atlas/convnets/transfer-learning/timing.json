@@ -1,18 +1,34 @@
 {
- "duration": 81.531,
+ "duration": 246.518,
  "scenes": {
-  "reuse": [0.0, 41.716],
-  "howmuch": [41.716, 81.531]
+  "problem": [0.0, 51.419],
+  "layers": [51.419, 111.484],
+  "swap": [111.484, 177.978],
+  "howmuch": [177.978, 246.518]
  },
  "beats": {
-  "reuse/pretrained": [0.7, 11.813, "Training a ConvNet from scratch takes a lot of labeled data. But networks already trained on ImageNet, over a million photos in a thousand classes, are free to download.", [[4.4, 4.98], [7.4, 7.69], [10.38, 10.66]]],
-  "reuse/layers": [12.193, 22.125, "Their first layers hold filters for edges and colors. Later layers combine those into textures and parts, and the last layer scores the thousand classes.", [[15.323, 15.893], [18.953, 19.313]]],
-  "reuse/swap": [22.505, 30.719, "To reuse one, keep its layers fixed and replace only the last layer with a new one for your own classes. Here, ten.", [[23.535, 23.895], [29.095, 29.565], [29.915, 30.285]]],
-  "reuse/count": [31.099, 40.616, "With five hundred and twelve features in and ten classes out, the new layer has five thousand one hundred and thirty parameters. Only those are trained.", [[34.799, 35.239], [38.739, 39.219]]],
-  "howmuch/small": [42.416, 51.808, "With a few hundred images, train just that last layer. Changing millions of weights on so few images would memorize them: overfitting.", [[43.906, 44.176], [46.046, 46.546], [50.466, 50.996]]],
-  "howmuch/more": [52.188, 59.701, "With tens of thousands of images, you can afford more: start from the pretrained weights and fine-tune every layer.", [[54.278, 54.468], [55.598, 56.118]]],
-  "howmuch/lr": [60.081, 68.07, "Fine-tune with a small learning rate, often ten times smaller than from scratch, so the good pretrained weights move only a little.", [[62.191, 62.531], [64.891, 65.231]]],
-  "howmuch/different": [68.45, 79.31, "And when your images look nothing like photos, say X-rays, the early layers carry over best: edges are everywhere, while the last layers belong to the old classes.", [[71.06, 71.27], [72.25, 72.65], [74.63, 75.1], [76.42, 76.73]]],
-  "howmuch/turn": [79.69, 80.431, "Your turn.", []]
+  "problem/task": [0.7, 12.63, "Say you want a network that tells ten kinds of flower apart, and you have a few hundred photos. Each comes with its label: the right answer, the flower's name, written down by a person.", [[4.19, 4.55], [6.49, 7.0], [8.38, 8.84], [9.66, 9.95], [10.9, 11.16]]],
+  "problem/many": [13.01, 24.949, "But a ConvNet has millions of weights. Trained from scratch on so few photos, it memorizes them: the training loss falls while the validation loss climbs. It overfits.", [[15.31, 15.78], [18.21, 18.45], [19.58, 20.02], [21.33, 21.52], [23.38, 23.84]]],
+  "problem/imagenet": [25.329, 40.957, "Far bigger sets exist. In 2009, Jia Deng, Fei-Fei Li and colleagues introduced ImageNet, a vast collection of labeled photos. Its yearly contest used about one point two million of them, in a thousand classes.", [[27.029, 27.559], [28.709, 28.969], [29.559, 29.779], [31.269, 31.429], [32.779, 33.139], [35.399, 35.949], [39.329, 39.579]]],
+  "problem/pretrained": [41.337, 50.319, "Networks trained on it are free to download. They are pretrained: trained before, on another task. Can one of them help with your flowers?", [[43.857, 44.297], [45.357, 45.777], [46.697, 46.927], [47.887, 48.507]]],
+  "layers/l1": [52.119, 60.332, "Look inside one, from the image up. The first layer's filters respond to edges at many angles, and to blobs of color.", [[53.169, 53.449], [54.519, 55.089], [58.649, 58.879]]],
+  "layers/mid": [60.712, 72.729, "In 2013, Matthew Zeiler and Rob Fergus pictured what the layers above respond to: combinations of those, then textures, then parts, such as eyes and legs.", [[61.922, 62.192], [64.122, 64.332], [66.662, 67.252], [68.492, 68.762], [69.602, 69.992], [70.782, 71.002]]],
+  "layers/last": [73.109, 86.943, "The last layer is a linear classifier. It reads five hundred and twelve features: numbers that describe the image, as before, only now computed by the layers below. It scores ImageNet's thousand classes.", [[75.439, 75.969], [78.259, 78.739], [81.129, 81.499], [83.809, 84.389]]],
+  "layers/yosinski": [87.323, 103.076, "In 2014, Jason Yosinski and colleagues measured how well each layer carries over to a new task. The first layers are general, since edges and colors are in nearly every photo. Higher layers grow specific to their old classes.", [[88.513, 88.853], [94.133, 94.763], [96.243, 96.503], [97.843, 98.033], [99.503, 100.033]]],
+  "layers/asis": [103.456, 110.384, "So the network cannot be used as it is: its last layer scores ImageNet's classes, not your ten.", [[106.126, 106.566], [109.226, 109.416]]],
+  "swap/freeze": [112.184, 123.013, "Instead, keep its layers, and freeze them. Setting requires grad to false means no gradient is computed for a weight, so gradient descent never moves it.", [[112.764, 113.044], [113.984, 114.154], [114.924, 115.734], [117.814, 118.024], [120.494, 120.804]]],
+  "swap/swap": [123.393, 130.966, "Then swap the last layer for a new one: five hundred and twelve features in, ten scores out, one per flower.", [[125.703, 126.233], [128.113, 128.503], [129.583, 129.973]]],
+  "swap/count": [131.346, 141.898, "It has five hundred and twelve times ten weights, plus ten biases: five thousand one hundred and thirty parameters. Only those are handed to gradient descent.", [[134.146, 134.406], [135.766, 136.206], [138.886, 139.386]]],
+  "swap/fit": [142.278, 148.197, "Thousands of numbers, not millions: a few hundred photos can fit them without memorizing.", [[143.548, 143.848], [144.768, 145.208]]],
+  "swap/two": [148.577, 155.115, "With two new layers, count each one the same way: its weights, plus one bias per output.", [[149.837, 150.117], [151.857, 152.397], [153.057, 153.307]]],
+  "swap/razavian": [155.495, 169.729, "In 2014, Ali Sharif Razavian and colleagues did just this, with an ImageNet network and a linear classifier on top. On scenes, birds and flowers, it rivaled or beat methods built for each task.", [[156.675, 156.995], [160.015, 160.365], [163.605, 164.235], [165.035, 165.245], [166.235, 166.555]]],
+  "swap/name": [170.109, 176.878, "This is transfer learning: what one task learned is carried over, or transferred, to another.", [[171.789, 172.329], [174.689, 174.939], [175.989, 176.259]]],
+  "howmuch/more": [178.678, 190.522, "A few hundred photos: train only the new layer. Tens of thousands: unfreeze every layer, and keep training, starting from the pretrained weights instead of random ones.", [[180.148, 180.608], [182.208, 182.878], [184.128, 184.568], [185.968, 186.158], [187.038, 187.268]]],
+  "howmuch/tune": [190.902, 200.296, "That is fine-tuning. The weights are nearly right already, and training only adjusts them a little, like tuning a guitar string that is almost in pitch.", [[192.422, 192.922], [194.702, 194.962], [196.962, 197.312]]],
+  "howmuch/lr": [200.676, 210.954, "So fine-tune with a small learning rate, often a tenth of the one used from scratch: here, zero point zero one becomes zero point zero zero one.", [[203.106, 203.436], [205.766, 206.186], [206.516, 206.766], [208.266, 208.486]]],
+  "howmuch/why": [211.334, 221.042, "The pretrained weights already sit near the bottom of the loss. Big steps would overshoot, throwing away what was learned. Small steps keep them close.", [[214.714, 215.194], [216.804, 217.114], [218.654, 219.164]]],
+  "howmuch/scratch": [221.422, 231.261, "With a million photos, you could start from random weights. But Yosinski's team found that transferred weights gave a boost that lasted, even after fine-tuning.", [[222.832, 222.992], [224.702, 225.222], [229.382, 229.722]]],
+  "howmuch/xray": [231.641, 244.297, "And when your images look nothing like photos, say chest X-rays, the early layers carry over best: edges are everywhere. Retrain the top layers, as far down as your data allows.", [[234.301, 234.531], [235.871, 236.201], [238.171, 238.641], [240.041, 240.611], [242.041, 242.261]]],
+  "howmuch/turn": [244.677, 245.418, "Your turn.", []]
  }
 }

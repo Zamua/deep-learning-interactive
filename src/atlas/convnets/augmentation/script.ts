@@ -15,6 +15,9 @@ export const script: LectureScript = {
   model: 'elevenlabs/eleven-v4',
   voice: 'george',
   speed: 1,
+  papers: [
+    { who: 'Krizhevsky, Sutskever & Hinton', year: 2012, title: 'ImageNet classification with deep convolutional neural networks', url: 'https://papers.nips.cc/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html', scene: 'crops' },
+  ],
   scenes: [
     {
       id: 'variety',
@@ -22,10 +25,12 @@ export const script: LectureScript = {
       codeTitle: 'augment.py',
       code,
       beats: [
-        { id: 'memo', say: 'A model that overfits has memorized its training images, quirks and all. One fix: never show it exactly the same image twice.', code: 'all' },
-        { id: 'change', say: 'Each time an image is used, change it a little at random. Shift it, make it brighter or darker, crop it. It still shows the same thing, so its label stays true.', code: ['crop', 'color'] },
-        { id: 'flip', say: 'But the change must keep the label true. Flip this right arrow left to right and it points left: now its label is wrong. A flipped photo of a cat is still a cat.', code: 'flip' },
+        { id: 'memo', say: 'A classifier that overfits has memorized its training images, quirks and all. More photos would help, but they are slow to collect. A cheaper fix: never show it exactly the same image twice.', code: 'all' },
+        { id: 'label', say: 'Every training image comes with its label: the correct answer stored with it, the class it really belongs to. This arrow\'s label says it points right.', code: 'all' },
+        { id: 'change', say: 'Each time an image is used, change it a little at random: shift it, darken it, crop it. It still shows the same thing, so its label stays true.', code: ['crop', 'color'] },
+        { id: 'flip', say: 'But the change must keep the label true. Flip this arrow left to right, and it points left: its stored label is now wrong. A flipped photo of a cat, though, is still a cat.', code: 'flip' },
         { id: 'which', say: 'So which changes are safe depends on the task. A six turned upside down is a nine, and a red light with its colors shifted can look green.', code: 'all' },
+        { id: 'name', say: 'This is data augmentation. To augment is to make bigger: it grows the training set without a single new photo.', code: 'all' },
       ],
     },
     {
@@ -35,30 +40,32 @@ export const script: LectureScript = {
       code,
       beats: [
         { id: 'count', say: 'Random crops alone add a lot. Cut a twenty eight by twenty eight crop from a thirty two by thirty two image.', code: 'crop' },
-        { id: 'across', say: 'Slide it across one pixel at a time. Its left edge can sit at zero, one, two, three or four, where its right edge meets the image\'s. That is thirty two minus twenty eight, plus one for position zero: five places.', code: 'crop' },
-        { id: 'down', say: 'Down, the same: its top edge sits at zero to four, five places. Every place across pairs with every place down: five times five, twenty five crops.', code: 'crop' },
-        { id: 'flips', say: 'Add a random flip, and each crop also comes mirrored: twenty five times two, fifty versions of every image.', code: 'flip' },
-        { id: 'train', say: 'Do this only while training, with fresh random choices every time. Validation and test images stay untouched, so they still measure the model on real data.', code: 'test' },
-        { id: 'gap', say: 'The training loss ends a little higher, because varied images are harder to memorize, and the validation loss ends lower: a smaller gap.', code: 'all' },
+        { id: 'across', say: 'Slide it across, a pixel at a time. Its left edge can sit at zero, one, two, three or four. At four, its right edge meets the image\'s.', code: 'crop' },
+        { id: 'plus', say: 'That is thirty two minus twenty eight, plus one, because position zero counts as well: five places.', code: 'crop' },
+        { id: 'down', say: 'Down, the same rule with the image\'s height gives five places again. Every place across pairs with every place down: five times five, twenty five crops.', code: 'crop' },
+        { id: 'flips', say: 'A random flip shows each crop either way round, which doubles that: fifty versions of every image.', code: 'flip' },
+        { id: 'alex', say: 'In 2012, Alex Krizhevsky, Ilya Sutskever and Geoffrey Hinton built an image classifier with sixty million adjustable numbers. Even {1.2|one point two} million training photos were too few to fit that many without overfitting.', code: 'all' },
+        { id: 'alex2', say: 'So they trained on random {224|two twenty four} by {224|two twenty four} crops of their {256|two fifty six} by {256|two fifty six} photos, and the crops\' mirror images: label-preserving transformations, they called them. That is over two thousand versions of every photo.', code: ['crop', 'flip'] },
+        { id: 'fresh', say: 'Make fresh random choices every time an image is used. One changed copy, saved once, would simply be memorized instead.', code: 'all' },
+        { id: 'test', say: 'And only while training. Validation and test images are just cut to size, from the middle, so they still measure the model on real images.', code: 'test' },
       ],
     },
     {
-      id: 'try',
-      title: 'Try one',
-      codeTitle: 'count.py',
+      id: 'gap',
+      title: 'A smaller gap',
+      codeTitle: 'train.py',
       code: `
-        width, height, crop = 36, 32, 28   #@p1
-        across = width - crop + 1   # 9    #@across
-        down = height - crop + 1    # 5    #@down
-        crops = across * down       # 45   #@total
-        versions = crops * 2        # 90   #@flip
+        for epoch in range(16):            #@fit
+            train_one_epoch(model, train)  #@fit
+            L_train = loss(model, train)   #@both
+            L_val = loss(model, val)       #@both
+        # with train_tf: L_train up a bit  #@up
+        # and L_val down: a smaller gap    #@down
       `,
       beats: [
-        { id: 'p1', say: 'Try one. A training image is thirty six pixels wide and thirty two high. A random twenty eight by twenty eight crop is cut from it, then flipped left to right half of the time. How many different versions can that give?', code: 'p1' },
-        { id: 'across', say: 'Across, the crop\'s left edge can sit at zero up to thirty six minus twenty eight, which is eight: nine places.', code: 'across' },
-        { id: 'down', say: 'Down, the image is only thirty two high, so the top edge sits at zero to four: five places.', code: 'down' },
-        { id: 'total', say: 'Nine across times five down is forty five crops.', code: 'total' },
-        { id: 'flip', say: 'And each comes flipped or not: forty five times two, ninety versions.', code: 'flip' },
+        { id: 'before', say: 'Here are the loss curves of an overfitting model, trained without augmentation: the training loss falls toward zero, while the validation loss turns and climbs.', code: 'both' },
+        { id: 'with', say: 'Train it again with random crops and flips. The training loss ends a little higher, because images that keep changing are harder to memorize.', code: ['fit', 'up'] },
+        { id: 'lower', say: 'But the validation loss keeps falling for longer, and ends lower. The gap shrinks: the model has learned more of what the images share, and less of their quirks.', code: 'down' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

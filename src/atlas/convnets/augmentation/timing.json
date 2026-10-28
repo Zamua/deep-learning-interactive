@@ -1,26 +1,29 @@
 {
- "duration": 153.302,
+ "duration": 195.67,
  "scenes": {
-  "variety": [0.0, 44.187],
-  "crops": [44.187, 110.01],
-  "try": [110.01, 153.302]
+  "variety": [0.0, 65.612],
+  "crops": [65.612, 162.769],
+  "gap": [162.769, 195.67]
  },
  "beats": {
-  "variety/memo": [0.7, 10.128, "A model that overfits has memorized its training images, quirks and all. One fix: never show it exactly the same image twice.", [[4.05, 4.39], [5.39, 6.06], [6.73, 7.24]]],
-  "variety/change": [10.508, 21.521, "Each time an image is used, change it a little at random. Shift it, make it brighter or darker, crop it. It still shows the same thing, so its label stays true.", [[12.188, 12.478], [13.948, 14.408], [14.958, 15.308], [16.838, 17.178], [17.658, 18.118], [19.708, 19.958]]],
-  "variety/flip": [21.901, 33.322, "But the change must keep the label true. Flip this right arrow left to right and it points left: now its label is wrong. A flipped photo of a cat is still a cat.", [[24.251, 24.831], [26.901, 27.121], [28.101, 28.611], [30.121, 30.681], [32.161, 32.321]]],
-  "variety/which": [33.702, 43.087, "So which changes are safe depends on the task. A six turned upside down is a nine, and a red light with its colors shifted can look green.", [[36.672, 37.282], [39.632, 40.042], [42.062, 42.242]]],
-  "crops/count": [44.887, 52.115, "Random crops alone add a lot. Cut a twenty eight by twenty eight crop from a thirty two by thirty two image.", [[46.917, 47.507], [49.647, 49.797]]],
-  "crops/across": [52.495, 68.382, "Slide it across one pixel at a time. Its left edge can sit at zero, one, two, three or four, where its right edge meets the image's. That is thirty two minus twenty eight, plus one for position zero: five places.", [[55.075, 55.555], [57.375, 57.555], [57.935, 58.155], [58.545, 58.695], [59.775, 60.075], [61.955, 62.455], [64.905, 65.135], [66.975, 67.385]]],
-  "crops/down": [68.762, 80.768, "Down, the same: its top edge sits at zero to four, five places. Every place across pairs with every place down: five times five, twenty five crops.", [[69.282, 69.692], [70.212, 70.862], [73.092, 73.292], [74.202, 74.772], [77.682, 78.152], [79.212, 79.552]]],
-  "crops/flips": [81.148, 88.947, "Add a random flip, and each crop also comes mirrored: twenty five times two, fifty versions of every image.", [[82.318, 82.598], [84.628, 85.068], [86.428, 86.818]]],
-  "crops/train": [89.327, 99.94, "Do this only while training, with fresh random choices every time. Validation and test images stay untouched, so they still measure the model on real data.", [[91.077, 91.377], [93.787, 94.427], [97.177, 97.437]]],
-  "crops/gap": [100.32, 108.91, "The training loss ends a little higher, because varied images are harder to memorize, and the validation loss ends lower: a smaller gap.", [[102.48, 102.69], [105.24, 105.63], [107.64, 108.02]]],
-  "try/p1": [110.71, 125.417, "Try one. A training image is thirty six pixels wide and thirty two high. A random twenty eight by twenty eight crop is cut from it, then flipped left to right half of the time. How many different versions can that give?", [[111.29, 111.87], [114.5, 114.68], [116.0, 116.67], [119.84, 120.18], [122.69, 123.24]]],
-  "try/across": [125.797, 133.661, "Across, the crop's left edge can sit at zero up to thirty six minus twenty eight, which is eight: nine places.", [[126.417, 126.687], [131.147, 131.457], [132.147, 132.547], [133.477, 133.627]]],
-  "try/down": [134.041, 141.023, "Down, the image is only thirty two high, so the top edge sits at zero to four: five places.", [[134.561, 134.951], [137.041, 137.351], [139.691, 140.071]]],
-  "try/total": [141.403, 145.257, "Nine across times five down is forty five crops.", []],
-  "try/flip": [145.637, 151.082, "And each comes flipped or not: forty five times two, ninety versions.", [[147.517, 148.027], [149.467, 149.867]]],
-  "try/turn": [151.462, 152.202, "Your turn.", []]
+  "variety/memo": [0.7, 14.176, "A classifier that overfits has memorized its training images, quirks and all. More photos would help, but they are slow to collect. A cheaper fix: never show it exactly the same image twice.", [[4.38, 4.68], [5.75, 6.38], [7.66, 7.9], [9.26, 9.92], [10.79, 11.28]]],
+  "variety/label": [14.556, 24.007, "Every training image comes with its label: the correct answer stored with it, the class it really belongs to. This arrow's label says it points right.", [[16.826, 17.266], [18.926, 19.326], [21.036, 21.666]]],
+  "variety/change": [24.387, 34.415, "Each time an image is used, change it a little at random: shift it, darken it, crop it. It still shows the same thing, so its label stays true.", [[25.967, 26.287], [27.827, 28.287], [28.847, 29.177], [29.727, 29.977], [30.417, 30.917], [32.527, 32.777]]],
+  "variety/flip": [34.795, 46.314, "But the change must keep the label true. Flip this arrow left to right, and it points left: its stored label is now wrong. A flipped photo of a cat, though, is still a cat.", [[37.225, 37.805], [39.455, 39.635], [40.645, 41.115], [42.965, 43.515], [45.235, 45.405]]],
+  "variety/which": [46.694, 56.079, "So which changes are safe depends on the task. A six turned upside down is a nine, and a red light with its colors shifted can look green.", [[49.664, 50.274], [52.624, 53.034], [55.054, 55.234]]],
+  "variety/name": [56.459, 64.512, "This is data augmentation. To augment is to make bigger: it grows the training set without a single new photo.", [[58.479, 59.029], [60.849, 61.359]]],
+  "crops/count": [66.312, 73.54, "Random crops alone add a lot. Cut a twenty eight by twenty eight crop from a thirty two by thirty two image.", [[68.342, 68.932], [71.072, 71.222]]],
+  "crops/across": [73.92, 84.822, "Slide it across, a pixel at a time. Its left edge can sit at zero, one, two, three or four. At four, its right edge meets the image's.", [[75.05, 75.33], [76.58, 77.15], [79.01, 79.24], [79.64, 79.89], [80.26, 80.48], [81.52, 82.09], [82.69, 82.96]]],
+  "crops/plus": [85.202, 92.848, "That is thirty two minus twenty eight, plus one, because position zero counts as well: five places.", [[87.982, 88.212], [88.892, 89.272], [91.362, 91.852]]],
+  "crops/down": [93.228, 104.165, "Down, the same rule with the image's height gives five places again. Every place across pairs with every place down: five times five, twenty five crops.", [[93.758, 94.198], [97.568, 98.128], [100.938, 101.418], [102.518, 102.878]]],
+  "crops/flips": [104.545, 111.272, "A random flip shows each crop either way round, which doubles that: fifty versions of every image.", [[107.575, 107.785], [108.705, 109.125]]],
+  "crops/alex": [111.652, 126.903, "In 2012, Alex Krizhevsky, Ilya Sutskever and Geoffrey Hinton built an image classifier with sixty million adjustable numbers. Even one point two million training photos were too few to fit that many without overfitting.", [[112.692, 113.002], [114.082, 114.322], [116.482, 116.732], [120.492, 121.062], [123.652, 123.812]]],
+  "crops/alex2": [127.283, 143.39, "So they trained on random two twenty four by two twenty four crops of their two fifty six by two fifty six photos, and the crops' mirror images: label-preserving transformations, they called them. That is over two thousand versions of every photo.", [[134.183, 134.523], [136.273, 136.853], [139.463, 139.973]]],
+  "crops/fresh": [143.77, 152.395, "Make fresh random choices every time an image is used. One changed copy, saved once, would simply be memorized instead.", [[147.35, 147.92], [149.12, 149.33], [150.14, 150.42]]],
+  "crops/test": [152.775, 161.669, "And only while training. Validation and test images are just cut to size, from the middle, so they still measure the model on real images.", [[154.305, 154.815], [157.845, 158.065], [158.695, 159.015]]],
+  "gap/before": [163.469, 173.547, "Here are the loss curves of an overfitting model, trained without augmentation: the training loss falls toward zero, while the validation loss turns and climbs.", [[167.809, 168.419], [170.509, 170.799]]],
+  "gap/with": [173.927, 182.66, "Train it again with random crops and flips. The training loss ends a little higher, because images that keep changing are harder to memorize.", [[176.547, 177.197], [179.197, 179.467]]],
+  "gap/lower": [183.04, 193.449, "But the validation loss keeps falling for longer, and ends lower. The gap shrinks: the model has learned more of what the images share, and less of their quirks.", [[185.79, 186.02], [187.08, 187.71], [188.78, 189.23], [191.78, 192.02]]],
+  "gap/turn": [193.829, 194.57, "Your turn.", []]
  }
 }

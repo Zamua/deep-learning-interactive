@@ -1,22 +1,31 @@
 {
- "duration": 133.637,
+ "duration": 212.121,
  "scenes": {
-  "nms": [0.0, 72.488],
-  "table": [72.488, 133.637]
+  "many": [0.0, 72.158],
+  "nms": [72.158, 128.548],
+  "chain": [128.548, 212.121]
  },
  "beats": {
-  "nms/many": [0.7, 9.518, "A detector, a network that finds and boxes objects, often fires several boxes on one object, each with a confidence score.", [[1.51, 2.02], [4.62, 5.03], [7.58, 7.95]]],
-  "nms/recall": [9.898, 21.9, "How much two boxes overlap is their IoU, intersection over union. A and B share thirty six units of the sixty two they cover: zero point five eight.", [[13.348, 13.758], [15.308, 15.988], [19.988, 20.448]]],
-  "nms/sort": [22.28, 28.697, "Non-max suppression keeps one box per object. First, sort the boxes by confidence.", [[25.4, 26.01], [26.48, 26.76]]],
-  "nms/keep": [29.077, 41.701, "Keep the top box, A, and drop every box whose IoU with it is above a threshold, here a half. B overlaps A at zero point five eight: a duplicate, gone.", [[30.267, 30.527], [30.867, 31.167], [34.957, 35.317], [36.327, 36.927], [39.817, 40.277], [40.947, 41.307]]],
-  "nms/stay": [42.081, 54.133, "C does not touch A, so it stays. Repeat with what is left: C is now the best, so it is kept, and D, at zero point six three with C, is dropped.", [[43.781, 44.031], [44.951, 45.631], [46.971, 47.571], [48.971, 49.171], [50.051, 50.411], [51.021, 51.231], [53.271, 53.481]]],
-  "nms/done": [54.513, 58.595, "Nothing is left: two boxes, one per object.", [[55.703, 56.253], [57.043, 57.373]]],
-  "nms/thresh": [58.975, 71.388, "The threshold sets what counts as a duplicate. At zero point six, B's zero point five eight would not be above it, and B would stay: a higher threshold drops fewer boxes.", [[61.585, 62.155], [63.515, 63.765], [66.885, 67.265], [68.415, 68.925]]],
-  "table/grid": [73.188, 92.448, "The same steps work from a table. Four boxes, with confidences: A zero point six, B zero point nine, C zero point seven, D zero point eight. Row A, column C holds the IoU of A and C: zero point six nine.", [[75.078, 75.658], [76.558, 76.768], [77.768, 78.278], [79.668, 80.058], [81.568, 81.938], [83.548, 83.878], [85.408, 86.008], [87.668, 87.848], [90.428, 90.968]]],
-  "table/order": [92.828, 97.073, "Sort by confidence: B, D, C, A.", [[94.178, 94.618], [95.038, 95.318], [95.728, 95.978], [96.428, 96.668]]],
-  "table/first": [97.453, 106.702, "Keep B, and read its row. D is at zero point six one, above a half: dropped. C and A are below.", [[98.283, 98.583], [99.633, 100.253], [102.453, 102.703], [103.573, 104.033], [104.463, 104.963]]],
-  "table/chain": [107.082, 122.138, "Next, C. It overlaps D at zero point five six, but D was dropped, and a dropped box drops nothing. Only kept boxes count: with B, C is at zero point three two, so C is kept.", [[107.622, 107.912], [108.362, 108.852], [111.702, 112.032], [113.122, 113.472], [115.282, 115.782], [117.372, 117.872], [118.462, 118.692], [120.762, 121.042]]],
-  "table/last": [122.518, 131.417, "Last, A. With C, now kept, it is at zero point six nine: dropped. B and C survive.", [[123.068, 123.548], [123.888, 124.458], [125.088, 125.568], [126.248, 126.498], [128.348, 128.848], [129.278, 129.768]]],
-  "table/turn": [131.797, 132.537, "Your turn.", []]
+  "many/many": [0.7, 12.606, "A detector is a network that looks at an image and draws a box around each object it finds. It rarely draws just one per object: here, two objects come back with four boxes.", [[6.32, 6.89], [9.18, 9.69], [10.03, 10.23]]],
+  "many/conf": [12.986, 23.625, "Each box comes with a confidence: the detector's score for how sure it is that the box holds an object. Here they run from zero to one, and higher means surer.", [[14.976, 15.436], [19.246, 19.806], [21.746, 22.076]]],
+  "many/want": [24.005, 34.233, "One object should get one box. So keep the most confident box, A, and treat a box that overlaps it heavily as the same object, found twice.", [[26.125, 26.615], [28.565, 28.805], [29.175, 29.485], [33.015, 33.325]]],
+  "many/iou": [34.613, 45.965, "Heavily means a high IoU, intersection over union. A and B share thirty six squares of the sixty two they cover: zero point five eight.", [[37.393, 37.833], [39.353, 39.973], [43.953, 44.503]]],
+  "many/name": [46.345, 56.211, "The box with the maximum confidence stays, and the overlapping boxes that are not the maximum are suppressed. That is the name: non-maximum suppression.", [[48.805, 49.115], [52.605, 53.145], [54.135, 54.575]]],
+  "many/canny": [56.591, 71.058, "Finding edges needs the same thing. An edge filter answers on the edge and on the pixels beside it. In 1986, John Canny asked for only one response to a single edge, marking it only at the peak.", [[58.791, 59.381], [61.511, 61.701], [63.391, 64.051], [65.291, 65.531], [69.061, 69.451]]],
+  "nms/sort": [72.858, 82.215, "Non-max suppression runs in rounds. First, sort the boxes by confidence, highest first: A, C, B, D.", [[75.158, 75.628], [76.118, 76.348], [78.098, 78.428], [79.388, 79.878], [80.218, 80.468], [80.928, 81.248], [81.548, 81.838]]],
+  "nms/keep": [82.595, 93.987, "Keep the top box, A, and drop every box whose IoU with it is above a threshold, here a half. B, at zero point five eight, is dropped.", [[83.835, 84.155], [84.485, 84.795], [87.535, 87.705], [88.895, 89.225], [90.305, 90.895], [91.285, 91.555], [93.085, 93.325]]],
+  "nms/stay": [94.367, 99.946, "C does not touch A, so their IoU is zero, and C stays.", [[96.087, 96.407], [98.367, 98.687]]],
+  "nms/repeat": [100.326, 109.907, "Repeat with what is left. C is now the most confident, so it is kept, and D, at zero point six three with C, is dropped.", [[101.746, 102.406], [104.386, 104.636], [105.636, 106.076], [106.706, 106.896], [108.986, 109.226]]],
+  "nms/done": [110.287, 114.334, "Nothing is left to check: two boxes, one per object.", [[111.647, 112.117], [112.897, 113.197]]],
+  "nms/thresh": [114.714, 127.448, "The threshold sets what counts as a copy. Raise it to zero point six, and B's zero point five eight is no longer above it, so B stays. A higher threshold drops fewer boxes.", [[117.134, 117.684], [119.324, 119.554], [122.874, 123.174], [124.414, 124.974]]],
+  "chain/row": [129.248, 138.371, "One case needs care. Here three boxes overlap in a row: C is the most confident, then B, then A.", [[130.888, 131.728], [134.218, 134.768], [136.378, 136.728], [137.348, 137.708]]],
+  "chain/dropB": [138.751, 146.129, "C is kept first. B overlaps it at zero point six, above a half, so B is dropped.", [[140.311, 140.791], [143.261, 143.501], [144.351, 144.711]]],
+  "chain/ghost": [146.509, 156.22, "Now A. It overlaps B at zero point five three, also above a half. But B is already gone, and a dropped box drops nothing.", [[147.349, 147.799], [150.639, 150.929], [152.119, 152.579], [153.949, 154.239]]],
+  "chain/keepA": [156.6, 168.379, "Only kept boxes count. Against C, the one kept box, A's IoU is zero point two five, so A stays: C and A survive.", [[158.28, 158.88], [159.83, 160.21], [161.52, 161.89], [164.77, 165.13], [166.37, 166.78]]],
+  "chain/why": [168.759, 176.379, "B was ruled a copy of C and thrown out. A is not a copy of anything still kept, so nothing removes it.", [[171.549, 172.179], [174.739, 174.999]]],
+  "chain/rcnn": [176.759, 191.426, "In 2014, the R C N N detector of Ross Girshick and colleagues put the rule this way: reject a box whose IoU with a higher scoring selected box is larger than the threshold. Selected means kept.", [[177.909, 178.209], [181.239, 181.489], [182.649, 183.219], [187.359, 187.629], [189.179, 189.719], [190.359, 190.529]]],
+  "chain/table": [191.806, 203.437, "Practice gives the overlaps as a table, rows and columns in letter order. Row B, column C holds the IoU of B and C: zero point six.", [[194.136, 194.406], [196.386, 197.016], [197.676, 197.906], [198.706, 198.946], [201.646, 202.186]]],
+  "chain/first": [203.817, 209.901, "So start with the row of the most confident box: here row C, not row A.", [[206.807, 207.247], [208.497, 208.797]]],
+  "chain/turn": [210.281, 211.021, "Your turn.", []]
  }
 }

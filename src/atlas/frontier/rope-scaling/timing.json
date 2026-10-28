@@ -1,26 +1,29 @@
 {
- "duration": 161.717,
+ "duration": 187.423,
  "scenes": {
-  "seen": [0.0, 56.338],
-  "squeeze": [56.338, 122.637],
-  "try": [122.637, 161.717]
+  "seen": [0.0, 56.95],
+  "squeeze": [56.95, 148.344],
+  "try": [148.344, 187.423]
  },
  "beats": {
-  "seen/train": [0.7, 13.461, "A model with rotary positions is trained on texts of up to a thousand tokens. Write L train for that trained length: every position it saw was below it, from zero to nine hundred ninety nine.", [[5.34, 5.93], [6.24, 6.44], [8.46, 8.95], [10.93, 11.23]]],
-  "seen/slow": [13.841, 27.463, "Follow one slow pair, with theta of a tenth of a degree per position. At position m it turns by m theta, so in training its angle only ran from zero to ninety nine point nine degrees.", [[15.491, 15.821], [18.371, 18.891], [21.691, 22.121], [23.131, 23.371]]],
-  "seen/past": [27.843, 37.399, "Now give it a text of four thousand tokens. At position three thousand, the pair turns three hundred degrees: an angle it never had in training.", [[30.493, 30.993], [32.513, 32.773], [34.873, 35.303]]],
-  "seen/fail": [37.779, 47.09, "Queries and keys arrive turned in ways the model never learned to read. The scores go wrong, and past the trained length, quality collapses.", [[42.059, 42.589], [43.789, 44.049], [45.479, 45.829]]],
-  "seen/fast": [47.47, 55.238, "Fast pairs are fine: they went round many times in training and met every angle. The slow ones are pushed somewhere new.", [[48.78, 49.22], [52.51, 53.04]]],
-  "squeeze/idea": [57.038, 71.393, "Position interpolation, from Chen and others at Meta in 2023, squeezes the long text into the trained range. It divides every position by s, the stretch: the new length over L train.", [[58.488, 58.818], [61.968, 62.288], [65.168, 65.748], [67.928, 68.228], [68.898, 69.338]]],
-  "squeeze/scale": [71.773, 76.069, "Here s is four thousand over a thousand: four.", [[74.983, 75.563]]],
-  "squeeze/angle": [76.449, 84.355, "So position three thousand turns as if it sat at seven hundred fifty: seventy five degrees, an angle training made.", [[78.269, 78.419], [80.779, 81.259], [82.579, 82.909]]],
-  "squeeze/last": [84.735, 96.307, "Even the last token, at three thousand nine hundred ninety nine, turns as if at nine hundred ninety nine point seven five, below L train. Every angle stays in the trained range.", [[86.075, 86.275], [88.505, 88.835], [92.055, 92.295], [93.345, 93.895]]],
-  "squeeze/close": [96.687, 108.832, "The price: neighbors sit closer, turning zero point zero two five degrees apart instead of a tenth. A short fine-tune on long texts teaches the model the finer spacing.", [[97.397, 97.877], [99.207, 99.537], [102.537, 102.727], [103.677, 104.307]]],
-  "squeeze/llama": [109.212, 121.537, "That is how LLaMA, trained on two thousand and forty eight tokens, was stretched to thirty two thousand seven hundred sixty eight: s of sixteen, with at most a thousand steps of fine-tuning.", [[110.422, 110.622], [113.032, 113.402], [116.892, 117.362], [118.552, 118.882]]],
-  "try/p": [123.337, 137.063, "Try one. A model trained on two thousand and forty eight positions should read eight thousand one hundred ninety two. A pair turns a tenth of a degree per position. How far does it turn at position six thousand?", [[123.937, 124.527], [127.507, 127.677], [128.207, 128.417], [130.517, 131.117], [133.857, 134.337]]],
-  "try/s": [137.443, 144.285, "First the stretch: eight thousand one hundred ninety two over two thousand and forty eight is four.", [[138.683, 139.303], [143.363, 143.613]]],
-  "try/raw": [144.665, 152.397, "Without it, six thousand times a tenth is six hundred degrees, far past the two hundred and four point seven training reached.", [[145.315, 145.585], [148.785, 149.115]]],
-  "try/scaled": [152.777, 159.496, "With it, six thousand over four is fifteen hundred, times a tenth: a hundred and fifty degrees.", [[153.237, 153.487], [156.167, 156.577], [157.407, 157.867]]],
-  "try/turn": [159.876, 160.617, "Your turn.", []]
+  "seen/problem": [0.7, 13.219, "A model with rotary positions learns from texts of up to a thousand tokens. Hand it one of four thousand, and past the first thousand, its predictions can get as bad as an untrained model's. Why?", [[5.19, 5.7], [7.14, 7.42], [8.84, 9.11], [12.23, 12.76]]],
+  "seen/slow": [13.599, 25.827, "Follow one slow pair, which turns a tenth of a degree per position. In all of training, its arrow only swept this shaded slice, between zero and ninety nine point nine degrees.", [[15.279, 15.609], [18.049, 18.639], [19.689, 19.919], [22.639, 22.909]]],
+  "seen/past": [26.207, 33.027, "At position three thousand it has turned three hundred degrees, into a part of the circle training never showed it.", [[27.837, 28.007], [29.907, 30.277]]],
+  "seen/fail": [33.407, 40.366, "Queries and keys arrive turned in ways the model never learned to read, and the attention scores go wildly wrong.", [[37.487, 37.877]]],
+  "seen/fast": [40.746, 48.846, "Fast pairs are fine: they went round many times in training and met every angle. It is the slow ones that are pushed somewhere new.", [[42.016, 42.436], [45.746, 46.216]]],
+  "seen/L": [49.226, 55.85, "Write L train for the trained length, here a thousand: every position training saw was below it.", [[51.416, 51.786], [52.856, 53.346]]],
+  "squeeze/idea": [57.65, 71.497, "In 2023, Shouyuan Chen and colleagues at Meta turned this around. Instead of letting positions run past the trained range, squeeze the long text into it: divide every position by the same number.", [[58.96, 59.29], [62.54, 63.18], [66.18, 66.51], [68.56, 69.07]]],
+  "squeeze/s": [71.877, 80.655, "That number is the stretch, s: the new length over L train. Here, four thousand over a thousand: four.", [[73.517, 73.927], [74.277, 74.707], [76.607, 77.147], [77.477, 77.877], [79.737, 80.217]]],
+  "squeeze/angle": [81.035, 88.942, "So position three thousand turns as if it sat at seven hundred fifty: seventy five degrees, an angle training made.", [[82.855, 83.005], [85.365, 85.845], [87.165, 87.495]]],
+  "squeeze/last": [89.322, 99.142, "Even the last token, at three thousand nine hundred ninety nine, turns as if at nine hundred ninety nine point seven five: still below L train.", [[90.632, 90.852], [93.212, 93.502], [97.002, 97.462]]],
+  "squeeze/between": [99.522, 117.117, "Most positions now land between two whole ones: three thousand and one turns as if at seven hundred fifty point two five. Filling in between known points is called interpolation, which names the method: position interpolation. Running past them is extrapolation.", [[102.572, 102.992], [107.402, 107.922], [111.122, 111.432], [112.502, 112.922], [114.292, 114.802], [115.752, 115.912]]],
+  "squeeze/close": [117.497, 133.092, "The price: neighbors now sit a quarter step apart, turning zero point zero two five degrees apart instead of a tenth. So the model gets a fine-tune: a short extra round of training, on long texts, to read the finer spacing.", [[118.207, 118.787], [121.027, 121.317], [124.217, 124.417], [125.407, 126.047], [127.937, 128.347], [130.137, 130.367], [131.387, 131.607]]],
+  "squeeze/llama": [133.472, 143.76, "That is how they stretched Llama models, trained on two thousand and forty eight tokens, to read up to thirty two thousand seven hundred sixty eight: an s of sixteen.", [[135.672, 135.842], [138.192, 138.492], [141.762, 142.222]]],
+  "squeeze/steps": [144.14, 147.244, "The fine-tune took at most a thousand steps.", [[147.03, 147.22]]],
+  "try/p": [149.044, 162.769, "Try one. A model trained on two thousand and forty eight positions should read eight thousand one hundred ninety two. A pair turns a tenth of a degree per position. How far does it turn at position six thousand?", [[149.644, 150.234], [153.214, 153.384], [153.914, 154.124], [156.224, 156.824], [159.564, 160.044]]],
+  "try/s": [163.149, 169.992, "First the stretch: eight thousand one hundred ninety two over two thousand and forty eight is four.", [[164.389, 165.009], [169.069, 169.319]]],
+  "try/raw": [170.372, 178.103, "Without it, six thousand times a tenth is six hundred degrees, far past the two hundred and four point seven training reached.", [[171.022, 171.292], [174.492, 174.822]]],
+  "try/scaled": [178.483, 185.203, "With it, six thousand over four is fifteen hundred, times a tenth: a hundred and fifty degrees.", [[178.943, 179.193], [181.873, 182.283], [183.113, 183.573]]],
+  "try/turn": [185.583, 186.323, "Your turn.", []]
  }
 }

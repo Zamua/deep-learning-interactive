@@ -1,22 +1,36 @@
 {
- "duration": 126.191,
+ "duration": 248.964,
  "scenes": {
-  "explog": [0.0, 57.2],
-  "try": [57.2, 126.191]
+  "grow": [0.0, 64.07],
+  "fast": [64.07, 113.87],
+  "mirror": [113.87, 171.243],
+  "try": [171.243, 248.964]
  },
  "beats": {
-  "explog/ex": [0.7, 11.691, "e to the x is special: it is its own derivative. At every point its slope equals its height: at x equals one, both are two point seven two.", [[2.4, 2.91], [4.41, 4.98], [5.89, 6.07], [7.76, 8.29], [9.51, 9.83]]],
-  "explog/eax": [12.071, 23.79, "Now put a three in the power. Each step in x moves the power three times as far, and the measured slope of e to the three x at zero is three, where its height is one.", [[13.881, 14.441], [17.871, 18.321], [22.021, 22.401]]],
-  "explog/one": [24.17, 32.441, "At x equals one, the height is twenty point oh nine, and the slope is about sixty point three: three times the height again.", [[25.62, 25.85], [27.9, 28.21], [30.5, 30.96]]],
-  "explog/rule": [32.821, 45.543, "So the three comes out in front: e to the three x becomes three e to the three x. For any number a, e to the a x becomes a times e to the a x.", [[34.891, 35.511], [37.231, 37.381], [39.101, 39.691], [40.941, 41.351], [43.111, 43.281], [45.331, 45.531]]],
-  "explog/ln": [45.923, 56.1, "And ln x has derivative one over x: steep near zero, flatter as x grows. At x equals two, its slope is a half.", [[49.093, 49.623], [50.773, 51.043], [52.683, 53.233], [54.493, 54.743]]],
-  "try/p1": [57.9, 68.402, "Try a mix: f of x equals two x cubed, plus four e to the minus two x, minus three ln x. Take it one term at a time.", [[58.77, 59.33], [61.54, 61.79], [63.95, 64.18], [65.89, 66.55], [68.17, 68.37]]],
-  "try/t1": [68.782, 76.065, "Two x cubed: the three comes down, and three times two is six. Six x squared.", [[70.002, 70.622], [71.862, 72.152], [74.102, 74.652]]],
-  "try/t2": [76.445, 88.204, "Four e to the minus two x: the minus two in the power comes out in front. Four times minus two is minus eight, so minus eight e to the minus two x.", [[78.595, 79.155], [81.725, 82.265], [84.685, 85.015], [85.385, 85.555], [86.355, 86.515]]],
-  "try/t3": [88.584, 97.798, "Three ln x has derivative three over x. It is subtracted, so its derivative is too: minus three over x.", [[92.134, 92.684], [93.664, 93.914], [95.634, 96.114]]],
-  "try/sum": [98.178, 106.114, "Together, f prime of x is six x squared, minus eight e to the minus two x, minus three over x.", [[98.748, 99.018], [101.508, 101.808], [104.238, 104.438]]],
-  "try/p2": [106.494, 114.958, "Now a slope at one point. For f of x equals x squared plus six ln x, what is f prime of two?", [[108.264, 108.924], [112.744, 113.224]]],
-  "try/a2": [115.338, 123.97, "Differentiate first: two x, plus six over x. Then put in two: four plus three, seven.", [[116.768, 117.308], [117.898, 118.098], [119.588, 120.178], [121.408, 121.948], [123.038, 123.448]]],
-  "try/turn": [124.35, 125.091, "Your turn.", []]
+  "grow/problem": [0.7, 15.564, "The power rule finds the slope of x cubed at every x, with no measuring. There, x is the base: the number being multiplied. In e to the x, x has moved up into the power, so the power rule does not apply.", [[4.47, 4.65], [5.58, 6.12], [6.54, 6.78], [7.87, 8.15], [9.59, 10.19], [11.31, 11.59], [13.45, 13.73]]],
+  "grow/bank": [15.944, 26.083, "Go back to the bank that grows a dollar by a hundred percent a year, at every instant. At each moment, it adds interest at a hundred percent of whatever is there now.", [[19.494, 19.724], [20.824, 21.404], [22.284, 22.474]]],
+  "grow/rate": [26.463, 34.235, "So the money grows at a rate equal to the amount. Two dollars grow at two dollars a year, and five dollars at five.", [[29.443, 30.003], [32.213, 32.553]]],
+  "grow/slide": [34.615, 45.0, "On the curve of e to the x, the rate is the slope, and the amount is the height. Slide the tangent along it: at every point, the slope equals the height.", [[36.505, 36.775], [37.995, 38.365], [39.775, 40.345], [41.855, 42.255], [43.205, 43.445]]],
+  "grow/one": [45.38, 56.664, "The tangent always meets the axis one step to the left, so its rise over that run of one is the height itself. At x equals one, both are two point seven two.", [[48.82, 49.2], [51.29, 51.5], [52.63, 53.21], [54.48, 54.76]]],
+  "grow/rule": [57.044, 62.97, "So e to the x is its own derivative: e to the x becomes e to the x.", [[57.354, 57.524], [59.924, 60.494], [61.914, 62.064]]],
+  "fast/three": [64.77, 75.194, "Now put a three in the power: e to the three x. At x equals one, its power is already three, so it gets to each height in a third of the time.", [[66.46, 66.98], [68.32, 68.84], [70.07, 70.34], [72.07, 72.42], [74.98, 75.16]]],
+  "fast/squeeze": [75.574, 80.997, "Its curve is the curve of e to the x, squeezed sideways to a third of its width.", [[78.174, 78.414]]],
+  "fast/steep": [81.377, 90.26, "Squeezing keeps every rise but cuts every run to a third, so each slope is three times as steep: three times the height.", [[83.317, 83.477], [85.537, 85.957], [88.367, 88.827]]],
+  "fast/zero": [90.64, 99.668, "Check it at zero. There the power is zero, and e to the zero is one: the height is one, and the measured slope is three.", [[91.8, 92.37], [93.9, 94.23], [95.99, 96.49], [97.57, 97.92]]],
+  "fast/rule": [100.048, 112.77, "So the three comes out in front: e to the three x becomes three e to the three x. For any number a, e to the a x becomes a times e to the a x.", [[102.118, 102.738], [104.458, 104.608], [106.328, 106.918], [108.168, 108.578], [110.338, 110.508], [112.558, 112.758]]],
+  "mirror/ln": [114.57, 127.83, "Now ln x. It reads e to the x backwards: give it a height, and it returns the x. So its curve is the same curve with the two axes swapped: mirrored across the diagonal.", [[116.27, 116.82], [118.94, 119.5], [120.28, 120.46], [121.81, 122.32], [125.82, 126.26]]],
+  "mirror/point": [128.21, 140.095, "e to the x reaches height two at about zero point six nine. In the mirror, that point lands at x equals two, with height zero point six nine: ln two.", [[132.37, 132.93], [133.56, 133.84], [136.13, 136.42], [138.47, 139.0]]],
+  "mirror/swap": [140.475, 152.419, "The tangent is mirrored too. There it rose two for every one across. In the mirror, rise and run trade places: one up for every two across, a slope of a half.", [[142.135, 142.665], [145.385, 145.915], [146.545, 146.815], [148.655, 149.115], [150.945, 151.225]]],
+  "mirror/every": [152.799, 162.939, "Any point works the same way. Where e to the x has height five, its slope is five, so ln, at five, has slope one fifth.", [[154.549, 155.159], [157.349, 157.639], [158.909, 159.319], [161.299, 161.569]]],
+  "mirror/rule": [163.319, 170.143, "The slope of ln at any x is one over x: ln x becomes one over x.", [[167.039, 167.619]]],
+  "try/p1": [171.943, 180.237, "Now mix all three kinds: a power, an exponential, and a log. A sum is differentiated one piece at a time.", [[173.833, 174.183], [174.733, 175.003], [175.883, 176.073], [176.673, 177.223]]],
+  "try/t1": [180.617, 188.298, "Two x cubed is a power: the three comes down, and three times two is six. Six x squared.", [[182.497, 182.957], [184.137, 184.517], [186.397, 186.857]]],
+  "try/t2": [188.678, 199.912, "Four e to the minus two x: the minus two comes out in front. Four times minus two is minus eight, so minus eight e to the minus two x.", [[190.958, 191.468], [193.378, 193.888], [196.408, 196.728], [197.078, 197.228], [198.028, 198.198]]],
+  "try/t3": [200.292, 210.165, "Three ln x becomes three over x. It is subtracted, so its derivative is subtracted as well: minus three over x.", [[203.732, 204.312], [205.292, 205.632], [207.862, 208.412]]],
+  "try/sum": [210.545, 215.933, "Put the three pieces back together, signs and all, and that is f prime of x.", [[212.435, 212.685], [213.615, 213.915]]],
+  "try/p2": [216.313, 225.295, "For the slope at one point, differentiate first. x squared plus six ln x becomes two x, plus six over x.", [[217.783, 218.073], [219.373, 220.043], [222.783, 223.003], [223.603, 223.783]]],
+  "try/a2": [225.675, 233.618, "Then put in two. Two x is four, and six over x is three, so f prime of two is seven.", [[226.885, 227.495], [228.745, 229.045], [230.845, 231.215]]],
+  "try/zero": [233.998, 246.744, "For five e to the three x, the three comes out: fifteen e to the three x. At zero, e to the zero is one, so the slope there is fifteen, not the height, five.", [[235.878, 236.108], [237.218, 237.648], [239.758, 240.278], [241.008, 241.288], [242.758, 243.108], [244.898, 245.228], [245.968, 246.198]]],
+  "try/turn": [247.124, 247.864, "Your turn.", []]
  }
 }

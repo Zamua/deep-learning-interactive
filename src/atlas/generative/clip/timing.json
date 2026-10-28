@@ -1,21 +1,37 @@
 {
- "duration": 112.66,
+ "duration": 261.382,
  "scenes": {
-  "space": [0.0, 37.426],
-  "diagonal": [37.426, 76.399],
-  "zeroshot": [76.399, 112.66]
+  "rows": [0.0, 39.707],
+  "space": [39.707, 76.645],
+  "train": [76.645, 167.05],
+  "zeroshot": [167.05, 261.382]
  },
  "beats": {
-  "space/pairs": [0.7, 8.493, "The web is full of images with text written beside them. CLIP trains on such pairs: a photo, and its caption.", [[3.93, 4.51], [6.21, 6.69], [7.35, 7.6]]],
-  "space/encoders": [8.873, 24.712, "It has two encoders. An image encoder turns each photo into a vector. A text encoder, starting from the embeddings of the caption's tokens, turns each caption into a vector of the same width, d. Both are scaled to length one.", [[10.373, 10.933], [14.073, 14.583], [15.673, 15.873], [18.513, 18.843], [21.763, 22.043], [22.343, 22.903]]],
-  "space/sim": [25.092, 36.326, "Stack a batch of N images, and their N captions. One matrix product gives every image's dot product with every caption: an N by N grid of similarities.", [[28.572, 29.142], [33.392, 33.782]]],
-  "diagonal/diag": [38.126, 44.281, "Pair i is image i with the caption written for it, so the right pairs sit on the diagonal.", [[41.606, 42.066]]],
-  "diagonal/rows": [44.661, 58.547, "Each row is a contrastive problem: a softmax over the captions, and a cross-entropy that wants image i to pick caption i. The other N minus one captions in the row are its negatives: here, two.", [[46.731, 47.181], [48.941, 49.211], [52.931, 53.541], [57.111, 57.531], [57.901, 58.151]]],
-  "diagonal/cols": [58.927, 66.241, "The columns get the same treatment: each caption should pick its own image. The loss averages the two directions.", [[60.767, 61.217], [63.297, 63.867]]],
-  "diagonal/count": [66.621, 75.299, "With three pairs, the grid holds nine similarities. Training pushes the three on the diagonal up, and the six negatives down.", [[67.621, 67.841], [69.951, 70.581], [73.221, 73.551]]],
-  "zeroshot/names": [77.099, 88.676, "After training, CLIP can sort images into classes it was never trained on. Write one caption per class: a photo of a tree, a photo of a boat, a photo of a sunset.", [[77.999, 78.309], [81.769, 82.429], [84.309, 84.759], [85.839, 86.109], [87.119, 87.419]]],
-  "zeroshot/embed": [89.056, 93.724, "Embed the captions with the text encoder, and the image with the image encoder.", [[91.356, 91.676]]],
-  "zeroshot/pick": [94.104, 110.44, "Score the image against each caption by the dot product: zero point three one, zero point one two, and zero point zero five. The highest wins: tree. No labeled tree images were needed. The classifier was written in words.", [[97.324, 97.844], [99.134, 99.544], [100.854, 101.174], [102.894, 103.484], [104.584, 105.004], [105.404, 105.984], [107.954, 108.354]]],
-  "zeroshot/turn": [110.82, 111.56, "Your turn.", []]
+  "rows/rows": [0.7, 12.851, "A classifier scores an image, x, with one row of weights per class: W times x, one dot product per row. Here, the rows are tree, boat and sunset.", [[3.08, 3.25], [5.22, 5.68], [7.08, 7.45], [9.03, 9.55], [9.89, 10.13], [11.2, 11.53], [11.85, 12.07]]],
+  "rows/labels": [13.231, 19.611, "The rows are learned from photos, each with its label: the right answer, written down by a person.", [[15.091, 15.421], [16.451, 16.981], [17.831, 18.101]]],
+  "rows/kite": [19.991, 27.19, "A new class, kite, needs a new row, and that row needs labeled kite photos, and more training.", [[20.941, 21.231], [21.621, 21.891], [22.921, 23.351], [25.771, 26.031]]],
+  "rows/words": [27.57, 38.607, "What if the row were written from the class's name instead? Turn the words, a photo of a kite, into a vector, and use it as the row. That is the idea behind CLIP.", [[30.66, 31.33], [32.16, 32.36], [33.51, 33.77], [34.66, 34.89], [36.1, 36.66]]],
+  "space/img": [40.407, 50.416, "CLIP has two encoders, networks that turn their input into a vector: one reads a photo, the other a caption's tokens, through their embeddings.", [[42.107, 42.537], [45.187, 45.737], [46.927, 47.287], [49.027, 49.227]]],
+  "space/unit": [50.796, 59.443, "Both vectors have the same size, and are scaled to length one: every tip lands on one circle, and only the direction counts.", [[52.816, 53.006], [54.606, 55.186], [57.126, 57.426]]],
+  "space/sim": [59.823, 75.545, "Their similarity is the dot product. This photo of a tree and the caption, a tree on a hill, point nearly the same way: zero point nine six. Training must turn every photo toward its own caption, and away from the rest.", [[62.013, 62.583], [63.913, 64.083], [64.813, 65.113], [66.253, 66.613], [68.123, 68.583], [70.153, 70.753], [73.983, 74.243]]],
+  "train/web": [77.345, 90.847, "For that, it needs pairs, and the web is full of them: images posted with text beside them. In 2021, Alec Radford and colleagues at OpenAI gathered four hundred million such pairs.", [[77.925, 78.105], [79.135, 79.565], [80.935, 81.385], [83.605, 84.265], [85.445, 85.755], [88.155, 88.405]]],
+  "train/batch": [91.227, 99.614, "Training takes a batch of them at a time: N images and their N captions, each turned into a unit vector of d numbers.", [[93.437, 94.017], [96.307, 96.717]]],
+  "train/sim": [99.994, 106.68, "One matrix product dots every image with every caption: an N by N grid of similarities.", [[103.654, 104.114]]],
+  "train/diag": [107.06, 117.016, "Image i was posted with caption i, so the right pairs lie on the diagonal. For row i, the label, the right answer, is column i.", [[109.71, 110.12], [112.23, 112.8], [113.77, 114.03], [114.61, 114.86], [115.65, 115.99]]],
+  "train/rows": [117.396, 130.12, "Each row is then a contrastive loss: a softmax over the captions, with a cross-entropy that wants image i to pick caption i. The other N minus one captions in the row are its negatives.", [[119.696, 120.146], [121.976, 122.236], [125.906, 126.476]]],
+  "train/cols": [130.5, 137.623, "Each column gets the same: every caption should pick its own image. The loss averages the two directions.", [[131.99, 132.57], [134.78, 135.33]]],
+  "train/count": [138.003, 147.332, "With three pairs, the grid holds nine similarities. The three right pairs are pushed up, and the six negatives down, whatever their values now.", [[139.033, 139.263], [141.333, 141.883], [143.783, 144.073], [145.653, 145.923]]],
+  "train/big": [147.712, 157.266, "CLIP trained on batches of thirty two thousand, seven hundred and sixty eight pairs, so every row had thirty two thousand, seven hundred and sixty seven negatives.", [[152.302, 152.682]]],
+  "train/name": [157.646, 165.95, "Hence the name: contrastive language-image pre-training. Pre-training, because it is trained first, before any one use.", [[158.466, 158.906], [161.326, 161.886], [162.586, 162.816], [164.276, 164.516]]],
+  "zeroshot/names": [167.75, 178.153, "Now build a classifier with no labeled photos at all. Write one caption per class: a photo of a tree, a photo of a boat, a photo of a sunset.", [[171.14, 171.78], [173.63, 174.1], [175.18, 175.49], [176.52, 176.88]]],
+  "zeroshot/prompt": [178.533, 186.943, "Why a sentence, and not just tree? Radford's team found that web text beside an image is rarely a single word.", [[179.853, 180.003], [181.373, 182.083]]],
+  "zeroshot/embed": [187.323, 196.343, "Embed the captions and the photo. In two numbers, to fit the circle, the photo points to zero point six, zero point eight.", [[189.443, 190.083], [191.043, 191.223], [192.173, 192.533], [194.933, 195.213]]],
+  "zeroshot/tree": [196.723, 210.156, "The tree caption points to zero point eight, zero point six. Their dot product: zero point six times zero point eight, plus zero point eight times zero point six, is zero point nine six.", [[199.143, 199.343], [200.493, 201.023], [201.983, 202.433], [204.813, 205.093], [207.833, 208.173]]],
+  "zeroshot/rest": [210.536, 222.965, "Boat points to one, zero, and scores zero point six. Sunset points straight down, and scores minus zero point eight. The arg max picks the highest: tree.", [[211.826, 212.286], [212.816, 213.196], [215.086, 215.636], [217.376, 217.556], [219.756, 220.316], [222.106, 222.506]]],
+  "zeroshot/W": [223.345, 230.613, "The caption vectors are the rows of W, with no bias: written from words, not learned from labeled photos.", [[225.725, 225.935], [226.875, 227.355], [228.415, 228.675]]],
+  "zeroshot/many": [230.993, 239.334, "Stack many images as rows, and images times captions transposed gives one row per image, one column per class.", [[233.013, 233.263], [237.503, 237.833]]],
+  "zeroshot/zero": [239.714, 248.92, "No labeled photo of a tree was used: zero examples, or zero shots. Hence the name, zero-shot classification.", [[242.154, 242.634], [243.874, 244.134], [244.384, 244.544], [245.524, 246.024], [246.764, 247.134]]],
+  "zeroshot/imagenet": [249.3, 259.162, "On ImageNet, a benchmark of a thousand classes, zero-shot CLIP matched a standard network trained on all one point two eight million of its labeled photos.", [[250.19, 250.41], [252.38, 252.73]]],
+  "zeroshot/turn": [259.542, 260.282, "Your turn.", []]
  }
 }

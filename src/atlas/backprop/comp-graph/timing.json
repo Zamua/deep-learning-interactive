@@ -1,24 +1,35 @@
 {
- "duration": 107.232,
+ "duration": 204.93,
  "scenes": {
-  "graph": [0.0, 39.829],
-  "forward": [39.829, 77.593],
-  "more": [77.593, 107.232]
+  "steps": [0.0, 51.883],
+  "graph": [51.883, 99.784],
+  "forward": [99.784, 158.387],
+  "more": [158.387, 204.93]
  },
  "beats": {
-  "graph/formula": [0.7, 10.277, "Take a formula: x times z, plus c, all squared. A computational graph breaks it into simple operations, one node each.", [[1.58, 2.0], [3.08, 3.27], [3.94, 4.11], [4.88, 5.49], [8.82, 9.15]]],
-  "graph/mul": [10.657, 17.383, "First, a multiply node. It takes x and z, and sends out their product. Call it q.", [[11.177, 11.427], [12.447, 12.947], [14.457, 14.677], [16.067, 16.477]]],
-  "graph/add": [17.763, 23.049, "A wire carries q into an add node, which adds c. Call that r.", [[20.293, 20.523], [21.523, 22.023]]],
-  "graph/sq": [23.429, 30.076, "Then a square node turns r into f, the output. Three operations, three nodes.", [[26.339, 26.659], [27.259, 27.799], [28.879, 29.159]]],
-  "graph/pieces": [30.456, 38.729, "Any formula breaks down into a handful of such pieces: add, multiply, max, e to the x, and square.", [[33.706, 34.176], [34.516, 34.876], [35.576, 35.926], [36.456, 36.816], [37.756, 38.016]]],
-  "forward/inputs": [40.529, 48.733, "To evaluate the graph, give the inputs values: x is two, z is three, and c is minus four.", [[41.819, 42.059], [43.559, 44.079], [45.089, 45.519], [46.639, 47.009]]],
-  "forward/mul": [49.113, 56.927, "Values flow forward, from the inputs toward the output. The multiply gives two times three: six.", [[50.563, 50.973], [53.143, 53.703], [55.913, 56.333]]],
-  "forward/add": [57.307, 60.864, "The add gives six plus minus four: two.", [[59.927, 60.457]]],
-  "forward/sq": [61.244, 65.837, "And the square gives two squared, four. So f is four.", [[63.144, 63.384], [63.804, 64.244], [64.594, 64.754]]],
-  "forward/ready": [66.217, 76.493, "The order is forced. A node can run only once every value it needs has arrived, so the add waits for the multiply, and the square waits for the add.", [[67.647, 68.217], [71.907, 72.347], [74.377, 74.657]]],
-  "more/max": [78.293, 89.372, "The other pieces work the same way. A max node passes on the larger of its inputs, written max of x and z: the max of one and minus two is one.", [[80.293, 80.873], [83.703, 84.013], [86.013, 86.623], [88.593, 88.753]]],
-  "more/exp": [89.752, 95.814, "An exp node raises e to its input. e to the one is about two point seven two.", [[92.482, 93.032]]],
-  "more/mul": [96.194, 105.011, "And z feeds a second node too: the multiply. Two point seven two times minus two is about minus five point four four.", [[98.324, 98.734], [99.544, 100.154], [102.384, 102.614]]],
-  "more/turn": [105.391, 106.132, "Your turn.", []]
+  "steps/chain": [0.7, 9.726, "In the chain rule, x fed one simple function, and its output, u, fed the next. Each link was simple, with a slope you knew.", [[1.67, 1.98], [3.86, 4.15], [5.0, 5.15], [5.56, 5.73], [6.54, 7.03], [8.25, 8.51]]],
+  "steps/more": [10.106, 18.703, "Most formulas are not one straight chain. This one takes three inputs, x, z and c, and their paths join.", [[12.716, 13.206], [14.946, 15.316], [15.696, 15.886], [16.926, 17.326]]],
+  "steps/wengert": [19.083, 31.694, "In 1964, R. E. Wengert, at General Electric, showed how a computer can take any formula apart: into a series of elementary steps, each a single simple operation.", [[20.483, 20.803], [21.843, 21.993], [23.073, 23.423], [26.453, 26.943], [29.043, 29.363]]],
+  "steps/list": [32.074, 42.986, "Here, the steps are: multiply x by z, and call it q. Add c to q, and call that r. Square r, and that is f.", [[32.514, 32.694], [33.504, 34.134], [35.844, 36.004], [37.004, 37.604], [40.074, 40.644], [41.564, 41.814]]],
+  "steps/why": [43.366, 50.783, "Then nothing is handled all at once: each step is simple enough to compute, and to find the slope of, on its own.", [[45.716, 46.216], [48.306, 48.526], [49.876, 50.046]]],
+  "graph/mul": [52.583, 61.622, "Now draw the steps. The multiply becomes a circle, called a node, with x and z coming in along wires, and q going out.", [[53.903, 54.423], [56.243, 56.403], [57.153, 57.443], [60.053, 60.313]]],
+  "graph/add": [62.002, 67.888, "q travels along a wire into an add node, which also takes c, and sends out r.", [[64.842, 65.122], [66.442, 66.692]]],
+  "graph/sq": [68.268, 71.962, "And a square node turns r into f, the output.", [[70.928, 71.258]]],
+  "graph/name": [72.342, 82.679, "Nodes joined by wires make a graph: not a plotted curve, but dots joined by lines. This one computes, so it is called a computational graph.", [[74.682, 75.172], [76.362, 76.652], [78.322, 78.842], [80.022, 80.292]]],
+  "graph/count": [83.059, 91.218, "One node per operation: three operations, three nodes. A formula that added twice would get two add nodes.", [[84.689, 85.219], [86.249, 86.499], [87.299, 87.859], [89.889, 90.039]]],
+  "graph/ends": [91.598, 98.684, "The inputs are not nodes: they are where values come in. And f is just what the last node sends out.", [[93.368, 93.778], [95.308, 95.798]]],
+  "forward/inputs": [100.484, 108.689, "To evaluate the graph, give the inputs values: x is two, z is three, and c is minus four.", [[101.774, 102.014], [103.514, 104.034], [105.044, 105.474], [106.594, 106.964]]],
+  "forward/mul": [109.069, 116.883, "Values flow forward, from the inputs toward the output. The multiply gives two times three: six.", [[110.519, 110.929], [113.099, 113.659], [115.869, 116.289]]],
+  "forward/add": [117.263, 126.225, "The add gives six plus minus four: two. It never sees x or z, only q, the one value the multiply sent.", [[119.643, 120.063], [120.373, 120.963], [122.883, 123.213], [123.973, 124.303]]],
+  "forward/sq": [126.605, 131.358, "And the square gives two squared: four. So f is four.", [[128.545, 128.945], [129.385, 129.755]]],
+  "forward/ready": [131.738, 142.014, "The order is forced. A node can run only once every value it needs has arrived, so the add waits for the multiply, and the square waits for the add.", [[133.168, 133.738], [137.428, 137.868], [139.898, 140.178]]],
+  "forward/pass": [142.394, 148.247, "One trip through the nodes in that order, inputs to output, is called the forward pass.", [[144.524, 144.844], [145.964, 146.324], [148.064, 148.224]]],
+  "forward/again": [148.627, 157.287, "Change x to three, and run the forward pass again. Every value that depends on x changes, and f becomes twenty five.", [[150.097, 150.267], [151.907, 152.527], [155.067, 155.397]]],
+  "more/max": [159.087, 170.026, "Two more kinds of node. A max node passes on the larger of its inputs, written max of x and z: the max of one and minus two is one.", [[160.567, 161.257], [164.257, 164.607], [164.957, 165.117], [166.657, 167.237], [169.247, 169.417]]],
+  "more/exp": [170.406, 176.895, "An exponential node raises e to its input: e to the one is about two point seven two.", [[173.536, 174.116], [175.486, 175.636]]],
+  "more/share": [177.275, 187.306, "And one input can feed two nodes: z goes into the max, and also into the multiply at the end. Two wires, but still no node of its own.", [[179.505, 179.995], [181.415, 181.645], [183.885, 184.505], [185.275, 185.515]]],
+  "more/mul": [187.686, 194.191, "The multiply gives two point seven two times minus two: about minus five point four four.", [[191.416, 191.926]]],
+  "more/pieces": [194.571, 202.71, "Add, multiply, max, exp and square: from a handful of pieces like these, every formula here is built.", [[194.981, 195.231], [195.961, 196.151], [196.701, 196.911], [198.131, 198.661], [200.591, 200.861]]],
+  "more/turn": [203.09, 203.83, "Your turn.", []]
  }
 }
