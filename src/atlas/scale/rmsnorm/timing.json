@@ -1,22 +1,28 @@
 {
- "duration": 100.633,
+ "duration": 176.971,
  "scenes": {
-  "jobs": [0.0, 32.39],
-  "rms": [32.39, 79.369],
-  "shift": [79.369, 100.633]
+  "jobs": [0.0, 61.163],
+  "rms": [61.163, 146.834],
+  "shift": [146.834, 176.971]
  },
  "beats": {
-  "jobs/ln": [0.7, 15.279, "Layer norm does two jobs on a token's vector. It re-centers: subtract the mean. And it re-scales: divide by the standard deviation. Then come a learned gain, gamma, and shift, beta.", [[3.55, 4.13], [5.23, 5.59], [6.64, 7.18], [8.56, 8.92], [10.84, 11.48], [12.92, 13.13], [13.56, 13.85], [14.48, 14.8]]],
-  "jobs/rms": [15.659, 24.724, "RMSNorm keeps only the re-scaling. No mean and no shift: it divides by the root mean square, then multiplies by gamma.", [[18.169, 18.629], [20.229, 20.719], [22.739, 22.999]]],
-  "jobs/why": [25.104, 31.29, "The re-scaling turned out to be the part that matters, and skipping the mean saves work on every token.", [[27.924, 28.274]]],
-  "rms/x": [33.09, 38.316, "Take a token's vector: one, minus five, five and seven.", [[34.43, 34.96], [35.34, 35.66], [36.53, 36.82], [37.29, 37.49]]],
-  "rms/sq": [38.696, 44.579, "Square every entry: one, twenty five, twenty five, forty nine.", [[40.246, 40.876], [41.246, 41.606], [42.426, 42.716], [43.486, 43.786]]],
-  "rms/mean": [44.959, 48.627, "Their mean is a hundred over four: twenty five.", [[47.219, 47.799]]],
-  "rms/root": [49.007, 58.1, "Its square root is five. That is the root mean square of x, written R M S of x: the size of a typical entry.", [[50.737, 51.217], [53.547, 53.847], [54.217, 54.397], [55.987, 56.417]]],
-  "rms/out": [58.48, 68.122, "Divide by it: zero point two, minus one, one, and one point four. Now the root mean square is exactly one.", [[59.44, 60.03], [61.13, 61.55], [62.28, 62.66], [63.05, 63.37], [64.59, 65.22]]],
-  "rms/gain": [68.502, 78.269, "Last, each feature is multiplied by its own learned gain gamma, which starts at one. That is d parameters, where layer norm has two d.", [[69.042, 69.352], [72.792, 73.052], [74.162, 74.542], [76.142, 76.462]]],
-  "shift/scale": [80.069, 86.564, "Multiply x by three, and its root mean square triples too. The output does not change.", [[81.849, 82.109], [84.249, 84.799]]],
-  "shift/shift": [86.944, 98.412, "But add three to every entry, and RMSNorm's output moves, because it never subtracts the mean. Layer norm would not notice. That is the whole price of dropping the mean.", [[88.904, 89.124], [91.344, 91.664], [93.444, 94.014], [95.564, 96.004]]],
-  "shift/turn": [98.792, 99.533, "Your turn.", []]
+  "jobs/x": [0.7, 11.789, "Layer norm runs on every token's vector, in every layer. Here is one token's four features as bars: one, minus five, five and seven.", [[3.4, 3.6], [4.58, 5.2], [8.02, 8.58], [8.95, 9.27], [10.13, 10.43], [10.91, 11.15]]],
+  "jobs/center": [12.169, 20.519, "Its first job is to re-center. Subtract the mean, two, and every bar slides down, until they balance on zero.", [[14.239, 14.739], [15.849, 16.129], [16.479, 16.869], [18.679, 18.929]]],
+  "jobs/scale": [20.899, 29.689, "Its second job is to re-scale. Divide by the standard deviation, and the bars shrink, or stretch, to a standard spread of one.", [[22.999, 23.589], [25.479, 25.759], [26.849, 27.079], [27.779, 28.059]]],
+  "jobs/cost": [30.069, 35.482, "Both jobs cost arithmetic on every token, and that slows the whole network down.", [[32.959, 33.349]]],
+  "jobs/bet": [35.862, 51.577, "In 2019, Biao Zhang and Rico Sennrich bet that only the re-scaling matters. They dropped the re-centering, and divided by a root mean square instead. They called it R M S Norm: R M S, for root mean square.", [[37.072, 37.352], [41.452, 42.082], [43.502, 43.742], [46.272, 46.962], [47.502, 47.652], [48.812, 49.382], [50.082, 50.312]]],
+  "jobs/result": [51.957, 60.063, "In their tests, it did about as well as layer norm, and cut running time by between seven and sixty four percent, depending on the model.", [[54.957, 55.187], [58.837, 59.047]]],
+  "rms/size": [61.863, 73.162, "To re-scale, you need one number for how big the entries are. Their mean will not do: the signs cancel, and one, minus five, five and seven average just two.", [[62.753, 63.003], [65.563, 66.043], [67.463, 67.813], [68.853, 69.113], [70.573, 70.753], [71.773, 71.973]]],
+  "rms/socket": [73.542, 87.528, "Electricians met this long ago. An American wall socket swings between about plus and minus a hundred and seventy volts, so its average is zero. The hundred and twenty volts it is rated at is a root mean square.", [[75.522, 76.072], [81.252, 81.592], [83.192, 83.772], [85.852, 86.082]]],
+  "rms/sq": [87.908, 100.166, "The name is the recipe, read backwards. Square every entry: one, twenty five, twenty five, forty nine. A square is never negative, so nothing cancels.", [[89.358, 89.698], [90.578, 91.158], [92.598, 93.088], [93.468, 93.728], [94.488, 94.758], [95.508, 95.758], [96.468, 97.028], [98.618, 98.888]]],
+  "rms/mean": [100.546, 105.096, "Take the mean of the squares: a hundred over four, twenty five.", [[102.166, 102.586], [103.826, 104.296]]],
+  "rms/root": [105.476, 119.941, "Then the root: five. It undoes the squaring, so the answer is back in the entries' own units. That is the root mean square of x, written R M S of x: the size of a typical entry.", [[106.386, 106.876], [107.396, 107.966], [109.426, 109.786], [112.566, 113.086], [115.386, 115.676], [117.756, 118.256]]],
+  "rms/out": [120.321, 129.963, "Divide by it: zero point two, minus one, one, and one point four. Now the root mean square is exactly one.", [[121.281, 121.871], [122.971, 123.391], [124.121, 124.501], [124.891, 125.211], [126.431, 127.061]]],
+  "rms/gain": [130.343, 136.703, "Last, each feature is multiplied by its own learned gain, gamma, which starts at one.", [[130.893, 131.283], [134.463, 134.733], [135.133, 135.453]]],
+  "rms/params": [137.083, 145.734, "There is no shift, beta, so with d features, R M S Norm learns d numbers, where layer norm learns two d.", [[138.253, 138.583], [138.973, 139.393], [140.893, 141.213], [143.393, 143.763]]],
+  "shift/scale": [147.534, 156.013, "Triple the vector, and its root mean square triples as well: fifteen. Divide, and the output is exactly the same as before.", [[148.554, 148.804], [151.024, 151.424], [152.024, 152.684], [153.224, 153.444]]],
+  "shift/shift": [156.393, 164.465, "But shift every entry up by three. R M S Norm never subtracts the mean, so its output moves.", [[159.043, 159.903], [162.683, 163.013]]],
+  "shift/ln": [164.845, 174.751, "Layer norm would subtract the new mean, and the shift would vanish. That is the whole price of dropping the mean: blind to scale, but not to a shift.", [[167.175, 167.465], [168.805, 169.435], [171.765, 172.305], [173.275, 173.545]]],
+  "shift/turn": [175.131, 175.871, "Your turn.", []]
  }
 }

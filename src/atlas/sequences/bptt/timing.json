@@ -1,23 +1,36 @@
 {
- "duration": 138.613,
+ "duration": 248.589,
  "scenes": {
-  "unroll": [0.0, 44.989],
-  "products": [44.989, 89.0],
-  "clip": [89.0, 138.613]
+  "unroll": [0.0, 70.027],
+  "rules": [70.027, 122.628],
+  "products": [122.628, 183.893],
+  "clip": [183.893, 248.589]
  },
  "beats": {
-  "unroll/graph": [0.7, 15.149, "Unroll the loop, and an RNN is just a deep graph: one copy of the step for every token, all sharing the same weights. At the end sits a loss, L: one number that says how wrong the outputs are.", [[1.66, 2.11], [4.49, 5.04], [7.28, 7.61], [9.2, 9.83], [11.37, 11.63], [11.96, 12.55]]],
-  "unroll/back": [15.529, 23.307, "Backprop runs through it as through any graph, from the loss back to the first step. That is backprop through time.", [[18.239, 18.649], [20.639, 21.169], [23.039, 23.279]]],
-  "unroll/factor": [23.687, 36.734, "Each step back multiplies the gradient by that step's local derivative, partial h t, partial h t minus one: W h h, times the slope of the tan-aitch, tan-aitch prime.", [[24.267, 24.417], [28.107, 28.487], [29.577, 29.807], [31.497, 31.977], [33.187, 33.567], [35.387, 35.727]]],
-  "unroll/sum": [37.114, 43.889, "And since W h h is used at every step, its gradient adds up one contribution from each of them.", [[40.274, 40.654]]],
-  "products/scalar": [45.689, 56.576, "Picture a single hidden unit, where each step back multiplies the gradient by the same number, a. Ten steps back, it has been multiplied by a to the tenth.", [[47.629, 47.999], [48.719, 48.869], [51.699, 51.969], [52.309, 52.969], [53.889, 54.129]]],
-  "products/slope": [56.956, 69.803, "For one unit, a is W h h times the slope of the tan-aitch. Say W h h is two, and the slope is a quarter. Then a is two times a quarter: one half.", [[57.806, 58.066], [61.746, 62.286], [64.306, 64.526], [65.826, 66.346], [66.686, 66.846], [68.706, 69.096]]],
-  "products/vanish": [70.183, 79.858, "Ten steps back, that is one half to the tenth: about one thousandth. The gradient vanishes: the early steps get almost none of it.", [[71.233, 71.693], [73.643, 74.073], [75.393, 75.983], [77.383, 77.773]]],
-  "products/explode": [80.238, 87.9, "If a is two, it is over a thousand. The gradient explodes, and the numbers soon grow too large to use.", [[81.548, 81.828], [83.198, 83.718], [85.208, 85.378]]],
-  "clip/clip": [89.7, 99.9, "Exploding gradients have a blunt fix: clip them. Take a gradient, g, of three and four, and pick a threshold, c, say one.", [[92.05, 92.52], [93.11, 93.79], [94.64, 94.82], [95.25, 95.41], [96.61, 96.97], [98.03, 98.21], [98.63, 99.02]]],
-  "clip/check": [100.28, 113.475, "The norm of g, written the norm of g, is its length as an arrow: the square root of its squared entries added up. Here that is the root of three squared plus four squared: five.", [[101.4, 101.7], [102.1, 102.27], [103.34, 103.74], [105.22, 105.72], [108.4, 109.06], [112.37, 112.89]]],
-  "clip/scale": [113.855, 128.704, "Whenever the norm is over c, shrink the whole vector to length c: multiply it by c over the norm, here one fifth. That gives zero point six and zero point eight. Same direction, shorter length.", [[115.725, 116.105], [118.225, 118.815], [121.085, 121.465], [122.525, 123.115], [124.905, 125.055], [126.185, 126.675], [127.595, 127.845]]],
-  "clip/limit": [129.084, 136.393, "Clipping only ever shrinks: it tames a gradient that explodes, but it cannot bring back one that has vanished.", [[130.964, 131.454], [133.644, 134.014]]],
-  "clip/turn": [136.773, 137.513, "Your turn.", []]
+  "unroll/loop": [0.7, 12.695, "A recurrent network, an R N N, reads one token at a time: a single step, in a loop, takes each token and the memory, h, and passes the new memory on.", [[1.94, 2.15], [3.28, 3.6], [5.35, 5.82], [6.74, 7.02], [7.56, 7.95], [9.91, 10.15], [10.54, 10.87]]],
+  "unroll/loss": [13.075, 21.328, "After the last token, a loss, L, is worked out from the final memory: one number saying how wrong the network was.", [[14.425, 14.745], [15.375, 15.605], [15.965, 16.205], [18.095, 18.615]]],
+  "unroll/need": [21.708, 32.336, "To learn, each weight needs its gradient. But W h h acted at every step, each step feeding the next. How does a gradient get back through a loop?", [[22.348, 22.608], [24.368, 24.858], [27.458, 27.898], [29.568, 30.048]]],
+  "unroll/unroll": [32.716, 43.182, "Lay the loop out flat, one copy of the step per token: that is unrolling. No loop is left, just a deep graph whose copies share the same weights.", [[34.056, 34.496], [36.446, 36.796], [38.026, 38.546], [39.586, 39.936]]],
+  "unroll/back": [43.562, 55.733, "So backprop runs through it like any graph, from the loss back to step one. The steps are moments in time, so this is called backpropagation through time: B P T T.", [[46.142, 46.522], [48.382, 48.952], [50.752, 51.112], [53.782, 54.252]]],
+  "unroll/werbos": [56.113, 68.927, "In 1990, Paul Werbos spelled it out in a paper titled Backpropagation Through Time: What It Does and How to Do It, noting that the derivatives can only be found backwards in time.", [[57.273, 57.583], [60.373, 60.683], [62.433, 62.893], [64.603, 65.143], [67.573, 67.723]]],
+  "rules/factor": [70.727, 85.404, "Zoom in on one step back. The gradient reaching h t passes on to h t minus one, times the local slope, partial h t, partial h t minus one: how far one moves when the other is nudged.", [[72.627, 73.227], [75.097, 75.287], [77.467, 77.737], [79.057, 79.337], [80.397, 80.567], [82.247, 82.697]]],
+  "rules/whh": [85.784, 92.03, "The step multiplied the old memory by W h h: that is one part of the slope.", [[89.464, 89.974], [90.444, 90.614]]],
+  "rules/tanh": [92.41, 103.661, "Then came the tan-aitch, whose slope, tan-aitch prime, is the other part. For one hidden unit, a step back multiplies by W h h times tan-aitch prime.", [[93.87, 94.15], [94.82, 95.12], [96.04, 96.3], [97.18, 97.78], [99.0, 99.26]]],
+  "rules/sum": [104.041, 113.227, "And W h h was used at every step. Like any value feeding several nodes, it collects a gradient from each use, and they add up.", [[107.031, 107.551], [109.841, 110.131], [112.271, 112.441]]],
+  "rules/add": [113.607, 121.528, "If steps one, two and three send back three, minus one, and two, its gradient is their sum: four.", [[116.947, 117.147], [118.577, 119.007], [120.627, 121.017]]],
+  "products/scalar": [123.328, 134.744, "Now go many steps back, with one hidden unit and the same slope, A, at every step. Ten steps multiply the gradient by A ten times: A to the tenth.", [[125.018, 125.398], [127.598, 127.748], [129.118, 129.738], [133.238, 133.708]]],
+  "products/slope": [135.124, 143.884, "Say W h h is two, and the tan-aitch's slope is a quarter. Then A is two times a quarter: one half.", [[137.514, 137.834], [139.874, 140.384], [140.764, 140.924], [142.744, 143.164]]],
+  "products/vanish": [144.264, 153.861, "One half to the tenth is about a thousandth. The gradient vanishes, as through a deep stack of sigmoids: the early tokens get almost none of it.", [[146.904, 147.534], [148.864, 149.114], [151.194, 151.654]]],
+  "products/explode": [154.241, 160.832, "If A is two instead, two to the tenth is over a thousand: the gradient explodes.", [[155.901, 156.351], [158.661, 159.151]]],
+  "products/near": [161.212, 171.069, "Even zero point nine, over a hundred steps, shrinks the gradient to about three in a hundred thousand. Only exactly one keeps its size.", [[162.792, 163.092], [164.432, 164.692], [167.972, 168.552]]],
+  "products/bengio": [171.449, 182.793, "In 1994, Yoshua Bengio, Patrice Simard and Paolo Frasconi showed why: the longer the stretch a memory must span, the harder it is to learn by gradient.", [[172.829, 173.089], [174.149, 174.309], [177.369, 177.929], [180.269, 180.549]]],
+  "clip/fix": [184.593, 194.418, "Exploding has a blunt fix, proposed in 2013 by Razvan Pascanu, Tomas Mikolov and Yoshua Bengio: clip the gradient's norm.", [[186.513, 186.783], [189.743, 190.013], [190.893, 191.093], [192.273, 192.883]]],
+  "clip/g": [194.798, 204.471, "Draw a gradient as an arrow, and call it g: here, three and four. Its length is called its norm, and is written with double bars.", [[196.648, 196.838], [197.838, 198.398], [198.768, 198.988], [200.028, 200.688], [202.458, 202.688]]],
+  "clip/norm": [204.851, 214.957, "Pythagoras gives it: square each entry, add them, and take the square root. Here that is the root of three squared plus four squared: five.", [[206.011, 206.561], [207.871, 208.251], [208.711, 208.981], [210.161, 210.721], [213.971, 214.391]]],
+  "clip/c": [215.337, 220.675, "Pick a threshold, c, the longest gradient allowed: say one.", [[216.307, 216.807], [217.247, 217.697], [219.247, 219.707]]],
+  "clip/scale": [221.055, 232.895, "Five is over one, so shrink the arrow to length one: multiply every entry by c over the norm, a fifth. That gives zero point six and zero point eight.", [[222.575, 222.945], [224.965, 225.515], [228.535, 228.755], [229.235, 229.745]]],
+  "clip/same": [233.275, 238.92, "Same direction, shorter length. A gradient already within c is left alone.", [[234.245, 234.515], [235.355, 235.915]]],
+  "clip/limit": [239.3, 246.369, "Clipping only ever shrinks: it tames a gradient that explodes, but cannot bring back one that has vanished.", [[241.19, 241.68], [243.84, 244.15]]],
+  "clip/turn": [246.749, 247.489, "Your turn.", []]
  }
 }

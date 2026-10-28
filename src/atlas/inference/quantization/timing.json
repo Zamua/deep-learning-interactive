@@ -1,19 +1,32 @@
 {
- "duration": 107.307,
+ "duration": 218.761,
  "scenes": {
-  "round": [0.0, 63.961],
-  "bytes": [63.961, 107.307]
+  "fit": [0.0, 37.157],
+  "steps": [37.157, 141.058],
+  "price": [141.058, 218.761]
  },
  "beats": {
-  "round/weights": [0.7, 7.324, "A model's weights are usually stored as sixteen bit numbers, two bytes each. Here are four of them.", [[4.25, 4.62], [5.58, 6.14]]],
-  "round/grid": [7.704, 25.073, "Quantization stores small integers instead, plus one scale, s: what one integer step is worth. Four bits hold the integers from minus seven to seven, so with s at zero point one they cover minus zero point seven to zero point seven.", [[10.514, 10.864], [11.964, 12.344], [12.754, 13.214], [15.224, 15.804], [18.884, 19.314], [21.424, 21.704]]],
-  "round/divide": [25.453, 39.232, "To store a weight, divide by s and round to the nearest integer, q. Zero point seven becomes seven. Minus zero point three three becomes minus three point three, which rounds to minus three.", [[26.473, 26.763], [29.593, 29.863], [30.213, 30.843], [32.913, 33.453], [35.333, 35.553], [37.333, 37.633]]],
-  "round/back": [39.612, 51.491, "To use it, multiply q back by s. Seven gives zero point seven again, but minus three gives minus zero point three, not minus zero point three three.", [[40.272, 40.592], [42.742, 43.272], [45.472, 45.932], [48.972, 49.322]]],
-  "round/error": [51.871, 62.861, "That gap is the rounding error. Rounding moves a weight at most half a step, so the error is never more than s over two: here, zero point zero five.", [[53.821, 54.391], [56.931, 57.361], [60.071, 60.581], [60.911, 61.171]]],
-  "bytes/b16": [64.661, 72.635, "Why bother? Memory. A model of seven billion parameters at sixteen bits takes fourteen gigabytes.", [[65.581, 66.201], [66.711, 67.251], [70.681, 70.901]]],
-  "bytes/b8": [73.015, 76.38, "At eight bits, one byte each, it takes seven.", [[73.985, 74.215], [75.185, 75.445]]],
-  "bytes/b4": [76.76, 88.294, "At four bits, half a byte each, three and a half: small enough for a much smaller GPU. The scales add almost nothing, since one scale is shared by many weights.", [[77.75, 77.99], [79.03, 79.35], [80.2, 80.64], [83.13, 83.63], [85.51, 85.76]]],
-  "bytes/coarse": [88.674, 105.086, "The price is precision. Eight bits run from minus one hundred and twenty seven to one hundred and twenty seven, four bits only from minus seven to seven. Over the same range, each step is about eighteen times as wide, and so is the largest error.", [[90.294, 90.934], [93.714, 93.904], [95.284, 95.794], [98.454, 99.084], [100.204, 100.414], [103.094, 103.364]]],
-  "bytes/turn": [105.466, 106.207, "Your turn.", []]
+  "fit/big": [0.7, 8.308, "Take a model of seven billion parameters, each weight in sixteen bits, two bytes: fourteen gigabytes.", [[3.23, 3.62], [5.51, 5.85], [6.49, 6.95]]],
+  "fit/gpu": [8.688, 12.44, "A smaller GPU, with eight gigabytes, cannot hold it.", [[10.088, 10.248], [11.358, 11.528]]],
+  "fit/b8": [12.82, 17.181, "In eight bits, one byte each, it takes seven, and fits.", [[13.79, 14.03], [14.98, 15.31], [16.23, 16.5]]],
+  "fit/b4": [17.561, 21.263, "In four bits, half a byte, it takes three and a half.", [[18.551, 18.791], [19.521, 19.831]]],
+  "fit/v16": [21.643, 31.036, "The catch: each bit doubles how many values a number can take, so sixteen bits allow sixty five thousand, five hundred and thirty six.", [[22.273, 22.803], [25.923, 26.323]]],
+  "fit/v4": [31.416, 36.057, "Four bits allow just sixteen. Which sixteen should a weight get?", [[33.556, 34.166]]],
+  "steps/line": [37.857, 43.504, "Here are three weights. In sixteen bits, each can sit almost anywhere on the line.", [[39.247, 39.737], [40.917, 41.117]]],
+  "steps/grid": [43.884, 54.424, "With four bits, allow only evenly spaced steps, numbered from minus seven to seven: fifteen of the sixteen patterns, the same on both sides of zero.", [[44.834, 45.104], [47.334, 47.584], [49.624, 50.094], [52.074, 52.404]]],
+  "steps/scale": [54.804, 65.162, "Each step is worth the same amount, the scale, s. With s at zero point one, the steps run from minus zero point seven to zero point seven.", [[56.864, 57.254], [57.864, 58.234], [58.644, 59.204], [60.994, 61.304], [63.804, 63.984]]],
+  "steps/name": [65.542, 78.7, "Forcing values onto fixed steps is called quantization, from quantum, Latin for how much: a fixed amount. Music software quantizes too, snapping each note to the nearest beat.", [[69.262, 69.622], [70.382, 70.722], [72.192, 72.522], [73.472, 74.102], [76.112, 76.432]]],
+  "steps/divide": [79.08, 90.196, "To store a weight, count its steps: divide by s, and round to the nearest whole number, q. Zero point seven over zero point one is exactly seven.", [[80.12, 80.41], [81.44, 81.87], [82.96, 83.17], [85.05, 85.27], [85.62, 86.23], [88.73, 88.95]]],
+  "steps/round": [90.576, 99.814, "Minus zero point three three is minus three point three steps, which rounds to minus three. And zero point one eight rounds to two.", [[92.516, 92.676], [94.766, 95.026], [96.546, 97.076], [98.746, 98.916]]],
+  "steps/back": [100.194, 112.792, "To use a weight, multiply back: q times s. Seven gives zero point seven again, but minus three gives minus zero point three, not minus zero point three three.", [[101.154, 101.454], [102.434, 102.894], [104.194, 104.914], [106.994, 107.374], [110.254, 110.634]]],
+  "steps/error": [113.172, 125.375, "That gap is the rounding error. Every weight is within half a step of the nearest step, so the error is at most s over two, whatever the bits: here, zero point zero five.", [[115.102, 115.702], [118.732, 119.082], [121.582, 121.842], [122.722, 123.172], [123.492, 123.782]]],
+  "steps/jacob": [125.755, 139.958, "In 2017, Beno\u00eet Jacob and colleagues at Google ran image networks on phones this way: eight bit integers, with one scale for a whole array of weights. Shared like that, the scales cost almost nothing.", [[126.995, 127.325], [129.405, 129.665], [131.985, 132.545], [133.645, 133.965], [136.415, 136.915], [137.825, 138.065]]],
+  "price/reach": [141.758, 154.968, "The scale sets the step, and the bits set how many steps there are, so together they set the reach: seven steps of zero point one reach zero point seven. A weight beyond that does not fit.", [[143.388, 143.718], [146.108, 146.488], [148.338, 148.838], [152.348, 152.828]]],
+  "price/wider": [155.348, 165.388, "Double s, to zero point two, and the reach doubles. But so does every step, and the largest error with it: now zero point one.", [[156.258, 156.588], [157.828, 158.188], [159.408, 159.938], [161.378, 161.748], [163.218, 163.758]]],
+  "price/b8": [165.768, 175.035, "More bits give finer steps. Eight bits make two hundred and fifty six patterns: minus a hundred and twenty seven to a hundred and twenty seven.", [[167.758, 168.328], [171.178, 171.698]]],
+  "price/b4": [175.415, 185.315, "To reach as far with four bits, each step must be about eighteen times as wide: a hundred and twenty seven over seven. So is the largest error.", [[177.285, 177.615], [180.555, 181.005], [183.145, 183.585]]],
+  "price/dettmers": [185.695, 201.282, "Is that error small enough? In 2022, Tim Dettmers and colleagues ran models of up to a hundred and seventy five billion parameters with almost every multiplication in eight bits: half the memory, with no loss in accuracy.", [[187.265, 188.025], [189.295, 189.615], [191.015, 191.195], [194.905, 195.205], [197.985, 198.385], [199.325, 199.685]]],
+  "price/frantar": [201.662, 216.541, "Four bits took more care. Later that year, Elias Frantar and colleagues rounded one column of weights at a time, adjusting the rest to make up for the error, and took models that size to four bits, or even three, with little loss.", [[203.322, 203.952], [204.902, 205.142], [209.072, 209.432], [211.732, 212.042], [215.362, 215.562]]],
+  "price/turn": [216.921, 217.661, "Your turn.", []]
  }
 }

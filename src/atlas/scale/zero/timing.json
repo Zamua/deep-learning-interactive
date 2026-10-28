@@ -1,22 +1,35 @@
 {
- "duration": 137.325,
+ "duration": 224.044,
  "scenes": {
-  "copies": [0.0, 35.391],
-  "stages": [35.391, 104.08],
-  "cost": [104.08, 137.325]
+  "copies": [0.0, 73.139],
+  "stages": [73.139, 165.068],
+  "cost": [165.068, 224.044]
  },
  "beats": {
-  "copies/dp": [0.7, 15.969, "In data parallelism, every GPU keeps a full copy of the training state: the 16-bit weights and gradients, and Adam's 32-bit master copy, m and v. Sixteen bytes per parameter, on every GPU.", [[2.05, 2.34], [5.51, 5.92], [8.04, 8.38], [10.9, 11.19], [12.08, 12.57], [14.35, 14.6]]],
-  "copies/waste": [16.349, 24.525, "A 7 billion parameter model on four GPUs is 112 gigabytes on each: four identical copies.", [[19.619, 19.889], [22.349, 22.769]]],
-  "copies/idea": [24.905, 34.291, "Sharding keeps just one copy, spread out: each GPU holds a quarter of it. That is the idea of ZeRO, for zero redundancy.", [[26.805, 27.035], [27.715, 28.235], [30.355, 30.855], [32.535, 32.855]]],
-  "stages/s1": [36.091, 46.419, "Stage one shards the optimizer state, the twelve bytes of master copy, m and v. Each GPU updates only its own quarter of the weights.", [[38.761, 39.111], [40.891, 41.161], [42.121, 42.701]]],
-  "stages/s1n": [46.799, 66.142, "Per GPU, the 16-bit weights and gradients stay whole: two bytes plus two. The twelve bytes of optimizer state are split four ways: three. That is seven bytes per parameter, and seven times 7 billion is forty nine gigabytes, instead of 112.", [[48.289, 48.839], [51.619, 52.069], [53.359, 53.929], [57.219, 57.629], [58.029, 58.619], [60.619, 60.959], [62.639, 62.839], [64.359, 64.589]]],
-  "stages/s2": [66.522, 73.89, "Stage two shards the gradients too: each GPU only needs the averaged gradient for its own quarter.", [[68.922, 69.472], [73.692, 73.872]]],
-  "stages/s2n": [74.27, 90.46, "Now only the two bytes of 16-bit weights stay whole. The gradients' two and the optimizer's twelve, fourteen bytes, are split four ways: three and a half. That is five and a half bytes per parameter: thirty eight and a half gigabytes.", [[77.96, 78.54], [79.65, 79.8], [81.23, 81.46], [82.31, 82.55], [83.83, 84.2], [85.1, 85.54], [88.08, 88.44]]],
-  "stages/s3": [90.84, 102.98, "Stage three shards the weights as well. Everything is split, sixteen N over G: sixteen bytes over four is four per parameter, twenty eight gigabytes each.", [[93.37, 93.88], [94.93, 95.38], [97.09, 97.65], [100.81, 101.32]]],
-  "cost/gather": [104.78, 114.131, "The price is traffic. With the weights sharded, each piece of them is gathered from the other GPUs just before it is used, then dropped again.", [[106.41, 107.11], [108.25, 108.53], [112.81, 113.12]]],
-  "cost/same": [114.511, 123.748, "The training itself does not change: the same averaged gradient, and the same step, as plain data parallelism. Only where the numbers live.", [[116.651, 117.091], [118.621, 118.771], [119.731, 120.001], [121.581, 122.161]]],
-  "cost/more": [124.128, 135.105, "And the memory per GPU keeps falling as GPUs are added: on sixty four of them, the 7 billion parameter model needs one point seven five gigabytes each.", [[128.258, 128.908], [130.148, 130.398], [132.208, 132.388]]],
-  "cost/turn": [135.485, 136.225, "Your turn.", []]
+  "copies/gpu": [0.7, 11.288, "Training runs on GPUs, graphics processing units: the chips that do its multiplications, thousands at once. A large one holds eighty gigabytes.", [[2.67, 3.0], [4.55, 4.99], [6.95, 7.31], [8.55, 9.03]]],
+  "copies/state": [11.668, 22.669, "A model of seven billion parameters, trained with Adam, keeps sixteen bytes per parameter: a hundred and twelve gigabytes. That is more than one GPU holds.", [[13.988, 14.148], [15.018, 15.308], [17.518, 17.998], [19.788, 20.248]]],
+  "copies/dp": [23.049, 32.672, "Data parallelism shares the work among GPUs, say four, but gives each one a full copy of the weights, and so of the whole training state.", [[26.309, 26.539], [27.299, 27.759], [30.339, 30.609]]],
+  "copies/waste": [33.052, 43.895, "Between them, the four hold three hundred and twenty gigabytes, plenty for a hundred and twelve. Yet none can train the model: each must fit an identical copy on its own.", [[33.732, 33.952], [36.592, 37.002], [38.572, 39.072], [40.692, 41.082]]],
+  "copies/idea": [44.275, 52.128, "So keep a single copy, cut into four pieces, one per GPU: twenty eight gigabytes each, and it fits.", [[45.825, 46.165], [47.445, 47.755], [49.105, 49.545], [51.045, 51.365]]],
+  "copies/shard": [52.508, 58.943, "A broken-off piece of something, like glass, is called a shard, so this is called sharding.", [[54.238, 54.448], [56.598, 57.038]]],
+  "copies/name": [59.323, 72.039, "In 2019, Samyam Rajbhandari and colleagues at Microsoft named it zero, for Zero Redundancy Optimizer: it brings the redundant copies, the ones not needed, down to zero.", [[60.513, 60.763], [63.563, 63.773], [64.813, 65.163], [67.323, 67.883], [69.533, 69.773], [70.783, 71.133]]],
+  "stages/bar": [73.839, 85.03, "Inside a GPU's sixteen bytes per parameter: two for the 16-bit weight, two for its gradient, and twelve for Adam: the master copy, m and v.", [[77.019, 77.589], [79.249, 79.569], [80.649, 80.939], [82.209, 82.719], [83.659, 83.959], [84.279, 84.459]]],
+  "stages/s1": [85.41, 94.009, "Stage one cuts Adam's twelve bytes, the biggest part, into four. Each GPU keeps one quarter: three bytes.", [[86.27, 86.42], [88.03, 88.28], [89.09, 89.32], [90.01, 90.54], [92.82, 93.2]]],
+  "stages/own": [94.389, 102.707, "It updates only its own quarter of the weights. Then the GPUs swap their new quarters, so each has all the new weights again.", [[97.069, 97.569], [100.179, 100.489]]],
+  "stages/s1b": [103.087, 109.796, "With the weight and gradient whole, that is two, plus two, plus three: seven bytes per parameter.", [[104.957, 105.267], [105.697, 105.867], [107.677, 108.127]]],
+  "stages/s1gb": [110.176, 114.947, "Forty nine gigabytes per GPU: under eighty, so it fits.", [[112.456, 113.046], [113.766, 114.146]]],
+  "stages/s2": [115.327, 123.851, "Stage two cuts the gradients too: a GPU that updates one quarter of the weights only needs that quarter's averaged gradient.", [[117.507, 118.027], [120.937, 121.177]]],
+  "stages/s2b": [124.231, 131.834, "Only the weight's two bytes stay whole, and the other fourteen split four ways: five and a half bytes per parameter.", [[126.561, 126.911], [129.201, 129.681], [131.651, 131.821]]],
+  "stages/s2gb": [132.214, 135.76, "That is thirty eight and a half gigabytes per GPU.", []],
+  "stages/s3": [136.14, 143.038, "Stage three cuts the weights as well: all sixteen bytes split four ways, four per parameter.", [[138.37, 138.9], [141.35, 141.65]]],
+  "stages/s3gb": [143.418, 148.177, "Twenty eight gigabytes per GPU: a quarter of the hundred and twelve.", [[145.698, 146.178]]],
+  "stages/rule": [148.557, 156.868, "With N parameters on G GPUs, that is sixteen N over G bytes each: G times less than a full copy.", [[150.997, 151.297], [154.237, 154.707]]],
+  "stages/saved": [157.248, 163.968, "So each GPU here saves a hundred and twelve, minus twenty eight: eighty four gigabytes.", [[160.768, 161.038], [162.098, 162.568]]],
+  "cost/gather": [165.768, 179.134, "Stage three has a price. To compute, a GPU needs all the weights, and it keeps only a quarter. So just before each piece is used, its keeper sends it to the others, and they drop it after.", [[167.578, 168.108], [168.788, 169.028], [171.058, 171.338], [172.928, 173.498], [175.568, 175.838], [177.658, 177.918]]],
+  "cost/same": [179.514, 186.63, "The arithmetic does not change: the same averaged gradient, the same step. Only where the numbers live.", [[181.354, 181.814], [183.324, 183.614], [184.494, 185.084]]],
+  "cost/traffic": [187.01, 199.144, "The cost is traffic. The paper counts it: stages one and two send no more between GPUs than plain data parallelism, and stage three about one and a half times as much.", [[188.49, 189.0], [189.99, 190.55], [193.87, 194.09], [195.69, 196.12], [197.03, 197.21]]],
+  "cost/more": [199.524, 208.965, "And the shares keep shrinking as GPUs are added: on sixty four of them, the seven billion parameters need one point seven five gigabytes each.", [[202.484, 203.044], [204.294, 204.544]]],
+  "cost/trillion": [209.345, 221.823, "That was the aim in the paper's title: a trillion parameters. Their sixteen thousand gigabytes of state, over one thousand and twenty four GPUs, come to about sixteen gigabytes each.", [[211.335, 211.745], [213.175, 213.715], [216.315, 216.625], [219.185, 219.535]]],
+  "cost/turn": [222.203, 222.944, "Your turn.", []]
  }
 }

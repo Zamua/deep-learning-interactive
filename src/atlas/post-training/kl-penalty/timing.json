@@ -1,26 +1,32 @@
 {
- "duration": 187.335,
+ "duration": 230.687,
  "scenes": {
-  "drift": [0.0, 92.319],
-  "sum": [92.319, 162.103],
-  "beta": [162.103, 187.335]
+  "drift": [0.0, 50.514],
+  "ratio": [50.514, 136.2],
+  "sum": [136.2, 201.528],
+  "beta": [201.528, 230.687]
  },
  "beats": {
-  "drift/drift": [0.7, 9.92, "Training on a reward moves a model away from where it started. Pushed far enough, it finds answers that score well but have stopped making sense.", [[1.93, 2.09], [4.35, 4.92], [5.82, 6.07], [8.11, 8.34]]],
-  "drift/ref": [10.3, 17.266, "So keep a frozen copy of the starting model, the reference, pi ref, and charge the model for drifting from it.", [[12.97, 13.26], [13.93, 14.18], [14.78, 15.16]]],
-  "drift/ratio": [17.646, 25.393, "For each token of a sampled answer, compare the probability each model gives it: the log of pi over pi ref.", [[19.866, 20.176], [22.636, 23.126]]],
-  "drift/value": [25.773, 38.968, "Here the model now gives sure zero point six, where the reference gave zero point three: twice as likely. The log of two is about zero point six nine: the model has moved toward this token.", [[26.213, 26.383], [29.093, 29.373], [31.473, 31.893], [32.983, 33.603], [36.363, 36.813]]],
-  "drift/diff": [39.348, 56.841, "The log of a quotient is a difference of logs, so it is also ln zero point six minus ln zero point three: minus zero point five one, plus one point two, which is zero point six nine. Given the two logs, just subtract.", [[41.988, 42.378], [43.548, 43.818], [47.518, 48.088], [49.978, 50.258], [51.598, 51.978], [52.408, 52.558], [53.918, 54.598], [55.708, 55.958]]],
-  "drift/neg": [57.221, 73.61, "A token the model now likes less than the reference did gets a negative log-ratio. The exclamation mark fell from zero point five to zero point three seven: minus zero point nine nine, plus zero point six nine, is minus zero point three.", [[60.201, 60.411], [62.031, 62.651], [65.431, 65.621], [67.121, 67.611], [69.441, 69.731], [71.481, 71.801]]],
-  "drift/most": [73.99, 91.219, "Which token costs most? thing rose from zero point one to zero point five, five times as likely. ln grows with its input, so the largest ratio has the largest log: one point six one, more than sure's, though sure has the larger pi.", [[75.75, 76.27], [79.46, 79.72], [81.12, 81.68], [83.39, 83.69], [86.17, 86.58], [87.75, 88.11], [89.13, 89.44]]],
-  "sum/logs": [93.019, 113.325, "Often the two models hand back log-probabilities. Then each token's log-ratio is ln pi minus ln pi ref. For sure, those are minus zero point five one and minus one point two, so minus zero point five one plus one point two: zero point six nine.", [[96.049, 96.569], [96.939, 97.129], [98.979, 99.319], [101.989, 102.599], [103.199, 103.439], [105.619, 105.819], [107.239, 107.649], [107.999, 108.189], [110.059, 110.229], [111.359, 111.859]]],
-  "sum/sum": [113.705, 133.031, "Add the log-ratios over the answer's tokens: zero point six nine, plus one point six one, minus zero point three: two. Averaged over many sampled answers, that sum is the KL divergence: zero when the two models agree, and larger the further they part.", [[116.475, 117.035], [118.475, 118.715], [120.275, 120.615], [122.155, 122.655], [122.985, 123.675], [125.735, 126.035], [128.445, 128.945], [130.775, 131.105]]],
-  "sum/never": [133.411, 139.558, "One answer's sum can come out negative, but the average over the model's own samples never does.", [[135.741, 136.131]]],
-  "sum/pen": [139.938, 152.334, "The model trains on its reward minus that sum, scaled by a strength written with the Greek letter beta. The sum runs over the answer's tokens, y t, one for each position t.", [[142.978, 143.258], [146.378, 146.978], [149.288, 149.488], [150.208, 150.588]]],
-  "sum/eg": [152.714, 161.003, "With a reward of one and beta at zero point one, the penalty is zero point two, and the model trains on zero point eight.", [[154.034, 154.214], [156.074, 156.464], [158.254, 158.664]]],
-  "beta/big": [162.803, 170.359, "A large beta makes any drift expensive. The model stays close to the reference, and its reward barely rises.", [[165.683, 166.163], [168.153, 168.373]]],
-  "beta/small": [170.739, 179.866, "A tiny beta makes drift nearly free. The model chases the reward wherever it leads, even into answers that only fool the reward.", [[173.519, 174.129], [176.809, 177.149]]],
-  "beta/mid": [180.246, 185.115, "In between, the model improves on the reward while it still writes like itself.", [[181.006, 181.296]]],
-  "beta/turn": [185.495, 186.235, "Your turn.", []]
+  "drift/climb": [0.7, 10.334, "Train a model on a reward, and it moves away from where it started. At first that is the point: its answers get better, and its reward climbs.", [[2.27, 2.52], [4.59, 5.2], [6.81, 7.23], [8.6, 8.83]]],
+  "drift/far": [10.714, 21.724, "But a reward is only a score from some checker, and no checker sees everything. Pushed far enough, the model finds answers that score well but have stopped making sense.", [[13.634, 14.004], [15.754, 16.394], [17.334, 17.614], [19.864, 20.114]]],
+  "drift/ziegler": [22.104, 33.127, "In 2019, Daniel Ziegler and colleagues tuned a language model on a reward this way. Without a penalty for drifting, they reported, its text turned to gibberish.", [[23.284, 23.564], [25.114, 25.284], [27.804, 28.404], [30.014, 30.174], [30.824, 31.194]]],
+  "drift/ref": [33.507, 49.414, "So keep a frozen copy of the model as it started, called the reference, pi ref, and charge the model for drifting from it. That charge is the K L penalty: K L for Solomon Kullback and Richard Leibler, whose measure of drift it uses.", [[36.597, 36.867], [38.057, 38.337], [38.947, 39.367], [41.367, 41.917], [44.107, 44.517], [47.337, 47.657]]],
+  "ratio/tokens": [51.214, 61.282, "To measure the drift, take one answer the model wrote, sure thing, with an exclamation mark, and ask both models how likely each of its three tokens was.", [[52.304, 52.594], [54.334, 54.664], [55.474, 55.704], [56.964, 57.394]]],
+  "ratio/sure": [61.662, 72.3, "The model now gives sure a probability of zero point six, where the reference gave it zero point three. Twice as likely: on this token, the model has moved.", [[65.432, 65.792], [67.962, 68.502], [69.572, 70.072], [70.922, 71.142]]],
+  "ratio/ln": [72.68, 80.941, "The penalty takes the log of that ratio: the log of two, about zero point six nine. That is the token's log-ratio.", [[75.09, 75.53], [76.38, 76.7], [78.42, 78.87]]],
+  "ratio/surprise": [81.321, 92.286, "Why a log? Minus ln p is surprise. The reference's surprise at sure is one point two, and the model's is now only zero point five one.", [[82.201, 82.741], [85.121, 85.661], [87.601, 87.761], [88.821, 89.221]]],
+  "ratio/diff": [92.666, 104.721, "The gap, one point two minus zero point five one, is zero point six nine again. The log of a ratio is a difference of logs: ln pi, minus ln pi ref.", [[93.216, 93.646], [96.296, 96.576], [98.466, 99.096], [101.566, 101.986], [102.836, 102.986]]],
+  "ratio/neg": [105.101, 117.909, "A token the model now likes less gets a negative log-ratio. The exclamation mark had zero point five under the reference, and now has zero point three seven: about minus zero point three.", [[108.891, 109.551], [113.001, 113.301], [115.441, 115.891]]],
+  "ratio/most": [118.289, 135.1, "Which token costs most? The token thing had zero point one under the reference, and now has zero point five: five times as likely. The log grows with the ratio, so thing's one point six one is the largest, though sure has the larger pi.", [[119.969, 120.599], [123.669, 123.939], [125.829, 126.169], [127.729, 128.289], [129.979, 130.269], [133.069, 133.429]]],
+  "sum/sum": [136.9, 149.685, "Add the log-ratios over the answer: zero point six nine, plus one point six one, minus zero point three, which makes two. That is how far this one answer has drifted.", [[139.11, 139.75], [141.19, 141.42], [143.07, 143.38], [144.97, 145.39], [146.27, 146.87]]],
+  "sum/kl": [150.065, 160.995, "Average that sum over many answers the model samples, and you get the K L divergence: a divergence, because it measures how far two models' probabilities have parted.", [[153.235, 153.545], [155.695, 156.185], [157.065, 157.305]]],
+  "sum/names": [161.375, 168.038, "Kullback and Leibler defined it in 1951, in a paper called On Information and Sufficiency.", [[164.525, 164.835], [165.715, 166.045]]],
+  "sum/never": [168.418, 183.224, "One answer's sum can come out negative. But on the model's own answers, no other model is less surprised, on average, than the model itself. So the divergence is never below zero, and it is zero only when the two agree.", [[170.668, 171.188], [172.918, 173.198], [175.318, 175.498], [176.118, 176.348], [177.388, 177.918], [180.498, 180.858]]],
+  "sum/pen": [183.604, 189.54, "The model then trains on its reward minus that sum, scaled by a strength written beta.", [[186.974, 187.314]]],
+  "sum/eg": [189.92, 200.428, "With a reward of one and beta at zero point one, the penalty is zero point one times two: zero point two. The model trains on zero point eight.", [[193.23, 193.63], [196.21, 196.65], [197.62, 198.24]]],
+  "beta/big": [202.228, 213.727, "Back to the first picture. beta is the price of drift. A large beta makes any drift expensive: the model stays close to the reference, and its reward barely rises.", [[203.578, 204.148], [205.958, 206.508], [209.148, 209.668], [211.528, 211.778]]],
+  "beta/small": [214.107, 223.219, "A tiny beta makes drift nearly free. The model chases the reward wherever it leads, even into answers that only fool the checker.", [[216.907, 217.467], [220.127, 220.527]]],
+  "beta/mid": [223.599, 228.467, "In between, the model improves on the reward while it still writes like itself.", [[224.359, 224.649]]],
+  "beta/turn": [228.847, 229.587, "Your turn.", []]
  }
 }

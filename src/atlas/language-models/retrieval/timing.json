@@ -1,23 +1,33 @@
 {
- "duration": 115.385,
+ "duration": 229.943,
  "scenes": {
-  "stale": [0.0, 27.705],
-  "score": [27.705, 85.838],
-  "prompt": [85.838, 115.385]
+  "stale": [0.0, 38.004],
+  "arrows": [38.004, 113.775],
+  "score": [113.775, 156.151],
+  "prompt": [156.151, 229.943]
  },
  "beats": {
-  "stale/ask": [0.7, 9.894, "A model knows what it read in training. Ask about something that has changed since, like the library's Sunday hours, and it answers from that old text.", [[2.84, 3.35], [5.63, 5.89], [7.51, 7.83]]],
-  "stale/context": [10.274, 17.679, "In-context learning showed a fix: put the facts in the prompt. The model reads them there, and no weight changes.", [[12.424, 12.914], [14.404, 14.944]]],
-  "stale/which": [18.059, 26.605, "But the library's pages may hold thousands of passages, far too many for one prompt. Retrieval picks the few that match the question.", [[21.269, 21.599], [23.369, 23.949]]],
-  "score/embed": [28.405, 39.197, "An embedding model turns any text into a vector, so that texts about the same thing point the same way. Embed the question, and every passage once, ahead of time.", [[31.445, 31.785], [33.655, 33.815], [34.925, 35.545], [36.545, 36.735], [38.215, 38.385]]],
-  "score/size": [39.577, 55.055, "Each vector is scaled to size one: its squared entries add up to one. Then a dot product sees only direction: one when two vectors point the same way, zero at a right angle. It is called cosine similarity.", [[41.917, 42.417], [44.477, 45.007], [47.647, 48.157], [50.607, 51.077], [52.477, 52.947]]],
-  "score/score": [55.435, 69.408, "The question is zero point six, zero point eight. Passage zero, zero point eight, zero point six, scores zero point four eight plus zero point four eight: zero point nine six.", [[56.445, 56.635], [57.855, 58.035], [59.145, 59.815], [60.755, 61.105], [62.115, 62.285], [63.435, 63.725], [64.205, 64.365], [65.605, 65.755], [67.395, 67.795]]],
-  "score/rest": [69.788, 78.709, "Passage one, one and zero, scores zero point six. Passage two, at a right angle, scores zero.", [[70.638, 71.088], [72.158, 72.548], [74.298, 74.888], [75.728, 76.188], [77.148, 77.538], [78.038, 78.188]]],
-  "score/top": [79.089, 84.738, "Keep the top k. With k of two, that is passages zero and one.", [[79.839, 80.049], [80.369, 80.939], [82.169, 82.509]]],
-  "prompt/build": [86.538, 90.025, "Put the top passages into the prompt, before the question.", [[88.668, 88.988]]],
-  "prompt/answer": [90.405, 97.488, "The model reads the current hours in its context and answers from them: noon. Its weights never changed.", [[94.175, 94.785], [95.245, 95.795]]],
-  "prompt/update": [97.868, 104.503, "When the hours change again, embed the new page and swap it into the collection. No model is retrained.", [[99.338, 99.638], [102.438, 102.928]]],
-  "prompt/cost": [104.883, 113.164, "The passages do take room in the context: two of two hundred tokens before a question of ten make four hundred ten tokens.", [[107.353, 107.883], [111.003, 111.193]]],
-  "prompt/turn": [113.544, 114.285, "Your turn.", []]
+  "stale/ask": [0.7, 12.02, "A language model knows what was in the text it trained on, stored in its weights. Ask about something that has changed since, like the library's Sunday hours, and it answers from that old text.", [[3.7, 3.91], [5.11, 5.67], [7.89, 8.12], [9.67, 9.97]]],
+  "stale/context": [12.4, 25.49, "Training it again is one fix. In-context learning showed a cheaper one: put the facts in the prompt, the text the model is given to continue. It reads them in its context, and no weight changes.", [[14.4, 14.99], [17.25, 17.81], [19.31, 19.69], [21.8, 22.35], [24.01, 24.2]]],
+  "stale/which": [25.87, 36.904, "But the library's site may hold thousands of passages, short pieces of its pages, far more than the context has room for. Retrieval fetches the few that match the question.", [[29.03, 29.37], [30.95, 31.29], [33.52, 34.09]]],
+  "arrows/embed": [38.704, 52.416, "To find the ones that match, turn each text into a vector. Token embeddings put alike words close together; an embedding model does the same for whole texts, so that texts about the same thing point the same way.", [[40.154, 40.414], [42.324, 42.964], [45.784, 46.314], [49.094, 49.334]]],
+  "arrows/ahead": [52.796, 57.825, "Embed every passage once, ahead of time, and the question when it comes.", [[55.616, 55.956]]],
+  "arrows/dot": [58.205, 64.174, "Then score each passage by its dot product with the question: how much the two arrows agree.", [[61.745, 62.145]]],
+  "arrows/long": [64.554, 74.045, "But a dot product also grows with length. Make passage one's arrow twice as long, and its score doubles, though it points no closer to the question.", [[67.044, 67.664], [69.994, 70.274], [71.584, 71.924]]],
+  "arrows/unit": [74.425, 82.419, "So every embedding is scaled to length one, onto this circle, keeping its direction. Then only the direction counts.", [[77.165, 77.425], [78.435, 78.705], [79.795, 80.245], [80.655, 80.825]]],
+  "arrows/size": [82.799, 98.277, "Length one means the squared entries add up to one, as Pythagoras says of a right triangle. The question goes zero point six across and zero point eight up: zero point three six plus zero point six four is one.", [[86.169, 86.439], [88.649, 89.299], [91.939, 92.139], [93.599, 94.209], [95.679, 95.839], [97.469, 97.639]]],
+  "arrows/cos": [98.657, 112.675, "For arrows of length one, the dot product is the cosine of the angle between them, from school trigonometry: one when they point the same way, and zero at a right angle. So this score is called cosine similarity.", [[100.207, 100.507], [103.517, 103.877], [105.157, 105.657], [107.427, 107.707], [109.267, 109.777]]],
+  "score/p0": [114.475, 122.902, "Passage zero, about the Sunday hours, points close to the question: zero point eight across, zero point six up.", [[115.445, 115.755], [117.105, 117.475], [118.925, 119.445], [121.015, 121.385]]],
+  "score/score": [123.282, 134.719, "Its score is zero point six times zero point eight, plus zero point eight times zero point six: zero point four eight, twice, which is zero point nine six.", [[126.692, 127.002], [129.882, 130.312], [131.592, 131.832], [132.322, 132.612]]],
+  "score/rest": [135.099, 146.147, "Passage one, about weekday hours, is one and zero, and scores zero point six. Passage two, about parking, is at a right angle: zero.", [[135.919, 136.249], [137.529, 137.699], [138.989, 139.339], [141.299, 141.889], [142.789, 142.969], [143.819, 144.119], [145.169, 145.619]]],
+  "score/top": [146.527, 155.051, "Keep the highest k scores, where k is how many passages you want. With k of two, that is passages zero and one.", [[148.407, 148.797], [151.077, 151.597], [152.577, 152.837], [153.237, 153.407]]],
+  "prompt/build": [156.851, 160.338, "Put the top passages into the prompt, before the question.", [[158.981, 159.301]]],
+  "prompt/answer": [160.718, 167.801, "The model reads the current hours in its context and answers from them: noon. Its weights never changed.", [[164.488, 165.098], [165.558, 166.108]]],
+  "prompt/update": [168.181, 176.35, "When the hours change again, embed the new page and swap it into the collection, in place of the old one. No model is retrained.", [[169.651, 170.041], [172.801, 173.031], [174.181, 174.751]]],
+  "prompt/rag": [176.73, 188.227, "In twenty twenty, Patrick Lewis and colleagues called this retrieval-augmented generation: the model generates the answer, and retrieval augments, or adds to, what it reads.", [[177.8, 178.08], [182.09, 182.69], [184.42, 184.69]]],
+  "prompt/swap": [188.607, 201.258, "They tried this swap with Wikipedia, as it stood in twenty sixteen and in twenty eighteen. Asked about world leaders who changed in between, the same model mostly switched from the old names to the new.", [[190.617, 190.807], [192.487, 192.667], [193.997, 194.667], [197.427, 197.717]]],
+  "prompt/cost": [201.638, 212.779, "The passages do take room in the context: two passages of two hundred tokens, before a question of ten, make four hundred and ten. An instruction at the start would add its own.", [[204.118, 204.618], [206.738, 206.958], [208.288, 208.548], [209.828, 210.368]]],
+  "prompt/fit": [213.159, 227.723, "And the context has a limit, so k does too. With room for one thousand and twenty four tokens, a question of ten leaves one thousand and fourteen: five passages of two hundred fit, and a sixth would spill over.", [[214.729, 215.129], [216.359, 216.949], [219.719, 220.039], [223.069, 223.619], [225.739, 226.079]]],
+  "prompt/turn": [228.103, 228.843, "Your turn.", []]
  }
 }

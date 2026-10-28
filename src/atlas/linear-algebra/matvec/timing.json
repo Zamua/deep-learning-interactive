@@ -1,22 +1,31 @@
 {
- "duration": 122.603,
+ "duration": 205.993,
  "scenes": {
-  "rows": [0.0, 39.63],
-  "shapes": [39.63, 85.594],
-  "paper": [85.594, 122.603]
+  "questions": [0.0, 86.532],
+  "rows": [86.532, 144.187],
+  "shapes": [144.187, 205.993]
  },
  "beats": {
-  "rows/setup": [0.7, 15.115, "Multiplying a matrix W by a vector x is written W x, the two side by side, and it is a stack of dot products. Here W has two rows of three, and x has three entries.", [[3.89, 4.05], [4.6, 4.75], [5.76, 6.11], [7.6, 7.98], [10.1, 10.64], [13.12, 13.42]]],
-  "rows/row0": [15.495, 26.172, "Dot the first row of W with x: one times two, plus two times one, plus zero times three. That is four, the first entry of the result.", [[17.985, 18.515], [19.535, 19.815], [21.115, 21.385], [22.915, 23.405], [24.235, 24.615]]],
-  "rows/row1": [26.552, 32.66, "The second row gives the second entry: six, minus one, plus six. Eleven.", [[28.672, 29.192], [29.682, 29.882], [30.662, 30.882], [31.642, 32.112]]],
-  "rows/result": [33.04, 38.53, "So W x is four, eleven: one entry for each row of W.", [[35.03, 35.32], [35.82, 36.29]]],
-  "shapes/match": [40.33, 49.863, "Each row is dotted with x, so a row and x must be the same length: the number of columns of W must equal the length of x.", [[42.31, 42.69], [45.75, 46.18], [47.78, 47.98]]],
-  "shapes/out": [50.243, 67.805, "And there is one dot product per row, so the result has one entry per row of W. A two by three matrix turns three numbers into two: two by three, times three, gives two, where the at sign is the product and the arrow points to what comes out.", [[52.503, 52.893], [55.923, 56.563], [59.853, 60.463], [61.293, 61.493], [62.233, 62.463], [63.113, 63.613], [65.473, 65.763]]],
-  "shapes/big": [68.185, 77.425, "The sizes can be anything. A ten by three thousand and seventy two W turns an image of three thousand and seventy two numbers into ten.", [[69.765, 70.285], [73.195, 73.445]]],
-  "shapes/fail": [77.805, 84.494, "Give it a vector of the wrong length, and a column of W has no partner: the product is not defined.", [[79.625, 79.925], [82.185, 82.725]]],
-  "paper/flat": [86.294, 96.776, "In code, a vector is only a list. x has shape three: no rows, no columns. Pages write it across, like this, to save space.", [[86.974, 87.244], [88.934, 89.484], [90.864, 91.304], [91.994, 92.214], [93.004, 93.544], [95.614, 95.834]]],
-  "paper/stand": [97.156, 108.974, "But in W x, x stands as a column, three tall, so each row of W lies across it. Books call that column three by one, and the result two by one.", [[98.506, 98.806], [100.306, 100.596], [101.416, 101.846], [104.086, 104.646], [106.976, 107.276], [107.926, 108.186]]],
-  "paper/first": [109.354, 120.383, "Put a vector first instead, as in v times W, and it lies as a row: v is dotted with each column of W. Two numbers in, three out.", [[111.144, 111.424], [111.844, 112.074], [113.324, 113.764], [114.954, 115.504], [117.944, 118.444], [119.304, 119.684]]],
-  "paper/turn": [120.763, 121.503, "Your turn.", []]
+  "questions/x": [0.7, 6.471, "Here is a vector, x: two across and one up, an arrow on the plane.", [[1.74, 2.09], [2.56, 3.02], [4.6, 5.1]]],
+  "questions/one": [6.851, 17.373, "A dot product asks it one question: how much does x agree with a weight vector, w? Say w is one and one: the answer is three.", [[9.311, 9.921], [13.041, 13.631], [15.661, 16.151]]],
+  "questions/more": [17.753, 24.54, "One answer is rarely enough. Bring two more weight vectors, and the same x gives two more answers.", [[19.653, 20.223], [21.853, 22.033]]],
+  "questions/agree": [24.92, 37.425, "The second, minus one and two, meets x at a right angle, so its answer is zero. The third, minus one and minus one, points away from x: minus three.", [[25.63, 25.93], [27.35, 27.66], [29.27, 29.68], [31.23, 31.94], [32.53, 32.84], [34.48, 34.77], [36.19, 36.59]]],
+  "questions/W": [37.805, 46.418, "Now stack the three weight vectors as the rows of one matrix, W: one row per question. W is three by two.", [[41.605, 41.885], [42.305, 42.785], [44.135, 44.655]]],
+  "questions/Wx": [46.798, 58.787, "Stack the three answers the same way, and they make a new vector: three, zero, minus three. That is W times x, written W x, the two side by side.", [[48.988, 49.258], [50.488, 50.998], [51.438, 51.638], [52.188, 52.338], [53.088, 53.598], [55.498, 55.678], [56.038, 56.248], [56.958, 57.318]]],
+  "questions/turns": [59.167, 68.266, "So a matrix turns one vector into another. Two numbers go in and three come out, each one how much x agrees with a row.", [[62.177, 62.687], [63.807, 63.967], [65.077, 65.497]]],
+  "questions/cayley": [68.646, 85.432, "In eighteen fifty eight, Arthur Cayley wrote that the idea of a matrix arises naturally from exactly this: a set of equations, each new number a weighted sum of the old ones, written in short: the weights as one grid, beside the list of old numbers.", [[69.916, 70.236], [75.336, 75.876], [77.116, 77.446], [80.236, 80.696], [81.526, 81.956], [83.366, 83.656]]],
+  "rows/setup": [87.232, 98.71, "Now a W with two rows of three, and an x of three entries, one above each column. Three entries take x out of the page, but the recipe never needed the picture.", [[89.742, 90.072], [91.662, 91.912], [93.162, 93.752], [96.302, 96.702]]],
+  "rows/pair": [99.09, 111.964, "Entry zero of W x is row zero's answer. Pair row zero with x, entry by entry, and multiply: one times two, two times one, and zero times three.", [[102.67, 103.36], [105.11, 105.34], [106.4, 106.65], [107.44, 108.0], [108.96, 109.36], [110.25, 110.56]]],
+  "rows/r0": [112.344, 118.766, "Add them up: two, plus two, plus zero, is four. That is entry zero.", [[112.994, 113.554], [113.934, 114.164], [114.854, 115.044], [115.794, 116.024], [116.624, 117.214]]],
+  "rows/r1": [119.146, 124.955, "Row one gives entry one: six, minus one, and six make eleven.", [[121.026, 121.606], [122.136, 122.356], [123.966, 124.116]]],
+  "rows/all": [125.335, 133.297, "So W x is four and eleven. Entry i always comes from row i, both counted from zero.", [[128.025, 128.715], [131.435, 131.845]]],
+  "rows/col": [133.677, 143.087, "Never from a column. A column of W holds one number per row, two of them here, and x has three: they do not even line up.", [[134.957, 135.547], [138.257, 138.687], [139.457, 139.977], [141.237, 141.757]]],
+  "shapes/match": [144.887, 154.421, "Every row is dotted with x, and a dot product pairs entries one to one. So x needs one entry per column of W: three.", [[146.877, 147.187], [149.917, 150.457], [153.517, 153.977]]],
+  "shapes/out": [154.801, 165.26, "And there is one dot product per row, so W x has one entry per row: two. A two by three matrix turns three numbers into two.", [[157.041, 157.451], [160.431, 160.921], [161.261, 161.811], [163.281, 163.461]]],
+  "shapes/at": [165.64, 170.901, "In code, the product is W at x, with the at sign of the dot product.", [[166.3, 166.56], [168.64, 168.94]]],
+  "shapes/rule": [171.281, 183.64, "In shapes: two by three, at three, gives two, the arrow pointing to what comes out. The three of x meets the three columns, and the two rows set the length of the answer.", [[172.061, 172.601], [173.471, 173.781], [174.481, 174.751], [175.431, 175.911], [177.761, 178.351], [180.701, 181.081]]],
+  "shapes/big": [184.02, 195.009, "The sizes can be anything. A ten by three thousand and seventy two W asks an image of three thousand and seventy two numbers ten questions, and turns it into ten numbers.", [[185.63, 186.12], [192.99, 193.27]]],
+  "shapes/fail": [195.389, 203.773, "Give it an x of the wrong length, and the last column of W has no partner: the product is not defined, and NumPy refuses.", [[197.159, 197.379], [199.889, 200.389], [201.959, 202.229]]],
+  "shapes/turn": [204.153, 204.893, "Your turn.", []]
  }
 }

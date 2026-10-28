@@ -719,7 +719,7 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
   rotation: { rotate: { is: 'turns a pair by an angle in degrees: the rotation matrix times the pair' } },
   rope: { rotate: { is: 'turns a pair by an angle in degrees: the rotation matrix times the pair' } },
   retrieval: {
-    embed: { is: 'turns a text into a vector of size 1' },
+    embed: { is: 'turns a text into a vector of length 1' },
     complete: { is: 'runs the model on a prompt and returns its continuation' },
   },
   'kv-cache': {
