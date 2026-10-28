@@ -385,6 +385,7 @@ export const SCOPED: Record<string, SymbolMap> = {
     sigma: { color: 'teal', name: 'σ: the standard deviation', tex: '\\sigma', code: [], about: 'How spread out one example\'s features are: the square root of their variance, σ².' },
   },
   'batch-norm': {
+    y: { color: 'gold', name: 'y: the batch-norm output', about: 'γx̂ + β: the normalized feature, scaled and shifted; what the activation receives.' },
     mu: { color: 'orange', name: 'μ: the batch mean', tex: '\\mu', about: 'The average of one feature over the examples in the batch.' },
     sigma: { color: 'teal', name: 'σ: the standard deviation', tex: '\\sigma', about: 'How spread out one feature is over the batch: the square root of its variance, σ².' },
     epstiny: tiny,
@@ -458,6 +459,8 @@ export const SCOPED: Record<string, SymbolMap> = {
     igate: { color: 'green', name: 'i: the input gate', tex: 'i', code: [], about: 'A sigmoid, between 0 and 1: how much of the candidate to add to the cell.' },
     ogate: { color: 'purple', name: 'o: the output gate', tex: 'o', code: [], about: 'A sigmoid, between 0 and 1: how much of the cell, through a tanh, to show as h.' },
     cand: { color: 'gold', name: 'g: the candidate', tex: 'g', code: [], about: 'A tanh, between −1 and 1: the new content proposed for the cell.' },
+    h: { color: 'gold', name: 'h: the hidden state', code: ['h'], about: 'What each step shows and feeds back to every gate: h = o · tanh(c).' },
+    b: { color: 'green', name: 'b: the bias', about: 'Added inside the step, one number per hidden unit.' },
   },
   'preference-loss': { r: { color: 'gold', name: 'r: the reward model\'s score', about: 'One number per answer. Only differences between two answers\' scores matter.' }, sig },
   'reward-model': { r: { color: 'gold', name: 'r: the reward model\'s score', about: 'One number per answer. Only differences between two answers\' scores matter.' }, sig },

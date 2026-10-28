@@ -1,22 +1,37 @@
 {
- "duration": 112.642,
+ "duration": 235.048,
  "scenes": {
-  "stages": [0.0, 40.742],
-  "head": [40.742, 57.164],
-  "count": [57.164, 112.642]
+  "goal": [0.0, 66.871],
+  "stages": [66.871, 137.187],
+  "head": [137.187, 176.077],
+  "count": [176.077, 235.048]
  },
  "beats": {
-  "stages/input": [0.7, 7.542, "A small ConvNet for color images, thirty two by thirty two. Follow the shape from layer to layer.", [[2.92, 3.28], [4.81, 5.39]]],
-  "stages/conv": [7.922, 17.552, "A three by three conv with sixteen filters and padding one keeps the size and makes sixteen channels: sixteen by thirty two by thirty two.", [[11.662, 11.902], [14.372, 14.842]]],
-  "stages/relu": [17.932, 22.2, "A ReLU works entry by entry, so the shape does not change.", [[20.122, 20.442]]],
-  "stages/pool": [22.58, 30.064, "Max pooling halves the height and the width: sixteen by sixteen by sixteen. That is one stage.", [[25.19, 25.66], [28.16, 28.71]]],
-  "stages/repeat": [30.444, 39.642, "Repeat it with thirty two filters: thirty two channels, then pooled to eight by eight. The image gets smaller and deeper as it goes.", [[32.584, 33.144], [36.174, 36.734]]],
-  "head/flatten": [41.442, 49.258, "Flatten lays all of it out in one vector: thirty two times eight times eight, two thousand and forty eight numbers.", [[43.972, 44.552], [45.932, 46.082], [46.752, 47.252]]],
-  "head/fc": [49.638, 56.064, "A fully connected layer then turns those into ten class scores, exactly like a linear classifier.", [[53.628, 53.998]]],
-  "count/c1": [57.864, 72.677, "Now count what it learns. Each of the first convolution's sixteen filters is three by three over the input's three channels: twenty seven weights, plus one bias. Sixteen times twenty eight is four hundred and forty eight.", [[59.464, 60.034], [63.994, 64.144], [65.924, 66.314], [68.564, 69.034], [70.754, 70.924], [72.464, 72.654]]],
-  "count/c2": [73.057, 87.531, "The second convolution's filters each span all sixteen channels coming in: three times three times sixteen, a hundred and forty four weights, plus one bias. Thirty two of them make four thousand, six hundred and forty.", [[77.737, 78.277], [80.367, 80.707], [82.387, 82.567], [83.667, 84.157]]],
-  "count/lin": [87.911, 98.143, "The linear layer has a weight for each of the two thousand and forty eight inputs, for each of the ten scores, plus ten biases: twenty thousand, four hundred and ninety.", [[92.201, 92.541], [94.001, 94.181], [95.481, 95.901]]],
-  "count/most": [98.523, 110.422, "Pooling and ReLU have none. In all, twenty five thousand, five hundred and seventy eight, and four fifths of them sit in that last fully connected layer, even in this tiny network.", [[100.453, 101.063], [101.523, 101.753], [104.383, 104.833], [108.353, 108.733]]],
-  "count/turn": [110.802, 111.542, "Your turn.", []]
+  "goal/goal": [0.7, 8.342, "The goal: turn a color image, thirty two by thirty two pixels, into ten class scores, one per class.", [[1.25, 1.79], [2.97, 3.2], [5.07, 5.39], [6.94, 7.25]]],
+  "goal/linear": [8.722, 19.92, "A linear classifier does it in one step, with a weight for every pixel, so what it learns is tied to places: move the cat's ear a few pixels, and different weights see it.", [[11.252, 11.612], [13.192, 13.602], [15.852, 16.312], [18.212, 18.502]]],
+  "goal/conv": [20.3, 26.927, "A convolution slides one small filter over the whole image, so it finds its pattern wherever it sits.", [[24.13, 24.47]]],
+  "goal/relu": [27.307, 32.815, "A ReLU bends the result, so stacked layers do not collapse into one linear step.", [[29.037, 29.387]]],
+  "goal/pool": [33.195, 37.819, "Pooling shrinks each map, keeping the strongest response in each window.", [[34.865, 35.285]]],
+  "goal/name": [38.199, 46.92, "Stack those a few times, then score what is left with a linear classifier, and you have a convolutional network: a ConvNet, for short.", [[39.679, 39.959], [42.659, 42.969], [45.039, 45.449], [46.169, 46.339]]],
+  "goal/lenet": [47.3, 65.771, "The shape is old. In 1998, Yann LeCun and colleagues described Le Net five: convolutions, each followed by a small averaging pool, then fully connected layers giving ten outputs, one per digit. Networks like it read millions of bank checks a day.", [[48.48, 49.05], [50.25, 50.46], [53.73, 54.21], [55.14, 55.44], [57.72, 57.99], [60.91, 61.18], [62.1, 62.66]]],
+  "stages/input": [67.571, 76.278, "Follow the shape through. The image is three by thirty two by thirty two: three color channels first, then height and width.", [[68.891, 69.511], [72.551, 73.071], [74.521, 74.821]]],
+  "stages/conv": [76.658, 81.119, "The first conv has sixteen filters, so it makes sixteen channels.", [[78.988, 79.248]]],
+  "stages/pad": [81.499, 92.212, "Its filters are three by three, and padding one gives back the two positions such a filter loses, so the grid stays put: sixteen by thirty two by thirty two.", [[83.419, 83.709], [87.449, 87.749], [89.019, 89.549]]],
+  "stages/relu": [92.592, 97.14, "The ReLU bends each entry on its own, so the shape does not change.", [[95.142, 95.462]]],
+  "stages/pool": [97.52, 108.365, "Two by two max pooling halves the height and the width: sixteen by sixteen by sixteen. Conv, ReLU, pool: that is one stage.", [[98.43, 98.84], [101.33, 101.79], [104.12, 104.68], [105.12, 105.35], [105.93, 106.14], [106.53, 107.0]]],
+  "stages/nopad": [108.745, 117.199, "Without padding, the conv would shrink it first: thirty two, minus three, plus one, is thirty, pooled to fifteen.", [[109.625, 109.915], [111.545, 112.025], [112.755, 112.975], [113.805, 114.035], [114.735, 114.915], [115.645, 115.965]]],
+  "stages/repeat": [117.579, 126.431, "A second stage, with thirty two filters, makes thirty two channels and pools them to eight by eight: thirty two by eight by eight.", [[118.649, 118.809], [120.149, 120.389], [121.829, 122.019], [123.809, 124.299], [125.669, 125.829]]],
+  "stages/deeper": [126.811, 136.087, "Each channel maps where one pattern shows up. Stage by stage, the block gets smaller and deeper: fewer positions, more patterns.", [[129.541, 130.061], [131.231, 131.431], [133.321, 133.831], [134.851, 135.151]]],
+  "head/flatten": [137.887, 147.987, "A linear classifier needs one vector, so flatten lays every number out in a row: thirty two times eight times eight, two thousand and forty eight.", [[140.237, 140.637], [143.417, 143.857], [145.217, 145.367], [146.017, 146.457]]],
+  "head/fc": [148.367, 158.422, "Then a fully connected layer: each of the ten scores has its own weight for every one of those numbers, plus a bias. Exactly a linear classifier.", [[150.107, 150.667], [154.537, 154.807], [155.877, 156.387]]],
+  "head/names": [158.802, 165.346, "PyTorch calls it n n dot linear: a linear layer and a fully connected layer are the same thing.", [[159.812, 159.982], [161.322, 161.902]]],
+  "head/order": [165.726, 174.977, "So the order follows the shapes. Convs and pools work on grids, so they come first; flatten makes the vector the linear layer scores.", [[167.646, 168.186], [170.416, 170.636], [171.676, 172.166]]],
+  "count/one": [176.777, 186.236, "Now count what it learns. A first-layer filter is three by three over three channels, twenty seven weights, plus one bias: twenty eight.", [[178.397, 178.947], [182.497, 182.827], [183.877, 184.027], [185.137, 185.567]]],
+  "count/c1": [186.616, 189.863, "Sixteen filters make four hundred and forty eight.", []],
+  "count/c2": [190.243, 198.605, "The second conv's thirty two filters, each sixteen channels deep, hold four thousand, six hundred and forty, counted the same way.", [[192.513, 192.853], [194.503, 194.833], [197.163, 197.503]]],
+  "count/lin": [198.985, 208.006, "The linear layer has two thousand and forty eight weights for each of ten scores, plus ten biases: twenty thousand, four hundred and ninety.", [[203.635, 203.975], [205.315, 205.785]]],
+  "count/most": [208.386, 217.705, "ReLU and pooling learn nothing. Of the twenty five thousand, five hundred and seventy eight in all, four fifths sit in that last layer.", [[210.666, 211.286], [212.806, 213.026], [214.876, 215.256]]],
+  "count/alexnet": [218.085, 232.827, "Big networks lean the same way. AlexNet, in 2012, was this recipe at scale: five conv layers, three fully connected, sixty million parameters, and no conv layer held more than one percent of them.", [[220.125, 220.765], [222.485, 222.735], [224.345, 224.875], [226.045, 226.325], [227.625, 228.015], [229.685, 229.995]]],
+  "count/turn": [233.207, 233.948, "Your turn.", []]
  }
 }

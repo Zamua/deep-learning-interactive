@@ -1,23 +1,35 @@
 {
- "duration": 143.785,
+ "duration": 240.949,
  "scenes": {
-  "columns": [0.0, 58.443],
-  "rows": [58.443, 98.995],
-  "pipeline": [98.995, 143.785]
+  "problem": [0.0, 36.344],
+  "columns": [36.344, 108.126],
+  "rows": [108.126, 176.239],
+  "pipeline": [176.239, 240.949]
  },
  "beats": {
-  "columns/layer": [0.7, 13.738, "Here is one layer, written the way code often writes it: the input x is a row of d numbers, and the weight matrix W one has d rows and four d columns, one column per output.", [[1.78, 2.08], [3.99, 4.62], [7.08, 7.43], [9.28, 9.45], [11.85, 12.26]]],
-  "columns/cols": [14.118, 22.666, "Each output is x dotted with one column. Output zero: one times one, plus two times one: three.", [[17.038, 17.628], [18.558, 19.098], [20.168, 20.478], [21.748, 22.198]]],
-  "columns/split": [23.046, 32.102, "So split the columns: GPU zero keeps columns zero and one, and GPU one keeps columns two and three.", [[24.406, 24.946], [28.206, 28.626], [30.116, 30.286]]],
-  "columns/own": [32.482, 47.413, "Each GPU computes its own outputs: three and two on GPU zero, two and one on GPU one, neither waiting for the other. The ReLU works entry by entry, so each applies it to its own part.", [[35.212, 35.602], [37.922, 38.332], [40.252, 40.712], [42.192, 42.852], [44.992, 45.302]]],
-  "columns/shape": [47.793, 57.343, "With k GPUs, each piece is d by four d over k: on four GPUs, every GPU holds a quarter of the columns.", [[49.193, 49.503], [52.273, 52.893], [54.193, 54.523]]],
-  "rows/w2": [59.143, 71.464, "The next matrix, W two, takes the four d outputs back down to d. Split it by rows to match: GPU zero gets the rows that read its own two outputs.", [[60.243, 60.423], [61.273, 61.633], [64.403, 65.033], [66.663, 67.253]]],
-  "rows/part": [71.844, 82.645, "Now each GPU's product is only part of the answer. GPU zero gets three and two, GPU one gets one and two: partial sums.", [[75.254, 75.854], [78.334, 78.864], [81.124, 81.654]]],
-  "rows/sum": [83.025, 97.895, "Adding them across the GPUs gives the real output, four and four. That exchange happens inside every layer, every step, so this split, tensor parallelism, needs very fast links between its GPUs.", [[86.025, 86.415], [87.485, 88.125], [90.745, 91.015], [91.825, 92.255], [93.205, 93.485], [94.645, 94.925]]],
-  "pipeline/layers": [99.695, 109.207, "Or cut the network the other way, between layers. Twenty four layers on four GPUs: six consecutive layers each, called a stage.", [[101.545, 101.805], [102.735, 103.325], [105.755, 106.175], [108.055, 108.255]]],
-  "pipeline/which": [109.587, 120.436, "Counting from zero, stage zero holds layers zero to five, so layer thirteen lands on stage two: thirteen over six, rounded down.", [[110.777, 111.237], [114.057, 114.487], [117.287, 117.767], [119.167, 119.377]]],
-  "pipeline/send": [120.816, 133.411, "Each stage runs its layers, then hands its output to the next stage, and the gradient on that output comes back. Nothing else crosses: once per cut, not inside every layer.", [[122.676, 123.006], [125.326, 125.656], [128.006, 128.596], [129.966, 130.386], [131.366, 131.726]]],
-  "pipeline/compare": [133.791, 141.565, "That is pipeline parallelism. The column split talks inside every layer; the layer split only at its cuts.", [[135.751, 136.281], [138.841, 139.361], [140.111, 140.271]]],
-  "pipeline/turn": [141.945, 142.685, "Your turn.", []]
+  "problem/gpu": [0.7, 12.935, "Training runs on GPUs, short for graphics processing units: chips first built to draw graphics, which do thousands of multiplications at once. Each has only so much memory.", [[2.66, 3.07], [5.21, 5.71], [7.77, 8.02], [10.53, 11.08]]],
+  "problem/copy": [13.315, 20.499, "Data parallelism gives every GPU a full copy of the weights, w, and its own slice of the batch.", [[17.665, 17.865], [18.315, 18.705]]],
+  "problem/big": [20.879, 26.98, "But the biggest models have more weights than one GPU can hold: not even one copy fits.", [[24.669, 25.179]]],
+  "problem/cut": [27.36, 35.244, "So cut the model itself into pieces, one per GPU: inside each layer's matrix, or between the layers.", [[29.64, 29.98], [31.41, 31.96], [33.77, 33.99]]],
+  "columns/x": [37.044, 47.386, "Take one layer. Its input, x, is a list of numbers; call its length d. Here d is two, and x is one and two.", [[38.134, 38.674], [39.414, 39.594], [40.044, 40.204], [41.344, 41.824], [43.144, 43.754], [45.254, 45.584]]],
+  "columns/W": [47.766, 57.264, "Big models usually write the layer with x on the left, times the weights, W one: one row per input, and one column per output.", [[51.016, 51.366], [52.336, 52.686], [53.526, 54.026], [55.286, 55.586]]],
+  "columns/wide": [57.644, 65.796, "This layer widens to four times d outputs, so W one is d by four d: here, two by four.", [[60.644, 60.974], [63.704, 64.204], [64.554, 64.864]]],
+  "columns/cols": [66.176, 74.725, "Each output is x dotted with one column. Output zero: one times one, plus two times one: three.", [[69.096, 69.686], [70.616, 71.156], [72.226, 72.536], [73.806, 74.256]]],
+  "columns/split": [75.105, 85.161, "So cut W one between its columns: GPU zero keeps columns zero and one, and GPU one keeps columns two and three.", [[77.735, 78.325], [81.515, 81.915]]],
+  "columns/own": [85.541, 98.813, "Each GPU computes its own outputs: three and two on GPU zero, two and one on GPU one. The ReLU works entry by entry, so each applies it to its own part.", [[88.381, 88.821], [91.171, 91.601], [93.701, 94.321], [96.401, 96.701]]],
+  "columns/shape": [99.193, 107.026, "With k GPUs, the columns are shared k ways: each GPU's piece is d by four d over k.", [[100.543, 100.773], [102.563, 103.053]]],
+  "rows/w2": [108.826, 122.481, "The next matrix, W two, is four d by d: it takes the four d values back down to d. Cut it by rows to match: GPU zero gets the two rows that read its own outputs.", [[109.896, 110.086], [110.886, 111.166], [112.506, 113.076], [115.806, 116.436], [117.906, 118.386]]],
+  "rows/rshape": [122.861, 127.679, "With k GPUs, each piece is four d over k, by d.", [[124.291, 124.581], [126.901, 127.071]]],
+  "rows/part": [128.059, 138.798, "Now each GPU's product is only part of the answer: three and two on GPU zero, one and two on GPU one. These are partial sums.", [[131.439, 131.939], [134.269, 134.709], [136.589, 137.119]]],
+  "rows/sum": [139.178, 151.74, "Add them across the GPUs for the real output: four and four. That exchange happens inside every layer, every step, so this split needs very fast links between GPUs.", [[141.898, 142.368], [143.478, 144.058], [146.608, 146.868], [147.648, 148.108], [151.508, 151.728]]],
+  "rows/megatron": [152.12, 165.264, "Mohammad Shoeybi and colleagues at NVIDIA split their models this way in 2019, in Megatron-LM, and trained a model of eight point three billion parameters across five hundred and twelve GPUs.", [[154.52, 154.73], [157.32, 157.56], [159.09, 159.45], [162.56, 162.83]]],
+  "rows/tensor": [165.644, 175.139, "Tensor is the word for any array of numbers, such as a vector or a matrix. Cutting the weight matrices themselves is called tensor parallelism.", [[168.314, 168.544], [170.434, 171.054]]],
+  "pipeline/layers": [176.939, 185.349, "Or cut between whole layers. Twenty four layers on four GPUs: six consecutive layers each, called a stage.", [[178.859, 179.439], [181.859, 182.329], [184.169, 184.409]]],
+  "pipeline/which": [185.729, 196.579, "Counting from zero, stage zero holds layers zero to five, so layer thirteen lands on stage two: thirteen over six, rounded down.", [[186.919, 187.379], [190.199, 190.629], [193.429, 193.909], [195.309, 195.519]]],
+  "pipeline/send": [196.959, 205.189, "Each stage hands its output to the next, and during backprop, the gradient on that output comes back. Nothing else crosses.", [[199.409, 199.719], [200.769, 201.099], [203.259, 203.769]]],
+  "pipeline/gpipe": [205.569, 219.257, "But one batch at a time keeps only one stage busy. In 2018, Yanping Huang and colleagues at Google fixed that in GPipe: cut the batch into micro-batches, and feed them in one after another.", [[208.819, 209.549], [210.619, 210.919], [214.519, 215.039], [216.969, 217.219]]],
+  "pipeline/name": [219.637, 229.859, "While stage one works on the first, stage zero starts the second, like an assembly line. That flow is a pipeline, hence pipeline parallelism.", [[221.737, 222.057], [224.037, 224.367], [225.427, 225.977], [227.507, 227.887], [228.227, 228.437]]],
+  "pipeline/compare": [230.239, 238.729, "So the column split talks inside every layer, the layer split only at its cuts, and data parallelism once per step.", [[233.239, 233.749], [235.809, 236.119]]],
+  "pipeline/turn": [239.109, 239.849, "Your turn.", []]
  }
 }

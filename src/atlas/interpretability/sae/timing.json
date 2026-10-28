@@ -1,19 +1,40 @@
 {
- "duration": 92.452,
+ "duration": 257.51,
  "scenes": {
-  "wide": [0.0, 28.805],
-  "loss": [28.805, 63.241],
-  "rebuild": [63.241, 92.452]
+  "tangle": [0.0, 52.033],
+  "wide": [52.033, 121.988],
+  "loss": [121.988, 193.839],
+  "rebuild": [193.839, 257.51]
  },
  "beats": {
-  "wide/recall": [0.7, 5.94, "An autoencoder squeezes its input through a narrow middle, then rebuilds it.", [[4.35, 4.66]]],
-  "wide/flip": [6.32, 20.091, "A sparse autoencoder turns that around. If a model stores more features than it has dimensions, the middle must be wider: often eight or sixteen times d. That ratio is the expansion factor.", [[8.98, 9.58], [12.57, 12.88], [14.28, 14.79], [17.19, 17.77]]],
-  "wide/dict": [20.471, 27.705, "Each middle unit is a feature, and each has its own direction in the decoder. Together they form a dictionary.", [[22.341, 22.671], [25.281, 25.851]]],
-  "loss/err": [29.505, 35.588, "Training balances two terms. The reconstruction error asks the rebuild to match x.", [[31.465, 31.995]]],
-  "loss/l1": [35.968, 52.203, "The L1 penalty adds lambda times the sum of the features, which the ReLU keeps from going negative. For the code zero, two, zero, zero, a half, zero, zero, zero, with lambda at zero point one, the penalty is zero point two five.", [[39.808, 40.108], [42.248, 42.908], [45.408, 45.638], [46.208, 46.358], [47.608, 47.868], [49.648, 50.018]]],
-  "loss/zero": [52.583, 62.141, "Every active feature costs something, so small, unhelpful ones are pushed all the way to zero. Only a few stay on for any one input.", [[54.873, 55.283], [58.923, 59.503]]],
-  "rebuild/sum": [63.941, 78.342, "The rebuild is the sum of each active feature times its direction. Here, two times feature one's direction, one, zero, plus a half times feature four's, zero, two. That is two, one.", [[66.751, 66.901], [68.021, 68.591], [68.961, 69.281], [71.231, 71.541], [71.901, 72.071], [72.541, 72.901], [73.701, 73.851], [75.061, 75.381], [76.301, 76.771], [77.251, 77.441]]],
-  "rebuild/meaning": [78.722, 90.232, "Because each input uses only a few features, each feature tends to stand for one thing. That is what sparsity buys: a readable dictionary of what the model represents.", [[81.692, 82.082], [84.512, 85.072], [86.912, 87.352]]],
-  "rebuild/turn": [90.612, 91.352, "Your turn.", []]
+  "tangle/puzzle": [0.7, 11.375, "Superposition left a puzzle: a model stores more features than its stream has numbers, each as a direction. Take a toy stream: three and one.", [[2.48, 3.1], [6.5, 6.85], [8.05, 8.68], [9.76, 10.19], [10.62, 10.78]]],
+  "tangle/tangle": [11.755, 20.763, "It holds two of one feature and one of another, along directions that match neither axis. Nothing in three and one says which.", [[14.725, 15.135], [17.665, 18.195]]],
+  "tangle/neuron": [21.143, 36.271, "Real models show it too. In 2023, Trenton Bricken and colleagues at Anthropic found a neuron in a small language model firing for academic citations, English dialogue, H T T P requests and Korean text.", [[22.703, 23.243], [24.503, 24.803], [27.133, 27.393], [29.703, 29.913], [31.903, 32.203], [33.113, 33.433], [34.873, 35.113]]],
+  "tangle/poly": [36.651, 40.064, "A neuron with many meanings is called polysemantic.", []],
+  "tangle/goal": [40.444, 50.933, "To read the model, we need those directions, and no one wrote them down. A sparse autoencoder learns them from the activations: the vectors a layer produces.", [[41.444, 41.614], [43.014, 43.264], [44.784, 45.324], [48.784, 49.104]]],
+  "wide/recall": [52.733, 57.974, "An autoencoder squeezes its input through a narrow middle, then rebuilds it.", [[56.383, 56.693]]],
+  "wide/flip": [58.354, 69.176, "Here features outnumber dimensions, so the middle is wider: m features for d dimensions. The ratio, m over d, is the expansion factor.", [[60.604, 60.884], [62.244, 62.844], [64.994, 65.504], [66.244, 66.474], [67.454, 67.724]]],
+  "wide/toy": [69.556, 74.938, "In this toy, d is two and m is eight: a factor of four.", [[70.376, 70.696], [71.846, 72.096], [73.366, 73.816]]],
+  "wide/size": [75.318, 84.899, "Bricken's team read a layer of five hundred and twelve neurons, and studied one run closely with a factor of eight: four thousand and ninety six features.", [[78.858, 79.108], [82.028, 82.458]]],
+  "wide/unit": [85.279, 92.866, "Each middle unit is a feature, its value computed with a ReLU: off at zero, or on by some amount.", [[87.099, 87.559], [89.539, 90.119], [91.089, 91.359]]],
+  "wide/dir": [93.246, 105.381, "Each feature owns a direction in the decoder: a row of d numbers, m times d in all. The rebuild adds up the directions of the features that are on, each scaled by its value.", [[95.806, 96.266], [97.616, 97.966], [99.446, 100.106], [103.376, 103.716]]],
+  "wide/name": [105.761, 114.644, "They form a dictionary: as a sentence uses a few of a dictionary's many words, an input uses a few of these many directions.", [[107.141, 107.791], [111.151, 111.451]]],
+  "wide/copy": [115.024, 120.888, "But a wide middle could just copy the input and learn nothing, unless most features are kept off.", [[118.584, 119.004]]],
+  "loss/err": [122.688, 130.978, "Training balances two terms. One is the reconstruction error: how far the rebuild, x hat, lands from x.", [[124.578, 125.038], [126.988, 127.398], [128.638, 128.888], [129.538, 129.778]]],
+  "loss/l1": [131.358, 142.376, "The other is a price on the code, the L1 penalty. Where L2 summed squares, L1 sums absolute values: the first power, not the second.", [[133.288, 133.668], [134.988, 135.598], [137.468, 137.848], [139.988, 140.398], [141.268, 141.488]]],
+  "loss/sum": [142.756, 150.353, "After the ReLU no feature is negative, so L1 is just the features' sum, times a strength, lambda.", [[145.326, 145.736], [148.346, 148.596], [149.516, 149.786]]],
+  "loss/code": [150.733, 159.391, "Take the code zero, two, zero, zero, one, zero, zero, zero. Two features are on, and they sum to three.", [[151.483, 151.923], [153.963, 154.153], [156.213, 156.693], [157.853, 158.133]]],
+  "loss/pay": [159.771, 166.431, "With lambda at zero point one, the penalty is zero point three, and the loss is the error plus that.", [[161.691, 161.991], [163.841, 164.211]]],
+  "loss/fade": [166.811, 176.507, "Why not squares? L2's pull toward zero is two lambda times the value: it fades as a feature shrinks, so small ones linger.", [[168.011, 168.591], [172.341, 172.881], [174.761, 175.071]]],
+  "loss/push": [176.887, 184.353, "L1's pull stays lambda however small the feature, so it pushes small, unhelpful ones all the way to zero.", [[180.287, 180.677]]],
+  "loss/balance": [184.733, 192.739, "Raise lambda, and fewer features stay on, with a rougher rebuild. Lower it, and the rebuild improves as more turn on.", [[185.663, 185.893], [187.473, 187.743], [188.903, 189.403], [189.973, 190.203]]],
+  "rebuild/on": [194.539, 201.265, "Now rebuild the stream. Only features one and four are on, so only their directions count.", [[196.199, 196.709], [198.919, 199.229]]],
+  "rebuild/a": [201.645, 208.888, "Feature one's direction is one, one. Times its value, two, that is two, two.", [[203.795, 203.975], [204.375, 204.975], [206.015, 206.355], [206.725, 207.145], [207.605, 207.795], [208.145, 208.485]]],
+  "rebuild/b": [209.268, 215.704, "Feature four's direction is one and minus one. Its value is one, so it adds just that.", [[212.288, 212.808], [213.988, 214.258]]],
+  "rebuild/sum": [216.084, 223.375, "Add them: x hat is three, one, the stream we started with, rebuilt from two dictionary entries.", [[216.594, 217.164], [218.414, 218.814], [219.214, 219.624], [220.944, 221.204]]],
+  "rebuild/meaning": [223.755, 231.117, "With so few features per input, each tends to stand for one thing: monosemantic, one meaning.", [[225.815, 226.135], [228.135, 228.685], [229.765, 230.315]]],
+  "rebuild/olshausen": [231.497, 244.648, "The idea is older than language models: in 1996, Bruno Olshausen and David Field learned a sparse code for natural images, and its parts came out like cells in the visual cortex.", [[233.887, 234.347], [235.677, 235.957], [238.127, 238.397], [240.897, 241.297]]],
+  "rebuild/found": [245.028, 255.289, "In 2023, Bricken's team and, separately, Hoagy Cunningham and colleagues found features this way that are more monosemantic than the model's raw numbers.", [[246.348, 246.638], [248.638, 248.858], [250.328, 250.598], [251.938, 252.128]]],
+  "rebuild/turn": [255.669, 256.41, "Your turn.", []]
  }
 }
