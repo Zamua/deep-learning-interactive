@@ -1,21 +1,31 @@
 {
- "duration": 109.785,
+ "duration": 223.316,
  "scenes": {
-  "count": [0.0, 58.761],
-  "repeat": [58.761, 109.785]
+  "cut": [0.0, 92.118],
+  "count": [92.118, 145.165],
+  "repeat": [145.165, 223.316]
  },
  "beats": {
-  "count/bytes": [0.7, 16.467, "Computers store text as bytes, and a byte has only two hundred fifty-six possible values. So a vocabulary can start with two hundred fifty-six tokens, ids zero to two hundred fifty-five, and spell any text at all.", [[2.87, 3.25], [6.82, 7.39], [11.19, 11.65], [12.25, 12.44], [14.4, 14.75]]],
-  "count/long": [16.847, 27.616, "Here is a short text: hug, hugs, pug, run together. Ten bytes, so ten tokens. It works, but it is long.", [[18.257, 18.907], [19.257, 19.767], [20.287, 20.837], [21.187, 21.697], [22.537, 23.077], [23.807, 24.057], [25.367, 25.807], [26.507, 26.687]]],
-  "count/pairs": [27.996, 34.174, "Byte-pair encoding shortens it. Count every pair of neighboring tokens, left to right.", [[30.036, 30.656], [32.926, 33.206]]],
-  "count/top": [34.554, 39.742, "u followed by g comes up three times: more than any other pair.", [[35.024, 35.174], [37.804, 38.204]]],
-  "count/merge": [40.122, 49.782, "So merge it. u g becomes one new token, with the next free id, two hundred fifty-six, and every u g in the text is replaced.", [[41.082, 41.592], [43.792, 44.062], [45.362, 45.582], [46.812, 47.132]]],
-  "count/shorter": [50.162, 57.661, "Each replacement turns two tokens into one. Three replacements save three tokens: ten become seven.", [[53.022, 53.562], [55.882, 56.302]]],
-  "repeat/again": [59.461, 66.451, "Then do it again, on the new text. Now h followed by u g is the top pair, twice.", [[60.491, 60.791], [61.681, 62.261], [65.561, 65.911]]],
-  "repeat/hug": [66.831, 73.456, "It becomes token two hundred fifty-seven, the whole word hug, and seven tokens become five.", [[69.261, 69.681], [70.971, 71.441]]],
-  "repeat/grow": [73.836, 89.884, "Every merge adds exactly one token to the vocabulary. Merge zero made two hundred fifty-six and merge one made two hundred fifty-seven, so after k merges the vocabulary size, V, is two hundred fifty-six plus k.", [[77.406, 78.016], [80.456, 80.756], [83.236, 83.636], [85.266, 85.546], [87.386, 87.606]]],
-  "repeat/real": [90.264, 101.239, "Real tokenizers run tens of thousands of merges. Fifty thousand of them make a vocabulary of fifty thousand two hundred fifty-six, where common words are single tokens.", [[93.584, 94.054], [98.744, 99.054]]],
-  "repeat/rows": [101.619, 107.565, "And every new token gets an id of its own, so a row of its own in the embedding table.", [[104.509, 104.859]]],
-  "repeat/turn": [107.945, 108.685, "Your turn.", []]
+  "cut/tokens": [0.7, 12.495, "A model reads text as tokens: the pieces the text is cut into, each with an id and a row of its own in the embedding table. The rule that does the cutting is called a tokenizer.", [[2.82, 3.2], [5.02, 5.4], [8.88, 9.45]]],
+  "cut/words": [12.875, 22.081, "One rule is whole words. Take hug, hugs, pug, run together: cut into words, that is just three tokens.", [[14.665, 15.125], [15.415, 15.565], [15.935, 16.315], [16.815, 17.185], [17.555, 17.955], [18.745, 19.185], [20.195, 20.465]]],
+  "cut/unk": [22.461, 29.418, "But a word missing from the vocabulary, such as pugs, has no token at all, so the model cannot read it.", [[24.661, 24.811], [25.301, 25.451], [25.911, 26.181], [27.541, 27.881]]],
+  "cut/bytes": [29.798, 44.285, "The other extreme is bytes, the units a computer stores text in. A byte is eight bits, binary digits that are each a one or a zero, so it has two to the eight possible values: two hundred fifty-six.", [[31.668, 32.048], [34.198, 34.768], [36.318, 36.698], [39.478, 39.928], [42.488, 42.888]]],
+  "cut/any": [44.665, 54.67, "So a vocabulary of just two hundred fifty-six tokens, ids zero through two hundred fifty-five, can spell any text at all, pugs included.", [[48.235, 48.565], [51.185, 51.555], [53.215, 53.625]]],
+  "cut/long": [55.05, 62.501, "The price is length. Spelled in bytes, hug, hugs, pug is ten tokens instead of three.", [[56.44, 56.98], [58.07, 58.4], [58.76, 59.1], [59.62, 60.01]]],
+  "cut/middle": [62.881, 77.889, "Byte-pair encoding, B P E for short, lands in between. It starts from the bytes and glues the most frequent neighbors into longer tokens, so common words end up as single tokens, and rare ones are spelled from pieces.", [[64.281, 64.671], [66.181, 66.441], [67.531, 68.171], [72.641, 73.091], [75.551, 75.831]]],
+  "cut/sennrich": [78.269, 91.018, "Rico Sennrich, Barry Haddow and Alexandra Birch proposed it in 2016, for translation models whose vocabularies held thirty to fifty thousand words, and kept meeting words outside them.", [[79.369, 79.579], [81.829, 81.989], [83.759, 84.069], [88.669, 88.959]]],
+  "count/pairs": [92.818, 103.353, "Start from the ten bytes. Count every pair of neighbors, in order, left to right: u then g is one pair, and g then u would be another.", [[94.338, 94.828], [96.458, 96.638], [97.158, 97.398], [98.168, 98.718], [100.698, 101.068]]],
+  "count/top": [103.733, 108.922, "u followed by g comes up three times: more than any other pair.", [[104.203, 104.353], [106.983, 107.383]]],
+  "count/merge": [109.302, 118.961, "So merge it. u g becomes one new token, with the next free id, two hundred fifty-six, and every u g in the text is replaced.", [[110.262, 110.772], [112.972, 113.242], [114.542, 114.762], [115.992, 116.312]]],
+  "count/shorter": [119.341, 126.84, "Each replacement turns two tokens into one. Three replacements save three tokens: ten become seven.", [[122.201, 122.741], [125.061, 125.481]]],
+  "count/gage": [127.22, 144.065, "The trick began as file compression. In 1994, Philip Gage shrank files by replacing their most frequent pair of bytes with a single unused byte, again and again. A pair of bytes, encoded as one: byte-pair encoding.", [[129.45, 130.0], [131.27, 131.52], [135.83, 136.07], [137.72, 138.07], [139.21, 139.85], [140.85, 141.09], [142.16, 142.65]]],
+  "repeat/again": [145.865, 152.854, "Then do it again, on the new text. Now h followed by u g is the top pair, twice.", [[146.895, 147.195], [148.085, 148.665], [151.965, 152.315]]],
+  "repeat/hug": [153.234, 161.973, "It becomes token two hundred fifty-seven, the whole word hug. Two replacements this time, so seven tokens become five.", [[155.674, 156.094], [156.834, 157.024], [157.464, 158.074], [159.404, 159.694]]],
+  "repeat/grow": [162.353, 175.162, "Each merge adds exactly one token. Merge zero made two hundred fifty-six, and merge one made two hundred fifty-seven, so merge number k makes two hundred fifty-six plus k.", [[164.993, 165.523], [167.963, 168.303], [170.743, 171.163]]],
+  "repeat/V": [175.542, 188.506, "After k merges, then, the vocabulary holds the two hundred fifty-six bytes plus k new tokens. Its size, V, as in the embedding table, is two hundred fifty-six plus k.", [[177.342, 177.662], [180.652, 180.832], [182.402, 182.972], [183.752, 183.952], [184.362, 184.592], [185.872, 186.132]]],
+  "repeat/radford": [188.886, 203.288, "Starting from bytes was the choice of Alec Radford and colleagues at OpenAI, in 2019. Starting from every character, in every script, would have taken over a hundred and thirty thousand tokens before a single merge.", [[194.646, 195.296], [198.216, 198.486], [201.696, 201.896]]],
+  "repeat/real": [203.668, 214.77, "They ran fifty thousand merges: two hundred fifty-six plus fifty thousand is fifty thousand two hundred fifty-six tokens, and common words became single tokens.", [[205.888, 206.348], [208.828, 209.158], [212.018, 212.428]]],
+  "repeat/rows": [215.15, 221.096, "And every new token gets an id of its own, so a row of its own in the embedding table.", [[218.04, 218.39]]],
+  "repeat/turn": [221.476, 222.216, "Your turn.", []]
  }
 }

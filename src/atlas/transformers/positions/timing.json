@@ -1,18 +1,28 @@
 {
- "duration": 92.576,
+ "duration": 168.96,
  "scenes": {
-  "blind": [0.0, 38.121],
-  "add": [38.121, 92.576]
+  "blind": [0.0, 53.691],
+  "add": [53.691, 118.026],
+  "learned": [118.026, 168.96]
  },
  "beats": {
-  "blind/one": [0.7, 11.701, "Self-attention scores every token against every token, and nothing in a score says where a token sits. Take dog bites man, and one number from each output.", [[4.12, 4.51], [7.41, 7.97], [8.27, 8.43], [9.54, 9.87]]],
-  "blind/swap": [12.081, 20.879, "Now swap the first and last words: man bites dog. Every token brings the same query, key and value as before.", [[14.361, 14.891], [16.241, 16.891], [18.981, 19.171]]],
-  "blind/same": [21.259, 29.773, "So bites gets exactly the same output, and dog and man keep theirs too: the outputs just trade places with their tokens.", [[23.989, 24.339], [26.599, 27.129]]],
-  "blind/bag": [30.153, 37.021, "To attention, a sentence is a bag of tokens. Two sentences with opposite meanings look the same.", [[30.963, 31.263], [33.313, 33.773], [36.803, 37.003]]],
-  "add/table": [38.821, 48.064, "The fix is a second table, P, with one vector per position: row zero for the first token, row one for the second, and so on.", [[40.651, 40.891], [41.241, 41.601], [43.241, 43.701], [45.481, 45.801], [47.141, 47.411]]],
-  "add/sum": [48.444, 59.24, "Each token's input is its embedding plus the vector for its position. Dog at position zero: one and two, plus zero and one, is one and three.", [[50.694, 50.904], [52.604, 53.284], [54.824, 55.334], [56.274, 56.484], [57.884, 58.164]]],
-  "add/differ": [59.62, 72.184, "Dog at position two gets one and two, plus one and minus one: two and one. The same word now enters differently in each place, so attention can tell the two sentences apart.", [[62.27, 62.55], [64.05, 64.53], [65.4, 66.21], [69.24, 69.56]]],
-  "add/learned": [72.564, 90.355, "The position vectors are learned, like the embeddings. Write T max for the most tokens a model takes: P is T max by d. With one thousand and twenty four tokens of seven hundred sixty eight numbers, that is about seven hundred eighty six thousand learned numbers.", [[74.344, 74.604], [75.624, 76.264], [79.484, 80.004], [82.054, 82.594], [86.494, 86.784]]],
-  "add/turn": [90.735, 91.476, "Your turn.", []]
+  "blind/rnn": [0.7, 9.465, "A recurrent network reads a sentence one token per step, so the order comes built in: dog is first because it is read first.", [[4.32, 4.71], [6.3, 6.86], [7.97, 8.17]]],
+  "blind/all": [9.845, 18.188, "Self-attention dropped the steps. Every token scores every token at once, and nothing in a score says where a token sits.", [[11.835, 12.405], [14.985, 15.245]]],
+  "blind/one": [18.568, 22.965, "Take dog bites man, and one number from each token's output.", [[20.138, 20.538]]],
+  "blind/swap": [23.345, 32.142, "Now swap the first and last words: man bites dog. Every token brings the same query, key and value as before.", [[25.625, 26.155], [27.505, 28.155], [30.245, 30.435]]],
+  "blind/same": [32.522, 41.036, "So bites gets exactly the same output, and dog and man keep theirs too: the outputs just trade places with their tokens.", [[35.252, 35.602], [37.862, 38.392]]],
+  "blind/bag": [41.416, 52.591, "To attention, a sentence is a bag of tokens, like words shaken in a bag: all there, in no order. Two sentences with opposite meanings look the same.", [[42.206, 42.686], [44.726, 45.046], [46.786, 47.316], [47.916, 48.146], [48.946, 49.546]]],
+  "add/fix": [54.391, 66.336, "The fix came in the same paper that dropped the steps. In 2017, Ashish Vaswani and colleagues gave every position a vector of its own, and added it to the embedding of the token there.", [[57.241, 57.841], [59.021, 59.281], [61.021, 61.231], [63.641, 63.931]]],
+  "add/table": [66.716, 75.582, "Stack those vectors as the rows of a second table, P: row zero for the first position, row one for the second, and so on.", [[69.676, 70.126], [70.456, 70.896], [72.756, 73.176], [74.566, 74.756]]],
+  "add/dog": [75.962, 81.11, "Dog's embedding is the point one, two. Draw it as an arrow from the origin.", [[78.422, 78.982]]],
+  "add/sum0": [81.49, 90.227, "At position zero, add row zero of P, which is zero, one, tip to tail: dog lands at one, three.", [[82.74, 83.03], [84.67, 84.97], [85.42, 85.63], [86.7, 87.05], [87.8, 88.27], [89.56, 89.77]]],
+  "add/sum2": [90.607, 98.395, "At position two, add row two instead, one, minus one: now dog lands at two, one.", [[91.767, 92.107], [93.707, 94.157], [94.577, 94.837], [95.557, 96.037], [97.257, 97.417], [97.787, 97.987]]],
+  "add/rows": [98.775, 105.308, "Two lookups, then: E by which token it is, and P by where it sits.", [[99.785, 100.425], [100.805, 101.095], [102.455, 102.845], [103.145, 103.385], [103.755, 104.135]]],
+  "add/differ": [105.688, 116.926, "The same word now enters at a different point in each place, so its query, key and value change with it, and attention can tell dog bites man from man bites dog.", [[109.208, 109.608], [110.508, 110.758], [112.618, 113.028], [115.328, 115.578]]],
+  "learned/learned": [118.726, 126.791, "The numbers in P are learned, the same way the embeddings are, so vectors like these are also called position embeddings.", [[120.736, 121.126], [122.646, 123.056], [125.406, 125.556]]],
+  "learned/tmax": [127.171, 142.048, "P needs a row for every position the model will see. Write T max for the most tokens it reads at once: T for tokens, as in attention, and max for the most. So P is T max by d.", [[130.481, 131.111], [131.421, 131.571], [134.471, 134.981], [136.101, 136.271], [137.291, 137.531], [139.031, 139.511]]],
+  "learned/size": [142.428, 158.594, "Say a model reads up to one thousand and twenty four tokens, each of seven hundred sixty eight numbers. Then P holds one thousand and twenty four times seven hundred sixty eight: seven hundred eighty six thousand, four hundred thirty two learned numbers.", [[145.948, 146.338], [148.598, 149.198], [149.528, 149.698], [153.628, 154.118], [155.908, 156.068]]],
+  "learned/end": [158.974, 166.74, "And a token past the last row gets no position vector at all. So T max is the longest input the model can read.", [[162.804, 163.304]]],
+  "learned/turn": [167.12, 167.86, "Your turn.", []]
  }
 }

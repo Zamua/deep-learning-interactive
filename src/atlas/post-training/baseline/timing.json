@@ -1,22 +1,29 @@
 {
- "duration": 122.291,
+ "duration": 201.413,
  "scenes": {
-  "allup": [0.0, 30.941],
-  "baseline": [30.941, 71.835],
-  "try": [71.835, 122.291]
+  "allup": [0.0, 58.453],
+  "baseline": [58.453, 150.957],
+  "try": [150.957, 201.413]
  },
  "beats": {
   "allup/rewards": [0.7, 11.874, "A grader scores four answers a model sampled for one question, from zero to one: zero point nine, zero point six, zero point five and zero point two.", [[4.64, 4.99], [6.16, 6.74], [7.73, 8.07], [9.09, 9.41], [10.41, 10.68]]],
-  "allup/allup": [12.254, 21.661, "Every reward is positive, so the policy gradient pushes every one of these answers up, even the worst. Only the size of the push differs.", [[13.964, 14.414], [17.814, 18.194], [19.114, 19.644]]],
-  "allup/noise": [22.041, 29.841, "On average the good answers still win, but each estimate is noisy: whatever happens to be sampled gets pushed up.", [[24.391, 24.861], [26.631, 27.171], [28.721, 28.881]]],
-  "baseline/b": [31.641, 40.154, "So subtract a baseline, b: the reward you expected. Here, the average of the four, zero point five five.", [[33.301, 33.681], [34.061, 34.511], [35.911, 36.461], [38.141, 38.581]]],
-  "baseline/A": [40.534, 53.479, "What is left is the advantage, A, equal to R minus b: zero point three five, zero point zero five, minus zero point zero five and minus zero point three five.", [[42.434, 42.904], [43.254, 43.614], [45.304, 45.724], [47.134, 47.454], [48.904, 49.224], [51.134, 51.424]]],
-  "baseline/signs": [53.859, 61.559, "Use A in place of R. Now the answers that beat expectations are pushed up, and the rest are pushed down.", [[55.859, 56.499], [57.499, 57.669], [59.599, 59.929]]],
-  "baseline/third": [61.939, 70.735, "Look at the third answer. Its reward, zero point five, is positive, but below what was expected, so now it gets pushed down.", [[63.209, 63.749], [64.519, 64.739], [65.759, 65.979], [66.779, 67.029], [68.609, 68.949]]],
-  "try/p1": [72.535, 83.743, "Try one. Three answers to a question get rewards one, zero point four and zero point one. With their mean as the baseline, what are the advantages?", [[73.165, 73.815], [76.295, 76.725], [77.105, 77.425], [78.525, 78.775], [79.895, 80.515], [82.165, 82.495]]],
-  "try/a1": [84.123, 95.471, "The mean is one point five over three: zero point five. Subtract it from each reward: zero point five, minus zero point one, and minus zero point four.", [[86.633, 87.043], [88.083, 88.623], [90.333, 90.883], [91.993, 92.203], [93.593, 93.833]]],
-  "try/p2": [95.851, 106.999, "Now one parameter, theta zero. The second answer has partial ln pi, partial theta zero of two. What is its estimate's entry for theta zero?", [[97.181, 97.531], [98.441, 99.061], [101.651, 101.841], [103.781, 104.351]]],
-  "try/a2": [107.379, 120.071, "Use its advantage in place of R: minus zero point one, times two, is minus zero point two. Its reward is positive, but below the baseline, so it is pushed down.", [[109.679, 110.289], [111.799, 112.049], [112.779, 113.049], [114.659, 115.279], [116.769, 117.049], [118.319, 118.609]]],
-  "try/turn": [120.451, 121.191, "Your turn.", []]
+  "allup/allup": [12.254, 24.473, "The policy gradient pushes each answer by its reward, and the sign of R alone sets the direction. Every reward here is positive, so every answer is pushed up, even the worst.", [[15.424, 15.804], [18.574, 19.194], [21.034, 21.334], [23.124, 23.484]]],
+  "allup/one": [24.853, 32.938, "And a step often sees just one draw. Draw the worst answer, at zero point two, and the step makes it more likely.", [[27.403, 28.003], [29.333, 29.583], [30.783, 31.123]]],
+  "allup/noise": [33.318, 43.089, "The better answers do pull ahead, but only over many draws, because their pushes are bigger. Any single step pushes up whatever happened to be drawn.", [[35.258, 35.548], [37.268, 37.538], [39.078, 39.708], [40.808, 40.958]]],
+  "allup/sutton": [43.469, 57.353, "In his nineteen eighty four thesis, Richard Sutton called rewards like these unbalanced: nearly all positive, so they give credit to everything. His fix was to compare each reward with the rewards that came before.", [[45.359, 45.719], [47.909, 48.099], [48.929, 49.449], [50.739, 51.009], [52.729, 53.409]]],
+  "baseline/level": [59.153, 70.86, "So draw a level across the bars, called b, and push each answer by how far its reward lands above it: R minus b. With b at zero, nothing changes.", [[61.393, 61.553], [62.223, 62.603], [66.203, 66.643], [67.833, 68.443], [69.583, 69.813]]],
+  "baseline/raise": [71.24, 79.815, "Raise the level, and every push shrinks. As it passes the top of a bar, that answer's push flips: now it goes down.", [[72.15, 72.33], [73.96, 74.49], [76.17, 76.5], [78.0, 78.45]]],
+  "baseline/top": [80.195, 87.512, "Above every bar, every answer is pushed down, even the best: the same problem, upside down.", [[81.455, 81.805], [83.635, 84.005], [84.865, 85.355], [86.285, 86.595]]],
+  "baseline/mean": [87.892, 101.321, "Set it at the average of the four, zero point five five. Now the two better answers go up, and the two worse go down. The average is what a draw scores on the whole: the reward you expected.", [[89.742, 90.162], [91.672, 92.282], [94.452, 94.762], [96.322, 96.942], [99.452, 99.892]]],
+  "baseline/name": [101.701, 110.007, "That level is called the baseline: the line you measure from, like a patient's resting heart rate, against which each new reading is judged.", [[103.651, 104.101], [105.291, 105.621], [107.421, 107.671]]],
+  "baseline/adv": [110.387, 122.942, "What is left, R minus b, is called the advantage, A: how far an answer came out ahead of what was expected. Positive when it is ahead, negative when it falls behind.", [[111.237, 111.587], [112.597, 112.897], [114.297, 114.627], [114.977, 115.577], [118.677, 119.257], [120.637, 121.057]]],
+  "baseline/third": [123.322, 135.323, "Look at the third answer. Its reward, zero point five, is positive, but it falls short of zero point five five, so its advantage is negative, and now it is pushed down.", [[124.662, 125.182], [125.932, 126.182], [127.212, 127.452], [128.242, 128.592], [131.172, 131.502], [133.332, 133.682]]],
+  "baseline/zero": [135.703, 141.505, "An answer that scores exactly the baseline has an advantage of zero, and is not pushed at all.", [[138.203, 138.353], [139.803, 140.053]]],
+  "baseline/williams": [141.885, 149.857, "Ronald Williams wrote such a level into his policy gradient rule of nineteen ninety two, and named it the reinforcement baseline.", [[146.965, 147.315], [147.915, 148.145]]],
+  "try/p1": [151.657, 162.865, "Try one. Three answers to a question get rewards one, zero point four and zero point one. With their mean as the baseline, what are the advantages?", [[152.287, 152.937], [155.417, 155.847], [156.227, 156.547], [157.647, 157.897], [159.017, 159.637], [161.287, 161.617]]],
+  "try/a1": [163.245, 174.594, "The mean is one point five over three: zero point five. Subtract it from each reward: zero point five, minus zero point one, and minus zero point four.", [[165.755, 166.165], [167.205, 167.745], [169.455, 170.005], [171.115, 171.325], [172.715, 172.955]]],
+  "try/p2": [174.974, 186.121, "Now one parameter, theta zero. The second answer has partial ln pi, partial theta zero of two. What is its estimate's entry for theta zero?", [[176.304, 176.654], [177.564, 178.184], [180.774, 180.964], [182.904, 183.474]]],
+  "try/a2": [186.501, 199.193, "Use its advantage in place of R: minus zero point one, times two, is minus zero point two. Its reward is positive, but below the baseline, so it is pushed down.", [[188.801, 189.411], [190.921, 191.171], [191.901, 192.171], [193.781, 194.401], [195.891, 196.171], [197.441, 197.731]]],
+  "try/turn": [199.573, 200.313, "Your turn.", []]
  }
 }

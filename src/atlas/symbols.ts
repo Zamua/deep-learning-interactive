@@ -303,7 +303,8 @@ const lrEta: SymbolMap = { g: grad, eta: { ...ATLAS_SYMBOLS.eta!, about: 'The st
 const termVar: SymbolDef = { color: 'orange', name: 'v: the variance of one term', about: 'How spread out each product w x is. A sum of n such terms has variance n v.' };
 const flops: SymbolDef = { ...ATLAS_SYMBOLS.Cflops!, about: 'The total arithmetic a training run does, counted in floating point operations, or FLOPs.' };
 const rho: SymbolDef = { color: 'purple', name: 'ρ: the probability ratio', tex: '\\rho', code: ['rho', 'ratio'], about: 'π / π_old: how much more likely the answer has become since it was sampled.' };
-const baseline: SymbolMap = { ...pick(rl, 'pi R theta A'), b: { color: 'gold', name: 'b: the baseline', code: ['baseline'], about: 'The reward expected before seeing the answer. A = R − b.' } };
+// The baseline and advantage explainers draw b in green and A in red, apart from R's gold.
+const baseline: SymbolMap = { ...pick(rl, 'pi R theta'), A: { ...rl.A!, color: 'red' }, b: { color: 'green', name: 'b: the baseline', code: ['baseline'], about: 'The reward expected before seeing the answer. A = R − b.' } };
 const temperature: SymbolMap = {
   tau: { color: 'slate', name: 'τ: the temperature', tex: '\\tau', code: ['tau'], about: 'Similarities are divided by τ before the softmax. Small τ sharpens the contest.' },
   s: { color: 'purple', name: 's: the row\'s scores', code: ['s', 'scores'], about: 'Each similarity divided by τ: one per candidate in the row.' },
@@ -535,7 +536,8 @@ export const SCOPED: Record<string, SymbolMap> = {
   rope: {
     ...pick(att, 'q k dk'),
     theta: { color: 'orange', name: 'θ: the turn per position', tex: '\\theta', code: ['theta'], about: 'The angle a pair turns for each step of position: at position m it turns by mθ. Each pair has its own θ.' },
-    R: { color: 'blue', name: 'R: the rotation', about: 'The 2 by 2 matrix [[cos, −sin], [sin, cos]] for one angle. R times a pair turns it by that angle.' },
+    R: { color: 'blue', name: 'R: the rotation', about: 'Turns a pair [a, b] by one angle: [a cos − b sin, a sin + b cos].' },
+    m: { color: 'slate', name: 'm: the position', code: ['m'], about: 'Where a token sits, counting from 0. Its pairs turn by mθ.' },
   },
   'online-softmax': {
     ...pick(att, 'q T dv'),
@@ -727,7 +729,7 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
   gpt: { block: { is: 'one causal transformer block: (T, d) in, (T, d) out' } },
   'in-context': { complete: { is: 'runs the model on a prompt and returns its continuation' } },
   rotation: { rotate: { is: 'turns a pair by an angle in degrees: [a cos − b sin, a sin + b cos]' } },
-  rope: { rotate: { is: 'turns a pair by an angle in degrees: the rotation matrix times the pair' } },
+  rope: { rotate: { is: 'turns a pair by an angle in degrees: [a cos − b sin, a sin + b cos]' } },
   retrieval: {
     embed: { is: 'turns a text into a vector of length 1' },
     complete: { is: 'runs the model on a prompt and returns its continuation' },

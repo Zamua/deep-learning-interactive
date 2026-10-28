@@ -1,24 +1,34 @@
 {
- "duration": 125.481,
+ "duration": 236.622,
  "scenes": {
-  "position": [0.0, 52.673],
-  "relative": [52.673, 125.481]
+  "goal": [0.0, 65.377],
+  "turn": [65.377, 153.204],
+  "relative": [153.204, 236.622]
  },
  "beats": {
-  "position/recap": [0.7, 11.774, "A turn sends a, b to a cos minus b sin, and a sin plus b cos: a quarter turn takes two, one to minus one, two.", [[4.73, 5.04], [5.36, 5.53], [7.3, 7.84], [9.38, 9.77], [11.01, 11.39]]],
-  "position/idea": [12.154, 19.037, "Rotary positions mark where a token sits by turning each query and key, instead of adding a position vector.", [[16.774, 17.104]]],
-  "position/angle": [19.417, 29.669, "Each pair turns by a fixed angle per position, written theta, the Greek letter theta. At position m, it has turned by m times theta.", [[22.487, 22.847], [23.767, 24.137], [25.457, 26.037], [27.187, 27.447]]],
-  "position/example": [30.049, 36.667, "With theta of thirty degrees, position zero is not turned, and position three turns by ninety.", [[31.809, 32.089], [33.969, 34.359]]],
-  "position/pairs": [37.047, 44.906, "A query of d k entries makes d k over two pairs, each with its own theta, some fast and some slow.", [[40.947, 41.337], [42.737, 43.107]]],
-  "position/only": [45.286, 51.573, "Nothing is learned or added to the token: only queries and keys turn, just before scoring.", [[47.656, 48.136], [50.076, 50.366]]],
-  "relative/both": [53.373, 59.968, "Turn a query and a key by the same angle, and they move together: their dot product stays the same.", [[56.053, 56.323], [57.413, 57.913]]],
-  "relative/numbers": [60.348, 67.828, "Two, one dotted with one, one is three. Turned ninety degrees each, they still give three.", [[60.738, 61.208], [62.558, 62.958], [64.028, 64.608], [66.278, 66.538]]],
-  "relative/apart": [68.208, 74.796, "Now a query at position five turns by five theta, and a key at position two by two theta.", [[71.698, 72.138], [73.688, 73.848]]],
-  "relative/shift": [75.176, 83.618, "Move both four places later, to nine and six. Each turns four theta more, together, so the score stays the same.", [[77.136, 77.386], [78.646, 79.146], [80.976, 81.156], [81.636, 81.946]]],
-  "relative/distance": [83.998, 89.434, "So the score depends only on how far apart the tokens are, and which comes first.", [[87.718, 87.988]]],
-  "relative/try": [89.814, 98.96, "Try one, with theta of ninety degrees: the query two, one at position one, and the key one, one at position zero.", [[90.534, 90.924], [92.684, 93.244], [94.284, 94.614], [96.054, 96.364]]],
-  "relative/tq": [99.34, 114.517, "The query turns by one times ninety degrees: two times zero minus one times one is minus one, and two times one plus one times zero is two. The key, at position zero, does not turn.", [[102.33, 102.9], [106.68, 107.11], [107.44, 107.61], [109.96, 110.11], [110.64, 111.3], [111.86, 112.07], [113.19, 113.39]]],
-  "relative/tdot": [114.897, 123.261, "Dot them: minus one times one, plus two times one. The score is one, where the unturned pair gave three.", [[115.477, 116.057], [117.587, 117.917], [119.237, 119.807], [120.957, 121.277]]],
-  "relative/turn": [123.641, 124.381, "Your turn.", []]
+  "goal/add": [0.7, 8.378, "With learned positions, each slot has its own vector, a row of P, added to the embedding of the token sitting there.", [[2.03, 2.34], [4.24, 4.55], [5.54, 5.95]]],
+  "goal/back": [8.758, 19.833, "But much of what a query looks for is relative, like the word just before it: the key at four, for a query at five, or the key at eight, for a query at nine.", [[11.498, 11.918], [13.408, 13.978], [14.928, 15.198], [16.558, 16.968], [17.278, 17.458], [18.308, 18.568]]],
+  "goal/twice": [20.213, 33.131, "To added vectors, those two cases share nothing. Rows five and four of P are one pair, rows nine and eight another, so the model has to learn the word before afresh at every slot.", [[21.343, 21.583], [23.353, 23.913], [26.543, 26.963], [28.603, 29.083]]],
+  "goal/want": [33.511, 41.493, "Better if the score depended only on how far apart the query and the key sit: the gap, which is one in both cases.", [[38.331, 38.861], [39.351, 39.761]]],
+  "goal/su": [41.873, 52.57, "In 2021, Jianlin Su and colleagues found a way. Instead of adding a vector, turn each query and each key by an angle set by its position.", [[43.153, 43.453], [45.853, 46.493], [47.993, 48.333]]],
+  "goal/name": [52.95, 64.277, "They called it rotary position embedding, rope for short. Rotary, because it rotates. Position embedding, after vectors like P, though here nothing is added.", [[55.33, 55.81], [56.13, 56.28], [56.78, 57.33], [59.08, 59.61], [60.55, 60.81], [62.27, 62.62]]],
+  "turn/pair": [66.077, 76.641, "Start with one pair of a query: two and one, the arrow q from rotation. Here is that same pair at positions zero to four, one dial each.", [[67.957, 68.377], [69.267, 69.667], [71.527, 72.147], [75.267, 75.557]]],
+  "turn/theta": [77.021, 85.304, "Each step of position turns it a fixed angle further, written theta, the Greek letter theta. Here, thirty degrees.", [[80.231, 80.631], [81.561, 81.941], [83.221, 83.761], [84.101, 84.301]]],
+  "turn/m": [85.684, 91.737, "Write m for the position. At position m, the pair has turned by m times theta.", [[87.354, 87.874], [88.954, 89.214]]],
+  "turn/three": [92.117, 99.883, "So position zero does not turn at all, and position three turns three times thirty degrees: ninety degrees.", [[94.747, 95.147], [98.557, 98.967]]],
+  "turn/wrap": [100.263, 109.77, "But one pair alone soon comes round. Twelve steps of thirty degrees make a full turn, so position twelve looks just like position zero.", [[102.693, 103.273], [106.113, 106.523]]],
+  "turn/pairs": [110.15, 121.601, "So the d k entries of a query are cut into d k over two pairs, and each pair turns at its own speed. Here, pair one turns only three degrees a step.", [[115.03, 115.41], [117.69, 118.28], [118.63, 118.95]]],
+  "turn/clock": [121.981, 132.059, "It works like the hands of a clock. The fast hand tells neighbors apart, and a slow one still tells twelve from zero, long after the fast hand has come round.", [[123.811, 124.381], [126.441, 126.791], [129.541, 129.851]]],
+  "turn/speeds": [132.439, 142.759, "With d k of sixty four, the paper's thirty two pairs run from about fifty seven degrees a step, the fastest, to under a hundredth of a degree, the slowest.", [[134.159, 134.569], [138.759, 139.029], [139.709, 140.079], [141.709, 142.019]]],
+  "turn/only": [143.139, 152.104, "Nothing is learned, and nothing is added to the token. Just before scoring, every query and every key is turned by its own position.", [[144.189, 144.459], [146.319, 146.949], [148.119, 148.379]]],
+  "relative/both": [153.904, 164.078, "Why does turning help? Turn a query and a key by the same angle, and they move together: the angle between them stays, and so does their dot product.", [[155.374, 156.064], [158.644, 158.924], [159.964, 160.544], [162.254, 162.554]]],
+  "relative/numbers": [164.458, 171.937, "Two, one dotted with one, one is three. Turned ninety degrees each, they still give three.", [[164.848, 165.318], [166.668, 167.068], [168.138, 168.718], [170.388, 170.648]]],
+  "relative/apart": [172.317, 185.04, "Now put a query at position five, turned by five theta, and a key at position two, turned by two theta. They end up three theta apart: one theta for each step between them.", [[174.507, 174.767], [176.107, 176.497], [178.157, 178.457], [179.697, 180.297], [182.207, 182.667], [184.827, 185.027]]],
+  "relative/shift": [185.42, 195.648, "Move both four places later, to nine and six. Each turns four theta more, together, so the angle between them stays, and so does the score.", [[187.38, 187.63], [188.91, 189.4], [191.24, 191.46], [191.95, 192.28], [194.18, 194.43]]],
+  "relative/distance": [196.028, 206.29, "So the score depends only on how far apart the two sit, and which comes first. The word before now looks the same at every slot, and is learned once.", [[199.678, 199.888], [201.218, 201.828], [202.858, 203.028], [204.968, 205.218]]],
+  "relative/try": [206.67, 215.815, "Try one, with theta of ninety degrees: the query two, one at position one, and the key one, one at position zero.", [[207.39, 207.78], [209.54, 210.1], [211.14, 211.47], [212.91, 213.22]]],
+  "relative/tq": [216.195, 227.15, "The query makes one quarter turn, which swaps its entries and flips the new first sign: minus one, two. The key, at position zero, does not turn.", [[218.265, 218.545], [221.755, 222.185], [222.965, 223.205], [223.545, 224.145], [225.965, 226.195]]],
+  "relative/tdot": [227.53, 234.402, "Dot them: minus one, plus two. The score is one, where the unturned pair gave three.", [[228.11, 228.66], [229.45, 229.72], [230.42, 230.98], [232.09, 232.4]]],
+  "relative/turn": [234.782, 235.522, "Your turn.", []]
  }
 }

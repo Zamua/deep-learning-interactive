@@ -1,20 +1,31 @@
 {
- "duration": 110.829,
+ "duration": 215.793,
  "scenes": {
-  "vote": [0.0, 50.812],
-  "try": [50.812, 110.829]
+  "slip": [0.0, 60.172],
+  "vote": [60.172, 115.98],
+  "needs": [115.98, 155.777],
+  "try": [155.777, 215.793]
  },
  "beats": {
-  "vote/paths": [0.7, 10.115, "Sample a chain of thought at a temperature above zero, and every run takes a different path. Ask for seventeen times twenty four, five times.", [[3.75, 4.05], [6.17, 6.77], [9.03, 9.23]]],
-  "vote/answers": [10.495, 19.0, "Most paths reach four hundred and eight, by different routes. One slips to three hundred and ninety eight, another to four hundred and eighteen.", [[12.775, 12.965], [13.915, 14.455], [16.585, 16.965]]],
-  "vote/vote": [19.38, 28.005, "Self-consistency ignores the paths and counts the final answers. Four hundred and eight has three votes of five, so it wins.", [[23.64, 24.22], [26.84, 27.17]]],
-  "vote/greedy": [28.385, 38.94, "This needs real sampling. As the temperature goes to zero, greedy decoding writes the same path every time, and five copies of one answer add nothing.", [[30.135, 30.715], [32.415, 32.785], [35.945, 36.295]]],
-  "vote/compare": [39.32, 49.712, "And the vote needs answers that can be compared: a number, a letter, yes or no. Five stories never match word for word, so there is nothing to count.", [[41.81, 42.25], [42.83, 43.02], [43.6, 43.88], [44.82, 45.42], [47.8, 48.08], [49.49, 49.68]]],
-  "try/p1": [51.512, 67.428, "Try one. Asked for fifteen percent of eighty, a model samples seven chains of thought. Their final answers are fifteen, twelve, twelve, eight, twelve, fifteen and twelve. What does self-consistency return?", [[52.142, 52.722], [54.792, 55.082], [57.482, 58.042], [59.882, 60.152], [60.632, 60.912], [61.432, 61.762], [62.072, 62.392], [62.882, 63.202], [63.812, 64.022], [64.712, 65.332]]],
-  "try/a1": [67.808, 79.475, "Count each answer: twelve four times, fifteen twice, and eight once. Twelve has the most votes, four of seven, so twelve is returned.", [[69.008, 69.558], [70.958, 71.348], [72.588, 72.948], [73.488, 73.688], [74.178, 74.838], [76.328, 76.628], [77.618, 78.008]]],
-  "try/not": [79.855, 89.292, "Not the first path's fifteen: that is one path. And not the average, about twelve point two nine: a number no path reached.", [[81.755, 82.235], [83.445, 83.975], [85.225, 85.515], [87.135, 87.575]]],
-  "try/p2": [89.672, 98.801, "Now each of five replies to a multiple-choice question ends in a letter, A to D. Can the vote pick a better reply than one sample?", [[92.882, 93.062], [94.052, 94.462], [95.272, 95.962]]],
-  "try/a2": [99.181, 108.609, "Yes. Different paths often end on the same letter, so letters can be counted. Here three of the five end in B, so B wins.", [[99.681, 100.081], [102.591, 102.931], [104.391, 104.911], [107.061, 107.381]]],
-  "try/turn": [108.989, 109.729, "Your turn.", []]
+  "slip/path": [0.7, 13.391, "With a chain of thought, a model writes its steps before its answer. Asked for seventeen times twenty four, it finds three hundred and forty, then sixty eight, and adds them: four hundred and eight.", [[1.84, 2.15], [4.77, 5.4], [7.65, 7.95], [9.58, 9.91], [10.91, 11.22], [11.89, 12.31]]],
+  "slip/slip": [13.771, 25.789, "But every step is a chance to slip. Get seventeen times four wrong, as fifty eight, and the steps after it carry the slip all the way to a wrong answer: three hundred and ninety eight.", [[16.071, 16.671], [18.581, 18.781], [19.631, 19.951], [21.971, 22.131], [23.811, 24.191]]],
+  "slip/sample": [26.169, 37.719, "And with sampling, which path you get is luck. At a temperature above zero, each run picks its tokens at random, so each run takes its own route. Sample five of them.", [[27.139, 27.479], [29.119, 29.689], [31.289, 31.549], [33.679, 34.059], [36.009, 36.479]]],
+  "slip/scatter": [38.099, 48.533, "Three reach four hundred and eight, by three different routes. The two slips land apart: one at three hundred and ninety eight, one at four hundred and eighteen.", [[40.069, 40.369], [41.769, 42.329], [43.999, 44.459], [46.279, 46.629]]],
+  "slip/agree": [48.913, 59.072, "That is the pattern. There is one right answer, so right paths pile up on it. A slip can land anywhere, so wrong paths seldom agree with each other.", [[50.063, 50.583], [52.083, 52.393], [54.293, 54.793], [56.323, 56.573]]],
+  "vote/count": [60.872, 66.407, "So ignore the routes, and count only the final answers: one vote per run.", [[62.312, 62.542], [64.512, 64.892], [66.152, 66.382]]],
+  "vote/win": [66.787, 75.918, "Four hundred and eight has three votes of five, the most, so it is the answer returned. It is right, even though two of the runs went wrong.", [[69.547, 69.777], [70.337, 70.687], [72.397, 72.877], [73.557, 73.837]]],
+  "vote/name": [76.298, 85.458, "This is self-consistency. The answer it returns is the one the model's own samples are consistent about, and that is where the name comes from.", [[78.088, 78.768], [83.148, 83.578]]],
+  "vote/wang": [85.838, 102.444, "In 2022, Shweh-jer Wahng and colleagues at Google proposed it, in place of the single greedy path that chain of thought had used. Their bet: right reasoning, however varied, agrees on its final answer more often than wrong reasoning does.", [[87.108, 87.388], [90.218, 90.618], [94.438, 95.078], [95.648, 96.158], [97.058, 97.248], [98.098, 98.418]]],
+  "vote/gain": [102.824, 114.88, "On grade-school math word problems, one large model solved fifty six and a half percent with its greedy path. Voting over forty sampled paths, it solved seventy four point four percent.", [[104.864, 105.204], [109.434, 110.114], [112.234, 112.494]]],
+  "needs/greedy": [116.68, 126.847, "The vote needs real sampling. As the temperature goes toward zero, sampling turns greedy: every run takes the most likely token at every step.", [[118.59, 119.24], [121.23, 121.47], [122.99, 123.51]]],
+  "needs/copies": [127.227, 135.597, "So all five runs write the same path and reach the same answer. Five copies of one answer give the vote nothing to choose between.", [[131.307, 131.857]]],
+  "needs/compare": [135.977, 146.683, "And it needs final answers that can be compared: a number, a letter, yes or no. Wang's team said as much: the answer has to come from a fixed set.", [[138.607, 139.047], [139.647, 139.817], [140.367, 140.637], [141.537, 142.207], [143.647, 144.117]]],
+  "needs/stories": [147.063, 154.677, "Five stories about a lighthouse never match word for word. Each gets one vote, and there is no majority to find.", [[150.723, 151.293], [152.513, 152.823]]],
+  "try/p1": [156.477, 172.392, "Try one. Asked for fifteen percent of eighty, a model samples seven chains of thought. Their final answers are fifteen, twelve, twelve, eight, twelve, fifteen and twelve. What does self-consistency return?", [[157.107, 157.687], [159.757, 160.047], [162.447, 163.007], [164.847, 165.117], [165.597, 165.877], [166.397, 166.727], [167.037, 167.357], [167.847, 168.167], [168.777, 168.987], [169.677, 170.297]]],
+  "try/a1": [172.772, 184.439, "Count each answer: twelve four times, fifteen twice, and eight once. Twelve has the most votes, four of seven, so twelve is returned.", [[173.972, 174.522], [175.922, 176.312], [177.552, 177.912], [178.452, 178.652], [179.142, 179.802], [181.292, 181.592], [182.582, 182.972]]],
+  "try/not": [184.819, 194.256, "Not the first path's fifteen: that is one path. And not the average, about twelve point two nine: a number no path reached.", [[186.719, 187.199], [188.409, 188.939], [190.189, 190.479], [192.099, 192.539]]],
+  "try/p2": [194.636, 203.766, "Now each of five replies to a multiple-choice question ends in a letter, A to D. Can the vote pick a better reply than one sample?", [[197.846, 198.026], [199.016, 199.426], [200.236, 200.926]]],
+  "try/a2": [204.146, 213.573, "Yes. Different paths often end on the same letter, so letters can be counted. Here three of the five end in B, so B wins.", [[204.646, 205.046], [207.556, 207.896], [209.356, 209.876], [212.026, 212.346]]],
+  "try/turn": [213.953, 214.693, "Your turn.", []]
  }
 }

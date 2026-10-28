@@ -1,20 +1,39 @@
 {
- "duration": 107.503,
+ "duration": 258.453,
  "scenes": {
-  "implicit": [0.0, 58.892],
-  "loss": [58.892, 107.503]
+  "route": [0.0, 48.852],
+  "settle": [48.852, 152.638],
+  "pairs": [152.638, 225.579],
+  "moves": [225.579, 258.453]
  },
  "beats": {
-  "implicit/rl": [0.7, 11.436, "The usual route has two stages: fit a reward model to preference pairs, then sample answers and push their reward up, with a KL penalty to the reference.", [[2.82, 3.4], [5.68, 6.03], [8.92, 9.29]]],
-  "implicit/skip": [11.816, 20.176, "Direct preference optimization skips both. No reward model, and no sampling: it trains on the pairs directly.", [[14.736, 15.476], [17.666, 18.156]]],
-  "implicit/implicit": [20.556, 35.975, "It uses the model's own log-ratio to the reference as the reward: beta times the log of pi over pi ref, for a whole answer. It is written r hat: the hat marks an implied reward, with no reward model behind it.", [[24.506, 24.976], [27.906, 28.156], [29.206, 29.816], [30.476, 30.716], [31.406, 31.936], [33.946, 34.206]]],
-  "implicit/eg": [36.355, 49.478, "If the model gives an answer a log-probability of minus twelve, where the reference gave minus fifteen, the log-ratio is three. With beta at zero point one, the implicit reward is zero point three.", [[40.015, 40.285], [42.335, 42.675], [44.205, 44.825], [46.675, 46.985]]],
-  "implicit/leash": [49.858, 57.792, "That reward grows only as the model moves away from the reference, and beta sets the exchange rate, as in the KL penalty.", [[53.558, 53.898], [55.928, 56.178]]],
-  "loss/plug": [59.592, 71.009, "Call the chosen answer y w and the rejected one y l. Put their implicit rewards into the reward model's loss: minus log sigmoid of their difference.", [[61.922, 62.242], [63.282, 63.502], [64.282, 64.942], [68.082, 68.562]]],
-  "loss/m": [71.389, 81.03, "Say the chosen answer's log-ratio is three, and the rejected one's is minus one. The gap is four; times beta, zero point four.", [[74.219, 74.569], [76.649, 77.189], [78.289, 78.799], [79.609, 79.999]]],
-  "loss/loss": [81.41, 88.346, "Sigma of zero point four is about zero point six, and minus its log is about zero point five one.", [[84.8, 85.18]]],
-  "loss/push": [88.726, 95.723, "Lowering the loss raises the chosen answer's probability relative to the reference, and lowers the rejected one's.", [[93.636, 93.996]]],
-  "loss/needs": [96.103, 105.283, "All it needs is the pairs, the model being trained, and a frozen reference. Every number comes from reading fixed answers, so nothing is sampled.", [[97.723, 98.023], [99.173, 99.353], [100.613, 101.143], [103.743, 103.943]]],
-  "loss/turn": [105.663, 106.403, "Your turn.", []]
+  "route/rm": [0.7, 8.631, "Teaching a model from people's picks has so far taken two trainings. First, fit a reward model to the preference pairs.", [[4.86, 5.39], [5.88, 6.21]]],
+  "route/loop": [9.011, 19.85, "Then, in a loop, sample an answer, score it, subtract the K L penalty, Kullback and Leibler's charge for drifting from the reference, and take a policy gradient step.", [[9.461, 9.661], [10.211, 10.591], [11.611, 11.841], [12.461, 12.751], [14.561, 14.861], [17.741, 18.051]]],
+  "route/cost": [20.23, 27.458, "That is a lot of machinery: a second model to train, and a loop that keeps sampling and scoring new answers.", [[22.12, 22.59], [23.99, 24.21]]],
+  "route/dpo": [27.838, 41.9, "In twenty twenty three, Rafael Rafailov, Archit Sharma, Eric Mitchell and colleagues at Stanford cut out the middle. Their method trains on the pairs directly: direct preference optimization, D P O.", [[29.148, 29.478], [30.638, 30.898], [31.788, 32.028], [34.238, 34.438], [35.358, 35.958], [38.368, 38.878], [40.808, 41.178]]],
+  "route/title": [42.28, 47.752, "Their paper's title says how: your language model is secretly a reward model.", [[44.15, 44.7]]],
+  "settle/charge": [49.552, 61.52, "Start from the K L penalty's charge for one answer: beta times its log-ratio, summed over its tokens. The more the model favors an answer over the reference, the more it pays.", [[52.652, 53.172], [54.992, 55.182], [56.742, 57.362], [60.222, 60.492]]],
+  "settle/two": [61.9, 72.227, "Take two answers to one prompt. The reference gives each a half. The reward is two for the first answer and one for the second, and beta is one.", [[63.93, 64.38], [66.31, 66.77], [69.04, 69.25], [70.46, 70.85]]],
+  "settle/shift": [72.607, 82.709, "Train on reward minus charge. The model shifts toward the first answer, which pays more, and as it does, that answer's charge rises.", [[75.027, 75.707], [77.867, 78.137], [79.017, 79.497], [80.537, 80.817]]],
+  "settle/level": [83.089, 91.741, "It stops when reward minus charge is the same for both answers: if one still paid more, moving probability to it would gain.", [[87.209, 87.699], [89.109, 89.469]]],
+  "settle/nums": [92.121, 102.578, "Here, that happens at about zero point seven three and zero point two seven. The charges are about zero point three eight, and minus zero point six two.", [[92.561, 92.751], [95.311, 95.471], [97.031, 97.661], [100.201, 100.401]]],
+  "settle/net": [102.958, 110.349, "For the first answer, reward minus charge is two minus zero point three eight: one point six two.", [[104.038, 104.358], [108.578, 109.048]]],
+  "settle/net2": [110.729, 117.459, "For the second, it is one plus zero point six two: one point six two again. Level.", [[111.539, 111.719], [114.309, 114.809], [116.469, 116.989]]],
+  "settle/flip": [117.839, 124.529, "Turn that around. Each reward is its answer's charge, plus one number shared by both answers.", [[118.729, 119.219], [121.519, 121.909]]],
+  "settle/gap": [124.909, 134.778, "And a shared number is what a pick never sees: as with the reward model, only the gap matters. The charges are one apart, just as the rewards are.", [[127.699, 128.189], [129.419, 129.709], [131.159, 131.679], [133.199, 133.479]]],
+  "settle/secret": [135.158, 143.015, "So, as far as any pick can tell, beta times the log-ratio is the reward. That is the secret in the title.", [[135.618, 135.888], [137.588, 137.968], [140.608, 141.148]]],
+  "settle/rhat": [143.395, 151.538, "It is called the implicit reward, r hat: the hat marks a reward that is implied, with no reward model behind it.", [[145.445, 145.835], [146.445, 146.995], [149.395, 149.665]]],
+  "pairs/back": [153.338, 162.864, "D P O runs this backwards. It never trains a reward model: it trains the model until its own implicit reward predicts the labelers' picks.", [[155.378, 155.798], [157.568, 158.028], [161.038, 161.218]]],
+  "pairs/lp": [163.244, 176.073, "First, one answer. A whole answer's log-probability is its tokens', added up. Say the model gives an answer a log-probability of minus twelve, and the reference, minus fifteen.", [[163.764, 164.214], [164.914, 165.614], [168.624, 168.794], [169.344, 169.934], [173.684, 174.024], [174.824, 175.014]]],
+  "pairs/imp": [176.453, 184.552, "The log-ratio is the difference: three. With beta at zero point one, the implicit reward is zero point three.", [[178.333, 178.743], [179.163, 179.763], [181.633, 181.903], [184.333, 184.523]]],
+  "pairs/pair": [184.932, 198.989, "Now a pair: the chosen answer, y w, w for winner, and the rejected one, y l, l for loser. Their log-ratios are three and minus one.", [[185.922, 186.482], [187.452, 187.962], [188.412, 188.652], [189.202, 189.702], [190.822, 191.262], [192.622, 193.092], [193.982, 194.462], [195.552, 196.122]]],
+  "pairs/loss": [199.369, 207.366, "Put their implicit rewards into the reward model's loss: minus ln sigma of the winner's reward minus the loser's.", [[202.749, 203.209], [206.009, 206.169]]],
+  "pairs/m": [207.746, 217.163, "The log-ratios are four apart, and beta times that gap, zero point four, is called the margin: how far the chosen answer leads.", [[209.836, 210.166], [211.856, 212.146], [213.096, 213.386], [214.586, 215.016]]],
+  "pairs/val": [217.543, 224.479, "Sigma of zero point four is about zero point six, and minus its log is about zero point five one.", [[220.933, 221.313]]],
+  "moves/step": [226.279, 235.941, "Each step that lowers the loss widens the margin: the chosen answer grows more likely, relative to the reference, and the rejected one less likely.", [[228.009, 228.159], [229.339, 229.929], [232.049, 232.319], [233.509, 233.869], [234.919, 235.109]]],
+  "moves/ref": [236.321, 242.3, "The reference never moves. It is frozen, and every log-ratio is measured against it.", [[238.011, 238.361], [239.271, 239.631]]],
+  "moves/wrong": [242.68, 248.164, "As with the reward model, the push is biggest on pairs the model ranks the wrong way round.", [[244.05, 244.38]]],
+  "moves/needs": [248.544, 256.233, "So all it needs is the pairs, the model being trained, and a frozen reference: no reward model, and no sampling.", [[250.344, 250.684], [251.784, 252.014], [253.484, 253.914], [254.934, 255.144]]],
+  "moves/turn": [256.613, 257.353, "Your turn.", []]
  }
 }

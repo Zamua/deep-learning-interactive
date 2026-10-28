@@ -1,22 +1,36 @@
 {
- "duration": 143.968,
+ "duration": 263.178,
  "scenes": {
-  "check": [0.0, 56.064],
-  "count": [56.064, 143.968]
+  "wait": [0.0, 39.867],
+  "check": [39.867, 133.004],
+  "count": [133.004, 178.884],
+  "sample": [178.884, 263.178]
  },
  "beats": {
-  "check/slow": [0.7, 7.459, "Decoding writes one token per pass of the large model, and each of those passes mostly waits on memory.", [[4.17, 4.57]]],
-  "check/draft": [7.839, 18.913, "Speculative decoding adds a small, fast draft model. It guesses the next four tokens, one at a time, cheaply: on, the, red, mat.", [[11.599, 12.099], [14.049, 14.269], [15.089, 15.309], [15.789, 16.339], [16.679, 16.999], [17.339, 17.709], [18.079, 18.479]]],
-  "check/check": [19.293, 29.965, "Then the large model runs once on all four guesses together, like a prefill. That one pass gives its own pick at every position, plus one more after the last.", [[23.013, 23.223], [24.083, 24.683], [27.753, 28.043]]],
-  "check/compare": [30.345, 41.247, "Compare them in order. On: the large model agrees. The: agrees. Red: it wanted soft, so red is rejected.", [[31.625, 32.345], [32.725, 33.365], [34.855, 35.435], [35.795, 36.285], [36.915, 37.595], [37.985, 38.565], [39.585, 39.805]]],
-  "check/keep": [41.627, 54.964, "Keep the agreeing prefix, on the, and add the large model's own pick, soft. Mat is thrown away, since it was guessed after red. Three tokens, from one pass of the large model.", [[43.297, 43.607], [44.127, 44.557], [46.667, 47.007], [47.557, 48.177], [49.467, 49.707], [51.417, 52.007], [52.897, 53.167]]],
-  "count/rule": [56.764, 68.595, "So every pass yields its accepted prefix, plus one token of the large model's own. Even when the first guess is wrong, the pass still writes one token, as plain decoding would.", [[59.874, 60.164], [62.524, 63.174], [64.954, 65.224], [67.074, 67.274]]],
-  "count/all": [68.975, 76.547, "When all four guesses are accepted, the extra pick after the last one comes free: five tokens from a single pass.", [[70.935, 71.245], [73.895, 74.345]]],
-  "count/speed": [76.927, 87.165, "Say four passes yield three, five, one and three tokens. Twelve tokens took four large passes instead of twelve: three times fewer.", [[78.997, 79.197], [79.727, 79.927], [81.547, 82.127], [85.597, 86.017]]],
-  "count/same": [87.545, 95.517, "And the text is still the large model's own. With greedy decoding, every kept token is exactly the one it would have picked.", [[90.165, 90.735], [92.065, 92.355]]],
-  "count/sample": [95.897, 112.82, "With sampling, there is no single pick to match. Take the guess red: say the draft gave it a probability of zero point six, and the large model gives it zero point three. Red is kept with chance zero point three over zero point six: one half.", [[96.687, 96.907], [98.847, 99.457], [100.537, 101.037], [104.257, 104.577], [107.007, 107.597], [111.717, 112.137]]],
-  "count/cap": [113.2, 126.15, "In general, a guess is kept with chance the smaller of one, and the large model's probability over the small model's. When the large model likes a guess at least as much as the draft does, it is always kept.", [[113.92, 114.15], [116.82, 117.14], [120.22, 120.88], [124.59, 124.91]]],
-  "count/resid": [126.53, 141.747, "After a rejection, the large model draws a replacement from what is left over: its own probabilities, with the share the draft already offered taken out. Balanced that way, every token comes out with exactly the large model's probabilities.", [[127.77, 127.99], [131.03, 131.53], [132.88, 133.21], [135.81, 136.48], [137.53, 137.84]]],
-  "count/turn": [142.127, 142.868, "Your turn.", []]
+  "wait/loop": [0.7, 8.536, "A large model writes one token per pass, each pass waiting for the one before: four tokens, four passes.", [[3.47, 3.93], [5.96, 6.5], [7.33, 7.61]]],
+  "wait/read": [8.916, 16.212, "And each pass is mostly waiting on memory, carrying every weight to the arithmetic, all for a single token.", [[11.556, 11.996], [14.146, 14.596]]],
+  "wait/share": [16.592, 24.28, "A prefill does better. Its tokens are all known, so they share one pass, and one read of the weights serves them all.", [[18.032, 18.482], [19.932, 20.212], [21.732, 21.982]]],
+  "wait/catch": [24.66, 29.778, "But tokens still being written are not known yet: each depends on the one before.", [[27.41, 27.93]]],
+  "wait/guess": [30.158, 38.767, "Unless you guess them. A small model guesses the next four, quickly, and the large model checks them all in one pass, like a prefill.", [[31.338, 31.918], [33.858, 34.088], [34.518, 34.938], [37.658, 37.878]]],
+  "check/draft": [40.567, 56.865, "Say the text so far is: the cat sat. The small model is called the draft model: like a first draft, it is written fast, to be checked. One cheap pass per token, it guesses: on, the, red, mat.", [[42.317, 42.667], [43.637, 44.347], [46.677, 47.117], [48.317, 48.527], [49.627, 49.827], [50.507, 51.087], [52.787, 53.057], [53.697, 54.177], [54.527, 54.877], [55.217, 55.627], [55.997, 56.427]]],
+  "check/check": [57.245, 67.175, "Then the large model runs once over the text and all four guesses. At every position it gives its own next pick, plus one more after the last guess.", [[61.295, 61.865], [64.655, 64.975]]],
+  "check/compare": [67.555, 81.144, "Compare in order. The large model's first pick is on, and the guess agrees. Its second, the word the, agrees too. Its third is soft, not red, so red is rejected.", [[68.955, 69.625], [71.755, 72.035], [73.175, 73.745], [74.475, 74.765], [75.655, 75.885], [76.705, 77.265], [78.605, 78.795], [79.395, 79.735]]],
+  "check/keep": [81.524, 94.146, "Keep the agreeing prefix, the guesses before the first wrong one: on, the. Add the large model's own pick, soft. Three tokens, from one large pass.", [[83.204, 83.494], [85.744, 86.314], [86.654, 87.064], [87.424, 88.094], [89.904, 90.314], [90.824, 91.404], [92.304, 92.634]]],
+  "check/mat": [94.526, 103.149, "Mat is thrown away, even though the large model picked mat too. It was guessed after red, and everything after a rejection goes.", [[95.876, 96.186], [98.546, 99.096], [100.556, 100.816]]],
+  "check/stern": [103.529, 115.278, "In 2018, Mitchell Stern, at Berkeley, and colleagues at Google had a model propose several tokens at once, then keep the longest prefix it confirmed, for greedy decoding.", [[104.649, 104.939], [108.099, 108.359], [110.909, 111.239], [113.689, 113.949]]],
+  "check/name": [115.658, 131.904, "In 2022, Yaniv Leviathan, Matan Kalman and Yossi Matias at Google handed the guessing to a smaller model. They named it after speculative execution, where a processor runs ahead on a guess, and throws the work away if the guess was wrong.", [[116.928, 117.228], [118.318, 118.548], [121.338, 121.598], [123.478, 124.078], [126.578, 126.908], [129.168, 129.388]]],
+  "count/rule": [133.704, 145.22, "So every pass yields its accepted prefix, plus one token of the large model's own. Even if the first guess is wrong, the pass still writes one token, as plain decoding would.", [[136.614, 136.864], [139.234, 139.844], [141.544, 141.814], [143.694, 143.904]]],
+  "count/all": [145.6, 152.914, "If all four are accepted, the large model's pick after the last one comes free: five tokens from one pass.", [[147.24, 147.52], [150.48, 150.93]]],
+  "count/speed": [153.294, 159.334, "Say four passes yield three, five, one and three tokens: twelve in all.", [[155.504, 155.714], [156.234, 156.404], [158.064, 158.494]]],
+  "count/fewer": [159.714, 167.699, "Plain decoding would need twelve large passes for those, and this took four. Twelve over four: three times fewer.", [[163.014, 163.354], [164.354, 164.924], [166.034, 166.494]]],
+  "count/same": [168.079, 177.784, "And with greedy decoding, every kept token is exactly the one the large model would pick alone. The draft changes how fast, never what.", [[169.669, 170.059], [174.129, 174.719], [176.559, 176.919]]],
+  "sample/sample": [179.584, 191.986, "With sampling, there is no single pick to match, only probabilities. Say the draft gave its guess, red, zero point six, and the large model gives red only zero point three.", [[180.424, 180.654], [182.574, 182.894], [184.114, 184.734], [186.414, 186.724], [187.104, 187.294], [188.444, 188.854], [190.364, 190.554]]],
+  "sample/red": [192.366, 198.114, "Then red is kept with chance zero point three over zero point six: one half.", [[196.936, 197.376]]],
+  "sample/cap": [198.494, 210.329, "In general, a guess is kept with chance the smaller of one, and the large model's probability over the draft's. If the large model likes it at least as much as the draft, it is always kept.", [[199.224, 199.474], [202.084, 202.384], [205.114, 205.704], [208.804, 209.084]]],
+  "sample/bars": [210.709, 221.383, "Now picture three tokens the draft might guess: red, soft and rug. Blue bars are the large model's probabilities, and purple lines the draft's.", [[213.539, 214.049], [214.409, 214.739], [215.249, 215.499], [216.079, 216.699], [219.209, 219.529]]],
+  "sample/kept": [221.763, 233.545, "Kept guesses fill each blue bar up to the purple line, never past it. Red, offered six times in ten and kept half of those, fills its bar exactly: three in ten.", [[225.063, 225.373], [226.333, 226.913], [227.303, 227.613], [229.193, 229.353], [230.503, 230.773], [232.313, 232.643]]],
+  "sample/gap": [233.925, 247.727, "Soft and rug are left with gaps, where the large model wants more than the draft offered. After a rejection, the replacement is drawn from the gaps alone, in proportion to their sizes, so it fills them exactly.", [[235.245, 235.415], [236.555, 236.825], [239.535, 240.245], [241.395, 241.645], [243.985, 244.255], [245.825, 246.085]]],
+  "sample/who": [248.107, 260.958, "So every token comes out with exactly the large model's probabilities. Leviathan's team found this rule, and so, independently, did Charlie Chen and colleagues at DeepMind, in 2023.", [[252.407, 253.057], [255.027, 255.357], [256.857, 257.127], [259.557, 259.737]]],
+  "sample/turn": [261.338, 262.078, "Your turn.", []]
  }
 }

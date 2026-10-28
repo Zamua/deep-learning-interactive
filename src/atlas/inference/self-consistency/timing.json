@@ -1,22 +1,29 @@
 {
- "duration": 154.081,
+ "duration": 209.869,
  "scenes": {
-  "both": [0.0, 82.379],
-  "odds": [82.379, 154.081]
+  "claim": [0.0, 47.29],
+  "both": [47.29, 123.034],
+  "odds": [123.034, 209.869]
  },
  "beats": {
-  "both/one": [0.7, 11.547, "Why does a majority vote help? Start with one sample. Say it is right with probability p, here zero point seven: in seven runs out of ten.", [[2.58, 3.16], [4.67, 5.15], [7.38, 7.82], [9.29, 9.7]]],
-  "both/two": [11.927, 24.445, "Now draw two samples, independently: how the first comes out tells you nothing about the second. Lay out a hundred equally likely pairs, the first sample across, the second down.", [[13.507, 13.777], [14.597, 15.137], [18.227, 18.787], [21.297, 21.687], [23.067, 23.327]]],
-  "both/both": [24.825, 41.856, "The first is right in seven columns of the ten. In each of those, the second is right in seven rows of ten. So both are right in seven times seven, forty nine squares of the hundred: zero point seven times zero point seven, which is zero point four nine.", [[27.705, 28.265], [29.215, 29.405], [31.885, 32.435], [34.815, 35.145], [36.955, 37.345], [39.815, 40.145]]],
-  "both/mixed": [42.236, 58.952, "The second is wrong with probability one minus p, zero point three. So first right and second wrong is seven columns times three rows, twenty one squares: zero point seven times zero point three, which is zero point two one.", [[45.486, 45.876], [46.856, 47.456], [52.306, 52.686], [53.916, 54.306], [56.716, 57.046]]],
-  "both/rule": [59.332, 68.494, "That is the rule for independent samples. The chance that each comes out a given way is the product of their chances, one factor per sample.", [[61.722, 62.242], [64.542, 64.762], [66.452, 66.872]]],
-  "both/third": [68.874, 81.279, "A third sample is right in zero point seven of those zero point four nine: zero point four nine times zero point seven is zero point three four three, or zero point seven cubed.", [[73.514, 73.974], [76.764, 77.034], [78.894, 79.254]]],
-  "odds/p": [83.079, 94.945, "Now the vote. Three samples are each right with probability zero point seven, independently, and the vote is right when at least two of them are. What is the chance the vote is right?", [[83.959, 84.599], [88.419, 88.639], [89.459, 89.799], [90.869, 91.049], [92.359, 93.009]]],
-  "odds/three": [95.325, 105.383, "All three right: one factor per sample, zero point seven times zero point seven times zero point seven, which is zero point three four three.", [[96.325, 96.795], [98.215, 98.685], [102.605, 102.935], [103.375, 103.635]]],
-  "odds/two": [105.763, 115.942, "Exactly two right, with the third one wrong: zero point seven times zero point seven times zero point three, which is zero point one four seven.", [[107.143, 107.493], [108.693, 109.223], [113.183, 113.593]]],
-  "odds/ways": [116.322, 126.874, "But the wrong one could also be the first sample, or the second. Three ways, each zero point one four seven, so zero point four four one in all.", [[118.972, 119.292], [120.072, 120.602], [121.432, 121.762], [123.872, 124.182]]],
-  "odds/sum": [127.254, 143.32, "Together, zero point seven eight four, or in symbols p cubed, plus three p squared times one minus p: better than one sample's zero point seven. When most samples are right, the majority is right even more often.", [[127.794, 128.114], [129.824, 130.194], [131.244, 131.544], [132.294, 132.504], [135.354, 135.974], [138.624, 139.274], [140.724, 141.004]]],
-  "odds/below": [143.7, 151.861, "It cuts both ways. At zero point four, a majority of three is right only zero point three five two of the time.", [[145.05, 145.49], [146.75, 146.96], [151.63, 151.84]]],
-  "odds/turn": [152.241, 152.981, "Your turn.", []]
+  "claim/one": [0.7, 10.859, "Why should the most common answer beat a single sample? Take a vote of three. If one sample goes wrong, the other two outvote it, and the vote is still right.", [[3.72, 4.28], [5.38, 5.87], [7.31, 7.62], [9.07, 9.34]]],
+  "claim/two": [11.239, 20.884, "The vote goes wrong only when at least two samples go wrong at once. And when each sample is usually right, two going wrong together is rarer than one.", [[15.239, 15.719], [17.809, 18.229]]],
+  "claim/condorcet": [21.264, 33.057, "This is old mathematics. In 1785, the Marquis de Condorcet, a French mathematician, wrote an essay on the chance that a decision made by majority vote is right.", [[23.024, 23.604], [24.994, 25.284], [26.624, 26.854], [28.024, 28.404]]],
+  "claim/jury": [33.437, 46.19, "His result is now called the jury theorem. If voters decide independently, and each is right more often than not, the majority is right more often still, and more so the more voters there are.", [[36.137, 36.717], [38.757, 38.997], [41.067, 41.427], [43.607, 43.937]]],
+  "both/p": [47.99, 58.658, "To see how much rarer, give each sample's chance of being right a name, p. Say p is zero point seven: right in seven runs out of ten.", [[49.4, 49.7], [52.5, 52.89], [53.24, 53.94], [55.94, 56.47]]],
+  "both/indep": [59.038, 70.717, "Independently means how one sample comes out tells you nothing about another. Then two samples make a hundred equally likely pairs: the first across, the second down.", [[60.468, 60.818], [63.968, 64.618], [68.028, 68.438], [69.398, 69.638]]],
+  "both/both": [71.097, 83.23, "The first is right in seven columns of the ten. In each of them, the second is right in seven rows. So both are right in seven times seven: forty nine squares of the hundred.", [[73.977, 74.587], [75.347, 75.617], [77.787, 78.297], [80.617, 81.127], [82.967, 83.207]]],
+  "both/mult": [83.61, 96.787, "As chances, that is zero point seven times zero point seven: zero point four nine. That is the rule for independent samples: multiply their chances, one factor per sample.", [[84.68, 85.04], [85.56, 85.71], [88.3, 88.69], [90.07, 90.71], [93.09, 93.49], [94.94, 95.23]]],
+  "both/mixed": [97.167, 109.922, "A sample is wrong with chance one minus p, zero point three. First right and second wrong is seven columns by three rows: twenty one squares, or zero point two one.", [[100.117, 100.447], [101.517, 102.167], [104.057, 104.217], [106.257, 106.657], [107.837, 108.147]]],
+  "both/wrong": [110.302, 121.934, "And both wrong is three by three: only nine squares, or zero point zero nine. One sample is wrong thirty times in a hundred, but two together only nine.", [[112.442, 112.892], [114.202, 114.432], [116.322, 116.912], [119.622, 120.022], [120.982, 121.142]]],
+  "odds/p": [123.734, 134.37, "Now the vote. Three samples are each right with chance zero point seven, independently, and the vote is right when at least two of them are. How often is that?", [[124.624, 125.174], [128.734, 129.024], [129.884, 130.294], [132.824, 133.324]]],
+  "odds/three": [134.75, 145.61, "All three right takes one more factor: zero point four nine times zero point seven, which is zero point three four three, or zero point seven cubed.", [[137.22, 137.77], [140.57, 140.97], [143.19, 143.56]]],
+  "odds/two": [145.99, 156.169, "Exactly two right, with the third one wrong: zero point seven times zero point seven times zero point three, which is zero point one four seven.", [[147.37, 147.72], [148.92, 149.45], [153.41, 153.82]]],
+  "odds/ways": [156.549, 167.685, "But the wrong one could also be the first sample, or the second. That makes three ways, each zero point one four seven, so zero point four four one in all.", [[159.269, 159.589], [160.399, 160.879], [162.169, 162.499], [164.579, 164.959]]],
+  "odds/sum": [168.065, 175.772, "Add the two cases, and the vote is right zero point seven eight four of the time, more than one sample's zero point seven.", [[170.325, 170.475], [172.805, 173.225]]],
+  "odds/formula": [176.152, 187.042, "With p in place of the numbers, that is p cubed, plus three p squared times one minus p: all three right, plus three ways of exactly two.", [[178.052, 178.442], [178.892, 179.072], [179.802, 180.002], [183.032, 183.612], [184.492, 184.872]]],
+  "odds/below": [187.422, 198.386, "It cuts both ways. At zero point four, a sample is usually wrong, and the vote is right only zero point three five two of the time: worse than one sample.", [[188.842, 189.332], [190.602, 190.822], [192.452, 192.752], [196.432, 196.892]]],
+  "odds/half": [198.766, 207.649, "That is why Condorcet needed each voter to be right more often than not. At exactly one half, the vote neither helps nor hurts.", [[203.096, 203.696], [205.106, 205.406]]],
+  "odds/turn": [208.029, 208.769, "Your turn.", []]
  }
 }
