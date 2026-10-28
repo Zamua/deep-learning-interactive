@@ -1,19 +1,30 @@
 {
- "duration": 107.979,
+ "duration": 213.309,
  "scenes": {
-  "stack": [0.0, 58.076],
-  "mix": [58.076, 107.979]
+  "ask": [0.0, 69.466],
+  "stack": [69.466, 146.832],
+  "mix": [146.832, 213.309]
  },
  "beats": {
-  "stack/tokens": [0.7, 13.549, "So far, one token asked at a time. Self-attention lets every token ask at once. Say there are T tokens: stack them as the rows of a matrix, X, T by d.", [[1.33, 1.59], [3.44, 4.01], [7.06, 7.63], [9.17, 9.57], [11.58, 11.91], [12.3, 12.54]]],
-  "stack/qkv": [13.929, 31.98, "Each token's query becomes one row of a matrix, Q; its key, one row of K; its value, one row of V. So Q and K are T by d k, and V is T by d v, where d v is each value's length.", [[17.089, 17.329], [17.699, 18.239], [18.889, 19.169], [20.349, 20.909], [21.649, 21.949], [23.099, 23.729], [26.799, 27.219], [29.299, 29.699]]],
-  "stack/scores": [32.36, 43.738, "Then one matrix product scores every query against every key: Q times K transpose. T by d k, times d k by T, gives T by T.", [[32.76, 32.95], [36.66, 37.16], [38.88, 39.37], [40.55, 40.76], [42.25, 42.51]]],
-  "stack/entry": [44.118, 56.976, "Entry i, j is token i's query dotted with token j's key, divided by the square root of d k. Row two, column zero: how much fish looks at cats.", [[45.018, 45.448], [47.538, 47.718], [49.588, 49.798], [52.088, 52.928], [54.548, 55.018]]],
-  "mix/softmax": [58.776, 69.022, "Softmax runs along each row, giving the weights, A. Every row adds up to one: it is how one token splits its attention over all of them.", [[60.916, 61.176], [62.026, 62.436], [62.766, 63.426], [65.116, 65.666]]],
-  "mix/fish": [69.402, 75.747, "Here fish, row two, gives a half to cats and a quarter each to like and to itself.", [[70.242, 70.522], [71.202, 71.582], [74.502, 74.672]]],
-  "mix/out": [76.127, 84.625, "Then A times V. T by T, times T by d v, gives T by d v: one output row per token.", [[78.657, 79.007], [80.567, 80.907], [82.297, 82.797]]],
-  "mix/row": [85.005, 97.418, "Row two of the output is the weighted sum of the rows of V: half of two and zero, plus a quarter of zero and four, plus a quarter of four and four. That is two and two.", [[88.615, 89.215], [90.755, 91.075], [93.085, 93.425], [95.275, 95.785], [96.265, 96.495]]],
-  "mix/formula": [97.798, 105.758, "All of self-attention in one line: softmax of Q K transpose over the square root of d k, times V.", [[99.978, 100.488], [104.658, 104.988]]],
-  "mix/turn": [106.138, 106.879, "Your turn.", []]
+  "ask/one": [0.7, 11.269, "With queries, keys and values, one token asked: fish. It scored every token's key, its own included, and took a weighted sum of their values.", [[1.52, 1.72], [2.89, 3.24], [4.32, 4.69], [5.16, 5.71], [7.54, 7.79], [8.77, 9.14]]],
+  "ask/all": [11.649, 24.22, "But the tokens cats and like need answers of their own. So let every token ask, all at once. Call the number of tokens T: here, three, each looking at all three.", [[15.029, 15.589], [17.279, 17.539], [18.289, 18.979], [20.719, 21.209], [21.569, 21.739], [22.179, 22.629]]],
+  "ask/self": [24.6, 41.028, "That is why it is called self-attention. In attention over the encoder, the decoder asked and the encoder answered: two different sequences. Here the tokens asking and the tokens answering are the same. The sentence attends to itself.", [[26.94, 27.63], [29.33, 29.63], [30.83, 31.04], [32.32, 32.75], [34.17, 34.75], [38.58, 39.02]]],
+  "ask/paper": [41.408, 55.84, "In 2017, Ashish Vaswani and colleagues at Google built a translation model on it, in a paper called Attention Is All You Need. Their definition: attention relating different positions of a single sequence.", [[42.648, 42.948], [45.288, 45.568], [47.178, 47.548], [48.458, 48.758], [50.348, 50.988], [51.798, 52.358]]],
+  "ask/parallel": [56.22, 68.366, "And they dropped recurrence. A recurrent network reads one token per step, and each step waits for the one before. Here nobody waits: every token asks at the same time.", [[57.78, 58.3], [61.18, 61.56], [63.74, 64.28], [65.64, 66.02]]],
+  "stack/X": [70.166, 80.719, "All at once means matrices. Stack the tokens as the rows of one matrix, X: T rows of d numbers, so X is T by d.", [[71.086, 71.236], [72.496, 73.066], [76.376, 76.866], [78.426, 78.766]]],
+  "stack/Q": [81.099, 91.134, "Multiply X by the query weights, transposed so the shapes line up, and every token's query comes out at once, as the rows of Q: T by d k.", [[83.299, 83.569], [85.499, 85.879], [88.449, 88.669]]],
+  "stack/K": [91.514, 97.066, "The keys come out the same way, as the rows of K, also T by d k.", [[93.204, 93.444], [94.604, 95.004], [96.004, 96.224]]],
+  "stack/V": [97.446, 100.09, "And the values, as the rows of V.", [[98.396, 98.686]]],
+  "stack/same": [100.47, 114.765, "A row stays with its token: row two is fish, in X, Q, K and V alike. Only the lengths differ. A value has its own length, d v, so V is T by d v.", [[102.29, 102.78], [104.1, 104.48], [105.12, 105.31], [105.7, 105.88], [107.24, 107.77], [109.04, 109.65], [111.22, 111.51], [112.15, 112.59]]],
+  "stack/scores": [115.145, 126.494, "Now one matrix product scores every query against every key: Q times K transpose. T by d k, times d k by T, gives T by T.", [[119.345, 119.835], [121.635, 122.155], [123.375, 123.535], [125.025, 125.295]]],
+  "stack/grid": [126.874, 140.433, "That grid is the fans of lines from before. Row i holds token i's scores, so row two, column zero is fish's query dotted with cats' key: how much fish looks at cats.", [[129.544, 130.084], [132.714, 133.114], [135.204, 135.474], [138.044, 138.574]]],
+  "stack/scale": [140.813, 145.732, "Then every score is divided by the square root of d k, as before.", [[144.613, 144.843]]],
+  "mix/softmax": [147.532, 159.134, "Softmax runs along each row, turning each token's scores into weights: the matrix A. Every row adds up to one. It is how one token splits its attention.", [[149.642, 149.982], [152.472, 152.842], [153.952, 154.542], [156.182, 156.662]]],
+  "mix/fish": [159.514, 164.804, "Fish's row gives a half to cats, a quarter to like, and a quarter to itself.", [[161.734, 161.994], [163.074, 163.334]]],
+  "mix/cols": [165.184, 172.496, "A column need not add up to one. Column zero is how much attention cats gets, and cats gets the most.", [[167.224, 167.834], [170.634, 170.954]]],
+  "mix/out": [172.876, 184.762, "Then A times V does every token's weighted sum at once. T by T, times T by d v, gives T by d v: one output row per token.", [[177.196, 177.856], [178.826, 179.096], [180.696, 180.976], [182.426, 182.836]]],
+  "mix/row": [185.142, 198.283, "Fish's output is row two of A, weighting the rows of V: half of two and zero, a quarter of zero and four, and a quarter of four and four. Together, two and two.", [[187.702, 188.172], [189.622, 190.152], [191.702, 192.172], [193.862, 194.242], [195.932, 196.442], [196.952, 197.262]]],
+  "mix/formula": [198.663, 211.089, "So all of self-attention is one line: softmax of Q K transpose over the square root of d k, times V. A few matrix products, and every token gets its answer at once.", [[201.213, 201.653], [205.673, 205.913], [206.583, 207.163], [208.433, 208.623]]],
+  "mix/turn": [211.469, 212.209, "Your turn.", []]
  }
 }

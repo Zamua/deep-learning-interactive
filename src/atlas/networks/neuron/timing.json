@@ -1,19 +1,31 @@
 {
- "duration": 104.739,
+ "duration": 210.232,
  "scenes": {
-  "sum": [0.0, 59.091],
-  "bend": [59.091, 104.739]
+  "fire": [0.0, 73.467],
+  "bend": [73.467, 145.347],
+  "inside": [145.347, 210.232]
  },
  "beats": {
-  "sum/inputs": [0.7, 6.601, "A neuron takes in a vector, x. This one has two entries: two and one.", [[2.99, 3.52], [5.07, 5.45], [5.82, 5.99]]],
-  "sum/weights": [6.981, 15.025, "It keeps one weight per entry, w, here one and minus three, and multiplies each input by its weight.", [[8.851, 9.271], [9.731, 10.211], [12.111, 12.541]]],
-  "sum/sum": [15.405, 29.316, "Then it adds up the products, plus a bias, b, of two. Two, minus three, plus two: one. That sum is the pre-activation, z, equal to w dot x plus b.", [[17.205, 17.455], [18.505, 18.775], [19.085, 19.295], [19.815, 20.405], [20.785, 20.935], [21.785, 21.935], [22.555, 22.965], [23.315, 23.915], [25.865, 26.165], [26.595, 26.875]]],
-  "sum/relu": [29.696, 46.956, "Last comes the bend, the activation. Here it is a ReLU, max of zero and z: the larger of zero and z. It keeps a positive number and turns a negative one into zero. One is positive, so the output, a, is one.", [[31.096, 31.446], [32.396, 32.906], [34.216, 34.576], [35.566, 35.716], [36.296, 36.706], [38.496, 39.076], [40.526, 40.716], [42.826, 43.396], [44.436, 44.806], [45.646, 45.836], [46.186, 46.376]]],
-  "sum/neg": [47.336, 57.991, "Feed it one and two instead. One, minus six, plus two is minus three, and the ReLU turns that into zero. The neuron stays silent.", [[49.426, 50.086], [50.486, 50.736], [53.396, 53.736], [55.766, 56.246]]],
-  "bend/linear": [59.791, 71.554, "Before the bend, w dot x plus b is exactly a class score from a linear classifier. Across the inputs, it rises steadily in one direction and falls in the other.", [[60.791, 61.131], [62.841, 62.991], [65.961, 66.521], [67.651, 67.881], [70.051, 70.321]]],
-  "bend/line": [71.934, 80.213, "It is zero along a straight line. Every input on one side scores above zero, and every input on the other side below.", [[74.054, 74.604], [77.434, 77.794]]],
-  "bend/half": [80.593, 93.619, "The ReLU flattens the negative side to zero. So a neuron splits its inputs with a line: silent on one side, and growing with the distance on the other. A linear classifier with a bend.", [[83.493, 84.073], [86.893, 87.373], [88.693, 88.993], [90.973, 91.583]]],
-  "bend/bias": [93.999, 102.518, "The weights set which way the line faces, and the bias slides it. With a bias of zero, the line would have to pass through the origin.", [[96.469, 96.789], [98.229, 98.819], [100.089, 100.339]]],
-  "bend/turn": [102.898, 103.639, "Your turn.", []]
+  "fire/plane": [0.7, 14.276, "Here are the linear classifier's cats and ships, and the line between them. The score, w dot x plus b, is positive on the ships' side, negative on the cats' side, and grows with the distance from the line.", [[3.58, 3.78], [4.92, 5.54], [6.16, 6.47], [8.05, 8.34], [10.02, 10.39], [11.91, 12.19]]],
+  "fire/cell": [14.656, 23.527, "A brain cell, called a neuron, works differently. It adds up the signals arriving from other cells, and either fires or stays silent.", [[15.546, 15.706], [16.606, 16.806], [17.686, 18.286], [20.956, 21.236], [22.226, 22.426]]],
+  "fire/mp": [23.907, 37.319, "In 1943, Warren McCulloch and Walter Pitts turned that into a precise model: a cell fires, all or nothing, once enough of its inputs fire together. That cutoff is its threshold.", [[25.297, 25.557], [27.367, 27.537], [29.437, 30.017], [31.037, 31.317], [32.287, 32.617], [34.957, 35.477]]],
+  "fire/flat": [37.699, 49.698, "An artificial neuron borrows the idea, and the name. It computes the same score, but outputs zero wherever the score is zero or below: the whole cats' side goes silent.", [[40.249, 40.439], [41.219, 41.799], [43.349, 43.619], [47.019, 47.609]]],
+  "fire/slice": [50.078, 61.627, "Walk straight across the line. The score was a straight ramp, dipping below zero. Now it lies flat at zero, then climbs past the line: a ramp with a bend.", [[51.658, 52.318], [53.918, 54.238], [55.478, 56.038], [57.838, 58.198], [59.858, 60.348]]],
+  "fire/detector": [62.007, 72.367, "So this neuron detects ships. It is silent for every cat, however cat-like, and fires for ships, more strongly the farther they are from the line.", [[64.397, 64.937], [66.667, 66.917], [67.897, 68.247], [69.537, 69.897]]],
+  "bend/z": [74.167, 83.75, "Give the score a name, z: z equals w dot x plus b. It is the pre-activation: the number before the bend.", [[75.427, 75.917], [76.327, 76.937], [79.797, 80.357], [81.797, 82.217]]],
+  "bend/a": [84.13, 95.512, "What comes out is the neuron's activation, written A: how strongly it fires. Below zero, A is zero. Above zero, A is z itself.", [[86.67, 86.99], [87.8, 88.24], [89.8, 90.28], [91.13, 91.38], [92.38, 92.91], [93.7, 94.01]]],
+  "bend/max": [95.892, 105.357, "As a formula, A equals the max of zero and z: the larger of zero and z. So a z of minus two gives zero.", [[96.752, 97.062], [99.672, 100.172], [101.992, 102.522], [104.462, 104.612]]],
+  "bend/relu": [105.737, 112.716, "This bend is called the ReLU, short for rectified linear unit, and each word of the name means something.", [[107.547, 107.957], [110.027, 110.437]]],
+  "bend/rect": [113.096, 124.518, "In electronics, a rectifier lets current through in one direction only. Feed it a wave, and the negative halves are cut off at zero, just as the ReLU cuts off negative z.", [[114.066, 114.296], [117.566, 118.146], [119.046, 119.286], [121.666, 121.976]]],
+  "bend/linear": [124.898, 133.227, "Linear, because what passes, passes unchanged: above zero, the graph is the straight line where A equals z.", [[125.438, 125.878], [127.028, 127.248], [128.588, 129.118], [129.968, 130.158]]],
+  "bend/unit": [133.607, 144.247, "And unit is another word for a neuron. Strictly, a rectified linear unit is a neuron with this bend, though today ReLU names the bend itself, too.", [[136.087, 136.667], [137.257, 137.507], [140.727, 141.157], [141.847, 142.007]]],
+  "inside/x": [146.047, 153.858, "Now in numbers, inside one neuron. It takes an input, x, with two entries: two and one.", [[147.137, 147.447], [148.857, 149.427], [150.487, 150.717], [151.167, 151.397], [152.367, 152.737], [153.077, 153.247]]],
+  "inside/w": [154.238, 164.61, "Each entry has its own weight in w: one, and minus three. A negative weight pulls the sum down, so that input argues against firing.", [[156.628, 157.138], [157.528, 157.768], [158.978, 159.608], [161.848, 162.128]]],
+  "inside/sum": [164.99, 171.579, "Multiply and add: two times one, plus one times minus three, is minus one.", [[166.33, 166.96], [167.98, 168.28], [170.23, 170.56]]],
+  "inside/b": [171.959, 176.234, "Then add the bias, two, and z comes out as one.", [[173.349, 173.659], [174.019, 174.479]]],
+  "inside/a": [176.614, 184.001, "One is above zero, so the ReLU passes it unchanged. The activation is one, and the neuron fires.", [[178.014, 178.344], [180.524, 181.044], [182.384, 182.664]]],
+  "inside/neg": [184.381, 195.036, "Feed it one and two instead. One, minus six, plus two is minus three, and the ReLU turns that into zero. The neuron stays silent.", [[186.471, 187.131], [187.531, 187.781], [190.441, 190.781], [192.811, 193.291]]],
+  "inside/thr": [195.416, 208.012, "Here is the threshold again. z is above zero exactly when w dot x is above minus b, here minus two. Minus one clears it; minus five does not.", [[196.856, 197.466], [202.446, 202.846], [204.056, 204.676], [206.096, 206.526]]],
+  "inside/turn": [208.392, 209.132, "Your turn.", []]
  }
 }

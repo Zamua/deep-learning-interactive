@@ -1,18 +1,30 @@
 {
- "duration": 76.154,
+ "duration": 209.713,
  "scenes": {
-  "sideways": [0.0, 29.824],
-  "one": [29.824, 76.154]
+  "company": [0.0, 55.298],
+  "sideways": [55.298, 128.551],
+  "one": [128.551, 209.713]
  },
  "beats": {
-  "sideways/recall": [0.7, 10.511, "Stack a batch as a matrix, X, one example per row. Batch norm normalizes each feature over the examples: down a column.", [[2.47, 2.81], [3.25, 3.61], [5.04, 5.62], [9.18, 9.62]]],
-  "sideways/rows": [10.891, 18.259, "Layer norm turns that sideways. It normalizes each example over its own features: along a row.", [[13.011, 13.481], [16.771, 17.181], [18.021, 18.241]]],
-  "sideways/alone": [18.639, 28.724, "So an example's output depends on that example alone. The batch size does not matter, and training and test work the same way, with no running averages.", [[22.359, 22.839], [24.489, 24.899], [27.099, 27.339]]],
-  "one/x": [30.524, 36.436, "Take one example with four features: nine, three, seventeen and eleven.", [[32.704, 33.214], [33.704, 33.984], [34.464, 34.754], [35.534, 35.724]]],
-  "one/mean": [36.816, 39.299, "Their mean, mu, is ten.", [[37.576, 37.866], [38.296, 38.606]]],
-  "one/var": [39.679, 48.824, "The squared distances from it, one, forty nine, forty nine and one, average to twenty five, so the standard deviation is five.", [[41.329, 41.699], [42.069, 42.299], [43.059, 43.249], [44.529, 44.819], [46.279, 46.629]]],
-  "one/xhat": [49.204, 61.864, "Subtract the mean and divide by the standard deviation: nine becomes minus zero point two, three becomes minus one point four. Epsilon only guards against dividing by zero.", [[52.404, 52.964], [55.484, 56.004], [58.324, 58.864]]],
-  "one/gamma": [62.244, 73.934, "Then, as in batch norm, a learned scale, gamma, and shift, beta, with one entry of each per feature. With d features, that is two d learned numbers.", [[62.694, 62.904], [63.974, 64.304], [65.284, 65.534], [65.904, 66.204], [66.864, 67.104], [67.524, 67.814], [69.804, 70.374], [71.504, 71.774], [72.164, 72.314]]],
-  "one/turn": [74.314, 75.054, "Your turn.", []]
+  "company/recall": [0.7, 16.791, "Batch norm rescued a unit stuck on the flat top of the sigmoid. Over a batch of four examples, its z was nine, three, seventeen and eleven. Batch norm slid them to center on zero, then squeezed them to a spread of one.", [[4.58, 5.21], [7.05, 7.34], [8.68, 8.97], [9.44, 9.69], [11.12, 11.79], [14.31, 14.63]]],
+  "company/company": [17.171, 26.664, "But each value was measured against the rest of its batch. Nine came out minus zero point two only because three, seventeen and eleven came along.", [[20.241, 20.771], [23.131, 23.371], [24.451, 24.601]]],
+  "company/two": [27.044, 36.801, "Put nine in a batch of two, beside three. Their mean is six, and each sits three away from it, so now nine becomes plus one.", [[28.874, 29.124], [29.994, 30.554], [31.894, 32.184], [33.974, 34.404]]],
+  "company/always": [37.181, 45.865, "Every batch of two ends the same way: the larger value becomes plus one and the smaller minus one, however far apart they are.", [[39.651, 40.191], [42.131, 42.421], [43.161, 43.311], [44.051, 44.371]]],
+  "company/one": [46.245, 54.198, "And in a batch of one, nine is its own mean, so it becomes zero. Whatever the input, the output is the same.", [[47.695, 47.985], [49.505, 49.785], [50.975, 51.535], [52.445, 52.735]]],
+  "sideways/grid": [55.998, 68.358, "Lay a batch out as before: one example per row, one feature per column. Our unit is column zero, and batch norm works down it, so every value leans on the rest of its column.", [[57.618, 58.118], [59.428, 59.728], [61.048, 61.618], [63.328, 63.608], [65.288, 65.578]]],
+  "sideways/paper": [68.738, 82.541, "In 2016, Jimmy Ba, Jamie Kiros and Geoffrey Hinton pointed out that this makes batch norm depend on the size of the batch. Their answer, in their words, was to transpose it: turn it sideways.", [[69.938, 70.188], [70.888, 71.138], [73.138, 73.388], [77.188, 77.808], [78.538, 78.728], [79.448, 79.708], [80.898, 81.398]]],
+  "sideways/row": [82.921, 93.781, "Layer normalization works along a row: one example's own features, and nothing else. Example zero's row is nine, one, fifteen and seven.", [[85.341, 85.871], [87.561, 87.731], [88.621, 89.231], [91.421, 91.681], [92.081, 92.371], [92.981, 93.131]]],
+  "sideways/name": [94.161, 104.236, "A row holds the value of every unit in a layer, for that one example. The mean and spread are taken across the whole layer, which gives layer norm its name.", [[97.291, 97.501], [98.531, 99.201], [102.081, 102.401]]],
+  "sideways/alone": [104.616, 115.998, "Now shrink the batch to one. Each column holds a single number, so batch norm turns every one into zero. The row still holds four, so layer norm still works.", [[106.326, 106.836], [108.736, 109.066], [111.856, 112.396], [113.956, 114.226]]],
+  "sideways/same": [116.378, 127.451, "Since nothing outside the row enters, the other examples can never change this one's result. Training and test do exactly the same arithmetic, with no running averages to keep.", [[118.488, 118.828], [121.818, 122.448], [125.358, 125.708]]],
+  "one/x": [129.251, 138.482, "Follow example zero along its row: nine, one, fifteen and seven, the values of the layer's four units for this one example.", [[131.571, 132.081], [132.561, 132.801], [133.201, 133.481], [134.811, 135.211]]],
+  "one/mean": [138.862, 148.23, "Together they make thirty two, so their mean, mu, is eight. Slide every value down by eight, and the row centers on zero.", [[140.662, 141.022], [141.862, 142.072], [142.502, 142.772], [143.322, 143.992], [146.182, 146.452]]],
+  "one/var": [148.61, 157.288, "The squared distances from the mean, one, forty nine, forty nine and one, average to twenty five: the variance.", [[150.67, 151.19], [151.56, 151.82], [152.55, 152.76], [153.99, 154.41], [155.87, 156.39]]],
+  "one/sigma": [157.668, 164.476, "Its square root, five, is the standard deviation, sigma. Squeeze every distance by it.", [[158.698, 158.968], [159.508, 159.718], [161.248, 161.508], [161.998, 162.498]]],
+  "one/xhat": [164.856, 175.665, "So nine, one above the mean, becomes one fifth: zero point two. The row now has mean zero and spread one, whatever else is in the batch.", [[165.856, 166.176], [167.236, 167.496], [168.566, 169.066], [170.146, 170.786], [173.786, 174.136]]],
+  "one/gamma": [176.045, 184.146, "Then come the learned scale and shift from batch norm, gamma and beta: one pair per feature, never per example.", [[177.715, 177.875], [179.275, 179.525], [180.655, 181.205], [182.495, 182.825]]],
+  "one/scale": [184.526, 194.427, "If feature zero's gamma is two and its beta is one, zero point two becomes two times zero point two, plus one: one point four.", [[186.746, 186.906], [188.256, 188.686], [192.086, 192.286], [192.936, 193.446]]],
+  "one/count": [194.807, 207.492, "Write d for the number of features. Each layer norm learns d scales and d shifts, two d in all, however big the batch: with five hundred twelve features, one thousand and twenty four.", [[197.087, 197.587], [200.807, 201.177], [202.107, 202.367], [203.567, 203.967], [205.607, 205.917]]],
+  "one/turn": [207.872, 208.613, "Your turn.", []]
  }
 }

@@ -1,23 +1,27 @@
 {
- "duration": 165.596,
+ "duration": 202.906,
  "scenes": {
-  "avg": [0.0, 81.491],
-  "push": [81.491, 165.596]
+  "draws": [0.0, 47.568],
+  "push": [47.568, 96.632],
+  "name": [96.632, 150.542],
+  "try": [150.542, 202.906]
  },
  "beats": {
-  "avg/recall": [0.7, 12.79, "The log trick: the gradient of pi is pi times the gradient of ln pi. For fifty six, zero point two five is zero point five times zero point five.", [[1.6, 2.2], [3.45, 3.67], [6.26, 6.87], [7.84, 8.16], [9.6, 9.83], [11.14, 11.3]]],
-  "avg/avg": [13.17, 38.358, "The gradient of the expected reward, J, takes each answer's R times the gradient of its pi. Put the trick in, and each answer brings R times the gradient of ln pi, weighted by its probability. For seven times eight: zero point five times one, times the gradient for fifty six, plus zero point three times zero, plus zero point two times zero.", [[15.18, 15.36], [15.81, 16.16], [19.5, 20.14], [20.96, 21.18], [24.82, 25.04], [26.55, 27.3], [28.5, 29.03], [30.94, 31.24], [33.07, 33.42], [33.78, 33.93], [35.86, 36.13]]],
-  "avg/draws": [38.738, 57.027, "A real model has far too many answers to list. But drawing answers weights them for free: fifty six turns up in half the draws. So R times the gradient of ln pi, averaged over answers drawn from the model, written y drawn from pi, is the gradient of J.", [[41.578, 42.058], [44.298, 44.768], [47.148, 47.738], [50.578, 50.868], [53.218, 53.478], [55.328, 55.678]]],
-  "avg/est": [57.407, 67.232, "Even one draw gives an estimate of it: the sampled answer's reward, times the gradient of its log-probability. That estimate is the policy gradient.", [[59.697, 60.257], [61.837, 62.097], [64.377, 64.987]]],
-  "avg/eg": [67.612, 80.391, "For fifty six, this model's gradient of ln pi is zero point five, minus zero point three, minus zero point two. With R equal to one, the estimate is that same vector.", [[68.682, 69.102], [71.282, 71.542], [72.832, 73.062], [74.492, 74.742], [76.142, 76.742], [78.112, 78.382]]],
-  "push/up": [82.191, 92.575, "Step theta a little along the estimate, and the log-probability of the sampled answer rises, in proportion to R. A rewarded fifty six becomes more likely.", [[84.471, 84.721], [87.821, 88.071], [89.251, 89.831]]],
-  "push/zero": [92.955, 98.613, "A wrong answer gets R of zero, so its estimate is zero, and nothing moves.", [[95.195, 95.525], [97.015, 97.335]]],
-  "push/neg": [98.993, 103.294, "A negative reward flips the step, and makes that answer less likely.", [[101.073, 101.333]]],
-  "push/loss": [103.674, 112.841, "As a loss to minimize, it is minus R times log pi of the sample: cross-entropy on the model's own answer, weighted by its reward.", [[105.104, 105.324], [108.464, 108.984], [111.224, 111.454]]],
-  "push/p1": [113.221, 128.214, "Try one. A checker gives minus one for a wrong answer, and the model samples fifty four. Its gradient of ln pi is minus zero point five, zero point seven, minus zero point two. What is the estimate?", [[113.831, 114.431], [117.091, 117.411], [119.381, 119.961], [123.581, 123.851], [124.871, 125.121], [126.561, 127.151]]],
-  "push/a1": [128.594, 141.383, "Multiply each entry by R. Minus one flips every sign: zero point five, minus zero point seven, zero point two. It points where fifty four gets less likely.", [[130.764, 131.474], [133.514, 134.084], [135.164, 135.414], [136.774, 137.064], [138.074, 138.654]]],
-  "push/p2": [141.763, 152.338, "Now average it with a second sample: fifty six, with R of one, whose estimate is zero point five, minus zero point three, minus zero point two.", [[143.893, 144.423], [145.323, 145.553], [146.633, 146.873], [148.893, 149.123], [150.593, 150.873]]],
-  "push/a2": [152.718, 163.375, "Add the two entry by entry: one, minus one, and zero. Then halve: zero point five, minus zero point five, and zero.", [[153.608, 153.958], [154.898, 155.458], [155.828, 156.098], [156.868, 157.088], [157.678, 158.288], [159.148, 159.688], [160.818, 161.038], [162.488, 162.728]]],
-  "push/turn": [163.755, 164.496, "Your turn.", []]
+  "draws/sum": [0.7, 14.793, "The log trick wrote the gradient of the expected reward, J, as a sum over every answer: its probability, times its reward, times the gradient of ln pi. For seven times eight, that is three terms.", [[4.46, 4.7], [6.53, 7.04], [8.0, 8.25], [9.23, 9.52], [11.5, 12.09], [13.25, 13.52]]],
+  "draws/many": [15.173, 21.997, "But a real model can write any sentence at all. That is far too many answers to list, let alone add up.", [[18.013, 18.493], [20.563, 20.793]]],
+  "draws/draws": [22.377, 31.859, "So learn from what the model actually says. Its own draws weigh every answer by its probability for free: fifty six turns up in half of them.", [[25.067, 25.557], [29.227, 29.787]]],
+  "draws/est": [32.239, 46.468, "Average R times the gradient of ln pi over its draws, and you get the gradient of J. Even one draw gives an estimate that is right on average: its reward, times the gradient of ln pi for the answer drawn.", [[36.189, 36.459], [38.059, 38.699], [41.909, 42.329], [43.099, 43.359]]],
+  "push/grad": [48.268, 69.389, "Take one draw: fifty six. Nudging each score in turn, as the log trick did, gives the gradient of ln pi of fifty six: zero point five for its own score, and minus zero point three and minus zero point two for the other two. Raising its own score helps it; raising the others hurts it.", [[49.248, 49.768], [50.608, 51.218], [52.988, 53.178], [54.258, 54.618], [57.488, 57.958], [60.088, 60.428], [62.118, 62.268], [64.718, 65.348], [67.208, 67.678]]],
+  "push/up": [69.769, 79.881, "Fifty six is right, so R is one, and the estimate is that same vector. Step the scores a little along it, and fifty six becomes more likely.", [[71.139, 71.479], [72.869, 73.199], [75.229, 75.739], [77.499, 77.739]]],
+  "push/zero": [80.261, 86.375, "Had the draw been wrong, with R of zero, the estimate would be zero, and nothing would move.", [[81.641, 81.911], [83.071, 83.431], [84.881, 85.161]]],
+  "push/neg": [86.755, 95.532, "And a reward of minus one flips the step: the answer drawn becomes less likely. The sign of R alone sets the direction.", [[89.355, 89.925], [92.095, 92.685]]],
+  "name/policy": [97.332, 112.622, "Why is it called a policy gradient? A rule for choosing what to do is called a policy, like a shop's returns policy. A model that samples answers follows one: for seven times eight, say fifty six half the time.", [[99.512, 100.162], [103.092, 103.512], [105.132, 105.762], [108.302, 108.852], [110.052, 110.242]]],
+  "name/sutton": [113.002, 131.47, "In 1999, Richard Sutton and three colleagues wrote such a policy as pi, the probability of each choice, set by parameters theta, such as a network's weights. They called methods that climb the gradient of J with respect to those parameters policy gradient methods.", [[114.422, 114.722], [118.612, 118.952], [120.772, 121.122], [122.742, 123.032], [124.532, 125.162], [127.842, 128.032], [129.592, 129.932]]],
+  "name/williams": [131.85, 149.442, "Among their examples was REINFORCE, published by Ronald Williams in 1992. In its simplest form, it steps each weight by the reward times the gradient of ln pi of what was drawn, and Williams proved that this step goes uphill on J, on average.", [[134.31, 134.66], [137.41, 138.09], [139.22, 139.47], [141.57, 141.72], [144.71, 145.22], [148.58, 148.74]]],
+  "try/p1": [151.242, 165.188, "Try one. The model draws fifty four, and the checker gives it minus one. Its gradient of ln pi is minus zero point five, zero point seven, minus zero point two. What is the estimate?", [[151.882, 152.442], [154.132, 154.422], [156.362, 156.952], [160.492, 160.722], [161.752, 162.012], [163.522, 164.122]]],
+  "try/a1": [165.568, 178.357, "Multiply each entry by R. Minus one flips every sign: zero point five, minus zero point seven, zero point two. It points where fifty four gets less likely.", [[167.738, 168.448], [170.488, 171.058], [172.138, 172.388], [173.748, 174.038], [175.048, 175.628]]],
+  "try/p2": [178.737, 189.649, "Now average it with a second draw: fifty six, with R of one, whose estimate is zero point five, minus zero point three, minus zero point two.", [[180.757, 181.337], [182.217, 182.547], [183.597, 183.837], [185.987, 186.207], [187.837, 188.097]]],
+  "try/a2": [190.029, 200.686, "Add the two entry by entry: one, minus one, and zero. Then halve: zero point five, minus zero point five, and zero.", [[190.919, 191.269], [192.209, 192.769], [193.139, 193.409], [194.179, 194.399], [194.989, 195.599], [196.459, 196.999], [198.129, 198.349], [199.799, 200.039]]],
+  "try/turn": [201.066, 201.806, "Your turn.", []]
  }
 }

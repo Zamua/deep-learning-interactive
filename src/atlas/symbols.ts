@@ -324,6 +324,7 @@ const sig: SymbolDef = { color: 'teal', name: 'σ: the sigmoid', tex: '\\sigma',
  * teach. Keys missing from ATLAS_SYMBOLS work too, through \sym{key}{tex}.
  */
 export const SCOPED: Record<string, SymbolMap> = {
+  convolution: { w: { color: 'blue', name: 'w: the filter', about: 'A few weights slid along x. At each position, its dot product with the patch under it gives one output; the same weights are used everywhere.' } },
   'lr-schedule': { T: { color: 'slate', name: 'T: the length of the decay, in steps', about: 'How many steps the glide from the top rate to the bottom one takes. After a warmup it starts counting where the warmup ends.' } },
   embeddings: {
     E: { color: 'blue', name: 'E: the embedding table', about: 'One row per token in the vocabulary, one column per number in its vector: shape (V, d).' },
@@ -381,8 +382,8 @@ export const SCOPED: Record<string, SymbolMap> = {
     gamma: { color: 'purple', name: 'γ: the learned scale', tex: '\\gamma', about: 'Layer norm multiplies each normalized feature by its own γ: one entry per feature.' },
     beta: { color: 'green', name: 'β: the learned shift', tex: '\\beta', about: 'Layer norm adds β after scaling: one entry per feature.' },
     epstiny: tiny,
-    mu: { color: 'orange', name: 'μ: the mean', tex: '\\mu', code: [], about: 'The average of one example\'s features.' },
-    sigma: { color: 'teal', name: 'σ: the standard deviation', tex: '\\sigma', code: [], about: 'How spread out one example\'s features are: the square root of their variance, σ².' },
+    mu: { color: 'orange', name: 'μ: the mean', tex: '\\mu', about: 'The average of one example\'s features.' },
+    sigma: { color: 'teal', name: 'σ: the standard deviation', tex: '\\sigma', about: 'How spread out one example\'s features are: the square root of their variance, σ².' },
   },
   'batch-norm': {
     y: { color: 'gold', name: 'y: the batch-norm output', about: 'γx̂ + β: the normalized feature, scaled and shifted; what the activation receives.' },

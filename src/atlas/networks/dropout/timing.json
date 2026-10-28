@@ -1,21 +1,30 @@
 {
- "duration": 134.016,
+ "duration": 192.759,
  "scenes": {
-  "drop": [0.0, 85.186],
-  "test": [85.186, 134.016]
+  "lean": [0.0, 57.658],
+  "mask": [57.658, 114.913],
+  "scale": [114.913, 192.759]
  },
  "beats": {
-  "drop/layer": [0.7, 8.022, "Here is a hidden layer's output, h: four units, with values two, one, three and two.", [[2.47, 2.85], [3.29, 3.67], [4.56, 4.89], [5.94, 6.2], [6.61, 6.83]]],
-  "drop/mask": [8.402, 25.176, "During training, dropout keeps each unit with probability p, here a half, and zeroes the rest. A random mask, m, decides: a one keeps a unit, and a zero drops it. This time it keeps units zero and two.", [[9.352, 9.672], [12.562, 12.952], [13.902, 14.272], [15.542, 16.152], [17.162, 17.322], [17.702, 17.902], [18.562, 19.102], [20.382, 20.602], [21.822, 22.372], [22.912, 23.102]]],
-  "drop/kept": [25.556, 35.728, "On average, a fraction p of the units stay: four units times a half, two. Each step draws a new mask, so which two changes.", [[26.266, 26.476], [28.576, 29.076], [30.686, 31.126], [31.426, 32.096], [33.956, 34.256]]],
-  "drop/zeroed": [36.108, 43.387, "Multiply h by m, entry by entry, and the layer's output becomes two, zero, three, zero.", [[37.838, 38.198], [39.318, 39.688]]],
-  "drop/scale": [43.767, 54.067, "Then the kept units are divided by p. With p a half, that doubles them: four, zero, six, zero. This is inverted dropout.", [[46.307, 46.837], [47.847, 48.067], [48.917, 49.397], [49.817, 50.017], [50.547, 50.697], [51.167, 51.337], [51.807, 52.317]]],
-  "drop/why": [54.447, 68.228, "Why divide? A unit is kept only a fraction p of the time. Dividing by p makes up for it: on average, p times h over p is h, exactly what the unit gives without dropout.", [[55.357, 55.927], [58.917, 59.477], [61.457, 61.977], [62.597, 62.927], [65.277, 65.617]]],
-  "drop/plain": [68.608, 84.086, "Plain dropout skips the division, so a kept unit passes h as it is. Then unit zero averages a half times two, plus a half times zero: one. That is p times h, smaller than h.", [[70.518, 70.878], [73.708, 74.328], [77.618, 77.908], [79.548, 79.998], [80.388, 80.958], [82.758, 82.978]]],
-  "test/test": [85.886, 95.488, "At test time, every unit is kept and nothing is scaled. The layer passes h straight through: two, one, three, two.", [[86.776, 87.086], [88.326, 88.486], [89.756, 90.306], [92.526, 92.986], [93.356, 93.606], [94.036, 94.296], [94.766, 95.076]]],
-  "test/match": [95.868, 104.752, "Because training already divided by p, the next layer sees at test time what it saw on average in training. No correction is needed.", [[98.368, 98.808], [102.808, 103.318]]],
-  "test/plain": [105.132, 122.491, "Plain dropout never divided, so at test time it keeps every unit and multiplies each output by p instead: two, one, three, two become one, a half, one and a half, one. That matches its training average, p times h.", [[107.032, 107.392], [108.542, 108.752], [112.852, 113.432], [113.812, 113.982], [115.432, 115.612], [116.332, 116.692], [117.222, 117.432], [118.212, 118.422], [118.762, 119.352], [121.102, 121.362]]],
-  "test/lean": [122.871, 131.796, "And in training, any unit might vanish at any moment, so no unit can count on another being there. Each has to be useful on its own.", [[123.751, 124.031], [126.291, 126.671], [129.241, 129.741]]],
-  "test/turn": [132.176, 132.916, "Your turn.", []]
+  "lean/train": [0.7, 10.653, "A network learns its weights in training: gradient steps, one after another, each nudging the weights so its scores come out better on a set of examples.", [[2.97, 3.49], [4.49, 4.74], [5.9, 6.31]]],
+  "lean/test": [11.033, 17.245, "Test time comes after. The weights are fixed, and the network meets inputs it has never seen.", [[12.643, 13.233], [14.283, 14.513]]],
+  "lean/gap": [17.625, 24.887, "Trained on too few examples, a big network can get those almost all right, and still do worse on new ones.", [[19.535, 19.835], [22.565, 22.865]]],
+  "lean/lean": [25.267, 36.112, "In 2012, Geoffrey Hinton and colleagues traced this to units tuned to work together on the training examples: each one useful only alongside a few particular others.", [[26.317, 26.557], [32.017, 32.497]]],
+  "lean/drop": [36.492, 49.269, "Their fix: on every training example, switch off each hidden unit at random, half of them on average. Then no unit can count on another being there, so each must be useful on its own.", [[37.262, 37.782], [39.302, 39.542], [41.852, 42.222], [43.462, 43.922], [46.682, 47.002]]],
+  "lean/name": [49.649, 56.558, "Units drop out of the network for one example, a different random set each time: hence the name, dropout.", [[52.129, 52.519], [54.469, 54.909], [55.659, 55.969]]],
+  "mask/h": [58.358, 65.895, "In numbers: a hidden layer's output, h, with four units: two, one, three and two.", [[59.158, 59.638], [61.018, 61.268], [61.708, 61.968], [63.038, 63.488], [63.878, 64.128], [64.538, 64.758]]],
+  "mask/p": [66.275, 75.43, "A 2014 paper by Nitish Srivastava and the same group made that share a setting, p: the probability that a unit is kept.", [[70.095, 70.335], [71.765, 72.415], [72.725, 73.255]]],
+  "mask/prob": [75.81, 84.686, "A probability is the share of tries in which something happens. With p a half, each unit is kept half the time, like a coin toss.", [[79.47, 80.04], [81.05, 81.36], [83.36, 83.66]]],
+  "mask/mask": [85.066, 95.924, "Each step tosses one coin per unit, giving a mask, m: a one keeps the unit, and a zero drops it. This one keeps units zero and two.", [[87.606, 87.936], [88.756, 89.066], [89.436, 90.036], [91.426, 91.646], [92.906, 93.446]]],
+  "mask/zeroed": [96.304, 102.876, "Multiply h by m, entry by entry: two, zero, three, zero.", [[98.054, 98.574], [99.704, 100.294], [100.664, 100.904], [101.464, 101.664], [102.134, 102.324]]],
+  "mask/kept": [103.256, 113.813, "On average, a fraction p of the units stay: four times a half, two. Each step draws a new mask, so which units stay keeps changing.", [[104.016, 104.186], [106.306, 106.816], [107.896, 108.246], [108.566, 109.266], [111.106, 111.356]]],
+  "scale/shrink": [115.613, 130.235, "Dropping lowers each unit's average. Unit zero gives two when kept and zero when dropped, so on average, a half times two: one. That is p times h, less than its full two.", [[118.093, 118.713], [120.903, 121.143], [122.463, 122.853], [123.883, 124.143], [125.383, 125.833], [126.223, 126.713], [128.433, 128.763]]],
+  "scale/test": [130.615, 137.364, "At test time nothing is dropped, so the next layer would suddenly see bigger numbers than it ever saw in training.", [[132.635, 133.075]]],
+  "scale/plain": [137.744, 150.542, "The 2012 paper fixed this at test time: keep every unit, and halve its outgoing weights, which halves what it passes on. In general, multiply by p, to match the training average.", [[140.534, 141.124], [142.234, 142.414], [144.154, 144.494], [146.124, 146.744], [147.334, 147.604], [148.854, 149.104]]],
+  "scale/invert": [150.922, 164.396, "A variant called inverted dropout turns this around, moving the scaling into training. Each kept unit is divided by p, which is multiplying by one over p: with p a half, it doubles.", [[154.292, 154.702], [156.492, 157.152], [159.402, 159.722], [161.892, 162.462], [163.422, 163.642]]],
+  "scale/scaled": [164.776, 170.43, "So two, zero, three, zero become four, zero, six, zero.", [[165.206, 165.386], [165.776, 165.936], [167.536, 167.816]]],
+  "scale/avg": [170.81, 182.697, "Now unit zero gives four half the time, and zero otherwise: on average, two, its full value. In general, p times h over p is h itself.", [[173.64, 173.84], [175.11, 175.63], [176.24, 176.45], [176.79, 177.1], [178.01, 178.66], [179.31, 179.6], [181.28, 181.46]]],
+  "scale/free": [183.077, 190.539, "So at test time there is nothing to fix: keep every unit, scale nothing, and h passes straight through.", [[185.667, 186.097], [187.187, 187.437], [188.377, 188.637]]],
+  "scale/turn": [190.919, 191.659, "Your turn.", []]
  }
 }

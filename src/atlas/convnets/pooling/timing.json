@@ -1,20 +1,28 @@
 {
- "duration": 114.616,
+ "duration": 204.921,
  "scenes": {
-  "max": [0.0, 51.333],
-  "shape": [51.333, 114.616]
+  "shift": [0.0, 86.52],
+  "max": [86.52, 149.742],
+  "shape": [149.742, 204.921]
  },
  "beats": {
-  "max/grid": [0.7, 9.222, "Pooling shrinks a channel. Split this four by four grid into two by two windows that do not overlap: a stride of two.", [[2.28, 2.82], [7.62, 8.13]]],
-  "max/max": [9.602, 15.773, "Max pooling keeps the largest value in each window: five, four, three and six.", [[12.782, 13.242], [13.702, 13.892], [14.322, 14.502]]],
-  "max/out": [16.153, 22.235, "The output is two by two: half as tall, half as wide, a quarter of the values.", [[17.943, 18.423], [19.233, 19.533], [20.383, 20.783]]],
-  "max/map": [22.615, 40.746, "Count rows and columns from zero. The three is output row one, column zero, and its window is input rows two and three, columns zero and one. Output row i reads input rows two i and two i plus one, and columns work the same way.", [[24.835, 25.495], [27.515, 27.695], [28.535, 28.865], [31.635, 31.875], [33.425, 34.075], [37.235, 37.455], [38.725, 39.105]]],
-  "max/avg": [41.126, 50.233, "Average pooling takes each window's mean instead: two point seven five, one point seven five, one point five and two point five.", [[44.206, 44.806], [45.956, 46.256], [47.526, 47.856], [48.836, 49.066]]],
-  "shape/channels": [52.033, 67.647, "Inputs often come as a stack of grids called channels, like the red, green and blue of a color image. Pooling runs on each channel on its own: sixteen channels of thirty two by thirty two become sixteen of sixteen by sixteen.", [[55.473, 55.823], [56.493, 56.673], [58.543, 59.133], [61.433, 61.903], [64.713, 64.973]]],
-  "shape/formula": [68.027, 77.752, "The size follows the output size formula, with F and S both two: thirty two minus two, over two, plus one, is sixteen.", [[70.587, 70.907], [72.847, 73.427], [74.937, 75.177], [76.647, 76.887]]],
-  "shape/overlap": [78.132, 92.876, "Windows can also overlap. Three by three windows with a stride of two share an edge column with the next. On twenty seven by twenty seven, that is twenty seven minus three, over two, plus one: thirteen.", [[79.982, 80.562], [83.182, 83.362], [85.242, 85.812], [87.762, 88.022], [90.072, 90.282], [90.962, 91.192], [91.842, 92.182]]],
-  "shape/none": [93.256, 99.93, "And there is nothing to learn: unlike a filter, pooling has no weights at all. Zero parameters.", [[94.716, 95.266], [96.236, 96.536], [98.226, 98.666]]],
-  "shape/shift": [100.31, 112.396, "When the grid is a filter's output, max pooling keeps how well the filter matched in each window, not exactly where. Move the five inside its window, and the output does not change.", [[102.33, 102.7], [106.26, 106.66], [107.89, 108.52], [110.48, 110.69]]],
-  "shape/turn": [112.776, 113.516, "Your turn.", []]
+  "shift/map": [0.7, 10.052, "A filter slid over an image gives a map of how well each patch matched it. This map has one strong match, a nine, among weak ones.", [[5.21, 5.85], [7.82, 8.08], [8.66, 8.95]]],
+  "shift/move": [10.432, 20.184, "Shift the image one pixel to the right, and the map shifts with it. Nearly every number changes, though what the filter found has only moved one pixel.", [[12.682, 12.952], [14.322, 14.892], [16.582, 16.942], [18.212, 18.412]]],
+  "shift/pool": [20.564, 32.082, "Pooling fixes that. Cut the map into two by two windows, and keep only the largest value in each: nine, two, three and four. That is max pooling.", [[21.874, 22.524], [24.714, 24.974], [27.314, 27.734], [28.174, 28.394], [28.754, 29.004], [30.054, 30.574]]],
+  "shift/same": [32.462, 43.324, "Now shift the image again. The nine moves, but stays inside its window, and so does every window's largest value. The pooled output does not change at all.", [[34.112, 34.682], [35.782, 35.972], [37.642, 37.962], [40.382, 40.912]]],
+  "shift/keeps": [43.704, 54.781, "So max pooling keeps how strongly the filter matched in each window, and lets go of exactly where. That is the name: each window's values are pooled into one.", [[47.984, 48.334], [50.294, 50.804], [51.714, 52.224]]],
+  "shift/cells": [55.161, 67.754, "The idea comes from the brain. In 1962, Hubel and Wiesel described complex cells in the cat's visual cortex, which answer to an edge at one angle anywhere in a larger patch.", [[57.081, 57.651], [59.031, 59.301], [63.661, 63.931]]],
+  "shift/later": [68.134, 85.42, "Fukushima's neocognitron, in 1980, built that in, so a pattern still registered when it moved a little. In 1999, Maximilian Riesenhuber and Tomaso Poggio made the case for the max: the largest value still signals the best match.", [[71.084, 71.384], [72.134, 72.574], [75.374, 76.034], [77.304, 77.544], [80.324, 80.584], [82.014, 82.494]]],
+  "max/grid": [87.22, 98.994, "Now the numbers, on that same map: one channel, four by four. Its two by two windows do not overlap: each starts two cells after the last, a stride of two.", [[88.22, 88.55], [89.58, 90.15], [90.8, 91.04], [91.91, 92.41], [94.81, 95.31], [97.71, 97.99]]],
+  "max/max": [99.374, 107.685, "Max pooling keeps each window's largest value. Read row by row, that is nine, two, three and four.", [[102.394, 102.954], [104.284, 104.654], [105.064, 105.334], [105.794, 105.994], [106.384, 106.564]]],
+  "max/out": [108.065, 115.931, "Four by four becomes two by two: half as tall, half as wide, and a quarter of the numbers for the next layer to read.", [[110.445, 110.945], [111.785, 112.025], [112.865, 113.185]]],
+  "max/map": [116.311, 127.401, "Count rows and columns from zero. The three is output row one, column zero. Its window is input rows two and three, columns zero and one.", [[118.561, 119.181], [121.261, 121.471], [122.331, 122.851], [125.521, 125.821]]],
+  "max/rule": [127.781, 139.115, "Each output row covers two input rows: output row i covers input rows two times i and two times i, plus one. Columns work the same way.", [[130.591, 131.131], [133.521, 133.681], [134.661, 134.861], [136.921, 137.581]]],
+  "max/avg": [139.495, 148.642, "Average pooling takes each window's mean instead. The top left window adds up to eleven, and eleven over four is two point seven five.", [[142.475, 143.065], [145.265, 145.645]]],
+  "shape/channels": [150.442, 162.442, "A layer's output has one channel per filter, and pooling runs on each channel on its own. Sixteen channels of thirty two by thirty two become sixteen of sixteen by sixteen.", [[153.222, 153.552], [156.072, 156.662], [159.442, 159.732]]],
+  "shape/formula": [162.822, 175.009, "The height and width follow the output size formula, with a window size F of two and a stride S of two: thirty two minus two, over two, plus one, is sixteen.", [[165.872, 166.212], [168.202, 168.442], [170.162, 170.702], [172.232, 172.412], [173.072, 173.232], [173.892, 174.122]]],
+  "shape/overlap": [175.389, 189.072, "Windows may also overlap: three by three, with a stride of two, so each shares a column with the next. Twenty seven wide becomes twenty seven minus three, over two, plus one: thirteen.", [[177.119, 177.599], [178.549, 178.799], [179.939, 180.239], [182.239, 182.899], [186.129, 186.369], [187.049, 187.279], [187.919, 188.369]]],
+  "shape/none": [189.452, 202.7, "And pooling learns nothing. A filter's weights are its parameters: the numbers a layer learns, which set what it finds. A max or an average is a fixed rule, so pooling has zero parameters.", [[191.182, 191.692], [193.742, 194.162], [195.642, 195.792], [197.212, 197.732], [200.232, 200.552]]],
+  "shape/turn": [203.08, 203.821, "Your turn.", []]
  }
 }

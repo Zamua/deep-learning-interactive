@@ -1,25 +1,31 @@
 {
- "duration": 138.398,
+ "duration": 244.744,
  "scenes": {
-  "max": [0.0, 41.407],
-  "pass": [41.407, 101.167],
-  "tiles": [101.167, 138.398]
+  "row": [0.0, 79.362],
+  "pass": [79.362, 174.362],
+  "tiles": [174.362, 244.744]
  },
  "beats": {
-  "max/scores": [0.7, 7.804, "Softmax on the scores three, four and zero: exponentiate each, then divide by the total.", [[1.51, 1.68], [4.12, 4.67], [5.99, 6.25]]],
-  "max/shift": [8.184, 19.849, "Subtracting the same amount from every score changes nothing, so subtract the largest, m, here four. The scores become minus one, zero and minus four.", [[11.654, 12.074], [13.684, 13.974], [14.324, 14.754], [15.584, 16.134], [17.944, 18.154], [18.694, 18.874]]],
-  "max/small": [20.229, 32.79, "Now no exponential is above one: about zero point three seven, one, and zero point zero two. Their sum, written l, a curly l, is one point three nine.", [[22.759, 23.239], [24.979, 25.229], [25.619, 25.869], [27.439, 28.049], [28.759, 29.019], [29.859, 30.079], [30.889, 31.279]]],
-  "max/catch": [33.17, 40.307, "But that takes two passes, with every score kept in between: for attention, the T by T matrix.", [[34.83, 35.17], [37.04, 37.47], [38.25, 38.62]]],
-  "pass/two": [42.107, 51.319, "Instead, read the scores once, keeping the largest so far, m, and the running sum, l, of e to the s minus m.", [[42.707, 42.957], [44.307, 44.597], [46.267, 46.587], [46.937, 47.247], [48.367, 48.657], [48.987, 49.227]]],
-  "pass/first": [51.699, 57.66, "First, three: m is three, and l is e to the zero, one.", [[52.229, 52.579], [53.019, 53.569], [54.669, 54.999], [56.999, 57.249]]],
-  "pass/grow": [58.04, 69.695, "Then four, a new max. The term in l was measured against three, so multiply l by e to the three minus four: about zero point three seven.", [[58.97, 59.47], [60.41, 60.97], [63.7, 64.07], [67.34, 67.84]]],
-  "pass/add": [70.075, 77.472, "Then add e to the zero for the four itself. l is one point three seven, and m is four.", [[70.535, 70.705], [73.375, 74.015], [75.845, 76.165]]],
-  "pass/below": [77.852, 90.564, "Last, zero, below the max: no rescale, just add e to the minus four, about zero point zero two. l is one point three nine, the same total as before.", [[78.412, 78.822], [79.362, 79.782], [80.762, 81.232], [82.082, 82.322], [84.282, 84.542], [86.342, 86.972], [88.792, 89.122]]],
-  "pass/weights": [90.944, 100.067, "Each weight is then e to the s minus m, over l: the four gets one over one point three nine, about zero point seven two.", [[94.584, 95.224], [97.904, 98.274]]],
-  "tiles/tiles": [101.867, 110.553, "This is how FlashAttention runs attention. Each query reads the keys a tile at a time, and the T by T scores are never stored.", [[104.387, 104.917], [107.727, 108.097]]],
-  "tiles/output": [110.933, 123.302, "Besides m and l, the query keeps a running output, o: the values weighted by e to the s minus m. When m grows, it is rescaled by the same factor as l.", [[112.553, 112.903], [114.673, 114.993], [115.303, 115.853], [118.783, 119.303], [120.383, 120.583]]],
-  "tiles/divide": [123.682, 129.915, "After the last tile, divide the output by l. That is exactly attention's output.", [[124.912, 125.202], [126.982, 127.502]]],
-  "tiles/memory": [130.295, 136.178, "However long the input, each query holds just a max, a sum and one output row.", [[131.615, 131.945], [133.805, 134.005], [134.575, 134.795]]],
-  "tiles/turn": [136.558, 137.298, "Your turn.", []]
+  "row/row": [0.7, 15.623, "Attention's T by T scores can take gigabytes. They are kept because of softmax. One query's scores fill one row, and every weight is divided by the row's total, so no weight is known until the whole row has been read.", [[3.08, 3.27], [3.97, 4.49], [6.34, 6.89], [9.14, 9.42], [12.03, 12.44]]],
+  "row/big": [16.003, 29.228, "And softmax is not computed quite as written. e grows fast: e to the hundred has forty four digits, and e to the thousand is too big for the computer at all: it comes out as infinity.", [[18.903, 19.473], [20.723, 21.233], [23.693, 24.023], [25.223, 25.423], [27.303, 27.703]]],
+  "row/shift": [29.608, 41.162, "The fix is a fact softmax already showed: only the gaps between scores matter. So subtract the largest score from every score. Call it m, for max.", [[32.408, 33.038], [35.378, 35.958], [38.908, 39.378], [40.238, 40.458]]],
+  "row/small": [41.542, 55.667, "Take the scores three, four and zero. m is four, so every score drops to zero or below, and every e is at most one: about zero point three seven, one, and zero point zero two.", [[42.922, 43.072], [44.312, 44.892], [45.882, 46.192], [48.812, 49.152], [51.152, 51.532], [53.172, 53.462], [53.862, 54.082]]],
+  "row/sum": [56.047, 64.744, "Their total is written l, a curly l, for the sum: one point three nine. Each weight is its term over l.", [[57.327, 57.487], [57.847, 58.217], [59.087, 59.387], [60.047, 60.557], [61.887, 62.457]]],
+  "row/passes": [65.124, 78.262, "Now count the passes, each a full read of the row: the first finds m, the second adds up l, and the third divides. Three passes, so the row must be kept the whole time.", [[66.544, 66.954], [68.654, 69.234], [70.534, 70.954], [72.524, 72.884], [74.194, 74.714], [75.644, 75.994]]],
+  "pass/idea": [80.062, 95.884, "In 2018, Maxim Milakov and Natalia Gimelshein, at NVIDIA, merged the first two passes. Read the scores once, keeping m as the largest so far, and l as the sum so far, every term measured against that m.", [[81.182, 81.472], [84.802, 85.122], [86.902, 87.502], [88.732, 89.002], [91.182, 91.462], [93.322, 93.732]]],
+  "pass/first": [96.264, 108.911, "First, three: the largest so far, so m is three. Its term, e to the zero, is exactly one: measured against m, the max always has a bar of one.", [[96.804, 97.104], [97.514, 98.014], [99.414, 99.734], [101.164, 101.724], [102.424, 102.664], [103.574, 103.804], [104.854, 105.394], [106.524, 106.794]]],
+  "pass/grow": [109.291, 121.58, "Then four, a new max. The old bar was measured against three, and must now be measured against four, so it shrinks by e to the minus one: about zero point three seven.", [[110.141, 110.591], [111.571, 112.211], [114.301, 114.601], [116.531, 116.971], [119.311, 119.711]]],
+  "pass/rule": [121.96, 133.077, "That is the whole trick. When m grows, multiply l by e to the old m minus the new m. Old minus new, so the factor is below one.", [[123.48, 124.02], [125.03, 125.32], [129.2, 129.76], [130.95, 131.32]]],
+  "pass/add": [133.457, 140.402, "Then add the four's own bar, one. l is one point three seven, and m is four.", [[133.917, 134.087], [135.537, 135.927], [136.307, 136.917], [138.797, 139.147]]],
+  "pass/below": [140.782, 155.459, "Last, zero: below the max, so nothing shrinks. Just add its bar, e to the minus four, about zero point zero two. l is one point three nine: the same total, from one pass.", [[141.322, 141.722], [142.252, 142.762], [143.722, 143.932], [145.202, 145.692], [146.762, 147.052], [148.332, 148.582], [150.372, 151.092], [152.912, 153.312], [154.222, 154.482]]],
+  "pass/weight": [155.839, 165.718, "Each weight is still its bar over l. The four's bar is one, so its weight is one over one point three nine: about zero point seven two.", [[158.289, 158.829], [160.239, 160.549], [163.449, 163.889]]],
+  "pass/online": [166.098, 173.262, "It is called online because it keeps up with the scores as they arrive, one at a time, never waiting for the rest.", [[167.508, 167.718], [170.298, 170.568], [171.388, 171.788]]],
+  "tiles/value": [175.062, 186.236, "Attention needs only the weighted sum of the values, not the weights themselves. So keep that running too: an output, o, adding up each value times its bar.", [[178.062, 178.342], [179.842, 180.392], [181.892, 182.352], [183.012, 183.262], [183.592, 183.952]]],
+  "tiles/shrink": [186.616, 195.471, "When m grows, the bars already inside o were measured against the old max too, so o shrinks by the same factor as l.", [[187.736, 187.986], [192.106, 192.506]]],
+  "tiles/divide": [195.851, 204.774, "After the last key, divide o by l. Every weight's division happens at once, and the result is exactly attention's output.", [[197.071, 197.381], [199.001, 199.601], [201.781, 202.111]]],
+  "tiles/tile": [205.154, 218.797, "In practice the keys come a few at a time, in tiles: a small block of the T by T grid, a few queries against a few keys. Like tiles on a floor, the blocks cover the grid, one at a time.", [[205.994, 206.154], [207.914, 208.214], [208.994, 209.524], [211.724, 212.094], [214.214, 214.734], [216.074, 216.244], [217.564, 217.904]]],
+  "tiles/flash": [219.177, 232.233, "In 2022, Tri Dao and colleagues at Stanford built attention this way and called it FlashAttention. Their paper's title says what it is: fast, memory-efficient, exact attention.", [[220.437, 220.737], [224.127, 224.387], [224.947, 225.107], [226.047, 226.637], [228.627, 229.057], [229.577, 229.827], [230.737, 230.987]]],
+  "tiles/memory": [232.613, 242.523, "However long the input, each query keeps just a max, a sum, and one output row of d v numbers. The T by T scores are never stored.", [[233.923, 234.273], [236.173, 236.383], [236.953, 237.213], [239.603, 240.163]]],
+  "tiles/turn": [242.903, 243.644, "Your turn.", []]
  }
 }
