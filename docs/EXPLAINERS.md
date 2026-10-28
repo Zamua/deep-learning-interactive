@@ -5,6 +5,28 @@ the narration track drives, drawn live with the site's own canvas and code panel
 sharp, small, and in the course's colors. Route: `#/atlas/<concept-id>/watch`. What an explainer
 may teach, and its length, are in `docs/MASTERY.md`; this is the craft.
 
+## Intuition first
+
+An explainer is not a voice reading symbols. It earns each symbol by first showing the thing it
+names, and says why the idea exists before saying how to compute it. Linear scores is the model:
+points on a graph, a line between them, then `w · x + b` as that line, with `w` turning it and
+`b` sliding it on screen, and only then the matrix and the arithmetic.
+
+- **Open on the problem and a picture of it**, in plain words, before any symbol: what goes
+  wrong without the idea, or what it lets you do.
+- **Name a symbol only once its thing is on screen**, then use the name. One new symbol per beat
+  at most, and at most one computation read aloud per beat.
+- **Show what each part does by changing it** (turn the weights, slide the bias, grow the
+  learning rate) rather than stating it.
+- **Say why the name fits** when the name carries meaning: linear, bias, softmax, residual.
+- **Define every term at its first use** on the prerequisite chain. A word like "feature" or
+  "logit" is a term too.
+- **Keep the picture when the idea generalizes.** Going from two classes to three, or from one
+  input to many, the geometry continues; it does not give way to a table.
+- **Prefer a familiar anchor** the learner already has (y = mx + b, a thermometer, a recipe) when
+  it maps exactly onto the idea, and say how it maps.
+- **Then the worked numbers** the practice asks for, now that each one means something.
+
 ## Files
 
 In the concept's folder, `src/atlas/<domain>/<concept-id>/`:

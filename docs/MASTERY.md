@@ -57,9 +57,11 @@ export interface ConceptMeta {
 ## Explainers
 
 The explainer is a lecture in miniature, using the same player, scene kit, symbols, code
-panel and lookup notes: 2 to 3 scenes, 8 to 20 beats, 1 to 3 minutes. It explains the one idea,
-working examples of the kind the practice will ask inside its scenes, so the first problem
-never comes as a surprise. Its last beat is `{ id: 'turn', say: 'Your turn.' }`, and the player
+panel and lookup notes: usually 2 to 4 scenes and 2 to 4 minutes, as long as the intuition needs
+and no longer. **Intuition first:** it opens on the problem the idea solves and a picture of it,
+and only then names symbols and works the numbers (`docs/EXPLAINERS.md` has the rules). It
+explains the one idea, working examples of the kind the practice will ask inside its scenes, so
+the first problem never comes as a surprise. Its last beat is `{ id: 'turn', say: 'Your turn.' }`, and the player
 then goes straight into practice: no worked example at the end, no recap. `docs/EXPLAINERS.md`
 is the craft: files, scenes, narration, lookup notes and review.
 
