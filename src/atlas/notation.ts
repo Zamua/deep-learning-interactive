@@ -21,7 +21,7 @@ export const NOTATION: Record<string, Notation> = {
     tex: /\\partial/,
     shown: /∂/,
     name: 'partial derivative',
-    about: 'A curly d, read “partial”. ∂f/∂x is how fast f changes when only x moves, with every other input held still.',
+    about: 'A curly d, read “partial”. ∂f/∂x is how fast f changes when only x moves, with every other input held still. With x the only input, it is the plain derivative, f′(x).',
     glyph: String.raw`\partial f / \partial x`,
     from: ['partials'],
   },

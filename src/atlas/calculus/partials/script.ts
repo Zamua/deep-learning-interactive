@@ -23,6 +23,7 @@ export const script: LectureScript = {
         { id: 'du', say: 'Hold v fixed and move only u. Along that line f is an ordinary curve, and its slope is the partial derivative in u, written {∂f/∂u|partial f, partial u}. {The curly d, ∂,|The curly d,} read “partial”, means only u moves, with v held still.', code: 'f' },
         { id: 'terms', say: 'Take f term by term. u squared gives two u. Two v squared does not change while v is held, so it is a constant, and gives zero. So {∂f/∂u = 2u|partial f, partial u is two u}: two, at the point one, one.', code: ['terms', 'du'] },
         { id: 'dv', say: 'Hold u fixed instead. Now u squared is the constant, and gives zero, while two v squared gives four v. So {∂f/∂v = 4v|partial f, partial v is four v}: four here. Each input has its own slope.', code: ['vterms', 'dv'] },
+        { id: 'one', say: 'With a single input, there is nothing to hold still, and the partial is just the derivative, {f′|f prime}. The curly d only says that other inputs exist, and stay where they are.', code: 'f' },
       ],
     },
     {

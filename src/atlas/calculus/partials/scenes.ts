@@ -33,6 +33,13 @@ const partials: SceneDef = {
       F.arrow(P[0], P[1], P[0], P[1] + G[1] * SCALE, 'teal', 0.6);
     });
     legendLine(s, L, 1, '∂f/∂v = 4v = 4', 'teal', after(s, 'dv', 0.6));
+    // Beside the bowl the legend is narrow, so the note takes two lines there.
+    const one = after(s, 'one', 0.25);
+    if (s.tall) legendLine(s, L, 2.3, 'u alone: ∂f/∂u = f′(u)', '--ink-2', one);
+    else {
+      legendLine(s, L, 2.4, 'u alone:', '--ink-2', one);
+      legendLine(s, L, 3.4, '∂f/∂u = f′(u)', '--ink-2', one);
+    }
   },
 };
 
