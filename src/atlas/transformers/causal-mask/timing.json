@@ -1,21 +1,34 @@
 {
- "duration": 122.982,
+ "duration": 225.188,
  "scenes": {
-  "peek": [0.0, 48.346],
-  "renorm": [48.346, 122.982]
+  "peek": [0.0, 69.371],
+  "grid": [69.371, 126.24],
+  "renorm": [126.24, 168.572],
+  "count": [168.572, 225.188]
  },
  "beats": {
-  "peek/predict": [0.7, 13.669, "A model that writes text predicts each next token from the ones before it. Trained on cats like fresh fish, position zero should predict like, position one should predict fresh, and so on.", [[5.14, 5.76], [7.83, 8.17], [10.3, 10.77], [12.75, 13.03]]],
-  "peek/cheat": [14.049, 23.218, "Self-attention trains every position at once. But then cats can attend to like, the very token it is meant to predict, and simply copy it.", [[17.019, 17.599], [18.069, 18.239], [19.659, 19.889], [21.849, 22.109]]],
-  "peek/fail": [23.598, 28.412, "That trick is useless when generating, where the next token does not exist yet.", [[25.938, 26.158]]],
-  "peek/mask": [28.792, 35.445, "So before the softmax, every score whose key comes after its query is set to minus infinity.", [[30.512, 30.792], [33.632, 33.782]]],
-  "peek/grid": [35.825, 47.246, "In the grid of scores, that is everything above the diagonal. Each row keeps itself and the past: row zero keeps one entry, and row three keeps all four.", [[37.145, 37.495], [38.005, 38.225], [39.845, 40.405], [42.765, 43.265], [45.015, 45.315]]],
-  "renorm/row": [49.046, 58.74, "Take row one, like. Its scores are two, zero, three and one, but the last two belong to fresh and fish, which come later.", [[50.126, 50.476], [50.866, 51.376], [52.696, 52.886], [53.436, 53.626], [54.736, 55.226], [57.656, 57.896]]],
-  "renorm/hide": [59.12, 66.021, "Both become minus infinity, and e to the minus infinity is zero, so they get no weight at all.", [[61.02, 61.4], [63.89, 64.28]]],
-  "renorm/weights": [66.401, 78.577, "The softmax shares everything among what is left: e squared over e squared plus one is zero point eight eight, and the other gets zero point one two. They still add up to one.", [[69.411, 69.951], [72.241, 72.411], [73.941, 74.301], [76.581, 77.151]]],
-  "renorm/count": [78.957, 92.256, "How many scores survive? Row zero keeps one, row one keeps two, and so on up to T, here four. One plus two plus three plus four: ten of the sixteen.", [[80.557, 81.087], [82.577, 83.047], [84.447, 84.767], [86.187, 86.527], [87.317, 87.967], [90.497, 91.017]]],
-  "renorm/pairs": [92.636, 106.788, "To add them fast, pair the rows from the ends: one plus four is five, and two plus three is five. That is T over two pairs of T plus one: T times T plus one, over two.", [[93.746, 94.006], [95.556, 96.026], [97.706, 98.056], [99.966, 100.506], [100.996, 101.226], [103.736, 104.186], [105.876, 106.086]]],
-  "renorm/hidden": [107.168, 120.761, "The rest are hidden: sixteen minus ten, six, everything above the diagonal. In general that is T squared minus the kept ones, which comes to T times T minus one, over two.", [[108.318, 108.868], [110.268, 110.588], [111.098, 111.448], [112.918, 113.508], [114.678, 114.848], [116.938, 117.238], [119.868, 120.048]]],
-  "renorm/turn": [121.141, 121.882, "Your turn.", []]
+  "peek/predict": [0.7, 13.316, "A language model learns from text by predicting every next token. Trained on \u201ccats like fresh fish\u201d, cats should predict \u201clike\u201d, \u201clike\u201d should predict \u201cfresh\u201d, and \u201cfresh\u201d, \u201cfish\u201d.", [[4.68, 5.25], [5.87, 6.04], [7.42, 7.81], [9.3, 9.82], [11.42, 11.8], [12.51, 12.82]]],
+  "peek/all": [13.696, 21.899, "Self-attention trains all those predictions at once: every token reads every token, in one pass, with no waiting.", [[16.776, 17.276], [19.436, 19.676], [20.646, 20.876]]],
+  "peek/cheat": [22.279, 29.958, "But then cats can read \u201clike\u201d, the very token it must predict, and simply copy it. It learns nothing about language.", [[22.829, 23.049], [24.349, 24.599], [26.279, 26.539], [27.599, 28.079]]],
+  "peek/generate": [30.338, 42.753, "And copying fails where it counts: generating, writing new text one token at a time and feeding each back in, as the decoder did. There, the next token does not exist yet.", [[32.568, 33.058], [33.758, 34.098], [36.628, 36.918], [38.378, 38.568], [39.618, 40.138], [40.558, 40.738]]],
+  "peek/cut": [43.133, 55.88, "So hide every arc that points ahead, the way tape masks off a wall before painting: that is a mask. Each token reads itself and the tokens before it, never one after.", [[45.673, 46.143], [48.773, 49.303], [50.503, 51.083], [54.273, 54.663]]],
+  "peek/causal": [56.26, 68.271, "That is why the mask is called causal: a cause comes before its effect. Engineers call a filter causal for the same reason, when its output uses only past and present input.", [[58.55, 59.12], [61.17, 61.79], [64.77, 65.13]]],
+  "grid/fold": [70.071, 83.04, "Self-attention's scores already form a grid. Row i holds the query of token i, reading, and column j the key of token j, being read. Every arc is one cell.", [[72.871, 73.431], [76.041, 76.321], [76.761, 77.171], [78.121, 78.321], [79.741, 80.021], [80.641, 81.261]]],
+  "grid/upper": [83.42, 89.871, "The arcs that point ahead are the cells where j is greater than i: the triangle above the diagonal.", [[87.58, 88.06]]],
+  "grid/tril": [90.251, 99.349, "The cells to keep form the lower triangle, the diagonal included. NumPy's tril builds it: tril, for triangle, lower.", [[92.641, 92.981], [94.281, 94.911], [96.611, 97.101], [97.501, 97.811], [98.561, 98.871]]],
+  "grid/inf": [99.729, 113.901, "Before the softmax, every hidden score becomes minus infinity. Ashish Vaswani and colleagues did exactly this in 2017, in Attention Is All You Need, so that no position could read one after it.", [[100.969, 101.209], [103.809, 104.519], [108.679, 108.909], [109.169, 109.329], [110.869, 111.239]]],
+  "grid/zero": [114.281, 125.14, "Why not zero? A score of zero still gets e to the zero, which is one: a real share. e to the minus infinity is zero: no share at all.", [[115.331, 115.821], [118.591, 118.801], [119.431, 119.861], [120.811, 121.301], [123.601, 124.061]]],
+  "renorm/row": [126.94, 137.009, "Take row one: \u201clike\u201d. Its scores are two, zero, three and one, but the last two belong to fresh and fish, which come after it.", [[127.9, 128.35], [128.81, 129.42], [130.78, 131.02], [132.74, 133.28], [135.72, 135.95]]],
+  "renorm/hide": [137.389, 140.96, "Both become minus infinity, so they get no weight.", [[139.279, 139.579]]],
+  "renorm/weights": [141.34, 151.417, "Softmax shares everything among what is left. e squared, about seven point three nine, out of eight point three nine, gives cats zero point eight eight.", [[144.06, 144.63], [145.39, 145.63], [147.25, 147.45], [148.91, 149.24]]],
+  "renorm/sum": [151.797, 157.246, "\u201cLike\u201d itself gets the other zero point one two, and the weights still add up to one.", [[154.907, 155.267]]],
+  "renorm/wrong": [157.626, 167.472, "So mask first, then softmax. Zero the late weights after the softmax instead, and the two left add up to only zero point two seven.", [[158.966, 159.196], [160.256, 160.836], [163.806, 164.176]]],
+  "count/rows": [169.272, 181.677, "How many scores survive? Token i keeps itself and every token before it: i plus one. Row zero keeps one, and the last row keeps all T, here four.", [[170.782, 171.402], [174.742, 175.152], [176.152, 176.682], [178.182, 178.462], [180.362, 180.792]]],
+  "count/add": [182.057, 186.6, "One plus two plus three plus four: ten of the sixteen.", [[184.687, 185.217]]],
+  "count/pairs": [186.98, 197.883, "For any T, pair the rows from the ends: one with four, two with three. Each pair adds up to T plus one, and there are T over two pairs.", [[187.95, 188.34], [189.89, 190.36], [191.24, 191.59], [192.52, 193.2], [195.53, 195.83]]],
+  "count/formula": [198.263, 205.437, "So the mask keeps T times T plus one, over two: four times five, over two, is ten.", [[202.093, 202.703]]],
+  "count/hidden": [205.817, 211.835, "The hidden ones fill the triangle above the diagonal: sixteen minus ten, six.", [[208.777, 209.337], [210.817, 211.237]]],
+  "count/general": [212.215, 222.968, "In general, that is T squared minus the kept, which comes to T times T minus one, over two. Not quite half: the diagonal is kept.", [[213.685, 213.955], [215.775, 216.145], [216.895, 217.055], [218.865, 219.015], [219.685, 220.225], [221.275, 221.665]]],
+  "count/turn": [223.348, 224.088, "Your turn.", []]
  }
 }

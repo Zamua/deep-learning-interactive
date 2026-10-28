@@ -6,62 +6,66 @@ export const script: LectureScript = {
   model: 'elevenlabs/eleven-v4',
   voice: 'george',
   speed: 1,
+  papers: [
+    { who: 'John S. Bridle', year: 1989, title: 'Training stochastic model recognition algorithms as networks can lead to maximum mutual information estimation of parameters', url: 'https://proceedings.neurips.cc/paper/1989/hash/0336dcbab05b9d5ad24f4333c7658a0e-Abstract.html', scene: 'gaps' },
+  ],
   scenes: [
     {
-      id: 'scores',
-      title: 'Scores are not probabilities',
-      codeTitle: 'softmax.py',
+      id: 'sure',
+      title: 'How sure?',
+      codeTitle: 'scores.py',
       code: `
-        s = np.array([2, 1, -1])   #@s
-        e = np.exp(s)              #@exp
-        # [7.39, 2.72, 0.37]       #@exp
-        p = e / e.sum()            #@norm
-        # [0.71, 0.26, 0.04]       #@norm
-        p.sum()    # 1.0           #@sum
+        # cat, dog or bird?              #@ask
+        s = np.array([2, 1, -1])         #@s
+        np.argmax(s)      # 0: cat       #@arg
+        # how sure? shares of one whole  #@p
+        s.sum()           # 2, not 1     #@fail
       `,
       beats: [
-        { id: 'scores', say: 'Here are three scores, one for each of three options: two, one, and minus one.', code: 's' },
-        { id: 'want', say: 'Often we want probabilities instead. Every one positive, and all of them adding up to one.' },
-        { id: 'fail', say: 'These scores fail both tests. Minus one is negative, and together they add up to two.', code: 's' },
+        { id: 'ask', say: 'A program looks at a photo and scores three answers: cat, dog and bird. The scores are two, one and minus one, and the higher the score, the more it leans that way.', code: ['ask', 's'] },
+        { id: 'arg', say: 'Argmax picks cat, the top score. But how sure is the program? Two against one could be a near thing.', code: 'arg' },
+        { id: 'prob', say: 'A probability measures how likely something is: a number from zero, meaning no chance, to one, meaning certain.', code: 'p' },
+        { id: 'whole', say: 'One of the answers must be right, so their probabilities add up to exactly one. Each is a share, a slice of the same whole.', code: 'p' },
+        { id: 'fail', say: 'Scores cannot be those slices. Minus one is negative, a slice smaller than nothing, and the three add up to two, not one.', code: 'fail' },
       ],
     },
     {
       id: 'exp',
-      title: 'Move one: exponentiate',
+      title: 'Move one: make them positive',
       codeTitle: 'softmax.py',
       code: `
-        s = np.array([2, 1, -1])   #@s
-        e = np.exp(s)              #@exp
-        # [7.39, 2.72, 0.37]       #@exp
-        p = e / e.sum()            #@norm
-        # [0.71, 0.26, 0.04]       #@norm
-        p.sum()    # 1.0           #@sum
+        s = np.array([2, 1, -1])         #@s
+        e = np.exp(s)                    #@exp
+        # [7.39, 2.72, 0.37]: all > 0    #@vals
+        # order kept: 7.39 > 2.72 > 0.37 #@order
       `,
       beats: [
-        { id: 'two', say: 'Softmax fixes both in two moves.' },
+        { id: 'two', say: 'Softmax fixes both problems in two moves.', code: 's' },
         { id: 'exp', say: 'First, raise e, about {2.718|two point seven one eight}, to the power of each score.', code: 'exp' },
-        { id: 'pos', say: 'e to any power is positive, so minus one becomes {0.37|zero point three seven}.', code: 'exp' },
-        { id: 'grow', say: 'And each extra point of score multiplies by about {2.7|two point seven}, so the top score pulls ahead: two becomes {7.39|seven point three nine}.', code: 'exp' },
+        { id: 'pos', say: 'e to any power is positive, so minus one becomes {0.37|zero point three seven}: a small slice, but a real one.', code: 'vals' },
+        { id: 'order', say: 'A higher score always gives a bigger result, so the order stays the same: cat, then dog, then bird.', code: 'order' },
+        { id: 'grow', say: 'And each extra point of score multiplies by about {2.7|two point seven}, so the leader pulls ahead: two becomes {7.39|seven point three nine}.', code: 'vals' },
       ],
     },
     {
       id: 'divide',
-      title: 'Move two: divide by the total',
+      title: 'Move two: share out one whole',
       codeTitle: 'softmax.py',
       code: `
-        s = np.array([2, 1, -1])   #@s
-        e = np.exp(s)              #@exp
-        # [7.39, 2.72, 0.37]       #@exp
-        p = e / e.sum()            #@norm
-        # [0.71, 0.26, 0.04]       #@norm
-        p.sum()    # 1.0           #@sum
+        e = np.exp(s)  # [7.39, 2.72, 0.37] #@e
+        e.sum()        # 10.48: the total   #@total
+        p = e / e.sum()                     #@p
+        # [0.71, 0.26, 0.04]                #@p
+        p.sum()        # 1.0                #@sum
       `,
       beats: [
-        { id: 'total', say: 'Second, add them up. The total is {10.48|ten point four eight}.', code: 'norm' },
-        { id: 'divide', say: 'Then divide each one by that total. These are the probabilities, p.', code: 'norm' },
-        { id: 'result', say: 'Option zero gets {0.71|zero point seven one}, option one {0.26|zero point two six}, and option two {0.04|zero point zero four}.', code: 'norm' },
-        { id: 'check', say: 'All positive, and they add up to one.', code: 'sum' },
-        { id: 'formula', say: 'In symbols: {pₖ|p k}, option k\'s probability, is e to the {sₖ|s k}, over the total. {Σ|Sigma}, a capital Greek sigma, means add up: the total adds e to the {sⱼ|s j} over every option j.', code: ['exp', 'norm'] },
+        { id: 'stack', say: 'Second, stack the three into one bar. Its height is their total: {10.48|ten point four eight}.', code: 'total' },
+        { id: 'divide', say: 'Now divide each one by that total. The whole bar now measures one, and every slice keeps its share of it. These shares are the probabilities, p.', code: 'p' },
+        { id: 'cat', say: 'Cat\'s slice is {7.39|seven point three nine} over {10.48|ten point four eight}: about {0.71|zero point seven one}.', code: 'p' },
+        { id: 'check', say: 'Every slice is positive, and together they fill the bar exactly: they add up to one.', code: 'sum' },
+        { id: 'pk', say: 'In symbols, the probability at position k, {pₖ|p sub k}, is that answer\'s slice, e to its score, over the total.', code: 'p' },
+        { id: 'sigma', say: 'The total is written with {Σ|sigma}, a capital Greek S, for sum: add up e to the score of every answer.', code: 'total' },
+        { id: 'j', say: 'The j beneath it stands for each position in turn: zero, one and two.', code: 'total' },
       ],
     },
     {
@@ -69,14 +73,17 @@ export const script: LectureScript = {
       title: 'Only the gaps matter',
       codeTitle: 'gaps.py',
       code: `
-        softmax(s)        # [0.71, 0.26, 0.04]   #@base
-        softmax(s + 5)    # [0.71, 0.26, 0.04]   #@shift
-        softmax(2 * s)    # [0.88, 0.12, 0.00]   #@scale
+        softmax(s)      # [0.71, 0.26, 0.04] #@base
+        softmax(s + 5)  # [0.71, 0.26, 0.04] #@shift
+        softmax(0 * s)  # [0.33, 0.33, 0.33] #@flat
+        softmax(2 * s)  # [0.88, 0.12, 0.00] #@scale
       `,
       beats: [
-        { id: 'shift', say: 'Add five to every score. Every exponential gets multiplied by the same factor, and that factor cancels when we divide. Nothing changes.', code: ['base', 'shift'] },
-        { id: 'scale', say: 'Double every score instead, and the gaps between them double. The top option grows to {0.88|zero point eight eight}.', code: ['base', 'scale'] },
-        { id: 'soft', say: 'That is the name: a soft maximum. The top score gets most of the probability, but every option keeps a little.', code: 'scale' },
+        { id: 'shift', say: 'Raise every score by five. Each e to the score is multiplied by the same factor, e to the five, so every slice grows alike, and the shares stay put.', code: ['base', 'shift'] },
+        { id: 'gaps', say: 'Only the gaps between the scores matter. With no gaps at all, every answer gets an equal share: a third each.', code: 'flat' },
+        { id: 'scale', say: 'Double every score instead, and the gaps double. Cat\'s share grows to {0.88|zero point eight eight}.', code: ['base', 'scale'] },
+        { id: 'soft', say: 'So the top score gets the biggest slice, but never all of it: every answer keeps a little. Argmax is a hard pick, and this is a soft one.', code: 'scale' },
+        { id: 'bridle', say: 'John Bridle named it softmax in 1989: it keeps the order of the scores, he wrote, and is a smooth version of winner take all, picking the maximum.', code: 'base' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

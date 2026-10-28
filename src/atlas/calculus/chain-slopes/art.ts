@@ -19,6 +19,10 @@ export function chain(s: Scene, fx: number[], y: number, labels: string[], inks:
   });
 }
 
+/** A node's letter drawn on its own, so it can fade in after the node (as `node` draws it). */
+export const label = (s: Scene, x: number, y: number, t: string, k: Ink) =>
+  s.text(t, x, y - 0.2 * s.u, { size: 5.6, italic: true, weight: 500, color: s.c(k) });
+
 /** Text centered between nodes i and i + 1. */
 export const between = (s: Scene, fx: number[], i: number) => ((fx[i]! + fx[i + 1]!) / 2) * s.w;
 

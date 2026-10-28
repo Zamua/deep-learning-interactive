@@ -1,17 +1,29 @@
 {
- "duration": 65.692,
+ "duration": 183.57,
  "scenes": {
-  "square": [0.0, 30.221],
-  "memory": [30.221, 65.692]
+  "pairs": [0.0, 48.144],
+  "grows": [48.144, 111.293],
+  "memory": [111.293, 183.57]
  },
  "beats": {
-  "square/pairs": [0.7, 12.042, "Self-attention scores every token against every token. T tokens make a T by T matrix: T squared scores. Four tokens, sixteen scores.", [[4.25, 4.88], [7.49, 7.95], [9.25, 9.72], [10.51, 10.79]]],
-  "square/double": [12.422, 20.59, "Double the tokens to eight, and there are sixty four scores: four times as many. Doubling T quadruples the scores.", [[13.972, 14.222], [15.882, 16.212], [17.502, 18.082], [18.962, 19.122]]],
-  "square/linear": [20.97, 29.121, "The queries, keys and values grow only in step with T: one row per token. And the weights do not grow at all.", [[24.93, 25.45], [26.74, 27.22]]],
-  "memory/bytes": [30.921, 40.375, "Each score is stored in two bytes. One score matrix for a thousand tokens is a million scores: two million bytes, two megabytes.", [[33.221, 33.751], [37.441, 37.851], [39.041, 39.441]]],
-  "memory/long": [40.755, 48.305, "At eight thousand tokens, it is sixty four million scores, one hundred twenty eight megabytes, for a single head.", [[42.335, 42.565], [44.735, 45.075], [46.885, 47.165]]],
-  "memory/heads": [48.685, 55.662, "And every head computes its own. With sixteen heads, one layer holds about two gigabytes of scores.", [[50.775, 51.315], [52.535, 52.805]]],
-  "memory/why": [56.042, 63.471, "That square is why long inputs are expensive for attention: twice the context, four times the work and memory.", [[59.722, 60.262], [61.312, 61.562]]],
-  "memory/turn": [63.851, 64.592, "Your turn.", []]
+  "pairs/grid": [0.7, 12.613, "In self-attention, every token scores every token, itself included. Cats like fish: three tokens asking, three answering, a grid of nine scores.", [[1.78, 2.1], [4.3, 4.69], [5.77, 6.68], [7.78, 8.19], [9.46, 9.69], [10.62, 10.98]]],
+  "pairs/T": [12.993, 21.055, "With T tokens, the grid is T by T, T squared scores: the matrix that Q times K transpose makes.", [[14.083, 14.303], [15.923, 16.333], [17.523, 17.983]]],
+  "pairs/double": [21.435, 30.373, "Now double the context, the tokens that attention reads at once. Four tokens make sixteen scores; eight make sixty-four.", [[22.965, 23.345], [25.635, 26.155], [28.385, 28.855]]],
+  "pairs/why": [30.753, 38.004, "Twice as many tokens ask, and each asks twice as many: two times two, four times the scores.", [[32.513, 32.813], [34.683, 35.203], [36.183, 36.473]]],
+  "pairs/square": [38.384, 47.044, "Ten times the tokens, a hundred times the scores. Growing with the square like this is called quadratic, from the Latin for squared.", [[39.764, 39.984], [41.674, 42.164], [45.124, 45.474]]],
+  "grows/rows": [48.844, 57.988, "Not everything grows that fast. The queries, keys and values have one row per token: twice the tokens, twice the rows.", [[50.804, 51.394], [55.044, 55.534], [56.534, 56.814]]],
+  "grows/weights": [58.368, 69.272, "The weights that make them, W Q, W K and W V, are shared by every token, so they stay the same size. Only the scores pair tokens up.", [[59.638, 59.968], [60.818, 61.048], [62.958, 63.338], [64.868, 65.128], [66.728, 67.188]]],
+  "grows/vaswani": [69.652, 87.268, "Ashish Vaswani and colleagues weighed this cost in 2017, in Attention Is All You Need. Over all the heads, each pair of tokens costs about d multiplications, d being a token's length, so attention's work grows like T squared, times d.", [[73.572, 73.792], [74.062, 74.222], [75.842, 76.592], [77.682, 77.932], [81.132, 81.532], [83.092, 83.572], [86.222, 86.542]]],
+  "grows/rnn": [87.648, 99.378, "A recurrent network of the same width pays per token instead: each step multiplies its state by a d by d matrix, so its work grows like T, times d squared.", [[91.398, 91.998], [95.698, 96.078], [97.808, 98.148]]],
+  "grows/cross": [99.758, 110.193, "So attention was the cheaper one while there were fewer tokens than d. With d at five hundred twelve, that held for most sentences in translation, their task.", [[101.708, 101.918], [103.818, 104.378], [106.248, 106.588], [109.068, 109.388]]],
+  "memory/bytes": [111.993, 119.901, "The scores take memory, too. A computer counts memory in bytes, and here each score is stored in two bytes.", [[113.793, 114.363], [116.573, 116.903], [117.443, 117.633]]],
+  "memory/one": [120.281, 125.255, "A thousand tokens make a thousand times a thousand scores: a million.", [[124.141, 124.581]]],
+  "memory/mb": [125.635, 132.863, "At two bytes each, that is two million bytes: two megabytes, as a megabyte is a million bytes.", [[126.955, 127.265], [127.725, 127.905], [129.175, 129.665], [130.645, 130.885]]],
+  "memory/long": [133.243, 143.195, "Make the context eight times longer, eight thousand tokens, and the scores grow sixty-four times: a hundred and twenty-eight megabytes, for one head.", [[135.313, 135.733], [137.133, 137.533], [139.833, 140.243], [142.163, 142.383]]],
+  "memory/heads": [143.575, 150.645, "And every head keeps its own grid. Sixteen heads hold about two gigabytes: two billion bytes.", [[145.785, 146.285], [148.785, 149.195]]],
+  "memory/layer": [151.025, 158.786, "Heads side by side, reading the same tokens, make a self-attention layer, just as neurons side by side make a layer.", [[152.405, 152.595], [153.955, 154.185], [155.665, 155.945]]],
+  "memory/child": [159.166, 173.311, "In 2019, Rewon Child and colleagues, modelling images, sound and text tens of thousands of steps long, opened their paper with this very cost: time and memory that grow quadratically with the length.", [[160.376, 160.636], [162.276, 162.526], [164.736, 164.886], [166.836, 167.206], [169.456, 169.936], [171.026, 171.216]]],
+  "memory/end": [173.691, 181.35, "That square is why long inputs are expensive for attention: twice the context, four times the work and the memory.", [[177.291, 177.791], [178.891, 179.121]]],
+  "memory/turn": [181.73, 182.47, "Your turn.", []]
  }
 }

@@ -1,74 +1,93 @@
 import type { LectureScript } from '../../../lecture/types';
 
-const code = `
-  def out_size(width, F, S=1, P=0):         #@def
-      return (width - F + 2 * P) / S + 1    #@def
-  out_size(7, 3)              # 5.0         #@count
-  out_size(7, 3, P=1)         # 7.0, same   #@pad
-  out_size(7, 5, P=2)         # 7.0, same   #@five
-  out_size(7, 3, S=2, P=1)    # 4.0         #@stride
-  out_size(8, 3, S=2)         # 3.5         #@fit
-  math.floor(out_size(8, 3, S=2))   # 3     #@drop
-`;
-
 export const script: LectureScript = {
   id: 'atlas-conv-output-size',
   title: 'Conv output size',
   model: 'elevenlabs/eleven-v4',
   voice: 'george',
   speed: 1,
+  papers: [
+    { who: 'LeCun et al.', year: 1989, title: 'Backpropagation applied to handwritten zip code recognition', url: 'https://doi.org/10.1162/neco.1989.1.4.541', scene: 'stride' },
+    { who: 'Krizhevsky, Sutskever & Hinton', year: 2012, title: 'ImageNet classification with deep convolutional neural networks', url: 'https://papers.nips.cc/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html', scene: 'fit' },
+  ],
   scenes: [
     {
-      id: 'count',
-      title: 'Count the positions',
+      id: 'shrink',
+      title: 'Every pass shrinks',
       codeTitle: 'out_size.py',
-      code,
+      code: `
+        def out_size(width, F):     #@def
+            return width - F + 1    #@def
+        out_size(7, 3)    # 5       #@one
+        out_size(5, 3)    # 3       #@again
+        out_size(3, 3)    # 1       #@again
+      `,
       beats: [
-        { id: 'row', say: 'An input of width W, here seven, and a filter of size F, here three. How many places can the filter sit?', code: 'count' },
-        { id: 'slide', say: 'It starts at the left edge and steps one entry at a time, until its right end reaches the last entry.', code: 'count' },
-        { id: 'count', say: 'That makes five positions, so five outputs: the width, minus the filter size, plus one, {W − F + 1|W minus F, plus one}. The plus one counts the very first position.', code: ['def', 'count'] },
+        { id: 'shrink', say: 'Slide a filter along a row of pixels, and the output comes out shorter than the row: seven pixels and a filter three wide give five outputs.', code: 'one' },
+        { id: 'again', say: 'Filter those five again, and three come out. Once more, and one is left.', code: 'again' },
+        { id: 'layer', say: 'Pictures are filtered over and over, each pass working on the last one\'s output. The passes are called layers, since they stack, and a few of them whittle a picture away.', code: ['one', 'again'] },
+        { id: 'W', say: 'So it pays to count. Call the width of the input W: here, seven.', code: 'def' },
+        { id: 'F', say: 'And call the size of the filter F: here, three.', code: 'def' },
+        { id: 'steps', say: 'From the left edge, the filter has room for {W − F|W minus F} steps, four here, before its right end reaches the last pixel.', code: 'def' },
+        { id: 'plus', say: 'Add one for the spot where it started: {W − F + 1|W minus F, plus one}, which makes five. Count positions, not steps.', code: ['def', 'one'] },
       ],
     },
     {
       id: 'pad',
       title: 'Padding',
       codeTitle: 'out_size.py',
-      code,
+      code: `
+        def out_size(width, F, P=0):     #@def
+            return width - F + 2*P + 1   #@def
+        out_size(7, 3)        # 5        #@lose
+        out_size(7, 3, P=1)   # 7: same  #@pad
+        out_size(7, 5, P=2)   # 7: same  #@five
+      `,
       beats: [
-        { id: 'pad', say: 'Padding, P, adds a border of zeros on each side. With P equal to one, the input becomes nine wide.', code: 'pad' },
-        { id: 'slide', say: 'Now the filter fits in seven places: seven, minus three, plus two for the padding, plus one. The output is seven wide, the same as the input.', code: 'pad' },
-        { id: 'lose', say: 'That is no accident. A filter three wide loses two positions: seven in, five out. Padding adds {2P|two P}, here two, which gives exactly those two back.', code: 'pad' },
-        { id: 'five', say: 'A filter five wide loses four, so it needs {2P|two P} equal to four: P equal to two.', code: 'five' },
-        { id: 'same', say: 'In general a filter loses {F − 1|F minus one} positions, so with stride one, P equal to {F − 1|F minus one}, over two, keeps the size. That is the usual choice.', code: ['def', 'pad', 'five'] },
+        { id: 'lose', say: 'Each layer loses {F − 1|F minus one} entries, one at each end, since the middle of the filter never sits over the end pixels.', code: 'lose' },
+        { id: 'pad', say: 'So before sliding, add a border of zeros on each side, the way padding fills the space around something in a box. P counts the zeros on one side.', code: 'pad' },
+        { id: 'nine', say: 'With one zero on each side, P is one, and the row of seven becomes nine. Now the filter fits in seven places: as many outputs as inputs.', code: 'pad' },
+        { id: 'formula', say: 'The border makes the row {2P|two P} wider, so the count becomes W minus F, plus {2P|two P}, plus one. Here, seven minus three, plus two, plus one: seven.', code: 'def' },
+        { id: 'same', say: 'To keep the size, the zeros must give back exactly what the filter loses: {2P|two P} equals {F − 1|F minus one}, so P is {F − 1|F minus one}, over two.', code: ['def', 'pad'] },
+        { id: 'five', say: 'A filter five wide loses four entries, so P must be two.', code: 'five' },
       ],
     },
     {
       id: 'stride',
       title: 'Stride',
       codeTitle: 'out_size.py',
-      code,
+      code: `
+        def out_size(width, F, S=1, P=0):   #@def
+            steps = width - F + 2*P         #@def
+            return steps / S + 1            #@def
+        out_size(7, 3, P=1)        # 7.0    #@one
+        out_size(7, 3, S=2, P=1)   # 4.0    #@two
+      `,
       beats: [
-        { id: 'jump', say: 'The stride, S, is how far the filter jumps each time. With a stride of two it lands on every other position: four of them.', code: 'stride' },
-        { id: 'formula', say: 'So divide by the stride before adding the one. W minus F plus two P, over S, plus one. Here, seven minus three plus two is six, over two is three, plus one: four.', code: ['def', 'stride'] },
-        { id: 'fit', say: 'The division does not always come out whole. Eight wide, with a filter of three and a stride of two: eight minus three is five, over two is two and a half, plus one is three and a half.', code: 'fit' },
-        { id: 'drop', say: 'Half a position means the last jump would hang over the edge, where there is no input. So that position is dropped: libraries such as PyTorch round the size down, here to three. A setting fits exactly when the division is whole, and nothing is dropped.', code: 'drop' },
+        { id: 'jump', say: 'The filter need not stop at every position. How far it moves each time is called the stride, S, like the length of a stride when you walk.', code: 'def' },
+        { id: 'every', say: 'With a stride of two, it lands on every other position: four of them.', code: 'two' },
+        { id: 'lecun', say: 'In 1989, Yann LeCun and colleagues at Bell Labs read handwritten zip codes this way. Their filters sat two pixels apart, so each digit, sixteen by sixteen pixels, gave outputs eight by eight.', code: 'two' },
+        { id: 'reason', say: 'Spotting a pattern needs fine detail, they reasoned, but its exact position need not be pinned down as finely. A stride keeps the spotting and drops some of the where.', code: 'two' },
+        { id: 'formula', say: 'So the steps, W minus F plus {2P|two P}, now come in jumps of S. Divide them by S, then add one for the start.', code: 'def' },
+        { id: 'four', say: 'Here, six steps of one make three jumps of two. Plus the start: four.', code: ['def', 'two'] },
       ],
     },
     {
-      id: 'try',
-      title: 'Try two',
-      codeTitle: 'try.py',
+      id: 'fit',
+      title: 'When it does not fit',
+      codeTitle: 'fit.py',
       code: `
-        out_size(8, 3, S=2, P=1)     # 4.5   #@p1
-        math.floor(4.5)              # 4     #@a1
-        # 10 - 5 + 2*P + 1 == 8, P = ?       #@p2
-        out_size(10, 5, P=1)         # 8.0   #@a2
+        out_size(8, 3, S=2)      # 3.5    #@half
+        np.floor(5 / 2) + 1      # 3.0    #@drop
+        out_size(224, 11, S=4)   # 54.25  #@alex
+        out_size(227, 11, S=4)   # 55.0   #@fit
       `,
       beats: [
-        { id: 'p1', say: 'Try one: eight wide, a filter of three, stride two and padding one. How wide is the output?', code: 'p1' },
-        { id: 'a1', say: 'Eight minus three plus two is seven. Over two is three and a half, plus one: four and a half. A fifth position would hang over the edge, so round down: four.', code: ['p1', 'a1'] },
-        { id: 'p2', say: 'Now backwards: ten wide, a filter of five, stride one. What padding makes the output eight wide?', code: 'p2' },
-        { id: 'a2', say: 'With stride one the output is W minus F, plus two P, plus one. So ten minus five, plus two P, plus one, is eight: six plus two P is eight. Two P is two, and P is one.', code: ['p2', 'a2'] },
+        { id: 'fit', say: 'The division does not always come out whole. Eight wide, a filter of three, and a stride of two: five steps make two and a half jumps.', code: 'half' },
+        { id: 'drop', say: 'Half a jump would leave the filter hanging over the edge, where there is no input, so that position is dropped: libraries such as PyTorch round the jumps down. Two jumps, plus the start: three.', code: 'drop' },
+        { id: 'alexnet', say: 'Real papers run into this. The 2012 AlexNet paper, by Alex Krizhevsky, Ilya Sutskever and Geoffrey Hinton, slid filters eleven wide, four pixels at a time, over images {224|two hundred and twenty four} wide.', code: 'alex' },
+        { id: 'odd', say: 'But {224|two hundred and twenty four} minus eleven is {213|two hundred and thirteen} steps, which four does not divide. Yet its own figure shows fifty five positions across.', code: 'alex' },
+        { id: 'exact', say: 'An input {227|two hundred and twenty seven} wide fits exactly: {216|two hundred and sixteen} steps, over four, make fifty four jumps, plus the start: fifty five. A setting fits only when the division is whole.', code: 'fit' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

@@ -1,19 +1,32 @@
 {
- "duration": 93.991,
+ "duration": 214.447,
  "scenes": {
-  "pick": [0.0, 41.45],
-  "temp": [41.45, 93.991]
+  "write": [0.0, 31.863],
+  "pick": [31.863, 103.577],
+  "temp": [103.577, 171.811],
+  "limits": [171.811, 214.447]
  },
  "beats": {
-  "pick/scores": [0.7, 11.145, "To generate text, the model scores every possible next token. Here there are three: cat, dog and fish, with scores two, one and zero.", [[1.85, 2.08], [4.74, 5.34], [6.41, 6.87], [7.22, 7.48], [7.78, 7.94], [8.53, 8.8], [9.79, 9.99]]],
-  "pick/probs": [11.525, 19.941, "Softmax turns the scores into probabilities: zero point six seven, zero point two four, and zero point zero nine.", [[14.315, 14.835], [16.155, 16.515], [17.795, 18.055]]],
-  "pick/greedy": [20.321, 30.262, "Greedy decoding always takes the most likely token: cat, every single time. That is safe, but the text comes out dull and repetitive.", [[21.271, 21.421], [23.581, 23.961], [24.331, 24.721], [26.011, 26.571], [27.431, 27.841]]],
-  "pick/sample": [30.642, 40.35, "Sampling draws at random with those probabilities instead: cat two times in three, dog about one in four, and now and then, fish.", [[33.932, 34.472], [36.122, 36.562], [38.132, 38.522], [39.592, 39.872]]],
-  "temp/formula": [42.15, 50.048, "A temperature, T, tunes how adventurous sampling is: divide every score by T before the softmax.", [[42.96, 43.21], [43.57, 43.93], [46.09, 46.62], [49.82, 50.02]]],
-  "temp/low": [50.428, 61.595, "With T at one half, the scores double to four, two and zero. The gaps grow, and cat takes zero point eight seven: sharper, closer to greedy.", [[51.768, 52.028], [52.998, 53.228], [53.798, 54.018], [55.078, 55.698], [56.598, 56.878], [59.158, 59.568], [60.198, 60.488]]],
-  "temp/high": [61.975, 73.467, "With T at two, the scores halve. The gaps shrink, and the probabilities flatten: zero point five one, zero point three one, and zero point one nine.", [[62.715, 62.865], [63.285, 63.555], [64.665, 65.175], [66.105, 66.315], [67.795, 68.425], [69.755, 70.085], [71.365, 71.665]]],
-  "temp/order": [73.847, 81.717, "Either way, the order never changes: cat stays on top. Temperature only changes how often the others get picked.", [[74.507, 74.827], [76.307, 76.757], [77.927, 78.477]]],
-  "temp/limits": [82.097, 91.771, "Push T toward zero and cat takes everything: that is greedy decoding. Push it ever higher, and every token gets the same share.", [[83.657, 83.817], [85.407, 85.927], [87.627, 88.177], [89.297, 89.517]]],
-  "temp/turn": [92.151, 92.891, "Your turn.", []]
+  "write/predict": [0.7, 9.429, "A language model only predicts. Given \u201cI fed my\u201d, it gives every token in its vocabulary a probability of coming next.", [[2.77, 3.27], [3.68, 3.88], [4.92, 5.3]]],
+  "write/loop": [9.809, 20.905, "To write, pick one token, add it to the end, and feed the longer text back in. Then predict again, one token at a time. That loop is called generating.", [[10.389, 10.679], [11.669, 11.989], [12.839, 13.119], [15.019, 15.519], [16.769, 17.099], [18.359, 18.869]]],
+  "write/decode": [21.285, 30.763, "Each turn rests on one choice: which token to take. Making it is called decoding, reading the model's numbers back out as words.", [[23.475, 23.905], [25.135, 25.755], [27.565, 27.975]]],
+  "pick/scores": [32.563, 45.206, "Say the model weighs three tokens: cat, dog and fish, with ids zero, one and two, and scores two, one and zero. Softmax gives cat about two thirds.", [[34.563, 34.953], [35.273, 35.563], [35.853, 36.053], [36.633, 37.013], [39.493, 39.853], [42.063, 42.613]]],
+  "pick/greedy": [45.586, 57.001, "The simplest decoding takes the tallest bar, the argmax: cat, every time. It is called greedy because it grabs what looks best right now, with no thought for later.", [[48.176, 48.446], [49.286, 49.686], [50.056, 50.396], [51.176, 51.786], [55.286, 55.526], [56.836, 56.986]]],
+  "pick/dull": [57.381, 69.46, "So greedy text repeats itself. In 2019, Ari Holtzman and colleagues showed that decoding for the most likely words gives text that is bland and strangely repetitive.", [[59.751, 60.351], [61.481, 61.791], [65.941, 66.141], [67.751, 67.941]]],
+  "pick/sample": [69.84, 83.423, "The other way is to sample: pick at random, with those probabilities. Lay the bars end to end, so together they span exactly one, and throw a dart. It lands on cat about two times in three.", [[71.57, 71.99], [72.81, 73.11], [74.38, 74.93], [76.49, 76.76], [79.05, 79.41], [80.31, 80.8]]],
+  "pick/shannon": [83.803, 95.201, "That is how Claude Shannon wrote fake English in 1948, in A Mathematical Theory of Communication: each word picked at random, by how often it follows the word before.", [[87.783, 88.113], [90.443, 91.003], [92.643, 92.993]]],
+  "pick/book": [95.581, 102.477, "His dart was a book: open it anywhere, read on to the last word written, and copy the word after it.", [[96.861, 97.411], [98.421, 98.741], [100.551, 100.861]]],
+  "temp/dial": [104.277, 113.07, "Between safe and varied, a temperature, T, sets where to stand: divide every score by T before the softmax.", [[106.027, 106.437], [107.177, 107.387], [107.757, 108.027], [109.377, 109.847]]],
+  "temp/name": [113.45, 130.032, "The name comes from physics, where the chance of a state goes as e to the minus its energy, over the temperature: softmax, with the score as minus the energy. Heated, a system spreads over many states. Cooled, it settles into the lowest.", [[115.05, 115.34], [118.84, 119.0], [119.95, 120.5], [121.3, 121.6], [123.54, 124.1], [124.58, 124.91], [127.13, 127.66], [128.12, 128.46]]],
+  "temp/gaps": [130.412, 138.449, "Dividing matters because softmax only sees the gaps between the scores, and dividing stretches or shrinks every gap.", [[131.522, 131.862], [135.082, 135.382]]],
+  "temp/cold": [138.829, 144.621, "Cool it to T equals one half, and the scores double: four, two and zero.", [[140.829, 141.029], [142.119, 142.629], [143.099, 143.379], [143.759, 143.929]]],
+  "temp/cold-p": [145.001, 154.666, "e to the four, about fifty five, out of a total near sixty three, gives cat zero point eight seven: sharper, closer to greedy.", [[145.951, 146.321], [147.531, 147.851], [149.821, 150.091], [152.211, 152.661], [153.231, 153.601]]],
+  "temp/hot": [155.046, 161.794, "Heat it to T equals two, and the scores halve. The bars flatten, and cat falls to about a half.", [[156.806, 156.996], [158.156, 158.676], [159.626, 159.846]]],
+  "temp/order": [162.174, 170.711, "Either way, cat stays on top. Dividing by the same positive T keeps the order, so greedy still picks id zero.", [[162.874, 163.134], [164.304, 164.894], [167.864, 168.214]]],
+  "limits/freeze": [172.511, 179.906, "Push T toward zero, and the gaps stretch without limit. Cat takes everything: greedy, again.", [[174.111, 174.321], [176.181, 176.791], [178.101, 178.541], [179.051, 179.311]]],
+  "limits/karpathy": [180.286, 193.637, "In 2015, Andrej Karpathy did this to a model that wrote one character at a time, trained on Paul Graham's essays. It wrote \u201cis that they were all the same thing that was a startup\u201d, over and over.", [[181.466, 181.766], [185.886, 186.136], [187.956, 188.526], [188.976, 189.376], [192.136, 192.446]]],
+  "limits/boil": [194.017, 203.892, "Push T up without limit, and every gap shrinks to nothing. Each token gets a third: uniform, all equally likely, like a fair die.", [[195.587, 195.797], [197.767, 198.327], [199.817, 200.337], [200.977, 201.347], [202.587, 202.847]]],
+  "limits/between": [204.272, 212.227, "In between, Karpathy found, a lower T writes more cautiously, and a higher one with more variety and more mistakes.", [[205.062, 205.282], [206.242, 206.562], [208.612, 208.972]]],
+  "limits/turn": [212.607, 213.347, "Your turn.", []]
  }
 }

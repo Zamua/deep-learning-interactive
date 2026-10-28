@@ -1,23 +1,34 @@
 {
- "duration": 118.071,
+ "duration": 194.476,
  "scenes": {
-  "formula": [0.0, 77.56],
-  "worked": [77.56, 118.071]
+  "every": [0.0, 50.453],
+  "formula": [50.453, 109.689],
+  "bend": [109.689, 154.503],
+  "worked": [154.503, 194.476]
  },
  "beats": {
-  "formula/recap": [0.7, 14.134, "Take z equals three x plus one, squared. At x equals one, the inside is four, and the local slopes three and eight multiply to twenty four. That is the slope at one point.", [[4.08, 4.63], [5.9, 6.19], [7.51, 7.87], [9.97, 10.16], [11.66, 12.21]]],
-  "formula/letter": [14.514, 23.182, "To get it at every x, keep u as a letter. The inside, three x plus one, has slope three wherever x is.", [[16.074, 16.324], [17.774, 18.364], [19.144, 19.404], [20.574, 20.794]]],
-  "formula/outer": [23.562, 29.177, "The outside, u squared, has slope two u. Leave it written in u.", [[24.442, 24.762], [25.592, 25.922], [27.242, 27.792]]],
-  "formula/times": [29.557, 33.536, "Multiply them: two u times three is six u.", [[30.417, 30.967], [32.487, 32.637]]],
-  "formula/sub": [33.916, 45.61, "Six u is still in u. Put the inside back in for u, and d z, d x is six times, three x plus one: a formula in x.", [[35.936, 36.526], [38.526, 38.936], [39.946, 40.256], [42.116, 42.426], [43.706, 44.216]]],
-  "formula/check": [45.99, 53.297, "At x equals one, the inside is four, and six times four is twenty four: the slope found before.", [[47.42, 47.68], [48.96, 49.35], [51.52, 51.93]]],
-  "formula/curve": [53.677, 65.74, "The inside need not be a line. In e to the x squared, the inside is x squared, with slope two x. The outside, e to the u, is its own derivative.", [[55.797, 56.377], [58.027, 58.297], [60.057, 60.347], [61.717, 62.237], [63.007, 63.267], [64.087, 64.357]]],
-  "formula/curve2": [66.12, 76.46, "Multiply, e to the u times two x, and put x squared back in for u: d z, d x is two x, e to the x squared.", [[66.83, 67.22], [69.36, 69.74], [71.99, 72.54], [74.78, 75.08]]],
-  "worked/p1": [78.26, 85.725, "Try one. What is the derivative of ln of two x plus three with respect to x? Call it z.", [[78.87, 79.54], [82.99, 83.17], [84.4, 84.87]]],
-  "worked/in1": [86.105, 90.948, "The inside is u equals two x plus three, with slope two.", [[89.535, 89.885]]],
-  "worked/out1": [91.328, 95.819, "The outside is ln u, whose slope is one over u.", [[93.598, 93.988]]],
-  "worked/a1": [96.199, 108.367, "Multiply: one over u, times two, is two over u. Put the inside back in for u: d z, d x is two over, two x plus three.", [[96.899, 97.459], [98.529, 98.779], [99.529, 99.799], [100.899, 101.609], [103.519, 104.109], [104.819, 105.129], [106.879, 107.149]]],
-  "worked/at": [108.747, 115.851, "Its slope at x equals one: the inside is five, so two over five, zero point four.", [[110.727, 111.267], [112.657, 112.907], [114.257, 114.697]]],
-  "worked/turn": [116.231, 116.971, "Your turn.", []]
+  "every/recap": [0.7, 11.515, "Chained slopes found the slope of z equals three x plus one, squared, at x equals one: the local slopes three and eight, multiplied, make twenty four.", [[5.44, 5.6], [6.87, 7.47], [9.42, 9.59], [10.31, 10.51]]],
+  "every/every": [11.895, 22.208, "But that took a fresh round of numbers for a single point. Slide x along the curve, and the slope keeps changing. Is there one formula for it, at every x?", [[14.935, 15.445], [17.005, 17.265], [18.725, 19.335], [20.895, 21.205]]],
+  "every/expand": [22.588, 33.037, "This one you could multiply out first, then use the power rule. But e to the x squared cannot be multiplied out, and neither can ln of two x plus three.", [[24.858, 25.078], [26.398, 26.978], [29.978, 30.318]]],
+  "every/leibniz": [33.417, 49.353, "Earlier methods for slopes had to untangle a formula first, clearing out its fractions and roots. Leibniz's 1684 paper, the one that named d x, promised a method that skips the untangling: it handles the pieces one at a time.", [[36.997, 37.357], [39.337, 39.937], [42.137, 42.437], [43.977, 44.327], [46.697, 47.137]]],
+  "formula/letter": [51.153, 61.089, "Do what the chain did, but keep u as a letter instead of a number. The inside, three x plus one, has slope three, wherever x is.", [[52.393, 52.703], [55.463, 56.123], [56.863, 57.143], [58.443, 58.713], [59.763, 59.953]]],
+  "formula/outer": [61.469, 66.581, "The outside, u squared, has slope two u. Leave it in u.", [[62.339, 62.669], [63.489, 63.739], [64.329, 64.499], [65.069, 65.639]]],
+  "formula/times": [66.961, 72.418, "Multiply them, as the chain rule says: two u times three is six u.", [[67.831, 68.071], [69.391, 69.921], [71.391, 71.551]]],
+  "formula/sub": [72.798, 84.164, "But six u is still in u. Put the inside back in for u: d z, d x is six times, three x plus one, a formula in x.", [[75.078, 75.608], [77.448, 78.088], [78.558, 79.058], [80.838, 81.178], [82.488, 82.758]]],
+  "formula/notx": [84.544, 90.862, "It is the inside that goes back in, not x alone: the outside only ever sees u.", [[86.604, 86.954], [88.094, 88.634]]],
+  "formula/check": [91.242, 98.549, "At x equals one, the inside is four, and six times four is twenty four: the slope found before.", [[92.672, 92.932], [94.212, 94.602], [96.772, 97.182]]],
+  "formula/slide": [98.929, 108.589, "And it holds at every x. Slide x along the curve, and six times, three x plus one, matches the slope measured there, all the way.", [[100.739, 101.309], [102.959, 103.229], [104.239, 104.459], [105.629, 105.919], [107.619, 107.879]]],
+  "bend/seen": [110.389, 117.363, "You have used this rule before, without its name: e to the three x became three e to the three x.", [[112.059, 112.259], [113.199, 113.829]]],
+  "bend/why": [117.743, 128.089, "Its inside, three x, has slope three. Its outside, e to the u, is its own slope. Multiply, and the three comes out in front.", [[118.703, 118.973], [119.683, 119.943], [120.953, 121.563], [122.483, 122.743], [123.553, 123.813], [124.863, 125.433], [126.133, 126.373]]],
+  "bend/in": [128.469, 138.071, "The inside need not be a line. In e to the x squared, the inside is x squared, whose slope, two x, changes with x.", [[130.519, 131.119], [132.739, 132.999], [134.799, 135.089], [135.729, 136.009], [136.589, 136.839]]],
+  "bend/out": [138.451, 142.683, "The outside is e to the u, whose slope is e to the u.", [[140.521, 140.811], [141.481, 141.641]]],
+  "bend/res": [143.063, 153.403, "Multiply, e to the u times two x, and put x squared back in for u: d z, d x is two x, e to the x squared.", [[143.773, 144.163], [146.303, 146.683], [148.933, 149.483], [151.723, 152.023]]],
+  "worked/p1": [155.203, 161.5, "Try one. What is the derivative of ln of two x plus three? Call it z.", [[155.813, 156.373], [160.023, 160.523]]],
+  "worked/in1": [161.88, 166.723, "The inside is u equals two x plus three, with slope two.", [[165.31, 165.66]]],
+  "worked/out1": [167.103, 171.594, "The outside is ln u, whose slope is one over u.", [[169.373, 169.763]]],
+  "worked/a1": [171.974, 176.894, "Multiply: one over u, times two, is two over u.", [[172.704, 173.194], [174.304, 174.524], [175.304, 175.614]]],
+  "worked/back": [177.274, 184.53, "Put the inside back in for u: d z, d x is two over, two x plus three.", [[179.084, 179.274], [179.574, 180.194], [180.634, 181.134], [182.774, 183.174]]],
+  "worked/at": [184.91, 192.256, "At x equals one, the inside is five, so the slope there is two over five: zero point four.", [[186.34, 186.64], [188.08, 188.47], [190.72, 191.14]]],
+  "worked/turn": [192.636, 193.376, "Your turn.", []]
  }
 }
