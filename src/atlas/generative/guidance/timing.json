@@ -1,22 +1,33 @@
 {
- "duration": 122.101,
+ "duration": 226.563,
  "scenes": {
-  "two": [0.0, 33.818],
-  "push": [33.818, 90.901],
-  "scale": [90.901, 122.101]
+  "pull": [0.0, 50.043],
+  "free": [50.043, 121.967],
+  "push": [121.967, 188.289],
+  "scale": [188.289, 226.563]
  },
  "beats": {
-  "two/prompt": [0.7, 13.821, "A denoiser can take a text prompt as an extra input, such as a red bicycle, and guess the noise with it in mind. Call that guess epsilon c: c for conditioned, shown the prompt.", [[3.99, 4.39], [4.97, 5.14], [6.07, 6.47], [8.34, 8.9], [9.7, 9.86], [10.84, 11.35], [12.59, 12.94]]],
-  "two/drop": [14.201, 24.953, "Train it with the prompt replaced by an empty one part of the time. Then the same network can also guess without the prompt: epsilon u, u for unconditioned.", [[17.701, 18.261], [21.361, 21.881], [22.901, 23.391]]],
-  "two/diff": [25.333, 32.718, "The difference, epsilon c minus epsilon u, is what the prompt changes: the direction the prompt points.", [[26.093, 26.423], [28.723, 28.983], [30.493, 30.923]]],
-  "push/rule": [34.518, 47.322, "Guidance mixes the two. The guess it uses, epsilon hat, is epsilon u, plus w times the difference. Here w is not a weight but one number, the guidance scale.", [[36.098, 36.748], [37.858, 38.078], [38.928, 39.248], [40.488, 40.648], [42.478, 42.998], [44.918, 45.088], [45.948, 46.258]]],
-  "push/ends": [47.702, 57.836, "At w equal to zero, that is just epsilon u: the prompt is ignored. At w equal to one, it is exactly epsilon c.", [[49.492, 49.792], [51.462, 51.952], [53.202, 53.852], [55.422, 55.692]]],
-  "push/three": [58.216, 75.481, "Above one, it steps past epsilon c, further the way the prompt points. At w equal to three: zero point two plus three times zero point three is one point one, and minus zero point four plus zero point nine is zero point five.", [[58.956, 59.126], [61.016, 61.456], [63.176, 63.916], [65.576, 66.126], [69.266, 69.456], [70.526, 70.956], [73.966, 74.196]]],
-  "push/use": [75.861, 89.801, "An image is made by taking the guessed noise away a little at a time, over many steps. Guidance swaps in this guess at every step, so each step runs the network twice: once with the prompt, once without.", [[80.131, 80.361], [81.511, 82.121], [84.621, 84.981], [87.271, 87.701], [88.661, 89.041]]],
-  "scale/sweep": [91.601, 97.806, "So what does a larger w buy? Every step leans harder toward what the prompt asks for.", [[93.791, 94.351]]],
-  "scale/low": [98.186, 103.706, "At w of one, the pictures vary a lot, and some follow the prompt only loosely.", [[99.426, 99.666], [101.096, 101.336]]],
-  "scale/mid": [104.086, 109.469, "Around seven, they follow it closely. Values like this are a common default.", [[105.076, 105.366], [106.556, 107.116]]],
-  "scale/big": [109.849, 119.881, "Push w much higher, and the pictures look more and more alike, with colors and contrast overdone. Guidance trades variety for faithfulness to the prompt.", [[111.199, 111.449], [113.549, 113.869], [115.989, 116.579]]],
-  "scale/turn": [120.261, 121.001, "Your turn.", []]
+  "pull/walk": [0.7, 11.058, "Sampling makes an image out of pure noise: a thousand steps back, each taking away the network's noise guess. But nothing in it says which image to make.", [[3.53, 3.95], [5.37, 5.72], [8.16, 8.66]]],
+  "pull/prompt": [11.438, 21.691, "To ask for one, give the network one more input, a prompt: a name or a few words, such as a red bicycle, turned into numbers it can read.", [[12.388, 12.878], [14.768, 15.108], [15.708, 16.188], [17.748, 17.898], [18.428, 18.578], [19.538, 19.888]]],
+  "pull/ec": [22.071, 31.274, "Its noise guess now depends on the prompt. Call it epsilon c: c for conditioned, since the guess is made on the condition of the prompt.", [[24.521, 25.101], [26.571, 27.081], [28.291, 28.611]]],
+  "pull/weak": [31.654, 41.913, "The trouble is that the prompt changes the guess only a little. Most of the guess is about what any image looks like, so the guess with no prompt at all lands close by.", [[35.054, 35.644], [38.404, 38.814]]],
+  "pull/loose": [42.293, 48.943, "So each step leans only slightly toward a red bicycle, and the pictures may look only vaguely like one.", [[45.953, 46.333]]],
+  "free/cls": [50.743, 65.171, "One fix came in 2021, from Prafulla Dhariwal and Alex Nichol, for prompts that name a class, such as bicycle: a second network, a classifier, trained to name the class even in a noisy image.", [[52.853, 53.213], [55.683, 56.013], [57.703, 57.983], [58.443, 58.613], [59.173, 59.743], [60.783, 61.013], [61.853, 62.133]]],
+  "free/grad": [65.551, 76.305, "At every step, its gradient showed how to change the image so the classifier grew surer, and the sampler leaned that way. It worked, but it took a whole second network.", [[66.571, 66.841], [71.011, 71.241], [72.911, 73.391], [74.011, 74.281]]],
+  "free/free": [76.685, 90.348, "Later that year, Jonathan Ho and Tim Salimans showed that the second network is not needed. Train the one denoiser with its prompt blanked out about one time in ten, so it also learns to guess with no prompt.", [[77.645, 77.965], [79.905, 80.105], [82.445, 82.995], [85.895, 86.105], [87.595, 87.945]]],
+  "free/eu": [90.728, 96.563, "That guess, the one with no prompt, is epsilon u: u for unconditioned.", [[91.498, 91.718], [92.898, 93.168], [94.458, 94.978]]],
+  "free/diff": [96.943, 105.749, "Run the network both ways, and the difference, epsilon c minus epsilon u, is just what the prompt changes: the direction it points.", [[98.583, 98.743], [99.573, 99.783], [101.963, 102.273], [104.023, 104.463]]],
+  "free/name": [106.129, 120.867, "The push toward the prompt comes from the same network, not from a classifier: hence the name, classifier-free guidance. Before the year was out, Alex Nichol and colleagues used it for text prompts, in a model called GLIDE.", [[109.029, 109.359], [110.659, 111.159], [111.909, 112.279], [113.999, 114.709], [115.819, 116.129], [118.989, 119.289]]],
+  "push/rule": [122.667, 137.425, "So step further that way. The guess the sampler uses, epsilon hat, starts at epsilon u and adds the difference times w, one number you choose: the guidance scale. Here w is not a weight.", [[124.317, 124.997], [126.567, 126.787], [127.657, 127.957], [129.567, 129.857], [131.827, 132.237], [133.497, 133.857], [134.867, 135.397]]],
+  "push/ends": [137.805, 151.3, "At w equal to zero, that is just epsilon u: the prompt is ignored. At a half, it lands halfway between. At one, it is exactly epsilon c: the weak pull from before.", [[139.595, 139.865], [141.515, 142.005], [143.235, 143.815], [144.565, 144.725], [146.225, 146.815], [147.395, 147.565], [149.425, 149.805]]],
+  "push/three": [151.68, 165.015, "Above one, it steps past epsilon c, further the way the prompt points. At w equal to three, the first number is zero point two, plus three times zero point one: zero point five.", [[152.43, 152.59], [154.48, 154.87], [156.63, 157.2], [158.8, 159.07], [161.12, 161.39], [163.35, 163.83]]],
+  "push/second": [165.395, 175.783, "The second is minus zero point four, plus three times zero point one: minus zero point one. The prompt's small nudge, three times over.", [[167.895, 168.195], [170.295, 170.765], [172.255, 172.885], [174.355, 174.755]]],
+  "push/use": [176.163, 187.189, "The sampler uses this guess at every step, so each step runs the network twice, once with the prompt and once without. A thousand steps, two thousand runs.", [[178.813, 179.263], [181.503, 181.883], [182.853, 183.073], [183.973, 184.553], [185.583, 185.933]]],
+  "scale/sweep": [188.989, 194.622, "So what does a larger w buy? Every step leans harder toward the prompt.", [[191.409, 192.029]]],
+  "scale/low": [195.002, 202.159, "At w of one, plain epsilon c, the pictures vary a lot, and some follow the prompt only loosely.", [[196.192, 196.482], [197.882, 198.252], [199.652, 199.882]]],
+  "scale/mid": [202.539, 207.75, "Around seven, they follow it closely: seven and a half is a common default.", [[203.549, 203.699], [204.909, 205.509]]],
+  "scale/big": [208.13, 218.203, "With a much larger w, they look more and more alike. Ho and Salimans saw strongly guided samples turn to saturated, overdone colors.", [[209.81, 210.09], [211.68, 212.26], [215.35, 215.59], [216.75, 216.93]]],
+  "scale/trade": [218.583, 224.343, "Guidance trades variety for faithfulness to the prompt, and w sets how far.", [[221.933, 222.423]]],
+  "scale/turn": [224.723, 225.463, "Your turn.", []]
  }
 }

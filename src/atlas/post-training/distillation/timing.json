@@ -1,24 +1,28 @@
 {
- "duration": 161.209,
+ "duration": 215.05,
  "scenes": {
-  "teacher": [0.0, 40.449],
-  "soften": [40.449, 92.668],
-  "loss": [92.668, 161.209]
+  "why": [0.0, 76.724],
+  "soften": [76.724, 139.228],
+  "loss": [139.228, 215.05]
  },
  "beats": {
-  "teacher/teacher": [0.7, 14.086, "Distillation trains a small network, the student, to copy a large one, the teacher. Shown this cat, the teacher's scores, s, are four for cat, two for dog and zero for car.", [[2.93, 3.18], [3.8, 4.09], [5.33, 5.61], [6.18, 6.99], [8.0, 8.3], [9.44, 9.66], [10.06, 10.3], [11.44, 11.76], [12.52, 12.78]]],
-  "teacher/probs": [14.466, 23.273, "Softmax turns that into zero point eight seven for cat, zero point one two for dog, and zero point zero two for car.", [[18.086, 18.536], [20.466, 20.826]]],
-  "teacher/label": [23.653, 31.585, "The label says only cat. The teacher says more: this cat looks a little like a dog, and nothing like a car.", [[25.503, 26.153], [27.333, 27.933], [29.983, 30.203]]],
-  "teacher/student": [31.965, 39.349, "So the student learns from the teacher's probabilities, not just the label, and picks up which wrong classes are close.", [[34.975, 35.245], [36.375, 36.765]]],
-  "soften/tiny": [41.149, 48.336, "But the teacher is confident, so those hints are faint. Car's zero point zero two barely registers.", [[42.679, 43.009], [44.379, 44.939]]],
-  "soften/temp": [48.716, 61.83, "So soften them with a temperature, as in sampling: divide every score by T before the softmax, and call the result q. With T at two, the scores become two, one and zero.", [[50.566, 50.956], [51.956, 52.526], [55.526, 55.806], [57.226, 57.866], [58.936, 59.196], [60.566, 60.726]]],
-  "soften/soft": [62.21, 81.026, "Exponentiate, about seven point three nine, two point seven two and one, and divide by their total, eleven point one one. The teacher's probabilities flatten to zero point six seven, zero point two four and zero point zero nine: the soft targets, q.", [[63.25, 63.66], [65.34, 65.69], [67.48, 67.94], [69.55, 69.94], [71.32, 71.94], [75.31, 75.58], [76.86, 77.09], [78.72, 79.24], [80.27, 80.64]]],
-  "soften/higher": [81.406, 91.568, "Cat still leads, but now dog and car count. Raise T to four, and they flatten further: the higher T, the more the wrong classes count.", [[82.616, 82.916], [84.846, 85.486], [86.736, 86.896], [88.096, 88.616], [89.476, 89.706]]],
-  "loss/p": [93.368, 104.11, "The student's scores are softened with the same T. Say its probabilities, p, are zero point six for cat, and zero point two each for dog and car.", [[96.178, 96.768], [98.088, 98.298], [98.668, 98.888], [100.818, 101.098]]],
-  "loss/hard": [104.49, 120.376, "Cross-entropy with the label is minus the log of cat's probability. Write the label as targets, one, zero, zero: weight each minus log p by its target and add, and only cat counts, zero point five one.", [[106.12, 106.28], [108.69, 109.37], [111.01, 111.31], [112.68, 113.26], [115.99, 116.21], [116.74, 117.21], [118.6, 118.96]]],
-  "loss/soft": [120.756, 133.066, "Distillation puts the teacher's soft targets, q, in place of the label. The loss, L, adds up, over every class k, q k times minus log p k.", [[123.446, 123.656], [124.096, 124.346], [125.466, 126.056], [126.686, 126.906], [127.266, 127.566], [128.126, 128.476], [129.986, 130.306]]],
-  "loss/sum": [133.446, 145.633, "Weighted by q, the classes add zero point three four, zero point three nine and zero point one four: a loss of zero point eight seven. Now dog and car count too.", [[134.636, 134.856], [137.206, 137.506], [138.816, 139.036], [140.546, 140.926], [142.876, 143.456]]],
-  "loss/best": [146.013, 158.989, "The loss is lowest when p matches q exactly: zero point eight three here. A student sure it saw a cat would pay minus log zero for dog and car, a loss without limit.", [[149.453, 149.963], [151.633, 152.243], [154.193, 154.373], [157.323, 157.693]]],
-  "loss/turn": [159.369, 160.109, "Your turn.", []]
+  "why/big": [0.7, 11.568, "A large network can be very accurate, and still too slow and costly to run for millions of people. A small network is fast and cheap, but usually less accurate.", [[2.96, 3.26], [6.99, 7.6], [9.77, 10.08]]],
+  "why/copy": [11.948, 16.716, "So train the small one, the student, to copy the large one, the teacher.", [[13.398, 13.638], [14.248, 14.538], [15.808, 16.078]]],
+  "why/compress": [17.096, 28.836, "In 2006, Rich Caruana and his colleagues did this with a big, slow collection of models. Their student was a thousand times smaller and faster, and nearly as accurate.", [[18.396, 18.656], [23.266, 23.876], [27.236, 27.556]]],
+  "why/label": [29.216, 42.76, "Normally a network learns from labels: each training image comes with its right answer. Written as targets, one number per class, a cat's label is one for cat, and zero for dog and for car.", [[31.666, 32.146], [34.626, 35.246], [36.486, 36.726], [38.026, 38.406], [40.326, 40.656]]],
+  "why/teacher": [43.14, 57.265, "The teacher says more. Its scores for this cat, four, two and zero, give probabilities of zero point eight seven for cat, zero point one two for dog, and only zero point zero two for car.", [[44.38, 44.96], [46.38, 46.69], [47.11, 47.31], [48.36, 48.74], [51.88, 52.28], [54.13, 54.48]]],
+  "why/hint": [57.645, 75.624, "This cat looks a little like a dog, and almost nothing like a car. Geoffrey Hinton, Oriol Vinyals and Jeff Dean gave an example in 2015: a BMW is rarely mistaken for a garbage truck, but that is still far likelier than mistaking it for a carrot.", [[59.815, 60.155], [61.885, 62.755], [63.695, 63.895], [65.755, 65.945], [67.905, 68.495], [71.835, 72.265]]],
+  "soften/faint": [77.424, 86.907, "But the teacher is confident, so those hints are faint. Car's zero point zero two is so close to zero that the student would barely notice it.", [[78.914, 79.244], [80.684, 81.274], [84.784, 85.014]]],
+  "soften/temp": [87.287, 99.225, "So soften them with a temperature, as in sampling: divide every score by T before the softmax. With T at two, the scores are halved: two, one and zero.", [[89.157, 89.537], [90.607, 91.097], [94.207, 94.687], [95.797, 96.017], [97.057, 97.487], [97.847, 98.107]]],
+  "soften/flat": [99.605, 111.426, "The bars flatten to zero point six seven, zero point two four and zero point zero nine, the same numbers sampling gave for these scores. These are the soft targets, q.", [[102.045, 102.275], [103.575, 103.825], [105.485, 105.945], [108.415, 108.955], [110.615, 110.985]]],
+  "soften/higher": [111.806, 124.871, "With T at four, they flatten further: the higher T, the more the wrong classes count. Lower it toward zero, and they sharpen toward all on cat. Either way, cat stays on top.", [[113.066, 113.246], [114.316, 114.886], [115.726, 115.996], [117.776, 118.366], [119.706, 119.896], [122.226, 122.776], [123.356, 123.646]]],
+  "soften/name": [125.251, 138.128, "Hinton, Vinyals and Dean called this distillation. The name fits: in chemistry, heating a mixture draws out its essence, and here raising the temperature draws out what the teacher knows.", [[128.701, 129.251], [130.141, 130.601], [131.341, 131.591], [133.891, 134.271], [134.781, 135.021]]],
+  "loss/p": [139.928, 150.989, "The student's scores are softened with the same T. Say its probabilities, p, come out zero point six for cat, and zero point two each for dog and car.", [[142.848, 143.508], [144.798, 145.008], [145.388, 145.618], [147.778, 148.058]]],
+  "loss/hard": [151.369, 167.24, "Cross-entropy weights each class's surprise, minus log p, by its target. Against the label, only cat has any weight: minus log zero point six, about zero point five one. Dog and car do not count at all.", [[154.199, 154.459], [155.469, 155.699], [156.599, 157.199], [158.159, 158.469], [160.159, 160.549], [162.509, 162.809], [164.449, 164.959]]],
+  "loss/soft": [167.62, 179.929, "Distillation puts the teacher's soft targets, q, in place of the label. The loss, L, adds up, over every class k, q k times minus log p k.", [[170.31, 170.52], [170.96, 171.21], [172.33, 172.92], [173.55, 173.77], [174.13, 174.43], [174.99, 175.34], [176.85, 177.17]]],
+  "loss/cat": [180.309, 186.752, "Cat adds zero point six seven times zero point five one: about zero point three four.", [[184.389, 184.919]]],
+  "loss/sum": [187.132, 197.257, "Dog and car add zero point three nine and zero point one four, so the loss is about zero point eight seven. Now dog and car count as well.", [[191.522, 191.982], [194.502, 195.122]]],
+  "loss/best": [197.637, 212.83, "The loss is lowest when p matches q exactly: zero point eight three here. Sharper or flatter costs more, and a student sure of cat would pay minus log zero for dog and car: a loss without limit.", [[201.117, 201.557], [203.187, 203.717], [205.867, 206.267], [207.867, 208.077], [211.017, 211.447]]],
+  "loss/turn": [213.21, 213.95, "Your turn.", []]
  }
 }

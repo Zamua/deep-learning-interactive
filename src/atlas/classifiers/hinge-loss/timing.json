@@ -1,21 +1,32 @@
 {
- "duration": 113.482,
+ "duration": 226.4,
  "scenes": {
-  "margin": [0.0, 51.376],
-  "sum": [51.376, 78.573],
-  "zero": [78.573, 113.482]
+  "gap": [0.0, 75.298],
+  "classes": [75.298, 133.48],
+  "sum": [133.48, 193.21],
+  "zero": [193.21, 226.4]
  },
  "beats": {
-  "margin/s": [0.7, 12.377, "Scores again, s: cat three, dog five, ship minus one. The image is a cat, so the right class, y, is zero.", [[1.78, 2.39], [2.81, 3.42], [4.15, 4.77], [5.73, 6.31], [6.65, 6.82], [7.6, 8.28], [9.51, 9.87], [10.9, 11.06], [11.53, 11.7]]],
-  "margin/line": [12.757, 27.63, "A loss, L, is one number for how bad the scores are. The multiclass SVM loss, or hinge loss, wants the right class to win by a margin of at least one. Draw a line one below cat's score, at two.", [[13.447, 13.697], [14.077, 14.377], [16.777, 17.357], [19.267, 19.417], [20.447, 20.747], [23.957, 24.507], [26.737, 26.997]]],
-  "margin/poke": [28.01, 35.656, "A wrong class that pokes above the line costs exactly how far it pokes. Dog, at five, is three above it.", [[30.24, 30.46], [32.65, 33.25], [33.59, 33.75], [34.42, 34.67]]],
-  "margin/safe": [36.036, 50.276, "Ship, far below the line, costs nothing. Its term is minus three, and the hinge clips it to zero: the max of zero and minus three, the larger of the two, is zero. No credit for being low.", [[36.466, 36.796], [37.986, 38.156], [39.056, 39.606], [41.286, 41.626], [43.436, 43.946], [46.026, 46.336], [47.396, 47.686], [48.286, 48.806]]],
-  "sum/formula": [52.076, 63.64, "In symbols: for every wrong class, j not equal to y, take the max of zero and s j, minus s y, plus one. Then add them up.", [[52.916, 53.516], [54.966, 55.226], [56.736, 57.186], [59.586, 59.976], [61.206, 61.406], [62.026, 62.576]]],
-  "sum/skip": [64.02, 71.154, "The right class is skipped. Its own term would always be one, a cost no score could ever remove.", [[65.69, 66.21], [68.33, 68.73]]],
-  "sum/sum": [71.534, 77.473, "Here that is three for dog, plus zero for ship. The loss is three.", [[71.964, 72.184], [73.924, 74.214], [75.694, 76.234]]],
-  "zero/raise": [79.273, 84.401, "Raise cat's score to six. The line rises to five, level with dog.", [[81.123, 81.623], [83.123, 83.393]]],
-  "zero/zero": [84.781, 96.033, "Dog's term is five, minus six, plus one: zero, and the max of zero and zero is zero. Ship's is zero too, so the loss is zero.", [[86.371, 86.711], [88.331, 88.711], [89.201, 89.621], [92.261, 92.871], [94.341, 94.611]]],
-  "zero/least": [96.413, 111.262, "Six is the smallest score that does it: the highest other score, plus one. At five and a half, dog pokes half a point above the line. Just winning is not enough: the right class must win by at least one.", [[98.843, 99.373], [100.683, 100.883], [101.553, 102.203], [103.293, 103.543], [105.773, 106.383], [108.033, 108.513]]],
-  "zero/turn": [111.642, 112.382, "Your turn.", []]
+  "gap/recap": [0.7, 14.985, "Here are the cats and ships again, split by the line where w dot x, plus b, is zero. A point's score, s, is positive on the ship side and negative on the cat side, and bigger the farther it sits from the line.", [[2.43, 2.75], [6.49, 7.12], [8.1, 8.25], [8.67, 8.85], [10.39, 10.59], [12.24, 12.53]]],
+  "gap/close": [15.365, 23.419, "Every point is on its own side. But this cat is right against the line: a slightly different cat could land on the ship side.", [[17.445, 17.975], [20.125, 20.635]]],
+  "gap/gap": [23.799, 35.072, "So ask for more than the right side. Every ship should score at least one, and every cat at most minus one. That leaves room on both sides of the line: a margin.", [[25.969, 26.529], [28.619, 28.919], [31.229, 31.769], [34.009, 34.409]]],
+  "gap/cost": [35.452, 48.299, "A point clear of the margin costs nothing. One that falls short costs how far short it falls: this cat scores minus a half, half a point short of minus one, so it costs a half.", [[38.012, 38.582], [39.682, 39.872], [41.802, 42.292], [44.232, 44.612], [46.512, 46.822]]],
+  "gap/loss": [48.679, 56.332, "That cost is the point's loss, L: one number for how bad its score is, and zero when nothing is wrong.", [[50.699, 51.169], [51.499, 52.059], [54.209, 54.479]]],
+  "gap/svm": [56.712, 74.198, "Corinna Cortes and Vladimir Vapnik charged points exactly this way in their support-vector network of 1995, now called the support vector machine, or SVM. Points right on the edges hold the margin in place: they are its support vectors.", [[59.052, 59.252], [64.322, 64.712], [66.862, 67.142], [68.252, 68.932], [71.832, 72.282], [74.012, 74.182]]],
+  "classes/three": [75.998, 86.41, "With three classes, each class has its own score. Here are one image's scores: three for cat, five for plane, and minus one for ship.", [[77.138, 77.448], [79.238, 79.818], [81.458, 81.948], [82.918, 83.328], [84.398, 84.738]]],
+  "classes/y": [86.79, 93.274, "It is a cat, so the right class, y, is cat: class zero, counting from zero.", [[87.62, 87.97], [89.06, 89.24], [89.66, 89.86], [90.45, 90.95], [91.81, 92.13]]],
+  "classes/line": [93.654, 104.019, "Now the margin sits between scores: the right class must beat every wrong class by at least one. So draw a line one below cat's score, at two.", [[95.944, 96.414], [99.964, 100.494], [103.124, 103.374]]],
+  "classes/poke": [104.399, 113.72, "A wrong class that pokes above the line costs how far it pokes. Plane, at five, is three above the line, so it costs three.", [[106.689, 106.849], [108.589, 109.249], [109.679, 109.829], [110.499, 110.699], [111.989, 112.299]]],
+  "classes/slide": [114.1, 122.54, "Slide plane's score up from the bottom, and watch its cost. It stays at zero all the way to the line, then climbs one for one.", [[117.58, 118.04], [120.47, 120.8]]],
+  "classes/hinge": [122.92, 132.38, "Flat, then a corner, then a straight climb: the graph bends at one point, like a hinge. That is why this is called the hinge loss.", [[123.43, 123.72], [124.48, 124.8], [126.15, 126.71], [128.4, 128.64], [129.42, 129.97]]],
+  "sum/height": [134.18, 145.061, "A wrong class's height above the line is its score, minus the right class's, plus one. For plane: five, minus three, plus one, is three.", [[137.23, 137.5], [138.95, 139.19], [139.85, 140.48], [141.11, 141.57], [142.09, 142.38], [143.23, 143.46], [144.15, 144.41]]],
+  "sum/max": [145.441, 157.591, "Ship sits below the line, at a height of minus three. Its cost is the max of zero and that height, the larger of the two: zero. Being far below earns no credit.", [[147.001, 147.291], [148.831, 149.431], [152.331, 152.631], [153.641, 154.161], [154.651, 155.271]]],
+  "sum/sum": [157.971, 171.0, "The hinge loss, L, adds up that cost over every wrong class j, written j not equal to y. Here that is three for plane, plus zero for ship: L is three.", [[158.961, 159.181], [159.521, 159.901], [163.081, 163.431], [165.541, 166.131], [167.921, 168.171], [169.431, 169.981]]],
+  "sum/skip": [171.38, 178.513, "The right class is skipped. Its own term would always be one, a cost no score could ever remove.", [[173.05, 173.57], [175.69, 176.09]]],
+  "sum/ww": [178.893, 192.11, "Jason Weston and Chris Watkins carried the support vector machine to many classes this way in 1999, with one term for each wrong class. So this is also called the multiclass SVM loss.", [[185.413, 185.833], [187.963, 188.413]]],
+  "zero/raise": [193.91, 199.196, "Raise cat's score to six. The line rises to five, level with plane.", [[195.79, 196.33], [197.87, 198.1]]],
+  "zero/zero": [199.576, 208.335, "Plane's term is five, minus six, plus one: zero. Ship's term is zero as well, so the loss is zero.", [[201.186, 201.506], [202.316, 202.536], [203.166, 203.666], [204.116, 204.766], [206.566, 206.856]]],
+  "zero/least": [208.715, 224.179, "Six is the smallest score that does it: the highest other score, plus one. At five and a half, cat still wins, but plane pokes half a point above the line. Winning is not enough: the right class must win by at least one.", [[211.125, 211.545], [212.815, 213.005], [213.655, 214.255], [215.295, 215.495], [216.615, 216.925], [219.295, 219.885], [221.195, 221.555]]],
+  "zero/turn": [224.559, 225.3, "Your turn.", []]
  }
 }
