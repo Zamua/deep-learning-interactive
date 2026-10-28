@@ -1,17 +1,27 @@
 {
- "duration": 81.066,
+ "duration": 180.88,
  "scenes": {
-  "hide": [0.0, 47.082],
-  "jobs": [47.082, 81.066]
+  "blank": [0.0, 69.19],
+  "bert": [69.19, 130.49],
+  "jobs": [130.49, 180.88]
  },
  "beats": {
-  "hide/causal": [0.7, 10.56, "A causal model like GPT predicts each token from the ones before it. To predict sat, it may use the and cat, and nothing after.", [[2.72, 2.93], [5.32, 5.87], [6.86, 7.14], [8.19, 8.37], [8.99, 9.3]]],
-  "hide/mask": [10.94, 22.008, "A masked language model, like BERT, is trained differently. Pick about fifteen percent of the tokens, hide each behind a mask token, and train the model to recover them.", [[12.47, 12.62], [13.31, 13.55], [14.71, 15.36], [17.65, 17.99], [19.91, 20.25]]],
-  "hide/both": [22.388, 35.021, "It has no causal mask: every position attends to every other. So to recover sat, it reads the and cat on the left, and on, a, mat on the right.", [[24.148, 24.668], [26.848, 27.468], [28.948, 29.248], [31.658, 32.018], [32.328, 32.518], [32.898, 33.218], [33.518, 33.828], [34.238, 34.388]]],
-  "hide/count": [35.401, 45.982, "Only the hidden tokens are scored. In a sequence of two hundred tokens, fifteen percent is thirty: thirty losses, where a causal model gets two hundred.", [[37.331, 37.951], [39.981, 40.331], [42.011, 42.491], [43.461, 43.851]]],
-  "jobs/attend": [47.782, 60.512, "In attention terms: in a sequence of six, position two of a causal model attends to three positions, itself and the two before it. In a masked model, it attends to all six.", [[49.042, 49.662], [50.932, 51.302], [54.842, 55.242], [55.852, 56.042], [57.072, 57.662], [58.652, 58.882]]],
-  "jobs/generate": [60.892, 72.486, "Generating text means writing one token at a time, with nothing yet on the right. That is exactly the causal model's training task, so causal models are the ones that write.", [[64.392, 64.632], [66.192, 66.832], [69.652, 70.062]]],
-  "jobs/fill": [72.866, 78.846, "Filling in a blank in the middle of a sentence, with words on both sides, is the masked model's task.", [[75.116, 75.316], [76.826, 77.096]]],
-  "jobs/turn": [79.226, 79.966, "Your turn.", []]
+  "blank/blank": [0.7, 12.495, "Here is a sentence with a word missing: the cat, blank, on a mat. You can fill it in at once: sat. And to do it, you used the words on both sides of the gap.", [[2.72, 3.35], [3.95, 4.33], [4.71, 5.06], [5.69, 6.31], [7.68, 8.18], [8.67, 9.19], [9.86, 10.04]]],
+  "blank/causal": [12.875, 28.132, "A causal model like GPT cannot do that. Each position sees only itself and what came before it, so at the gap it has two words to go on: the, and cat. On a mat, the best clue, stays hidden.", [[15.735, 16.335], [19.685, 20.165], [21.175, 21.325], [22.825, 23.325], [23.715, 24.065], [24.675, 25.315], [25.905, 26.195], [27.005, 27.335]]],
+  "blank/peek": [28.512, 41.313, "So why not drop the causal mask, and let every position read both sides? Then the answer sits right there in the input: the position that must predict sat can read sat itself, and copy it.", [[30.782, 31.002], [33.332, 33.862], [36.222, 36.732], [38.662, 38.852], [40.302, 40.482]]],
+  "blank/mask": [41.693, 56.882, "The fix is to hide the answer in the input instead. Swap sat for a special token, the mask token, which says only: a word goes here. Now every position can read both sides, and the answer is nowhere in sight.", [[44.833, 45.383], [47.313, 47.603], [48.613, 48.923], [49.823, 50.233], [51.493, 52.133], [54.593, 54.823]]],
+  "blank/recover": [57.262, 68.09, "Then train the model to recover the hidden word from everything around it. That is a masked language model: masked, because its training hides words behind that token.", [[57.732, 57.932], [61.352, 61.912], [63.812, 64.312], [64.872, 65.092]]],
+  "bert/cloze": [69.89, 82.671, "Filling blanks is an old test. In 1953, Wilson Taylor blanked out words in a passage, and counted how many of them readers could fill back in, to measure how easy the passage was to read.", [[71.97, 72.51], [73.84, 74.11], [76.86, 77.16], [79.96, 80.27]]],
+  "bert/closure": [83.051, 89.551, "He called it a cloze test, from closure: the way the eye completes a circle that has a gap in it.", [[84.841, 85.171], [85.991, 86.491]]],
+  "bert/bert": [89.931, 105.454, "In 2018, Jacob Devlin and colleagues at Google turned the test into training, and said it was their inspiration. Their model, BERT, picked fifteen percent of the tokens in each sequence at random, hid them, and learned to recover them.", [[91.051, 91.361], [93.401, 93.671], [95.221, 95.521], [97.321, 97.931], [98.601, 98.751], [99.211, 99.491], [103.021, 103.421], [103.861, 104.161]]],
+  "bert/name": [105.834, 116.573, "BERT stands for bidirectional encoder representations from transformers. Bidirectional, because every position reads in both directions, left and right.", [[110.664, 111.264], [112.154, 112.384], [115.094, 115.434]]],
+  "bert/enc": [116.953, 129.39, "Encoder, because it is the encoder half of the 2017 Transformer: the half that read the whole source sentence, with no causal mask. GPT kept the other half, the decoder.", [[117.653, 118.023], [121.623, 122.103], [124.353, 124.533], [125.923, 126.523], [128.303, 128.593]]],
+  "jobs/count": [131.19, 139.326, "Only the hidden tokens are scored. In a sequence of two hundred tokens, fifteen percent is thirty: thirty losses.", [[133.12, 133.68], [135.69, 136.04], [137.79, 138.31]]],
+  "jobs/fewer": [139.706, 145.144, "A causal model predicts every next token, so the same sequence gives it two hundred.", [[142.416, 142.816]]],
+  "jobs/attend": [145.524, 154.961, "In attention terms: in a sequence of six, position two of a causal model attends to three positions, itself and the two before it.", [[146.764, 147.334], [148.614, 148.904], [150.874, 151.034], [152.594, 152.994], [153.584, 153.814]]],
+  "jobs/all": [155.341, 158.38, "In a masked model, it attends to all six.", [[156.491, 156.761]]],
+  "jobs/generate": [158.76, 170.354, "Generating text means writing one token at a time, with nothing yet on the right. That is exactly the causal model's training task, so causal models are the ones that write.", [[162.26, 162.5], [164.06, 164.7], [167.52, 167.93]]],
+  "jobs/fill": [170.734, 178.66, "Filling a blank in the middle, with words on both sides, is the masked model's task: the cat, blank, on a mat.", [[172.174, 172.384], [173.894, 174.134], [175.804, 176.324], [176.874, 177.244], [177.604, 177.994]]],
+  "jobs/turn": [179.04, 179.78, "Your turn.", []]
  }
 }

@@ -325,6 +325,7 @@ const sig: SymbolDef = { color: 'teal', name: 'σ: the sigmoid', tex: '\\sigma',
  * teach. Keys missing from ATLAS_SYMBOLS work too, through \sym{key}{tex}.
  */
 export const SCOPED: Record<string, SymbolMap> = {
+  seq2seq: { h: { color: 'gold', name: 'h: the encoder\'s final state', code: ['h'], about: 'H numbers that carry the whole input to the decoder, the same size for three words or fifty.' } },
   'char-lm': {
     h: { color: 'gold', name: 'h: the hidden state', code: ['h'], about: 'The memory after each character: it tells apart steps that read the same letter.' },
     V: { color: 'slate', name: 'V: the vocabulary size', about: 'How many tokens the model knows: each step outputs V scores, then V probabilities.' },

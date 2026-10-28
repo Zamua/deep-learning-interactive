@@ -1,20 +1,34 @@
 {
- "duration": 147.593,
+ "duration": 220.605,
  "scenes": {
-  "slope": [0.0, 108.199],
-  "try": [108.199, 147.593]
+  "learn": [0.0, 64.011],
+  "back": [64.011, 166.226],
+  "agree": [166.226, 220.605]
  },
  "beats": {
-  "slope/chain": [0.7, 24.425, "How does one choice move the two scores? Call the gap z: r w minus r l. The loss is a chain: z feeds the sigmoid, and the sigmoid feeds minus ln. People preferred an answer scored two over one scored one, so z is one, sigma is zero point seven three, and the loss zero point three one.", [[3.28, 3.86], [5.08, 5.47], [7.41, 7.97], [9.29, 9.78], [11.22, 11.46], [13.8, 14.35], [18.03, 18.42], [19.63, 19.96], [21.97, 22.28]]],
-  "slope/back": [24.805, 37.517, "Walk back from the loss, multiplying local slopes. Minus ln has slope minus one over its input. At zero point seven three, that is about minus one point three seven.", [[26.185, 26.565], [28.325, 28.885], [32.535, 33.095], [34.675, 34.975]]],
-  "slope/sig": [37.897, 54.924, "The sigmoid's slope is sigma times one minus sigma: zero point seven three times zero point two seven, about zero point two. So the slope on z is minus one point three seven times zero point two: minus zero point two seven.", [[41.437, 42.007], [45.197, 45.597], [46.897, 47.497], [52.387, 52.837], [54.697, 54.897]]],
-  "slope/cancel": [55.304, 72.458, "In symbols, that is minus one over sigma, times sigma times one minus sigma. The sigmas cancel, leaving minus, one minus sigma: one minus zero point seven three, made negative. The same minus zero point two seven.", [[56.154, 56.384], [58.554, 58.844], [59.684, 59.864], [61.354, 61.994], [63.154, 63.404], [64.344, 64.574], [65.694, 66.144], [68.374, 68.594], [69.404, 69.864], [70.414, 70.574]]],
-  "slope/scores": [72.838, 90.699, "Last, z rises one for one with the winner's score, and falls one for one as the loser's rises. So the slope on r w is sigma minus one, minus zero point two seven, and on r l it is one minus sigma, plus zero point two seven.", [[73.388, 73.688], [76.468, 76.798], [79.518, 80.088], [81.888, 82.138], [83.508, 83.718], [85.528, 86.048], [87.098, 87.338], [88.758, 88.958]]],
-  "slope/push": [91.079, 98.926, "Lowering the loss steps against those slopes: it raises the winner and lowers the loser, by zero point two seven each.", [[93.659, 94.149], [96.589, 96.919]]],
-  "slope/agree": [99.306, 107.099, "A pair the model already ranks right, with sigma near one, barely moves it. A pair it gets wrong moves it the most.", [[101.596, 101.816], [102.996, 103.286], [104.156, 104.666], [105.856, 106.046]]],
-  "try/p1": [108.899, 123.928, "Try one. A pair has r w minus r l of minus one: the model scored the rejected answer higher. sigma of minus one is about zero point two seven. What is the loss's slope on r l?", [[109.519, 110.099], [114.049, 114.589], [117.049, 117.579], [120.989, 121.569]]],
-  "try/a1": [124.308, 133.31, "The slope on z is minus, one minus sigma: one minus zero point two seven is zero point seven three, made negative.", [[126.288, 126.618], [127.828, 128.288], [130.268, 130.528], [132.108, 132.458]]],
-  "try/a2": [133.69, 145.372, "z falls as r l rises, so multiply by minus one: plus zero point seven three. Far more than the zero point two seven of the pair it ranked right.", [[136.21, 136.62], [138.49, 139.05], [140.98, 141.57]]],
-  "try/turn": [145.752, 146.493, "Your turn.", []]
+  "learn/clips": [0.7, 16.137, "A reward model learns from people's picks, and people's time is scarce. In 2017, Paul Christiano and colleagues showed people pairs of clips of a simulated robot, each a second or two long, and asked which they preferred.", [[3.19, 3.55], [5.41, 6.13], [7.32, 7.54], [12.22, 12.6], [14.16, 14.48]]],
+  "learn/flip": [16.517, 26.357, "Their reward model learned from those picks with the loss from before. From only nine hundred picks, made in under an hour, the robot learned to do backflips.", [[20.137, 20.777], [22.437, 22.637], [24.077, 24.387]]],
+  "learn/train": [26.737, 35.29, "Training a model means changing it, step by step, so that its loss goes down. So what does one pick do to the two scores?", [[28.707, 28.937], [29.887, 30.157], [31.797, 32.367]]],
+  "learn/curve": [35.67, 42.169, "Here is that loss, against the gap between the winner's score and the loser's. Call the gap z.", [[36.91, 37.18], [40.21, 40.75], [41.42, 41.68]]],
+  "learn/right": [42.549, 51.519, "A pair the model already ranks right, by a gap of three, sits where the curve is nearly flat: little slope, so little to learn.", [[43.169, 43.359], [45.059, 45.359], [46.399, 46.749], [48.749, 49.269], [49.989, 50.329]]],
+  "learn/wrong": [51.899, 62.911, "A pair it ranks wrong, by two, sits where the curve is steep: a big slope, so a big push. How big, exactly? Walk back through the loss.", [[53.519, 53.919], [54.499, 54.809], [56.489, 57.029], [57.809, 58.059], [59.139, 59.719], [60.829, 61.429]]],
+  "back/graph": [64.711, 71.219, "Draw the loss as a graph. The two scores meet at a subtract node, which makes the gap, z.", [[66.311, 66.971], [69.311, 69.611], [70.491, 70.741]]],
+  "back/chain": [71.599, 78.362, "z goes into a sigmoid node, and a minus ln node turns that into the loss, L.", [[73.789, 74.179], [76.019, 76.209], [77.689, 77.949]]],
+  "back/fwd": [78.742, 90.799, "Run it forward on the pair from before, scored two and one: z is one. As before, sigma is about zero point seven three, and the loss about zero point three one.", [[80.782, 81.062], [81.472, 81.622], [82.542, 83.052], [84.122, 84.722], [85.432, 85.682], [88.112, 88.432]]],
+  "back/ln": [91.179, 103.902, "Now walk back from L, one local slope at a time. Minus ln has slope minus one over its input: at zero point seven three, about minus one point three seven.", [[92.769, 93.179], [94.879, 95.569], [99.359, 99.769], [101.449, 101.769]]],
+  "back/sig": [104.282, 113.83, "The sigmoid's local slope is sigma times one minus sigma: zero point seven three times zero point two seven, about zero point two.", [[108.202, 108.722], [111.912, 112.392]]],
+  "back/times": [114.21, 121.11, "Times the minus one point three seven arriving from above, z gets about minus zero point two seven.", [[117.68, 118.16]]],
+  "back/cancel": [121.49, 131.227, "That is no coincidence. Minus one over sigma, times sigma times one minus sigma: the sigma on top cancels the one below.", [[123.18, 123.73], [125.31, 125.54], [127.95, 128.53], [129.6, 129.78]]],
+  "back/rule": [131.607, 138.408, "That leaves minus, one minus sigma: one minus zero point seven three, made negative.", [[132.987, 133.387], [134.607, 135.077], [137.277, 137.477]]],
+  "back/win": [138.788, 148.399, "Last, the subtract node. z rises one for one with the winner's score, so r w gets the same minus zero point two seven.", [[139.318, 139.638], [140.708, 141.268], [144.018, 144.348]]],
+  "back/lose": [148.779, 157.201, "But z falls as the loser's score rises, so r l gets it with the sign flipped: plus zero point two seven.", [[151.729, 152.129], [154.719, 155.209]]],
+  "back/step": [157.581, 165.126, "Step against those slopes, as with any gradient, and the winner's score rises while the loser's falls, by the same amount.", [[159.151, 159.341], [160.511, 160.771], [163.781, 164.081]]],
+  "agree/push": [166.926, 174.801, "So one pick pushes the two scores apart, each by one minus sigma of the gap. Plot that push against z.", [[169.706, 170.056], [172.366, 172.966]]],
+  "agree/one": [175.181, 180.824, "The pair from before, ranked right by one, moves each score zero point two seven.", [[176.401, 176.631], [177.801, 178.121]]],
+  "agree/neg": [181.204, 189.269, "Now say the labeler had picked b. The scores are the same, but z is minus one: the model ranks this pair wrong.", [[182.824, 182.974], [183.324, 183.874], [185.034, 185.294], [186.954, 187.434]]],
+  "agree/neg2": [189.649, 202.34, "Sigma of minus one is about zero point two seven, so the push is zero point seven three: nearly three times as big. The slope on r l is plus zero point seven three.", [[193.069, 193.479], [195.859, 196.329], [198.089, 198.669]]],
+  "agree/far": [202.72, 211.809, "A pair ranked right by three moves only about zero point zero five. Still, it moves: sigma never quite reaches one.", [[207.25, 207.78], [208.23, 208.45], [209.12, 209.62]]],
+  "agree/most": [212.189, 218.385, "So the model learns most from the picks it gets wrong, and least from the ones it already agrees with.", [[215.329, 215.699]]],
+  "agree/turn": [218.765, 219.505, "Your turn.", []]
  }
 }

@@ -1,19 +1,36 @@
 {
- "duration": 80.839,
+ "duration": 232.345,
  "scenes": {
-  "readwrite": [0.0, 42.812],
-  "train": [42.812, 80.839]
+  "lengths": [0.0, 57.142],
+  "readwrite": [57.142, 141.03],
+  "train": [141.03, 204.511],
+  "squeeze": [204.511, 232.345]
  },
  "beats": {
-  "readwrite/task": [0.7, 10.001, "Some tasks turn one sequence into another of a different length. Translation, say: je suis \u00e9tudiant becomes I am a student.", [[4.45, 5.01], [5.72, 5.92], [6.33, 6.75], [7.88, 8.17], [8.7, 9.01]]],
-  "readwrite/enc": [10.381, 19.457, "An encoder RNN reads the input, one token per step. Its final state sums up the whole sentence in a single vector.", [[12.211, 12.361], [13.371, 13.721], [15.091, 15.691]]],
-  "readwrite/dec": [19.837, 28.24, "A second RNN, the decoder, starts from that vector. It reads a start token and predicts the first word: I.", [[21.147, 21.407], [22.057, 22.277], [23.637, 24.187], [27.227, 27.757]]],
-  "readwrite/feed": [28.62, 35.088, "Each predicted word is fed back in to predict the next one: am, a, student.", [[32.12, 32.66], [33.1, 33.6], [33.89, 34.38]]],
-  "readwrite/end": [35.468, 41.712, "Until it predicts the end token. Four words, plus the end: five decoder steps.", [[37.478, 37.978], [38.788, 39.038], [39.808, 40.288]]],
-  "train/tf": [43.512, 54.47, "In training, the decoder reads the true previous word, not its own guess. That is teacher forcing: one early mistake cannot derail the rest of the sentence.", [[44.252, 44.522], [46.832, 47.142], [48.392, 48.842], [50.512, 50.972]]],
-  "train/loss": [54.85, 62.307, "Every step has a right answer, the next word of the target, so one sentence pair gives five predictions to score.", [[56.74, 57.13], [58.58, 58.99]]],
-  "train/test": [62.687, 69.129, "At test time there is no true word to read, so the decoder reads its own last prediction instead.", [[65.567, 65.917]]],
-  "train/bottleneck": [69.509, 78.619, "One weakness remains: everything about the input must squeeze through that one final vector, whether the sentence has three words or fifty.", [[70.959, 71.549], [75.619, 76.049], [77.769, 77.949]]],
-  "train/turn": [78.999, 79.739, "Your turn.", []]
+  "lengths/task": [0.7, 10.215, "Translate the French je suis \u00e9tudiant, and you get I am a student: three words in, four out. No word-for-word rule can do that.", [[1.79, 2.02], [3.12, 3.55], [4.11, 4.47], [5.42, 5.93], [6.76, 6.97], [7.65, 8.15]]],
+  "lengths/one": [10.595, 23.712, "A recurrent neural network, an R N N, makes one output per token it reads, like a language model guessing at every step. Three tokens in, three out: the fourth word has nowhere to go.", [[12.275, 12.485], [13.385, 13.785], [16.165, 16.535], [18.855, 19.475], [20.395, 20.645], [21.265, 21.705]]],
+  "lengths/two": [24.092, 33.819, "The way around it is two RNNs: the first reads the whole input, and only then does the second write the output, for as many steps as it needs.", [[26.582, 27.062], [28.972, 29.252], [31.752, 32.042]]],
+  "lengths/teams": [34.199, 46.828, "In 2014, two teams built this for translation: Kyunghyun Cho and colleagues, who called it an RNN encoder-decoder, and Ilya Sutskever, Oriol Vinyals and Quoc Le.", [[35.399, 35.679], [37.769, 38.329], [39.889, 40.169], [42.899, 43.319], [44.589, 44.859]]],
+  "lengths/name": [47.208, 56.042, "Sutskever's paper, Sequence to Sequence Learning, gave the idea its name: seek two seek, short for sequence to sequence.", [[48.388, 48.638], [50.268, 50.568], [51.988, 52.478], [53.688, 54.138]]],
+  "readwrite/enc": [57.842, 65.29, "The first RNN, the encoder, reads the French one token per step, passing its memory, h, along.", [[59.192, 59.392], [60.142, 60.402], [62.642, 62.942], [63.962, 64.182], [64.602, 64.772]]],
+  "readwrite/h": [65.67, 75.271, "After the last token, h is the encoder's final state: capital H numbers, one per hidden unit, that must hold the whole sentence.", [[66.99, 67.33], [69.54, 70.06], [71.31, 71.65], [72.98, 73.23]]],
+  "readwrite/code": [75.651, 86.997, "To encode is to put into a code: the sentence becomes a code of capital H numbers. The second RNN, the decoder, turns that code back out as words.", [[78.041, 78.581], [81.531, 82.051], [83.381, 83.611], [84.301, 84.631]]],
+  "readwrite/start": [87.377, 93.572, "The decoder starts from h. Nothing is written yet, so its first input is a start token.", [[89.227, 89.747], [90.897, 91.187]]],
+  "readwrite/first": [93.952, 102.735, "Like a language model, it gives every token in its vocabulary a probability, and writes the most likely one, the argmax: I.", [[95.142, 95.402], [98.542, 98.922], [100.462, 100.902], [101.822, 102.302]]],
+  "readwrite/feed": [103.115, 112.238, "Each word it writes becomes its next input. Reading I, it writes am; then the word a; then student.", [[105.865, 106.475], [107.335, 107.625], [108.185, 108.365], [108.795, 109.345], [110.595, 111.155]]],
+  "readwrite/end": [112.618, 119.994, "It stops when it writes the end token, which is in its vocabulary too. That is what lets the output be any length.", [[114.958, 115.228], [116.868, 117.438]]],
+  "readwrite/count": [120.374, 126.056, "So count the decoder's steps: four words, plus the end token, makes five.", [[122.254, 122.724], [123.544, 123.784], [124.954, 125.234]]],
+  "readwrite/reads": [126.436, 135.464, "It also reads five tokens: the start token and the four words. The start token is only read, and the end token only written.", [[128.326, 128.766], [130.986, 131.506], [133.346, 133.606]]],
+  "readwrite/total": [135.844, 139.93, "Add the encoder's three steps, and the whole translation takes eight.", [[137.674, 137.884]]],
+  "train/training": [141.73, 152.078, "Now training: nudging every weight, a little at a time, downhill on the loss. The model learns from sentence pairs with known translations.", [[142.7, 143.33], [144.63, 144.92], [145.95, 146.23], [147.74, 148.67]]],
+  "train/targets": [152.458, 161.923, "Every decoder step has a right answer, the next word of the true translation, and its guess is scored with cross-entropy: five losses for this pair.", [[154.678, 155.078], [157.038, 157.488], [159.798, 160.338]]],
+  "train/mistake": [162.303, 172.224, "Count the steps from zero, and say step one guesses was, instead of am. That step pays its loss. But what should step two read?", [[163.843, 164.113], [164.623, 164.813], [166.603, 166.883], [167.793, 168.373], [169.973, 170.493]]],
+  "train/tf": [172.604, 181.112, "In training, it reads the true word, am, not its own guess, so one early mistake cannot throw off the rest of the sentence.", [[173.344, 173.584], [174.904, 175.154], [175.544, 175.924], [177.054, 177.434]]],
+  "train/name": [181.492, 193.894, "The true translation acts as a teacher, forcing the right word in at every step: so this is called teacher forcing. Ronald Williams and David Zipser named it in 1989.", [[183.932, 184.382], [186.912, 187.372], [188.442, 188.612], [189.512, 190.082]]],
+  "train/test": [194.274, 203.411, "At test time, the trained model meets new sentences with no translation given, so the decoder reads its own last guess, right or wrong.", [[195.184, 195.434], [199.164, 199.594], [202.114, 202.344]]],
+  "squeeze/squeeze": [205.211, 214.698, "One weakness is left. All the decoder knows of the input comes through h: the same capital H numbers, for three words or fifty.", [[206.711, 207.301], [210.421, 210.911], [212.681, 212.981], [213.861, 214.011]]],
+  "squeeze/cho": [215.078, 223.506, "Later in 2014, Cho and colleagues measured the cost: their translations got rapidly worse as sentences grew longer.", [[216.728, 217.058], [219.138, 219.658]]],
+  "squeeze/bottle": [223.886, 230.125, "Like the narrow neck of a bottle, that one vector limits what gets through: it is the bottleneck.", [[225.666, 226.036], [228.476, 228.966]]],
+  "squeeze/turn": [230.505, 231.245, "Your turn.", []]
  }
 }
