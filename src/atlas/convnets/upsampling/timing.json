@@ -1,23 +1,34 @@
 {
- "duration": 143.155,
+ "duration": 238.398,
  "scenes": {
-  "pixels": [0.0, 38.081],
-  "stamp": [38.081, 86.849],
-  "size": [86.849, 143.155]
+  "pixels": [0.0, 75.453],
+  "stamp": [75.453, 126.003],
+  "name": [126.003, 180.848],
+  "size": [180.848, 238.398]
  },
  "beats": {
-  "pixels/label": [0.7, 10.611, "A classifier gives a whole image one label. Segmentation labels every pixel: this one is sky, that one tree, those ground.", [[3.51, 4.13], [6.38, 6.94], [7.94, 8.28], [9.15, 9.54]]],
-  "pixels/shrink": [10.991, 21.858, "A ConvNet shrinks as it goes. Strided convolutions and pooling take a sixty four by sixty four image down to eight by eight, with two hundred and fifty six channels.", [[13.061, 13.651], [18.021, 18.171], [19.471, 19.741]]],
-  "pixels/grow": [22.238, 36.981, "To label every pixel, it must grow back: a score for each of the C classes at every pixel, C by sixty four by sixty four. Each pixel's label is the arg max of its scores: the class with the highest one.", [[23.738, 23.908], [25.008, 25.508], [28.548, 28.958], [31.338, 31.868], [35.018, 35.448]]],
-  "stamp/setup": [38.781, 50.021, "The layer that grows is a transposed convolution. Here is an input of three numbers, one, two and three, and a filter, w: one, two, one.", [[41.831, 42.491], [44.461, 44.791], [45.111, 45.321], [46.261, 46.611], [47.311, 47.611], [48.051, 48.481], [48.851, 49.051], [49.421, 49.601]]],
-  "stamp/first": [50.401, 59.121, "Each input value stamps a copy of the filter, scaled by that value, into the output. The one stamps one, two, one.", [[53.161, 53.361], [54.701, 54.901], [55.841, 56.371], [57.931, 58.121], [58.481, 58.671]]],
-  "stamp/next": [59.501, 67.942, "The next stamp lands S further along: two places, with a stride of two. The two stamps two, four, two.", [[62.101, 62.591], [63.371, 63.631], [64.761, 65.361], [66.201, 66.421], [67.361, 67.531]]],
-  "stamp/add": [68.322, 74.411, "Where stamps overlap, they add. Position two gets one plus two: three.", [[69.672, 69.972], [70.542, 71.142], [73.482, 73.922]]],
-  "stamp/all": [74.791, 85.749, "The three stamps three, six, three. Add it all up: one, two, three, four, five, six, three. Three numbers became seven.", [[75.811, 76.171], [76.601, 76.761], [77.791, 78.331], [79.031, 79.531], [79.921, 80.101], [81.081, 81.241], [81.701, 81.881], [82.351, 82.501], [83.531, 84.051]]],
-  "size/starts": [87.549, 103.928, "How long is the output? With an input W wide, here three, the first stamp starts at zero, and each of the other W minus one starts S further on. So the last starts at S times W minus one: four.", [[88.939, 89.569], [91.289, 91.609], [92.509, 92.919], [94.789, 95.129], [97.489, 97.659], [99.249, 99.789], [103.059, 103.459]]],
-  "size/width": [104.308, 108.956, "Add the last stamp's width, F, and the output is seven long.", [[106.068, 106.338], [106.698, 107.088]]],
-  "size/pad": [109.336, 122.815, "Padding works backwards here: it trims P entries off each end. With P of one, seven becomes five. So the size is S times W minus one, plus F, minus two P.", [[110.896, 111.416], [113.736, 114.316], [115.326, 115.576], [116.976, 117.536], [120.556, 120.816], [121.486, 121.696]]],
-  "size/undo": [123.195, 140.935, "It is the convolution size rule, run backwards. A convolution with a filter of four, stride two and padding one takes thirty two down to sixteen. The transposed one takes sixteen back: two times fifteen, plus four, minus two, is thirty two.", [[125.165, 125.375], [126.305, 126.845], [128.895, 129.105], [130.945, 131.275], [133.455, 134.075], [136.395, 136.815], [137.965, 138.145], [138.815, 138.995], [139.765, 139.995]]],
-  "size/turn": [141.315, 142.055, "Your turn.", []]
+  "pixels/one": [0.7, 7.375, "A classifier looks at a whole image and answers with one label: the name of a class, like tree.", [[2.83, 3.05], [4.65, 5.18], [6.29, 6.56]]],
+  "pixels/every": [7.755, 19.75, "To find where the tree is, every pixel needs its own label: sky, tree or ground. That is segmentation: it splits the image into segments, one per class.", [[9.185, 9.475], [11.415, 11.865], [12.455, 12.685], [13.105, 13.275], [13.875, 14.505], [15.965, 16.395], [18.375, 18.625]]],
+  "pixels/shrink": [20.13, 29.789, "A ConvNet cannot do that as it stands: its strided convolutions and pooling shrink a sixty four by sixty four image into an eight by eight grid.", [[22.65, 23.15], [25.36, 25.53], [27.98, 28.13]]],
+  "pixels/deep": [30.169, 42.58, "It grows deeper instead, to two hundred and fifty six channels: it knows what is in the image, but only roughly where. Each cell of its grid stands for an eight by eight patch of pixels.", [[31.699, 32.049], [34.129, 34.619], [36.349, 36.599], [38.039, 38.609]]],
+  "pixels/fcn": [42.96, 56.625, "In 2015, Jonathan Long, Evan Shelhamer and Trevor Darrell made a ConvNet label every pixel, with a layer that learns to grow the small grid back to full size. Growing a grid is upsampling.", [[44.12, 44.43], [45.26, 45.5], [47.44, 47.68], [49.95, 50.28], [54.01, 54.53], [55.42, 55.58]]],
+  "pixels/grow": [57.005, 68.052, "At full size, the last layer gives one channel per class, C of them: a score for each class at every pixel, shape C by sixty four by sixty four.", [[58.035, 58.235], [60.805, 61.055], [61.935, 62.385], [64.865, 65.225]]],
+  "pixels/argmax": [68.432, 74.353, "Each pixel's label is its arg max: not its highest score, but which class has it.", [[70.892, 71.312], [72.682, 72.962]]],
+  "stamp/setup": [76.153, 87.752, "The layer that grows is a transposed convolution. Take one row: an input, x, of one, two and three, and a filter, w: one, two, one.", [[79.133, 79.773], [80.593, 80.973], [81.623, 81.793], [82.933, 83.123], [84.063, 84.413], [85.123, 85.353], [85.813, 86.183], [86.543, 86.773], [87.133, 87.303]]],
+  "stamp/first": [88.132, 96.852, "Each input value stamps a copy of the filter, scaled by that value, into the output. The one stamps one, two, one.", [[90.892, 91.092], [92.432, 92.632], [93.572, 94.102], [95.662, 95.852], [96.212, 96.402]]],
+  "stamp/next": [97.232, 106.823, "The next stamp starts S places further on: S is the stride, here two. The two stamps two, four, two.", [[100.352, 100.942], [102.242, 102.612], [102.952, 103.142], [103.492, 104.082], [104.902, 105.162], [105.522, 105.742], [106.172, 106.432]]],
+  "stamp/add": [107.203, 113.564, "Where stamps overlap, they add: position two gets one, plus two. Three.", [[108.613, 108.843], [109.413, 110.063], [111.613, 111.893], [112.483, 113.103]]],
+  "stamp/all": [113.944, 124.903, "The three stamps three, six, three. Add it all up: one, two, three, four, five, six, three. Three numbers became seven.", [[114.964, 115.324], [115.754, 115.914], [116.944, 117.484], [118.184, 118.684], [119.074, 119.254], [120.234, 120.394], [120.854, 121.034], [121.504, 121.654], [122.684, 123.204]]],
+  "name/gather": [126.703, 137.827, "Why transposed? Run the same filter as an ordinary convolution, stride two, over seven numbers: each of its three outputs gathers a patch of three inputs.", [[127.953, 128.623], [131.253, 131.503], [132.323, 132.623], [133.773, 134.333]]],
+  "name/spread": [138.207, 146.337, "Reverse every connection, keeping its weight, and each input spreads into a patch of three outputs instead: the stamps.", [[139.787, 140.137], [141.047, 141.437], [145.087, 145.567]]],
+  "name/matrix": [146.717, 155.274, "As a matrix, M, the convolution has one row per output, each holding the filter, two places further along each time.", [[147.677, 147.927], [148.307, 148.677], [151.077, 151.457], [152.697, 153.027]]],
+  "name/flip": [155.654, 165.639, "Reversing the wiring turns its rows into columns: the transpose. Now each column, scaled by one input, is a stamp. Hence the name.", [[158.824, 159.254], [160.154, 160.744], [161.864, 162.034], [163.354, 163.624], [164.344, 164.814]]],
+  "name/history": [166.019, 179.748, "Vincent Dumoulin and Francesco Visin explained it this way in 2016. They argued against its older name, deconvolution, which would mean undoing a convolution: this restores only the size.", [[170.759, 171.369], [173.369, 173.579], [174.629, 174.959], [175.549, 175.699], [177.229, 177.749]]],
+  "size/starts": [181.548, 198.152, "How long is the output? Call the input's width W: here, three. The first stamp starts at zero, and each of the other W minus one starts S further on, so the last starts at S times W minus one: four.", [[182.908, 183.488], [185.378, 185.858], [186.228, 186.438], [186.858, 187.418], [189.448, 189.688], [191.918, 192.068], [193.618, 193.988], [197.258, 197.668]]],
+  "size/width": [198.532, 203.626, "Add the filter's width, F, which is three, and the output is seven long.", [[199.902, 200.102], [200.492, 200.672], [201.442, 201.802]]],
+  "size/pad": [204.006, 216.869, "Padding, P, runs backwards too: the convolution added P zeros at each end of its input, so this trims P off each end of its output. With P of one, seven becomes five.", [[204.496, 204.706], [205.066, 205.316], [206.496, 207.046], [210.436, 210.826], [213.566, 214.176], [215.136, 215.346]]],
+  "size/formula": [217.249, 222.933, "So the width is S times W minus one, plus F, minus two P.", [[220.569, 220.859], [221.519, 221.749]]],
+  "size/undo": [223.313, 236.178, "It is the convolution's size rule, run backwards. With a filter of four, stride two and padding one, a convolution halves thirty two into sixteen, and the transposed one doubles it back.", [[225.273, 225.583], [226.513, 227.043], [228.233, 228.423], [230.283, 230.643], [233.653, 233.973]]],
+  "size/turn": [236.558, 237.298, "Your turn.", []]
  }
 }

@@ -1,22 +1,35 @@
 {
- "duration": 99.98,
+ "duration": 225.767,
  "scenes": {
-  "list": [0.0, 43.921],
-  "image": [43.921, 74.185],
-  "ops": [74.185, 99.98]
+  "image": [0.0, 51.134],
+  "arrow": [51.134, 110.354],
+  "list": [110.354, 168.536],
+  "ops": [168.536, 225.767]
  },
  "beats": {
-  "list/list": [0.7, 9.928, "A vector is a list of numbers, kept in order. This one, x, holds four: three, minus one, four, and two.", [[2.68, 2.85], [3.62, 4.24], [4.77, 4.97], [5.4, 5.61], [6.35, 6.88], [7.33, 7.64], [8.36, 8.64], [9.11, 9.31]]],
-  "list/dim": [10.308, 26.411, "How many numbers it holds is its length, or its dimension. This x is four-dimensional, written x in R four. R stands for the real numbers, R four for every list of four of them, and in reads \u201cis in\u201d.", [[12.738, 13.008], [13.948, 14.548], [16.428, 16.808], [18.718, 19.338], [21.178, 21.598], [23.888, 24.318], [25.438, 25.708]]],
-  "list/index": [26.791, 36.951, "Each entry has an index: its position, written in square brackets. Python counts from zero, so x of zero is the first entry, three.", [[28.511, 28.851], [29.651, 29.871], [31.351, 31.771], [33.331, 33.611], [36.131, 36.481]]],
-  "list/last": [37.331, 42.821, "That makes the last of four entries x of three. There is no x of four.", [[39.411, 39.601], [40.611, 41.141]]],
-  "image/image": [44.621, 51.239, "Anything described by numbers can be a vector. Take a tiny color image, four pixels by four.", [[47.311, 47.891], [49.431, 49.791]]],
-  "image/rgb": [51.619, 57.085, "Each pixel is three numbers: how much red, how much green, and how much blue.", [[53.549, 53.999], [54.709, 54.999], [55.859, 56.089]]],
-  "image/flat": [57.465, 65.387, "Lay every number out in one row, and the image becomes a vector of four times four times three: forty eight entries.", [[59.625, 59.905], [63.545, 63.995]]],
-  "image/big": [65.767, 73.085, "A thirty two by thirty two color photo works the same way: three thousand and seventy two numbers in one vector.", [[69.307, 69.837]]],
-  "ops/add": [74.885, 83.442, "Two vectors of the same length add entry by entry: first plus first, second plus second, third plus third.", [[78.185, 78.715], [79.985, 80.415], [81.685, 82.175], [82.555, 82.705]]],
-  "ops/scale": [83.822, 91.52, "Multiplying by a number scales every entry. Two times u, written two u, doubles each one.", [[87.022, 87.622], [88.702, 88.952], [90.002, 90.372]]],
-  "ops/same": [91.9, 97.76, "The lengths have to match. Give v a fourth entry, and u has nothing to add to it.", [[93.43, 93.95], [95.66, 95.9]]],
-  "ops/turn": [98.14, 98.88, "Your turn.", []]
+  "image/numbers": [0.7, 8.37, "A program cannot see a picture: all it can work with is numbers. So first, an image has to become numbers.", [[2.65, 3.12], [4.93, 5.41], [6.15, 6.32]]],
+  "image/rgb": [8.75, 19.231, "Take this tiny color image, four pixels by four. Each pixel, one small square of color, is three numbers: how much red, green and blue.", [[10.46, 10.79], [12.17, 12.72], [13.49, 13.75], [15.38, 15.63], [16.63, 17.12], [17.86, 18.17]]],
+  "image/flat": [19.611, 29.651, "Lay them all out in one row: pixel after pixel, red, green, then blue. Four times four times three: forty eight numbers.", [[21.391, 21.861], [23.131, 23.571], [23.921, 24.251], [24.681, 24.931], [25.511, 26.021], [27.921, 28.411]]],
+  "image/vector": [30.031, 42.335, "A list of numbers in a fixed order is called a vector: here, the whole image as one object. The order tells the numbers apart: the first is always the top left pixel's red.", [[33.391, 33.941], [34.291, 34.481], [36.321, 36.951], [38.791, 39.321]]],
+  "image/big": [42.715, 50.034, "A thirty two by thirty two color photo works the same way: three thousand and seventy two numbers in one vector.", [[46.255, 46.785]]],
+  "arrow/point": [51.834, 60.137, "Now a vector of just two numbers, three and two. On a graph, they say where to go: three across, then two up.", [[54.004, 54.314], [55.384, 55.934], [56.624, 56.774], [57.844, 58.264], [59.084, 59.354]]],
+  "arrow/arrow": [60.517, 67.03, "Or draw it as an arrow: from the origin, the corner where both numbers are zero, out to the point.", [[61.997, 62.597], [63.497, 63.747], [65.747, 66.097]]],
+  "arrow/name": [67.41, 80.469, "In 1846, the Irish mathematician William Rowan Hamilton called such a line, with a length and a direction, a vector: Latin for carrier. It carries you from the origin to the point.", [[68.87, 69.14], [71.82, 72.08], [73.1, 73.31], [74.78, 75.06], [75.7, 76.18], [77.42, 78.02]]],
+  "arrow/dim": [80.849, 94.008, "Each number moves you along a direction of its own: the first across, the second up. Two directions make a flat plane, with two dimensions: a vector's dimension is how many numbers it holds.", [[83.689, 84.099], [85.189, 85.449], [86.039, 86.199], [86.479, 87.029], [88.979, 89.239], [90.439, 90.939], [92.089, 92.249]]],
+  "arrow/three": [94.388, 100.332, "A third number adds a third direction, out of the page: three dimensions, like a room.", [[96.698, 97.038], [97.978, 98.358], [99.368, 99.588]]],
+  "arrow/more": [100.712, 109.254, "Past three, no picture fits, but the count still works: the image's forty eight numbers make a forty eight dimensional vector.", [[101.522, 102.072], [103.252, 103.512], [104.922, 105.422]]],
+  "list/list": [111.054, 119.385, "Longer vectors are written as lists. This x holds four numbers: three, minus one, four and two.", [[113.344, 113.934], [115.914, 116.364], [116.784, 117.084], [117.834, 118.094], [118.584, 118.784]]],
+  "list/len": [119.765, 130.536, "Four numbers, so x is four-dimensional. Python calls that count its length, and NumPy writes its shape as four, comma: one row of four.", [[120.675, 121.105], [123.095, 123.665], [125.615, 125.985], [128.475, 128.635], [129.005, 129.305]]],
+  "list/reals": [130.916, 139.994, "In math, the real numbers, all the points on the number line, are written as a double-struck R. Lists of four of them make R four.", [[131.556, 131.846], [132.876, 133.106], [134.606, 134.866], [136.866, 137.456]]],
+  "list/in": [140.374, 148.062, "So x in R four says x is a list of four real numbers. The sign in the middle means \u201cis in\u201d.", [[142.514, 142.774], [145.054, 145.604], [147.084, 147.324]]],
+  "list/index": [148.442, 158.135, "Each entry has an index, its position, in square brackets. Python counts from zero, so x of zero is the first entry: three.", [[150.162, 150.482], [151.272, 151.422], [152.572, 153.102], [154.572, 154.832], [157.292, 157.662]]],
+  "list/last": [158.515, 167.436, "So the last of four is x of three, which is two, and there is no x of four: the last index is one less than the count.", [[161.285, 161.595], [162.335, 162.845], [164.485, 164.925]]],
+  "ops/two": [169.236, 176.276, "Take two vectors, u and v: u is one, two, and v is three, minus one.", [[170.456, 170.736], [171.746, 172.336], [173.876, 174.196]]],
+  "ops/add": [176.656, 184.625, "Add them entry by entry, first with first and second with second: u plus v is four, one.", [[178.316, 178.736], [179.836, 180.076], [181.406, 181.956], [183.826, 184.196]]],
+  "ops/tail": [185.005, 194.804, "On the graph, that is one arrow after the other: follow the arrow u, then v from where it ends, and the walk ends at four, one.", [[185.795, 186.025], [188.165, 188.725], [190.085, 190.315], [192.125, 192.425], [194.085, 194.375]]],
+  "ops/scale": [195.184, 208.068, "Multiply by a number, and every entry is multiplied: two times u is two, and four. The arrow keeps its direction and grows twice as long, which is why this is called scaling.", [[196.614, 196.824], [198.724, 199.264], [200.904, 201.134], [201.764, 202.454], [205.604, 205.984]]],
+  "ops/neg": [208.448, 215.339, "A negative number turns it around: minus one times u is minus one, and minus two.", [[210.498, 211.068], [213.718, 214.098]]],
+  "ops/same": [215.719, 223.547, "Adding needs the same number of entries. Give v a third, and u has none to match it: NumPy refuses.", [[217.869, 218.429], [219.709, 219.949], [221.629, 222.129]]],
+  "ops/turn": [223.927, 224.667, "Your turn.", []]
  }
 }

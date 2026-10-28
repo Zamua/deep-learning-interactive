@@ -1,18 +1,33 @@
 {
- "duration": 88.704,
+ "duration": 227.956,
  "scenes": {
-  "parts": [0.0, 47.849],
-  "flow": [47.849, 88.704]
+  "why": [0.0, 69.059],
+  "parts": [69.059, 138.071],
+  "norms": [138.071, 186.585],
+  "flow": [186.585, 227.956]
  },
  "beats": {
-  "parts/io": [0.7, 11.992, "A transformer block takes T tokens, each a vector of d numbers, and returns T vectors of d numbers. Same shape in and out, so blocks can be stacked.", [[3.13, 3.45], [5.28, 5.62], [8.02, 8.55], [10.19, 10.51]]],
-  "parts/attn": [12.372, 25.618, "First the tokens exchange information: layer norm, then multi-head attention, and the result is added back to the input. A residual connection: x plus attention of layer norm of x.", [[14.802, 15.272], [15.982, 16.412], [18.042, 18.392], [20.632, 21.222], [22.462, 22.912]]],
-  "parts/mlp": [25.998, 33.609, "Then each token is processed on its own: layer norm again, then an MLP, added back the same way.", [[26.468, 26.638], [28.698, 29.198], [30.158, 30.518], [31.798, 32.168]]],
-  "parts/width": [33.989, 46.749, "The MLP widens each token to four d numbers, applies a ReLU, and comes back down to d. With d of seven hundred sixty eight, its hidden layer is three thousand and seventy two wide.", [[37.459, 37.799], [38.739, 38.999], [40.459, 41.109], [43.109, 43.419]]],
-  "flow/x": [48.549, 54.186, "Follow one token through, with d of two. It enters as one and two.", [[50.209, 50.559], [51.719, 52.249]]],
-  "flow/a": [54.566, 63.534, "For this token, the attention branch returns zero point five and minus one. Added to the input, that makes one point five and one.", [[55.476, 55.756], [59.416, 60.076], [61.086, 61.346]]],
-  "flow/m": [63.914, 74.739, "The MLP branch, reading the normalized sum, returns minus zero point five and two. Added on, that makes one and three: the block's output.", [[65.254, 65.554], [67.114, 67.404], [70.314, 70.914], [71.534, 71.774], [73.294, 73.694]]],
-  "flow/path": [75.119, 86.484, "The input runs straight through the adds, and each branch only adds a change, as in a residual block. With the norms at the start of each branch, this is called a pre-norm block.", [[77.369, 77.639], [79.929, 80.169], [81.589, 82.199], [84.279, 84.579]]],
-  "flow/turn": [86.864, 87.604, "Your turn.", []]
+  "why/gather": [0.7, 14.466, "Self-attention lets every token gather from the others. In the sentence, cats like fish, fish comes out as a blend of their values: half from cats, a quarter from like, and a quarter from itself.", [[4.07, 4.76], [5.55, 5.8], [6.93, 7.38], [9.87, 10.34], [11.37, 11.62], [12.71, 13.01]]],
+  "why/alone": [14.846, 26.813, "A blend moves information between tokens. To work on what it gathered, each token then goes through a small network on its own: the two-layer network, with a ReLU between its layers.", [[17.826, 18.386], [19.676, 20.036], [23.036, 23.496], [24.666, 24.956]]],
+  "why/mlp": [27.193, 38.61, "This network is called an MLP, for multilayer perceptron: neurons in layers, named after Rosenblatt's perceptron, though they bend with a ReLU rather than a step.", [[29.573, 29.903], [31.463, 32.043], [33.363, 33.683], [35.673, 36.033]]],
+  "why/paper": [38.99, 53.416, "In 2017, Ashish Vaswani and colleagues built a translation model around this pair: attention, then one MLP, applied to each token separately and identically. They called it the Transformer.", [[40.27, 40.59], [44.78, 45.38], [45.97, 46.31], [47.85, 48.28], [51.15, 51.74], [52.3, 52.48]]],
+  "why/stack": [53.796, 67.959, "One attention and one MLP make a block, and the model stacks identical blocks, six in the paper. So a block must hand back what it takes in: T tokens, each a vector of d numbers.", [[57.006, 57.456], [59.616, 59.926], [61.086, 61.586], [64.346, 64.836], [65.646, 65.986]]],
+  "parts/path": [69.759, 77.752, "Now the block as it is really built. Draw a token's path straight down through it, from the input, x, to the output.", [[71.859, 72.409], [74.939, 75.309], [76.089, 76.279], [76.689, 76.919]]],
+  "parts/branch": [78.132, 88.822, "Attention sits on a branch beside the path. The branch first runs layer norm, so attention reads every token on the same scale, then multi-head attention.", [[80.742, 81.402], [83.422, 83.672], [86.642, 87.102]]],
+  "parts/add": [89.202, 99.631, "Its output is added back onto the path: a residual connection, x plus attention of layer norm of x. So the branch only has to learn a change to x.", [[91.612, 92.032], [93.272, 93.682], [96.132, 96.672]]],
+  "parts/grid": [100.011, 111.504, "Inside, attention builds a T by T grid of weights, but it hands back one vector of d numbers per token: the shape of x. That is what lets the add line up.", [[100.651, 100.941], [103.741, 104.131], [107.341, 107.811], [109.001, 109.501]]],
+  "parts/mlp": [111.884, 118.295, "Then a second branch, built the same way: layer norm, the MLP, and another add.", [[113.284, 113.524], [114.514, 114.974], [115.654, 115.954], [116.854, 117.154]]],
+  "parts/width": [118.675, 131.951, "The MLP widens each token to four d numbers, applies the ReLU there, and brings it back down to d. In the paper, d was five hundred twelve, so the middle was two thousand and forty eight wide.", [[122.125, 122.425], [123.705, 123.995], [125.585, 126.185], [126.865, 127.095], [128.775, 129.115]]],
+  "parts/out": [132.331, 136.971, "Out comes T by d, the shape that went in, ready for the next block.", [[134.011, 134.321], [135.431, 135.781]]],
+  "norms/post": [138.771, 145.28, "The 2017 paper put each layer norm somewhere else: after its add, right on the path.", [[142.441, 142.911], [143.861, 144.231]]],
+  "norms/road": [145.66, 152.184, "Then the path itself runs through a norm in every block, and so does every gradient flowing back along it.", [[149.1, 149.47]]],
+  "norms/xiong": [152.564, 166.134, "In 2020, Ruibin Xiong and colleagues showed what that costs. With the norms on the path, the gradients near the output start out large, so training has to begin with a small step size and raise it slowly.", [[153.644, 153.924], [156.844, 157.424], [158.794, 159.104], [161.764, 162.114]]],
+  "norms/pre": [166.514, 177.893, "Move each norm to the start of its branch, and the path is bare: from input to output, only adds, like a residual network's shortcut. This is the pre-norm block.", [[169.034, 169.204], [170.444, 170.954], [172.354, 172.574], [173.424, 173.674], [175.614, 176.134]]],
+  "norms/calm": [178.273, 185.485, "There, they found, the gradients start out well behaved, and pre-norm blocks trained well with no slow start.", [[178.773, 178.943], [179.503, 179.853], [181.903, 182.193]]],
+  "flow/x": [187.285, 195.023, "Follow one token through, with d of two, so it is an arrow on a page. It enters as one and two.", [[189.005, 189.285], [190.405, 190.755], [192.615, 193.025]]],
+  "flow/a": [195.403, 205.346, "The attention branch hands back a change: zero point five and minus one. Added tip to tail, the arrow now ends at one point five and one.", [[197.623, 198.103], [200.233, 200.893], [202.013, 202.323]]],
+  "flow/m": [205.726, 217.08, "The MLP branch reads that sum, normalized, and hands back minus zero point five and two. Added on, the arrow ends at one and three: the block's output.", [[208.056, 208.236], [208.956, 209.126], [212.256, 212.836], [213.426, 213.696], [215.616, 215.996]]],
+  "flow/path": [217.46, 225.736, "The token is never replaced, only nudged, once by each branch, while x itself runs straight through both adds.", [[219.22, 219.49], [220.37, 220.68], [222.11, 222.55]]],
+  "flow/turn": [226.116, 226.856, "Your turn.", []]
  }
 }

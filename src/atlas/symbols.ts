@@ -189,7 +189,7 @@ export const ATLAS_SYMBOLS: SymbolMap = {
     color: 'blue',
     name: 'N: the number of parameters',
     tex: 'N',
-    about: 'Every weight and bias in the model. Training compute and training memory both grow in step with it.',
+    about: 'Every weight and bias in the model.',
   },
   Dtokens: {
     color: 'orange',
@@ -329,6 +329,7 @@ export const SCOPED: Record<string, SymbolMap> = {
     b: { color: 'green', name: 'b: the hidden bias', about: 'One number per hidden unit, added before the tanh at every step: shape (H,).' },
   },
   'sgd-linear': { eta: { color: 'slate', name: 'η: the step size', tex: '\\eta', code: ['lr'], about: 'How far each gradient step goes: every weight and bias moves by η times its gradient.' } },
+  'receptive-field': { F: { ...ATLAS_SYMBOLS.F!, about: 'A filter covers F × F pixels, or units of the layer below. With stride 1, each layer of size F widens what a unit sees by F − 1.' } },
   convolution: { w: { color: 'blue', name: 'w: the filter', about: 'A few weights slid along x. At each position, its dot product with the patch under it gives one output; the same weights are used everywhere.' } },
   'lr-schedule': { T: { color: 'slate', name: 'T: the length of the decay, in steps', about: 'How many steps the glide from the top rate to the bottom one takes. After a warmup it starts counting where the warmup ends.' } },
   embeddings: {
@@ -560,6 +561,7 @@ export const SCOPED: Record<string, SymbolMap> = {
   'weight-grad': { g: fGrad },
   'backprop-graph': { g: fGrad },
   'matmul-grad': { g: fGrad },
+  gates: { g: { ...grad, name: 'dx, dz, dq: gradients of f', code: ['dq', 'dx', 'dz'], about: 'd before a name holds ∂f/∂ of that value: how far the final output f moves per unit of it. dq arrives from above; dx and dz are what the gate sends back.' } },
   'log-log': { Cflops: flops },
   'power-laws': { Cflops: flops },
   neuron: { b: { color: 'green', name: 'b: the bias', about: 'One number added to the weighted sum. It shifts where the neuron switches on.' } },

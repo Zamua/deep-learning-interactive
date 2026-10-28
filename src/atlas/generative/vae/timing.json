@@ -1,22 +1,34 @@
 {
- "duration": 151.395,
+ "duration": 246.165,
  "scenes": {
-  "spread": [0.0, 43.961],
-  "sample": [43.961, 103.23],
-  "prior": [103.23, 151.395]
+  "gaps": [0.0, 40.604],
+  "spread": [40.604, 105.574],
+  "sample": [105.574, 169.054],
+  "pull": [169.054, 246.165]
  },
  "beats": {
-  "spread/plain": [0.7, 5.776, "A plain autoencoder maps each input to one code: a single point.", [[4.34, 4.79]]],
-  "spread/two": [6.156, 29.04, "A variational autoencoder, or VAE, gives two numbers for every code dimension instead: a mean, written mu, the Greek letter mu, and a spread, sigma, the Greek letter sigma. Here sigma is a standard deviation, not the sigmoid. With a code of two dimensions, the encoder outputs four numbers.", [[8.096, 8.326], [9.596, 9.976], [12.886, 13.456], [14.036, 14.326], [15.266, 15.546], [16.656, 17.106], [17.886, 18.206], [18.726, 19.056], [20.216, 20.826], [23.166, 23.396], [24.386, 25.066], [26.696, 26.986]]],
-  "spread/bell": [29.42, 42.861, "Each pair describes a bell curve. Codes near the mean are likely, and the spread says how far they range: here one, give or take a half, and minus a half, give or take zero point two.", [[31.57, 32.18], [33.97, 34.38], [36.57, 37.09], [37.91, 38.22], [39.26, 39.62], [40.87, 41.24]]],
-  "sample/eps": [44.661, 59.839, "In training, the decoder does not get the mean. First draw noise from a standard normal, with mean zero and spread one. It is written epsilon, the Greek letter epsilon: here zero point four and minus one.", [[45.411, 45.681], [47.581, 48.201], [50.601, 50.881], [52.831, 53.381], [54.681, 55.061], [56.421, 57.031], [58.691, 58.841]]],
-  "sample/z": [60.219, 78.25, "Stretch it by the spread and shift it by the mean: z is mu plus sigma times epsilon. One, plus a half times zero point four, is one point two. Minus a half, plus zero point two times minus one, is minus zero point seven.", [[61.609, 61.859], [63.299, 63.889], [66.789, 67.609], [67.979, 68.379], [70.479, 70.749], [71.799, 72.379], [73.309, 73.629], [76.119, 76.429]]],
-  "sample/why": [78.63, 89.275, "Every step draws a fresh code near the mean, and the decoder has to rebuild the same input from each one. So a whole neighborhood of codes comes to decode alike.", [[81.32, 81.67], [85.09, 85.58]]],
-  "sample/grad": [89.655, 102.13, "The randomness sits in epsilon, which no weight sets. So backprop still reaches mu and sigma: z moves one for one with mu, and by epsilon times any change in sigma.", [[91.665, 91.915], [93.185, 93.675], [96.425, 96.955], [99.075, 99.395]]],
-  "prior/drift": [103.93, 113.673, "Left alone, training would shrink every spread toward zero, making codes exact again, and scatter the means wherever it liked, with gaps in between.", [[104.75, 105.06], [107.76, 108.17], [109.73, 110.15], [112.19, 112.45]]],
-  "prior/term": [114.053, 124.222, "So the loss gets an extra term for each code dimension: one half of mu squared, plus sigma squared, minus one, minus the log of sigma squared.", [[117.373, 117.923], [119.403, 119.693], [121.013, 121.253], [122.033, 122.313]]],
-  "prior/zero": [124.602, 138.519, "It is zero only when mu is zero and sigma is one: a standard normal. Move the mean away, or shrink or widen the spread, and it grows. So it pulls every input's bell toward that one.", [[127.152, 127.322], [128.542, 128.932], [129.972, 130.642], [131.852, 132.062], [133.932, 134.242], [135.042, 135.512]]],
-  "prior/generate": [138.899, 149.175, "With every code crowded into the same region, a fresh draw from a standard normal lands where the decoder knows what to do. Decode it, and out comes a new image.", [[141.579, 141.859], [143.959, 144.119], [146.339, 146.869], [147.399, 147.649]]],
-  "prior/turn": [149.555, 150.295, "Your turn.", []]
+  "gaps/codes": [0.7, 13.017, "An autoencoder squeezes each image into a short code, z, and its decoder rebuilds the image from it. Picture a code of one number: each image is a point on a line.", [[4.37, 4.69], [5.08, 5.54], [8.12, 8.74], [10.36, 10.95]]],
+  "gaps/new": [13.397, 20.764, "Can the decoder make new images? Decode a code that no image produced, between the seven and the zero.", [[15.477, 16.097], [18.637, 18.997]]],
+  "gaps/smudge": [21.144, 28.875, "Out comes a smudge: training only ever showed the decoder the codes of real images, so between them it learned nothing.", [[22.414, 22.904], [26.494, 26.834]]],
+  "gaps/cloud": [29.255, 39.504, "The fix: give each image a range of codes, and train the decoder to rebuild it from anywhere in that range. Wide enough, the ranges cover the gaps.", [[29.905, 30.475], [32.685, 32.955], [36.435, 37.025], [37.685, 37.975]]],
+  "spread/bell": [41.304, 55.33, "The range is a bell curve. Draw many random numbers, as for a network's first weights, and count how often each value comes up: most near the middle, fewer farther out. That pattern is a distribution.", [[42.994, 43.564], [45.224, 45.464], [47.264, 47.614], [49.864, 50.374], [51.344, 51.674], [52.864, 53.434]]],
+  "spread/mu": [55.71, 65.646, "The encoder places a bell for each image. First, its center: the mean, written mu, the Greek letter mu. Here, one.", [[58.31, 58.77], [59.25, 59.41], [60.11, 60.51], [61.1, 61.4], [61.78, 61.97], [62.4, 62.79], [64.0, 64.49], [64.85, 65.18]]],
+  "spread/sigma": [66.026, 77.941, "Then its width: the standard deviation, sigma, here a half. A spread, not the sigmoid. A width cannot be negative, so e to the x makes it positive.", [[67.096, 67.586], [68.866, 69.086], [69.586, 69.936], [70.896, 71.436], [72.056, 72.286], [73.206, 73.846], [75.466, 75.746]]],
+  "spread/four": [78.321, 86.61, "A code of two numbers gets two bells, so the encoder outputs four numbers, each with its own row of weights and its own bias.", [[80.601, 81.071], [83.211, 83.551]]],
+  "spread/name": [86.99, 104.474, "Diederik Kingma and Max Welling introduced this in 2013: the variational autoencoder, or V A E. Variational methods, from statistics, replace a distribution too hard to compute with the closest simple one. Here, a bell.", [[91.13, 91.6], [93.55, 93.87], [95.12, 95.78], [97.13, 97.29], [98.16, 98.48], [101.04, 101.3], [102.8, 103.31], [103.67, 103.93]]],
+  "sample/eps": [106.274, 119.18, "To train, draw a code from the bell. Start with noise from the standard normal, mean zero and standard deviation one: epsilon, the Greek letter epsilon, here zero point four.", [[106.944, 107.244], [108.744, 109.334], [111.554, 111.944], [114.534, 115.044], [115.614, 116.034], [117.324, 117.684]]],
+  "sample/stretch": [119.56, 126.976, "Stretch it by the spread: sigma times epsilon, a half times zero point four, is zero point two.", [[120.95, 121.57], [123.04, 123.36], [125.35, 125.72]]],
+  "sample/shift": [127.356, 137.245, "Then shift it by the mean: one plus zero point two, so z is one point two. The second dimension gives minus zero point seven.", [[129.006, 129.496], [131.186, 131.546], [133.496, 134.016]]],
+  "sample/fresh": [137.625, 146.289, "Each training step draws fresh noise, so a fresh code under the bell, and the decoder must rebuild this same image from every one.", [[139.995, 140.315], [142.265, 142.685]]],
+  "sample/grad": [146.669, 159.16, "The randomness sits in epsilon, which no weight sets, so backprop passes through z to mu and sigma: z moves one for one with mu, and epsilon times as fast as sigma.", [[148.709, 148.919], [150.159, 150.579], [153.859, 154.449], [156.479, 156.739]]],
+  "sample/trick": [159.54, 167.954, "Kingma and Welling called this the reparameterization trick: random draw and all, the model trains with ordinary gradient steps.", [[163.13, 163.71], [164.92, 165.21]]],
+  "pull/cheat": [169.754, 182.742, "With only the reconstruction error, the autoencoder's squared error, a V A E would cheat: shrink every sigma to zero, and the noise is gone. One exact code per image again, gaps and all.", [[171.654, 171.934], [173.774, 174.094], [175.714, 176.174], [177.914, 178.164], [179.204, 179.654], [181.574, 181.924]]],
+  "pull/term": [183.122, 192.71, "So the loss adds a term per code dimension, comparing its bell with the standard normal: zero when they match, mu zero and sigma one.", [[186.132, 186.502], [188.642, 189.252], [190.492, 190.892]]],
+  "pull/mean": [193.09, 200.883, "Set the mean at two, and mu squared, halved, makes the term two. That pulls every mean toward zero.", [[194.53, 194.81], [195.86, 196.05], [196.54, 196.78], [197.98, 198.51]]],
+  "pull/narrow": [201.263, 211.46, "Narrow the bell to sigma a half, and minus the log of sigma squared climbs, since the log of a number below one is negative: about zero point three two.", [[203.323, 203.543], [206.263, 206.563], [209.183, 209.673]]],
+  "pull/wide": [211.84, 223.412, "Widen it to sigma two, and sigma squared, the variance, takes over: about zero point eight one. Lowest at exactly one, it pulls every spread toward one.", [[213.42, 213.66], [214.94, 215.15], [216.67, 217.1], [218.78, 219.29], [220.96, 221.21]]],
+  "pull/kl": [223.792, 233.713, "This is the K L divergence, from Solomon Kullback and Richard Leibler in 1951: a measure of how much one distribution differs from another.", [[225.912, 226.252], [229.782, 230.332]]],
+  "pull/generate": [234.093, 243.945, "Pulled toward one bell, the images' bells overlap and fill the standard normal. So draw any code from it, decode it, and out comes a new image.", [[235.413, 235.743], [238.923, 239.523], [241.223, 241.523], [242.143, 242.413]]],
+  "pull/turn": [244.325, 245.065, "Your turn.", []]
  }
 }
