@@ -3,8 +3,8 @@ import { Local, canon, codeFromRoom, makeRng, memoryStorage, type Kind } from 'h
 import { device, fakeWorld } from 'hearthsync/testing';
 import { emptyRecord, type ConceptRecord } from '../mastery/domain/model';
 import {
-  LAST_KEY, MODEL, PREFS_KEY, READING_KEY, concepts, lastSeen, laterConcept, lecture, lectureKey, masteryKey, model, orBits, paceOf, putConcepts, putLast, putLecture, putPace, putReading,
-  readEntry, type Rec,
+  LAST_KEY, MODEL, PREFS_KEY, READING_KEY, TRACKS_KEY, concepts, lastSeen, laterConcept, lecture, lectureKey, masteryKey, model, orBits, paceOf, putConcepts, putLast, putLecture, putPace,
+  putReading, putTrack, readEntry, trackList, type Rec,
 } from './model';
 
 const rec = (over: Partial<ConceptRecord> = {}): ConceptRecord => ({ ...emptyRecord(), ...over });
@@ -20,13 +20,14 @@ function randomRec(key: string, rng: () => number): Rec {
     return { c: Object.fromEntries(ids.filter(() => rng() < 0.7).map((id) => [id, { t: t(), r: rng() < 0.5 ? mastered(t()) : rec({ attempts: pick([1, 2]), last: t() }) }])) };
   if (key.startsWith('lectures/'))
     return { l: Object.fromEntries(ids.filter(() => rng() < 0.7).map((id) => [id, { pos: { val: { at: pick([0, 12]), dur: pick([60, 90]) }, t: t() }, heard: { [pick(['60', '90'])]: pick(['AQ==', 'Ag==', 'BAE=']) } }])) };
+  if (key === TRACKS_KEY) return { on: Object.fromEntries(ids.filter(() => rng() < 0.7).map((id) => [id, { val: pick([0, 3, 7]), t: t() }])) };
   if (key === PREFS_KEY) return rng() < 0.2 ? {} : { pace: { val: pick(['deep', 'broad'] as const), t: t() } };
   if (key === READING_KEY) return { ch: Object.fromEntries(ids.filter(() => rng() < 0.7).map((id) => [id, { max: pick([0.2, 0.5]), at: { val: pick(['x', 'y']), t: t() } }])) };
   return { at: { val: rng() < 0.3 ? null : { kind: 'chapter', id: pick(ids), t: t() }, t: t() } };
 }
 
 describe('the progress records', () => {
-  for (const key of ['mastery/0', 'lectures/0', READING_KEY, LAST_KEY, PREFS_KEY]) {
+  for (const key of ['mastery/0', 'lectures/0', READING_KEY, LAST_KEY, PREFS_KEY, TRACKS_KEY]) {
     it(`${key} merges commutatively, associatively and idempotently`, () => {
       const kind = MODEL.kind(key) as Kind<Rec>;
       const rng = makeRng(7).next;
@@ -53,6 +54,18 @@ describe('the progress records', () => {
     expect(laterConcept(later, won)).toBe(won);
     const review = { t: 30, r: { ...mastered(30), slipping: true } };
     expect(laterConcept(won, review)).toBe(review);
+  });
+
+  it('tracks keep the order they were added in, and a removal or re-add on any device is the latest word', () => {
+    const l = fresh();
+    l.edit((s, now) => putTrack(s, now, 'transformer-block', true));
+    l.edit((s, now) => putTrack(s, now + 1, 'gan', true));
+    l.edit((s, now) => putTrack(s, now + 2, 'transformer-block', true));
+    expect(trackList(l.store)).toEqual(['transformer-block', 'gan']);
+    l.edit((s, now) => putTrack(s, now, 'transformer-block', false));
+    expect(trackList(l.store)).toEqual(['gan']);
+    l.edit((s, now) => putTrack(s, now + 5, 'transformer-block', true));
+    expect(trackList(l.store)).toEqual(['gan', 'transformer-block']);
   });
 
   it('heard stretches combine', () => {

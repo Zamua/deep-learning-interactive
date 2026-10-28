@@ -9,7 +9,10 @@ vectors to post-training, and the graph is meant to keep growing.
 Working name: **Atlas** (course id `atlas`). Routes: `#/atlas` the map (`#/atlas/graph` as a
 graph), `#/atlas/learn[/<concept-id>]` a session (optionally starting with that concept),
 `#/atlas/place` the placement test, `#/atlas/<concept-id>` a concept and
-`#/atlas/<concept-id>/watch` its explainer.
+`#/atlas/<concept-id>/watch` its explainer, `#/atlas/new-track[/<concept-id>]` picking a track's
+target, `#/atlas/track/<concept-id>` a track and `#/atlas/track/<concept-id>/map` its map. A
+session or an explainer followed from a track carries the track's target as a last part:
+`#/atlas/learn/<concept-id>/<target>`, `#/atlas/<concept-id>/watch/<target>`.
 
 ## Concepts and the graph
 
@@ -165,6 +168,32 @@ start, each opening on its explainer, with the deep or broad switch. The Atlas h
 moment and a new concept's intro link to it.
 
 A concept's first problem comes after its explainer, which the learner may skip.
+
+## Tracks
+
+A track is a target concept and everything it needs: the target and its prerequisites, all the
+way down. The learner picks the target on the map (or from a concept's page); its set lights up
+and the rest dims, with how many concepts it holds, how many are already mastered and about how
+long the rest takes. A learner may follow several tracks at once.
+
+- **Mastery is the learner's, not the track's.** Tracks share concepts freely: one mastered on
+  any track, or outside them all, counts on every track that holds it. A track keeps only its
+  target; progress is derived from the records.
+- **Reviews stay outside tracks.** They are due across everything mastered, and the home leads
+  with them whatever tracks are followed.
+- **A track drives what is new.** Its next concept is the one in progress on it, else the best
+  new one by the learner's pace among its own. Continue opens that concept's explainer (its
+  practice once watched or started). A session followed from a track learns the track's concepts
+  while any is left, and the mastery moment leads to the track's next one; once a track is
+  finished, sessions go back to the whole map.
+- **The estimate** adds up, for each concept left, its explainer's unheard minutes (the narration
+  length is read from `timing.json` at build time) and its bar's remaining answers at 1.5 times
+  their target time.
+
+With tracks, the home shows due reviews (or a concept slipping, or one in progress outside every
+track), then a card per track under way (progress, next concept, time left, Continue), a line
+for the finished ones, and the whole map. Without any, the home is as below, with a link to start
+one. The tracks followed sync across devices (`docs/SYNC.md`).
 
 ## Placement
 

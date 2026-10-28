@@ -43,6 +43,7 @@ export const DOMAINS: Domain[] = [
 const metas = import.meta.glob<ConceptMeta>('./*/*/meta.ts', { eager: true, import: 'meta' });
 const problems = import.meta.glob<Generator[]>('./*/*/problems.ts', { import: 'generators' });
 const explainers = import.meta.glob<LectureDef>('./*/*/explainer.ts', { import: 'default' });
+const durations = import.meta.glob<number>('./*/*/timing.json', { query: '?duration', import: 'default', eager: true });
 
 const folder = (path: string) => {
   const [, domain = '', name = ''] = path.split('/');
@@ -70,6 +71,9 @@ export function loadGenerators(id: string): Promise<Generator[]> {
 export function hasExplainer(id: string): boolean {
   return at(id, 'explainer.ts') in explainers;
 }
+
+/** An explainer's narration in seconds, 0 before its first build. */
+export const explainerSeconds = (id: string): number => durations[at(id, 'timing.json')] ?? 0;
 
 export function loadExplainer(id: string): Promise<LectureDef> | null {
   return explainers[at(id, 'explainer.ts')]?.() ?? null;

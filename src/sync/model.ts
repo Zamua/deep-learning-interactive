@@ -25,7 +25,10 @@ export interface LastSeen { at: Reg<Seen | null> }
 /** The learner's choices that follow them across devices. */
 export interface Prefs { pace?: Reg<Pace> }
 
-export type Rec = MasteryBucket | LectureBucket | Reading | LastSeen | Prefs;
+/** Atlas tracks by target concept: when each was added, 0 once removed. */
+export interface Tracks { on: Readonly<Record<string, Reg<number>>> }
+
+export type Rec = MasteryBucket | LectureBucket | Reading | LastSeen | Prefs | Tracks;
 
 /** Records spread over a few keys, so an upload carries a slice of them and a room stays far under its key cap. */
 const MASTERY_KEYS = 8;
@@ -33,6 +36,7 @@ const LECTURE_KEYS = 4;
 export const READING_KEY = 'reading';
 export const LAST_KEY = 'last';
 export const PREFS_KEY = 'prefs';
+export const TRACKS_KEY = 'tracks';
 
 /** FNV-1a: a stable slot for an id, whatever build or device computes it. */
 function slot(id: string, n: number): number {
@@ -194,6 +198,14 @@ const prefs: Kind<Rec> = {
   stamp: (r) => (r as Prefs).pace?.t ?? 0,
 };
 
+const isAdded = (x: unknown): x is number => num(x) && x >= 0;
+
+const tracks: Kind<Rec> = {
+  from: (raw) => (isObj(raw) ? { on: mapFrom(raw.on, ID, (v) => regFrom(v, isAdded)) } : null),
+  merge: (a, b) => ({ on: mergeMap((a as Tracks).on, (b as Tracks).on, lww) }),
+  stamp: (r) => Math.max(0, ...Object.values((r as Tracks).on).map((e) => e.t)),
+};
+
 const MASTERY_KEY = /^mastery\/\d$/;
 const LECTURE_KEY = /^lectures\/\d$/;
 
@@ -202,7 +214,7 @@ export const MODEL: Model<Rec> = {
   prefix: 'progress.v2.',
   salt: 'deep-learning-interactive/public/',
   qrPrefix: 'DLI',
-  kind: (key) => (MASTERY_KEY.test(key) ? mastery : LECTURE_KEY.test(key) ? lectures : key === READING_KEY ? reading : key === LAST_KEY ? last : key === PREFS_KEY ? prefs : null),
+  kind: (key) => (MASTERY_KEY.test(key) ? mastery : LECTURE_KEY.test(key) ? lectures : key === READING_KEY ? reading : key === LAST_KEY ? last : key === PREFS_KEY ? prefs : key === TRACKS_KEY ? tracks : null),
 };
 
 export type Store = LocalStore<Rec>;
@@ -272,6 +284,19 @@ export const paceOf = (s: Store): Pace => (s.records[PREFS_KEY] as Prefs | undef
 
 export const putPace = (s: Store, now: number, pace: Pace): Store =>
   putRecord(MODEL, s, PREFS_KEY, now, (held, t) => ({ ...(held as Prefs | null), pace: { val: pace, t } })).store;
+
+/** Targets of the tracks the learner follows, oldest first. */
+export function trackList(s: Store): string[] {
+  const on = (s.records[TRACKS_KEY] as Tracks | undefined)?.on ?? {};
+  return Object.keys(on).filter((id) => on[id]!.val > 0).sort((a, b) => on[a]!.val - on[b]!.val || (a < b ? -1 : 1));
+}
+
+/** Adds a track, keeping its place if it is already followed, or removes it. */
+export function putTrack(s: Store, now: number, target: string, follow: boolean): Store {
+  const had = (s.records[TRACKS_KEY] as Tracks | undefined)?.on[target]?.val ?? 0;
+  if (follow === had > 0) return s;
+  return putRecord(MODEL, s, TRACKS_KEY, now, (held, t) => ({ on: sorted({ ...(held as Tracks | null)?.on, [target]: { val: follow ? now : 0, t } }) })).store;
+}
 
 // What builds before sync kept, one localStorage key per item.
 

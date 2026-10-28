@@ -1,7 +1,7 @@
 // The learner's mastery data: one record per concept, kept in the synced progress store, and an answer log kept on
 // this device.
 import { editProgress, progressStore } from '../sync/cloud';
-import { conceptFrom, concepts, paceOf, putConcepts, putPace } from '../sync/model';
+import { conceptFrom, concepts, paceOf, putConcepts, putPace, putTrack, trackList } from '../sync/model';
 import type { ConceptRecord } from './domain/model';
 import type { Pace } from './domain/scheduler';
 
@@ -58,6 +58,13 @@ export const loadPace = (): Pace => paceOf(progressStore().store);
 
 export function savePace(pace: Pace): void {
   if (pace !== loadPace()) editProgress((s, now) => putPace(s, now, pace));
+}
+
+/** Targets of the tracks the learner follows, on any of their devices, oldest first. */
+export const loadTracks = (): string[] => trackList(progressStore().store);
+
+export function saveTrack(target: string, follow: boolean): void {
+  if (follow !== loadTracks().includes(target)) editProgress((s, now) => putTrack(s, now, target, follow));
 }
 
 export function loadLog(): LogRow[] {

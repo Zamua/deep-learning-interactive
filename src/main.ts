@@ -303,7 +303,7 @@ function redrawOnRemoteProgress(): void {
     window.clearTimeout(due);
     due = window.setTimeout(() => {
       const [, a = '', b = '', c = ''] = location.hash.replace(/^#\/?/, '#').split(/[#/]/);
-      const busy = a === 'watch' || a === 'account' || a === 'link' || (a === 'atlas' && (b === 'learn' || b === 'place' || c === 'watch')) || CHAPTERS.some((x) => x.id === a);
+      const busy = a === 'watch' || a === 'account' || a === 'link' || (a === 'atlas' && (b === 'learn' || b === 'place' || b === 'new-track' || c === 'watch')) || CHAPTERS.some((x) => x.id === a);
       if (busy) return;
       const y = scrollY;
       currentId = '';

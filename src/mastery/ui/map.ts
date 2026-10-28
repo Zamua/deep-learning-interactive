@@ -3,12 +3,17 @@ import { domainOf, DOMAINS, hasExplainer } from '../../atlas/index';
 import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
 import { streak, type Status } from '../domain/model';
+import { trackConcepts } from '../domain/tracks';
 import type { Learner } from '../learner';
 import { syncReminders } from '../push';
 import { atlasRoot, dots, pickLink, plural, whenDue } from './common';
 import { graphView } from './graph-view';
+import { tracksSection } from './tracks';
 
-/** The Atlas front page: today's concept, the short path around it, and a way into the whole map. */
+/**
+ * The Atlas front page: today's concept, the short path around it, and a way into the whole map. With tracks, the due
+ * reviews, then each track's next concept.
+ */
 export function renderHome(main: HTMLElement, learner: Learner): void {
   const root = atlasRoot('at-map');
   main.append(root);
@@ -23,6 +28,21 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
   const goBtn = (label: string, href = '#/atlas/learn') => h('a', { class: 'lead-go', href, html: `${icon('playFill')} ${label}` });
   const altBtn = (label: string, href: string, ic: string) => h('a', { class: 'lead-alt', href, html: `${icon(ic)} ${label}` });
   const opens = d.opens?.length ? ` · then ${d.opens.map(title).join(', ')} opens` : '';
+  const st = [...learner.statuses().values()];
+  const mastered = st.filter((x) => x === 'mastered' || x === 'due' || x === 'slipping').length;
+  const mapLink = () => h('a', { class: 'at-maplink', href: '#/atlas/graph', html: `${icon('graph')} <span>The whole map</span><small>${mastered} of ${st.length} mastered</small>${icon('arrowRight')}` });
+  void syncReminders(learner);
+
+  const targets = learner.trackTargets;
+  if (targets.length) {
+    const inTrack = (id: string) => targets.some((t) => trackConcepts(graph, t).includes(id));
+    if (d.kind === 'review') root.append(lead('Reviews', `${plural(d.due, 'concept')} due`, reviewTime(learner), goBtn('Start reviews')));
+    else if (d.kind === 'learning' && d.slipping) root.append(lead('Win it back', c!.title, `Slipped on a review: ${d.need} right in a row win it back. ${d.streak} so far.`, goBtn('Practice')));
+    else if (d.kind === 'learning' && !inTrack(c!.id)) root.append(lead('In progress', c!.title, `${d.streak} of ${d.need} right in a row${opens}`, goBtn('Practice', `#/atlas/learn/${c!.id}`)));
+    root.append(...tracksSection(learner), pickLink('Or choose something else to learn'), mapLink());
+    return;
+  }
+
   if (d.kind === 'start') root.append(lead('Start here', c!.title, 'The first concept: a short explainer, then practice.', goBtn('Start'), altBtn('Placement test', '#/atlas/place', 'compass')));
   else if (d.kind === 'learning' && d.slipping) root.append(lead('Win it back', c!.title, `Slipped on a review: ${d.need} right in a row win it back. ${d.streak} so far.`, goBtn('Practice')));
   else if (d.kind === 'learning') root.append(lead('In progress', c!.title, `${d.streak} of ${d.need} right in a row${opens}`, goBtn('Practice')));
@@ -42,10 +62,8 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
       ...(now ? [step(now, 'now', d.kind === 'learning' ? `in progress · ${d.streak} of ${d.need}` : d.kind === 'review' ? 'after the reviews' : 'next to learn')] : []),
       ...next.map((id, i) => step(id, 'lock', i === 0 ? `opens after ${title(now!)}` : 'then this'))));
   }
-  const st = [...learner.statuses().values()];
-  const mastered = st.filter((x) => x === 'mastered' || x === 'due' || x === 'slipping').length;
-  root.append(h('a', { class: 'at-maplink', href: '#/atlas/graph', html: `${icon('graph')} <span>The whole map</span><small>${mastered} of ${st.length} mastered</small>${icon('arrowRight')}` }));
-  void syncReminders(learner);
+  root.append(h('a', { class: 'at-maplink', href: '#/atlas/new-track', html: `${icon('target')} <span>Start a track</span><small>aim at any concept</small>${icon('arrowRight')}` }));
+  root.append(mapLink());
 }
 
 /** What the due reviews take: one problem each, at about the pace a concept's bar asks for. */

@@ -63,6 +63,11 @@ export function renderConcept(main: HTMLElement, learner: Learner, id: string): 
     ? h('div', { class: 'at-cta at-cta-off', html: `${icon('lock')} Master ${missing.join(' and ')} first` })
     : h('a', { class: 'at-cta', href: `#/atlas/learn/${id}`, html: `${s === 'mastered' ? 'Practice' : s === 'due' ? 'Review' : 'Practice'} ${c.title.toLowerCase()} ${icon('arrowRight')}` }));
 
+  if (!rec.mastered) {
+    const followed = learner.trackTargets.includes(id);
+    root.append(h('a', { class: 'at-pick-link', href: followed ? `#/atlas/track/${id}` : `#/atlas/new-track/${id}`, html: icon('target') }, h('span', {}, followed ? 'Open its track' : 'Make it a track: everything it needs, in order')));
+  }
+
   const pill = (pid: string) => {
     const ok = learner.record(pid).mastered;
     return h('a', { class: `at-pill${ok ? ' ok' : ''}`, href: `#/atlas/${pid}`, html: `${icon(ok ? 'check' : 'lock')} ${graph.get(pid)!.title}` });

@@ -3,6 +3,7 @@
 import { hasExplainer } from '../../atlas/index';
 import { icon } from '../../core/controls';
 import { h, onDispose } from '../../core/dom';
+import { trackConcepts } from '../domain/tracks';
 import type { Learner } from '../learner';
 import { graphView } from './graph-view';
 
@@ -22,8 +23,8 @@ export function haptic(): void {
   label.remove();
 }
 
-/** Plays the moment over `host` and resolves when the learner moves on. */
-export function celebrate(host: HTMLElement, learner: Learner, id: string, unlocked: string[], next: string | undefined): Promise<void> {
+/** Plays the moment over `host` and resolves when the learner moves on; `track` is the target of the track followed. */
+export function celebrate(host: HTMLElement, learner: Learner, id: string, unlocked: string[], next: string | undefined, track?: string): Promise<void> {
   const graph = learner.graph;
   const c = graph.get(id)!;
   const map = graphView(learner);
@@ -32,6 +33,8 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
   const view = h('div', { class: 'at-cm-view' }, stage);
   const here = h('div', { class: 'at-cm-here' });
   const done = [...learner.statuses().values()].filter((s) => s === 'mastered' || s === 'due').length;
+  const finished = !!track && trackConcepts(graph, track).every((x) => learner.record(x).mastered);
+  const along = track && !finished ? `/${track}` : '';
   // A new concept opens on its explainer, never straight into its practice.
   const watch = !!next && hasExplainer(next);
   const go = h('button', { type: 'button', class: 'at-cm-go' },
@@ -45,6 +48,7 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
     view,
     here,
     h('div', { class: 'at-cm-cap' },
+      finished ? `Track complete: ${graph.get(track!)!.title} · ` : '',
       `${done} of ${graph.order.length} concepts mastered`,
       unlocked.length ? ` · ${unlocked.length} unlocked` : ''),
     go,
@@ -71,7 +75,7 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
   };
   go.addEventListener('click', () => {
     close();
-    if (next) location.hash = watch ? `#/atlas/${next}/watch` : `#/atlas/${next}`;
+    if (next) location.hash = watch ? `#/atlas/${next}/watch${along}` : `#/atlas/${next}`;
   });
   if (stay) stay.addEventListener('click', close);
   onDispose(close);

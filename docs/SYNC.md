@@ -14,6 +14,7 @@ the storage it used before, and the screens.
 | Chapter reading depth | `reading` | the furthest read; the section last scrolled past: the later edit wins |
 | What was open last | `last` | the later edit wins |
 | Settings that follow the learner (how Atlas picks new concepts) | `prefs` | each: the later edit wins |
+| Atlas tracks followed, by target concept | `tracks` | each: the later add or remove wins |
 
 Records are spread over a few keys so an upload carries a slice of them, and so a room (256 keys, 256 KiB) holds every
 learner with room to spare. Every merge is commutative, associative and idempotent (`src/sync/model.test.ts` checks this

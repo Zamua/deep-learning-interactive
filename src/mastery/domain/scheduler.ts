@@ -33,6 +33,8 @@ export interface SessionState {
   learnOnly?: boolean;
   /** `deep` by default. */
   pace?: Pace;
+  /** A track's concepts: what to learn comes from these while any is left. */
+  within?: ReadonlySet<string>;
 }
 
 /** Misses among a concept's last few answers that send the learner back to a prerequisite. */
@@ -86,12 +88,17 @@ export function pickNext(s: SessionState): Pick | null {
     const due = ids('due').filter((id) => !s.reviewed?.has(id));
     if (due.length) return { concept: due[0]!, reason: 'review', difficulty: DIFFICULTY.review };
   }
-  const focus = ids('learning').sort(recent)[0];
+  const learning = ids('learning');
+  const fresh = ids('new');
+  // A track's concepts while any is left to learn; then the whole map.
+  const scoped = !!s.within && [...learning, ...fresh].some((id) => s.within!.has(id));
+  const pool = (list: string[]) => (scoped ? list.filter((id) => s.within!.has(id)) : list);
+  const focus = pool(learning).sort(recent)[0];
   if (focus) return learn(focus);
 
   // Nothing in progress: start a new concept.
-  const fresh = ids('new');
-  return fresh.length ? { concept: rankNew(graph, records, fresh, s.pace ?? 'deep')[0]!, reason: 'new', difficulty: 0 } : null;
+  const open = pool(fresh);
+  return open.length ? { concept: rankNew(graph, records, open, s.pace ?? 'deep')[0]!, reason: 'new', difficulty: 0 } : null;
 }
 
 /**

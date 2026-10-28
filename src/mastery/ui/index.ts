@@ -1,5 +1,5 @@
-// Routes under #/atlas: the map, its graph view, a session, the placement test, what to learn next, a concept and its
-// explainer.
+// Routes under #/atlas: the map, its graph view, a session, the placement test, what to learn next, tracks, a concept
+// and its explainer. A session or an explainer may carry the target of the track it follows as its last part.
 import '../../styles/atlas.css';
 import { domainOf, GRAPH, loadExplainer } from '../../atlas/index';
 import { h } from '../../core/dom';
@@ -10,13 +10,20 @@ import { renderHome, renderMap } from './map';
 import { renderNext } from './next';
 import { renderPlacement } from './placement';
 import { renderSession } from './session';
+import { renderTrack, renderTrackMap } from './tracks';
 
 export async function renderAtlas(main: HTMLElement, parts: string[], current: () => boolean): Promise<void> {
   const learner = new Learner(GRAPH);
-  const [a = '', b = ''] = parts;
+  const [a = '', b = '', third = ''] = parts;
+  const track = GRAPH.get(third) ? third : undefined;
   if (!a) return renderHome(main, learner);
   if (a === 'graph' || a === 'list') return renderMap(main, learner, a);
-  if (a === 'learn') return renderSession(main, learner, b || undefined);
+  if (a === 'learn') return renderSession(main, learner, b || undefined, track);
+  if (a === 'new-track') return renderTrackMap(main, learner, 'pick', GRAPH.get(b) ? b : undefined);
+  if (a === 'track') {
+    if (!GRAPH.get(b)) return location.replace('#/atlas');
+    return third === 'map' ? renderTrackMap(main, learner, 'view', b) : renderTrack(main, learner, b);
+  }
   if (a === 'place') return renderPlacement(main, learner);
   if (a === 'next') return renderNext(main, learner);
   const c = GRAPH.get(a);
@@ -46,7 +53,7 @@ export async function renderAtlas(main: HTMLElement, parts: string[], current: (
     notes: (marks, said) => notationIn(a, marks, said),
     // A locked concept cannot be practiced yet, so its explainer ends on what to master first.
     end: locked
-      ? { kicker: 'Not yet', title: `Master ${missing} first`, action: 'See the map', href: '#/atlas' }
-      : { kicker: 'Your turn', title: 'Ready to practice?', action: 'Start practice', href: `#/atlas/learn/${a}` },
+      ? { kicker: 'Not yet', title: `Master ${missing} first`, action: track ? 'See the track' : 'See the map', href: track ? `#/atlas/track/${track}` : '#/atlas' }
+      : { kicker: 'Your turn', title: 'Ready to practice?', action: 'Start practice', href: `#/atlas/learn/${a}${track ? `/${track}` : ''}` },
   });
 }

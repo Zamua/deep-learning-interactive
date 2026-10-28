@@ -3,6 +3,7 @@
 import type { ConceptGraph } from './domain/graph';
 import { applyAnswer, emptyRecord, placeMastered, recoveryStreak, status, streak, type ConceptRecord, type Status } from './domain/model';
 import { inheritSplits, isUnlocked, newChoices, pickNext, statuses, type NewChoices, type Pick } from './domain/scheduler';
+import { track, trackConcepts, type Track } from './domain/tracks';
 
 /** What the learner would do next, for a page to lead with. */
 export interface Today {
@@ -25,7 +26,7 @@ export interface Today {
   /** Epoch ms of the latest answer; 0 before any. */
   t: number;
 }
-import { appendLog, loadPace, loadRecords, saveRecords, type LogRow } from './store';
+import { appendLog, loadPace, loadRecords, loadTracks, saveRecords, saveTrack, type LogRow } from './store';
 
 export class Learner {
   constructor(readonly graph: ConceptGraph, private readonly clock: () => number = Date.now) {
@@ -51,8 +52,10 @@ export class Learner {
     return this.records[id] ?? emptyRecord();
   }
 
-  next(last?: string, session: { focus?: string; reviewed?: ReadonlySet<string> } = {}): Pick | null {
-    return pickNext({ graph: this.graph, records: this.records, now: this.clock(), last, pace: loadPace(), ...session });
+  /** `track`: the target of the track a session follows. */
+  next(last?: string, session: { focus?: string; reviewed?: ReadonlySet<string>; track?: string } = {}): Pick | null {
+    const { track: t, ...rest } = session;
+    return pickNext({ graph: this.graph, records: this.records, now: this.clock(), last, pace: loadPace(), ...rest, within: this.within(t) });
   }
 
   /** The ways to go on to something new, and every concept open to start. */
@@ -61,8 +64,26 @@ export class Learner {
   }
 
   /** The concept to learn next, leaving reviews aside: what a mastery leads on to. */
-  nextToLearn(last?: string): string | undefined {
-    return pickNext({ graph: this.graph, records: this.records, now: this.clock(), last, pace: loadPace(), learnOnly: true })?.concept;
+  nextToLearn(last?: string, track?: string): string | undefined {
+    return pickNext({ graph: this.graph, records: this.records, now: this.clock(), last, pace: loadPace(), learnOnly: true, within: this.within(track) })?.concept;
+  }
+
+  private within(target?: string): Set<string> | undefined {
+    return target && this.graph.get(target) ? new Set(trackConcepts(this.graph, target)) : undefined;
+  }
+
+  /** Targets of the tracks followed, oldest first; one whose concept left the course is skipped. */
+  get trackTargets(): string[] {
+    return loadTracks().filter((id) => this.graph.get(id));
+  }
+
+  /** `explainer` gives the seconds of a concept's explainer not yet heard; a concept already practiced needs none. */
+  track(target: string, explainer: (id: string) => number): Track {
+    return track(this.graph, this.records, this.clock(), target, loadPace(), (id) => (this.record(id).attempts ? 0 : explainer(id)));
+  }
+
+  follow(target: string, on = true): void {
+    saveTrack(target, on);
   }
 
   answer(id: string, generator: string, a: { ok: boolean; seconds: number; help?: boolean }): ConceptRecord {

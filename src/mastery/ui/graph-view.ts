@@ -9,7 +9,19 @@ import type { Learner } from '../learner';
 const NODE_H = 66;
 const ROW_GAP = 46;
 
-export function graphView(learner: Learner): HTMLElement {
+/** A set of concepts lit on a drawn map, with the rest dimmed: a track and its target. */
+export interface Lit {
+  ids: ReadonlySet<string>;
+  target: string;
+}
+
+const lighters = new WeakMap<HTMLElement, (lit: Lit | null) => void>();
+
+/** Lights a track on a map from `graphView`, or clears it. */
+export const lightTrack = (map: HTMLElement, lit: Lit | null): void => lighters.get(map)?.(lit);
+
+/** `onTap` takes over a node's tap, which otherwise opens its concept. */
+export function graphView(learner: Learner, opts: { onTap?: (id: string) => void } = {}): HTMLElement {
   const graph = learner.graph;
   const st = learner.statuses();
   const wrap = h('div', { class: 'at-graph' });
@@ -31,9 +43,31 @@ export function graphView(learner: Learner): HTMLElement {
     const el = h('a', { class: `at-node st-${s}`, href: `#/atlas/${c.id}`, 'data-id': c.id, style: `--dom:var(--c-${domainOf(c).color})` },
       h('span', { class: 'at-node-t' }, c.title),
       h('span', { class: 'at-node-s', html: mark }));
+    if (opts.onTap)
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        opts.onTap!(c.id);
+      });
     nodes.set(c.id, el);
     wrap.append(el);
   }
+
+  let lit: Lit | null = null;
+  const paint = () => {
+    wrap.classList.toggle('at-graph-lit', !!lit);
+    for (const [id, el] of nodes) {
+      el.classList.toggle('in', !!lit?.ids.has(id));
+      el.classList.toggle('target', lit?.target === id);
+    }
+    for (const p of svg.querySelectorAll<SVGPathElement>('path[data-e]')) {
+      const [a = '', b = ''] = p.dataset.e!.split('>');
+      p.classList.toggle('in', !!lit && lit.ids.has(a) && lit.ids.has(b));
+    }
+  };
+  lighters.set(wrap, (next) => {
+    lit = next;
+    paint();
+  });
 
   const layout = () => {
     const width = wrap.clientWidth;
@@ -65,6 +99,7 @@ export function graphView(learner: Learner): HTMLElement {
         }),
       )
       .join('');
+    paint();
   };
   const ro = new ResizeObserver(layout);
   ro.observe(wrap);

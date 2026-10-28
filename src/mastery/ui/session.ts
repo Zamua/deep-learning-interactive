@@ -175,7 +175,7 @@ function responseText(a: Answer, r: Response): string {
 }
 
 /** After an answer: right or wrong, why, the worked solution, and what changed. Resolves on Next. */
-function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLElement }, c: Concept, p: Problem, got: Asked, before: ConceptRecord, after: ConceptRecord, learner: Learner): Promise<void> {
+function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLElement }, c: Concept, p: Problem, got: Asked, before: ConceptRecord, after: ConceptRecord, learner: Learner, track?: string): Promise<void> {
   const graph = learner.graph;
   const { verdict } = got;
   const a = p.answer;
@@ -191,7 +191,7 @@ function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLEleme
   const news: HTMLElement[] = [];
   if (after.mastered && !before.mastered) {
     const unlocked = graph.dependents.get(c.id)!.filter((d) => graph.get(d)!.prereqs.every((pid) => pid === c.id || learner.record(pid).mastered));
-    void celebrate(frame.root, learner, c.id, unlocked, unlocked[0] ?? learner.nextToLearn(c.id));
+    void celebrate(frame.root, learner, c.id, unlocked, track ? learner.nextToLearn(c.id, track) : unlocked[0] ?? learner.nextToLearn(c.id), track);
     news.push(h('div', { class: 'at-news', html: `${icon('sparkle')} <b>${c.title} mastered.</b> ${unlocked.length ? `Unlocks ${unlocked.map((d) => graph.get(d)!.title).join(', ')}.` : 'It will come back for review tomorrow.'}` }));
   } else if (before.slipping && !after.slipping) {
     news.push(h('div', { class: 'at-news', html: `${icon('sparkle')} <b>${c.title} is back to mastered.</b>` }));
@@ -211,7 +211,7 @@ function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLEleme
   box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   return new Promise((resolve) => {
     const next = h('button', { type: 'button', class: 'at-check' }, 'Next');
-    if (!verdict.ok && hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-ghost', href: `#/atlas/${c.id}/watch`, html: `${icon('reset')} Rewatch the explainer` }));
+    if (!verdict.ok && hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-ghost', href: `#/atlas/${c.id}/watch${track ? `/${track}` : ''}`, html: `${icon('reset')} Rewatch the explainer` }));
     frame.dock.append(next);
     const go = () => {
       window.removeEventListener('keydown', onKey);
@@ -244,7 +244,8 @@ function problemTag(c: Concept, pick: Pick, rec: ConceptRecord): HTMLElement {
 /** How a concept's review went this session. `due`: not reached yet; `slipped`: missed, being won back. */
 type ReviewState = 'due' | 'passed' | 'helped' | 'slipped' | 'recovered';
 
-export function renderSession(main: HTMLElement, learner: Learner, focus?: string): void {
+/** `track`: the target of the track the session follows, whose concepts it learns while any is left. */
+export function renderSession(main: HTMLElement, learner: Learner, focus?: string, track?: string): void {
   const frame = runFrame(main, 'at-session-run');
   const rng = new Rng((Date.now() ^ (Math.random() * 2 ** 32)) >>> 0);
   const gens = new Map<string, Generator[]>();
@@ -286,7 +287,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
   const loop = async () => {
     for (;;) {
       if (results.length >= SESSION_LENGTH) return summary();
-      const pick = (opened ? null : firstPick()) ?? learner.next(last, { focus, reviewed: new Set([...reviews].filter(([, v]) => v !== 'due').map(([id]) => id)) });
+      const pick = (opened ? null : firstPick()) ?? learner.next(last, { focus, track, reviewed: new Set([...reviews].filter(([, v]) => v !== 'due').map(([id]) => id)) });
       opened = true;
       const reviewing = !!pick && (pick.reason === 'review' || pick.reason === 'slipping');
       // Reviews run as one block; leaving it is a stop of its own, never a silent slide into new material.
@@ -332,7 +333,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       results.push({ id: c.id, ok: got.verdict.ok });
       last = c.id;
       showProgress();
-      await feedback(frame, c, problem, got, before, after, learner);
+      await feedback(frame, c, problem, got, before, after, learner, track);
     }
   };
 
@@ -432,7 +433,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         h('p', { class: 'at-small' }, `You will practice it until ${c.mastery.streak} in a row are right, about ${c.mastery.seconds} s each. Then the next concept opens.`),
         example,
         learner.choices().open.length > 1 ? pickLink('Not this one? Choose another') : ''));
-      if (hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-check', href: `#/atlas/${c.id}/watch`, html: `${icon('playFill')} Watch the explainer` }));
+      if (hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-check', href: `#/atlas/${c.id}/watch${track ? `/${track}` : ''}`, html: `${icon('playFill')} Watch the explainer` }));
       frame.dock.append(start);
     });
 
@@ -454,7 +455,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       showProgress();
       void loop();
     });
-    frame.dock.append(again, h('a', { class: 'at-check', href: '#/atlas' }, 'Back to the map'));
+    frame.dock.append(again, backLink());
   };
 
   const caughtUp = () => {
@@ -465,8 +466,10 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       h('div', { class: 'at-kicker' }, results.length ? 'Nothing left for now' : 'All caught up'),
       h('h1', { class: 'at-title' }, results.length ? plural(results.length, 'problem') + ' done' : 'Nothing is due'),
       h('p', { class: 'at-lede' }, 'Every concept you can reach is mastered and none is due for review. Come back tomorrow.')));
-    frame.dock.append(h('a', { class: 'at-check', href: '#/atlas' }, 'Back to the map'));
+    frame.dock.append(backLink());
   };
+
+  const backLink = () => (track ? h('a', { class: 'at-check', href: `#/atlas/track/${track}` }, 'Back to the track') : h('a', { class: 'at-check', href: '#/atlas' }, 'Back to the map'));
 
   void loop();
 }
