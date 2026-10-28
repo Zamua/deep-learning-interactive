@@ -266,6 +266,8 @@ const adamAll: SymbolMap = {
   epstiny: tiny,
   beta1: { color: 'slate', name: 'β₁: the first moment\'s decay', tex: '\\beta_1', about: 'The share of m kept each step, usually 0.9.' },
   beta2: { color: 'slate', name: 'β₂: the second moment\'s decay', tex: '\\beta_2', about: 'The share of v kept each step, usually 0.999: a longer memory than m\'s.' },
+  mhat: { color: 'orange', name: 'm̂: the corrected first moment', tex: '\\hat m', code: ['m_hat'], about: 'm divided by 1 − β₁ᵗ, undoing the pull toward its zero start.' },
+  vhat: { color: 'teal', name: 'v̂: the corrected second moment', tex: '\\hat v', code: ['v_hat'], about: 'v divided by 1 − β₂ᵗ; Adam divides each step by its square root.' },
 };
 const pick = (m: SymbolMap, keys: string): SymbolMap => Object.fromEntries(keys.split(' ').map((k) => [k, m[k]!]));
 const mlpW: SymbolMap = {
@@ -322,6 +324,12 @@ const sig: SymbolDef = { color: 'teal', name: 'σ: the sigmoid', tex: '\\sigma',
  * teach. Keys missing from ATLAS_SYMBOLS work too, through \sym{key}{tex}.
  */
 export const SCOPED: Record<string, SymbolMap> = {
+  'lr-schedule': { T: { color: 'slate', name: 'T: the length of the decay, in steps', about: 'How many steps the glide from the top rate to the bottom one takes. After a warmup it starts counting where the warmup ends.' } },
+  embeddings: {
+    E: { color: 'blue', name: 'E: the embedding table', about: 'One row per token in the vocabulary, one column per number in its vector: shape (V, d).' },
+    V: { color: 'slate', name: 'V: the vocabulary size', about: 'How many tokens the model knows: the number of rows of E.' },
+    d: { color: 'slate', name: 'd: the embedding size', about: 'How many numbers describe each token: the number of columns of E.' },
+  },
   derivative: { h: step },
   'derivative-rules': { h: step },
   'grad-check': { h: { ...step, about: 'The small nudge for the numerical slope: (f(x + h) - f(x - h)) / 2h.' } },
@@ -632,6 +640,13 @@ export const ATLAS_GLOSSARY: Glossary = {
 
 /** Notes on calls whose names mean something only inside one concept's listings. */
 export const SCOPED_GLOSSARY: Record<string, Glossary> = {
+  'e-and-ln': {
+    'np.exp': { is: 'e to the power of every element', more: 'np.exp(x) is eˣ: x years of growth that never stops. np.exp(a) * np.exp(b) equals np.exp(a + b).', eg: 'np.exp(1)   # 2.718' },
+    'np.log': { is: 'the natural logarithm of every element', more: 'The inverse of np.exp: the power of e that gives y. Negative below 1; no real log at 0 or below.', eg: 'np.log(np.exp(2))   # 2.0' },
+  },
+  'exp-log': {
+    'np.log': { is: 'the natural logarithm of every element', more: 'The power of e that gives y. np.log(a * b) equals np.log(a) + np.log(b).', eg: 'np.log(6)   # 1.79' },
+  },
   vit: { block: { is: 'one transformer block: (N + 1, d) in, (N + 1, d) out' } },
   autoencoder: { decode: { is: 'the decoder: turns a code back into an input-sized output' } },
   vae: {

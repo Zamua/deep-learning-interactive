@@ -1,23 +1,34 @@
 {
- "duration": 129.812,
+ "duration": 247.592,
  "scenes": {
-  "penalty": [0.0, 43.521],
-  "decay": [43.521, 95.62],
-  "spread": [95.62, 129.812]
+  "touchy": [0.0, 44.111],
+  "price": [44.111, 153.147],
+  "decay": [153.147, 247.592]
  },
  "beats": {
-  "penalty/add": [0.7, 16.474, "L2 regularization adds a second term to the loss. The loss L becomes the data loss, L data, plus lambda, the Greek letter lambda, times the sum of the squared weights, the sum over i of w i squared.", [[4.24, 4.79], [7.07, 7.41], [8.18, 8.5], [9.51, 9.8], [11.11, 11.43], [13.36, 13.68]]],
-  "penalty/example": [16.854, 25.933, "Say the weights are two, minus one and zero, and lambda is zero point one. Squared, they are four, one and zero.", [[18.284, 18.644], [20.124, 20.454], [22.364, 22.864], [23.434, 23.644], [24.414, 24.714], [25.124, 25.274]]],
-  "penalty/sum": [26.313, 33.325, "They add up to five, and lambda times five is a penalty of zero point five, added to the data loss.", [[27.603, 27.953], [31.643, 31.953]]],
-  "penalty/lam": [33.705, 42.421, "Lambda sets the trade. At zero the penalty vanishes; large, and keeping the weights small matters more than fitting the data.", [[35.205, 35.745], [37.775, 38.255], [38.805, 38.965]]],
-  "decay/grad": [44.221, 50.707, "The penalty's gradient is two lambda w. Each weight's slope is proportional to the weight itself.", [[46.981, 47.561]]],
-  "decay/example": [51.087, 60.452, "For two, minus one and zero, with lambda at zero point one, that is zero point four, minus zero point two, and zero.", [[51.707, 52.187], [53.687, 54.007], [55.877, 56.167], [57.707, 58.007], [59.497, 59.747]]],
-  "decay/step": [60.832, 69.855, "The gradient step adds it to the data gradient, g: w gets w, minus eta times g plus two lambda w.", [[63.482, 63.762], [64.122, 64.732], [66.082, 66.442]]],
-  "decay/shrink": [70.235, 84.28, "Where the data gradient is zero, each step just multiplies the weight by one minus two eta lambda. With eta at a half, that is zero point nine: two becomes one point eight, then one point six two.", [[72.125, 72.475], [76.755, 77.285], [78.575, 78.825], [80.165, 80.615], [82.345, 82.675]]],
-  "decay/pull": [84.66, 94.52, "So every step pulls every weight a little toward zero, and only the data can pull back. That is why L2 is also called weight decay.", [[88.34, 88.71], [90.61, 91.19]]],
-  "spread/same": [96.32, 106.382, "Take the input one, one, one, one. The weights one, zero, zero, zero, and a quarter in every entry, both give it a score of one.", [[97.19, 97.37], [99.24, 99.78], [102.47, 102.68], [104.41, 104.66]]],
-  "spread/pen": [106.762, 115.8, "But their penalties differ. The first costs one squared: one. The second, four times a quarter squared: a quarter.", [[108.242, 108.822], [110.852, 111.262], [111.612, 112.242], [112.832, 113.092], [114.712, 115.132]]],
-  "spread/prefer": [116.18, 127.592, "Squaring makes big weights expensive, so L2 prefers the second: weight spread over every input, using all of the evidence a little rather than one input a lot.", [[118.49, 118.88], [120.93, 121.46], [123.4, 123.76], [125.58, 125.83]]],
-  "spread/turn": [127.972, 128.712, "Your turn.", []]
+  "touchy/quirk": [0.7, 12.813, "Overfitting means fitting quirks of the training examples. Here is one that big weights can exploit: two features that happen to be equal in every training example, like one and one.", [[4.15, 4.73], [5.48, 5.63], [6.93, 7.55], [11.09, 11.39]]],
+  "touchy/tie": [13.193, 23.242, "The weights one and one, and five and minus three, both score it two. They agree on every training example, so the loss cannot tell them apart.", [[14.773, 15.003], [16.783, 17.033], [18.213, 18.793], [20.973, 21.313]]],
+  "touchy/new": [23.622, 32.208, "But take a new input, one and one point five: the small weights give two point five, and the big ones only zero point five.", [[24.942, 25.352], [26.942, 27.432], [29.462, 29.782]]],
+  "touchy/slope": [32.588, 43.011, "Each weight is how much the score moves when its feature grows by one. Big weights make the model touchy: it swings on differences the training data never showed.", [[36.758, 37.368], [39.238, 39.758]]],
+  "price/plane": [44.811, 55.353, "Picture each pair of weights as a point, and as an arrow from zero. Every point on this line adds up to two, so all of them tie on the training examples.", [[47.121, 47.481], [49.291, 49.961], [52.341, 52.721]]],
+  "price/sum": [55.733, 69.824, "L2 regularization breaks the tie with a price on size: the sum of the squared weights, the sum over i of w i squared. Square each weight, then add. For one and one, that is two.", [[59.593, 60.103], [61.733, 62.073], [64.713, 65.303], [66.373, 66.623], [67.243, 67.773], [68.803, 69.043]]],
+  "price/sumb": [70.204, 75.426, "For five and minus three, twenty-five plus nine: thirty-four.", [[72.034, 72.664], [74.144, 74.634]]],
+  "price/rings": [75.806, 88.794, "By Pythagoras, that sum is how long the arrow is, squared, so equal prices lie on rings around zero. This measure of length is called the L2 norm, the 2 for the squares.", [[76.836, 77.036], [79.936, 80.306], [83.466, 84.026], [86.896, 87.296]]],
+  "price/lam": [89.174, 96.617, "Scale the price by a strength, lambda, the Greek letter lambda, chosen by trying a few on the validation split.", [[90.994, 91.294], [91.854, 92.194], [93.484, 93.824]]],
+  "price/loss": [96.997, 106.868, "Then add it to the old loss on the examples, now called the data loss: L equals L data, plus lambda times the sum of the squared weights.", [[99.677, 99.957], [101.497, 102.107], [103.747, 104.007]]],
+  "price/pay": [107.248, 114.011, "With lambda at zero point one, the long arrow adds a tenth of thirty-four to the loss: three point four.", [[109.128, 109.428], [112.608, 113.008]]],
+  "price/touch": [114.391, 128.23, "Slide along the ties. The data loss stays put, but the price falls until the line just touches a ring, at one and one, the weight spread evenly. That tie costs least, so L2 picks it.", [[115.861, 116.331], [117.791, 118.081], [121.311, 121.681], [122.781, 123.121], [124.501, 125.021], [126.561, 126.821]]],
+  "price/regular": [128.61, 135.601, "A calmer fit, steadier on new inputs: making a fit more regular is what regularization means.", [[129.56, 129.98], [131.65, 132.1]]],
+  "price/history": [135.981, 152.047, "Arthur Hoerl and Robert Kennard proposed it in 1970, for inputs that move together like these: many fits are then nearly as good as the best, and the best tends to come out too long. Their cure: among those, take the shortest.", [[139.671, 140.071], [142.421, 143.121], [145.641, 146.051], [148.211, 148.851], [149.491, 149.971], [150.701, 151.001]]],
+  "decay/grad": [153.847, 164.794, "What does the price do to training? Each weight adds lambda w squared, whose slope is two lambda w: a gradient pointing straight away from zero, up the bowl.", [[155.687, 156.337], [158.777, 159.027], [160.907, 161.397], [163.837, 164.037]]],
+  "decay/out": [165.174, 172.971, "For weights two and minus one, with lambda at zero point one, it is zero point four and minus zero point two.", [[167.214, 167.464], [169.274, 169.604]]],
+  "decay/step": [173.351, 186.595, "A gradient step goes against it plus the data gradient, g: w gets w, minus eta, times g plus two lambda w. So the penalty pulls w toward zero.", [[175.291, 175.511], [176.841, 177.061], [177.471, 178.051], [179.521, 179.791], [180.711, 180.911], [183.251, 183.771]]],
+  "decay/factor": [186.975, 200.394, "Where g is zero, each step just multiplies w by one minus two eta lambda: the step factor of a bowl, with lambda as its steepness. With eta at a half, it is zero point nine.", [[188.375, 188.705], [193.055, 193.515], [194.935, 195.205], [196.825, 197.425], [198.745, 198.985]]],
+  "decay/shrink": [200.774, 208.224, "So two becomes one point eight, then one point six two: a little closer to zero every step.", [[203.134, 203.584], [205.334, 205.824]]],
+  "decay/both": [208.604, 216.505, "Add a data gradient of one on that first weight, and its full gradient is one plus zero point four: one point four.", [[211.524, 211.884], [215.104, 215.614]]],
+  "decay/land": [216.885, 222.712, "With eta at a half, the step is zero point seven, and the weight lands at one point three.", [[218.275, 218.525], [220.245, 220.595]]],
+  "decay/lamup": [223.092, 231.096, "Turn lambda up, and the pull grows. Only the data gradient pulls back, so the weights settle where the two pulls balance.", [[224.202, 224.392], [225.542, 226.002], [228.032, 228.422]]],
+  "decay/name": [231.476, 245.372, "That steady shrinking is why L2 is also called weight decay. In 1991, Anders Krogh and John Hertz proved it picks the smallest weights that still fit, quieting the inputs that do not matter.", [[235.726, 236.346], [237.596, 237.876], [239.716, 239.916], [242.736, 243.146]]],
+  "decay/turn": [245.752, 246.492, "Your turn.", []]
  }
 }

@@ -1,22 +1,34 @@
 {
- "duration": 158.236,
+ "duration": 244.511,
  "scenes": {
-  "cosine": [0.0, 82.154],
-  "both": [82.154, 111.482],
-  "try": [111.482, 158.236]
+  "shape": [0.0, 53.107],
+  "circle": [53.107, 121.93],
+  "fit": [121.93, 192.341],
+  "warm": [192.341, 244.511]
  },
  "beats": {
-  "cosine/cos": [0.7, 21.529, "Cosine decay glides along a curve called the cosine, written cos. Feed it pi, a number about three point one four, times t over T. As t runs from zero to T, the cosine of pi t over T falls from one to minus one: slowly, then fast, then slowly.", [[4.08, 4.44], [5.43, 6.0], [6.98, 7.27], [9.2, 9.54], [11.1, 11.73], [13.8, 14.16], [16.17, 16.43], [18.36, 18.84], [19.42, 19.72], [20.43, 20.78]]],
-  "cosine/vals": [21.909, 32.464, "Along the way, a third of the way through, it is a half. Halfway, it is zero. Three quarters of the way, it is about minus zero point seven one.", [[22.759, 23.049], [24.279, 24.539], [25.379, 25.929], [26.609, 26.879], [27.689, 28.229], [29.479, 29.759]]],
-  "cosine/halve": [32.844, 42.893, "Add one and halve it, and the curve runs from one down to zero instead: a third of the way, zero point seven five; halfway, a half.", [[34.254, 34.574], [37.524, 38.104], [39.054, 39.374], [40.854, 41.354], [41.944, 42.274]]],
-  "cosine/scale": [43.273, 57.372, "Stretch it across the gap from the top rate, eta max, to the bottom one, eta min, and add the bottom. The rate at step t, eta t, is eta min plus half the gap, times one plus the cosine.", [[45.593, 45.843], [46.563, 46.823], [47.653, 47.953], [48.593, 48.913], [49.933, 50.543], [51.873, 52.113], [52.823, 53.123], [55.293, 55.563]]],
-  "cosine/half": [57.752, 71.25, "From zero point one down to zero, half the gap is zero point zero five. Halfway through, the cosine is zero, so the rate is zero point zero five times one: zero point zero five.", [[59.982, 60.292], [62.902, 63.452], [64.282, 64.502], [65.792, 66.132], [69.212, 69.672]]],
-  "cosine/third": [71.63, 81.054, "A third of the way in, the cosine is a half, so the rate is zero point zero five times one point five: zero point zero seven five.", [[72.81, 73.06], [74.49, 74.82], [77.17, 77.34], [78.56, 79.07]]],
-  "both/both": [82.854, 93.191, "Runs often join the two: warm up over the first k steps, then decay along the cosine over the next T, counting its t from the end of the warmup.", [[84.524, 85.164], [87.284, 87.634], [90.554, 90.934]]],
-  "both/ex": [93.571, 110.382, "Warm up to zero point one over a thousand steps, then decay to zero over three thousand. Step two thousand five hundred is fifteen hundred steps into the decay: halfway, where the cosine is zero. So the rate is zero point zero five.", [[96.681, 97.071], [99.641, 100.281], [102.031, 102.231], [104.591, 105.011], [105.651, 105.931], [107.381, 107.831]]],
-  "try/p1": [112.182, 126.298, "Try one: cosine decay from zero point one down to zero point zero one over twelve hundred steps. What is the rate at step nine hundred? Use a cosine of about minus zero point seven zero seven.", [[112.762, 113.402], [115.642, 115.792], [119.222, 119.852], [121.892, 122.472]]],
-  "try/a1": [126.678, 138.337, "Nine hundred over twelve hundred is three quarters of the way. The cosine there is about minus zero point seven zero seven, so one plus it is zero point two nine three.", [[130.218, 130.788], [134.638, 135.098], [136.238, 136.408]]],
-  "try/a2": [138.717, 156.016, "Half the gap is half of zero point zero nine: zero point zero four five. Times zero point two nine three, that is about zero point zero one three two. Add the bottom, zero point zero one: about zero point zero two three two.", [[141.897, 142.437], [144.317, 144.827], [147.007, 147.417], [150.207, 150.747], [151.497, 151.827], [153.247, 153.637]]],
-  "try/turn": [156.396, 157.136, "Your turn.", []]
+  "shape/linear": [0.7, 12.676, "Linear decay lowers the learning rate in a straight line, from the top rate, eta max, to the bottom one, eta min, over a run of T steps, one training from start to finish.", [[3.94, 4.27], [5.15, 5.4], [6.15, 6.43], [7.24, 7.54], [8.19, 8.53], [10.23, 10.58]]],
+  "shape/ends": [13.056, 24.843, "But the two ends want different things. Early on, big steps make fast progress, so stay near the top. At the end, small steps settle in, so linger near the bottom.", [[15.366, 15.956], [16.516, 16.746], [18.746, 19.016], [20.206, 20.786], [21.386, 21.626], [23.066, 23.386]]],
+  "shape/cos": [25.223, 32.84, "Cosine decay does both. It leaves the top gently, drops fastest through the middle, and eases into the bottom.", [[26.893, 27.443], [28.903, 29.313], [30.953, 31.273]]],
+  "shape/drops": [33.22, 43.4, "Sample both at evenly spaced steps. The straight line drops the same amount every time; the cosine drops a little, then a lot, then a little again.", [[35.96, 36.47], [39.16, 39.64], [41.17, 41.44], [42.09, 42.43]]],
+  "shape/time": [43.78, 52.007, "Both pass the middle rate halfway through. But the cosine spends about twice as long near the top, and twice as long near the bottom.", [[46.18, 46.74], [49.78, 50.1]]],
+  "circle/circle": [53.807, 64.893, "Where does that shape come from? Take a point on a circle of radius one, at the top, and move it at a steady speed half a turn, to the bottom. Watch its height.", [[55.447, 56.277], [58.687, 58.947], [59.527, 59.867], [62.497, 62.787], [63.397, 63.967]]],
+  "circle/height": [65.273, 76.723, "Near the top it moves sideways, so its height barely changes. At the side it moves straight down, and the height falls fastest. Near the bottom it moves sideways again.", [[67.353, 67.593], [69.363, 69.953], [72.043, 72.233], [73.863, 74.463]]],
+  "circle/cos": [77.103, 86.979, "That height is called the cosine of the angle turned, written cos. It starts at one, passes zero at the side, and ends at minus one.", [[80.183, 80.483], [80.863, 81.013], [81.473, 82.023], [83.123, 83.503], [85.113, 85.403]]],
+  "circle/pi": [87.359, 97.954, "Measure the angle by the distance travelled around the circle. Half a turn on a circle of radius one is pi, the Greek letter pi, about three point one four.", [[90.579, 91.129], [94.369, 94.769], [95.979, 96.279]]],
+  "circle/tT": [98.334, 111.166, "Spread that half turn over the run. At step t of T, the point has gone t over T of the way: an angle of pi t over T, and a height of the cosine of pi t over T.", [[100.564, 101.244], [102.754, 103.044], [105.554, 106.024], [108.084, 108.404]]],
+  "circle/vals": [111.546, 120.83, "A third of the way through, the height is a half. Halfway, zero. Three quarters of the way, about minus zero point seven one.", [[112.936, 113.196], [114.406, 114.886], [115.466, 115.856], [116.356, 116.856], [118.106, 118.416]]],
+  "fit/halve": [122.63, 132.747, "The height runs from one down to minus one. Add one and halve it, and it runs from one down to zero instead: how much of the drop is still to come.", [[125.27, 125.87], [127.23, 127.51], [130.1, 130.65]]],
+  "fit/gap": [133.127, 145.515, "Multiply that share by the gap between the top and bottom rates, and add the bottom. The rate at step t, eta t, is eta min plus half the gap, times one plus the cosine.", [[136.747, 137.007], [137.977, 138.597], [139.897, 140.207], [140.907, 141.247], [143.447, 143.757]]],
+  "fit/half": [145.895, 157.882, "From zero point one down to zero, half the gap is zero point zero five. Halfway through, the cosine is zero, so the rate is just that: zero point zero five.", [[148.135, 148.485], [151.085, 151.635], [152.465, 152.695], [154.035, 154.375], [155.835, 156.225]]],
+  "fit/third": [158.262, 169.612, "A third of the way in, the cosine is a half, so the rate is zero point zero five times one point five: zero point zero seven five, still above the straight line.", [[159.532, 159.772], [161.172, 161.542], [165.262, 165.802], [167.712, 168.072]]],
+  "fit/history": [169.992, 185.159, "Ilya Loshchilov and Frank Hutter proposed this glide in 2016, in a paper on warm restarts: jumping back to the top and gliding down again. Even a single glide, with no restart, often beat the usual step decay.", [[174.422, 174.642], [176.562, 177.032], [178.372, 178.532], [179.722, 180.362], [181.652, 181.872], [182.812, 183.052]]],
+  "fit/anneal": [185.539, 191.241, "They called it cosine annealing. Annealing is cooling glass or metal slowly.", [[186.209, 186.359], [187.579, 188.169]]],
+  "warm/both": [193.041, 204.063, "Runs often warm up first: climb to the top over the first k steps, then glide down the cosine over the next T, counting its t from where the warmup ends.", [[194.961, 195.511], [197.961, 198.291], [201.191, 201.511]]],
+  "warm/ex": [204.443, 218.435, "Say a warmup of a thousand steps to zero point one, then a glide to zero point zero one over two thousand. Step two thousand five hundred is fifteen hundred steps into the glide: three quarters of the way.", [[207.733, 208.153], [211.833, 212.453], [214.183, 214.363], [216.723, 217.133]]],
+  "warm/c": [218.815, 226.691, "There the cosine is about minus zero point seven zero seven, so one plus it is zero point two nine three.", [[219.305, 219.455], [223.065, 223.485], [224.665, 224.815]]],
+  "warm/gap": [227.071, 235.589, "Half the gap, zero point zero four five, times zero point two nine three, is about zero point zero one three two.", [[227.871, 228.241], [230.161, 230.391], [232.511, 232.821]]],
+  "warm/add": [235.969, 242.291, "Add the bottom, zero point zero one, and the rate is about zero point zero two three two.", [[236.809, 237.169], [238.599, 238.999]]],
+  "warm/turn": [242.671, 243.411, "Your turn.", []]
  }
 }

@@ -1,22 +1,36 @@
 {
- "duration": 146.654,
+ "duration": 252.782,
  "scenes": {
-  "table": [0.0, 64.304],
-  "onehot": [64.304, 146.654]
+  "points": [0.0, 81.436],
+  "table": [81.436, 151.876],
+  "onehot": [151.876, 219.55],
+  "batch": [219.55, 252.782]
  },
  "beats": {
-  "table/ids": [0.7, 13.158, "Arithmetic works on numbers, not letters. So every token in the vocabulary gets an id: h is zero, e is one, l is two, and o is three.", [[2.51, 2.71], [3.5, 3.98], [5.93, 6.11], [7.14, 7.74], [8.85, 9.23], [10.2, 10.59], [11.58, 11.9]]],
-  "table/table": [13.538, 33.434, "An embedding is a table, E, with one row per token: V rows, where V is the vocabulary size, the number of tokens. Each row is a vector of d numbers, where d is the embedding size. Here V is four and d is three, so E is four by three.", [[15.038, 15.358], [15.698, 16.028], [17.548, 17.968], [18.768, 19.098], [21.148, 21.418], [22.558, 23.208], [25.488, 25.778], [27.618, 28.168], [29.698, 29.918], [31.108, 31.498]]],
-  "table/lookup": [33.814, 43.373, "To embed the letter l, take its id, two, and read row two of E: zero point five, minus one, two.", [[35.334, 35.684], [36.844, 37.184], [37.554, 37.884], [39.794, 40.364], [41.554, 41.904], [42.674, 42.974]]],
-  "table/learned": [43.753, 52.085, "The rows are free numbers: nothing in them comes from how a token is spelled, so tokens that are used alike can have rows that are alike.", [[45.343, 45.843], [48.373, 48.793], [50.443, 50.643]]],
-  "table/count": [52.465, 63.204, "The table holds V times d numbers: twelve here. With fifty thousand tokens and d of seven hundred sixty-eight, that is over thirty-eight million.", [[55.095, 55.515], [56.245, 56.815], [58.495, 58.645], [60.685, 61.025]]],
-  "onehot/mix": [65.004, 84.289, "There is another way to see the lookup. Put a vector v on the left of E, with one entry per row: one, two, zero, zero. The product, v times E, weighs each row of E by its entry and adds them up: one times row zero, plus two times row one.", [[66.894, 67.484], [69.774, 70.084], [71.524, 72.044], [72.404, 72.654], [73.044, 73.254], [74.324, 74.884], [75.514, 75.734], [76.814, 77.114], [79.424, 79.594], [80.404, 80.964], [82.374, 82.644]]],
-  "onehot/entries": [84.669, 99.874, "Entry by entry: zero point two plus minus two is minus one point eight. One plus zero point eight is one point eight. And minus zero point five plus one point six is one point one.", [[85.899, 86.589], [88.869, 89.159], [90.729, 91.389], [93.079, 93.319], [94.369, 95.029], [98.439, 98.759]]],
-  "onehot/onehot": [100.254, 107.593, "Now write id two as a one-hot vector: four entries, all zero except a one in place two.", [[103.334, 103.904], [104.764, 105.034]]],
-  "onehot/product": [107.973, 115.174, "Multiply it into E the same way: a sum of the rows of E, each weighted by its entry of the one-hot.", [[110.213, 110.663], [112.283, 112.623]]],
-  "onehot/picks": [115.554, 122.952, "Every row is weighted by zero except row two, weighted by one. So the product is exactly row two.", [[117.554, 117.714], [118.914, 119.134], [120.044, 120.614]]],
-  "onehot/layer": [123.332, 133.26, "So a lookup is a matrix product with a one-hot vector. Reading the row directly gives the same answer and skips every multiplication by zero.", [[127.072, 127.702], [130.402, 130.572], [133.092, 133.242]]],
-  "onehot/batch": [133.64, 144.434, "Stack m sequences of n ids into an array of shape m by n, and the lookup gives m by n by d: every id is swapped for its row.", [[138.47, 138.93], [141.52, 142.12]]],
-  "onehot/turn": [144.814, 145.554, "Your turn.", []]
+  "points/tokens": [0.7, 11.062, "A model computes with numbers, so text has to become numbers first. Cut it into tokens, the pieces the model reads: here, whole words.", [[2.47, 2.86], [5.31, 5.84], [7.1, 7.45], [9.0, 9.44], [9.81, 10.14]]],
+  "points/vocab": [11.442, 19.7, "The list of every token a model knows is its vocabulary. Number the list from zero, and each token's number is its id.", [[14.972, 15.622], [17.092, 17.342]]],
+  "points/line": [20.08, 31.436, "But an id is only a filing number. It puts car between cat and dog, as if a car were halfway from a cat to a dog, and says nothing about which words are alike.", [[22.7, 23.25], [25.63, 25.98], [28.72, 29.12]]],
+  "points/points": [31.816, 43.535, "So give each token a vector instead: two numbers here, a point on a plane. Put cat and dog close together, and car and bus together, off in another direction.", [[34.326, 34.906], [35.896, 36.146], [37.336, 37.936], [39.966, 40.306], [41.826, 42.086]]],
+  "points/dot": [43.915, 52.753, "Now the dot product says how alike two tokens are. Cat dot dog is three times three, plus one times two: eleven.", [[47.265, 47.825], [48.365, 48.515], [48.855, 49.035], [50.255, 50.455], [51.745, 52.225]]],
+  "points/dot2": [53.133, 60.229, "Cat dot car is minus three, plus three: zero. A right angle: nothing in common.", [[55.353, 55.583], [56.223, 56.673], [57.153, 57.813], [58.603, 59.133]]],
+  "points/name": [60.609, 69.782, "A token's vector is called its embedding: the token is embedded, set in place, as a point in a space where nearness means something.", [[63.129, 63.629], [64.949, 65.279], [66.219, 66.469], [67.829, 68.009]]],
+  "points/firth": [70.162, 80.336, "Why should nearness mean anything? In 1957, the linguist John Rupert Firth put it this way: you shall know a word by the company it keeps.", [[72.152, 72.972], [74.262, 74.512], [77.202, 77.832]]],
+  "table/stack": [82.136, 92.616, "Stack every token's vector as a row, in order of id, and you have the embedding table, E. Row zero is cat's point: three, one.", [[84.646, 84.876], [86.186, 86.536], [88.056, 88.406], [88.716, 89.326], [91.056, 91.466], [91.886, 92.156]]],
+  "table/V": [92.996, 100.72, "It has one row per token: V rows, V for the size of the vocabulary. Here V is four.", [[94.716, 95.306], [96.076, 96.596], [98.626, 99.166], [99.516, 99.716]]],
+  "table/d": [101.1, 111.129, "And one column per number in a vector: d columns, d for the embedding's size. Here d is two, so E is four by two.", [[103.43, 103.97], [104.81, 105.27], [107.06, 107.53], [108.99, 109.32]]],
+  "table/lookup": [111.509, 123.625, "To embed a token, read its row. Dog has id two, so its embedding is row two: three, two. That is the third row down, because ids count from zero.", [[112.649, 112.879], [113.769, 114.379], [116.059, 116.399], [118.079, 118.469], [118.879, 119.069], [119.409, 119.919], [121.539, 121.709]]],
+  "table/count": [124.005, 129.005, "The table holds V times d numbers: four times two, eight.", [[126.565, 127.025], [128.165, 128.595]]],
+  "table/bengio": [129.385, 141.962, "In 2003, Yoshua Bengio and three colleagues gave each word a row like this, learned from text, so that words used alike, such as cat and dog, could land near each other.", [[130.655, 130.965], [133.125, 133.275], [135.365, 135.655], [136.655, 137.035], [138.535, 138.755], [140.305, 140.625]]],
+  "table/big": [142.342, 150.776, "Their vocabularies held about seventeen thousand words, with up to a hundred numbers each: one point seven million numbers.", [[145.822, 146.172], [148.022, 148.492]]],
+  "onehot/x": [152.576, 162.579, "There is a second way to reach a row. Put a vector, x, on the left of E, with one entry per row: one, two, zero, zero.", [[154.586, 155.206], [157.626, 157.956], [159.506, 160.036], [160.416, 160.726], [161.106, 161.386]]],
+  "onehot/col": [162.959, 174.528, "x times E dots x with each column of E. Down the first: one times three, plus two times minus one, is one. The second column gives seven.", [[166.349, 166.959], [167.809, 168.339], [169.499, 169.729], [171.499, 171.689], [172.219, 172.829]]],
+  "onehot/rows": [174.908, 185.919, "Read it by rows instead, and it is one times row zero, plus two times row one. x times E weighs each row of E by its entry, and adds them up.", [[176.588, 176.888], [178.788, 179.048], [180.678, 181.388], [184.778, 185.038]]],
+  "onehot/onehot": [186.299, 197.542, "Now write dog's id, two, as a one-hot vector: all zeros except a one in place two. One entry is on, or hot, which gives it the name.", [[188.229, 188.509], [188.919, 189.099], [190.379, 190.919], [193.479, 194.109], [195.379, 195.579], [196.189, 196.479]]],
+  "onehot/picks": [197.922, 209.437, "Times E, it weighs every row by zero except row two, which it weighs by one. So one-hot times E is exactly row two: dog's embedding.", [[198.742, 199.302], [202.492, 202.782], [203.922, 204.542], [206.312, 206.472], [207.892, 208.472]]],
+  "onehot/same": [209.817, 218.45, "A lookup is a product with a one-hot vector. Reading the row directly gives the same answer, and skips every multiplication by zero.", [[212.457, 213.047], [215.677, 215.897]]],
+  "batch/seq": [220.25, 230.817, "Text comes as a sequence, tokens in order: dog, cat, bus, car is four ids, two, zero, three, one.", [[221.92, 222.29], [223.43, 224.0], [224.3, 224.59], [224.95, 225.24], [225.66, 225.89], [226.31, 226.67], [228.0, 228.46], [228.83, 229.06], [229.57, 229.73], [230.17, 230.34]]],
+  "batch/rows": [231.197, 239.034, "Look them all up at once, and every id becomes its row: four rows of two numbers, a shape of four by two.", [[232.587, 232.787], [234.927, 235.367], [237.077, 237.387]]],
+  "batch/batch": [239.414, 250.561, "Stack three such sequences, shape three by four, and the lookup gives three by four by two: the ids keep their shape, and gain a last axis of d numbers.", [[241.214, 241.484], [242.764, 243.074], [245.814, 246.294], [247.914, 248.184]]],
+  "batch/turn": [250.941, 251.682, "Your turn.", []]
  }
 }

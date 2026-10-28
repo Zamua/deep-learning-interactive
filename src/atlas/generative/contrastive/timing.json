@@ -1,21 +1,36 @@
 {
- "duration": 153.823,
+ "duration": 253.189,
  "scenes": {
-  "push": [0.0, 69.216],
-  "temperature": [69.216, 113.118],
-  "worked": [113.118, 153.823]
+  "pull": [0.0, 68.387],
+  "slopes": [68.387, 153.908],
+  "temperature": [153.908, 220.286],
+  "worked": [220.286, 253.189]
  },
  "beats": {
-  "push/recall": [0.7, 14.762, "Take a row whose scores are two, zero and one, the positive first. Its softmax is zero point six seven, zero point zero nine and zero point two four, and its loss is zero point four one.", [[2.69, 2.91], [4.02, 4.36], [5.46, 6.06], [8.49, 8.77], [10.2, 10.45], [11.94, 12.35]]],
-  "push/nudge": [15.142, 30.701, "How hard does the loss push each negative? Candidate two's score enters the loss only through the total, as e to the one. e to the x is its own slope, so the total grows two point seven two times as fast as that score.", [[17.882, 18.582], [22.082, 22.352], [23.562, 24.082], [26.102, 26.432]]],
-  "push/share": [31.081, 48.984, "The log of the total grows one over the total as fast. So the loss's slope on that score is two point seven two over eleven point one one: zero point two four, its probability. Candidate one's slope is its probability too: zero point zero nine.", [[34.611, 35.121], [37.171, 37.401], [40.651, 41.131], [42.521, 42.721], [43.601, 44.231], [46.901, 47.351]]],
-  "push/push": [49.364, 68.116, "The positive's score is also subtracted on its own, so its slope is zero point six seven minus one. Lowering the loss pulls the positive in and pushes each negative away by its probability, the closer negative hardest. Every row takes its turn, and their losses are averaged.", [[52.374, 52.694], [55.954, 56.594], [57.614, 57.764], [59.054, 59.304], [62.184, 62.564], [64.214, 64.834], [66.374, 66.574]]],
-  "temperature/sharp": [69.916, 86.857, "Take similarities of zero point nine, zero point one and zero point five. Divided by a temperature of one, the softmax stays soft: zero point four seven for the top. Divided by zero point one, the top takes zero point nine eight.", [[72.296, 72.566], [73.576, 73.876], [75.146, 75.746], [77.506, 77.836], [79.516, 80.046], [82.046, 82.606], [84.256, 84.576]]],
-  "temperature/hard": [87.237, 112.018, "A small temperature also aims the push. Each negative is pushed by its probability. Divided by one, the negatives hold zero point two one and zero point three two, close to even. Divided by zero point one, the one at zero point five holds zero point zero two and the other almost none: nearly all the push lands on the negative most like the anchor.", [[89.707, 90.247], [92.827, 93.477], [94.547, 94.797], [97.037, 97.267], [98.777, 99.117], [99.937, 100.577], [102.207, 102.577], [104.157, 104.367], [106.237, 106.537], [107.917, 108.407], [110.647, 110.867]]],
-  "worked/ask": [113.818, 123.952, "One more row. The positive is candidate zero, and the scores are two, one and one. What is the loss's slope on candidate one's score?", [[114.858, 115.448], [117.388, 117.728], [119.108, 119.328], [119.718, 119.868], [120.428, 121.058]]],
-  "worked/exps": [124.332, 133.226, "The exponentials are seven point three nine, two point seven two and two point seven two: a total of twelve point eight three.", [[125.802, 125.962], [127.322, 127.632], [128.882, 129.112], [130.642, 131.092]]],
-  "worked/neg": [133.606, 143.001, "Candidate one is a negative, so its slope is its probability: two point seven two over twelve point eight three, zero point two one.", [[135.296, 135.656], [137.656, 138.056], [141.016, 141.516]]],
-  "worked/pos": [143.381, 151.603, "The positive's slope would be its probability minus one: zero point five eight minus one, minus zero point four two.", [[146.721, 147.321], [149.371, 149.681]]],
-  "worked/turn": [151.983, 152.723, "Your turn.", []]
+  "pull/anchor": [0.7, 9.26, "Back on the circle of unit vectors. The view a row belongs to is its anchor: the fixed point the whole row is measured from.", [[2.77, 3.4], [6.08, 6.6]]],
+  "pull/cands": [9.64, 19.494, "Its positive sits close, at a similarity of zero point eight. Two negatives, views of other images, sit at zero and zero point four.", [[11.34, 11.59], [13.77, 14.37], [15.28, 15.55], [16.82, 17.08]]],
+  "pull/ask": [19.874, 24.993, "Training lowers the loss. As it does, which way does each of them move?", [[21.464, 21.994], [22.794, 23.164]]],
+  "pull/low": [25.373, 34.051, "The loss is low when the positive holds most of the probability. So lowering it raises the positive's score, and lowers each negative's.", [[28.963, 29.563], [30.493, 30.643], [32.203, 32.433]]],
+  "pull/move": [34.431, 43.567, "A higher score is a higher similarity: an arrow turned toward the anchor. So the positive is pulled in, and the negatives are pushed away.", [[36.801, 37.281], [39.321, 39.891], [41.581, 41.781]]],
+  "pull/names": [43.947, 60.457, "In 2020, Tongzhou Wang and Phillip Isola named the two effects: alignment, positive pairs pulled together, and uniformity, all the views spread evenly around the circle. With enough negatives, they proved, the loss aims for both.", [[44.987, 45.247], [48.447, 48.917], [49.547, 49.937], [51.517, 51.877], [53.157, 53.617], [56.157, 56.817], [57.947, 58.097], [58.647, 58.917]]],
+  "pull/how": [60.837, 67.287, "But the negatives are not pushed equally. How hard each is pushed is the loss's slope on its score.", [[63.127, 63.607]]],
+  "slopes/row": [69.087, 77.282, "In numbers: divided by the temperature, zero point four, the similarities become scores of two, zero and one.", [[69.857, 70.397], [71.787, 72.087], [73.107, 73.497], [75.727, 76.107]]],
+  "slopes/loss": [77.662, 86.918, "As cross-entropy, the loss is the log of the total, eleven point one one, minus the score of the positive: zero point four one.", [[78.842, 79.212], [81.152, 81.542], [82.802, 83.162], [84.902, 85.362]]],
+  "slopes/nudge": [87.298, 101.034, "Now nudge candidate two's score up. It reaches the loss only through the total, as e to the one: e to the x is its own slope, so the total grows two point seven two times as fast as the score.", [[88.488, 88.638], [89.718, 90.308], [92.638, 92.908], [94.118, 94.558], [96.578, 96.948]]],
+  "slopes/share": [101.414, 112.438, "And the log of a number grows one over that number as fast. So the loss grows two point seven two over eleven point one one as fast: zero point two four.", [[105.004, 105.494], [110.354, 110.824]]],
+  "slopes/is-p": [112.818, 122.096, "That is candidate two's probability. For every negative, the slope is its probability: for candidate one, zero point zero nine.", [[115.008, 115.668], [116.778, 117.008], [118.648, 119.168], [120.128, 120.428]]],
+  "slopes/pos": [122.476, 134.979, "The positive is in the total as well, but the loss also subtracts its score, which takes off one: its slope is zero point six seven minus one, which is minus zero point three three.", [[124.566, 124.966], [127.306, 127.566], [128.656, 129.196], [132.266, 132.626]]],
+  "slopes/step": [135.359, 143.817, "Training steps each score against its slope: the negatives' scores go down, a push, and the positive's goes up, a pull.", [[137.979, 138.509], [140.189, 140.509], [141.059, 141.489], [142.899, 143.279]]],
+  "slopes/order": [144.197, 152.808, "The closer negative holds more probability, so it is pushed hardest: the slopes follow the scores, and the positive comes last.", [[146.777, 147.087], [148.657, 149.157], [150.817, 151.137]]],
+  "temperature/circle": [154.608, 165.685, "On the circle, draw each slope as an arrow. The pushes, zero point zero nine and zero point two four, add up to the pull, zero point three three.", [[155.478, 155.748], [157.648, 158.308], [159.018, 159.268], [160.788, 160.968], [162.458, 162.798], [163.888, 164.218]]],
+  "temperature/hard": [166.065, 177.872, "The closer negative takes zero point two four of it, almost three quarters. A negative this close to the anchor is called a hard negative: it is hard to tell apart from the positive.", [[169.165, 169.525], [170.895, 171.545], [175.165, 175.625]]],
+  "temperature/warm": [178.252, 189.924, "Raise the temperature, tau, to one. The gaps between the scores narrow, the softmax flattens, and the push is split more evenly: zero point six and zero point four.", [[179.362, 179.572], [179.992, 180.162], [180.682, 181.322], [183.192, 183.522], [184.832, 185.132], [187.022, 187.552]]],
+  "temperature/cold": [190.304, 200.565, "Lower it to zero point one, and every gap stretches tenfold. The softmax turns sharp, and the hard negative takes zero point nine eight of the push.", [[192.004, 192.274], [194.534, 195.064], [196.704, 197.014]]],
+  "temperature/unit": [200.945, 208.459, "The vectors never move, and stay length one: tau only rescales the scores, and with them their gaps.", [[202.465, 202.675], [203.955, 204.515], [206.755, 207.005]]],
+  "temperature/aware": [208.839, 219.186, "Feng Wang and Huaping Liu showed in 2021 that the contrastive loss is hardness-aware, and that the temperature sets how hard it presses on the hard negatives.", [[212.189, 212.469], [214.979, 215.309]]],
+  "worked/ask": [220.986, 230.141, "One more: the positive is candidate one, and the scores are one, two and one. What is the slope on candidate zero?", [[221.576, 222.206], [224.086, 224.396], [225.346, 225.606], [226.016, 226.256], [227.256, 227.886]]],
+  "worked/neg": [230.521, 241.361, "Candidate zero is a negative, so the slope is its probability: two point seven two over the total, twelve point eight three, which is zero point two one.", [[232.371, 232.751], [234.591, 235.051], [237.291, 237.641], [238.901, 239.311]]],
+  "worked/pos": [241.741, 250.969, "For the positive, the slope is its probability minus one: zero point five eight minus one, which is minus zero point four two.", [[242.651, 242.881], [245.421, 245.931], [248.061, 248.441], [248.861, 249.011]]],
+  "worked/turn": [251.349, 252.089, "Your turn.", []]
  }
 }

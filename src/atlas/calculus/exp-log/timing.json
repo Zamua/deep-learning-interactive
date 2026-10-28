@@ -1,21 +1,31 @@
 {
- "duration": 153.658,
+ "duration": 206.523,
  "scenes": {
-  "rules": [0.0, 58.128],
-  "quot": [58.128, 153.658]
+  "prod": [0.0, 77.271],
+  "pow": [77.271, 109.736],
+  "quot": [109.736, 206.523]
  },
  "beats": {
-  "rules/why": [0.7, 16.716, "Since powers add when exponentials multiply, ln turns a product into a sum. e squared times e cubed is e to the five, so its ln is five: two plus three, the ln of each factor, added.", [[3.73, 4.16], [6.66, 7.32], [9.2, 9.39], [10.59, 10.92], [12.57, 13.08], [14.11, 14.44], [15.94, 16.26]]],
-  "rules/rule": [17.096, 25.637, "The same holds for any positive numbers a and b: ln of a times b is ln a plus ln b.", [[20.276, 20.836], [22.696, 22.926], [24.096, 24.246]]],
-  "rules/nums": [26.017, 35.944, "ln two is about zero point six nine and ln three about one point one, so ln six is their sum, one point seven nine.", [[28.847, 29.227], [31.637, 32.117], [34.207, 34.617]]],
-  "rules/nine": [36.324, 48.119, "A power is a product of equal factors. Nine is three times three, so ln nine is ln three plus ln three: two ln three, about two point two.", [[38.884, 39.394], [41.104, 41.524], [45.164, 45.574], [46.634, 46.924]]],
-  "rules/power": [48.499, 57.028, "So for any power k, ln of a to the k is k times ln a: the power comes out in front.", [[50.409, 50.819], [52.489, 52.749], [54.889, 55.389]]],
-  "quot/flip": [58.828, 75.839, "Two times a half is one, and ln one is zero. So ln two plus ln a half is zero: ln of a half is minus ln two, about minus zero point six nine. One over a number flips the sign of its log.", [[60.518, 60.848], [62.758, 63.178], [63.568, 63.718], [66.608, 67.068], [69.618, 69.918], [72.118, 72.818]]],
-  "quot/quot": [76.219, 93.684, "Dividing by two is multiplying by a half. So ln of three halves is ln three plus ln a half, which is ln three minus ln two: about one point one minus zero point six nine, zero point four one.", [[79.279, 79.749], [81.809, 82.049], [83.149, 83.319], [84.759, 85.159], [85.609, 85.759], [88.079, 88.569], [91.839, 92.279]]],
-  "quot/diff": [94.064, 102.63, "The log of a quotient is the difference of the logs: ln of a over b is ln a minus ln b.", [[96.974, 97.504], [99.474, 99.734], [100.924, 101.074]]],
-  "quot/small": [103.01, 119.615, "So minus the log of a number below one is positive: minus ln of a half is zero point six nine. The bigger a number p, the smaller minus ln p: minus ln of zero point nine is only zero point one one.", [[106.48, 107.09], [108.62, 108.82], [110.38, 111.23], [112.59, 112.9], [114.87, 115.49], [117.52, 117.75]]],
-  "quot/try": [119.995, 132.46, "Try one. Use ln two is about zero point six nine and ln five is about one point six one. Let p be one tenth. What is minus ln p?", [[120.605, 121.195], [124.475, 124.885], [127.815, 128.355], [130.045, 130.565]]],
-  "quot/solve": [132.84, 151.438, "Ten is two times five, so ln ten is zero point six nine plus one point six one: two point three oh. One over ten flips the sign of its log, so minus ln p is two point three oh. The smaller p, the taller the bar.", [[134.75, 135.13], [136.46, 136.61], [138.22, 138.38], [139.91, 140.43], [141.61, 142.28], [144.76, 145.18], [147.04, 147.22], [148.62, 149.19], [150.09, 150.38]]],
-  "quot/turn": [151.818, 152.558, "Your turn.", []]
+  "prod/slow": [0.7, 6.978, "Multiplying long numbers by hand is slow, and easy to get wrong. Adding them is quick.", [[3.62, 3.82], [5.2, 5.77]]],
+  "prod/napier": [7.358, 19.67, "In 1614, John Napier published tables of logarithms to trade one for the other. With them, he wrote, adding does the work of multiplying, and subtracting the work of dividing.", [[8.768, 9.058], [13.178, 13.838], [14.858, 15.338], [17.218, 17.478]]],
+  "prod/curve": [20.05, 26.539, "To see why, go back to the curve of e to the x, where ln reads a height back to its x.", [[20.89, 21.1], [23.29, 23.5]]],
+  "prod/two": [26.919, 33.553, "The curve reaches height two at x of about zero point six nine: that is ln two.", [[31.229, 31.669], [32.189, 32.439]]],
+  "prod/three": [33.933, 39.017, "Height three, at about one point one: that is ln three.", [[34.793, 35.203], [36.673, 37.153], [37.663, 37.853]]],
+  "prod/six": [39.397, 50.598, "Lay those two lengths end to end: zero point six nine plus one point one is one point seven nine. The curve there stands at six, which is two times three.", [[41.507, 42.017], [44.757, 45.017], [46.487, 47.067], [48.877, 49.137]]],
+  "prod/why": [50.978, 61.323, "It has to: two is e to the zero point six nine, three is e to the one point one, and multiplying exponentials adds their powers.", [[51.738, 52.318], [54.998, 55.448], [57.618, 58.138], [61.088, 61.288]]],
+  "prod/rule": [61.703, 76.171, "So for positive numbers a and b, ln of a b is ln a plus ln b. The log of a product, what multiplying gives, is the sum of the logs, one log per factor.", [[62.123, 62.303], [64.373, 64.833], [66.363, 66.553], [67.683, 67.843], [69.103, 69.833], [71.103, 71.453], [72.813, 73.113], [74.403, 74.733]]],
+  "pow/nine": [77.971, 86.509, "Nine is three times three, so its x is two equal steps of one point one: ln nine is about two point two.", [[79.861, 80.231], [83.581, 84.091]]],
+  "pow/k": [86.889, 99.199, "Any power is equal factors: a to the k is k factors of a. So its log is k equal steps: ln of a to the k is k times ln a.", [[88.959, 89.409], [92.019, 92.489], [94.899, 95.309], [97.119, 97.339]]],
+  "pow/front": [99.579, 108.636, "The power comes down in front, as a multiplier. It does not square the log: ln three, squared, is only about one point two one.", [[101.279, 101.489], [102.429, 102.929], [104.409, 104.949], [106.459, 106.659]]],
+  "quot/half": [110.436, 125.1, "Dividing undoes multiplying, so along x it steps back. Two times a half is one, which sits at zero, so the steps for two and for a half cancel: ln of a half is minus ln two.", [[112.536, 112.886], [115.046, 115.606], [117.256, 117.436], [118.566, 118.966], [121.656, 122.186], [123.236, 123.436]]],
+  "quot/flip": [125.48, 133.203, "One over a number flips the sign of its log: ln of a half is about minus zero point six nine.", [[128.37, 129.03]]],
+  "quot/quot": [133.583, 144.573, "So three divided by two steps back from ln three: one point one minus zero point six nine is zero point four one, the height one and a half.", [[133.973, 134.183], [137.463, 138.033], [140.753, 141.023], [142.613, 143.053]]],
+  "quot/diff": [144.953, 156.159, "The log of a quotient, what dividing gives, is the difference of the logs, top minus bottom: ln of a over b is ln a minus ln b.", [[146.333, 146.743], [148.003, 148.253], [149.663, 149.993], [150.263, 150.413], [151.183, 151.713], [153.533, 153.733]]],
+  "quot/small": [156.539, 165.628, "Any number p between zero and one sits left of zero, so minus ln p is positive: how far left it sits.", [[160.469, 160.919], [163.499, 163.989]]],
+  "quot/order": [166.008, 176.122, "The smaller p, the farther left, and the bigger minus ln p. Minus ln of zero point nine is only about zero point one one.", [[166.958, 167.298], [168.248, 168.608], [170.868, 171.498], [173.718, 173.938]]],
+  "quot/try": [176.502, 189.065, "Try one. Use ln two is about zero point six nine and ln five is about one point six one. Let p be a tenth. What is minus ln p?", [[177.112, 177.782], [181.052, 181.462], [182.672, 182.862], [184.492, 185.182], [186.622, 187.192]]],
+  "quot/ten": [189.445, 195.498, "A tenth is one over ten, so minus ln p is ln ten itself.", [[191.405, 191.825], [193.615, 193.805]]],
+  "quot/solve": [195.878, 204.303, "And ten is two times five, so add: zero point six nine plus one point six one is two point three oh.", [[198.038, 198.358], [198.918, 199.358], [202.438, 202.728]]],
+  "quot/turn": [204.683, 205.423, "Your turn.", []]
  }
 }

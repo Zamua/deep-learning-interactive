@@ -1,22 +1,32 @@
 {
- "duration": 159.454,
+ "duration": 217.13,
  "scenes": {
-  "inside": [0.0, 69.126],
-  "outside": [69.126, 159.454]
+  "pull": [0.0, 94.174],
+  "fix": [94.174, 156.32],
+  "step": [156.32, 217.13]
  },
  "beats": {
-  "inside/recall": [0.7, 11.678, "Write the L2 penalty as half of lambda times the squared weights, and its gradient is lambda times w: a pull toward zero, added to every weight's gradient.", [[5.0, 5.35], [7.75, 8.26], [9.64, 9.86]]],
-  "inside/adam": [12.058, 18.828, "In Adam, that sum goes into the running averages, and the step divides by the square root of v hat.", [[12.758, 12.998], [15.268, 15.618]]],
-  "inside/two": [19.208, 32.791, "Take two weights, both at one, with lambda at zero point one. Weight a has had large gradients: the square root of its v hat is ten. Weight b's gradients are tiny: zero point one.", [[20.288, 20.588], [21.448, 21.718], [23.518, 24.138], [26.358, 26.688], [28.878, 29.488], [31.318, 31.708]]],
-  "inside/divide": [33.171, 43.255, "The decay, zero point one, is divided like everything else. For a it shrinks to zero point zero one. For b it grows to one.", [[33.891, 34.151], [35.181, 35.521], [37.261, 37.791], [38.451, 38.631], [40.831, 41.361], [41.921, 42.151]]],
-  "inside/move": [43.635, 55.857, "Then the step multiplies by eta. With eta at zero point one, the decay alone moves weight a by zero point zero zero one, and weight b by zero point one.", [[46.075, 46.725], [48.595, 48.955], [53.255, 53.665]]],
-  "inside/wrong": [56.237, 68.026, "So weight a barely decays, and weight b decays a hundred times harder. How strongly a weight is pulled to zero now depends on its gradients, which is not what lambda asked for.", [[58.037, 58.377], [61.067, 61.687], [63.957, 64.117], [65.837, 66.137]]],
-  "outside/fix": [69.826, 76.378, "AdamW takes the decay out of the gradient. The running averages see only the data's gradient.", [[72.796, 73.376]]],
-  "outside/rule": [76.758, 86.558, "Then the decay joins the step after the division: w moves by eta times the sum of m hat over root v hat, and lambda w.", [[79.758, 80.368], [85.008, 85.328]]],
-  "outside/nums": [86.938, 98.385, "Say w is two, m hat is zero point three, and v hat is zero point zero nine. Its square root is zero point three, so the Adam part is one.", [[88.598, 89.038], [90.908, 91.208], [93.688, 94.208], [96.318, 96.688]]],
-  "outside/decay": [98.765, 111.803, "Lambda w is zero point two. Together that is one point two, and times eta, zero point one, a step of zero point one two. W becomes one point eight eight.", [[101.115, 101.715], [103.525, 104.035], [105.285, 105.575], [106.535, 106.955], [108.835, 109.455]]],
-  "outside/neg": [112.183, 136.499, "Now flip the gradient's sign: m hat is minus zero point three. The Adam part is minus one, and the decay is still zero point two, so the bracket is minus zero point eight. Times eta, the step is minus zero point zero eight. Subtracting a negative step raises w: two plus zero point zero eight is two point zero eight.", [[114.043, 114.593], [116.913, 117.523], [119.323, 119.693], [121.923, 122.283], [124.683, 125.283], [126.143, 126.533], [129.163, 129.753], [132.353, 132.883], [134.883, 135.093]]],
-  "outside/same": [136.879, 157.234, "Back to weights a and b, with eta at zero point one. Now the decay inside the bracket is lambda w for both, zero point one, so the decay alone moves each of them zero point zero one, whatever their gradients. Every weight loses the same fraction, eta times lambda, each step.", [[138.649, 138.849], [140.699, 141.349], [144.989, 145.349], [146.389, 146.729], [150.569, 150.849], [152.049, 152.639], [154.819, 155.129], [156.359, 156.549]]],
-  "outside/turn": [157.614, 158.354, "Your turn.", []]
+  "pull/recall": [0.7, 13.289, "L2 regularization pulls every weight toward zero. In plain gradient descent, its part of each step shrinks every weight by the same fraction, which is why it is also called weight decay.", [[4.28, 4.87], [6.33, 6.61], [10.41, 10.78], [12.31, 12.47]]],
+  "pull/half": [13.669, 23.319, "Put a half in front of the penalty, and the two from squaring cancels it: each weight's pull, the penalty's gradient, is just lambda times w.", [[15.569, 15.879], [17.899, 18.409], [19.449, 19.729], [20.829, 21.149]]],
+  "pull/adam": [23.699, 33.852, "Now train with Adam. The pull is added to the data's gradient, so it flows into m and v, and the step divides by the square root of v hat.", [[25.109, 25.669], [28.049, 28.289], [30.339, 30.719]]],
+  "pull/two": [34.232, 47.318, "Take two weights, a and b, both at one. a has had big gradients, so its root v hat is ten. b's gradients have been tiny, so its root v hat is zero point one.", [[35.332, 35.612], [36.512, 36.822], [37.682, 38.302], [39.962, 40.182], [42.232, 42.832], [44.492, 44.772]]],
+  "pull/same": [47.698, 54.311, "With lambda at zero point one, both feel the same pull, lambda w: zero point one.", [[49.598, 49.928], [51.458, 51.928], [52.788, 53.268]]],
+  "pull/diva": [54.691, 64.085, "But Adam divides the pull along with the rest of the gradient. For a, zero point one over ten: it shrinks to zero point zero one.", [[58.041, 58.671], [59.281, 59.651], [61.421, 61.841]]],
+  "pull/divb": [64.465, 71.471, "For b, zero point one over zero point one: it grows to one, a hundred times a's.", [[65.025, 65.545], [67.945, 68.465], [69.555, 69.855]]],
+  "pull/move": [71.851, 82.039, "Times a learning rate of zero point one, the decay alone moves a by zero point zero zero one in a step, and b by zero point one.", [[74.161, 74.561], [79.511, 79.981], [80.611, 80.811]]],
+  "pull/wrong": [82.419, 93.074, "So a barely decays, and b decays a hundred times harder. How hard a weight is pulled to zero now depends on its gradients, not just on lambda.", [[84.029, 84.299], [86.889, 87.529], [89.669, 89.819], [91.529, 91.809]]],
+  "fix/paper": [94.874, 108.126, "In 2017, Ilya Loshchilov and Frank Hutter pointed this out. Common versions of Adam used L2, often calling it weight decay, but with Adam the two are not the same thing.", [[96.154, 96.534], [99.514, 100.134], [102.654, 103.054], [104.724, 105.314], [106.104, 106.324]]],
+  "fix/out": [108.506, 115.232, "Their fix: take the decay out of the gradient. m and v see only the data's gradient.", [[109.276, 109.786], [111.746, 112.366]]],
+  "fix/rule": [115.612, 125.06, "Then add the decay to the step after the division. w moves by eta times the sum of m hat over root v hat, and lambda w.", [[116.102, 116.262], [118.692, 119.352], [123.692, 123.962]]],
+  "fix/name": [125.44, 135.056, "They called it AdamW, for Adam with decoupled weight decay, and in their tests it did markedly better on new data than Adam with L2.", [[127.07, 127.43], [129.79, 130.24]]],
+  "fix/equal": [135.436, 146.279, "Back to a and b: the decay now skips the division, so with eta at zero point one, each one moves zero point zero one, whatever its gradients.", [[136.846, 137.526], [139.446, 139.796], [141.976, 142.336], [144.706, 145.006]]],
+  "fix/fraction": [146.659, 155.22, "Every weight loses the same fraction, eta times lambda, each step: the weight decay that L2 gave plain gradient descent.", [[148.949, 149.279], [150.509, 150.659], [151.289, 151.829]]],
+  "step/nums": [157.02, 168.583, "Now one full step. w is two, m hat is zero point three, and v hat is zero point zero nine, with eta and lambda both zero point one.", [[158.59, 159.21], [160.44, 160.84], [162.65, 162.98], [165.38, 165.72], [167.02, 167.17]]],
+  "step/u": [168.963, 177.421, "The square root of zero point zero nine is zero point three, so the Adam part, m hat over root v hat, is one.", [[171.483, 171.653], [172.913, 173.383], [174.533, 174.873], [176.543, 176.793]]],
+  "step/decay": [177.801, 183.714, "The decay, lambda w, is zero point two, so the bracket holds one point two.", [[178.561, 178.811], [179.721, 179.901], [181.201, 181.581]]],
+  "step/res": [184.094, 191.168, "Times eta, the step is zero point one two, and w goes from two to one point eight eight.", [[185.054, 185.434], [187.504, 187.944]]],
+  "step/neg": [191.548, 202.638, "Now flip the gradient's sign: m hat is minus zero point three, so m hat over root v hat is minus one, and the bracket holds minus zero point eight.", [[193.328, 193.868], [196.148, 196.438], [199.558, 199.938]]],
+  "step/rise": [203.018, 214.91, "The step is minus zero point zero eight, and subtracting it raises w to two point zero eight. The data pushes w up, and the decay only holds it back a little.", [[205.908, 206.318], [207.278, 207.438], [209.808, 210.418], [212.208, 212.598]]],
+  "step/turn": [215.29, 216.03, "Your turn.", []]
  }
 }
