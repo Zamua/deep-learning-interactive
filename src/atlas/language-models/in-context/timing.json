@@ -1,20 +1,35 @@
 {
- "duration": 109.375,
+ "duration": 233.136,
  "scenes": {
-  "prompt": [0.0, 38.354],
-  "frozen": [38.354, 109.375]
+  "teach": [0.0, 68.639],
+  "context": [68.639, 143.299],
+  "frozen": [143.299, 173.449],
+  "room": [173.449, 233.136]
  },
  "beats": {
-  "prompt/zero": [0.7, 12.678, "A pretrained model continues whatever text it is given. So write a task as text: an instruction, English to French, then a new input, cheese, and an arrow.", [[3.98, 4.53], [6.57, 6.99], [7.77, 8.15], [9.11, 9.56], [10.71, 11.08], [11.58, 11.94]]],
-  "prompt/few": [13.058, 20.46, "Better still, show it a few solved examples first: dog becomes chien, cow becomes vache.", [[13.818, 14.088], [16.268, 16.828], [18.318, 18.828]]],
-  "prompt/answer": [20.84, 29.306, "Now the likeliest continuation is fromage. The model picked up the task from examples in its context: in-context learning.", [[23.8, 24.42], [27.54, 27.98]]],
-  "prompt/shots": [29.686, 37.254, "With no examples, the prompt is zero-shot. One example makes it one-shot, and several make it few-shot.", [[30.866, 31.076], [32.626, 33.196], [35.096, 35.426]]],
-  "frozen/frozen": [39.054, 45.841, "No gradient step happened. The model only ran forward, and every weight is exactly what it was before.", [[40.664, 41.094], [42.734, 43.064]]],
-  "frozen/tokens": [46.221, 56.727, "The examples are just tokens in the context. Attention reads them like any earlier tokens, and to predict what follows such a pattern, the model has to work out the task.", [[48.831, 49.361], [51.991, 52.361], [54.471, 54.751]]],
-  "frozen/gone": [57.107, 65.026, "So nothing is kept. Send a new prompt without the examples, and the model starts from the same weights, with no trace of them.", [[58.547, 59.087], [61.347, 61.657], [63.677, 63.887]]],
-  "frozen/cost": [65.406, 76.115, "They do cost room in the context. An instruction of five tokens, two examples of four, and an input of three make sixteen tokens to read before the answer.", [[67.656, 68.216], [70.006, 70.256], [71.536, 71.766], [73.026, 73.206]]],
-  "frozen/room": [76.495, 90.033, "The context also has a limit. Say it holds at most one thousand and twenty four tokens, with an instruction of twelve and an input of three. Those fifteen leave one thousand and nine tokens for the examples.", [[78.345, 78.945], [82.315, 82.615], [84.045, 84.255], [85.445, 86.075]]],
-  "frozen/fit": [90.413, 107.155, "At six tokens an example, one thousand and nine over six is about a hundred and sixty eight point two. Only whole examples fit, so round down: a hundred and sixty eight take one thousand and eight tokens, and one more would need one thousand and fourteen.", [[92.153, 92.503], [96.863, 97.383], [98.963, 99.233], [100.403, 100.863], [104.103, 104.453]]],
-  "frozen/turn": [107.535, 108.275, "Your turn.", []]
+  "teach/pre": [0.7, 12.697, "Start with a language model that has already been trained, on a huge amount of text, to predict the next token. That is a pretrained model: its training is done before anyone puts it to work.", [[5.29, 5.47], [6.89, 7.53], [9.22, 9.75]]],
+  "teach/job": [13.077, 19.815, "Now you want it for one particular job: turning English words into French. How do you teach it that?", [[15.507, 16.017], [17.987, 18.537]]],
+  "teach/tune": [20.195, 32.328, "The usual way was fine-tuning: train it some more on thousands of solved examples, with a gradient step on each. That changes the weights, and every new job needs a training run of its own.", [[22.155, 22.735], [25.685, 25.945], [27.465, 28.065], [29.375, 29.605]]],
+  "teach/continue": [32.708, 41.115, "But a language model already does one thing well: it continues whatever text it is given. That text is called the prompt.", [[35.598, 36.148], [38.408, 38.978], [40.258, 40.418]]],
+  "teach/prompt": [41.495, 50.041, "So write the job itself into the prompt: an instruction, English to French, then a new input, cheese, and an arrow.", [[43.945, 44.375], [45.205, 45.555], [46.525, 46.915], [48.095, 48.465], [48.975, 49.305]]],
+  "teach/few": [50.421, 58.015, "Better still, first show it a few solved examples: dog becomes chien, cow becomes vache.", [[51.261, 51.591], [53.841, 54.381], [55.861, 56.391]]],
+  "teach/answer": [58.395, 67.539, "Now the likeliest continuation is fromage. No training run, no gradient step: the model picked up the task from the examples in front of it.", [[61.205, 61.735], [62.675, 62.905], [63.995, 64.475]]],
+  "context/context": [69.339, 81.869, "Everything the model can read at once is called its context: the prompt, plus anything the model has written since. Not to be confused with a context vector: this context is the text itself.", [[72.819, 73.289], [73.849, 74.089], [76.169, 76.819], [79.189, 79.629]]],
+  "context/limit": [82.249, 89.718, "It has room for only so many tokens. Picture it as a box of fixed size, with the prompt filling the start of it.", [[84.669, 85.179], [87.499, 87.779]]],
+  "context/attend": [90.098, 102.453, "The examples are tokens in that box like any others. Attention lets the last position read every token before it, and to predict what follows such a pattern, the model has to work out the task.", [[93.308, 93.908], [97.538, 98.008], [100.258, 100.548]]],
+  "context/name": [102.833, 112.199, "That is why it is called in-context learning. The task is learned from examples in the context, and the learning lives there, not in the weights.", [[105.473, 106.003], [108.903, 109.243], [110.743, 111.073]]],
+  "context/brown": [112.579, 130.298, "In 2020, Tom Brown and colleagues at Open A I described it in their paper on G P T three, a model with a hundred and seventy five billion parameters. Given a few examples in its prompt, and no gradient step, it sometimes rivaled models fine-tuned for the task.", [[113.629, 113.909], [116.109, 116.349], [118.959, 119.369], [122.499, 123.159], [125.169, 125.329], [126.539, 126.919]]],
+  "context/shots": [130.678, 142.199, "They sorted prompts by how many solved examples, or shots, they show. No examples is zero-shot, one is one-shot, and several, like ours, is few-shot.", [[134.498, 134.648], [135.178, 135.778], [137.648, 138.058], [139.308, 139.648], [141.138, 141.358]]],
+  "frozen/pass": [143.999, 155.3, "So what did the examples change? Copy the weights, then run the prompt. That is a forward pass: it computes no loss and no gradient, so nothing takes a step.", [[146.109, 146.769], [147.619, 147.779], [148.809, 149.349], [150.909, 151.339], [153.609, 153.919]]],
+  "frozen/same": [155.68, 164.05, "Every weight is exactly what it was. The examples changed only the context, and through attention, what the model predicts next.", [[157.96, 158.46], [160.78, 161.08], [162.2, 162.44]]],
+  "frozen/gone": [164.43, 172.349, "So nothing is kept. Send a new prompt without the examples, and the model starts from the same weights, with no trace of them.", [[165.87, 166.41], [168.67, 168.98], [171.0, 171.21]]],
+  "room/parts": [174.149, 182.678, "Examples do cost one thing: room in the context. Here the instruction takes five tokens, and the new input three.", [[176.079, 176.669], [178.039, 178.619], [180.919, 181.199]]],
+  "room/each": [183.058, 187.577, "Say each example takes six tokens. Our two take twelve.", [[185.548, 186.038]]],
+  "room/total": [187.957, 193.885, "Five, plus twelve, plus three: twenty tokens for the model to read before it answers.", [[188.487, 188.727], [189.467, 189.637], [190.277, 190.807]]],
+  "room/limit": [194.265, 206.257, "And the box has a limit. In G P T three, it held two thousand and forty eight tokens, room for between ten and a hundred examples. Say ours holds one thousand and twenty four.", [[195.655, 196.195], [197.405, 197.625], [200.045, 200.455], [203.055, 203.535]]],
+  "room/left": [206.637, 212.791, "The instruction and the input take eight of them, which leaves one thousand and sixteen for examples.", [[209.297, 209.707]]],
+  "room/fit": [213.171, 220.022, "At six tokens each, one thousand and sixteen over six is about a hundred and sixty nine point three.", [[214.641, 214.941]]],
+  "room/down": [220.402, 230.916, "Only whole examples fit, so round down: a hundred and sixty nine of them, taking one thousand and fourteen tokens. One more would spill past the limit.", [[222.092, 222.442], [223.702, 224.172], [225.772, 226.052], [228.462, 228.912]]],
+  "room/turn": [231.296, 232.036, "Your turn.", []]
  }
 }

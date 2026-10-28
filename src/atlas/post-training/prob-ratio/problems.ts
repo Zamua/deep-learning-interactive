@@ -111,7 +111,7 @@ export const generators: Generator[] = [
       if (rng.int(2) === 0) {
         const k = int(rng, 2, n);
         return {
-          prompt: `PPO samples a batch of answers, then makes ${n} updates on that same batch. During update ${k}, which model gives each token's $${OLD}$ in its ratio $${RHO}$?`,
+          prompt: `A trainer samples a batch of answers, then makes ${n} updates on that same batch. During update ${k}, which model gives each token's $${OLD}$ in its ratio $${RHO}$?`,
           answer: choose('The model as it was when it sampled this batch', [
             [`The model as it was after update ${k - 1}`, `$${OLD}$ does not move from update to update. It stays the model that sampled the batch until the batch is used up.`],
             ['The model being trained, as it is right now', `That is $${PI}$, the top of the ratio. With $${PI}$ on both sides the ratio would always be 1.`],
@@ -125,7 +125,7 @@ export const generators: Generator[] = [
       }
       const b = int(rng, 2, 5);
       return {
-        prompt: `PPO makes ${n} updates on each batch it samples. It has finished the ${n} updates on batch ${b - 1} and now samples batch ${b}. In batch ${b}'s ratios, which model is $${OLD}$?`,
+        prompt: `A trainer makes ${n} updates on each batch it samples. It has finished the ${n} updates on batch ${b - 1} and now samples batch ${b}. In batch ${b}'s ratios, which model is $${OLD}$?`,
         answer: choose(`The model as trained on batch ${b - 1}, which sampled batch ${b}`, [
           [`The model that sampled batch ${b - 1}`, `That was $${OLD}$ for batch ${b - 1}. Batch ${b} was sampled by the trained model, so that one is the new $${OLD}$.`],
           ['The model as it was before any training began', `Each batch's $${OLD}$ is the model that sampled that batch, not the starting model.`],

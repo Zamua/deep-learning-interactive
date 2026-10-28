@@ -324,6 +324,11 @@ const sig: SymbolDef = { color: 'teal', name: 'σ: the sigmoid', tex: '\\sigma',
  * teach. Keys missing from ATLAS_SYMBOLS work too, through \sym{key}{tex}.
  */
 export const SCOPED: Record<string, SymbolMap> = {
+  'rnn-step': {
+    h: { color: 'gold', name: 'h: the hidden state', code: ['h'], about: 'The memory carried from token to token: hₜ = tanh(W_hh hₜ₋₁ + W_xh xₜ + b). H numbers, each between −1 and 1, starting at all zeros.' },
+    b: { color: 'green', name: 'b: the hidden bias', about: 'One number per hidden unit, added before the tanh at every step: shape (H,).' },
+  },
+  'sgd-linear': { eta: { color: 'slate', name: 'η: the step size', tex: '\\eta', code: ['lr'], about: 'How far each gradient step goes: every weight and bias moves by η times its gradient.' } },
   convolution: { w: { color: 'blue', name: 'w: the filter', about: 'A few weights slid along x. At each position, its dot product with the patch under it gives one output; the same weights are used everywhere.' } },
   'lr-schedule': { T: { color: 'slate', name: 'T: the length of the decay, in steps', about: 'How many steps the glide from the top rate to the bottom one takes. After a warmup it starts counting where the warmup ends.' } },
   embeddings: {
@@ -439,8 +444,8 @@ export const SCOPED: Record<string, SymbolMap> = {
   },
   sft: { m: { color: 'slate', name: 'm: the loss mask', code: ['mask'], about: '1 on the tokens the assistant wrote, its end token included; 0 everywhere else.' } },
   lora: {
-    B: { color: 'blue', name: 'B: the up-projection', about: 'Shape (d, r). It starts at zero, so BA adds nothing at first.' },
-    A: { color: 'blue', name: 'A: the down-projection', about: 'Shape (r, k), starting random.' },
+    B: { color: 'green', name: 'B: the up-projection', about: 'Shape (d, r). It starts at zero, so BA adds nothing at first.' },
+    A: { color: 'orange', name: 'A: the down-projection', about: 'Shape (r, k), starting random.' },
     r: { color: 'slate', name: 'r: the rank', about: 'How narrow the change BA is: it has r(d + k) parameters instead of dk.' },
   },
   'log-trick': pick(rl, 'pi R theta'),
@@ -548,6 +553,7 @@ export const SCOPED: Record<string, SymbolMap> = {
   },
 
   'weight-grad': { g: fGrad },
+  'backprop-graph': { g: fGrad },
   'matmul-grad': { g: fGrad },
   'log-log': { Cflops: flops },
   'power-laws': { Cflops: flops },

@@ -1,19 +1,36 @@
 {
- "duration": 85.009,
+ "duration": 243.115,
  "scenes": {
-  "walk": [0.0, 55.591],
-  "twice": [55.591, 85.009]
+  "ask": [0.0, 114.129],
+  "walk": [114.129, 193.029],
+  "twice": [193.029, 243.115]
  },
  "beats": {
-  "walk/fwd": [0.7, 13.376, "To backprop through a graph, first run it forward and keep every value. With x two, z three and c minus four: q is six, r is two, and f is four.", [[2.22, 2.54], [5.14, 5.81], [6.71, 6.92], [7.71, 7.86], [9.12, 9.59], [10.63, 10.93], [11.87, 12.17]]],
-  "walk/seed": [13.756, 18.91, "Then start at the output, where the gradient of f with respect to itself is one.", [[15.326, 15.616]]],
-  "walk/sq": [19.29, 33.233, "Walk back one node at a time. At each, multiply the gradient from above by the node's local slope. The square's slope is two r, which is four, so r gets one times four: four.", [[21.48, 22.03], [22.59, 22.9], [26.39, 26.98], [28.87, 29.1], [29.8, 30.23], [32.34, 32.78]]],
-  "walk/add": [33.613, 38.014, "The add passes that four, unchanged, to both q and c.", [[35.293, 35.523], [36.333, 36.513]]],
-  "walk/mul": [38.394, 46.142, "The multiply swaps: x gets z times four, twelve, and z gets x times four, eight.", [[39.674, 40.224], [42.064, 42.414], [42.864, 43.314], [45.324, 45.724]]],
-  "walk/all": [46.522, 54.491, "So the gradient is twelve for x, eight for z, and four for c. One backward walk gives every one of them.", [[48.882, 49.152], [49.952, 50.242], [51.412, 52.002]]],
-  "twice/fork": [56.291, 63.862, "Sometimes one value feeds two nodes. Here x goes into the multiply, and also straight into the add.", [[59.021, 59.561], [61.651, 61.891]]],
-  "twice/paths": [64.242, 73.104, "Walking back, x receives a gradient along each wire: one from the add, and from the multiply, z times one, which is two.", [[65.022, 65.302], [67.722, 68.162], [69.172, 69.482], [70.692, 70.942], [72.062, 72.362]]],
-  "twice/sum": [73.484, 82.788, "The two add up: x's total gradient is three. Nudge x, and f moves through both paths at once, so their effects add.", [[74.564, 75.134], [77.154, 77.814], [78.664, 78.834], [81.214, 81.474]]],
-  "twice/turn": [83.168, 83.909, "Your turn.", []]
+  "ask/ask": [0.7, 11.736, "Here is the graph from before, with its inputs set and its output, f, worked out. Now a new question: nudge one input, and how much does f move?", [[2.29, 2.55], [3.7, 3.87], [4.69, 4.89], [5.23, 5.45], [6.08, 6.73], [7.99, 8.55], [9.75, 10.06]]],
+  "ask/grad": [12.116, 22.748, "There is one answer per input: partial f, partial x, and the same for z and for c. Together, those three partials make the gradient of f.", [[14.006, 14.526], [15.306, 15.556], [16.356, 16.676], [18.596, 19.206], [19.696, 19.896]]],
+  "ask/nudge": [23.128, 35.887, "One way to find them is to nudge each input and run the graph again. Raise x by a hundredth, making it two point zero one, and f, which was four, becomes about four point one two.", [[27.268, 27.878], [29.478, 29.818], [31.608, 31.998], [32.618, 32.828], [33.628, 33.908]]],
+  "ask/slope": [36.267, 42.796, "f moved twelve times as far as x did, so partial f, partial x is about twelve.", [[39.017, 39.427]]],
+  "ask/cost": [43.176, 52.939, "But that costs one more run of the whole graph for every input. Three inputs, three runs. A graph with a million inputs would need a million.", [[47.136, 47.646], [48.506, 48.736], [49.586, 50.056], [51.676, 51.856]]],
+  "ask/walk": [53.319, 66.152, "A chain of functions showed a cheaper way: start at the end, walk backward multiplying local slopes, and every slope turns up on the way. A graph works the same, one gate at a time.", [[55.599, 56.119], [57.089, 57.469], [58.299, 58.509], [60.079, 60.419], [62.479, 63.049], [64.449, 64.819]]],
+  "ask/name": [66.532, 83.257, "That backward walk is called backpropagation, or backprop for short. To propagate is to pass something along, step by step, the way a ripple spreads. Here the gradient is passed backward, from the output, node by node, to the inputs.", [[69.332, 69.682], [71.212, 71.902], [74.142, 74.362], [75.312, 75.682], [77.012, 77.602], [79.792, 80.102], [80.942, 81.222], [82.112, 82.372]]],
+  "ask/found": [83.637, 98.168, "The walk has been found more than once. Seppo Linnainmaa wrote it down in his master's thesis in Helsinki, in 1970, to estimate how the tiny roundings a computer makes at every step build up through a long calculation.", [[85.807, 86.347], [91.657, 91.947], [95.757, 96.107]]],
+  "ask/named": [98.548, 113.029, "In 1986, David Rumelhart, Geoffrey Hinton and Ronald Williams used it on networks of neuron-like units, to learn which way to adjust each of their many numbers. They called it back-propagation, and the name stuck.", [[99.888, 100.208], [101.158, 101.398], [103.368, 103.608], [106.148, 106.368], [109.268, 109.838], [111.628, 111.988]]],
+  "walk/fwd": [114.829, 121.507, "First, run the graph forward, and keep every value it makes along the way: the walk back will need them.", [[115.369, 115.679], [116.859, 117.159], [119.549, 120.069]]],
+  "walk/seed": [121.887, 130.452, "Then start at the output. Nudge f, and f moves by exactly that much, so its gradient with respect to itself is one.", [[123.427, 123.957], [124.757, 124.977], [127.297, 127.617]]],
+  "walk/rule": [130.832, 143.078, "Now walk back one node at a time. Each node takes the gradient arriving from above, and multiplies it by its own local slope: add copies, multiply swaps, max routes.", [[133.202, 133.812], [136.522, 136.732], [139.162, 139.782], [140.542, 140.782], [141.852, 142.132]]],
+  "walk/sq": [143.458, 150.128, "The square's local slope is two r, and r was two going forward, so that slope is four.", [[145.968, 146.348], [148.368, 148.678]]],
+  "walk/sq2": [150.508, 154.428, "Times the one arriving from above, r's gradient is four.", [[152.448, 152.838]]],
+  "walk/add": [154.808, 160.46, "The add copies that four, unchanged, to both of its inputs, q and c.", [[156.518, 156.748], [157.538, 157.738], [159.018, 159.328]]],
+  "walk/mul": [160.84, 167.592, "The multiply swaps. x gets z's value, three, times the four from above: twelve.", [[162.14, 162.72], [164.2, 164.4], [164.84, 165.09], [166.56, 167.03]]],
+  "walk/mulz": [167.972, 172.547, "And z gets x's value, two, times four: eight.", [[170.062, 170.312], [170.692, 170.932], [171.692, 172.142]]],
+  "walk/all": [172.927, 183.872, "Every question mark is filled, and x's twelve is the slope the nudge measured. On the way, the walk also found the gradient of each value in between, like q's four.", [[174.607, 174.987], [177.767, 178.397], [178.977, 179.217], [182.567, 182.837]]],
+  "walk/once": [184.252, 191.929, "And it visited each node just once, as the forward run did. A million inputs would still need only one walk back.", [[186.642, 186.822], [188.002, 188.562]]],
+  "twice/fork": [193.729, 201.3, "Sometimes one value feeds two nodes. Here x goes into the multiply, and also straight into the add.", [[196.459, 196.999], [199.089, 199.329]]],
+  "twice/nudge": [201.68, 209.54, "Nudge x, and the nudge travels down both wires at once: f feels it through the add, and again through the multiply.", [[202.69, 203.03], [205.68, 206.16], [207.72, 207.96]]],
+  "twice/add": [209.92, 217.337, "So walking back, x collects a gradient from each wire. The add copies its one straight back to x.", [[210.33, 210.52], [211.31, 211.6], [213.86, 214.42]]],
+  "twice/mul": [217.717, 224.112, "The multiply swaps: x gets z's value, two, times one. That is two.", [[218.957, 219.537], [221.047, 221.297], [221.677, 221.907], [222.607, 223.067]]],
+  "twice/sum": [224.492, 231.417, "Both effects happen together, so they add: x's total gradient is one plus two, three.", [[226.222, 226.472], [227.212, 227.802], [230.542, 230.972]]],
+  "twice/check": [231.797, 240.894, "Check it by hand: f is x z plus x, whose slope in x is z plus one. With z at two, that is three.", [[232.847, 233.367], [235.547, 235.847], [238.187, 238.737], [239.827, 240.077]]],
+  "twice/turn": [241.274, 242.015, "Your turn.", []]
  }
 }

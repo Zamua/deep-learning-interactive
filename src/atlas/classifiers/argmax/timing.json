@@ -1,18 +1,27 @@
 {
- "duration": 65.467,
+ "duration": 128.861,
  "scenes": {
-  "position": [0.0, 36.036],
-  "accuracy": [36.036, 65.467]
+  "pick": [0.0, 34.956],
+  "where": [34.956, 87.911],
+  "accuracy": [87.911, 128.861]
  },
  "beats": {
-  "position/scores": [0.7, 9.338, "Here are four scores, s, one for each of four possible answers: two, seven, one and five.", [[2.21, 2.65], [3.1, 3.51], [5.81, 6.33], [6.72, 7.06], [7.6, 7.94], [8.36, 8.59]]],
-  "position/max": [9.718, 13.158, "The largest value is seven. That is the max.", [[11.498, 11.928]]],
-  "position/arg": [13.538, 27.387, "The argmax asks a different question: where is it? Counting from zero, as Python does, seven sits at position one. So s one, s with its position written small, is seven.", [[15.878, 16.438], [17.158, 17.768], [19.938, 20.288], [22.158, 22.678], [23.888, 24.338], [26.428, 26.698]]],
-  "position/predict": [27.767, 34.936, "Often the position is what you want. With the answers numbered zero to three, the top pick is answer one.", [[29.847, 30.457], [32.747, 33.057], [33.757, 33.917]]],
-  "accuracy/rows": [36.736, 43.888, "Now four questions at once: one row of three scores for each, and its right answer, y, beside it.", [[38.536, 39.026], [41.076, 41.316], [42.416, 42.606], [43.066, 43.216]]],
-  "accuracy/pred": [44.268, 49.824, "The argmax of each row is its pick: one, zero, two and zero.", [[46.598, 47.168], [47.548, 47.788], [48.338, 48.548], [48.938, 49.138]]],
-  "accuracy/compare": [50.204, 56.946, "Check them against y. Three match. The second question's answer was two, not zero.", [[51.544, 52.044], [53.134, 53.644], [55.834, 56.104]]],
-  "accuracy/acc": [57.326, 63.246, "The share that match is the accuracy: three out of four, zero point seven five.", [[59.566, 60.036], [61.156, 61.676]]],
-  "accuracy/turn": [63.626, 64.367, "Your turn.", []]
+  "pick/ask": [0.7, 11.854, "Suppose a program looks at a photo and must say which animal it shows: a cat, a dog, a bird or a fish. That is a question with four possible answers.", [[2.98, 3.18], [5.23, 5.67], [6.18, 6.4], [6.88, 7.13], [7.66, 7.86], [8.5, 9.08]]],
+  "pick/score": [12.234, 20.54, "It gives each answer a score: a number for how strongly it favors that answer. The higher the score, the more it leans that way.", [[14.114, 14.584], [17.224, 17.784], [18.794, 19.074]]],
+  "pick/vector": [20.92, 27.746, "Kept in order, the four scores make a vector, s: two, seven, one and five.", [[21.87, 22.15], [23.86, 24.23], [24.66, 25.15], [25.51, 25.77], [26.28, 26.52]]],
+  "pick/pick": [28.126, 33.856, "In the end it has to pick one answer, and the natural pick is the one with the highest score.", [[30.566, 30.996]]],
+  "where/max": [35.656, 39.668, "The highest score is seven. That is the max of s.", [[37.406, 37.936]]],
+  "where/which": [40.048, 46.804, "But seven alone does not say which answer won. For that you need where it sits: its position.", [[43.098, 43.618], [45.608, 45.988]]],
+  "where/index": [47.184, 53.233, "Counting from zero, the way Python counts a vector's entries, the seven sits at position one.", [[48.434, 48.654], [50.754, 51.234]]],
+  "where/sub": [53.613, 59.74, "A position written small beside s picks out one entry: s sub one is seven.", [[55.903, 56.113], [57.383, 57.973]]],
+  "where/name": [60.12, 70.096, "That position is the argmax. Arg is short for argument, the mathematician's word for an input: the argmax is the input that gives the max.", [[62.08, 62.63], [64.33, 64.7], [66.63, 67.2]]],
+  "where/answer": [70.476, 80.463, "Position one is the dog, so the pick is dog. The max says how high the top score is; the argmax says which answer it belongs to.", [[72.136, 72.566], [73.936, 74.596], [77.126, 77.606]]],
+  "where/min": [80.843, 86.811, "Turned around, the argmin is the position of the lowest score: two, the bird.", [[81.753, 82.113], [84.813, 85.373], [85.733, 86.173]]],
+  "accuracy/rows": [88.611, 98.852, "Now four questions like it, each with three possible answers and its own three scores. Stack the lists one under another, and each list becomes a row.", [[90.321, 90.771], [94.211, 94.741], [96.691, 96.941]]],
+  "accuracy/y": [99.232, 104.49, "Beside each row is its right answer, y, written as a position too.", [[101.682, 102.042], [102.472, 102.872]]],
+  "accuracy/pred": [104.87, 111.35, "The argmax of each row is that question's pick. In the first row, the seven is at position one.", [[107.8, 108.38], [109.29, 109.54]]],
+  "accuracy/compare": [111.73, 119.898, "Check each pick against y. Three match. The second question's pick is zero, but its right answer is two.", [[113.62, 114.08], [114.53, 114.74], [115.2, 115.71], [117.78, 118.13]]],
+  "accuracy/acc": [120.278, 126.641, "The share of picks that are right is the accuracy: three out of four, zero point seven five.", [[123.088, 123.528], [124.648, 125.058]]],
+  "accuracy/turn": [127.021, 127.761, "Your turn.", []]
  }
 }
