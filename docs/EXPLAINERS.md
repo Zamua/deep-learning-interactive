@@ -23,6 +23,12 @@ points on a graph, a line between them, then `w · x + b` as that line, with `w`
   "logit" is a term too.
 - **Keep the picture when the idea generalizes.** Going from two classes to three, or from one
   input to many, the geometry continues; it does not give way to a table.
+- **Tell where it came from** when the history explains why: what came before, what broke, who
+  fixed it and when. Name the people and the paper in the voice and on screen, and list each
+  paper in the script's `papers` (author, year, title, link: arXiv when it is there), which the
+  lookup sheet and the concept page show. Check every name, year and claim against the paper
+  itself, and keep the story inside the prerequisite chain. Activation functions is the model:
+  the step, the sigmoid backprop needed, tanh, then ReLU when deep networks stalled.
 - **Prefer a familiar anchor** the learner already has (y = mx + b, a thermometer, a recipe) when
   it maps exactly onto the idea, and say how it maps.
 - **Then the worked numbers** the practice asks for, now that each one means something.

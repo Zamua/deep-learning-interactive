@@ -36,6 +36,9 @@ export function renderConcept(main: HTMLElement, learner: Learner, id: string): 
       h('span', { class: 'at-ex-go', html: icon('arrowRight') })));
     void loadExplainer(id)?.then((def) => {
       if (def.timing) k.textContent = `Explainer · ${Math.max(1, Math.round(def.timing.duration / 60))} min`;
+      const papers = def.script.papers ?? [];
+      if (papers.length) root.append(h('h2', { class: 'at-h2' }, 'Papers'), h('div', { class: 'at-papers' }, ...papers.map((p) =>
+        h('a', { class: 'at-paper', href: p.url, target: '_blank', rel: 'noopener' }, h('b', {}, p.title), h('small', {}, `${p.who}, ${p.year}`)))));
     });
   }
 

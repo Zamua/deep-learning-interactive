@@ -5,7 +5,7 @@ import { tex } from '../core/math';
 import type { SymbolMap } from '../core/symbols';
 import { LIBRARY } from './library';
 import { callKey, type GlossEntry, type Glossary, MODULES } from './glossary';
-import type { Beat } from './types';
+import type { Beat, Paper } from './types';
 
 /** Something a viewer can look up: a symbol by its key, or a call by its glossary key. */
 export interface Term {
@@ -37,6 +37,8 @@ export interface LookupHost {
   glossary: Glossary;
   /** The notation scene `i` uses. */
   notes?(i: number): Note[];
+  /** The papers scene `i` names. */
+  papers?(i: number): Paper[];
   scene(): number;
   time(): number;
   playing(): boolean;
@@ -198,7 +200,11 @@ export function mountLookup(host: LookupHost): { showScene(): void; tick(t: numb
     if (notes.length) content.push(h('div', { class: 'lk-sec' }, 'Notation'), h('div', { class: 'lk-list' }, ...notes));
     if (syms.length) content.push(h('div', { class: 'lk-sec' }, 'Symbols'), h('div', { class: 'lk-list' }, ...syms));
     if (fns.length) content.push(h('div', { class: 'lk-sec' }, 'Functions'), h('div', { class: 'lk-list' }, ...fns));
-    if (!notes.length && !syms.length && !fns.length) content.push(h('p', { class: 'lk-lead' }, 'Nothing to look up in this scene.'));
+    const papers = (host.papers?.(i) ?? []).map((p) => h('a', { class: 'lk-row', href: p.url, target: '_blank', rel: 'noopener' },
+      h('span', { class: 'lk-tok' }, String(p.year)),
+      h('span', { class: 'lk-what' }, `${p.who}: ${p.title}`)));
+    if (papers.length) content.push(h('div', { class: 'lk-sec' }, 'Papers'), h('div', { class: 'lk-list' }, ...papers));
+    if (!notes.length && !syms.length && !fns.length && !papers.length) content.push(h('p', { class: 'lk-lead' }, 'Nothing to look up in this scene.'));
     show(content, `In this scene: ${host.scenes[i]!.title}`);
   }
 

@@ -804,6 +804,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
     symbols: def.symbols,
     glossary: def.glossary ?? {},
     notes: frame.notes && ((i) => frame.notes!([...markEls[i]!.values()], def.script.scenes[i]!.beats.map((b) => shownText(b.say)).join('\n'))),
+    papers: (i) => (def.script.papers ?? []).filter((p) => p.scene === def.script.scenes[i]!.id),
     scene: () => Math.max(0, cur),
     time: () => clock.time(),
     playing: () => !clock.paused,

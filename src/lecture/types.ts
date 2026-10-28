@@ -22,6 +22,18 @@ export interface SceneScript {
   beats: Beat[];
 }
 
+/** A paper the narration names, for the lookup sheet and the concept page. */
+export interface Paper {
+  /** "Rumelhart, Hinton & Williams". */
+  who: string;
+  year: number;
+  title: string;
+  /** arXiv when the paper is there, else the publisher's page or the authors' copy. */
+  url: string;
+  /** The scene that names it; its lookup sheet lists it. */
+  scene: string;
+}
+
 export interface LectureScript {
   /** `atlas-<concept-id>`. */
   id: string;
@@ -33,6 +45,7 @@ export interface LectureScript {
   /** Speaking rate; Kokoro only. */
   speed: number;
   scenes: SceneScript[];
+  papers?: Paper[];
 }
 
 /** Written by tools/lecture/build.mjs from the synthesized narration. Times are seconds. */

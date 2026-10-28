@@ -21,45 +21,57 @@ function yTicks(s: Scene, F: Frame, ys: number[]) {
   for (const y of ys) s.text(String(y).replace('-', '−'), F.l - 2 * s.u, F.Y(y), { size: 3, font: 'mono', align: 'right', color: s.c('--ink-3') });
 }
 
+const step = (z: number) => (z > 0 ? 1 : 0);
+const STEP: Color = 'slate';
+
+/** Who introduced an idea, and when: small, at the top right of the stage. */
+function cite(s: Scene, text: string, a: number) {
+  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
+}
+
+/** The step: off below zero, on above, with the jump marked by an open and a filled end. */
+function stepCurve(s: Scene, F: Frame, k: Color, grow: number) {
+  if (grow <= 0) return;
+  F.seg(-4, 0, Math.min(0, -4 + 8 * grow), 0, k, 0.8);
+  if (grow > 0.5) {
+    F.seg(0, 1, -4 + 8 * grow, 1, k, 0.8);
+    F.dot(0, 0, k, 0.9);
+    s.circle(F.X(0), F.Y(1), 0.9 * s.u, { stroke: s.c(k), fill: s.c('--card'), lw: 0.35 });
+  }
+}
+
 const shapes: SceneDef = {
   draw(s) {
     const F = box(s, [-1.4, 2.6]);
     F.axes();
     yTicks(s, F, [-1, 0, 1, 2]);
     s.text('z', F.r, F.Y(0) + 4 * s.u, { size: 3.4, font: 'mono', weight: 650, align: 'right', color: s.c('purple') });
-    const all = s.ease('ranges', 0.6);
-    // Each curve draws itself in on its beat, then dims while the next is introduced.
-    const dim = (next: string) => 1 - 0.6 * s.win(next, 'ranges');
-    s.alpha(dim('sigmoid'), () => F.fn(relu, K.relu, 0.7, -4, -4 + 8 * s.ease('relu', 1.2)));
-    s.alpha(dim('tanh'), () => F.fn(sig, K.sig, 0.7, -4, -4 + 8 * s.ease('sigmoid', 1.2)));
-    F.fn(tanh, K.tanh, 0.7, -4, -4 + 8 * s.ease('tanh', 1.2));
-    s.alpha(s.win('relu', 'sigmoid'), () => {
-      mark(s, F, 2, 2, K.relu, 'ReLU(2) = 2', -2.5, 0, 'right');
-      mark(s, F, -2, 0, K.relu, 'ReLU(−2) = 0', 0, -4, 'center');
+    // Each curve draws itself in on its beat; the older ones dim as the next arrives.
+    s.alpha(1 - 0.65 * s.ease('sigmoid', 0.8), () => stepCurve(s, F, STEP, s.ease('step', 1.2)));
+    s.alpha(s.win('stuck', 'sigmoid'), () => {
+      const lab = { size: 3.4, font: 'mono', weight: 650, color: s.c('red'), halo: true } as const;
+      s.text('slope 0', F.X(-2), F.Y(0) - 4 * s.u, lab);
+      s.text('slope 0', F.X(2), F.Y(1) - 4 * s.u, lab);
     });
-    s.alpha(s.win('sigmoid', 'tanh'), () => {
+    s.alpha(1 - 0.6 * s.ease('tanh', 0.8), () => F.fn(sig, K.sig, 0.7, -4, -4 + 8 * s.ease('sigmoid', 1.2)));
+    F.fn(tanh, K.tanh, 0.7, -4, -4 + 8 * s.ease('tanh', 1.2));
+    s.alpha(s.win('sig-values', 'tanh'), () => {
       mark(s, F, 0, 0.5, K.sig, 'σ(0) = 0.5', -2.5, -2.5, 'right');
       mark(s, F, 2, sig(2), K.sig, 'σ(2) ≈ 0.88', 1.5, 4, 'left');
       mark(s, F, -2, sig(-2), K.sig, 'σ(−2) ≈ 0.12', 0, 6, 'center');
     });
-    s.alpha(s.win('tanh', 'ranges'), () => {
+    s.alpha(after(s, 'tanh', 0.55), () => {
       mark(s, F, 0, 0, K.tanh, 'tanh(0) = 0', 2, 4.5, 'left');
       mark(s, F, 1, tanh(1), K.tanh, 'tanh(1) ≈ 0.76', 2, 3.5, 'left');
-      mark(s, F, -1, tanh(-1), K.tanh, 'tanh(−1) ≈ −0.76', 2, 3.5, 'left');
     });
-    s.alpha(all, () => {
-      F.seg(-4, 1, 4, 1, '--ink-3', 0.3, [1, 1]);
-      F.seg(-4, -1, 4, -1, '--ink-3', 0.3, [1, 1]);
-      const x = F.l + 3 * s.u;
-      const o = { size: 3.4, align: 'left' as const, weight: 600 };
-      rich(s, [['ReLU  ', K.relu], ['[0, ∞)', '--ink-2']], x, F.Y(2.35), o);
-      rich(s, [['σ     ', K.sig], ['(0, 1)', '--ink-2']], x, F.Y(2.35) + 5 * s.u, o);
-      rich(s, [['tanh  ', K.tanh], ['(−1, 1)', '--ink-2']], x, F.Y(2.35) + 10 * s.u, o);
-    });
+    cite(s, 'the perceptron · Rosenblatt, 1958', s.win('step', 'sigmoid'));
+    cite(s, 'Rumelhart, Hinton & Williams, 1986', s.win('sigmoid', 'tanh'));
+    cite(s, 'LeCun, Bottou, Orr & Müller, 1998', s.ease('tanh', 0.6));
     const cy = s.h * 0.93;
-    s.alpha(s.win('relu', 'sigmoid'), () => caption(s, 'ReLU(z) = max(0, z)', cy, K.relu));
+    s.alpha(s.win('bend', 'step'), () => caption(s, 'z → activation → what the neuron passes on', cy));
+    s.alpha(s.win('step', 'sigmoid'), () => caption(s, 'step: 0 below zero, 1 above', cy, STEP));
     s.alpha(s.win('sigmoid', 'tanh'), () => caption(s, 'σ(−z) = 1 − σ(z)', cy, K.sig));
-    s.alpha(s.win('tanh', 'ranges'), () => caption(s, 'tanh(−z) = −tanh(z)', cy, K.tanh));
+    s.alpha(s.ease('tanh', 0.6), () => caption(s, 'tanh(−z) = −tanh(z)', cy, K.tanh));
   },
 };
 
@@ -77,17 +89,6 @@ const slopes: SceneDef = {
       for (const [a, b] of [[-4, -2.5], [2.5, 4]] as const) s.rrect(F.X(a), F.t, F.X(b) - F.X(a), F.b - F.t, 0, { fill: s.tint('red', 0.08) });
       s.text('saturated', F.X(-3.25), F.Y(0.62), { size: 3.2, font: 'mono', weight: 600, color: s.c('red'), halo: true });
       s.text('saturated', F.X(3.25), F.Y(0.62), { size: 3.2, font: 'mono', weight: 600, color: s.c('red'), halo: true });
-    });
-    const rA = s.ease('d-relu', 0.8);
-    s.alpha(rA * (1 - 0.6 * s.win('d-sig', 'flat')), () => {
-      F.seg(-4, 0, 0, 0, K.relu, 0.8);
-      F.seg(0, 1, 4, 1, K.relu, 0.8);
-      F.dot(0, 0, K.relu, 0.9);
-      s.circle(F.X(0), F.Y(1), 0.9 * s.u, { stroke: s.c(K.relu), fill: s.c('--card'), lw: 0.35 });
-    });
-    s.alpha(s.win('d-relu', 'd-sig'), () => {
-      s.text('slope 1', F.X(2), F.Y(1) - 4 * s.u, { size: 3.4, font: 'mono', weight: 600, color: s.c(K.relu), halo: true });
-      s.text('slope 0', F.X(-2), F.Y(0) - 4 * s.u, { size: 3.4, font: 'mono', weight: 600, color: s.c(K.relu), halo: true });
     });
     F.fn(dsig, K.sig, 0.7, -4, -4 + 8 * s.ease('d-sig', 1.2));
     s.alpha(s.win('d-sig', 'nudge'), () => {
@@ -117,9 +118,8 @@ const slopes: SceneDef = {
     });
     const x = F.l + 3 * s.u;
     const o = { size: 3.3, align: 'left' as const, weight: 600 };
-    s.alpha(s.ease('d-relu', 0.6), () => rich(s, [['ReLU′ ', K.relu], ['0 or 1', '--ink-2']], x, F.Y(1.22), o));
-    s.alpha(s.ease('d-sig', 0.6), () => rich(s, [['σ′    ', K.sig], ['σ(1 − σ)', '--ink-2']], x, F.Y(1.22) + 5 * s.u, o));
-    s.alpha(s.ease('d-tanh', 0.6), () => rich(s, [['tanh′ ', K.tanh], ['1 − tanh²', '--ink-2']], x, F.Y(1.22) + 10 * s.u, o));
+    s.alpha(s.ease('d-sig', 0.6), () => rich(s, [['σ′    ', K.sig], ['σ(1 − σ)', '--ink-2']], x, F.Y(1.22), o));
+    s.alpha(s.ease('d-tanh', 0.6), () => rich(s, [['tanh′ ', K.tanh], ['1 − tanh²', '--ink-2']], x, F.Y(1.22) + 5 * s.u, o));
     s.alpha(sat, () => caption(s, 'flat curve, slope near 0, gradient near 0', s.h * 0.93, 'red', 3.4));
   },
 };
@@ -153,8 +153,43 @@ function row(s: Scene, y: number, gs: number[], k: Color, label: string, a: numb
 const why: SceneDef = {
   draw(s) {
     const dead = s.ease('dead', 0.8);
-    s.alpha(1 - 0.7 * dead, () => row(s, s.h * 0.3, SIG_G, 'teal', 'sigmoid: × 0.25 at best, per unit', 1, s.prog('chain') * 1.4));
-    s.alpha(1 - dead, () => row(s, s.h * 0.72, SIG_G.map(() => 1), 'gold', 'ReLU, on: × 1 per unit', s.ease('whole', 0.6), s.prog('whole') * 1.6));
+    // The ReLU's own plot, while it is introduced and again for the ranges; the gradient rows the rest of the time.
+    const plotA = Math.max(s.win('relu', 'whole'), s.win('ranges', 'dead'));
+    s.alpha((1 - plotA) * (1 - 0.7 * dead), () => row(s, s.h * 0.3, SIG_G, 'teal', 'sigmoid: × 0.25 at best, per unit', 1, s.prog('chain') * 1.4));
+    s.alpha((1 - plotA) * (1 - dead), () => row(s, s.h * 0.72, SIG_G.map(() => 1), 'gold', 'ReLU, on: × 1 per unit', s.ease('whole', 0.6), s.prog('whole') * 1.6));
+    s.alpha(plotA, () => {
+      const F = box(s, [-1.4, 2.6]);
+      F.axes();
+      yTicks(s, F, [-1, 0, 1, 2]);
+      s.text('z', F.r, F.Y(0) + 4 * s.u, { size: 3.4, font: 'mono', weight: 650, align: 'right', color: s.c('purple') });
+      const ranges = s.ease('ranges', 0.6);
+      s.alpha(ranges, () => {
+        F.fn(sig, K.sig, 0.6);
+        F.fn(tanh, K.tanh, 0.6);
+        F.seg(-4, 1, 4, 1, '--ink-3', 0.3, [1, 1]);
+        F.seg(-4, -1, 4, -1, '--ink-3', 0.3, [1, 1]);
+        const x = F.l + 3 * s.u;
+        const o = { size: 3.4, align: 'left' as const, weight: 600 };
+        rich(s, [['ReLU  ', K.relu], ['[0, ∞)', '--ink-2']], x, F.Y(2.35), o);
+        rich(s, [['σ     ', K.sig], ['(0, 1)', '--ink-2']], x, F.Y(2.35) + 5 * s.u, o);
+        rich(s, [['tanh  ', K.tanh], ['(−1, 1)', '--ink-2']], x, F.Y(2.35) + 10 * s.u, o);
+      });
+      F.fn(relu, K.relu, 0.8, -4, -4 + 8 * s.ease('relu', 1.2));
+      s.alpha(s.win('relu', 'd-relu'), () => {
+        mark(s, F, 2, 2, K.relu, 'ReLU(2) = 2', -2.5, 0, 'right');
+        mark(s, F, -2, 0, K.relu, 'ReLU(−2) = 0', 0, -4, 'center');
+      });
+      s.alpha(s.win('d-relu', 'whole'), () => {
+        const lab = { size: 3.4, font: 'mono', weight: 650, color: s.c(K.relu), halo: true } as const;
+        s.text('slope 1', F.X(1.9), F.Y(1.1), { ...lab, align: 'left' });
+        s.text('slope 0', F.X(-2), F.Y(0) - 4 * s.u, lab);
+      });
+    });
+    cite(s, 'Nair & Hinton, 2010 · Glorot, Bordes & Bengio, 2011', s.win('d-relu', 'whole'));
+    cite(s, 'AlexNet · Krizhevsky, Sutskever & Hinton, 2012', s.win('whole', 'ranges'));
+    const cy = s.h * 0.93;
+    s.alpha(s.win('relu', 'd-relu'), () => caption(s, 'ReLU(z) = max(0, z)', cy, K.relu));
+    s.alpha(s.win('d-relu', 'whole'), () => caption(s, 'slope: 1 if z > 0, else 0', cy, K.relu));
     s.alpha(dead, () => {
       const F = new Frame(s, s.w / 2 - 40 * s.u, s.h * 0.6, s.w / 2 + 40 * s.u, s.h * 0.86, [-4, 4], [-0.4, 3]);
       s.rrect(F.l - 2 * s.u, F.t - 3 * s.u, F.r - F.l + 4 * s.u, F.b - F.t + 9 * s.u, 1.5, { stroke: s.tint('red', 0.6), lw: 0.35 });
