@@ -1,22 +1,36 @@
 {
- "duration": 135.42,
+ "duration": 241.751,
  "scenes": {
-  "top": [0.0, 60.336],
-  "down": [60.336, 93.466],
-  "mask": [93.466, 135.42]
+  "why": [0.0, 68.758],
+  "top": [68.758, 132.792],
+  "down": [132.792, 173.603],
+  "mask": [173.603, 241.751]
  },
  "beats": {
-  "top/setup": [0.7, 14.216, "Here is a forward pass, already run. The hidden layer, h, is two and zero: the second unit's pre-activation was minus one, so the ReLU zeroed it. The scores came out three and three.", [[2.18, 2.45], [3.18, 3.77], [4.55, 4.74], [5.15, 5.32], [6.58, 7.08], [9.91, 10.26], [11.69, 12.18]]],
-  "top/ds": [14.596, 23.157, "The loss sends back its gradient on the scores, ds. With class zero correct, softmax gives minus a half and a half.", [[17.176, 17.466], [18.056, 18.656], [20.136, 20.406]]],
-  "top/dW2": [23.537, 37.86, "The second layer computes W two times h. As for any matrix product, the gradient on W two is ds times h transposed: entry i, j is ds i, times h j.", [[26.667, 27.337], [28.937, 29.267], [30.897, 31.067], [33.487, 33.997], [35.247, 35.447]]],
-  "top/entries": [38.24, 51.801, "Row zero: minus a half times two is minus one, and times zero is zero. Row one: one, and zero. The weights that read the silent unit get nothing.", [[39.1, 39.72], [42.38, 42.85], [44.12, 44.29], [44.87, 45.68], [46.38, 46.99], [47.36, 47.74], [48.35, 49.07], [50.93, 51.1]]],
-  "top/db2": [52.181, 59.236, "The bias adds straight onto the scores, so its gradient is ds itself: minus a half, and a half.", [[54.491, 54.741], [56.941, 57.391], [58.241, 58.521]]],
-  "down/dh": [61.036, 74.906, "To keep going, we need the gradient on h, d h. It is W two transposed, times ds: each hidden unit collects the gradient of every score it fed, weighted by the weight it fed it through.", [[61.856, 62.006], [63.696, 64.036], [64.806, 65.236], [67.156, 67.446], [68.556, 69.066], [72.536, 72.886]]],
-  "down/u0": [75.286, 85.211, "Unit zero fed score zero with weight one, and score one with weight two. One times minus a half, plus two times a half, is a half.", [[78.266, 78.556], [80.356, 80.996], [82.596, 82.886], [84.176, 84.476]]],
-  "down/u1": [85.591, 92.366, "Unit one, with weights minus one and one: a half, plus a half, is one.", [[86.411, 86.891], [88.331, 88.541], [89.151, 89.761], [90.401, 90.661], [91.441, 91.711]]],
-  "mask/mask": [94.166, 105.496, "Now the ReLU. Its slope is one where its input was positive and zero where it was negative. So the gradient passes where a unit was on, and stops where it was off.", [[95.236, 95.796], [98.496, 98.676], [100.416, 100.976], [103.566, 103.826]]],
-  "mask/apply": [105.876, 117.81, "Unit zero was on, so it keeps its half. Unit one was off, so its gradient of one becomes zero. That is d z, the gradient on the pre-activations.", [[107.336, 107.596], [108.996, 109.546], [110.866, 111.166], [113.606, 114.066], [115.366, 115.666]]],
-  "mask/dW1": [118.19, 133.199, "From here, the first layer works like the second: the gradient on W one is that masked gradient times x transposed. The off unit's row is all zeros: from this example, no gradient reaches its weights at all.", [[118.86, 119.08], [121.02, 121.52], [123.1, 123.3], [126.38, 126.96], [129.25, 129.74], [130.64, 130.82]]],
-  "mask/turn": [133.579, 134.32, "Your turn.", []]
+  "why/net": [0.7, 11.994, "Here is a two-layer network, already run forward: the input, x, on the left, the hidden layer, h, in the middle, and the scores on the right, where the loss measures them.", [[2.35, 2.59], [3.77, 4.29], [4.92, 5.12], [6.2, 6.66], [7.42, 7.62], [8.67, 9.05], [10.44, 10.7]]],
+  "why/off": [12.374, 23.069, "Hidden unit one had a pre-activation of minus one, so the ReLU turned it off: h is two and zero. The two scores tied, at three each.", [[15.714, 16.084], [17.954, 18.494], [20.134, 20.664], [21.894, 22.094]]],
+  "why/need": [23.449, 30.286, "To learn, every weight in both layers needs its gradient: which way to nudge it, to bring the loss down.", [[24.089, 24.469], [27.229, 27.639], [28.779, 28.979]]],
+  "why/top": [30.666, 36.216, "The second layer is the easy one: the loss says straight away how each score should move.", [[32.526, 33.006]]],
+  "why/hidden": [36.596, 43.904, "But nothing says what the hidden units should have been. The data shows x and the right answer, never h.", [[39.486, 40.046], [42.466, 42.916]]],
+  "why/walk": [44.284, 52.092, "So the first layer's weights can only be reached by walking back from the loss: through W two, then through the ReLU.", [[48.834, 49.274], [50.384, 50.704]]],
+  "why/paper": [52.472, 67.658, "In 1986, David Rumelhart, Geoffrey Hinton and Ronald Williams trained hidden units this way, and found they learn useful features of their own. That, they wrote, set backprop apart from simpler methods, like the perceptron's.", [[53.832, 54.102], [55.102, 55.352], [57.352, 57.602], [59.252, 59.552], [61.982, 62.552], [62.922, 63.072], [63.492, 63.792], [66.302, 66.512]]],
+  "top/ds": [69.458, 82.622, "With the scores tied, softmax gives each class a half. Class zero is right, so the gradient on the scores, d s, is p minus one at class zero: minus a half, and a half.", [[70.678, 70.928], [73.208, 73.738], [75.078, 75.428], [76.998, 77.208], [77.808, 78.048], [80.298, 80.778], [81.668, 81.908]]],
+  "top/w00": [83.002, 97.14, "Now one weight of W two: the one carrying h zero into score zero. As for any weight, its gradient is its output's gradient, times its input: minus a half, times two. Minus one.", [[85.012, 85.512], [88.292, 88.932], [89.952, 90.222], [93.492, 93.982], [94.872, 95.052], [95.752, 96.302]]],
+  "top/w10": [97.52, 102.994, "The weight from h zero into score one gets a half, times two: one.", [[100.99, 101.43], [102.12, 102.58]]],
+  "top/silent": [103.374, 110.63, "And both weights reading h one get zero. They multiplied a zero, so nudging them changes nothing at all.", [[106.144, 106.664], [107.994, 108.254]]],
+  "top/table": [111.01, 122.827, "As a grid, d W two is the outer product of d s and h: d s down the side, h across the top, and each cell, its row's number times its column's.", [[111.77, 112.05], [115.65, 116.16], [117.48, 117.83], [119.06, 119.46], [120.36, 120.6]]],
+  "top/db2": [123.207, 131.692, "Each bias adds straight onto its own score, so its gradient is that score's gradient: d b two is d s itself.", [[125.887, 126.227], [128.607, 129.127]]],
+  "down/fork": [133.492, 145.697, "To keep walking, h needs its gradient, d h. Each hidden unit fed both scores, so it collects from each, the score's gradient times the weight between them, and adds them up.", [[134.412, 134.742], [136.252, 136.552], [137.242, 137.832], [140.032, 140.402], [141.742, 142.062], [144.592, 144.862]]],
+  "down/u0": [146.077, 157.116, "h zero went out through a weight of one into score zero, and a weight of two into score one. One times minus a half, plus two times a half, is a half.", [[149.817, 150.177], [152.287, 152.877], [154.497, 154.767], [156.097, 156.377]]],
+  "down/u1": [157.496, 163.895, "h one went out through weights of minus one and one: a half, plus a half, is one.", [[160.906, 161.506], [162.066, 162.346], [163.076, 163.306]]],
+  "down/T": [164.275, 172.503, "Each unit reads down its own column of W two, so all of d h is W two transpose, times d s.", [[167.425, 167.805], [171.005, 171.255]]],
+  "mask/slope": [174.303, 179.636, "The ReLU's slope is one where its input was positive, and zero where it was negative.", [[177.523, 177.773]]],
+  "mask/on": [180.016, 186.933, "Unit zero's input was two: on. Its gradient, a half, passes through unchanged.", [[182.006, 182.476], [182.856, 183.386], [184.146, 184.376], [184.976, 185.256]]],
+  "mask/off": [187.313, 200.388, "Unit one's was minus one: off. Its gradient of one is multiplied by zero, and stops dead. So d z, the gradient on the pre-activations, is a half, and zero.", [[189.293, 189.773], [190.143, 190.743], [193.503, 193.693], [194.603, 195.203], [196.323, 196.613], [198.443, 198.683], [199.393, 199.683]]],
+  "mask/mask": [200.768, 211.756, "z greater than zero is a row of ones and zeros, laid over the gradient like a mask: it lets the gradient through where a unit was on, and covers it where it was off.", [[204.188, 204.448], [206.378, 206.948], [209.648, 209.968]]],
+  "mask/sign": [212.136, 217.744, "The mask comes from z, going forward, not from the sign of the gradient coming back.", [[213.756, 214.066], [214.906, 215.286]]],
+  "mask/dW1": [218.124, 230.849, "From here, the first layer works just like the second: d W one is the outer product of d z and x. Row zero is a half, times one and two: a half, and one.", [[218.774, 219.004], [221.234, 221.754], [225.534, 226.014], [227.554, 227.874], [229.144, 229.544], [230.074, 230.254]]],
+  "mask/dead": [231.229, 239.53, "Row one is zero times x: all zeros. From this example, no gradient reaches the off unit's weights at all.", [[233.559, 234.039], [234.949, 235.469], [236.399, 236.649]]],
+  "mask/turn": [239.91, 240.651, "Your turn.", []]
  }
 }

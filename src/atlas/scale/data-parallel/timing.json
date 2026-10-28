@@ -1,21 +1,31 @@
 {
- "duration": 104.423,
+ "duration": 203.204,
  "scenes": {
-  "split": [0.0, 37.612],
-  "average": [37.612, 74.198],
-  "epoch": [74.198, 104.423]
+  "why": [0.0, 77.176],
+  "average": [77.176, 161.785],
+  "epoch": [161.785, 203.204]
  },
  "beats": {
-  "split/copies": [0.7, 10.889, "To train on several GPUs at once, give each one a full copy of the weights, w. Call the number of GPUs G: here, four.", [[3.09, 3.45], [5.79, 6.08], [6.51, 7.14], [8.7, 8.85], [9.25, 9.79], [10.15, 10.4]]],
-  "split/slice": [11.269, 21.451, "Every step, split the batch into slices, one per GPU. Four GPUs with thirty two examples each make a batch of a hundred and twenty eight.", [[12.009, 12.469], [14.199, 14.539], [15.899, 16.339], [19.149, 19.389]]],
-  "split/grad": [21.831, 36.512, "Each GPU computes the gradient on its own slice, the average over its own thirty two examples, all four at the same time. GPU zero's is written g zero, GPU one's g one, and so on.", [[25.281, 25.591], [28.371, 28.721], [30.371, 30.891], [33.421, 33.861], [34.831, 35.071], [35.561, 35.851]]],
-  "average/per": [38.312, 44.901, "For one weight, the four GPUs might find gradients of two, minus one, three and zero.", [[39.132, 39.342], [42.212, 42.522], [43.282, 43.522], [43.992, 44.192]]],
-  "average/mean": [45.281, 55.525, "They send them to each other and average: four over four, one. With equal slices, that is exactly the gradient of the whole batch of a hundred and twenty eight.", [[47.301, 47.751], [48.831, 49.211], [49.551, 50.171], [51.351, 51.601]]],
-  "average/step": [55.905, 62.074, "Every GPU then takes the same step, with the same gradient, so the copies stay identical.", [[58.535, 58.765], [59.925, 60.255]]],
-  "average/send": [62.454, 73.098, "So each step, what travels between the GPUs is gradients: one number per parameter, from every GPU. The examples stay where they are.", [[62.824, 63.034], [63.714, 64.224], [67.144, 67.604], [69.164, 69.394], [70.644, 71.234]]],
-  "epoch/epoch": [74.898, 83.395, "An epoch is still one pass through all N examples, and each step uses one whole batch, across all the GPUs.", [[78.568, 78.948], [81.348, 81.618]]],
-  "epoch/steps": [83.775, 93.369, "So an epoch takes N over B steps. Twelve thousand eight hundred examples, in batches of a hundred and twenty eight: a hundred steps.", [[86.815, 87.375], [89.505, 89.805], [91.765, 92.245]]],
-  "epoch/more": [93.749, 102.203, "With eight GPUs at thirty two each, the batch is two hundred and fifty six: fifty steps, each covering twice the data.", [[96.309, 96.609], [98.719, 99.199], [100.089, 100.419]]],
-  "epoch/turn": [102.583, 103.323, "Your turn.", []]
+  "why/slow": [0.7, 12.443, "Training a model takes many gradient steps, and every step needs the gradients of a whole batch of examples. One chip working through them all alone, step after step, is slow.", [[3.35, 3.64], [7.38, 7.91], [10.01, 10.18], [11.39, 11.7]]],
+  "why/gpu": [12.823, 21.189, "That chip is a GPU, a graphics processing unit: first built to draw graphics, it does many multiplications at once.", [[14.713, 15.043], [16.633, 17.113], [18.683, 18.933]]],
+  "why/copies": [21.569, 30.855, "So share the work. Give each of several GPUs a full copy of the weights, w: every one of its numbers, called the parameters.", [[22.909, 23.379], [26.819, 27.169], [27.559, 28.009], [29.339, 29.619]]],
+  "why/slice": [31.235, 38.677, "And give each its own slice of the batch: a hundred and twenty eight examples, split four ways, is thirty two each.", [[33.565, 34.025], [35.805, 35.965], [37.065, 37.315]]],
+  "why/G": [39.057, 49.143, "Call the number of GPUs G. Turned around, G slices of thirty two make the batch: four times thirty two, a hundred and twenty eight.", [[41.187, 41.807], [42.547, 43.067], [45.657, 46.207], [47.537, 47.867]]],
+  "why/name": [49.523, 60.721, "The data is split, the weights are copied, and the GPUs work in parallel, at the same time. That is data parallelism. Each GPU has a quarter of the work.", [[50.673, 51.033], [51.993, 52.293], [54.193, 54.453], [55.433, 56.033], [57.763, 58.273]]],
+  "why/goyal": [61.101, 76.076, "In 2017, Priya Goyal and colleagues trained on over a million images this way, with two hundred and fifty six GPUs at thirty two images each. Training that had taken twenty nine hours on eight GPUs took one hour.", [[62.361, 62.671], [66.621, 67.021], [70.981, 71.601], [74.871, 75.151]]],
+  "average/loss": [77.876, 86.417, "Training makes a function, f, small: f measures how badly the weights do on the examples, and is called the loss.", [[79.376, 79.676], [80.026, 80.266], [80.786, 81.456], [84.696, 84.986], [85.596, 85.746]]],
+  "average/grad": [86.797, 101.573, "Each GPU works out the gradient of the loss on its own slice, the average over its thirty two examples, all four at once. GPU zero's is written g zero, GPU one's g one, and so on.", [[90.927, 91.327], [93.717, 94.027], [95.297, 95.887], [98.497, 98.917], [99.917, 100.107], [100.667, 100.917]]],
+  "average/per": [101.953, 110.127, "For one weight, the four might find two, minus one, three and zero. Different slices give different gradients.", [[102.803, 103.053], [104.743, 105.033], [105.733, 105.933], [107.153, 107.683]]],
+  "average/mean": [110.507, 116.698, "So they send them to each other and average: they add up to four, and four over four is one.", [[112.857, 113.277], [114.457, 114.797]]],
+  "average/whole": [117.078, 127.415, "The slices are the same size, so this average of four averages is the average over all a hundred and twenty eight examples: exactly the gradient of the whole batch.", [[118.838, 119.168], [124.538, 125.008]]],
+  "average/vec": [127.795, 135.76, "Every other weight is averaged the same way, entry by entry: its own four gradients, one from each GPU.", [[130.285, 130.705], [131.855, 132.355], [133.865, 134.185]]],
+  "average/step": [136.14, 145.665, "Then every GPU takes the same step with that same average, so the copies stay identical. With their own gradients, they would drift apart.", [[136.61, 136.84], [140.56, 140.93], [142.69, 143.19], [144.29, 144.49]]],
+  "average/send": [146.045, 160.685, "So each step, what travels between the GPUs is gradients: one number per parameter, from every GPU. The examples stay put, and the loss, a single number, could not say which way to move each weight.", [[147.125, 147.485], [150.445, 150.855], [152.435, 152.645], [153.915, 154.505], [155.925, 156.265], [158.015, 158.265]]],
+  "epoch/epoch": [162.485, 168.902, "An epoch is still one pass through all N examples: here, twelve thousand eight hundred.", [[166.225, 166.695], [167.025, 167.325]]],
+  "epoch/step": [169.282, 176.335, "And a step still takes one whole batch, all four slices at once: a hundred and twenty eight examples.", [[171.852, 172.162], [173.862, 174.252]]],
+  "epoch/steps": [176.715, 184.276, "So an epoch takes N over B steps: twelve thousand eight hundred over a hundred and twenty eight is a hundred.", [[179.725, 180.225], [181.645, 181.835], [183.325, 183.535]]],
+  "epoch/not": [184.656, 192.15, "Not four hundred. The four slices are worked at the same time, so together they make one step, not four.", [[185.876, 186.416], [188.906, 189.196], [191.116, 191.466]]],
+  "epoch/more": [192.53, 200.984, "With eight GPUs at thirty two each, the batch is two hundred and fifty six: fifty steps, each covering twice the data.", [[195.09, 195.39], [197.5, 197.98], [198.87, 199.2]]],
+  "epoch/turn": [201.364, 202.104, "Your turn.", []]
  }
 }

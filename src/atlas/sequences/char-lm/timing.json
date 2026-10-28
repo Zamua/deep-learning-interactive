@@ -1,18 +1,32 @@
 {
- "duration": 101.364,
+ "duration": 247.66,
  "scenes": {
-  "shift": [0.0, 54.45],
-  "loss": [54.45, 101.364]
+  "game": [0.0, 69.481],
+  "shift": [69.481, 120.733],
+  "guess": [120.733, 172.695],
+  "loss": [172.695, 247.66]
  },
  "beats": {
-  "shift/task": [0.7, 9.968, "A language model reads text and, at every step, predicts what comes next. Here the tokens are characters, and the text is hello.", [[2.57, 2.73], [3.08, 3.25], [4.1, 4.34], [5.77, 6.29], [8.2, 8.53]]],
-  "shift/shift": [10.348, 19.614, "So the inputs are h, e, l, l, and the targets are the same text shifted by one: e, l, l, o.", [[12.218, 12.458], [12.818, 13.068], [13.398, 13.578], [13.898, 14.358], [17.288, 17.798], [18.108, 18.268], [18.588, 18.748]]],
-  "shift/scores": [19.994, 33.759, "At each step, a linear layer with weights W h y, from h to the output, turns the hidden state into one score for every token in the vocabulary: four here, h, e, l and o.", [[20.844, 21.094], [23.894, 24.104], [25.424, 25.694], [29.934, 30.394], [31.134, 31.504], [31.924, 32.104], [32.434, 32.694]]],
-  "shift/softmax": [34.139, 42.893, "Softmax turns the scores into probabilities for the next character. After reading h, this model gives e zero point five.", [[38.029, 38.639], [39.829, 40.089], [41.419, 41.659]]],
-  "shift/memory": [43.273, 53.35, "Look at steps two and three. Both read an l, but one must predict l and the other o. Only the memory, h, can tell them apart.", [[45.073, 45.563], [46.783, 47.103], [48.643, 48.833], [49.873, 50.423], [51.383, 51.673], [52.103, 52.313]]],
-  "loss/step": [55.15, 70.254, "Each step is a classification over the vocabulary, so its loss, L t, is cross-entropy. At step zero the target, e, got zero point five: the loss is minus its log, zero point six nine.", [[58.16, 58.5], [59.38, 59.61], [60.21, 60.52], [61.61, 62.22], [63.24, 63.41], [64.09, 64.36], [64.69, 64.91], [66.31, 66.78], [68.46, 68.8]]],
-  "loss/all": [70.634, 79.132, "Every step does the same against its own target: zero point nine two, zero point five one, and zero point two two.", [[73.494, 73.964], [75.294, 75.664], [76.964, 77.294]]],
-  "loss/total": [79.512, 99.144, "The loss for the whole text, L, adds them up: two point three four. In symbols, L is the sum over steps t of minus ln p t at y t, where y t is step t's target. Divided by the four steps, that is about zero point five nine per step.", [[81.062, 81.362], [81.712, 82.002], [82.622, 83.112], [84.292, 84.852], [85.592, 85.912], [91.092, 91.482], [93.722, 94.272], [95.862, 96.212]]],
-  "loss/turn": [99.524, 100.264, "Your turn.", []]
+  "game/game": [0.7, 13.229, "Here is a game. Read a text one letter at a time, and before each new letter, guess what it will be. After h, e, l, l, most people would guess o.", [[1.61, 2.15], [4.29, 4.63], [6.14, 6.42], [7.38, 7.99], [8.43, 8.58], [9.01, 9.29], [9.63, 9.99], [10.35, 10.69], [11.04, 11.51]]],
+  "game/shannon": [13.609, 28.736, "In 1951, Claude Shannon played this game with people, in a paper called Prediction and Entropy of Printed English. How well they guessed measured how predictable English is: its entropy, the average surprise per letter.", [[14.939, 15.239], [17.349, 17.709], [18.579, 18.829], [21.309, 21.889], [23.079, 23.259], [25.329, 25.709], [26.529, 26.889]]],
+  "game/free": [29.116, 41.499, "The game needs nobody to grade it. A classifier needs someone to label every image, cat or ship. Text holds its own answers: each letter is the right answer for the letters before it.", [[31.136, 31.616], [34.506, 34.786], [35.736, 36.276], [38.076, 38.516]]],
+  "game/lm": [41.879, 52.793, "So any text at all can teach a model to play. A model that plays is called a language model: a model of how a language goes, of which pieces tend to follow which.", [[44.859, 45.479], [47.979, 48.449], [50.329, 50.679]]],
+  "game/vocab": [53.173, 68.381, "The pieces it reads are tokens, here single characters. Its vocabulary, every token it knows, is just h, e, l and o, with ids zero to three. Its size, V, is four.", [[55.213, 55.533], [57.043, 57.643], [58.633, 58.923], [60.093, 60.393], [60.843, 61.013], [61.403, 61.663], [61.993, 62.263], [63.273, 63.633], [65.533, 66.113], [66.873, 67.073], [67.483, 67.723]]],
+  "shift/inputs": [70.181, 80.962, "Feed hello in, one character at a time. The inputs are h, e, l, l: every letter but the last, since nothing follows the o.", [[71.511, 71.891], [73.311, 73.891], [74.861, 75.111], [75.511, 75.741], [76.071, 76.351], [76.671, 76.851], [77.191, 77.711], [79.121, 79.341]]],
+  "shift/shift": [81.342, 90.974, "The targets are the same text, shifted by one place: e, l, l, o. Each step's target is the letter that comes next.", [[83.112, 83.362], [84.872, 85.402], [85.672, 86.042], [86.352, 86.652], [86.962, 87.262], [87.512, 88.172]]],
+  "shift/y": [91.354, 104.523, "Number the steps with t, from zero, and call step t's target y of t, written as its id. At step zero, after h, the target is e: id one.", [[92.954, 93.314], [94.064, 94.444], [97.194, 97.494], [98.884, 99.544], [100.544, 100.734], [101.534, 101.814], [103.044, 103.544]]],
+  "shift/memory": [104.903, 119.633, "Steps two and three both read an l, but one must predict l, and the other o. The input alone cannot tell them apart. The memory, h, can: it knows whether one l has come, or two.", [[107.553, 107.963], [109.493, 109.763], [110.383, 110.553], [110.893, 111.533], [113.853, 114.453], [115.093, 115.363], [115.773, 115.973], [116.353, 116.953], [118.793, 119.033]]],
+  "guess/scores": [121.433, 133.84, "At each step, the network reads its memory, h, through one more matrix of weights, W h y: hidden to output. Out comes one score for every token in the vocabulary.", [[122.293, 122.563], [124.153, 124.473], [124.873, 125.143], [127.023, 127.373], [128.583, 128.983], [130.043, 130.563]]],
+  "guess/V": [134.22, 144.213, "That is V scores, four here, however big the memory and however long the text: the next letter could be any token, so every token gets a score.", [[135.62, 136.01], [136.69, 137.01], [139.83, 140.27], [142.11, 142.37]]],
+  "guess/softmax": [144.593, 154.14, "Softmax turns the scores into probabilities for the next letter. After reading h, this model gives the target, e, zero point five.", [[148.303, 148.863], [150.113, 150.413], [151.863, 152.123], [152.463, 152.863]]],
+  "guess/id": [154.52, 163.245, "To find the target in p, use its id. e is token one, so its probability is entry one: p of one.", [[156.12, 156.34], [157.45, 158.07], [159.38, 159.65], [161.86, 162.32]]],
+  "guess/every": [163.625, 171.595, "Every step makes a guess like this, over the whole vocabulary, against its own target: the one bar that should be tall.", [[165.765, 166.075], [167.515, 167.755], [169.185, 169.665]]],
+  "loss/step": [173.395, 188.686, "Each guess is a classification over the vocabulary, so its loss, L of t, is cross-entropy: minus the log of the target's probability. At step zero, minus ln zero point five is zero point six nine.", [[176.375, 176.735], [177.615, 177.845], [178.585, 178.875], [179.925, 180.315], [182.755, 183.315], [184.325, 184.625], [186.825, 186.995]]],
+  "loss/all": [189.066, 200.85, "Every step pays for its own target the same way. The surer the guess, the less it pays: the last step, which gave its target zero point eight, pays only zero point two two.", [[192.086, 192.626], [193.666, 193.846], [194.876, 195.376], [196.136, 196.376], [198.406, 198.746]]],
+  "loss/elman": [201.23, 217.744, "Shannon's guessers missed most often at the beginnings of words. In 1990, Jeffrey Elman saw the same in a network trained to predict the next letter of text with no spaces: its error was high at each word's first letter, and fell as the word went on.", [[204.77, 205.42], [206.45, 206.73], [212.41, 212.89], [215.67, 215.95]]],
+  "loss/total": [218.124, 223.757, "The loss for the whole text, L, adds up every step's: two point three four.", [[219.684, 219.934], [220.294, 220.634], [222.064, 222.494]]],
+  "loss/sum": [224.137, 236.094, "In symbols, L is the sum, over the steps t, of minus ln p t, at y t: at each step, minus the log of the probability it gave its target.", [[224.977, 225.227], [226.427, 226.707], [227.877, 228.217], [230.267, 230.487], [231.307, 231.857], [232.717, 233.047]]],
+  "loss/mean": [236.474, 245.44, "Divide by the four steps for the average: about zero point five nine a step, a number that does not grow just because the text is longer.", [[238.834, 239.284], [241.634, 242.164]]],
+  "loss/turn": [245.82, 246.56, "Your turn.", []]
  }
 }

@@ -1,22 +1,33 @@
 {
- "duration": 163.024,
+ "duration": 230.207,
  "scenes": {
-  "derive": [0.0, 109.565],
-  "try": [109.565, 163.024]
+  "paths": [0.0, 47.637],
+  "top": [47.637, 108.281],
+  "right": [108.281, 184.689],
+  "any": [184.689, 230.207]
  },
  "beats": {
-  "derive/recap": [0.7, 12.908, "Nudging the scores measured the gradient: zero point six, minus zero point seven and zero point one. That is p, minus one at the correct option. Here is why.", [[2.87, 3.4], [4.49, 4.79], [6.2, 6.46], [7.68, 8.2], [8.67, 8.86], [9.22, 9.62], [11.55, 12.13]]],
-  "derive/expand": [13.288, 25.817, "Write the loss out. Minus the log of a fraction is minus the log of the top, plus the log of the bottom: minus s y, the correct option's score, plus the log of the total, T.", [[14.358, 14.908], [16.488, 16.668], [18.288, 18.568], [19.908, 20.518], [21.768, 22.038], [23.398, 23.768], [25.168, 25.428]]],
-  "derive/dT": [26.197, 47.401, "Log T reaches s zero through a chain: s zero feeds T, and T feeds log T. T adds up e to every score, and only one of those terms holds s zero. e to the x is its own derivative, so T moves e to the one point eight, about six, times as fast as s zero.", [[28.947, 29.547], [31.037, 31.277], [32.837, 33.557], [35.657, 35.927], [38.527, 39.137], [41.327, 41.737], [44.157, 44.417], [45.157, 45.467]]],
-  "derive/dlog": [47.781, 64.927, "And log T, the natural log, has slope one over T. T is about ten, so log T moves a tenth as fast as T. A nudge of zero point zero one grows to zero point zero six, then shrinks to zero point zero zero six.", [[48.791, 49.021], [49.871, 50.111], [51.791, 52.451], [53.641, 53.941], [56.871, 57.511], [59.561, 59.731], [61.711, 62.021]]],
-  "derive/pj": [65.307, 79.791, "The chain rule multiplies the two: six times a tenth is zero point six, the slope measured before. For any score s j, it is e to the s j, over the total. That is exactly p j.", [[67.337, 67.907], [70.517, 70.847], [72.177, 72.757], [74.397, 74.677], [76.387, 76.667], [77.497, 77.947]]],
-  "derive/minus": [80.171, 92.811, "Minus s y depends only on the correct score: its derivative is minus one when j is y, and zero when j is not y, the slashed equals sign reading \u201cis not\u201d.", [[83.501, 84.021], [87.171, 87.501], [89.651, 90.051], [91.941, 92.141]]],
-  "derive/together": [93.191, 108.465, "Add the two: p j, minus the bracket j equals y. The bracket is one when j is y and zero otherwise, so it is p j with one taken away at the correct option. Just the pattern the nudges found.", [[93.981, 94.551], [95.191, 95.511], [96.931, 97.111], [97.931, 98.561], [100.911, 101.121], [102.371, 102.791], [106.281, 106.751]]],
-  "try/p1": [110.265, 123.298, "Try one: scores two, zero and zero, with option zero correct. Use e to the two, about seven point three nine. What is partial L, partial s zero?", [[110.865, 111.395], [112.375, 112.615], [113.855, 114.185], [115.745, 116.255], [117.645, 117.945], [119.565, 120.215], [121.595, 121.785]]],
-  "try/total": [123.678, 129.651, "T is seven point three nine, plus one, plus one: nine point three nine.", [[125.808, 126.158], [126.768, 126.998], [127.628, 128.178]]],
-  "try/slope": [130.031, 139.707, "Through log T: e to the s zero, over T, is seven point three nine over nine point three nine, about zero point seven nine.", [[131.121, 131.671], [133.131, 133.321], [133.991, 134.281], [137.391, 137.841]]],
-  "try/minus": [140.087, 150.589, "Zero is the correct option, so minus s y adds minus one: zero point seven nine minus one, minus zero point two one.", [[141.847, 142.297], [143.937, 144.107], [145.227, 145.807], [148.117, 148.507], [150.367, 150.557]]],
-  "try/other": [150.969, 160.803, "For s one, the slope is one over nine point three nine, about zero point one one, and nothing more: s one is not the correct score.", [[151.959, 152.239], [154.969, 155.329], [157.009, 157.339], [158.159, 158.669]]],
-  "try/turn": [161.183, 161.924, "Your turn.", []]
+  "paths/measured": [0.7, 14.209, "Nudging the scores one at a time measured the gradient of the loss: zero point six, minus zero point seven, and zero point one. That is p, with one taken away at the right answer, y.", [[4.47, 5.02], [6.09, 6.43], [7.86, 8.15], [9.44, 9.97], [10.83, 11.15], [13.41, 13.73]]],
+  "paths/why": [14.589, 24.677, "But a nudge measures only the scores in front of you. To know the pattern holds for every set of scores, follow how each score reaches the loss, and use the chain rule.", [[17.479, 18.029], [20.599, 20.939], [23.239, 23.409]]],
+  "paths/loss": [25.057, 34.316, "Written out, the loss is the log of the total, T, minus the right answer's score: L equals log T, minus s y.", [[25.727, 25.997], [28.017, 28.237], [28.597, 28.887], [30.747, 31.227], [32.757, 32.987]]],
+  "paths/paths": [34.696, 46.537, "So every score feeds T, T feeds log T, and log T feeds L. The right answer's score also takes a second, shorter path, straight to minus s y.", [[36.596, 37.006], [38.376, 38.716], [40.316, 40.956], [44.466, 44.726]]],
+  "top/term": [48.337, 61.918, "Follow s zero, a wrong option's score, along the long path. T adds up e to every score, but only one of its terms holds s zero: e to the s zero. The others stay put.", [[49.637, 49.907], [51.167, 51.357], [52.527, 53.207], [55.557, 55.937], [58.507, 58.947], [60.197, 60.717]]],
+  "top/dT": [62.298, 72.992, "e to the x is its own slope, so T moves e to the one point eight, about six, times as fast as s zero. A nudge grows sixfold.", [[64.448, 64.888], [67.378, 67.608], [68.378, 68.678], [70.678, 71.208]]],
+  "top/dlog": [73.372, 84.562, "The log's slope is one over its input, so log T moves one over T times as fast as T. T is about ten, so the nudge shrinks to a tenth.", [[75.902, 76.332], [80.482, 81.172], [82.352, 82.682]]],
+  "top/mult": [84.942, 92.621, "The chain rule multiplies the local slopes: six times a tenth is zero point six, the slope the nudges measured.", [[87.582, 88.082], [90.762, 91.092]]],
+  "top/pj": [93.001, 107.181, "None of that needed these numbers. For any score s j, the two slopes are e to the s j, and one over T. Their product, e to the score over the total, is that option's probability, p j.", [[94.761, 95.241], [96.921, 97.311], [99.651, 99.891], [100.941, 101.541], [102.281, 102.631], [104.401, 104.661], [106.271, 106.541]]],
+  "right/minus": [108.981, 118.772, "Now the short path. Minus s y holds only the right answer's score, and moves against it by the whole nudge: a slope of minus one.", [[110.261, 110.891], [114.231, 114.581], [116.771, 117.201]]],
+  "right/zero": [119.152, 127.544, "Every other score leaves it alone: a slope of zero when j is not y, where the slashed equals sign reads \u201cis not\u201d.", [[121.152, 121.622], [124.322, 124.752], [126.642, 126.872]]],
+  "right/add": [127.924, 133.457, "L is the sum of the two parts, and the slope of a sum is the sum of the slopes.", [[130.134, 130.574], [131.834, 132.014]]],
+  "right/wrong": [133.837, 144.334, "So a wrong option gets p j alone, while the right answer gets p y, minus one: zero point three minus one, minus zero point seven.", [[136.497, 136.867], [138.957, 139.257], [140.017, 140.477], [142.417, 142.727]]],
+  "right/bracket": [144.714, 156.133, "One line covers both with a bracket. The bracket j equals y is one when j is y, and zero otherwise: entry j of the one-hot vector of y.", [[146.884, 147.464], [149.384, 149.534], [151.374, 151.634], [152.954, 153.444]]],
+  "right/result": [156.513, 168.861, "So partial L, partial s j, equals p j, minus the bracket j equals y, for any scores at all. The pattern the nudges found now has a reason.", [[157.863, 158.183], [159.443, 159.723], [160.853, 161.243], [162.263, 162.433], [163.733, 164.043], [165.363, 166.153]]],
+  "right/bridle": [169.241, 183.589, "In 1989, John Bridle, who named the softmax, made the same point: the gradient on the scores is the probabilities, minus the one-hot target. He called softmax and this loss natural partners.", [[170.531, 170.771], [171.621, 171.771], [173.051, 173.281], [174.391, 174.951], [177.521, 177.731], [179.421, 180.011], [182.171, 182.421]]],
+  "any/new": [185.389, 195.413, "The rule works on scores nobody nudged. Take two, zero and zero, with option zero right, and e squared about seven point three nine.", [[187.939, 188.539], [189.189, 189.519], [190.739, 190.999], [192.439, 192.689]]],
+  "any/total": [195.793, 202.569, "The total, T, is seven point three nine, plus one, plus one: nine point three nine.", [[196.503, 196.743], [197.123, 197.363], [198.913, 199.253], [199.883, 200.073], [200.673, 201.163]]],
+  "any/p0": [202.949, 210.065, "Option zero's probability is seven point three nine over nine point three nine: about zero point seven nine.", [[207.709, 208.199]]],
+  "any/g0": [210.445, 218.905, "It is the right answer, so take one away: zero point seven nine, minus one, is minus zero point two one.", [[211.745, 212.045], [213.245, 213.845], [215.345, 215.615], [216.355, 216.695]]],
+  "any/g1": [219.285, 227.987, "Option one is wrong, so its slope is its probability alone: one over nine point three nine, about zero point one one.", [[220.765, 221.125], [223.495, 223.945], [225.855, 226.275]]],
+  "any/turn": [228.367, 229.107, "Your turn.", []]
  }
 }

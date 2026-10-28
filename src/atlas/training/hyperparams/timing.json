@@ -1,23 +1,33 @@
 {
- "duration": 113.038,
+ "duration": 249.159,
  "scenes": {
-  "log": [0.0, 66.94],
-  "random": [66.94, 92.27],
-  "judge": [92.27, 113.038]
+  "knobs": [0.0, 42.268],
+  "log": [42.268, 161.117],
+  "random": [161.117, 217.861],
+  "judge": [217.861, 249.159]
  },
  "beats": {
-  "log/range": [0.7, 8.595, "A good learning rate could be anywhere from ten to the minus five to ten to the minus one: a range of four factors of ten.", [[4.36, 4.54], [5.95, 6.48]]],
-  "log/uniform": [8.975, 19.281, "Draw uniformly across that range, and nine draws in ten land between zero point zero one and zero point one. The small rates are barely tried.", [[11.195, 11.435], [15.225, 15.485], [16.695, 17.275]]],
-  "log/share": [19.661, 33.782, "Why? Measured plainly, that one stretch is zero point zero nine long, out of about zero point one for the whole range: nine tenths of it. Everything below zero point zero one shares the last tenth.", [[20.131, 20.711], [21.711, 21.971], [24.951, 25.221], [27.941, 28.381], [29.471, 29.951]]],
-  "log/log": [34.162, 42.573, "Instead, draw the exponent: u uniform between minus five and minus one, and set the rate to ten to the u.", [[34.742, 35.012], [36.132, 36.572], [40.122, 40.482]]],
-  "log/even": [42.953, 49.451, "Now every decade, every factor of ten, gets the same share of the draws: a quarter each.", [[44.353, 44.673], [46.023, 46.273], [48.093, 48.453]]],
-  "log/ex": [49.831, 65.84, "A u of minus three gives zero point zero zero one. Minus two point five gives ten to the zero point five, about three point one six, times zero point zero zero one: about zero point zero zero three two.", [[53.891, 54.551], [55.971, 56.131], [58.241, 58.531], [60.091, 60.411], [62.821, 63.241]]],
-  "random/grid": [67.64, 77.262, "Say the learning rate matters a lot, and a second hyperparameter, like the batch size, barely matters. A three by three grid runs nine trainings.", [[69.67, 70.02], [71.63, 71.79], [72.81, 72.99], [73.92, 74.49]]],
-  "random/waste": [77.642, 81.696, "But it tries only three learning rates, each three times over.", [[79.922, 80.242]]],
-  "random/random": [82.076, 91.17, "Nine random trials try nine different learning rates. When one hyperparameter matters most, random search explores it far better.", [[85.516, 86.056], [88.296, 88.646]]],
-  "judge/train": [92.97, 97.817, "Each trial is trained on the training split, and judged on the validation split.", [[95.49, 95.72]]],
-  "judge/pick": [98.197, 104.986, "Keep the one with the lowest validation loss. Not the lowest training loss: that only rewards memorizing.", [[100.727, 101.117], [102.717, 103.037]]],
-  "judge/test": [105.366, 110.817, "And leave the test split alone until the very end, so its one number stays honest.", [[108.376, 108.696]]],
-  "judge/turn": [111.197, 111.938, "Your turn.", []]
+  "knobs/learned": [0.7, 7.314, "Training sets the weights on its own: every step moves them against the gradient, downhill on the loss.", [[2.65, 3.16], [5.52, 5.86]]],
+  "knobs/chosen": [7.694, 20.247, "But some settings it never touches: the learning rate, how far each step goes, and the batch size, how many examples each step averages. You pick those before training starts.", [[9.924, 10.484], [11.264, 11.604], [13.284, 13.654], [14.844, 15.194], [17.504, 18.004]]],
+  "knobs/name": [20.627, 29.208, "They are called hyperparameters. Hyper is Greek for over: they sit over the weights, and decide how the weights get learned.", [[22.547, 23.097], [24.987, 25.547], [26.987, 27.157]]],
+  "knobs/cost": [29.588, 41.168, "And every try is costly. To learn how good one learning rate is, you train a whole model with it, and measure its validation loss. So where you spend your tries matters.", [[31.628, 32.218], [34.298, 34.648], [36.198, 36.418], [38.068, 38.628]]],
+  "log/range": [42.968, 54.735, "Say a good learning rate could be anywhere from ten to the minus five up to ten to the minus one, a tenth. Mark the powers of ten evenly, each one ten times the last.", [[46.998, 47.158], [48.778, 49.118], [49.658, 50.398], [52.338, 52.708]]],
+  "log/decade": [55.115, 66.573, "On this axis a rate's place is its power of ten, so it is called a log scale. Each stretch from one power of ten to the next is a decade: four decades here.", [[56.105, 56.285], [58.495, 58.855], [60.705, 61.365], [64.845, 65.325]]],
+  "log/why": [66.953, 81.889, "Why so wide? On a bowl, the largest rate that does not blow up is one over a, its steepness. A bowl a hundred times steeper needs a rate a hundred times smaller, and you rarely know the steepness ahead of time.", [[68.113, 68.713], [69.413, 69.613], [73.023, 73.233], [74.123, 74.733], [76.583, 76.743], [78.843, 79.303]]],
+  "log/uniform": [82.269, 95.284, "The plain way to search is to draw rates uniformly: every value in the range equally likely. Look where the draws land: nine in ten fall in the top decade, above zero point zero one.", [[85.299, 85.779], [88.209, 88.879], [90.239, 90.719], [93.049, 93.309]]],
+  "log/ruler": [95.664, 108.043, "On a plain ruler, that top decade covers nine tenths of the length, so it catches nine tenths of the draws. The three lower decades share the last tenth, and the small rates are barely tried.", [[96.724, 96.984], [99.814, 100.184], [102.484, 103.124], [105.674, 106.044]]],
+  "log/log": [108.423, 118.062, "So draw the exponent instead. Call it u, draw it uniformly between minus five and minus one, and set the rate to ten to the u.", [[110.453, 110.993], [111.793, 112.203], [115.563, 115.923]]],
+  "log/even": [118.442, 126.626, "Now each decade covers the same stretch of exponents, one unit long, so it gets the same share of the draws: a quarter each.", [[121.682, 121.912], [122.862, 123.262], [125.332, 125.682]]],
+  "log/ends": [127.006, 137.761, "For any range, read off its powers of ten. To search from zero point zero zero one up to a tenth, draw the exponent from minus three to minus one.", [[127.976, 128.246], [129.856, 130.586], [134.206, 134.616], [136.646, 136.816]]],
+  "log/ex": [138.141, 144.488, "An exponent of minus three gives ten to the minus three: zero point zero zero one.", [[141.791, 142.341]]],
+  "log/ex2": [144.868, 160.017, "Minus two point five is minus three, plus a half, and a sum in the power is a product: ten to the half, about three point one six, times zero point zero zero one. About zero point zero zero three two.", [[147.458, 147.698], [148.468, 149.018], [151.088, 151.588], [152.538, 152.758], [154.228, 154.498], [156.918, 157.388]]],
+  "random/grid": [161.817, 175.799, "Now tune two at once: the learning rate, which matters a lot, and the batch size, which here barely matters. The obvious plan is a grid: three rates, times three batch sizes, nine trainings.", [[163.547, 163.967], [164.797, 165.007], [165.987, 166.387], [167.587, 167.817], [169.237, 169.887], [171.487, 171.927], [172.697, 172.897], [174.367, 174.687]]],
+  "random/waste": [176.179, 186.677, "But look along the learning rate. The nine trainings try only three rates, three times each, and since the batch size barely matters, each repeat comes out about the same.", [[177.749, 178.229], [180.649, 180.909], [181.839, 182.239], [184.299, 184.629]]],
+  "random/random": [187.057, 195.943, "Draw all nine at random instead, and the same nine trainings try nine different rates, so one is far more likely to land near the best.", [[189.207, 189.607], [192.607, 192.867]]],
+  "random/bergstra": [196.323, 216.761, "James Bergstra and Yoshua Bengio drew this picture in 2012, in Random Search for Hyper-Parameter Optimization. On most problems, they found, only a few hyperparameters really matter, and which ones changes from problem to problem, so a grid spends most of its tries varying the ones that do not.", [[200.863, 201.183], [204.423, 205.293], [206.953, 207.273], [209.703, 210.143], [212.613, 213.043]]],
+  "judge/train": [218.561, 226.086, "Each try trains on the training split, and is judged on the validation split: examples its weights were never fit to.", [[220.971, 221.241], [223.271, 223.701]]],
+  "judge/pick": [226.466, 235.758, "Keep the one with the lowest validation loss, here run C. Not the lowest training loss, run B: that only rewards memorizing.", [[228.926, 229.256], [230.476, 230.966], [232.586, 232.806], [233.506, 233.876]]],
+  "judge/test": [236.138, 246.939, "And leave the test split alone until the very end. Choose by it, and it becomes one more validation split: its number no longer measures data the choices never saw.", [[239.168, 239.648], [240.388, 240.588], [242.868, 243.358]]],
+  "judge/turn": [247.319, 248.059, "Your turn.", []]
  }
 }

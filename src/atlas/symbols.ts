@@ -297,7 +297,8 @@ const dif: SymbolMap = {
 };
 
 const fGrad: SymbolDef = { ...grad, name: 'g: a gradient of f', about: 'One partial derivative of f per entry, laid out in the shape of what it is the gradient of.' };
-const softmaxGrad: SymbolMap = { s: scores, y: answer, p: probs, L: loss, g: { ...grad, about: 'One partial derivative per score: how fast L changes as that score is nudged.' } };
+const expTotal: SymbolDef = { color: 'slate', name: 'T: the total', code: ['T'], about: 'e to every score, added up: the bottom of the softmax.' };
+const softmaxGrad: SymbolMap = { s: scores, y: answer, p: probs, L: loss, T: { ...expTotal, about: `${expTotal.about} Only the term e^sⱼ moves with sⱼ, so ∂T/∂sⱼ = e^sⱼ.` }, g: { ...grad, about: 'One partial derivative per score: how fast L changes as that score is nudged.' } };
 const lrEta: SymbolMap = { g: grad, eta: { ...ATLAS_SYMBOLS.eta!, about: 'The step size: each step moves η times the gradient. Too small crawls; too large overshoots.' } };
 const termVar: SymbolDef = { color: 'orange', name: 'v: the variance of one term', about: 'How spread out each product w x is. A sum of n such terms has variance n v.' };
 const flops: SymbolDef = { ...ATLAS_SYMBOLS.Cflops!, about: 'The total arithmetic a training run does, counted in floating point operations, or FLOPs.' };
@@ -324,6 +325,11 @@ const sig: SymbolDef = { color: 'teal', name: 'σ: the sigmoid', tex: '\\sigma',
  * teach. Keys missing from ATLAS_SYMBOLS work too, through \sym{key}{tex}.
  */
 export const SCOPED: Record<string, SymbolMap> = {
+  'char-lm': {
+    h: { color: 'gold', name: 'h: the hidden state', code: ['h'], about: 'The memory after each character: it tells apart steps that read the same letter.' },
+    V: { color: 'slate', name: 'V: the vocabulary size', about: 'How many tokens the model knows: each step outputs V scores, then V probabilities.' },
+    Why: { color: 'blue', name: 'W_hy: the hidden-to-output weights', tex: 'W_{hy}', code: ['W_hy', 'Why'], about: 'Shape (V, H): turns the memory h into one score per token.' },
+  },
   'rnn-step': {
     h: { color: 'gold', name: 'h: the hidden state', code: ['h'], about: 'The memory carried from token to token: hₜ = tanh(W_hh hₜ₋₁ + W_xh xₜ + b). H numbers, each between −1 and 1, starting at all zeros.' },
     b: { color: 'green', name: 'b: the hidden bias', about: 'One number per hidden unit, added before the tanh at every step: shape (H,).' },
@@ -349,13 +355,14 @@ export const SCOPED: Record<string, SymbolMap> = {
     W: { color: 'blue', name: 'W: a grid of numbers', about: 'Numbers in rows and columns, all of them inputs to f.' },
     w: { color: 'blue', name: 'w: a vector of inputs', about: 'Several numbers fed to f at once.' },
   },
+  'matrix-shape': { W: { color: 'blue', name: 'W: a matrix', about: 'A grid of numbers in rows and columns. Its shape is (rows, columns), and W[i, j] is the entry in row i, column j, both counted from zero.' } },
   'matmul-shapes': {
     B: { color: 'orange', name: 'B: a matrix', about: 'A second grid of numbers, whose columns are the vectors A multiplies. The product AB needs A\'s columns to match B\'s rows.' },
     C: { color: 'teal', name: 'C: a third matrix', about: 'Four by five here: it turns five numbers into the four that B takes, so A B C is two by five.' },
   },
   argmax: { s: scores, y: answer },
   softmax: { s: scores, p: probs },
-  'cross-entropy': { s: scores, y: answer, p: probs, L: loss },
+  'cross-entropy': { s: scores, y: answer, p: probs, L: loss, T: expTotal },
   'score-grad': softmaxGrad,
   'softmax-grad': softmaxGrad,
   'hinge-loss': { L: loss },
@@ -365,7 +372,7 @@ export const SCOPED: Record<string, SymbolMap> = {
     eta: { ...ATLAS_SYMBOLS.eta!, name: 'η: the step size', code: ['eta'], about: 'How far each step goes, as a multiple of the gradient.' },
     c: { color: 'slate', name: 'c: the clipping threshold', code: ['c'], about: 'The longest gradient allowed. A longer one is scaled down to length c, keeping its direction.' },
   },
-  'step-factor': lrEta,
+  'step-factor': { g: grad, eta: { ...ATLAS_SYMBOLS.eta!, name: 'η: the step size', about: 'How far each step goes, as a multiple of the gradient. On a bowl a x², it sets the step factor 1 − 2aη.' } },
   'learning-rate': lrEta,
   minibatch: { g: grad, N: { color: 'slate', name: 'N: the number of examples', about: 'How many examples the function averages over. One pass through all N is an epoch.' } },
   'param-count': {
