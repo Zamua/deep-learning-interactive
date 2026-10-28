@@ -1,8 +1,8 @@
 {
- "duration": 89.445,
+ "duration": 111.582,
  "scenes": {
   "rows": [0.0, 50.01],
-  "bias": [50.01, 89.445]
+  "bias": [50.01, 111.582]
  },
  "beats": {
   "rows/x": [0.7, 6.69, "An input arrives as a vector, x. This one has two features: two and one.", [[3.11, 3.61], [5.18, 5.56], [5.9, 6.09]]],
@@ -14,6 +14,8 @@
   "bias/s": [58.954, 68.764, "The scores, s equals W x plus b, come out five, one and three. Cat scores highest, so the classifier says cat.", [[59.754, 60.044], [62.324, 62.684], [63.674, 63.904], [64.964, 65.544], [66.774, 67.064]]],
   "bias/forget": [69.144, 76.839, "Leave the bias out, and ship wins instead, with five. The bias is part of the score, not an afterthought.", [[70.434, 70.734], [72.134, 72.404], [73.054, 73.644], [75.404, 75.674]]],
   "bias/zero": [77.219, 87.225, "Set x to all zeros, and W times x vanishes. The scores are exactly b: each class's lean before it sees any evidence.", [[79.069, 79.349], [81.439, 81.969], [83.699, 84.229]]],
-  "bias/turn": [87.605, 88.345, "Your turn.", []]
+  "bias/name": [87.605, 96.534, "That lean gives the bias its name: it tilts a class's score up or down before any evidence, the way a bias tilts a judgment.", [[89.875, 90.385], [94.225, 94.655]]],
+  "bias/why": [96.914, 109.362, "Without b, an input of all zeros would score zero for every class, so every class would start level. With b, a class that turns up often, like cat, can start ahead.", [[97.774, 98.204], [101.844, 102.154], [104.094, 104.724], [105.314, 105.614], [108.104, 108.394]]],
+  "bias/turn": [109.742, 110.482, "Your turn.", []]
  }
 }

@@ -43,6 +43,8 @@ export const script: LectureScript = {
         { id: 's', say: 'The scores, {s = Wx + b|s equals W x plus b}, come out five, one and three. Cat scores highest, so the classifier says cat.', code: ['s', 'pred'] },
         { id: 'forget', say: 'Leave the bias out, and ship wins instead, with five. The bias is part of the score, not an afterthought.', code: 'nob' },
         { id: 'zero', say: 'Set x to all zeros, and W times x vanishes. The scores are exactly b: each class\'s lean before it sees any evidence.', code: 'zero' },
+        { id: 'name', say: 'That lean gives the bias its name: it tilts a class\'s score up or down before any evidence, the way a bias tilts a judgment.', code: 'zero' },
+        { id: 'why', say: 'Without b, an input of all zeros would score zero for every class, so every class would start level. With b, a class that turns up often, like cat, can start ahead.', code: 'zero' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

@@ -30,7 +30,7 @@ export const ATLAS_SYMBOLS: SymbolMap = {
   b: {
     color: 'green',
     name: 'b: the biases, one per class',
-    about: 'Added after the multiply: a class\'s built-in lean before any evidence. With an all-zero input the scores are exactly b.',
+    about: 'Added after the multiply: a class\'s built-in lean before any evidence, which is where the name comes from. With an all-zero input the scores are exactly b; without b they would all be 0.',
   },
   s: {
     color: 'purple',

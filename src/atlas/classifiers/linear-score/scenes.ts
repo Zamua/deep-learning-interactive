@@ -132,7 +132,9 @@ const bias: SceneDef = {
     s.alpha(z, () => column(s, L, L.s, 's', 'purple', A.b.map(str), { op: '=', opX: mid(L.b, L.s), on: [1, 1, 1] }));
     s.alpha(pred, () => caption(s, 'top score 5: cat', cy, 'purple', 3.8));
     s.alpha(nob, () => centered(s, false, 'without b: ship wins with 5', cy));
-    s.alpha(z, () => caption(s, 'x = 0  →  s = b', cy, 'green', 4));
+    s.alpha(z * (1 - s.ease('name', 0.5)), () => caption(s, 'x = 0  →  s = b', cy, 'green', 4));
+    s.alpha(s.win('name', 'why'), () => caption(s, 'b: each class\'s lean, before any evidence', cy, 'green', 3.6));
+    s.alpha(s.ease('why', 0.5), () => caption(s, 'without b, every class starts at 0', cy, '--ink-2', 3.6));
   },
 };
 
