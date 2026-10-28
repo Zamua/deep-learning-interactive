@@ -111,6 +111,26 @@ class OpenRouter:
         return np.frombuffer(pcm, dtype=np.float32)
 
 
+# A number word followed by "too" or "to" with no number after it, as in "zero point zero one too", which a listener
+# hears as one longer number.
+RISKY = re.compile(r'\b(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|point \w+)\s+(?:too|to)\b'
+                   r'(?!\s+(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|minus|a|an|the)\b)', re.I)
+# Dollars per character of OpenRouter speech, roughly.
+PRICE = 40e-6
+
+
+def dry(job, todo):
+    """Prints the voice text of every beat not yet cached, flags phrasing a listener may mishear, and what it would cost."""
+    for s in job['scenes']:
+        for b in s['beats']:
+            if b['text'] in todo:
+                flag = '  << may mishear' if RISKY.search(b['text']) else ''
+                print(f"{s['id']}/{b['id']}: {b['text']}{flag}")
+    chars = sum(len(t) for t in todo)
+    cost = 0 if job['model'] == 'kokoro' else chars * PRICE
+    print(f'{len(todo)} new beats, {chars} characters, about ${cost:.2f}')
+
+
 def main():
     job = json.load(open(sys.argv[1]))
     cache = env_path('TTS_CACHE', '~/.cache/lecture-tts')
@@ -125,6 +145,9 @@ def main():
         sf.write(path_of(text), trim(tts.synth(text), sr), sr)
 
     todo = sorted({b['text'] for s in job['scenes'] for b in s['beats'] if not os.path.exists(path_of(b['text']))})
+    if job.get('dry'):
+        dry(job, todo)
+        return
     if todo:
         print(f'synthesizing {len(todo)} beats with {job["model"]}:{job["voice"]}', flush=True)
         with concurrent.futures.ThreadPoolExecutor(getattr(tts, 'parallel', 1)) as ex:

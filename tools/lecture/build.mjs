@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Synthesizes a lecture's narration and timing:
-//   node tools/lecture/build.mjs <lecture-id | atlas-<concept-id>> [--check]
-// --check transcribes every beat back with whisper-cli and lists the ones that drift from the script.
+//   node tools/lecture/build.mjs atlas-<concept-id> [--dry | --check]
+// --dry synthesizes nothing: it prints the voice text of every beat not yet voiced, flags phrasing a listener may
+// mishear, and estimates the cost. --check transcribes every beat back with whisper-cli and lists the ones that
+// drift from the script.
 // Env: TTS_PY, KOKORO_DIR, OPENROUTER_API_KEY or OPENROUTER_KEY_FILE, TTS_CACHE, WHISPER_MODEL;
 // tools/lecture/local.env (KEY=value lines, untracked) supplies any that are unset.
 import { spawnSync } from 'node:child_process';
@@ -20,7 +22,7 @@ if (existsSync(localEnv)) {
 }
 const [id, ...flags] = process.argv.slice(2);
 if (!id) {
-  console.error('usage: node tools/lecture/build.mjs atlas-<concept-id> [--check]');
+  console.error('usage: node tools/lecture/build.mjs atlas-<concept-id> [--dry | --check]');
   process.exit(2);
 }
 // An explainer lives in its concept's folder: src/atlas/<domain>/<concept>/.
@@ -46,6 +48,7 @@ const job = {
   audio: join(root, dir, 'narration.m4a'),
   timing: join(root, dir, 'timing.json'),
   check: flags.includes('--check'),
+  dry: flags.includes('--dry'),
 };
 mkdirSync(dirname(job.audio), { recursive: true });
 const jobFile = join(mkdtempSync(join(tmpdir(), 'lecture-')), 'job.json');

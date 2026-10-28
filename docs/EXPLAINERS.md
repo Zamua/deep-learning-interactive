@@ -97,6 +97,7 @@ listing that shows the same idea as code.
 
 ## Narration
 
+    node tools/lecture/build.mjs atlas-<concept-id> --dry    # free: the voice text of every new beat, risky phrasing, cost
     node tools/lecture/build.mjs atlas-<concept-id>          # synthesize changed beats, write audio + timing
     node tools/lecture/build.mjs atlas-<concept-id> --check  # also transcribe each beat back with whisper
 
@@ -104,7 +105,8 @@ The script's `model` and `voice` pick the speech engine: `elevenlabs/eleven-v4` 
 voice such as `george` goes through OpenRouter's `/api/v1/audio/speech` (key in
 `OPENROUTER_API_KEY`, or in the file `OPENROUTER_KEY_FILE` names; about $40 per million
 characters, so a 2-minute explainer is about 7 cents), and `kokoro` runs Kokoro locally for free. Each clip is
-cached by model, voice and text, so a rebuild only pays for the beats that changed. `--check` lists beats whose transcript drifts from the script; most
+cached by model, voice and text, so a rebuild only pays for the beats that changed. Read the `--dry`
+output aloud before the first build: a beat rephrased after voicing is paid for twice. `--check` lists beats whose transcript drifts from the script; most
 hits are just digits written as numerals, but read them for real mispronunciations. Defaults:
 `TTS_PY=python3` (numpy, soundfile; kokoro-onnx for Kokoro), `KOKORO_DIR=~/.cache/kokoro`,
 `TTS_CACHE=~/.cache/lecture-tts`, `WHISPER_MODEL=~/.cache/whisper/ggml-large-v3-turbo-q5_0.bin`.
