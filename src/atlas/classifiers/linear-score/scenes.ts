@@ -12,7 +12,8 @@ interface Spec {
 }
 
 const dot = (a: number[], b: number[]) => a.reduce((t, v, i) => t + v * b[i]!, 0);
-const A: Spec = { x: [2, 1], W: [[1, 2], [-1, 3], [2, 1]], b: [1, 0, -2], names: ['cat', 'dog', 'ship'] };
+/** Each class's weights are its center and its bias is minus half the center's squared length, so the highest score is the nearest center. */
+const A: Spec = { x: [2, 1], W: [[1, 1], [4, 2], [2, 4]], b: [-1, -10, -10], names: ['cat', 'plane', 'ship'] };
 const AWX = A.W.map((r) => dot(r, A.x));
 const AS = AWX.map((v, k) => v + A.b[k]!);
 const str = (v: number) => String(v);
@@ -92,7 +93,7 @@ const rows: SceneDef = {
   draw(s) {
     const L = layout(s, A, 9);
     const cy = s.h * 0.88;
-    s.alpha(s.ease('x', 0.6), () => xRow(s, L, A.x.map(str), s.win('row', 'all')));
+    xRow(s, L, A.x.map(str), s.win('row', 'all'));
     const band = [s.win('row', 'all'), 0, 0];
     s.alpha(s.ease('W', 0.6), () => {
       wRows(s, L, A, { band });
@@ -100,7 +101,7 @@ const rows: SceneDef = {
     });
     const wxA = [s.ease('row', 0.6, 2.2), s.ease('all', 0.6), s.ease('all', 0.6, 1.2)];
     column(s, L, L.wx, 'Wx', '--ink-2', AWX.map(str), { a: wxA, on: [s.win('row', 'all'), 0, 0], op: '→', opX: arrowX(L) });
-    s.alpha(s.win('row', 'all'), () => caption(s, '1·2 + 2·1 = 4', cy, 'blue', 3.8));
+    s.alpha(s.win('row', 'all'), () => caption(s, '1·2 + 1·1 = 3', cy, 'blue', 3.8));
     s.alpha(s.win('all', 'col'), () => caption(s, 'one dot product per row', cy));
     const c = s.ease('col', 0.6);
     s.alpha(c, () => {
@@ -132,8 +133,8 @@ const bias: SceneDef = {
     const sA = AS.map(() => s.ease('s', 0.6) * dimBS);
     s.alpha(1 - z, () => column(s, L, L.s, 's', 'purple', AS.map(str), { a: sA, op: '=', opX: mid(L.b, L.s), on: [pred, 0, 0] }));
     s.alpha(z, () => column(s, L, L.s, 's', 'purple', A.b.map(str), { op: '=', opX: mid(L.b, L.s), on: [1, 1, 1] }));
-    s.alpha(pred, () => caption(s, 'top score 5: cat', cy, 'purple', 3.8));
-    s.alpha(nob, () => centered(s, false, 'without b: ship wins with 5', cy));
+    s.alpha(pred, () => caption(s, 'top score 2: cat', cy, 'purple', 3.8));
+    s.alpha(nob, () => centered(s, false, 'without b: plane wins with 10', cy));
     s.alpha(z * (1 - s.ease('name', 0.5)), () => caption(s, 'x = 0  →  s = b', cy, 'green', 4));
     s.alpha(s.win('name', 'why'), () => caption(s, 'b: each class\'s lean, before any evidence', cy, 'green', 3.6));
     s.alpha(s.ease('why', 0.5), () => caption(s, 'without b, every class starts at 0', cy, '--ink-2', 3.6));
@@ -143,7 +144,8 @@ const bias: SceneDef = {
 // ---- the line: two features, cats and ships, and the line w · x + b = 0 between them
 
 const CATS: [number, number][] = [[0.8, 1.6], [1.4, 0.9], [1.1, 1.3], [1.7, 1.4], [0.7, 0.9], [1.4, 1.9], [1, 1]];
-const SHIPS: [number, number][] = [[2.7, 3.3], [3.4, 2.5], [3.1, 3.6], [3.7, 3.1], [2.6, 2.8], [3.5, 3.7], [3, 3]];
+const SHIPS: [number, number][] = [[1.8, 3.3], [2.5, 3.9], [2.3, 3.6], [2.7, 3.4], [1.6, 3.8], [2.4, 3.1], [2, 4]];
+const PLANES: [number, number][] = [[3.6, 1.7], [4.2, 2.3], [3.9, 1.4], [4.3, 1.8], [3.7, 2.4], [4.1, 2.7], [3.4, 2.1]];
 /** The final line: w = (1, 1), b = -4, so x₀ + x₁ = 4. */
 const WB = { w: [1, 1], b: -4 };
 
@@ -200,7 +202,7 @@ const line: SceneDef = {
     SHIPS.forEach(([a, b], i) => s.alpha(pts * after(s, 'points', 0.6 + i * 0.04), () => F.dot(a, b, 'teal', 1.3)));
     s.alpha(s.win('points', 'line'), () => {
       s.text('cats', F.X(0.55), F.Y(2.4), { size: 3.4, font: 'mono', weight: 650, color: s.c('gold'), halo: true });
-      s.text('ships', F.X(3.15), F.Y(4.15), { size: 3.4, font: 'mono', weight: 650, color: s.c('teal'), halo: true });
+      s.text('ships', F.X(3.4), F.Y(3.7), { size: 3.4, font: 'mono', weight: 650, color: s.c('teal'), halo: true });
     });
 
     // The line: in place, then turned, then slid back to the corner and out again.
@@ -222,11 +224,11 @@ const line: SceneDef = {
 
     // The scores of one ship and one cat.
     s.alpha(side, () => {
-      F.dot(3, 3, 'teal', 1.9);
+      F.dot(2, 4, 'teal', 1.9);
       F.dot(1, 1, 'gold', 1.9);
     });
     const lab = { size: 3.2, font: 'mono', weight: 650, halo: true } as const;
-    s.alpha(after(s, 'side', 0.2), () => s.text('3 + 3 − 4 = 2', F.X(3.1), F.Y(4.2), { ...lab, color: s.c('purple') }));
+    s.alpha(after(s, 'side', 0.2), () => s.text('2 + 4 − 4 = 2', F.r - 2 * u, F.Y(4.25), { ...lab, align: 'right', color: s.c('purple') }));
     s.alpha(after(s, 'side', 0.45), () => s.text('1 + 1 − 4 = −2', F.X(1.2), F.Y(0.3), { ...lab, color: s.c('purple') }));
 
     // The equation, beside the plane on a wide stage and under it on a phone.
@@ -247,4 +249,81 @@ const line: SceneDef = {
   },
 };
 
-export const scenes: Record<string, SceneDef> = { line, rows, bias };
+// ---- three classes: each scores with its own line, and the highest score claims its region
+
+const CLASSES: { name: string; k: Color; pts: [number, number][]; at: [number, number] }[] = [
+  { name: 'cats', k: 'gold', pts: CATS, at: [0.5, 2.2] },
+  { name: 'planes', k: 'red', pts: PLANES, at: [3.9, 0.7] },
+  { name: 'ships', k: 'teal', pts: SHIPS, at: [3.5, 4.1] },
+];
+const score = (k: number, p: readonly number[]) => A.W[k]![0]! * p[0]! + A.W[k]![1]! * p[1]! + A.b[k]!;
+
+/** The window, cut down to where class `k` scores at least as high as every other: a convex polygon. */
+function region(k: number): [number, number][] {
+  let poly: [number, number][] = [[-0.5, -0.5], [4.5, -0.5], [4.5, 4.5], [-0.5, 4.5]];
+  for (let j = 0; j < A.W.length; j++) {
+    if (j === k) continue;
+    const f = (p: [number, number]) => score(k, p) - score(j, p);
+    const out: [number, number][] = [];
+    poly.forEach((p, i) => {
+      const q = poly[(i + 1) % poly.length]!;
+      const [fp, fq] = [f(p), f(q)];
+      if (fp >= 0) out.push(p);
+      if (fp >= 0 !== fq >= 0) {
+        const t = fp / (fp - fq);
+        out.push([p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])]);
+      }
+    });
+    poly = out;
+  }
+  return poly;
+}
+const REGIONS = A.W.map((_, k) => region(k));
+
+const classes: SceneDef = {
+  draw(s) {
+    const F = plane(s);
+    const u = s.u;
+    const reg = s.ease('regions', 0.8, 1.5);
+    REGIONS.forEach((poly, k) => {
+      const c = CLASSES[k]!;
+      s.alpha(reg, () => {
+        const g = s.ctx;
+        g.beginPath();
+        poly.forEach(([a, b], i) => (i ? g.lineTo(F.X(a), F.Y(b)) : g.moveTo(F.X(a), F.Y(b))));
+        g.closePath();
+        g.fillStyle = s.tint(c.k, 0.14);
+        g.fill();
+        g.strokeStyle = s.c('--ink-2');
+        g.lineWidth = 0.5 * u;
+        g.stroke();
+      });
+    });
+    s.rrect(F.l, F.t, F.r - F.l, F.b - F.t, 1, { stroke: s.c('--axis'), lw: 0.3 });
+    F.axes();
+    const ax = { size: 3.2, font: 'mono', weight: 600, color: s.c('orange'), halo: true } as const;
+    s.text('x₀: blue →', F.X(0) + 2 * u, F.Y(0) + 3.2 * u, { ...ax, align: 'left' });
+    s.text('x₁: edges ↑', F.X(0) + 2 * u, F.t + 3.5 * u, { ...ax, align: 'left' });
+    CLASSES.forEach((c, k) => {
+      const a = k === 1 ? s.ease('three', 0.8, 1.2) : 1;
+      s.alpha(a, () => {
+        c.pts.forEach(([x0, x1]) => F.dot(x0, x1, c.k, 1.3));
+        s.text(c.name, F.X(c.at[0]), F.Y(c.at[1]), { size: 3.4, font: 'mono', weight: 650, color: s.c(c.k), halo: true });
+      });
+    });
+    // The input, which lands in the cats' region.
+    s.alpha(s.ease('x', 0.6, 0.6), () => {
+      F.dot(A.x[0]!, A.x[1]!, 'orange', 2);
+      s.text('x', F.X(A.x[0]!) + 3 * u, F.Y(A.x[1]!) - 2.6 * u, { size: 3.8, font: 'mono', weight: 700, color: s.c('orange'), halo: true });
+    });
+    const st = stacked(s);
+    const ex = st ? s.w / 2 : (F.r + s.w) / 2;
+    const ey = st ? F.b + 9 * u : s.h * 0.4;
+    const cap = { size: st ? 3.6 : 3.8, font: 'mono', color: s.c('--ink-2'), halo: true } as const;
+    s.alpha(s.win('three', 'regions'), () => s.text('three classes, three scores', ex, ey, cap));
+    s.alpha(s.win('regions', 'x'), () => s.text('the highest score claims each spot', ex, ey, cap));
+    s.alpha(s.ease('x', 0.6), () => s.text('x lands where cat scores highest', ex, ey, { ...cap, color: s.c('gold') }));
+  },
+};
+
+export const scenes: Record<string, SceneDef> = { line, classes, rows, bias };
