@@ -368,7 +368,7 @@ export const SCOPED: Record<string, SymbolMap> = {
   'score-grad': softmaxGrad,
   'softmax-grad': softmaxGrad,
   'hinge-loss': { L: loss },
-  'gd-step': { g: grad, eta: { ...ATLAS_SYMBOLS.eta!, name: 'η: the step size', about: 'How far each step goes, as a multiple of the gradient.' } },
+  'gd-step': { w: { color: 'blue', name: 'w: where you stand', about: 'The inputs of f, gathered into one vector. Each gradient step moves it a little downhill: w ← w − ηg.' }, g: grad, eta: { ...ATLAS_SYMBOLS.eta!, name: 'η: the step size', about: 'How far each step goes, as a multiple of the gradient.' } },
   'grad-clipping': {
     g: grad,
     eta: { ...ATLAS_SYMBOLS.eta!, name: 'η: the step size', code: ['eta'], about: 'How far each step goes, as a multiple of the gradient.' },
@@ -780,7 +780,7 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
   },
   'best-of-n': {
     solve: { is: 'samples one answer to the problem' },
-    passes: { is: 'runs the checker: True when the answer passes its tests' },
+    passes: { is: 'runs the verifier: True when the answer passes its check' },
   },
   'prefill-decode': {
     tokens: { is: 'splits text into token ids' },

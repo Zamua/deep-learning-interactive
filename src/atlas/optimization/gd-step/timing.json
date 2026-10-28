@@ -1,26 +1,33 @@
 {
- "duration": 197.838,
+ "duration": 232.077,
  "scenes": {
-  "uphill": [0.0, 43.546],
-  "rule": [43.546, 138.04],
-  "drop": [138.04, 197.838]
+  "walk": [0.0, 72.828],
+  "rule": [72.828, 165.535],
+  "drop": [165.535, 232.077]
  },
  "beats": {
-  "uphill/curve": [0.7, 9.103, "The goal is to make a function as small as possible. Here is f as a function of a single number, w, which sits at three.", [[3.66, 4.26], [7.03, 7.24], [7.72, 7.99]]],
-  "uphill/slope": [9.483, 18.023, "The gradient, g, is the slope of f right there. It is plus two: moving w to the right makes f go up.", [[10.303, 10.513], [10.943, 11.193], [12.973, 13.473], [14.493, 15.013], [16.513, 16.693]]],
-  "uphill/against": [18.403, 33.369, "So to go downhill, step the other way, against the gradient: a move of minus eta times g, where eta, the Greek letter eta, is a small positive number. w moves left, and f drops.", [[18.853, 19.043], [20.043, 20.423], [21.483, 21.753], [22.853, 23.333], [25.633, 26.013], [26.733, 26.963], [28.083, 28.383], [29.983, 30.593], [31.873, 32.143], [32.663, 32.813]]],
-  "uphill/left": [33.749, 42.446, "On the other side of the valley the slope is negative, so stepping against it moves w to the right. Either way, the step goes downhill.", [[36.479, 36.829], [39.619, 40.139], [40.739, 41.009]]],
-  "rule/rule": [44.246, 56.599, "That is the whole rule, written w gets w minus eta g. The arrow reads \u201cgets\u201d: the new w is the old w, minus eta times g.", [[45.696, 46.196], [47.606, 47.766], [49.636, 50.236], [51.166, 51.346], [51.906, 52.446], [54.466, 54.816]]],
-  "rule/eta": [56.979, 62.971, "Eta is the step size: a small positive number that sets how far each step goes.", [[58.709, 59.139]]],
-  "rule/num": [63.351, 75.73, "Try it where w is three and the slope g is two, with eta equal to zero point five. The step, eta times g, is one, and three minus one is two.", [[65.431, 65.691], [67.381, 67.751], [70.081, 70.631], [71.201, 71.551], [72.671, 72.921], [73.481, 73.841]]],
-  "rule/neg": [76.11, 90.179, "At minus one the slope is minus two, so eta times g is minus one. Subtracting a negative adds: minus one, plus one, is zero. w moves right, still downhill.", [[77.16, 77.31], [78.81, 79.1], [81.81, 82.32], [84.13, 84.59], [85.33, 85.58], [86.23, 86.47], [87.09, 87.66], [88.89, 89.16]]],
-  "rule/steep": [90.559, 103.98, "The step is proportional to g, so a steep slope makes a big step. From three, g goes two, one, a half: near the bottom the slope flattens, and the steps shrink on their own.", [[92.619, 93.079], [95.439, 96.039], [96.769, 97.059], [98.189, 98.429], [98.839, 99.009], [99.579, 100.099], [102.019, 102.259]]],
-  "rule/vector": [104.36, 117.037, "When w is a vector, every entry steps at once. Entry i, written w sub i with the index set low, moves against g sub i, its own entry of the gradient.", [[105.86, 106.18], [108.05, 108.6], [109.47, 109.74], [112.81, 113.11], [114.93, 115.29]]],
-  "rule/vnum": [117.417, 136.94, "With w equal to one and minus a half, g equal to two and minus one, and eta zero point one: eta times g is zero point two and minus zero point one. Subtract entry by entry, and w becomes zero point eight and minus zero point four.", [[120.217, 120.697], [122.937, 123.257], [125.107, 125.737], [130.077, 130.747], [132.467, 132.807], [135.007, 135.177]]],
-  "drop/tangent": [138.74, 148.335, "How much does one step lower f? Close up, the curve is almost its tangent line, so f changes by about the slope times the move.", [[140.97, 141.63], [142.2, 142.51], [144.64, 145.02], [147.23, 147.39]]],
-  "drop/formula": [148.715, 161.228, "The move is minus eta g. Times the slope g, that is minus eta g squared. Here, minus zero point four, and the true change is minus zero point three eight.", [[150.755, 151.275], [152.545, 152.935], [155.235, 155.665], [156.035, 156.245], [157.795, 158.165]]],
-  "drop/always": [161.608, 175.028, "Eta g squared is never negative, written eta g squared is at least zero, where the sign greater than or equal reads \u201cis at least\u201d. So a small enough step never raises f.", [[163.878, 164.308], [164.698, 165.098], [167.488, 167.908], [170.558, 170.818], [171.618, 172.068]]],
-  "drop/sum": [175.408, 195.617, "When w is a vector, each entry adds its own minus eta g squared. For g of two and minus one, with eta zero point one: two squared, plus minus one squared, is four plus one, five. Minus zero point one times five is minus zero point five.", [[176.968, 177.318], [180.628, 181.388], [183.398, 183.658], [185.288, 185.918], [186.618, 186.878], [188.398, 188.678], [189.878, 190.168], [190.658, 191.278], [193.528, 193.798]]],
-  "drop/turn": [195.997, 196.738, "Your turn.", []]
+  "walk/bowl": [0.7, 13.913, "Here is the bowl from the gradient, f of u and v is u squared plus two v squared, seen from above, with a point at one, one. The task now: get to the bottom, where f is smallest.", [[2.41, 2.82], [6.41, 6.76], [7.68, 7.96], [9.38, 9.95], [10.81, 11.34], [12.26, 12.51]]],
+  "walk/fog": [14.293, 27.823, "This bowl can be seen whole. A function of thousands of inputs cannot be drawn, so all you can learn is how it slopes right where you stand, like a walker in thick fog who feels only the ground underfoot.", [[16.113, 16.633], [19.553, 20.023], [23.423, 23.833], [25.533, 25.723]]],
+  "walk/down": [28.203, 39.548, "That is enough to choose a direction. The gradient, two, four, points straight uphill, so head the opposite way, along minus two, minus four: straight downhill.", [[30.063, 30.553], [31.263, 31.513], [32.373, 32.653], [33.903, 34.333], [35.693, 36.013], [38.093, 38.453]]],
+  "walk/short": [39.928, 49.176, "But go only a short way, since the slope you felt holds only near your feet. Take a small step, then feel the slope again where you land.", [[41.548, 41.898], [44.788, 45.368], [46.438, 46.788]]],
+  "walk/walk": [49.556, 56.728, "Step after step, each one straight downhill from wherever you stand, the walk winds its way to the bottom.", [[50.866, 51.286], [54.226, 54.616]]],
+  "walk/cauchy": [57.108, 71.728, "Augustin-Louis Cauchy proposed this walk in 1847. Working out the orbit of a heavenly body meant solving many equations at once, so he folded them into one function to make small, and stepped against its slopes.", [[60.978, 61.618], [63.758, 63.968], [66.138, 66.598], [69.688, 70.028]]],
+  "rule/w": [73.528, 81.906, "Now give things names. Gather the inputs into one vector, w, for where you stand: here, one, one.", [[75.078, 75.588], [77.618, 77.908], [78.378, 78.718], [79.788, 80.238], [80.568, 80.978], [81.338, 81.508]]],
+  "rule/g": [82.286, 86.591, "Call the gradient at w just g: two, four.", [[84.816, 85.386], [85.746, 86.086]]],
+  "rule/eta": [86.971, 96.73, "How far to step is set by a small positive number, eta, the Greek letter eta, called the step size. Here it is zero point one.", [[90.351, 90.611], [91.041, 91.381], [92.661, 92.991], [94.391, 94.901]]],
+  "rule/eg": [97.11, 107.006, "The step goes against g, scaled by eta. Eta times g is zero point two, zero point four: the gradient, cut to a tenth.", [[98.77, 99.12], [100.32, 100.91], [103.28, 103.43], [104.46, 104.92], [105.57, 105.91]]],
+  "rule/new": [107.386, 116.126, "Subtract that from w, entry by entry, and w becomes zero point eight, zero point six: one step down the bowl.", [[108.926, 109.156], [110.236, 110.596], [112.836, 113.036], [114.166, 114.606]]],
+  "rule/rule": [116.506, 128.859, "That is the whole rule, written w gets w minus eta g. The arrow reads \u201cgets\u201d: the new w is the old w, minus eta times g.", [[117.956, 118.456], [119.866, 120.026], [121.896, 122.496], [123.426, 123.606], [124.166, 124.706], [126.726, 127.076]]],
+  "rule/sign": [129.239, 144.594, "Each entry moves against its own slope. From minus one, one, the gradient is minus two, four. Subtracting eta times minus two adds, so u moves right, toward the bottom, while v moves down.", [[131.659, 132.129], [133.159, 133.379], [133.809, 134.149], [136.409, 136.879], [139.909, 140.219], [141.659, 141.849], [142.699, 143.049]]],
+  "rule/which": [144.974, 155.54, "So the sign of each entry of g decides which way that entry of w goes. Eta is always positive: it sets how far, never which way.", [[147.314, 147.524], [150.304, 150.904], [152.594, 153.024], [154.234, 154.514]]],
+  "rule/steep": [155.92, 164.435, "And twice the slope makes twice the step. Near the bottom the bowl flattens, g shrinks, and the steps shrink on their own.", [[158.59, 159.17], [161.15, 161.5], [162.42, 162.7]]],
+  "drop/ask": [166.235, 176.633, "How much lower is f after that step? The gradient answers this too: a small move changes f by about each slope times its move, added up.", [[168.765, 169.385], [171.065, 171.655], [175.765, 176.035]]],
+  "drop/each": [177.013, 187.046, "Each entry moved by minus eta times its own slope. Times that slope again, its share of the change is minus eta times its slope squared.", [[180.753, 181.323], [182.693, 183.003]]],
+  "drop/never": [187.426, 199.353, "A square is never negative, written g of i, squared, is at least zero, where the sign in the middle reads \u201cis at least\u201d. So every share is a drop.", [[189.256, 189.846], [190.256, 190.446], [192.146, 192.396], [193.616, 194.156], [195.766, 196.036], [196.806, 197.346]]],
+  "drop/works": [199.733, 208.483, "That is why the rule works: a small enough step never raises f. Cauchy wrote down this same estimate in 1847.", [[201.403, 201.873], [202.943, 203.093], [204.323, 205.063]]],
+  "drop/sum": [208.863, 212.447, "Here, two squared plus four squared is twenty.", [[209.283, 209.633], [211.543, 211.713]]],
+  "drop/est": [212.827, 219.04, "Times minus eta, which is minus zero point one: f should drop by about two.", [[214.267, 214.577], [216.557, 217.117]]],
+  "drop/true": [219.42, 229.857, "In fact, the new f is one point three six, down from three: a drop of one point six four. Close, and closer still for a smaller step.", [[220.03, 220.25], [222.64, 222.98], [223.95, 224.44], [226.27, 226.81], [227.3, 227.66]]],
+  "drop/turn": [230.237, 230.977, "Your turn.", []]
  }
 }

@@ -1,22 +1,34 @@
 {
- "duration": 124.195,
+ "duration": 222.518,
  "scenes": {
-  "size": [0.0, 41.128],
-  "clip": [41.128, 96.283],
-  "step": [96.283, 124.195]
+  "wall": [0.0, 61.539],
+  "size": [61.539, 104.64],
+  "clip": [104.64, 184.043],
+  "step": [184.043, 222.518]
  },
  "beats": {
-  "size/explode": [0.7, 11.194, "Backprop through time can make a gradient explode. This one has grown ten times over, to six, eight, and a step along it would throw the weights far off course.", [[3.82, 4.36], [6.36, 6.63], [7.22, 7.47], [7.79, 8.11]]],
-  "size/norm": [11.574, 21.233, "Clipping caps how big a gradient may get. Its size is its norm, written the norm of g with double bars: the length of its arrow.", [[14.134, 14.724], [16.324, 16.864], [19.494, 19.984]]],
-  "size/pyth": [21.613, 29.518, "By Pythagoras, that is the square root of six squared plus eight squared: the square root of a hundred, which is ten.", [[22.713, 23.043], [23.563, 23.723], [25.383, 25.533], [26.523, 27.033], [28.443, 28.723]]],
-  "size/dot": [29.898, 40.028, "And six squared plus eight squared is just g dotted with itself. So the norm is the square root of g dot g, however many entries g has.", [[32.118, 32.358], [34.428, 34.958], [37.848, 38.138]]],
-  "clip/threshold": [41.828, 48.891, "Pick a threshold, c, here five. A gradient whose norm is at most c is left alone.", [[42.748, 43.178], [43.608, 43.938], [44.778, 45.388]]],
-  "clip/scale": [49.271, 61.481, "This norm is ten, over c, so multiply all of g by c over the norm: five over ten, one half. Six, eight becomes three, four.", [[50.651, 51.031], [51.711, 52.151], [55.371, 55.871], [56.811, 57.161], [57.821, 58.401], [58.951, 59.431], [60.641, 61.011]]],
-  "clip/same": [61.861, 69.024, "Both entries shrink by the same factor, so the arrow keeps its direction, and its new norm is exactly c.", [[64.281, 64.651], [66.451, 66.741]]],
-  "clip/each": [69.404, 81.089, "It is tempting to clip each entry on its own instead, to between minus c and c, written minus c to c. Six, eight would become five, five.", [[72.574, 72.994], [75.154, 75.454], [75.834, 76.044], [77.504, 78.274]]],
-  "clip/turns": [81.469, 95.183, "But five, five is not a multiple of six, eight: eight was cut more than six, so that arrow points somewhere else. Scaling cuts every entry by the same factor, so it never turns the step.", [[82.309, 82.709], [84.709, 85.319], [85.659, 86.189], [87.819, 88.089], [89.929, 90.519], [93.299, 93.569]]],
-  "step/step": [96.983, 112.268, "Then take the gradient step as usual, with the clipped gradient. From w at one, two, with step size zero point one, the step is zero point three, zero point four, and w lands at zero point seven, one point six.", [[97.353, 97.513], [99.303, 99.533], [100.643, 101.213], [102.613, 102.883], [103.303, 103.583], [105.333, 105.643], [107.293, 107.523], [108.523, 108.883], [111.033, 111.203]]],
-  "step/raw": [112.648, 121.974, "Unclipped, the step would have been twice as long. However far a gradient explodes, a clipped step never goes further than eta times c.", [[113.368, 113.788], [115.638, 116.228], [118.308, 118.618]]],
-  "step/turn": [122.354, 123.095, "Your turn.", []]
+  "wall/wall": [0.7, 12.145, "Backprop through time can make a gradient explode. To see the harm, plot the loss, L, against a single weight, w: a valley, with a steep wall on its right.", [[3.81, 4.43], [5.32, 5.59], [6.46, 6.65], [6.99, 7.24], [8.55, 8.78], [9.2, 9.66], [10.21, 10.45]]],
+  "wall/slope": [12.525, 17.537, "On the wall, where the gradient explodes, the slope, g, is fifty.", [[13.305, 13.455], [14.945, 15.265], [15.825, 16.115], [16.535, 16.795]]],
+  "wall/thrown": [17.917, 27.585, "With a step size of zero point one, the step is minus five: w is thrown clear across the valley, and the loss ends up higher than it started.", [[20.057, 20.387], [21.987, 22.617], [24.897, 25.247]]],
+  "wall/mikolov": [27.965, 37.743, "Tomas Mikolov, training recurrent networks for his 2012 thesis, saw steps like this overwrite the weights with meaningless values, and training fail.", [[29.025, 29.355], [32.345, 32.685], [36.445, 36.625]]],
+  "wall/cut": [38.123, 46.886, "His fix was to cut the gradient: he kept every value of it between minus fifteen and fifteen, setting any value past that to the limit.", [[40.083, 40.563], [44.123, 44.553]]],
+  "wall/small": [47.266, 54.68, "Cut this one to five, and the step is zero point five long: w lands in the valley, just beside the wall.", [[48.686, 48.896], [51.006, 51.656], [53.056, 53.366]]],
+  "wall/name": [55.06, 60.439, "Trimming whatever sticks out past a limit is called clipping, the way a hedge is clipped.", [[58.59, 59.09]]],
+  "size/explode": [62.239, 69.544, "With many weights, the gradient is a vector, drawn as an arrow. This one has exploded to six, eight.", [[63.189, 63.369], [64.819, 65.079], [66.289, 66.869], [68.869, 69.139]]],
+  "size/norm": [69.924, 84.639, "How big is it? The length of its arrow is called its norm, written the norm of g, with double bars. By Pythagoras, it is the square root of six squared plus eight squared: the root of a hundred, ten.", [[70.924, 71.594], [74.074, 74.504], [74.884, 75.074], [76.224, 76.404], [77.394, 77.954], [78.914, 79.094], [82.204, 82.714], [83.794, 84.224]]],
+  "size/dot": [85.019, 94.659, "Six squared plus eight squared is just g dotted with itself, so the norm is the square root of g dot g, however many entries g has.", [[86.979, 87.179], [89.089, 89.559], [92.419, 92.769]]],
+  "size/three": [95.039, 103.54, "With three entries, say one, two, two, it is the root of one plus four plus four, nine: three.", [[96.179, 96.389], [97.359, 97.539], [98.449, 98.839], [100.139, 100.299], [101.719, 102.139], [102.609, 103.049]]],
+  "clip/threshold": [105.34, 117.967, "Pick a threshold, c, the longest gradient allowed: here, five. Draw it as a circle. An arrow that ends inside it is left alone: clipping only ever shrinks.", [[106.31, 106.81], [107.23, 107.65], [109.26, 109.73], [110.07, 110.31], [110.79, 111.36], [112.67, 113.2], [115.75, 116.18]]],
+  "clip/each": [118.347, 130.124, "Cutting each entry on its own, as Mikolov did, keeps every entry between minus c and c, written minus c to c. Six, eight becomes five, five.", [[121.257, 121.617], [124.477, 124.807], [126.637, 127.467], [127.967, 128.237]]],
+  "clip/turns": [130.504, 141.469, "But five, five is not a multiple of six, eight: eight was cut by more than six, so the arrow turns. The step no longer points straight downhill.", [[131.334, 131.824], [133.814, 134.294], [134.654, 135.164], [137.064, 137.334], [138.624, 139.034]]],
+  "clip/miss": [141.849, 153.034, "It can also miss. The arrow four, four has no entry over five, so nothing is cut, yet its arrow is about five point seven long, outside the circle.", [[143.249, 143.839], [147.029, 147.249], [148.379, 148.879], [151.509, 151.819]]],
+  "clip/pascanu": [153.414, 165.972, "In 2013, Razvan Pascanu, Tomas Mikolov and Yoshua Bengio clipped the whole arrow instead: when its norm is over c, multiply every entry by c over the norm.", [[154.604, 154.864], [156.014, 156.264], [158.424, 158.624], [160.394, 160.944], [162.604, 162.864]]],
+  "clip/scale": [166.352, 173.32, "Here that factor is five over ten, a half, and six, eight becomes three, four.", [[166.792, 166.952], [169.062, 169.332], [169.862, 170.272], [171.152, 171.472]]],
+  "clip/same": [173.7, 182.943, "One factor for every entry keeps their ratios, so the arrow keeps its direction and ends exactly on the circle: its new norm is c.", [[176.7, 177.1], [180.92, 181.38]]],
+  "step/step": [184.743, 197.252, "Then take the gradient step as usual, with the clipped gradient. From w at one, two, with a step size of zero point one, eta times g is zero point three, zero point four.", [[187.103, 187.293], [188.433, 188.933], [190.323, 190.593], [190.983, 191.243], [193.253, 193.633], [195.983, 196.153]]],
+  "step/land": [197.632, 202.399, "Subtract it, and w lands at zero point seven, one point six.", [[198.472, 198.722], [201.052, 201.272]]],
+  "step/raw": [202.779, 208.791, "Unclipped, the step would be twice as long, landing at zero point four, one point two.", [[203.519, 203.869], [205.559, 205.879], [207.549, 207.789]]],
+  "step/bound": [209.171, 220.298, "However far a gradient explodes, a clipped step is never longer than eta times c: here, half a unit. Every clipped step lands inside this circle.", [[211.331, 211.641], [214.841, 215.371], [215.721, 215.931], [216.691, 217.301]]],
+  "step/turn": [220.678, 221.418, "Your turn.", []]
  }
 }

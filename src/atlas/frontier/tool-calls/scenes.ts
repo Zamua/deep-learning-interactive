@@ -74,8 +74,8 @@ function exchange(s: Scene, first: boolean): void {
   const tag = (t: string, x: number, y: number, k: Ink) => s.text(t, x, y, { size: lab, font: 'mono', weight: 600, align: 'left', color: s.c(k) });
 
   tokens(s, L.x0, L.ys[0]!, ROWS[0]!.toks, 'orange', { size: L.size, h: L.h, show: (i) => shown('ask', 0.3, 0.15 * i) });
-  s.alpha(shown('ask', 0.5, 1), () => tag(ROWS[0]!.who, L.x0, top(0), 'orange'));
-  if (first) s.alpha(s.ease('ask', 0.6, 2.5) * (1 - s.ease('call', 0.5)), () => note(s, 'weights fixed in training: no forecast', L.x0, L.ys[1]!, '--ink-3', 3, 'left'));
+  s.alpha(shown('prompt', 0.5, 0.3), () => tag(ROWS[0]!.who, L.x0, top(0), 'orange'));
+  if (first) s.alpha(s.ease('ask', 0.6, 4) * (1 - s.ease('call', 0.5)), () => note(s, 'weights fixed in training: no forecast', L.x0, L.ys[1]!, '--ink-3', 3, 'left'));
 
   // The call, written by the model; its end marker is what the program watches for.
   const on = (i: number) => (first ? (i === 0 || i === 5 ? 0.7 * s.ease('markers', 0.6) : 0) : i === 5 ? s.win('spot', 'paste') : 0);
@@ -160,54 +160,177 @@ function line(s: Scene, x: number, y: number, text: string, k: Ink, w: number, s
   s.text(text, x + 2.4 * s.u, y + 0.2 * s.u, { size, font: 'mono', weight: 600, align: 'left', color: s.c(k) });
 }
 
+/** Who introduced an idea, and when: small, at the top right of the stage. */
+function cite(s: Scene, text: string, a: number) {
+  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
+}
+
+/** Transcripts with calls, through gradient steps, into the weights. */
+function training(s: Scene, label: string): void {
+  const tall = s.tall;
+  const cy = s.h - (tall ? 20 : 18) * s.u;
+  const cx = s.w / 2 - (tall ? 30 : 34) * s.u;
+  for (let i = 2; i >= 0; i--) {
+    const ox = cx + i * 2.2 * s.u - 9 * s.u;
+    const oy = cy + i * 2 * s.u - 9 * s.u;
+    s.rrect(ox, oy, 18 * s.u, 14 * s.u, 1, { fill: s.c('--card'), stroke: s.tint('blue', 0.7), lw: 0.3 });
+    for (let j = 0; j < 4; j++) s.rrect(ox + 2 * s.u, oy + (2.4 + j * 2.6) * s.u, (j === 1 || j === 2 ? 11 : 14) * s.u, 1.2 * s.u, 0.4, { fill: s.tint(j === 2 ? 'teal' : j === 1 ? 'gold' : 'blue', 0.6) });
+  }
+  s.text(label, cx + 2 * s.u, cy + 11 * s.u, { size: 2.8, font: 'mono', weight: 600, color: s.c('blue') });
+  const gx = s.w / 2 + (tall ? 30 : 34) * s.u;
+  s.arrow(cx + 17 * s.u, cy, gx - 10 * s.u, cy, s.c('--ink-3'), 0.4, 2.2);
+  s.text('gradient steps', (cx + 17 * s.u + gx - 10 * s.u) / 2, cy - 3.6 * s.u, { size: 2.7, font: 'mono', color: s.c('--ink-2'), halo: true });
+  const c = 2.6 * s.u;
+  for (let i = 0; i < 4; i++)
+    for (let j = 0; j < 6; j++) {
+      const v = Math.sin(i * 2.3 + j * 1.9) * 0.5 + 0.5;
+      s.rrect(gx - 3 * c + j * c + 0.25 * s.u, cy - 2 * c + i * c + 0.25 * s.u, c - 0.5 * s.u, c - 0.5 * s.u, 0.4, { fill: s.tint('blue', 0.15 + 0.6 * v) });
+    }
+  s.text('format in the weights', gx, cy + 9 * s.u, { size: 2.8, font: 'mono', weight: 600, color: s.c('blue') });
+}
+
+/** Learning the format from a few examples in the prompt, or from transcripts in training. */
+function fewShot(s: Scene): void {
+  const tall = s.tall;
+  const w = (tall ? 70 : 72) * s.u;
+  const x = tall ? 6 * s.u : s.w / 2 - w / 2 - 14 * s.u;
+  const pitch = 8.4 * s.u;
+  const y0 = tall ? 10 * s.u : s.h * 0.11;
+  const size = tall ? 2.7 : 2.9;
+  s.alpha(1 - 0.55 * s.ease('train', 0.6), () => {
+    SHOT.forEach(([t, k], i) => s.alpha(i < 4 ? s.ease('shots', 0.5, 0.5 + 0.5 * i) : s.ease('new', 0.5), () => line(s, x, y0 + i * pitch, t, k, w, size)));
+    s.alpha(s.ease('new', 0.5, 1.6), () => line(s, x, y0 + 5 * pitch, '<call>weather("Paris")</call>', 'gold', w, size));
+    if (!tall) {
+      const tag = (txt: string, y: number, k: Ink, a: number) => s.alpha(a, () => s.text(txt, x + w + 3 * s.u, y, { size: 2.8, font: 'mono', align: 'left', color: s.c(k) }));
+      tag('solved example', y0 + 1.5 * pitch, 'blue', s.ease('shots', 0.6, 2.5));
+      tag('new question', y0 + 4 * pitch, 'orange', s.ease('new', 0.6, 0.4));
+      tag('model writes', y0 + 5 * pitch, 'gold', s.ease('new', 0.6, 1.8));
+    } else {
+      const bx = x + w + 1.6 * s.u;
+      s.alpha(s.ease('shots', 0.6, 2.5), () => {
+        s.line(bx, y0 - 3 * s.u, bx, y0 + 3 * pitch + 3 * s.u, s.tint('blue', 0.8), 0.35);
+        s.text('example', bx + 1.2 * s.u, y0 + 1.5 * pitch, { size: 2.4, font: 'mono', align: 'left', color: s.c('blue') });
+      });
+    }
+  });
+  s.alpha(s.ease('train', 0.6, 0.3), () => training(s, 'transcripts?'));
+}
+
+const LEFT = 'Pittsburgh is also known as';
+const RIGHT = 'the Steel City.';
+/** Toolformer's two proposed calls for that sentence, each with what the tool gave back. */
+const CANDS: { q: string; r: string; beat: string; delay: number; keep: boolean }[] = [
+  { q: 'QA("What other name is Pittsburgh known by?")', r: 'Steel City', beat: 'text', delay: 4.5, keep: true },
+  { q: 'QA("Which country is Pittsburgh in?")', r: 'United States', beat: 'other', delay: 0.3, keep: false },
+];
+/** Loss on "the Steel City" with no call, and with each call's result: drawn lengths, not measured values. */
+const LOSS: { label: string; len: number; k: Ink; delay: number }[] = [
+  { label: 'no call', len: 30, k: 'slate', delay: 0.6 },
+  { label: '+ Steel City', len: 11, k: 'teal', delay: 4.7 },
+  { label: '+ United States', len: 31, k: 'red', delay: 10.3 },
+];
+const VERDICT = [9.2, 12.2];
+
+/** Largest text size up to `max` at which `text` fits in `room` px. */
+function fit(s: Scene, text: string, room: number, max: number): number {
+  const w = s.measure(text, { size: max, font: 'mono' });
+  return w <= room ? max : (max * room) / w;
+}
+
+/** Toolformer: calls proposed through ordinary text, kept only where the result lowers the loss. */
+function toolformer(s: Scene): void {
+  const tall = s.tall;
+  const m = 5 * s.u;
+  const tune = s.ease('tune', 0.8);
+  const room = s.w - 2 * m;
+  const call = { font: 'mono', weight: 600, align: 'left' } as const;
+
+  // The sentence, with a slot where a call could go; the kept call fills it at the end.
+  const chip = '[QA → Steel City]';
+  const ss = fit(s, `${LEFT} ${chip} ${RIGHT}`, room - 4 * s.u, 2.8);
+  const so = { ...call, size: ss };
+  const slotW = 6 * s.u + tune * (s.measure(chip, so) + 1.6 * s.u - 6 * s.u);
+  const lw = s.measure(LEFT, so);
+  const sx = Math.max(m, (s.w - (lw + slotW + s.measure(RIGHT, so) + 2 * s.u)) / 2);
+  const sy = 14 * s.u;
+  s.text(LEFT, sx, sy, { ...so, color: s.c('--ink') });
+  const gx = sx + lw + s.u;
+  s.alpha(1 - tune, () => {
+    s.ctx.save();
+    s.ctx.setLineDash([0.8 * s.u, 0.7 * s.u]);
+    s.rrect(gx, sy - 2.6 * s.u, slotW, 5.2 * s.u, 0.8, { stroke: s.tint('gold', 0.8), lw: 0.3 });
+    s.ctx.restore();
+  });
+  s.alpha(tune, () => {
+    s.rrect(gx, sy - 2.6 * s.u, slotW, 5.2 * s.u, 0.8, { fill: s.tint('gold', 0.15), stroke: s.tint('gold', 0.8), lw: 0.3 });
+    s.text(chip, gx + 0.8 * s.u, sy + 0.1 * s.u, { ...so, color: s.c('gold') });
+  });
+  s.text(RIGHT, gx + slotW + s.u, sy, { ...so, color: s.c('--ink') });
+
+  // More ordinary text, with calls proposed all through it.
+  s.alpha(s.win('schick', 'text') * s.ease('schick', 0.6, 4.8), () => {
+    const bw = Math.min(room, 90 * s.u);
+    const x = (s.w - bw) / 2;
+    [0.55, 0.25, 0.7].forEach((f, i) => {
+      const y = (30 + 8 * i) * s.u;
+      s.rrect(x, y - 0.8 * s.u, bw * f - 1.5 * s.u, 1.6 * s.u, 0.6, { fill: s.tint('slate', 0.35) });
+      s.ctx.save();
+      s.ctx.setLineDash([0.8 * s.u, 0.7 * s.u]);
+      s.rrect(x + bw * f, y - 2.2 * s.u, 6 * s.u, 4.4 * s.u, 0.8, { stroke: s.tint('gold', 0.8), lw: 0.3 });
+      s.ctx.restore();
+      s.rrect(x + bw * f + 7.5 * s.u, y - 0.8 * s.u, bw * (1 - f) - 7.5 * s.u, 1.6 * s.u, 0.6, { fill: s.tint('slate', 0.35) });
+    });
+    s.text('ordinary text, calls proposed', s.w / 2, 56 * s.u, { size: 2.8, font: 'mono', color: s.c('--ink-2') });
+  });
+
+  // The proposed calls and their results, then whether each is kept. A phone puts the result on a line of its own.
+  const verdictW = (tall ? 8 : 12) * s.u;
+  const lines = CANDS.map((c) => (tall ? c.q : `${c.q} → ${c.r}`));
+  const cs = Math.min(...lines.map((l) => fit(s, l, room - (tall ? 0 : verdictW), 2.8)));
+  const co = { ...call, size: cs };
+  const block = Math.max(...lines.map((l) => s.measure(l, co))) + (tall ? 0 : verdictW);
+  const x0 = Math.max(m, (s.w - block) / 2);
+  CANDS.forEach((c, i) => {
+    const y = (tall ? 24 + 13 * i : 27 + 8 * i) * s.u;
+    const dim = c.keep ? 1 : 1 - 0.6 * tune;
+    s.alpha(s.ease(c.beat, 0.6, c.delay) * dim, () => {
+      if (tall) {
+        s.text(c.q, x0, y, { ...co, color: s.c('gold') });
+        rich(s, [['→ ', '--ink-3'], [c.r, 'teal']], x0 + 3 * s.u, y + 5.5 * s.u, co);
+      } else rich(s, [[c.q, 'gold'], [' → ', '--ink-3'], [c.r, 'teal']], x0, y, co);
+      s.alpha(s.ease('keep', 0.5, VERDICT[i]!), () => {
+        const vy = tall ? y + 5.5 * s.u : y;
+        s.text(c.keep ? 'keep' : 'drop', x0 + block, vy, { ...co, size: cs + 0.1, weight: 700, align: 'right', color: s.c(c.keep ? 'teal' : 'red') });
+      });
+    });
+  });
+
+  // Loss on the words after the call: lower with a helpful result.
+  const ly = (tall ? 52 : 46) * s.u;
+  const unit = (tall ? 1.3 : 1.4) * s.u;
+  const lab = 2.6;
+  const labW = Math.max(...LOSS.map((l) => s.measure(l.label, { size: lab, font: 'mono' })));
+  const bx = s.w / 2 - (labW + 2 * s.u + 31 * unit) / 2 + labW + 2 * s.u;
+  s.alpha(s.ease('keep', 0.6, 0.3) * (1 - (tall ? 1 : 0.6) * tune), () => {
+    s.text('loss on “the Steel City”', s.w / 2, ly, { size: 2.8, font: 'mono', weight: 600, color: s.c('--ink-2') });
+    LOSS.forEach((l, i) => {
+      const y = ly + (6 + 5.4 * i) * s.u;
+      s.alpha(s.ease('keep', 0.5, l.delay), () => {
+        s.text(l.label, bx - 2 * s.u, y, { size: lab, font: 'mono', align: 'right', color: s.c(l.k === 'slate' ? '--ink-2' : l.k) });
+        s.rrect(bx, y - 1.6 * s.u, l.len * unit * s.ease('keep', 0.8, l.delay), 3.2 * s.u, 0.6, { fill: s.tint(l.k, 0.45), stroke: s.tint(l.k, 0.9), lw: 0.25 });
+      });
+    });
+  });
+
+  s.alpha(s.ease('tune', 0.6, 0.6), () => training(s, 'text + kept calls'));
+}
+
 const learn: SceneDef = {
   draw(s) {
-    const tall = s.tall;
-    const w = (tall ? 70 : 72) * s.u;
-    const x = tall ? 6 * s.u : s.w / 2 - w / 2 - 14 * s.u;
-    const pitch = 8.4 * s.u;
-    const y0 = tall ? 10 * s.u : s.h * 0.11;
-    const size = tall ? 2.7 : 2.9;
-    const dim = 1 - 0.55 * s.ease('train', 0.6);
-    s.alpha(dim, () => {
-      SHOT.forEach(([t, k], i) => s.alpha(i < 4 ? s.ease('shots', 0.5, 0.5 + 0.5 * i) : s.ease('new', 0.5), () => line(s, x, y0 + i * pitch, t, k, w, size)));
-      s.alpha(s.ease('new', 0.5, 1.6), () => line(s, x, y0 + 5 * pitch, '<call>weather("Paris")</call>', 'gold', w, size));
-      const tag = (txt: string, y: number, k: Ink, a: number) =>
-        s.alpha(a, () => s.text(txt, tall ? x + w + 2 * s.u : x + w + 3 * s.u, y, { size: 2.8, font: 'mono', align: 'left', color: s.c(k) }));
-      if (!tall) {
-        tag('solved example', y0 + 1.5 * pitch, 'blue', s.ease('shots', 0.6, 2.5));
-        tag('new question', y0 + 4 * pitch, 'orange', s.ease('new', 0.6, 0.4));
-        tag('model writes', y0 + 5 * pitch, 'gold', s.ease('new', 0.6, 1.8));
-      } else {
-        const bx = x + w + 1.6 * s.u;
-        s.alpha(s.ease('shots', 0.6, 2.5), () => {
-          s.line(bx, y0 - 3 * s.u, bx, y0 + 3 * pitch + 3 * s.u, s.tint('blue', 0.8), 0.35);
-          s.text('example', bx + 1.2 * s.u, y0 + 1.5 * pitch, { size: 2.4, font: 'mono', align: 'left', color: s.c('blue') });
-        });
-      }
-    });
-    // Training on transcripts instead: many of them, through gradient steps, into the weights.
-    s.alpha(s.ease('train', 0.6, 0.3), () => {
-      const cy = s.h - (tall ? 20 : 18) * s.u;
-      const cx = s.w / 2 - (tall ? 30 : 34) * s.u;
-      for (let i = 2; i >= 0; i--) {
-        const ox = cx + i * 2.2 * s.u - 9 * s.u;
-        const oy = cy + i * 2 * s.u - 9 * s.u;
-        s.rrect(ox, oy, 18 * s.u, 14 * s.u, 1, { fill: s.c('--card'), stroke: s.tint('blue', 0.7), lw: 0.3 });
-        for (let j = 0; j < 4; j++) s.rrect(ox + 2 * s.u, oy + (2.4 + j * 2.6) * s.u, (j === 1 || j === 2 ? 11 : 14) * s.u, 1.2 * s.u, 0.4, { fill: s.tint(j === 2 ? 'teal' : j === 1 ? 'gold' : 'blue', 0.6) });
-      }
-      s.text('transcripts', cx + 2 * s.u, cy + 11 * s.u, { size: 2.8, font: 'mono', weight: 600, color: s.c('blue') });
-      const gx = s.w / 2 + (tall ? 30 : 34) * s.u;
-      s.arrow(cx + 17 * s.u, cy, gx - 10 * s.u, cy, s.c('--ink-3'), 0.4, 2.2);
-      s.text('gradient steps', (cx + 17 * s.u + gx - 10 * s.u) / 2, cy - 3.6 * s.u, { size: 2.7, font: 'mono', color: s.c('--ink-2'), halo: true });
-      const c = 2.6 * s.u;
-      for (let i = 0; i < 4; i++)
-        for (let j = 0; j < 6; j++) {
-          const v = Math.sin(i * 2.3 + j * 1.9) * 0.5 + 0.5;
-          s.rrect(gx - 3 * c + j * c + 0.25 * s.u, cy - 2 * c + i * c + 0.25 * s.u, c - 0.5 * s.u, c - 0.5 * s.u, 0.4, { fill: s.tint('blue', 0.15 + 0.6 * v) });
-        }
-      s.text('format in the weights', gx, cy + 9 * s.u, { size: 2.8, font: 'mono', weight: 600, color: s.c('blue') });
-    });
+    const turn = s.ease('schick', 0.6);
+    s.alpha(1 - turn, () => fewShot(s));
+    s.alpha(turn, () => toolformer(s));
+    cite(s, 'Toolformer · Schick et al., 2023', turn);
   },
 };
 

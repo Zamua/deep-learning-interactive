@@ -6,54 +6,98 @@ export const script: LectureScript = {
   model: 'elevenlabs/eleven-v4',
   voice: 'george',
   speed: 1,
+  papers: [
+    { who: 'Rumelhart, Hinton & Williams', year: 1986, title: 'Learning internal representations by error propagation', url: 'https://www.cs.toronto.edu/~fritz/absps/pdp8.pdf', scene: 'start' },
+    { who: 'LeCun, Bottou, Orr & Müller', year: 1998, title: 'Efficient BackProp', url: 'https://leon.bottou.org/papers/lecun-98x', scene: 'size' },
+    { who: 'Glorot & Bengio', year: 2010, title: 'Understanding the difficulty of training deep feedforward neural networks', url: 'https://proceedings.mlr.press/v9/glorot10a.html', scene: 'fanin' },
+    { who: 'He, Zhang, Ren & Sun', year: 2015, title: 'Delving deep into rectifiers: surpassing human-level performance on ImageNet classification', url: 'https://arxiv.org/abs/1502.01852', scene: 'relu' },
+  ],
   scenes: [
     {
-      id: 'symmetry',
-      title: 'Why not all the same',
+      id: 'start',
+      title: 'Where to start',
       codeTitle: 'init.py',
       code: `
-        W1 = np.zeros((H, D))      # every unit the same    #@zero
-        # same output, same gradient, same change           #@same
-        W1 = 0.01 * np.random.randn(H, D)  # break the tie  #@random
+        W -= lr * dW   # each step        #@step
+        x = np.array([2, 1])              #@x
+        W = np.full((3, 2), 0.5)          #@equal
+        z = W @ x   # [1.5, 1.5, 1.5]     #@same
+        # same z: same dW, same step      #@grad
+        W = 0.1 * np.random.randn(3, 2)   #@random
       `,
       beats: [
-        { id: 'zero', say: 'Before any weight is adjusted by its gradient, every weight needs a starting value. The obvious choice, all zeros, does not work.', code: 'zero' },
-        { id: 'same', say: 'If every hidden unit starts with the same weights, every unit computes the same output and backprop hands every unit the same gradient. Adjusted by the same gradient, they stay copies of one unit, forever.', code: 'same' },
-        { id: 'random', say: 'So the weights start random, which breaks the tie. The question is how big to make them.', code: 'random' },
+        { id: 'start', say: 'Training steps each weight against its gradient. But before the first step, every weight needs a value to start from.', code: 'step' },
+        { id: 'equal', say: 'The simplest start gives every weight the same value: say, all of them a half.', code: ['x', 'equal'] },
+        { id: 'same', say: 'Then every hidden unit adds up the same inputs with the same weights, and gets the same z: one and a half.', code: 'same' },
+        { id: 'grad', say: 'Backprop hands each one the same gradient, so every step changes them alike: copies of one unit, forever.', code: 'grad' },
+        { id: 'symmetry', say: 'In 1986, David Rumelhart, Geoffrey Hinton and Ronald Williams called this the problem of symmetry breaking: the units are symmetric, so swap any two and nothing changes.', code: 'grad' },
+        { id: 'random', say: 'Their cure: small random weights, so every unit starts out different.', code: 'random' },
       ],
     },
     {
-      id: 'scale',
+      id: 'size',
+      title: 'How big?',
+      codeTitle: 'size.py',
+      code: `
+        W = std * np.random.randn(H, n)   #@randn
+        # n = 100, std = 1: std(z) = 10   #@big
+        np.tanh(10)   # ≈ 1: flat         #@flat
+        # std = 0.01: std(z) = 0.1        #@small
+        # per layer: 1, 0.1, 0.01, 0.001  #@layers
+      `,
+      beats: [
+        { id: 'randn', say: 'How big should they be? Code draws them with {randn|rand N}: numbers centered on zero, with a standard deviation of one. Times a scale, the scale becomes their standard deviation.', code: 'randn' },
+        { id: 'big', say: 'Each unit adds up n terms, so z swings root n times as wide as a single term. A hundred inputs of variance one, at a scale of one, give z a standard deviation of ten.', code: 'big' },
+        { id: 'flat', say: 'Through a tanh, most of that bell lands on the flat ends: the units are saturated, with slopes near zero, so almost no gradient gets back.', code: 'flat' },
+        { id: 'small', say: 'So make the scale small: {0.01|zero point zero one}. Then z\'s standard deviation is ten times that: {0.1|zero point one}.', code: 'small' },
+        { id: 'layers', say: 'Near zero, tanh barely bends, so it passes that on, and the next layer shrinks it by ten again: one, {0.1|zero point one}, {0.01|zero point zero one}, {0.001|zero point zero zero one}. The signal fades away.', code: 'layers' },
+        { id: 'back', say: 'So does the gradient, multiplied by the same small weights on its way back.', code: 'layers' },
+        { id: 'lecun', say: 'Yann LeCun and colleagues warned of both in 1998: too large saturates, too small leaves the gradients tiny. They aimed between, for a z with a standard deviation of about one.', code: ['big', 'small'] },
+      ],
+    },
+    {
+      id: 'fanin',
       title: 'Scale by the fan-in',
-      codeTitle: 'init.py',
+      codeTitle: 'fanin.py',
       code: `
-        # n = 100, std(w) = 1: std(z) = 10, tanh flat   #@recap
-        # std(w) = 0.01: std(z) = 0.1 per layer         #@small
-        W = np.random.randn(H, n)                   # H units, n inputs  #@fanin
-        W = np.random.randn(H, n) / np.sqrt(n)      # Xavier, tanh       #@xavier
-        W = np.random.randn(H, n) * np.sqrt(2 / n)  # He, ReLU           #@he
+        # aim: std(z) ≈ 1, every layer    #@goal
+        # n: inputs per unit, the fan-in  #@fanin
+        # W: H rows, n columns            #@cols
+        # Var(z) = n * Var(w) = 1         #@rule
+        W = np.random.randn(H, n)         #@std
+        W /= np.sqrt(n)   # std 1/√n      #@std
+        # Xavier: Var(w) = 1/n, for tanh  #@name
       `,
       beats: [
-        { id: 'recap', say: 'A sum of n independent terms has n times their variance. Give a hundred inputs, each of variance one, weights of variance one, and z has variance a hundred: a {std|standard deviation} of ten.', code: 'recap' },
-        { id: 'flat', say: 'Through a tanh, a value like ten sits far out on the flat end. The slope there is nearly zero, and so is the gradient.', code: 'recap' },
-        { id: 'small', say: 'Too small is just as bad. With weights of {std|standard deviation} {0.01|zero point zero one}, z has variance a hundred times {0.0001|zero point zero zero zero one}: {0.01|zero point zero one}, a {std|standard deviation} of {0.1|zero point one}. Near zero, tanh passes values almost unchanged, so layer after layer the signal shrinks: one, {0.1|zero point one}, {0.01|zero point zero one}, {0.001|zero point zero zero one}.', code: 'small' },
-        { id: 'fanin', say: 'The fix scales the weights by the fan-in, n: the number of inputs each unit adds up. The weight matrix has a row per unit and a column per input, so n is its number of columns.', code: 'fanin' },
-        { id: 'xavier', say: 'Give each weight a variance of one over n. Then the n terms add up to a variance of one. The standard deviation is {1/√n|one over root n}: for a hundred inputs, {0.1|zero point one}.', code: 'xavier' },
-        { id: 'he', say: 'A ReLU zeroes about half of its inputs, which halves the variance. So for ReLU, double it: a variance of two over n. For fifty inputs, the standard deviation is {√(2/50)|the root of two over fifty}: {0.2|zero point two}.', code: 'he' },
-        { id: 'names', say: 'The first is Xavier initialization, used with tanh. The second is {He|Kaiming He} initialization, used with ReLU.', code: ['xavier', 'he'] },
+        { id: 'goal', say: 'A standard deviation of one keeps z on the bend of the tanh, off its flat ends.', code: 'goal' },
+        { id: 'fanin', say: 'The scale that does it depends on n, the number of inputs a unit adds up. Drawn as lines, they fan in to the unit, so n is called its fan-in.', code: 'fanin' },
+        { id: 'cols', say: 'In the weight matrix, each unit is a row and each input a column, so the fan-in is the number of columns.', code: 'cols' },
+        { id: 'rule', say: 'With inputs of variance one, z\'s variance is n times the weights\' variance. For that to equal one, the weights\' variance must be one over n.', code: 'rule' },
+        { id: 'std', say: 'So divide by root n: the standard deviation is one over root n. For a hundred inputs, one over ten: {0.1|zero point one}.', code: 'std' },
+        { id: 'glorot', say: 'In 2010, Xavier Glorot and Yoshua Bengio studied why deep networks trained so poorly, and asked every layer to pass on the variance it receives: this same rule.', code: 'std' },
+        { id: 'name', say: 'It carries his first name: Xavier initialization, the rule for tanh.', code: 'name' },
       ],
     },
     {
-      id: 'try',
-      title: 'Try one',
-      codeTitle: 'check.py',
+      id: 'relu',
+      title: 'Double it for ReLU',
+      codeTitle: 'relu.py',
       code: `
-        W = np.random.randn(20, 8) * np.sqrt(2 / 8)   #@p1
-        # fan-in 8: std = sqrt(0.25) = 0.5            #@a1
+        h = np.maximum(0, z)   # ReLU     #@relu
+        # about half the h's are 0        #@half
+        # Var(w) = 2 / n: double it       #@double
+        W = np.random.randn(H, n)         #@he
+        W *= np.sqrt(2 / n)   # He        #@he
+        # W: 20 rows, 8 columns: n = 8    #@shape
+        np.sqrt(2 / 8)        # 0.5       #@ans
       `,
       beats: [
-        { id: 'p1', say: 'Try one: a ReLU layer with He initialization has a weight matrix of shape twenty by eight. What standard deviation should its weights have?', code: 'p1' },
-        { id: 'a1', say: 'One column per input, so the fan-in is eight, not twenty. He\'s variance is two over eight, a quarter, and its square root is a half.', code: 'a1' },
+        { id: 'relu', say: 'A ReLU bends differently: it zeroes every negative z, and that is about half of them.', code: 'relu' },
+        { id: 'half', say: 'Those zeros add nothing to the next layer\'s sum, so with one over n, its variance comes out halved, layer after layer.', code: 'half' },
+        { id: 'double', say: 'So double the weights\' variance: two over n.', code: 'double' },
+        { id: 'he', say: 'Kaiming He and colleagues at Microsoft Research worked this out in 2015: a thirty-layer ReLU network that stalled under Xavier\'s rule trained under theirs. It is called {He|Kaiming He} initialization.', code: 'he' },
+        { id: 'shape', say: 'Try one: a ReLU layer, {He|Kaiming He} initialization, with a weight matrix of twenty rows and eight columns. Its fan-in is the columns: eight, not twenty.', code: 'shape' },
+        { id: 'ans', say: 'Two over eight is a quarter, and its square root, a half, is the standard deviation.', code: 'ans' },
         { id: 'turn', say: 'Your turn.' },
       ],
     },

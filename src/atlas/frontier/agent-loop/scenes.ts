@@ -31,7 +31,7 @@ const loop: SceneDef = {
     const widest = Math.max(...LINES.map((l) => s.measure(l.t, { size, font: 'mono' })));
     const lw = widest + 4.4 * s.u;
     const lx = s.w / 2 - lw / 2 + 5 * s.u;
-    const y0 = 8 * s.u;
+    const y0 = 12 * s.u;
     const shown = LINES.map((l) => s.ease(l.beat, 0.5, l.delay));
     LINES.forEach((l, i) =>
       s.alpha(shown[i]!, () => {
@@ -61,7 +61,8 @@ const loop: SceneDef = {
     const callOn = hl('first', 0.6, 3.6) + hl('second', 1, 4.2);
     const resOn = hl('first', 3.6) * (1 - s.ease('second', 0.4)) + hl('second', 4.2) * (1 - s.ease('answer', 0.4));
     const outOn = hl('answer', 0.6) * (1 - s.ease('limit', 0.5));
-    s.alpha(s.ease('need', 0.6, 2.5), () => {
+    const trace = s.ease('react', 0.6, 6);
+    s.alpha(s.ease('need', 0.6, 2.5) * (1 - trace), () => {
       box(s, dx, my, bw, bh, 'model', 'blue', Math.max(callOn, outOn), size + 0.2);
       box(s, dx, py, bw, bh, 'program', 'teal', resOn, size + 0.2);
       const a = (on: number) => s.tint('--ink-3', 0.5 + 0.5 * on);
@@ -73,12 +74,35 @@ const loop: SceneDef = {
       s.arrow(dx + bw / 2 + 0.8 * s.u, my, dx + bw / 2 + 9 * s.u, my, outOn > 0.01 ? s.c('gold') : a(0), 0.35 + 0.25 * outOn, 2);
       s.text('no call: stop', dx + bw / 2 + 10.4 * s.u, my, { size, font: 'mono', weight: 600, align: 'left', color: s.tint('gold', 0.55 + 0.45 * outOn) });
     });
-    s.alpha(s.ease('limit', 0.6, 0.4), () => {
+    s.alpha(s.ease('limit', 0.6, 0.4) * (1 - trace), () => {
       s.text('at most 10 turns', dx + bw / 2 + 2 * s.u, py, { size, font: 'mono', weight: 600, align: 'left', color: s.c('--ink-2') });
     });
-    s.alpha(s.ease('limit', 0.6, 4), () => note(s, 'a model run in this loop: an agent', s.w / 2, py + (tall ? 11 : 9) * s.u, 'blue', 3.1));
+    const ny = py + (tall ? 11 : 9) * s.u;
+    s.alpha(s.win('agent', 'react'), () => note(s, 'a model run in this loop: an agent (Latin agēns, doing)', s.w / 2, ny, 'blue', 3.1));
+
+    // The same loop in ReAct's own format: a thought, an action, and what came back.
+    s.alpha(trace, () => {
+      const tw = Math.max(...REACT.map(([t]) => s.measure(t, { size, font: 'mono' })));
+      const tx = s.w / 2 - tw / 2;
+      const ty = (my + py) / 2 - 7 * s.u;
+      REACT.forEach(([t, k], i) => s.alpha(s.ease('react', 0.5, 8.2 + 1.6 * i), () => s.text(t, tx, ty + i * 7 * s.u, { size, font: 'mono', weight: 600, align: 'left', color: s.c(k) })));
+    });
+    s.alpha(s.ease('hotpot', 0.6, 1), () => note(s, 'questions needing 2+ Wikipedia passages: 7 steps', s.w / 2, ny, '--ink-2', 3));
+    cite(s, 'ReAct · Yao et al., 2022', s.ease('react', 0.6));
   },
 };
+
+/** One turn of the worked task as ReAct wrote its turns. */
+const REACT: [string, Ink][] = [
+  ['Thought 1: find the capital, then its weather', 'purple'],
+  ['Action 1: Search[capital of Peru]', 'gold'],
+  ['Observation 1: Lima', 'teal'],
+];
+
+/** Who introduced an idea, and when: small, at the top right of the stage. */
+function cite(s: Scene, text: string, a: number) {
+  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
+}
 
 /** An arrow's color: `k` when lit, dim ink otherwise. */
 const on2 = (s: Scene, on: number, k: Ink) => (on > 0.05 ? s.tint(k, 0.5 + 0.5 * on) : s.tint('--ink-3', 0.6));
@@ -116,7 +140,7 @@ const grow: SceneDef = {
     const rows: { label: string; segs: Seg[]; total: number; a: number }[] = [
       { label: 'prompt', segs: [{ n: 30, k: 'orange', read: 1 }], total: 30, a: s.ease('p', 0.6) },
       { label: 'after turn 1', segs: [{ n: 30, k: 'orange', read: 1 }, { n: 5, k: 'gold', read: 1 }, { n: 15, k: 'teal', read: 1 }], total: 50, a: s.ease('t1', 0.6, 0.3) },
-      { label: 'after turn 2', segs: [{ n: 30, k: 'orange', read: 1 }, { n: 5, k: 'gold', read: 1 }, { n: 15, k: 'teal', read: 1 }, { n: 5, k: 'gold', read: 1 }, { n: 15, k: 'teal', read: 1 }], total: 70, a: s.ease('t1', 0.6, 4) },
+      { label: 'after turn 2', segs: [{ n: 30, k: 'orange', read: 1 }, { n: 5, k: 'gold', read: 1 }, { n: 15, k: 'teal', read: 1 }, { n: 5, k: 'gold', read: 1 }, { n: 15, k: 'teal', read: 1 }], total: 70, a: s.ease('t2', 0.6, 0.3) },
     ];
     rows.forEach((r, i) => {
       const y = s.h * (0.17 + 0.19 * i);
@@ -142,7 +166,7 @@ const grow: SceneDef = {
 };
 
 /** Each turn's prefill as a bar: the prompt, then every call and result before that turn. */
-function turns(s: Scene, P: number, c: number, r: number, st: { rows: number[]; prev: number; call: number; plain: number; kept: number }): void {
+function turns(s: Scene, P: number, c: number, r: number, st: { rows: number[]; prev: number; call: number; plain: number[]; kept: number }): void {
   const unit = unitOf(s);
   const x0 = s.w / 2 - 38 * unit;
   const size = s.tall ? 2.7 : 3;
@@ -159,7 +183,7 @@ function turns(s: Scene, P: number, c: number, r: number, st: { rows: number[]; 
       s.text(`turn ${t + 1} prefill`, x0, y - h / 2 - 2.6 * s.u, { size: size - 0.3, font: 'mono', weight: 600, align: 'left', color: s.c('--ink-2') });
       const end = bar(s, x0, y, segs, unit, h, size);
       const o = { size, font: 'mono', weight: 650, align: 'left' } as const;
-      s.alpha(st.plain, () => s.text(`${P + t * (c + r)}`, end + 2 * s.u, y, { ...o, color: s.c('--ink-2') }));
+      s.alpha(st.plain[t]!, () => s.text(`${P + t * (c + r)}`, end + 2 * s.u, y, { ...o, color: s.c('--ink-2') }));
       s.alpha(st.kept, () => s.text(`${t === 0 ? P : r}`, end + 2 * s.u, y, { ...o, color: s.c(t === 0 ? 'orange' : 'teal') }));
     });
   }
@@ -167,29 +191,33 @@ function turns(s: Scene, P: number, c: number, r: number, st: { rows: number[]; 
 
 const reread: SceneDef = {
   draw(s) {
-    const show = s.ease('prefill', 0.6);
+    const gone = 1 - s.ease('same', 0.5, 2);
     turns(s, 30, 5, 15, {
-      rows: [show, s.ease('plain', 0.6, 3), s.ease('plain', 0.6, 5.5)],
+      rows: [s.ease('prefill', 0.6), s.ease('plain', 0.6, 2.3), s.ease('plain', 0.6, 4.8)],
       prev: s.ease('same', 0.8, 2),
-      call: s.ease('new', 0.8, 1.5),
-      plain: s.ease('plain', 0.5, 1) * (1 - s.ease('same', 0.5, 2)),
-      kept: s.ease('new', 0.5, 6),
+      call: s.ease('keep', 0.8, 1.5),
+      plain: PLAIN.map((d) => s.ease('plain', 0.5, d) * gone),
+      kept: s.ease('keep', 0.5, 6),
     });
     const sz = s.tall ? 3.4 : 3.6;
-    s.alpha(s.ease('prefill', 0.6, 1.5) * (1 - s.ease('plain', 0.4)), () => note(s, 'read the whole context, then write', s.w / 2, s.h * 0.58, '--ink-3', 3));
+    s.alpha(s.win('prefill', 'fresh'), () => note(s, 'read the whole context, then write', s.w / 2, s.h * 0.58, '--ink-3', 3));
+    s.alpha(s.win('fresh', 'same'), () => note(s, 'a fresh generate: empty cache, read it all', s.w / 2, s.h * 0.58, '--ink-3', 3));
     s.alpha(s.ease('sum', 0.6), () => {
       rich(s, [['30', 'orange'], [' + 50 + 70 = ', '--ink-2'], ['150', '--ink']], s.w / 2, s.h * 0.69, { size: sz, weight: 650 });
       s.alpha(1 - s.ease('cache', 0.6, 2.5), () => note(s, 'no cache: every turn reads it all', s.w / 2, s.h * 0.75, '--ink-3', 2.9));
     });
-    s.alpha(s.win('same', 'new'), () => note(s, 'earlier tokens: same keys and values, kept', s.w / 2, s.h * 0.58, '--ink-2', 3));
-    s.alpha(s.win('new', 'cache'), () => note(s, 'calls: cached as the model wrote them', s.w / 2, s.h * 0.58, 'gold', 3));
-    s.alpha(s.ease('cache', 0.6), () => {
-      rich(s, [['30', 'orange'], [' + ', '--ink-2'], ['15', 'teal'], [' + ', '--ink-2'], ['15', 'teal'], [' = ', '--ink-2'], ['60', '--ink']], s.w / 2, s.h * 0.81, { size: sz, weight: 650 });
-      note(s, 'prefix caching: only new tokens', s.w / 2, s.h * 0.87, 'teal', 2.9);
-    });
+    s.alpha(s.win('same', 'keep'), () => note(s, 'earlier tokens: same keys and values, kept', s.w / 2, s.h * 0.58, '--ink-2', 3));
+    s.alpha(s.win('keep', 'name'), () => note(s, 'calls: cached as the model wrote them', s.w / 2, s.h * 0.58, 'gold', 3));
+    s.alpha(s.ease('name', 0.6, 1.7), () => note(s, 'prefix: the start every turn shares', s.w / 2, s.h * 0.58, '--ink-2', 3));
+    s.alpha(s.ease('cache', 0.6), () => rich(s, [['30', 'orange'], [' + ', '--ink-2'], ['15', 'teal'], [' + ', '--ink-2'], ['15', 'teal'], [' = ', '--ink-2'], ['60', '--ink']], s.w / 2, s.h * 0.81, { size: sz, weight: 650 }));
+    s.alpha(s.ease('name', 0.6), () => note(s, 'prefix caching: only new tokens', s.w / 2, s.h * 0.87, 'teal', 2.9));
     s.alpha(s.ease('same', 0.6, 2.5), () => legend(s, s.h * 0.95));
+    cite(s, 'SGLang · Zheng et al., 2023', s.ease('sglang', 0.6));
   },
 };
+
+/** Seconds into the 'plain' beat at which each turn's no-cache read is said. */
+const PLAIN = [1, 3.6, 7.8];
 
 /** Which bars are read this turn and which come from the cache. */
 function legend(s: Scene, y: number): void {
@@ -210,7 +238,7 @@ const tryIt: SceneDef = {
       rows: [s.ease('p1', 0.5, 0.5), s.ease('p1', 0.5, 2.5), s.ease('p1', 0.5, 4.5)],
       prev: a2,
       call: a2,
-      plain: s.ease('a1', 0.5, 0.5) * (1 - a2),
+      plain: [0, 1, 2].map(() => s.ease('a1', 0.5, 0.5) * (1 - a2)),
       kept: s.ease('a2', 0.5, 1.5),
     });
     const sz = s.tall ? 3.4 : 3.6;
