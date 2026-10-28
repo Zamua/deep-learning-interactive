@@ -1,24 +1,32 @@
 {
- "duration": 158.942,
+ "duration": 254.019,
  "scenes": {
-  "gradient": [0.0, 113.583],
-  "try": [113.583, 158.942]
+  "deep": [0.0, 83.368],
+  "add": [83.368, 156.971],
+  "back": [156.971, 254.019]
  },
  "beats": {
-  "gradient/plain": [0.7, 9.128, "A plain layer replaces its input with something new. A residual block keeps its input, x, and adds a change to it.", [[3.93, 4.52], [5.55, 5.7], [6.69, 6.9], [7.31, 7.6]]],
-  "gradient/add": [9.508, 24.642, "The layers inside, a linear layer, a ReLU and another linear layer, compute a function of x, written F of x. A shortcut carries x around them, and the two are added: y equals x plus F of x.", [[10.758, 11.078], [11.898, 12.118], [12.748, 12.898], [14.218, 14.508], [16.078, 16.328], [16.668, 16.868], [17.598, 18.168], [20.238, 20.528], [21.648, 22.128]]],
-  "gradient/example": [25.022, 38.097, "With x at two and F of x at a half, y is two and a half. And to leave its input alone, a block only has to make F zero, so an extra block need not make the network worse.", [[26.182, 26.352], [27.982, 28.302], [29.682, 30.272], [31.892, 32.192], [34.462, 34.842]]],
-  "gradient/split": [38.477, 46.259, "Going backward, the sum is an add gate: it hands the gradient arriving at y, g, to both of its inputs.", [[39.417, 39.697], [41.147, 41.647], [43.917, 44.217], [44.647, 44.897]]],
-  "gradient/paths": [46.639, 54.611, "Along the shortcut, g reaches x unchanged. Through F, it gets multiplied by F's slope, F prime.", [[47.699, 47.979], [50.029, 50.549], [51.229, 51.479], [53.529, 53.839]]],
-  "gradient/formula": [54.991, 64.258, "The two paths add up at x: g times one plus F prime. With g equal to two and a slope of a half, that is three.", [[57.001, 57.471], [59.781, 60.331], [63.121, 63.451]]],
-  "gradient/stack": [64.638, 74.806, "Now stack two blocks. The first turns x into h, through layers F one. The second turns h into y, through layers F two.", [[66.198, 66.678], [68.858, 69.068], [70.408, 70.988], [73.178, 73.428]]],
-  "gradient/back2": [75.186, 87.885, "Walking back, each block multiplies the gradient by one plus its slope. Say g is one, and F two prime is one: block two hands h one times two, which is two.", [[76.016, 76.356], [79.926, 80.446], [81.816, 82.106], [83.726, 84.266], [86.906, 87.166]]],
-  "gradient/back1": [88.265, 99.002, "Block one, with F one prime at minus a half, hands x two times a half: one. The blocks are in a chain, so their factors multiply.", [[89.005, 89.455], [91.795, 92.125], [94.035, 94.555], [94.955, 95.585], [96.925, 97.155], [98.745, 98.975]]],
-  "gradient/deep": [99.382, 112.483, "Now stack fifty layers. If each one halves the gradient, almost nothing reaches the first. With shortcuts, each block multiplies by one plus a slope, so the gradient arrives intact.", [[101.112, 101.642], [103.432, 103.742], [105.662, 106.302], [107.142, 107.392], [110.212, 110.552]]],
-  "try/p1": [114.283, 124.61, "Try one: at the current value, F prime of x is three, and the gradient arriving at y, g, is two. What gradient reaches x?", [[114.863, 115.503], [116.543, 116.813], [118.533, 118.953], [120.753, 120.993], [121.423, 121.663], [122.253, 122.803]]],
-  "try/a1": [124.99, 135.24, "The shortcut hands x two, unchanged. Through F, it is two times three: six. The paths add: two plus six, eight.", [[126.89, 127.22], [127.98, 128.55], [129.26, 129.51], [130.86, 131.19], [131.74, 132.18], [133.15, 133.62], [134.56, 134.84]]],
-  "try/p2": [135.62, 145.238, "Now two stacked blocks: F one prime is one, F two prime is minus a half, and g is four. What reaches x?", [[137.24, 137.8], [139.32, 139.79], [141.83, 142.19], [143.4, 143.98]]],
-  "try/a2": [145.618, 156.721, "Block two hands h four times one minus a half: two. Block one hands x two times one plus one: four.", [[146.438, 146.928], [147.858, 148.188], [150.208, 150.718], [151.018, 151.768], [152.508, 152.928], [153.828, 154.088], [155.708, 156.258]]],
-  "try/turn": [157.101, 157.842, "Your turn.", []]
+  "deep/stack": [0.7, 11.446, "Here is a plain network: a stack of layers, each one feeding the next. More layers can compute more, so a deeper stack ought to do at least as well as a shallow one.", [[2.23, 2.67], [3.74, 3.95], [5.46, 6.01], [7.73, 8.02]]],
+  "deep/train": [11.826, 24.732, "Training it means taking gradient steps: every weight moves against its own gradient. Backprop finds those gradients by walking back from the output, where the gradient, g, starts at one.", [[14.396, 14.946], [17.496, 18.106], [21.716, 22.046], [22.816, 22.976], [23.396, 23.586]]],
+  "deep/fade": [25.112, 38.054, "Each layer it passes through multiplies g by that layer's local slope. Say every slope is a half. After ten layers, about a thousandth is left, so the first layers hardly learn at all.", [[29.752, 30.312], [32.062, 32.652], [33.702, 33.932], [35.522, 35.872]]],
+  "deep/deeper": [38.434, 55.219, "Careful starting weights, and layers that rescale the numbers in between, let networks tens of layers deep start to learn. But in 2015, Kaiming He, Xiangyu Zhang, Shaoqing Ren and Jian Sun found that going deeper still made things worse.", [[39.884, 40.064], [42.694, 43.054], [46.084, 46.794], [48.044, 48.304], [49.054, 49.284], [50.074, 50.334], [51.154, 51.324], [52.114, 52.294]]],
+  "deep/worse": [55.599, 70.485, "On small photos in ten classes, a plain network fifty six layers deep did worse than one with twenty. Worse even on the very images it was trained on, its training data: the deeper network was simply harder to train.", [[57.789, 58.049], [60.589, 60.829], [62.609, 63.189], [65.939, 66.199], [67.279, 67.799]]],
+  "deep/copy": [70.865, 82.268, "That is strange, because the deep one could copy the shallow one: the same twenty layers, plus thirty six that pass their input along unchanged. Training just never found that.", [[72.035, 72.385], [74.715, 75.185], [76.455, 76.695], [80.015, 80.515]]],
+  "add/fix": [84.068, 95.216, "Their fix was to group the layers into blocks: here, two layers with a ReLU between, like a two layer network. Call what a block's layers compute from x, F of x.", [[86.678, 87.158], [87.538, 87.798], [89.508, 89.818], [91.108, 91.648], [94.108, 94.428]]],
+  "add/shortcut": [95.596, 103.887, "Then give the block a shortcut: a wire with no weights at all, carrying x around the layers, untouched, to meet their output.", [[97.486, 97.956], [99.666, 99.966], [101.736, 101.956], [102.606, 102.796]]],
+  "add/sum": [104.267, 114.254, "There the two are added: y equals x plus F of x. With x at two, and F of x at a half, y is two and a half.", [[105.837, 106.447], [108.947, 109.537], [110.647, 110.837], [112.377, 112.767]]],
+  "add/zero": [114.634, 129.462, "Now passing x along is easy. Set everything F learns to zero, and F gives zero, so y is just x. A block with nothing to add can leave its input alone, so an extra block need not make things worse.", [[116.654, 117.134], [119.294, 119.564], [120.844, 121.154], [122.744, 123.364], [126.334, 126.734]]],
+  "add/name": [129.842, 141.109, "That is where the name comes from. The layers no longer have to make y, only the change from x to y, y minus x: what is left over, called the residual.", [[131.482, 132.002], [134.092, 134.572], [136.492, 136.902], [138.202, 138.632], [139.572, 139.912]]],
+  "add/won": [141.489, 155.871, "With shortcuts, depth paid off. The fifty six layer network now beat the twenty layer one, and residual networks up to a hundred and fifty two layers deep won the 2015 ImageNet contest in recognizing photos.", [[142.399, 142.589], [143.699, 144.319], [147.649, 148.029], [151.579, 151.829]]],
+  "back/split": [157.671, 165.453, "Going backward, the sum is an add gate: it hands the gradient arriving at y, g, to both of its inputs.", [[158.611, 158.891], [160.341, 160.841], [163.111, 163.411], [163.841, 164.091]]],
+  "back/paths": [165.833, 173.805, "Along the shortcut, g reaches x unchanged. Through F, it gets multiplied by F's slope, F prime.", [[166.893, 167.173], [169.223, 169.743], [170.423, 170.673], [172.723, 173.033]]],
+  "back/formula": [174.185, 183.452, "The two paths add up at x: g times one plus F prime. With g equal to two and a slope of a half, that is three.", [[176.195, 176.665], [178.975, 179.525], [182.315, 182.645]]],
+  "back/stack": [183.832, 190.97, "Now stack two blocks: the first turns x into h, and the second turns h into y.", [[185.352, 185.842], [188.152, 188.522]]],
+  "back/names": [191.35, 197.988, "Each has its own layers, numbered by block: F one in the first, and F two in the second.", [[192.9, 193.16], [194.22, 194.78], [196.11, 196.39]]],
+  "back/back2": [198.368, 211.068, "Walking back, each block multiplies the gradient by one plus its slope. Say g is one, and F two prime is one: block two hands h one times two, which is two.", [[199.198, 199.538], [203.108, 203.628], [204.998, 205.288], [206.908, 207.448], [210.088, 210.348]]],
+  "back/back1": [211.448, 222.185, "Block one, with F one prime at minus a half, hands x two times a half: one. The blocks are in a chain, so their factors multiply.", [[212.188, 212.638], [214.978, 215.308], [217.218, 217.738], [218.138, 218.768], [220.108, 220.338], [221.928, 222.158]]],
+  "back/deep": [222.565, 240.625, "Back to the deep stack. Plain, every layer kept only half, and almost nothing reached the first. With shortcuts, one path back runs only along shortcuts, with no slopes to multiply, so g reaches the first block whole, and the paths through the layers add to it.", [[223.865, 224.415], [224.865, 225.265], [227.065, 227.335], [229.295, 229.915], [230.785, 231.045], [233.705, 233.935], [235.515, 235.935], [238.165, 238.455]]],
+  "back/proof": [241.005, 251.799, "The same four authors spelled this out in 2016: through shortcuts that pass x unchanged, the gradient goes straight from any block back to any earlier one.", [[244.335, 244.995], [247.695, 248.015], [250.135, 250.315]]],
+  "back/turn": [252.179, 252.919, "Your turn.", []]
  }
 }

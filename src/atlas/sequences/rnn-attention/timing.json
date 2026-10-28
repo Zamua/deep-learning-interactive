@@ -1,21 +1,32 @@
 {
- "duration": 122.519,
+ "duration": 238.993,
  "scenes": {
-  "look": [0.0, 45.196],
-  "mix": [45.196, 91.456],
-  "every": [91.456, 122.519]
+  "squeeze": [0.0, 52.673],
+  "look": [52.673, 149.605],
+  "mix": [149.605, 200.958],
+  "every": [200.958, 238.993]
  },
  "beats": {
-  "look/keep": [0.7, 16.496, "A plain decoder only sees the encoder's final state. Attention keeps all of them: one state per input word, here for je, suis, and \u00e9tudiant. Call them h j, with j counting the input words from zero.", [[4.2, 4.74], [6.32, 6.82], [8.49, 8.86], [9.83, 10.11], [10.56, 10.8], [11.64, 12.2], [13.5, 13.89]]],
-  "look/score": [16.876, 30.077, "At each step, the decoder scores every encoder state against its own state, q. A simple score is the dot product, s j equals q dot h j: two, zero, and one.", [[17.766, 18.046], [21.766, 22.006], [22.386, 22.976], [24.966, 25.306], [27.766, 28.246], [28.606, 28.886]]],
-  "look/weights": [30.457, 44.096, "Softmax turns the scores into the attention weights, written alpha j: positive, and adding up to one. Here they are zero point six seven, zero point zero nine, and zero point two four.", [[33.447, 33.847], [35.097, 35.487], [35.987, 36.387], [37.737, 38.327], [38.987, 39.267], [40.627, 40.917], [42.337, 42.587]]],
-  "mix/context": [45.896, 56.263, "The context vector is the weighted sum of the states, the sum over j of alpha j times h j: scale each state by its weight, then add them up.", [[48.976, 49.326], [52.656, 53.166], [55.066, 55.316]]],
-  "mix/scale": [56.643, 69.873, "Je's state, two and zero, times zero point six seven, is one point three four and zero. Suis gives zero and zero point zero nine; \u00e9tudiant, zero point two four and zero.", [[57.453, 57.703], [58.743, 58.993], [60.823, 61.083], [63.093, 63.653], [66.663, 67.113], [67.673, 67.983]]],
-  "mix/add": [70.253, 83.883, "Add them entry by entry: one point three four plus zero point two four is one point five eight, and the second entries give zero point zero nine. Mostly je, a little of the rest.", [[72.023, 72.603], [75.663, 75.943], [77.403, 77.823], [80.853, 81.463], [82.363, 82.773]]],
-  "mix/use": [84.263, 90.356, "The decoder reads this context along with its own state to predict the next word: I.", [[87.673, 87.893], [89.303, 89.883]]],
-  "every/again": [92.156, 103.554, "At the next step the decoder's state has moved on, so the scores change, and it looks somewhere else: for am and a, at suis; for student, at \u00e9tudiant.", [[93.056, 93.256], [95.006, 95.376], [96.616, 96.866], [98.106, 98.606], [100.006, 100.286], [101.006, 101.486], [102.176, 102.476]]],
-  "every/grid": [103.934, 110.83, "Stack the weights, one row per output word, and they show which input words each output word drew on.", [[104.994, 105.304], [106.924, 107.324]]],
-  "every/free": [111.21, 120.299, "Nothing has to squeeze through one fixed-size vector any more: every step can read every input state directly. That is attention.", [[114.82, 115.36], [118.42, 118.96], [119.36, 119.51]]],
-  "every/turn": [120.679, 121.419, "Your turn.", []]
+  "squeeze/recall": [0.7, 15.186, "A sequence-to-sequence model reads, je suis \u00e9tudiant, with an encoder, and writes, I am a student, with a decoder. Everything it read reaches the decoder through one vector: the encoder's final state.", [[2.81, 3.16], [4.27, 4.68], [5.59, 5.9], [6.51, 6.85], [7.9, 8.19], [9.06, 9.7], [12.99, 13.47]]],
+  "squeeze/long": [15.566, 26.461, "That vector has a fixed size. Three words or fifty, the whole sentence must squeeze into the same few numbers, and long sentences came out translated worse.", [[17.606, 18.016], [19.526, 19.956], [23.186, 23.616]]],
+  "squeeze/bahdanau": [26.841, 40.979, "In 2014, Dzmitry Bahdanau, Kyunghyun Cho and Yoshua Bengio called that fixed-length vector a bottleneck. Their fix: let the decoder look back at every encoder state, not just the last.", [[28.001, 28.291], [29.441, 29.721], [30.491, 30.651], [31.811, 32.031], [33.741, 33.921], [34.711, 35.321], [36.021, 36.471], [39.531, 39.811]]],
+  "squeeze/keep": [41.359, 51.573, "The encoder already makes one state per input word as it reads. Keep them all, and call them h j: the state after word j, counting from zero.", [[45.339, 45.789], [46.439, 46.589], [48.109, 48.519], [50.239, 50.499]]],
+  "look/need": [53.373, 64.374, "To write its first word, I, the decoder needs je far more than suis or \u00e9tudiant. So it needs a way to score each encoder state for the word at hand.", [[54.813, 55.103], [55.473, 55.683], [56.353, 56.503], [58.513, 58.713], [59.743, 60.263]]],
+  "look/arrows": [64.754, 72.483, "Picture the states as arrows. Real ones hold hundreds of numbers; these hold two, so they fit on a page.", [[66.564, 67.054], [69.164, 69.644], [70.764, 71.044]]],
+  "look/q": [72.863, 81.496, "The decoder has a state of its own, an arrow too. Call it q, for query: what the decoder is looking for right now.", [[74.843, 75.193], [76.123, 76.673], [77.073, 77.253], [77.653, 77.963], [78.603, 79.133]]],
+  "look/score": [81.876, 100.444, "Score each encoder state by its dot product with q, which is big when two arrows point the same way. This q lies along the first axis, so each score is how far a state reaches along it: two for je, one for \u00e9tudiant, and zero for suis, at a right angle.", [[85.206, 85.576], [88.336, 88.996], [91.356, 91.686], [94.606, 95.136], [96.016, 96.416], [97.626, 97.976], [99.176, 99.526]]],
+  "look/sj": [100.824, 108.228, "Those are the scores, s j equals q dot h j: biggest for the state that lines up best with q.", [[101.984, 102.394], [104.884, 105.334]]],
+  "look/luong": [108.608, 121.154, "In 2015, Minh-Thang Luong, Hieu Pham and Christopher Manning found that this plain dot product works well as the score. The first attention model had used a small learned network instead.", [[109.768, 110.118], [111.008, 111.268], [113.078, 113.298], [116.568, 117.308]]],
+  "look/weights": [121.534, 134.492, "Softmax turns the scores into weights, positive and adding up to one: about zero point six seven, zero point zero nine and zero point two four. The highest score still gets the most.", [[123.984, 124.364], [126.144, 126.584], [128.264, 128.554], [129.984, 130.264], [131.804, 132.364]]],
+  "look/alpha": [134.872, 148.505, "These are the attention weights, alpha j: how much attention the decoder pays to each input word. The word comes from Bahdanau's paper: the decoder decides which parts of the sentence to pay attention to.", [[136.512, 137.082], [137.872, 138.472], [141.712, 142.272], [144.292, 144.762]]],
+  "mix/blend": [150.305, 158.943, "Now blend the states into one vector, each counting as much as its weight says: shrink every arrow by its weight, then add them up.", [[152.635, 153.065], [155.215, 155.705], [157.655, 157.935]]],
+  "mix/scale": [159.323, 171.434, "Je's state, two, one, times zero point six seven, shrinks to one point three four, zero point six seven. The other two, with small weights, shrink almost away.", [[160.213, 160.593], [160.953, 161.183], [161.583, 161.873], [163.673, 163.983], [165.873, 166.083], [167.433, 168.013], [168.753, 168.903], [169.833, 170.043]]],
+  "mix/add": [171.814, 181.847, "Add them by laying the arrows tip to tail. The sum ends at one point five eight, zero point six one: mostly je, a little of the rest.", [[174.364, 174.924], [177.234, 177.454], [178.874, 179.404], [180.254, 180.744]]],
+  "mix/context": [182.227, 193.001, "This weighted sum is called the context vector, the sum over j of alpha j times h j: the part of the input that matters for the word being written now.", [[185.147, 185.647], [189.007, 189.577]]],
+  "mix/use": [193.381, 199.858, "The decoder reads the context vector along with its own state, and predicts its next word: I.", [[196.991, 197.261], [198.821, 199.401]]],
+  "every/again": [201.658, 214.075, "At the next step the decoder's state has moved on, so q points somewhere new, and the weights shift: for the words am and a, mostly to suis; for student, to \u00e9tudiant.", [[202.558, 202.798], [204.498, 204.818], [206.578, 206.918], [207.898, 208.368], [208.988, 209.148], [209.508, 209.668], [209.838, 209.988], [210.248, 210.508], [211.578, 212.058], [212.748, 212.998]]],
+  "every/grid": [214.455, 228.168, "Stack each step's weights as a row, and you see which input words each output word drew on. Bahdanau's paper drew grids like this, and called them alignments: which words line up across the two languages.", [[216.675, 216.965], [220.325, 221.015], [223.445, 223.645], [225.085, 225.505]]],
+  "every/free": [228.548, 236.773, "Nothing has to squeeze through one fixed-size vector any more: at every step, the decoder can read every input state directly.", [[232.118, 232.598], [233.528, 233.818]]],
+  "every/turn": [237.153, 237.893, "Your turn.", []]
  }
 }

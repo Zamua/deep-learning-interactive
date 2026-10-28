@@ -1,22 +1,33 @@
 {
- "duration": 155.625,
+ "duration": 238.042,
  "scenes": {
-  "tenfold": [0.0, 109.012],
-  "try": [109.012, 155.625]
+  "step": [0.0, 106.982],
+  "shrink": [106.982, 169.294],
+  "back": [169.294, 238.042]
  },
  "beats": {
-  "tenfold/line": [0.7, 13.555, "On log-log axes, a scaling law is a straight line of slope minus alpha. With alpha at zero point one, each power of ten in compute moves log L down by zero point one.", [[2.17, 2.44], [5.88, 6.49], [8.31, 8.68], [10.48, 10.67]]],
-  "tenfold/step": [13.935, 20.201, "In plain numbers, taking alpha off the log multiplies the loss by ten to the minus alpha.", [[14.965, 15.255], [16.935, 17.135]]],
-  "tenfold/ex": [20.581, 31.026, "With alpha at zero point one, the factor is zero point seven nine. Ten times the compute takes a loss of three point one six down to two point five one.", [[22.481, 22.771], [24.941, 25.541], [26.801, 27.001], [29.071, 29.331]]],
-  "tenfold/hundred": [31.406, 51.638, "A hundred times the compute is two such steps: zero point seven nine times zero point seven nine. That is ten to the minus zero point one, twice, and multiplying adds the powers: ten to the minus zero point two, about zero point six three. The loss reaches about two point zero.", [[34.396, 34.906], [38.086, 38.566], [39.056, 39.226], [41.366, 41.636], [42.156, 42.486], [44.406, 44.896], [46.926, 47.216], [48.896, 49.386]]],
-  "tenfold/k": [52.018, 64.864, "So k factors of ten in compute multiply the loss by ten to the minus k alpha. A thousand times the compute is three factors: ten to the minus zero point three, about a half.", [[52.338, 52.488], [54.518, 54.688], [57.818, 58.408], [61.138, 61.598], [63.658, 63.998]]],
-  "tenfold/cost": [65.244, 79.754, "Each step takes the same fraction off a smaller loss, so the drops shrink: zero point eight two, then zero point six five, then zero point five one. Every gain asks for ten times the compute of the last.", [[68.404, 68.704], [69.814, 70.344], [71.594, 71.894], [73.574, 73.914], [75.654, 76.254]]],
-  "tenfold/back": [80.134, 99.627, "Run it backwards, too. Say each tenfold step multiplies the loss by zero point eight. How much more compute takes a loss of four down to two point five six? Two point five six over four is zero point six four, which is zero point eight times zero point eight: two factors.", [[81.424, 82.014], [86.184, 86.784], [89.404, 89.554], [91.184, 91.784], [95.314, 95.724], [98.324, 98.764]]],
-  "tenfold/factors": [100.007, 107.912, "Each factor costs ten times the compute, so two of them cost ten times ten: a hundred times the compute.", [[102.787, 103.187], [105.727, 106.197]]],
-  "try/p": [109.712, 131.805, "Try one. A family of models follows a scaling law with alpha at zero point three. One run ends at loss three point six. What loss does a run with a hundred times its compute reach? Use ten to the minus zero point three is about zero point five, and ten to the minus zero point six about zero point two five.", [[110.292, 110.912], [115.492, 116.132], [118.692, 119.272], [122.622, 123.272], [125.652, 125.822], [127.462, 127.802], [129.902, 130.102]]],
-  "try/two": [132.185, 135.679, "A hundred times the compute is two factors of ten.", []],
-  "try/f": [136.059, 147.105, "Each multiplies the loss by ten to the minus zero point three. Multiplying adds the powers: ten to the minus zero point six, about zero point two five.", [[140.009, 140.659], [141.399, 141.549], [142.479, 142.939], [145.069, 145.359]]],
-  "try/ans": [147.485, 153.405, "So the loss becomes three point six times zero point two five: zero point nine.", [[151.725, 152.205]]],
-  "try/turn": [153.785, 154.525, "Your turn.", []]
+  "step/ask": [0.7, 9.934, "You have a model, and you want a better one, with a lower loss. Before you train it, you would like to know the price: how much more compute will it take?", [[1.63, 1.8], [3.11, 3.38], [4.39, 4.97], [5.96, 6.15], [7.56, 8.02]]],
+  "step/line": [10.314, 20.185, "The runs of one family of models fall on a straight line on log-log axes, with a slope of minus alpha. Here alpha is zero point one.", [[15.114, 15.474], [17.264, 17.884], [18.224, 18.474]]],
+  "step/step": [20.565, 29.61, "Take one step to the right: ten times the compute. The line drops by alpha, so log L goes down by zero point one.", [[22.095, 22.555], [23.915, 24.565], [26.095, 26.415]]],
+  "step/factor": [29.99, 44.156, "Minus zero point one is the log of ten to the minus zero point one, and adding logs multiplies the numbers. So the loss is multiplied by ten to the minus zero point one: about zero point seven nine.", [[34.51, 35.02], [37.38, 37.96], [41.8, 42.24]]],
+  "step/value": [44.536, 50.83, "So a loss of three point nine eight, multiplied by that, becomes about three point one six.", [[46.906, 47.206], [48.386, 48.646]]],
+  "step/same": [51.21, 64.267, "Every step along a straight line has the same shape: across one power of ten, and down alpha. So every tenfold step multiplies the loss by the same factor, ten to the minus alpha.", [[54.2, 54.66], [56.21, 56.45], [57.5, 58.06], [62.32, 62.71]]],
+  "step/law": [64.647, 78.965, "The power law says so too. In L equals A times C to the minus alpha, replace C with ten times C, and the ten comes out as a factor of its own: ten to the minus alpha, times the old loss.", [[66.367, 66.957], [70.197, 70.637], [72.787, 73.127], [75.547, 75.987], [77.417, 77.727]]],
+  "step/two": [79.345, 93.593, "A hundred times the compute is two steps, so two factors. Multiplying adds the powers: ten to the minus zero point one, twice, is ten to the minus zero point two, about zero point six three.", [[81.975, 82.245], [83.425, 83.995], [85.785, 86.265], [88.245, 88.455], [88.955, 89.215], [91.335, 91.695], [93.355, 93.565]]],
+  "step/k": [93.973, 105.882, "So k steps of ten multiply the loss by ten to the minus k alpha. Three steps, a thousand times the compute, give ten to the minus zero point three: about a half.", [[95.653, 95.803], [98.903, 99.503], [100.243, 100.423], [101.953, 102.283], [104.623, 105.023]]],
+  "shrink/plain": [107.682, 112.903, "Now put the loss axis back to plain numbers, and keep the tenfold steps across.", [[110.372, 110.602]]],
+  "shrink/drops": [113.283, 125.806, "The steps no longer match. Each takes the same fraction off a smaller loss, so the drops shrink: zero point eight two, then zero point six five, then zero point five one.", [[114.923, 115.383], [118.233, 118.553], [119.713, 120.253], [121.563, 121.923], [123.643, 123.993]]],
+  "shrink/price": [126.186, 135.964, "And each step costs ten times the compute of the one before. The last step here takes off the least, and its run costs a hundred times the first one's.", [[129.986, 130.626], [132.686, 132.956]]],
+  "shrink/kaplan": [136.344, 147.949, "Measured exponents are smaller still. In 2020, Jared Kaplan and colleagues measured alpha at about zero point zero five, for language models given more and more compute.", [[138.494, 139.104], [140.114, 140.404], [144.954, 145.264]]],
+  "shrink/tenth": [148.329, 157.175, "Then each tenfold step multiplies the loss by ten to the minus zero point zero five: only about zero point eight nine.", [[148.759, 148.939], [154.479, 154.999]]],
+  "shrink/million": [157.555, 168.194, "Halving the loss takes six such steps, since six times zero point zero five is zero point three. Six steps of ten: a million times the compute.", [[159.945, 160.225], [162.655, 162.875], [164.025, 164.655], [165.995, 166.445]]],
+  "back/given": [169.994, 181.294, "Now a different family. One run ends at a loss of four, and a run with ten times its compute ends at three point two. What loss will a hundred times the compute reach?", [[171.404, 171.984], [174.014, 174.384], [176.494, 176.674], [177.984, 178.574]]],
+  "back/factor": [181.674, 187.444, "First find the factor per step: three point two over four is zero point eight.", [[183.834, 184.364]]],
+  "back/again": [187.824, 197.453, "A hundred times the compute is one more tenfold step past three point two, so multiply by zero point eight again: two point five six.", [[192.534, 192.954], [195.544, 196.074]]],
+  "back/not": [197.833, 206.453, "Not three point two minus another zero point eight, which would give two point four. The factor stays the same, so the drops shrink.", [[201.213, 201.423], [202.853, 203.383], [204.883, 205.173]]],
+  "back/back": [206.833, 219.658, "Now run it backwards. A loss of four should become two point five six: how much more compute does that take? Divide first: two point five six over four is zero point six four.", [[208.193, 208.703], [211.583, 212.093], [213.973, 214.573], [215.533, 215.943], [217.843, 218.023]]],
+  "back/count": [220.038, 227.854, "Zero point six four is zero point eight times zero point eight: two factors, so two tenfold steps.", [[221.488, 221.638], [224.278, 224.808], [225.578, 225.888], [226.248, 226.408]]],
+  "back/hundred": [228.234, 235.822, "Each step is ten times the compute, so two steps cost ten times ten: a hundred times the compute.", [[230.624, 231.074], [233.684, 234.124]]],
+  "back/turn": [236.202, 236.942, "Your turn.", []]
  }
 }

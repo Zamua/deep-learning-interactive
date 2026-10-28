@@ -1,23 +1,36 @@
 {
- "duration": 114.587,
+ "duration": 228.759,
  "scenes": {
-  "token": [0.0, 36.752],
-  "grow": [36.752, 73.916],
-  "fit": [73.916, 114.587]
+  "fill": [0.0, 72.872],
+  "token": [72.872, 136.262],
+  "grow": [136.262, 188.638],
+  "fit": [188.638, 228.759]
  },
  "beats": {
-  "token/grid": [0.7, 6.981, "The KV cache keeps, for every token seen so far, a key and a value at every layer.", [[2.23, 2.43], [4.36, 4.66]]],
-  "token/vec": [7.361, 16.634, "Each key and each value is a vector of d numbers, as wide as the model. Here d is four thousand, and there are thirty two layers.", [[10.901, 11.111], [12.281, 12.851], [14.741, 15.041]]],
-  "token/per": [17.014, 35.652, "So one token costs two vectors, times thirty two layers, times four thousand numbers. At sixteen bits, two bytes each, that is five hundred and twelve thousand bytes for a single token: half a megabyte, or MB, where a megabyte is a million bytes.", [[17.414, 17.654], [19.784, 20.004], [21.354, 21.594], [23.474, 24.004], [25.214, 25.454], [26.334, 26.654], [30.474, 30.944], [31.964, 32.204], [33.204, 33.564]]],
-  "grow/ctx": [37.452, 45.139, "Now multiply by the tokens. A context of four thousand tokens needs about two gigabytes, for one sequence.", [[39.462, 39.992], [42.102, 42.292], [43.842, 44.052]]],
-  "grow/formula": [45.519, 52.632, "All together: two, times the layers, times the tokens, times d, times the bytes per number.", [[46.229, 46.809], [47.199, 47.549], [48.509, 48.739], [49.759, 50.009], [50.779, 51.119]]],
-  "grow/double": [53.012, 57.483, "It grows in a straight line. Twice the context, twice the cache.", [[54.662, 55.172], [56.232, 56.492]]],
-  "grow/batch": [57.863, 64.918, "And every sequence being served keeps a cache of its own. Sixteen at once need about thirty three gigabytes.", [[61.143, 61.683]]],
-  "grow/weights": [65.298, 72.816, "That is more than the model's own weights: about seven billion parameters, fourteen gigabytes at two bytes each.", [[67.548, 67.928], [69.918, 70.298]]],
-  "fit/free": [74.616, 83.036, "Now run it backward. Say that after loading the weights, sixteen gigabytes are left for the cache: sixteen billion bytes.", [[75.796, 76.326], [78.076, 78.346], [80.736, 81.226]]],
-  "fit/per": [83.416, 91.373, "Each token costs five hundred and twelve thousand bytes. So the question is how many of those fit into sixteen billion.", [[86.896, 87.396], [88.326, 88.616]]],
-  "fit/fit": [91.753, 101.438, "Divide. Cancel three zeros from each, and it is sixteen million over five hundred twelve: thirty one thousand, two hundred and fifty tokens.", [[92.403, 92.973], [94.813, 95.073], [97.903, 98.403], [99.503, 99.663]]],
-  "fit/share": [101.818, 112.367, "That budget is shared by every sequence at once: one sequence of thirty one thousand, two hundred and fifty tokens, or eight of about three thousand nine hundred each.", [[104.738, 105.228], [108.918, 109.338]]],
-  "fit/turn": [112.747, 113.487, "Your turn.", []]
+  "fill/gpu": [0.7, 10.572, "A model runs on a GPU, a graphics processing unit: a chip first built to draw graphics, and now used for the arithmetic of neural networks.", [[2.78, 3.11], [4.71, 5.21], [7.31, 7.59]]],
+  "fill/mem": [10.952, 17.591, "Everything the model uses has to fit in the GPU's own memory: eighty gigabytes, on a large one.", [[14.972, 15.532]]],
+  "fill/weights": [17.971, 26.355, "Load a model of eight billion parameters, at two bytes each, and its weights take sixteen gigabytes. That part stays fixed.", [[19.231, 19.381], [20.501, 20.691], [21.821, 22.101], [24.521, 24.901]]],
+  "fill/serve": [26.735, 36.917, "Now serve it: write text for many people at once. Each person's text is a sequence, and the tokens the model has read so far in it are its context.", [[27.725, 28.265], [30.355, 30.995], [33.055, 33.315], [35.715, 35.885]]],
+  "fill/cache": [37.297, 43.87, "Every sequence keeps a KV cache of its own, and each cache grows with every token the model writes.", [[40.077, 40.487]]],
+  "fill/full": [44.25, 55.131, "Sixteen sequences of four thousand tokens already hold twice as much as the weights, and soon the memory is full. It is the cache, not the weights, that fills it.", [[47.14, 47.29], [49.54, 49.91], [50.5, 50.68], [51.71, 52.31], [53.25, 53.45]]],
+  "fill/kwon": [55.511, 71.772, "In 2023, Woosuk Kwon and colleagues, building a serving system called V L L M, named this as the limit: each sequence's cache is huge and grows as it goes, so it caps how many sequences a GPU can serve at once.", [[56.801, 57.091], [58.511, 58.801], [61.731, 62.031], [63.441, 64.031], [67.611, 68.021]]],
+  "token/grid": [73.572, 84.765, "So how big is one sequence's cache? It keeps, for every token so far, a key and a value in every block. A model's blocks are also called its layers.", [[76.292, 76.782], [79.082, 79.312], [81.522, 82.042]]],
+  "token/two": [85.145, 90.759, "Start with one token, in one layer: two vectors, its key and its value.", [[86.615, 86.865], [87.655, 88.125], [88.895, 89.215], [89.795, 89.945]]],
+  "token/d": [91.139, 99.953, "Each vector holds d numbers, the model's width: four thousand here. So two times four thousand: eight thousand numbers.", [[93.089, 93.479], [94.409, 94.789], [95.839, 96.299], [98.179, 98.629]]],
+  "token/layers": [100.333, 109.191, "Every layer keeps its own pair, so thirty two layers make thirty two times as many: two hundred and fifty six thousand numbers.", [[102.313, 102.743], [106.103, 106.533]]],
+  "token/bytes": [109.571, 116.866, "At sixteen bits, each number takes two bytes: five hundred and twelve thousand bytes, for a single token.", [[110.791, 111.021], [112.861, 113.261], [115.491, 115.661]]],
+  "token/mb": [117.246, 123.087, "That is about half a megabyte, or MB, where a megabyte is a million bytes.", [[119.096, 119.386], [120.396, 120.846]]],
+  "token/opt": [123.467, 135.162, "Kwon's team counted it the same way for a model of thirteen billion parameters, with forty layers and d of five thousand one hundred and twenty: over eight hundred thousand bytes per token.", [[127.797, 128.147], [129.107, 129.287], [131.927, 132.437]]],
+  "grow/ctx": [136.962, 146.335, "Now multiply by the tokens. A context of four thousand tokens, at half a megabyte each, needs about two gigabytes, for one sequence.", [[139.012, 139.472], [141.602, 141.752], [143.162, 143.452], [145.012, 145.252]]],
+  "grow/formula": [146.715, 153.828, "All together: two, times the layers, times the tokens, times d, times the bytes per number.", [[147.425, 148.005], [148.395, 148.745], [149.705, 149.935], [150.955, 151.205], [151.975, 152.315]]],
+  "grow/double": [154.208, 159.181, "Each factor scales it in proportion. Twice the context, twice the cache.", [[156.378, 156.898], [157.938, 158.208]]],
+  "grow/batch": [159.561, 167.907, "And every sequence being served keeps a cache of its own. Sixteen at once need about thirty three gigabytes: twice the weights.", [[162.821, 163.341], [166.521, 166.891]]],
+  "grow/not": [168.287, 177.597, "What is not in the product leaves the cache alone. The vocabulary and the MLP make no keys or values, so growing them changes nothing here.", [[170.967, 171.517], [175.217, 175.547]]],
+  "grow/heads": [177.977, 187.538, "And more attention heads only split the same d numbers between them: each token still stores d numbers per key and per value, in every layer.", [[179.037, 179.257], [182.047, 182.577], [186.307, 186.547]]],
+  "fit/free": [189.338, 198.466, "Now run it backward. On the eighty gigabyte GPU, the weights leave sixty four gigabytes for the cache: sixty four billion bytes.", [[190.618, 191.198], [193.098, 193.408], [196.138, 196.558]]],
+  "fit/per": [198.846, 206.687, "Each token costs five hundred and twelve thousand bytes, so the question is how many of those fit into sixty four billion.", [[202.316, 202.756], [203.616, 203.836]]],
+  "fit/fit": [207.067, 216.541, "Divide. Cancel three zeros from each, and it is sixty four million over five hundred and twelve: a hundred and twenty five thousand tokens.", [[207.717, 208.287], [210.157, 210.347], [213.497, 213.997]]],
+  "fit/share": [216.921, 226.538, "That budget is shared by every sequence at once: one sequence of a hundred and twenty five thousand tokens, or about thirty one of four thousand each.", [[219.831, 220.331], [223.501, 223.841]]],
+  "fit/turn": [226.918, 227.659, "Your turn.", []]
  }
 }

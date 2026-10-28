@@ -1,21 +1,35 @@
 {
- "duration": 144.743,
+ "duration": 236.657,
  "scenes": {
-  "setup": [0.0, 84.434],
-  "bars": [84.434, 144.743]
+  "ask": [0.0, 42.923],
+  "nudge": [42.923, 116.232],
+  "why": [116.232, 172.169],
+  "onehot": [172.169, 236.657]
  },
  "beats": {
-  "setup/chain": [0.7, 17.769, "Scores, s, go through softmax to give probabilities, p. The loss is minus the log of the correct option's probability. Here the correct option is option one, so the loss is minus log zero point three, about one point two.", [[1.41, 1.78], [2.21, 2.67], [5.18, 5.5], [5.81, 6.54], [10.04, 10.61], [12.88, 13.26], [16.13, 16.51]]],
-  "setup/ask": [18.149, 31.048, "Now ask how the loss changes as each score moves. One partial derivative per score, stacked into a vector: the gradient, partial L, partial s, called ds in code.", [[21.599, 22.169], [24.189, 24.419], [25.659, 26.129], [26.839, 27.179], [28.939, 29.309]]],
-  "setup/nudge": [31.428, 50.479, "Measure the first one. Raise s zero by zero point zero one, and the loss goes from one point two zero eight to one point two one four: up zero point zero zero six, which is zero point six times the nudge. That slope, zero point six, is the first entry.", [[32.558, 33.078], [36.098, 36.478], [39.078, 39.338], [40.918, 41.448], [43.728, 44.088], [46.538, 47.108], [47.818, 48.088], [49.108, 49.348]]],
-  "setup/others": [50.859, 68.638, "Nudge the others the same way. Raising s one, the correct score, lowers the loss, by zero point zero zero seven: a slope of minus zero point seven. Raising s two adds zero point zero zero one: a slope of zero point one.", [[52.589, 53.389], [54.589, 54.829], [55.699, 56.069], [57.059, 57.289], [59.559, 59.939], [62.199, 62.839], [66.539, 66.899]]],
-  "setup/pattern": [69.018, 83.334, "Now compare with p. The two wrong options' slopes are their own probabilities, zero point six and zero point one. The correct option's slope is its probability minus one: zero point three minus one.", [[70.488, 71.068], [74.248, 74.618], [75.738, 75.888], [77.058, 77.588], [80.938, 81.338]]],
-  "bars/p": [85.134, 95.445, "Now write it as a vector. The probabilities are zero point six, zero point three and zero point one, and the correct option is option one.", [[86.754, 87.314], [88.554, 88.704], [89.864, 90.104], [91.204, 91.464], [92.734, 93.214], [94.214, 94.404]]],
-  "bars/answer": [95.825, 106.392, "The gradient is p, minus one-hot of y: the vector with a one at the correct option and zeros elsewhere. Here, zero, one, zero.", [[97.145, 97.495], [99.195, 99.705], [102.005, 102.185], [103.505, 104.035], [104.365, 104.675]]],
-  "bars/sub": [106.772, 116.181, "Take one away at option one: zero point three minus one is minus zero point seven. The other options keep their probabilities.", [[108.722, 109.332], [111.172, 111.412], [113.232, 113.862]]],
-  "bars/sum": [116.561, 124.076, "The entries always add up to zero: p adds up to one, and the one-hot vector takes exactly one away.", [[118.761, 119.341], [120.701, 121.071]]],
-  "bars/step": [124.456, 134.389, "So to lower the loss, move each score against its entry: the correct score goes up, and the others go down, the most confident wrong option the most.", [[125.876, 126.106], [128.176, 128.686], [130.056, 130.346], [131.576, 132.056]]],
-  "bars/done": [134.769, 142.522, "And once the correct option gets nearly all the probability, the gradient is nearly zero: there is little loss left to remove.", [[137.899, 138.259], [140.019, 140.559]]],
-  "bars/turn": [142.902, 143.643, "Your turn.", []]
+  "ask/ask": [0.7, 12.983, "To learn, a classifier needs its scores to change so that its loss comes down. So for each score, two questions: which way should it move, and how much does the loss care?", [[1.33, 1.63], [5.78, 6.42], [7.67, 7.91], [8.75, 9.24], [10.55, 10.84]]],
+  "ask/scores": [13.363, 24.399, "Here are three options' scores, drawn as bars. Softmax turns them into probabilities, p: about zero point six, zero point three and zero point one.", [[15.143, 15.323], [16.453, 17.013], [19.283, 19.593], [19.933, 20.363], [21.753, 21.983], [22.963, 23.213]]],
+  "ask/right": [24.779, 31.358, "The right answer, y, is the middle option, option one. It got only zero point three.", [[25.719, 25.999], [26.479, 26.649], [27.679, 28.069], [28.839, 29.359]]],
+  "ask/loss": [31.738, 41.823, "The loss is minus the log of that: about one point two, this dot on the minus log curve. The less the right answer gets, the higher the dot climbs.", [[33.868, 34.268], [35.568, 35.928], [37.818, 38.378], [39.998, 40.258]]],
+  "nudge/plain": [43.623, 50.229, "Answer them the plain way: nudge one score a little, hold the others still, and watch the loss.", [[45.093, 45.703], [47.103, 47.513], [48.663, 49.043]]],
+  "nudge/up0": [50.609, 59.806, "Raise the first score, a wrong option's. Its share grows and the right answer's shrinks, so the dot climbs: the loss goes up.", [[51.919, 52.299], [53.329, 53.869], [55.049, 55.209], [56.759, 57.069], [58.369, 58.729]]],
+  "nudge/slope0": [60.186, 69.74, "A nudge of one hundredth raises the loss by six thousandths, which is zero point six times the nudge. That rate is the slope for the first score.", [[63.996, 64.296], [66.666, 67.236]]],
+  "nudge/right1": [70.12, 80.787, "Now raise the right answer's score. Its share grows, the dot slides down, and the loss falls by seven thousandths: a slope of minus zero point seven.", [[72.1, 72.65], [73.83, 74.19], [75.43, 75.71], [78.04, 78.41]]],
+  "nudge/last2": [81.167, 87.661, "Raise the last score, and the loss rises by only one thousandth: a slope of zero point one.", [[82.557, 82.807], [85.357, 85.817]]],
+  "nudge/grad": [88.041, 102.695, "One slope per score, each found with the others held still: these are the partial derivatives of the loss. Stacked into a vector, they make its gradient, partial L, partial s, called d s in code.", [[89.501, 89.971], [92.071, 92.671], [95.061, 95.611], [96.881, 97.131], [98.251, 98.601], [99.411, 99.631], [100.471, 100.851]]],
+  "nudge/read": [103.075, 115.132, "The sign says which way. Positive means raising that score raises the loss, so lower it; negative means raise it. The size says how much the loss cares.", [[104.585, 105.205], [106.755, 107.155], [108.945, 109.145], [110.005, 110.545], [112.025, 112.615]]],
+  "why/compare": [116.932, 128.198, "Set the slopes beside the probabilities. For the two wrong options they match exactly: zero point six and zero point six, zero point one and zero point one.", [[119.232, 119.882], [122.482, 123.022], [125.362, 125.892], [126.862, 127.082]]],
+  "why/minus": [128.578, 136.414, "The right answer's slope is its probability minus one: zero point three minus one is minus zero point seven.", [[129.898, 130.058], [132.048, 132.568], [134.308, 134.558]]],
+  "why/why": [136.794, 143.43, "Why? The same loss can be written as the log of the total, T, minus the right answer's score.", [[137.264, 137.764], [140.724, 140.934], [141.284, 141.594]]],
+  "why/share": [143.81, 151.809, "Raise any score a little, and T grows by e to that score, times the nudge, because e to the x is its own slope.", [[145.43, 145.69], [147.89, 148.15], [149.11, 149.39]]],
+  "why/over": [152.189, 161.644, "And the log's slope is one over T, so the log of T grows by that growth, divided by T: the option's probability, times the nudge.", [[154.439, 154.909], [157.299, 157.489], [158.529, 158.979], [160.299, 160.659]]],
+  "why/one": [162.024, 171.069, "The other part, minus the right score, moves only when the right score does, and by the whole nudge, the other way. That is the minus one.", [[162.904, 163.164], [164.424, 164.724], [166.744, 167.154], [169.084, 169.584]]],
+  "onehot/collect": [172.869, 185.276, "So every slope is that option's probability, and the right answer's loses one more. Collect what is taken away in a vector: a one at the right answer, zeros elsewhere.", [[175.729, 176.079], [177.119, 177.309], [178.399, 179.289], [181.559, 182.069], [183.599, 183.969]]],
+  "onehot/name": [185.656, 197.053, "It is called one-hot: exactly one entry is on, or hot, and the rest are off. Here it is zero, one, zero, written one-hot of y.", [[187.126, 187.626], [189.586, 189.836], [190.516, 190.836], [192.006, 192.566], [194.876, 195.196]]],
+  "onehot/formula": [197.433, 206.369, "So the gradient is p minus the one-hot vector: partial L, partial s, equals p minus one-hot of y.", [[199.253, 199.423], [201.083, 201.513], [202.353, 202.513], [203.373, 203.643]]],
+  "onehot/sum": [206.749, 217.089, "Its entries always add up to zero: p adds up to one, and the one-hot takes exactly one away. So the only negative entry is the right answer's.", [[209.009, 209.559], [210.809, 211.129], [213.699, 214.229]]],
+  "onehot/step": [217.469, 226.795, "To lower the loss, move the scores against the gradient: the right score goes up, and the wrong ones go down, the most probable wrong option the most.", [[218.449, 218.699], [220.749, 221.239], [222.509, 222.759], [224.149, 224.569]]],
+  "onehot/done": [227.175, 234.436, "As the right answer's probability nears one, every entry nears zero: there is little loss left to remove.", [[229.735, 230.095], [231.835, 232.435]]],
+  "onehot/turn": [234.816, 235.557, "Your turn.", []]
  }
 }

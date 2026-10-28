@@ -1,23 +1,36 @@
 {
- "duration": 133.486,
+ "duration": 237.398,
  "scenes": {
-  "probe": [0.0, 41.654],
-  "classes": [41.654, 88.089],
-  "test": [88.089, 104.694],
-  "meaning": [104.694, 133.486]
+  "probe": [0.0, 74.082],
+  "score": [74.082, 110.701],
+  "classes": [110.701, 167.18],
+  "test": [167.18, 185.239],
+  "meaning": [185.239, 237.398]
  },
  "beats": {
-  "probe/freeze": [0.7, 11.641, "Does the residual stream at some layer know whether a word is a noun? Freeze the model, and collect its stream, h, for many words, each labeled noun or not.", [[4.73, 5.39], [7.64, 7.85], [8.24, 8.41], [9.36, 9.69], [10.4, 10.59]]],
-  "probe/fit": [12.021, 23.449, "Then fit a linear classifier on them: a score, w dot h plus b, positive for a noun. Only w and b are trained. The model never changes.", [[14.341, 14.781], [15.381, 15.771], [17.431, 17.781], [18.991, 19.541], [21.511, 21.941]]],
-  "probe/example": [23.829, 40.554, "Say h is two, minus one and a half, w is one, two and minus two, and b is a half. The score is two, minus two, minus one, plus a half: minus a half. The probe says: not a noun.", [[25.439, 25.619], [26.859, 27.299], [28.519, 28.709], [30.019, 30.359], [31.739, 32.359], [33.569, 33.779], [34.559, 34.719], [35.469, 35.729], [36.479, 36.889], [37.749, 38.409], [39.249, 39.649]]],
-  "classes/rows": [42.354, 61.365, "A probe can also decode more than yes or no, like a sentence's tense. Then it is a linear classifier with one weight row and one bias per class: w zero and b zero for past, w one and b one for present, w two and b two for future.", [[45.554, 45.894], [47.334, 47.884], [49.774, 49.964], [52.774, 53.344], [55.804, 56.294], [58.454, 58.994]]],
-  "classes/scores": [61.745, 80.973, "Here h is one, two. Past scores one times one, plus zero times two, plus zero: one. Present scores minus one, plus four, minus one: two. Future scores two, minus two, plus one: one.", [[62.985, 63.215], [63.625, 63.985], [64.365, 64.965], [65.855, 66.195], [67.175, 67.385], [68.855, 69.055], [69.805, 70.205], [70.605, 71.225], [72.105, 72.435], [73.205, 73.455], [74.145, 74.315], [75.085, 75.535], [75.905, 76.515], [77.465, 77.795], [78.185, 78.385], [79.195, 79.395], [80.075, 80.525]]],
-  "classes/wins": [81.353, 86.989, "As in any linear classifier, the highest score wins: the probe says present.", [[83.143, 83.423], [85.003, 85.453], [86.253, 86.463]]],
-  "test/held": [88.789, 94.56, "Now test the probe on words it was not fit on. A score above zero predicts noun.", [[91.639, 92.139]]],
-  "test/count": [94.94, 103.594, "It matches the true label on six of eight: an accuracy of zero point seven five, where a coin flip would get zero point five.", [[97.6, 98.09], [100.63, 101.0]]],
-  "meaning/there": [105.394, 111.838, "High accuracy shows the information is in the stream, written so that one linear map can read it.", [[108.744, 109.254]]],
-  "meaning/use": [112.218, 121.144, "It does not show that the model uses it. Present is not the same as used, and testing use takes an experiment on the model itself.", [[114.468, 115.118], [117.248, 117.648]]],
-  "meaning/linear": [121.524, 131.266, "And the probe is kept linear on purpose. A large network could work out the answer by itself, and then its success would describe the probe, not the stream.", [[123.944, 124.494], [127.244, 127.594], [130.144, 130.404]]],
-  "meaning/turn": [131.646, 132.386, "Your turn.", []]
+  "probe/ask": [0.7, 10.778, "Halfway up a model, a word's residual stream is hundreds of numbers. Does it know whether the word is a noun? Reading the numbers by eye will not tell you.", [[1.88, 2.18], [5.24, 5.74], [7.59, 8.15]]],
+  "probe/points": [11.158, 19.314, "Collect the stream at that layer, h, for many words, and pretend it holds just two numbers: each word is a point.", [[12.938, 13.298], [13.758, 13.958], [14.848, 15.178], [17.338, 17.848]]],
+  "probe/labels": [19.694, 27.74, "Each word comes with its right answer, noun or not, called its label, y. Color the points by label.", [[21.944, 22.254], [23.164, 23.514], [24.624, 25.114], [25.534, 26.144]]],
+  "probe/line": [28.12, 39.981, "Train a linear classifier on these points, as before: weights, w, turn its line, and a bias, b, slides it, until it splits the colors as well as it can.", [[31.58, 32.06], [32.51, 32.67], [33.16, 33.53], [34.46, 34.75], [35.55, 35.77], [36.09, 36.29], [37.0, 37.31], [39.78, 39.95]]],
+  "probe/score": [40.361, 51.469, "Its score, w dot h plus b, is positive on the noun side. If the line splits the colors well, the stream holds the answer where a linear classifier can read it.", [[41.131, 41.421], [43.151, 43.431], [45.091, 45.701], [47.581, 47.901]]],
+  "probe/frozen": [51.849, 62.876, "Only w and b are trained; the model stays frozen. That is why this is called a probe: an instrument that measures a system without changing it, like a thermometer.", [[54.179, 54.639], [55.959, 56.489], [58.309, 58.719], [61.619, 61.939]]],
+  "probe/history": [63.256, 72.982, "Guillaume Alain and Yoshua Bengio named these linear classifiers probes in 2016, and fit one on every layer of trained image networks.", [[69.236, 69.616]]],
+  "score/wb": [74.782, 79.694, "Say training gave w as one and two, and b as minus one.", [[77.752, 78.012]]],
+  "score/yes": [80.074, 89.518, "Take a word at the point one, one. Its score is one, plus two, minus one: two. Positive, so the probe says noun.", [[82.144, 82.634], [83.924, 84.194], [84.864, 85.034], [85.744, 86.194], [86.544, 87.094], [87.614, 87.944]]],
+  "score/no": [89.898, 100.684, "Another word sits at zero and minus one. Its score is zero, minus two, minus one: minus three. Negative: not a noun.", [[92.688, 93.218], [94.648, 94.808], [96.468, 96.978], [97.818, 98.618], [99.258, 99.788]]],
+  "score/dir": [101.064, 109.601, "Exactly zero sits on the line. And w is a direction: the probe weighs every number in the stream, not just one.", [[103.314, 103.904], [105.564, 106.124], [108.414, 108.754]]],
+  "classes/three": [111.401, 121.563, "A probe can read out more than yes or no: say, a sentence's tense, past, present or future. Each point now has one of three labels.", [[114.021, 114.521], [116.311, 116.591], [117.031, 117.231], [118.351, 119.061]]],
+  "classes/regions": [121.943, 130.789, "Each class gets its own weights and bias, as in any linear classifier, and the highest score wins: three regions with straight borders.", [[124.433, 124.603], [126.263, 126.593], [128.253, 128.663]]],
+  "classes/h": [131.169, 137.149, "A new word's stream, h, is one and two. It lands in the present region.", [[132.689, 132.959], [133.399, 133.599], [134.849, 135.379]]],
+  "classes/W": [137.529, 145.349, "Stack the weight rows into a matrix, W, and the biases into b: one row and one bias per class.", [[139.719, 139.989], [140.399, 140.789], [142.389, 142.919]]],
+  "classes/row": [145.729, 156.603, "Row zero, w zero, is past's. Dot it with h and add its bias: two times one, plus zero times two, minus one, is one.", [[146.629, 146.939], [147.829, 148.109], [148.979, 149.499], [150.499, 150.659], [151.759, 152.249], [153.159, 153.389], [155.749, 156.009]]],
+  "classes/all": [156.983, 166.08, "Present's row gives two, and future's minus two. Two is the highest, so the probe says present: the region h landed in.", [[158.603, 158.913], [160.463, 161.113], [162.253, 162.553], [164.103, 164.553]]],
+  "test/held": [167.88, 176.184, "Then test the probe on held-out words: words kept aside, never trained on. A score above zero predicts noun.", [[170.42, 170.89], [172.09, 172.33], [173.26, 173.77]]],
+  "test/count": [176.564, 184.139, "It matches their labels on six of eight: an accuracy of zero point seven five, where a coin flip gets a half.", [[178.994, 179.494], [182.044, 182.374]]],
+  "meaning/there": [185.939, 193.751, "High accuracy shows the answer is in the stream, readable by one linear map: a weighted sum, like the probe's score.", [[188.869, 189.199], [190.989, 191.449], [192.409, 192.619]]],
+  "meaning/use": [194.131, 203.057, "It does not show that the model uses it. Being there is not being used: testing use takes changing the stream and watching the model.", [[196.391, 196.941], [199.021, 199.541], [200.301, 200.501]]],
+  "meaning/random": [203.437, 219.22, "The probe must also stay simple. In 2019, John Hewitt and Percy Liang gave each word a random label, one no stream could know. An MLP probe still got about ninety three percent right, by memorizing.", [[205.647, 206.297], [207.437, 207.717], [209.427, 209.607], [211.477, 211.907], [213.567, 214.227], [217.937, 218.297]]],
+  "meaning/linear": [219.6, 235.178, "A linear probe got only about seventy one, though both got about ninety seven on the real labels. A line can barely memorize, so its success describes the stream. If only a big probe succeeds, the big probe may be doing the work.", [[222.2, 222.56], [225.55, 226.14], [227.94, 228.22], [230.37, 230.92], [232.87, 233.21]]],
+  "meaning/turn": [235.558, 236.298, "Your turn.", []]
  }
 }

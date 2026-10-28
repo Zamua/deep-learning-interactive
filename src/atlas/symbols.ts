@@ -423,7 +423,11 @@ export const SCOPED: Record<string, SymbolMap> = {
   rmsnorm: { d: { color: 'slate', name: 'd: the number of features', about: 'How many numbers each vector has; the mean square is taken over them.' }, gamma: { color: 'purple', name: 'γ: the learned gain', tex: '\\gamma', about: 'One entry per feature, multiplied in after normalizing.' }, beta: { color: 'green', name: 'β: the learned shift', tex: '\\beta', about: 'Layer norm adds it after scaling; RMSNorm leaves it out.' } },
   swiglu: { d: att.d!, h: { color: 'slate', name: 'h: the hidden width', code: ['h'], about: 'How wide the MLP is inside: each of its three matrices has d × h weights.' }, sig },
   gqa: { ...pick(att, 'q k v d heads dhead'), kvheads: { color: 'slate', name: 'g: the number of key-value heads', tex: 'g', code: ['n_kv'], about: 'How many key and value heads the query heads share. The cache shrinks by h / g.' } },
-  'residual-stream': { x: { color: 'orange', name: 'x: the residual stream', about: 'One running vector per token: the embedding x₀ plus everything each block has added.' }, d: att.d! },
+  'residual-stream': {
+    x: { color: 'orange', name: 'x: the residual stream', about: 'One running vector per token: the embedding x₀ plus everything each block has added.' },
+    x0: { color: 'orange', name: 'x₀: the embedding', tex: 'x_0', code: ['x0'], about: 'Where the stream starts: the token\'s embedding, before any block writes to it.' },
+    d: att.d!,
+  },
   'logit-lens': { x: { color: 'orange', name: 'x: the residual stream', about: 'One running vector per token: the embedding x₀ plus everything each block has added.' }, s: { color: 'purple', name: 's: the scores', code: ['s', 'scores'], about: 'One per token in the vocabulary: W_U times the stream.' } },
   'linear-probe': {
     h: { color: 'gold', name: 'h: the activations probed', code: ['h'], about: 'The hidden vector the probe reads, taken from partway through the model.' },
@@ -452,7 +456,7 @@ export const SCOPED: Record<string, SymbolMap> = {
   'policy-gradient': pick(rl, 'pi R theta'),
   baseline,
   advantage: baseline,
-  'sigmoid-grad': { sig },
+  'sigmoid-grad': { sig: { ...sig, about: 'σ(x) = 1 / (1 + e⁻ˣ) squashes any number into the range 0 to 1, with σ(0) = 0.5. Sigmoid means S-shaped: it is Verhulst\'s growth curve, levelling off at 1.' } },
   activations: { sig },
   gan: {
     gen: { color: 'green', name: 'G: the generator', tex: 'G', code: [], about: 'G(z) is the fake image it makes from the noise z.' },
@@ -492,6 +496,7 @@ export const SCOPED: Record<string, SymbolMap> = {
     s: { color: 'purple', name: 's: the scores', code: ['s', 'scores', 'logits'], about: 'One per token in the vocabulary, at every position.' },
   },
   'kv-cache': pick(att, 'q k v d T'),
+  'kv-memory': pick(att, 'd'),
   perplexity: { L: { color: 'red', name: 'L: the average next-token loss', code: ['L', 'loss'], about: 'The mean of −ln p over the tokens; perplexity is e to this.' } },
   autoencoder: { z: { color: 'purple', name: 'z: the code', about: 'The narrow middle: what the encoder keeps of x for the decoder to rebuild it from.' } },
   vae: {
@@ -562,7 +567,8 @@ export const SCOPED: Record<string, SymbolMap> = {
   'conv-output-size': { F: { ...ATLAS_SYMBOLS.F!, about: 'A filter covers F positions along each side of the input. 3 is the usual choice.' } },
   'rnn-attention': {
     s: { ...scores, name: 's: the attention scores', about: 'One per encoder state: the decoder\'s state q dotted with that state.' },
-    alpha: { color: 'teal', name: 'α: the attention weights', tex: '\\alpha', code: ['alpha', 'weights'], about: 'The softmax of the scores: positive, adding up to one.' },
+    alpha: { color: 'teal', name: 'α: the attention weights', tex: '\\alpha', code: ['a', 'alpha', 'weights'], about: 'The softmax of the scores: positive, adding up to one.' },
+    q: { color: 'teal', name: 'q: the decoder\'s state', about: 'What the decoder is looking for at this step. Its dot product with each encoder state hⱼ gives that state\'s score.' },
   },
   sampling: { s: { ...scores, name: 's: the next-token scores', about: 'One number per token in the vocabulary. Softmax turns them into probabilities.' } },
   'linear-recurrence': ssm,
@@ -763,8 +769,8 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
   'lr-schedule': { cosine: { is: 'the cosine schedule: the rate at step t of T, from hi down to lo' } },
   'res-block': { cut: { is: 'the shortcut: a 1 × 1 conv that matches x to F(x)\'s shape' } },
   residual: {
-    layer1: { is: 'the first linear layer inside F' },
-    layer2: { is: 'the second linear layer: its output is F(x)' },
+    layer1: { is: 'the first layer inside F: weights times x, plus a bias' },
+    layer2: { is: 'the second layer inside F: its output is F(x)' },
     block1: { is: 'the first residual block: x + F₁(x)' },
     block2: { is: 'the second residual block: h + F₂(h)' },
   },

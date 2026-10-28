@@ -1,21 +1,28 @@
 {
- "duration": 125.531,
+ "duration": 174.387,
  "scenes": {
-  "block": [0.0, 47.901],
-  "match": [47.901, 125.531]
+  "block": [0.0, 47.062],
+  "clash": [47.062, 105.688],
+  "fit": [105.688, 174.387]
  },
  "beats": {
-  "block/plain": [0.7, 9.128, "A plain layer replaces its input with something new. A residual block keeps its input, x, and adds a change to it.", [[3.93, 4.52], [5.55, 5.7], [6.69, 6.9], [7.31, 7.6]]],
-  "block/add": [9.508, 27.918, "The layers inside, a conv, a ReLU and another conv, compute a function of x, written F of x. Here F names that function, not a filter size. A shortcut carries x around them, and the two are added: y equals x plus F of x.", [[10.688, 10.998], [11.598, 11.848], [13.538, 13.888], [15.438, 15.708], [16.068, 16.258], [16.988, 17.488], [17.848, 18.028], [19.518, 19.768], [20.918, 21.498], [23.548, 23.798], [24.898, 25.338], [26.628, 26.788]]],
-  "block/example": [28.298, 38.613, "If x is two, minus one and three, and F gives a half, a half and minus one, then y is two and a half, minus a half, and two.", [[31.048, 31.438], [34.498, 34.958], [36.708, 36.918], [37.768, 37.978]]],
-  "block/zero": [38.993, 46.801, "To leave its input alone, a block only has to make F zero. So an extra block need not make the network worse.", [[40.503, 40.803], [42.953, 43.533]]],
-  "match/need": [48.601, 58.335, "The sum needs x and F of x in the same shape. Take an x with sixty four channels, eight by eight: sixty four by eight by eight.", [[51.871, 52.521], [54.731, 54.941], [55.761, 56.191]]],
-  "match/keep": [58.715, 68.025, "If F's convs have sixty four filters, stride one and padding one, F of x has that shape too, and the shortcut is x itself.", [[61.295, 61.535], [63.275, 63.735], [65.555, 65.945]]],
-  "match/first": [68.405, 77.499, "Now give F's first conv a hundred and twenty eight filters, and stride two. A hundred and twenty eight filters make a hundred and twenty eight channels.", [[71.955, 72.135], [73.075, 73.695]]],
-  "match/round": [77.879, 89.289, "Its width: eight minus three, plus two for the padding, over two, plus one. That is four and a half. It is not whole, so it rounds down: four.", [[78.549, 79.089], [80.249, 80.549], [81.869, 82.219], [82.879, 83.129], [83.779, 84.309], [85.759, 86.219], [87.139, 87.329], [88.399, 88.819]]],
-  "match/second": [89.669, 100.893, "The second conv, stride one and padding one, keeps four by four. So F of x is a hundred and twenty eight by four by four, and x cannot be added to it.", [[90.719, 91.019], [92.719, 92.979], [94.169, 94.709], [98.539, 98.979]]],
-  "match/cut": [101.273, 109.312, "So the shortcut becomes a one by one conv, with F's channels, a hundred and twenty eight filters, and F's stride, two.", [[104.153, 104.443], [105.493, 105.753], [107.303, 107.563], [108.653, 108.923]]],
-  "match/check": [109.692, 123.311, "Its width, with no padding: eight minus one, over two, plus one, is four and a half again, so four. The shortcut gives a hundred and twenty eight by four by four, and the sum works.", [[110.432, 110.612], [111.482, 111.942], [113.002, 113.222], [113.952, 114.112], [114.752, 115.082], [116.432, 116.712], [117.592, 118.232], [121.782, 122.152]]],
-  "match/turn": [123.691, 124.431, "Your turn.", []]
+  "block/recap": [0.7, 12.052, "A residual block adds its input back: y equals x plus F of x. Its layers, F, only learn the change, what is left over: the residual.", [[3.21, 3.73], [6.18, 6.68], [7.41, 7.59], [7.95, 8.22], [9.58, 9.87], [10.85, 11.27]]],
+  "block/conv": [12.432, 22.307, "In a ConvNet, x is a stack of channels, and F is two convs with a ReLU between. Here F names the layers, not a filter size.", [[13.342, 13.622], [15.292, 15.592], [18.432, 19.012], [19.382, 19.562], [20.832, 21.082]]],
+  "block/entries": [22.687, 33.063, "The sum goes entry by entry, at every channel and position. Take three of x's numbers: two plus a half is two and a half, and so on down.", [[24.707, 24.957], [26.617, 27.197], [28.887, 29.427], [31.667, 31.997]]],
+  "block/relu": [33.443, 45.962, "In the first residual networks, from Kaiming He and colleagues in 2015, a ReLU follows the sum. So the minus a half becomes zero, while the two and a half and the two stay.", [[35.283, 35.463], [38.103, 38.523], [40.223, 40.823], [43.233, 43.553]]],
+  "clash/stages": [47.762, 58.63, "But a ConvNet changes shape as it goes: stage by stage, fewer positions and more channels. So some residual blocks have to change the shape themselves.", [[50.422, 50.852], [52.082, 52.482], [54.532, 55.062]]],
+  "clash/x": [59.01, 64.982, "Take an x with sixty four channels, eight by eight: sixty four by eight by eight.", [[61.34, 61.58], [62.36, 62.83], [64.21, 64.36]]],
+  "clash/first": [65.362, 75.339, "This block's first conv, with a hundred and twenty eight filters, makes a hundred and twenty eight channels. And its stride is two, so it lands on every other position.", [[66.862, 67.132], [68.852, 69.122], [71.062, 71.522], [72.922, 73.262]]],
+  "clash/round": [75.719, 84.365, "Its width: eight minus three, plus two for the padding, over two, plus one, is four and a half, rounded down to four.", [[76.449, 76.889], [78.049, 78.349], [79.659, 79.919], [80.599, 80.759], [81.409, 81.749], [82.769, 83.099]]],
+  "clash/second": [84.745, 93.899, "The second conv, stride one and padding one, keeps four by four. So F of x is a hundred and twenty eight by four by four.", [[85.725, 86.045], [87.815, 88.055], [89.265, 89.755], [92.355, 92.565]]],
+  "clash/clash": [94.279, 104.588, "Now try the sum. F of x is twice as deep as x, and half as wide. Their entries do not pair up one to one, so the two cannot be added.", [[95.359, 95.979], [98.409, 98.579], [99.649, 100.269], [102.689, 102.989]]],
+  "fit/need": [106.388, 118.132, "So the shortcut has to reshape x the same way, while changing as little else as it can. It gets a conv of its own, with filters one position wide: a one by one conv.", [[109.588, 109.908], [112.078, 112.638], [114.178, 114.418], [116.248, 116.688]]],
+  "fit/mix": [118.512, 128.264, "A one by one filter still reaches through every channel. At each position, it mixes the sixty four numbers there into one, and looks at nothing around them.", [[121.892, 122.372], [123.332, 123.542], [126.362, 126.632]]],
+  "fit/filters": [128.644, 134.691, "A hundred and twenty eight such filters make a hundred and twenty eight channels, as many as F makes.", [[132.764, 133.124]]],
+  "fit/stride": [135.071, 148.305, "Stride two, with no padding, lands on every other position, the very positions F's first conv was centered on. Eight minus one, over two, plus one, is four and a half: four.", [[136.031, 136.331], [137.151, 137.401], [139.111, 139.571], [142.561, 143.151], [144.231, 144.521], [145.231, 145.411], [146.011, 146.321], [147.401, 147.811]]],
+  "fit/sum": [148.685, 155.88, "So the shortcut gives a hundred and twenty eight by four by four, the shape of F of x, and the sum works.", [[152.595, 152.955], [154.295, 154.645]]],
+  "fit/proj": [156.26, 166.157, "The 2015 paper matched shapes this way in its deepest networks, and called it a projection shortcut: it carries x over into F's shape.", [[160.53, 160.89], [162.9, 163.45]]],
+  "fit/same": [166.537, 172.167, "In every block that keeps the shape, the shortcut stays x itself, with nothing to learn.", [[168.507, 168.777], [170.757, 171.067]]],
+  "fit/turn": [172.547, 173.287, "Your turn.", []]
  }
 }
