@@ -924,3 +924,11 @@ canvas.lec-canvas {
   width: 16px;
   height: 16px;
 }
+
+a.lk-row {
+  color: inherit;
+  text-decoration: none;
+}
+a.lk-row .lk-what {
+  color: var(--accent);
+}
