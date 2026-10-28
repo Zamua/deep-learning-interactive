@@ -19,7 +19,7 @@ export const script: LectureScript = {
         # the line: w @ x + b == 0           #@line
       `,
       beats: [
-        { id: 'points', say: 'Boil each image down to two numbers, two features, and every image becomes a point on a graph. The cats land low and to the left, the ships up and to the right.', code: 'x' },
+        { id: 'points', say: 'Describe each image by two numbers, called its features: say, how much blue it has, and how many straight edges. Then every image is a point on a graph. Cats land low and to the left; ships, with sea and masts, up and to the right.', code: 'x' },
         { id: 'line', say: 'Telling them apart means drawing a line between them. You know a line from school as {y = mx + b|y equals m x plus b}: m tilts it, and b slides it.', code: 'line' },
         { id: 'rewrite', say: 'Here both directions are features, so the same line is written another way: every point x where w dot x, plus b, is zero. The weights, w, do what m did, and b is the same b.', code: 'line' },
         { id: 'rotate', say: 'Change the weights in w, and the line turns.', code: 'w' },

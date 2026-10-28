@@ -1,29 +1,29 @@
 {
- "duration": 197.575,
+ "duration": 203.313,
  "scenes": {
-  "line": [0.0, 83.02],
-  "rows": [83.02, 133.737],
-  "bias": [133.737, 197.575]
+  "line": [0.0, 88.759],
+  "rows": [88.759, 139.475],
+  "bias": [139.475, 203.313]
  },
  "beats": {
-  "line/points": [0.7, 11.986, "Boil each image down to two numbers, two features, and every image becomes a point on a graph. The cats land low and to the left, the ships up and to the right.", [[3.06, 3.38], [4.19, 4.6], [7.05, 7.68], [9.66, 10.09], [11.81, 11.97]]],
-  "line/line": [12.366, 22.638, "Telling them apart means drawing a line between them. You know a line from school as y equals m x plus b: m tilts it, and b slides it.", [[15.256, 15.806], [19.826, 20.376], [21.216, 21.446]]],
-  "line/rewrite": [23.018, 37.42, "Here both directions are features, so the same line is written another way: every point x where w dot x, plus b, is zero. The weights, w, do what m did, and b is the same b.", [[23.448, 23.608], [25.378, 25.738], [27.778, 28.378], [31.708, 31.858], [32.468, 33.078], [33.648, 33.808], [34.308, 34.508], [35.418, 35.778]]],
-  "line/rotate": [37.8, 41.0, "Change the weights in w, and the line turns.", [[39.46, 39.71]]],
-  "line/slide": [41.38, 54.824, "Change b, and it slides without turning. Set b to zero, and the line is pinned to the corner where both features are zero: no line through there splits these. b moves it out between them.", [[42.27, 42.59], [44.21, 44.84], [46.14, 46.39], [49.79, 50.31], [52.43, 53.0]]],
-  "line/side": [55.204, 73.474, "Plug a point in, and w dot x plus b is its score. A ship at three, three: three plus three, minus four, is two. A cat at one, one scores minus two. Positive on one side, negative on the other, and bigger the farther from the line.", [[56.134, 56.354], [59.254, 59.814], [61.314, 61.764], [62.874, 63.034], [63.824, 64.024], [64.574, 65.124], [66.534, 66.684], [67.924, 68.544], [69.774, 70.004], [71.174, 71.504]]],
-  "line/linear": [73.854, 81.92, "Features times weights, added up, plus b: a straight line. That is why this is called a linear classifier.", [[75.424, 75.744], [76.284, 76.634], [77.324, 77.794], [78.704, 79.194]]],
-  "rows/x": [83.72, 90.618, "Now three classes, cat, dog and ship, and an input x with features two and one.", [[85.04, 85.39], [85.73, 86.04], [86.36, 86.54], [87.09, 87.57]]],
-  "rows/W": [90.998, 103.089, "Each class gets its own line: its own weights, and its own bias. Stack the weights as rows, and they make a matrix, W: one row per class, one column per feature.", [[92.858, 93.248], [94.148, 94.298], [95.518, 96.088], [98.818, 99.128], [99.588, 100.078], [101.358, 101.668]]],
-  "rows/row": [103.469, 114.178, "Each class scores the input with its own row. Cat's row is one and two. Dot it with x: one times two, plus two times one, is four.", [[106.319, 106.829], [108.639, 109.209], [110.309, 110.779], [111.799, 111.999], [113.269, 113.509]]],
-  "rows/all": [114.558, 122.954, "Dog's row gives one, and ship's gives five. That is all W times x does: one dot product per row.", [[116.038, 116.328], [117.858, 118.488], [120.858, 121.288]]],
-  "rows/col": [123.334, 132.637, "Always a row, never a column. A column holds one weight per class, three of them here, so it does not even line up with the two features.", [[124.334, 124.684], [125.684, 126.234], [128.444, 128.864], [129.704, 130.054]]],
-  "bias/b": [134.437, 142.3, "Then each class adds its bias, b, one number per class: one, zero, and minus two.", [[136.797, 137.117], [137.507, 137.967], [139.357, 139.827], [140.197, 140.477], [141.017, 141.197]]],
-  "bias/s": [142.68, 152.491, "The scores, s equals W x plus b, come out five, one and three. Cat scores highest, so the classifier says cat.", [[143.48, 143.77], [146.05, 146.41], [147.4, 147.63], [148.69, 149.27], [150.5, 150.79]]],
-  "bias/forget": [152.871, 160.566, "Leave the bias out, and ship wins instead, with five. The bias is part of the score, not an afterthought.", [[154.161, 154.461], [155.861, 156.131], [156.781, 157.371], [159.131, 159.401]]],
-  "bias/zero": [160.946, 170.952, "Set x to all zeros, and W times x vanishes. The scores are exactly b: each class's lean before it sees any evidence.", [[162.796, 163.076], [165.166, 165.696], [167.426, 167.956]]],
-  "bias/name": [171.332, 180.261, "That lean gives the bias its name: it tilts a class's score up or down before any evidence, the way a bias tilts a judgment.", [[173.602, 174.112], [177.952, 178.382]]],
-  "bias/why": [180.641, 195.354, "It is the same b that slid the line. Without it, an input of all zeros would score zero for every class, so every class would start level. With it, a class that turns up often, like cat, can start ahead.", [[183.081, 183.611], [184.171, 184.431], [188.111, 188.451], [190.321, 190.871], [191.271, 191.551], [193.121, 193.351], [194.131, 194.421]]],
-  "bias/turn": [195.734, 196.475, "Your turn.", []]
+  "line/points": [0.7, 17.725, "Describe each image by two numbers, called its features: say, how much blue it has, and how many straight edges. Then every image is a point on a graph. Cats land low and to the left; ships, with sea and masts, up and to the right.", [[3.06, 3.33], [4.35, 4.83], [5.22, 5.39], [6.59, 6.83], [8.39, 9.05], [11.41, 12.0], [14.01, 14.46], [16.38, 16.66]]],
+  "line/line": [18.105, 28.377, "Telling them apart means drawing a line between them. You know a line from school as y equals m x plus b: m tilts it, and b slides it.", [[20.995, 21.545], [25.565, 26.115], [26.955, 27.185]]],
+  "line/rewrite": [28.757, 43.159, "Here both directions are features, so the same line is written another way: every point x where w dot x, plus b, is zero. The weights, w, do what m did, and b is the same b.", [[29.187, 29.347], [31.117, 31.477], [33.517, 34.117], [37.447, 37.597], [38.207, 38.817], [39.387, 39.547], [40.047, 40.247], [41.157, 41.517]]],
+  "line/rotate": [43.539, 46.738, "Change the weights in w, and the line turns.", [[45.199, 45.449]]],
+  "line/slide": [47.118, 60.563, "Change b, and it slides without turning. Set b to zero, and the line is pinned to the corner where both features are zero: no line through there splits these. b moves it out between them.", [[48.008, 48.328], [49.948, 50.578], [51.878, 52.128], [55.528, 56.048], [58.168, 58.738]]],
+  "line/side": [60.943, 79.213, "Plug a point in, and w dot x plus b is its score. A ship at three, three: three plus three, minus four, is two. A cat at one, one scores minus two. Positive on one side, negative on the other, and bigger the farther from the line.", [[61.873, 62.093], [64.993, 65.553], [67.053, 67.503], [68.613, 68.773], [69.563, 69.763], [70.313, 70.863], [72.273, 72.423], [73.663, 74.283], [75.513, 75.743], [76.913, 77.243]]],
+  "line/linear": [79.593, 87.659, "Features times weights, added up, plus b: a straight line. That is why this is called a linear classifier.", [[81.163, 81.483], [82.023, 82.373], [83.063, 83.533], [84.443, 84.933]]],
+  "rows/x": [89.459, 96.357, "Now three classes, cat, dog and ship, and an input x with features two and one.", [[90.779, 91.129], [91.469, 91.779], [92.099, 92.279], [92.829, 93.309]]],
+  "rows/W": [96.737, 108.828, "Each class gets its own line: its own weights, and its own bias. Stack the weights as rows, and they make a matrix, W: one row per class, one column per feature.", [[98.597, 98.987], [99.887, 100.037], [101.257, 101.827], [104.557, 104.867], [105.327, 105.817], [107.097, 107.407]]],
+  "rows/row": [109.208, 119.917, "Each class scores the input with its own row. Cat's row is one and two. Dot it with x: one times two, plus two times one, is four.", [[112.058, 112.568], [114.378, 114.948], [116.048, 116.518], [117.538, 117.738], [119.008, 119.248]]],
+  "rows/all": [120.297, 128.693, "Dog's row gives one, and ship's gives five. That is all W times x does: one dot product per row.", [[121.777, 122.067], [123.597, 124.227], [126.597, 127.027]]],
+  "rows/col": [129.073, 138.375, "Always a row, never a column. A column holds one weight per class, three of them here, so it does not even line up with the two features.", [[130.073, 130.423], [131.423, 131.973], [134.183, 134.603], [135.443, 135.793]]],
+  "bias/b": [140.175, 148.039, "Then each class adds its bias, b, one number per class: one, zero, and minus two.", [[142.535, 142.855], [143.245, 143.705], [145.095, 145.565], [145.935, 146.215], [146.755, 146.935]]],
+  "bias/s": [148.419, 158.23, "The scores, s equals W x plus b, come out five, one and three. Cat scores highest, so the classifier says cat.", [[149.219, 149.509], [151.789, 152.149], [153.139, 153.369], [154.429, 155.009], [156.239, 156.529]]],
+  "bias/forget": [158.61, 166.304, "Leave the bias out, and ship wins instead, with five. The bias is part of the score, not an afterthought.", [[159.9, 160.2], [161.6, 161.87], [162.52, 163.11], [164.87, 165.14]]],
+  "bias/zero": [166.684, 176.691, "Set x to all zeros, and W times x vanishes. The scores are exactly b: each class's lean before it sees any evidence.", [[168.534, 168.814], [170.904, 171.434], [173.164, 173.694]]],
+  "bias/name": [177.071, 185.999, "That lean gives the bias its name: it tilts a class's score up or down before any evidence, the way a bias tilts a judgment.", [[179.341, 179.851], [183.691, 184.121]]],
+  "bias/why": [186.379, 201.093, "It is the same b that slid the line. Without it, an input of all zeros would score zero for every class, so every class would start level. With it, a class that turns up often, like cat, can start ahead.", [[188.819, 189.349], [189.909, 190.169], [193.849, 194.189], [196.059, 196.609], [197.009, 197.289], [198.859, 199.089], [199.869, 200.159]]],
+  "bias/turn": [201.473, 202.213, "Your turn.", []]
  }
 }

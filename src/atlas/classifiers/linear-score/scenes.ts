@@ -192,8 +192,8 @@ const line: SceneDef = {
     s.rrect(F.l, F.t, F.r - F.l, F.b - F.t, 1, { stroke: s.c('--axis'), lw: 0.3 });
     F.axes();
     const ax = { size: 3.2, font: 'mono', weight: 600, color: s.c('orange'), halo: true } as const;
-    s.text('x₀', F.r - 3.5 * u, F.Y(0) - 3 * u, ax);
-    s.text('x₁', F.X(0) + 3.5 * u, F.t + 3.5 * u, ax);
+    s.text('x₀: blue →', F.X(0) + 2 * u, F.Y(0) + 3.2 * u, { ...ax, align: 'left' });
+    s.text('x₁: edges ↑', F.X(0) + 2 * u, F.t + 3.5 * u, { ...ax, align: 'left' });
 
     const pts = s.ease('points', 0.8);
     CATS.forEach(([a, b], i) => s.alpha(pts * after(s, 'points', 0.35 + i * 0.04), () => F.dot(a, b, 'gold', 1.3)));
