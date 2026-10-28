@@ -88,7 +88,7 @@ function open(btn: HTMLElement, closed: () => void): () => void {
     h('div', { class: 'set-sec' }, 'Appearance'),
     themeSwitch(),
     ...(sync ? [h('div', { class: 'set-sec' }, 'Sync'), sync.el] : []),
-    h('div', { class: 'set-sec' }, 'New concepts in Atlas'),
+    h('div', { class: 'set-sec' }, 'New concepts'),
     paceSwitch(),
     ...(reminders ? [h('div', { class: 'set-sec' }, 'Daily reminder'), reminders] : []));
   const onKey = (e: KeyboardEvent) => {

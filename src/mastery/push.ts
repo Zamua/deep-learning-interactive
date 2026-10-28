@@ -121,6 +121,9 @@ export function summary(learner: Learner): { title: string; body: string } {
   const d = learner.today();
   const t = (id: string) => learner.graph.get(id)!.title;
   const due = d.due ? ` ${d.due} ${d.due === 1 ? 'review' : 'reviews'} due.` : '';
+  // With tracks, what is new comes from the oldest one still under way, as on the home page.
+  const track = learner.trackTargets.map((id) => learner.track(id, () => 0)).find((x) => x.next);
+  if (track && d.kind !== 'review' && !d.slipping) return { title: 'Atlas', body: `Next on your ${t(track.target)} track: ${t(track.next!)}.${due}` };
   switch (d.kind) {
     case 'start':
       return { title: 'Atlas', body: `Your first concept, ${t(d.concept!)}, takes a few minutes.` };

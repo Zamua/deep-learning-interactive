@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Attention ignores order, so each token gets a vector for its position added to its embedding.',
   prereqs: ['self-attention', 'embeddings'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'transformer' }],
 };

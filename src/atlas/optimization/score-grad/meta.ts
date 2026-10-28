@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['cross-entropy', 'gradient'],
   mastery: { streak: 5, seconds: 30 },
   from: 'softmax-grad',
-  deeper: [{ chapter: 'optimization', section: 'analytic' }],
 };

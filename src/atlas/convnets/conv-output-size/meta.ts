@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: '(W − F + 2P) / S + 1, rounded down: how the input size, filter, padding and stride set the output size.',
   prereqs: ['convolution'],
   mastery: { streak: 5, seconds: 25 },
-  deeper: [{ chapter: 'convnets', section: 'arrangement' }],
 };

@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Two vectors per token per layer: 2 × layers × tokens × d × bytes per number.',
   prereqs: ['kv-cache', 'training-memory'],
   mastery: { streak: 4, seconds: 50 },
-  deeper: [{ chapter: 'inference' }],
 };

@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Squeeze the input through a narrow middle and train the network to give it back unchanged.',
   prereqs: ['mlp-forward', 'gd-step'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'unsupervised' }],
 };

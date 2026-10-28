@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'The gradient flows back from the scores through W2, the ReLU\'s on-off mask, and W1.',
   prereqs: ['mlp-forward', 'matmul-grad', 'softmax-grad'],
   mastery: { streak: 4, seconds: 60 },
-  deeper: [{ chapter: 'case-study', section: 'network' }],
 };

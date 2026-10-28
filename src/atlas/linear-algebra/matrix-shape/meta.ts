@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Rows by columns: reading a matrix\'s shape, and finding any entry by its row and column.',
   prereqs: ['vector'],
   mastery: { streak: 4, seconds: 15 },
-  deeper: [{ chapter: 'math-kit', section: 'matrices' }],
 };

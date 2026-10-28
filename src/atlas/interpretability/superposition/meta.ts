@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'More features than dimensions, stored as nearly perpendicular directions that interfere a little.',
   prereqs: ['residual-stream', 'dot-product'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'interpretability' }],
 };

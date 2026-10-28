@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['softmax-grad', 'linear-score'],
   mastery: { streak: 4, seconds: 45 },
   from: 'sgd-linear',
-  deeper: [{ chapter: 'optimization', section: 'analytic' }],
 };

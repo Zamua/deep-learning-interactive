@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Let the model write out its steps before the answer, at the price of more tokens.',
   prereqs: ['gpt'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'reasoning' }],
 };

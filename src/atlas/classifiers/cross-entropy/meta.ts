@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Minus the log of the probability given to the right answer: a loss that punishes confident mistakes.',
   prereqs: ['softmax'],
   mastery: { streak: 5, seconds: 30 },
-  deeper: [{ chapter: 'linear-classification', section: 'softmax' }],
 };

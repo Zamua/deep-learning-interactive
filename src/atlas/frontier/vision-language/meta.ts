@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'A vision transformer turns the image into patch vectors, a projection maps them to the language model\'s width, and they sit in the prompt like words.',
   prereqs: ['vit', 'gpt'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'vit' }],
 };

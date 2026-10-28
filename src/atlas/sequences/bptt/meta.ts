@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Unroll the recurrence and backprop through every step; long products of factors make gradients vanish or explode.',
   prereqs: ['rnn-step', 'backprop-graph'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'rnn', section: 'bptt' }],
 };

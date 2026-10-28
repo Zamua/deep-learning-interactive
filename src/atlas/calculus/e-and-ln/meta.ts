@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: [],
   from: 'exp-log',
   mastery: { streak: 5, seconds: 30 },
-  deeper: [{ chapter: 'math-kit', section: 'exp-log' }],
 };

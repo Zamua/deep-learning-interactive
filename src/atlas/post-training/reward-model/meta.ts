@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Each preference raises the chosen answer\'s score and lowers the other\'s, by 1 − σ of their gap.',
   prereqs: ['preference-loss'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'rlhf' }],
 };

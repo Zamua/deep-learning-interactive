@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['backprop-graph', 'matmul-shapes'],
   from: 'matmul-grad',
   mastery: { streak: 5, seconds: 35 },
-  deeper: [{ chapter: 'backprop', section: 'vectorized' }],
 };

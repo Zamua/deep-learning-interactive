@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['sampling', 'gradient', 'exp-log'],
   from: 'policy-gradient',
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'policy-gradients' }],
 };

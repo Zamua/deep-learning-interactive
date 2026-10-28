@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Show the network a noised image and train it to predict the noise that was added.',
   prereqs: ['diffusion-noise', 'minibatch'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'diffusion' }],
 };

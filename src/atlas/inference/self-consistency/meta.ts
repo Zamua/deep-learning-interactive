@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Independent chances multiply, so when each sample is usually right, a majority of three is right more often still.',
   prereqs: ['majority-vote'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'reasoning' }],
 };

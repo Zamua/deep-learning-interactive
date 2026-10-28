@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Draw n answers and keep one a checker accepts: the chance of a hit is 1 − (1 − p)ⁿ.',
   prereqs: ['self-consistency'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'reasoning' }],
 };

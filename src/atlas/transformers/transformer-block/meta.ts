@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Attention, then an MLP, each with a layer norm and a residual connection around it.',
   prereqs: ['multi-head', 'layer-norm', 'residual'],
   mastery: { streak: 4, seconds: 50 },
-  deeper: [{ chapter: 'transformer' }],
 };

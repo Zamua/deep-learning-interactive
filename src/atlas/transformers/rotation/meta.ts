@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['positions'],
   mastery: { streak: 4, seconds: 50 },
   from: 'rope',
-  deeper: [{ chapter: 'modern-transformer' }],
 };

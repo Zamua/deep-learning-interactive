@@ -23,7 +23,7 @@ export interface SceneScript {
 }
 
 export interface LectureScript {
-  /** The chapter this lecture precedes. */
+  /** `atlas-<concept-id>`. */
   id: string;
   title: string;
   /** Speech model: `kokoro` (local) or an OpenRouter speech model such as `elevenlabs/eleven-v4`. */

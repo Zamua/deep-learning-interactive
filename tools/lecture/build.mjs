@@ -20,17 +20,17 @@ if (existsSync(localEnv)) {
 }
 const [id, ...flags] = process.argv.slice(2);
 if (!id) {
-  console.error('usage: node tools/lecture/build.mjs <lecture-id> [--check]');
+  console.error('usage: node tools/lecture/build.mjs atlas-<concept-id> [--check]');
   process.exit(2);
 }
-// An Atlas explainer lives in its concept's folder: src/atlas/<domain>/<concept>/.
-const atlas = id.startsWith('atlas-') ? id.slice(6) : null;
-const domain = atlas && readdirSync(join(root, 'src/atlas'), { withFileTypes: true }).find((d) => d.isDirectory() && existsSync(join(root, 'src/atlas', d.name, atlas, 'script.ts')));
-if (atlas && !domain) {
+// An explainer lives in its concept's folder: src/atlas/<domain>/<concept>/.
+const atlas = id.replace(/^atlas-/, '');
+const domain = readdirSync(join(root, 'src/atlas'), { withFileTypes: true }).find((d) => d.isDirectory() && existsSync(join(root, 'src/atlas', d.name, atlas, 'script.ts')));
+if (!domain) {
   console.error(`no explainer script for concept ${atlas}`);
   process.exit(2);
 }
-const dir = atlas ? `src/atlas/${domain.name}/${atlas}` : `src/lectures/${id}`;
+const dir = `src/atlas/${domain.name}/${atlas}`;
 const { script } = await import(pathToFileURL(join(root, dir, 'script.ts')).href);
 const { GAP, spokenText } = await import(pathToFileURL(join(root, 'src/lecture/types.ts')).href);
 

@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'A formula drawn as a graph of simple operations, evaluated forward from the inputs to the output.',
   prereqs: ['chain-rule'],
   mastery: { streak: 4, seconds: 30 },
-  deeper: [{ chapter: 'backprop', section: 'simple' }],
 };

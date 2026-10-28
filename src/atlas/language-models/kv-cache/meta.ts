@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'While generating, keep every earlier token\'s keys and values instead of computing them again.',
   prereqs: ['gpt'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'modern-transformer' }],
 };

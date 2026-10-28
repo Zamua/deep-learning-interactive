@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'To run past the trained length, divide positions by the stretch factor so every angle stays in the range training saw.',
   prereqs: ['rope'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'modern-transformer' }],
 };

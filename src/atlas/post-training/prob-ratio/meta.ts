@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['advantage'],
   mastery: { streak: 4, seconds: 40 },
   from: 'ppo',
-  deeper: [{ chapter: 'rlhf' }],
 };

@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Compare the analytic gradient with a numerical one from a centered difference, using a relative error.',
   prereqs: ['backprop-graph', 'derivative'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'nn-learning', section: 'gradcheck' }],
 };

@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'A small model drafts several tokens and the large one checks them all in one pass.',
   prereqs: ['prefill-decode', 'sampling'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'inference' }],
 };

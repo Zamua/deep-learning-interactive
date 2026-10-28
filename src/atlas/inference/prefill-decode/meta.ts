@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'The prompt runs as one parallel pass; after that, each new token takes a pass of its own.',
   prereqs: ['kv-cache'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'inference' }],
 };

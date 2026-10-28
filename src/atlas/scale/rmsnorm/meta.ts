@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Layer norm without the mean: divide each token by its root mean square, then scale.',
   prereqs: ['layer-norm', 'embeddings'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'modern-transformer' }],
 };

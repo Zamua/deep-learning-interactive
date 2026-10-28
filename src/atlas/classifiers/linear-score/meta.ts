@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Scores for every class at once: s = Wx + b.',
   prereqs: ['matvec'],
   mastery: { streak: 5, seconds: 40 },
-  deeper: [{ chapter: 'linear-classification', section: 'score-function' }],
 };

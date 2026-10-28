@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'The contrastive loss pulls each positive in and pushes each negative away by its probability; a small temperature aims the push at the closest negatives.',
   prereqs: ['contrastive-loss'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'contrastive' }],
 };

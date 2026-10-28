@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Cache one small latent vector per token and rebuild every head\'s keys and values from it.',
   prereqs: ['gqa', 'kv-memory'],
   mastery: { streak: 4, seconds: 50 },
-  deeper: [{ chapter: 'modern-transformer' }],
 };

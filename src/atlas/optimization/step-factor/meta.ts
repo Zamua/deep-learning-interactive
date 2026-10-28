@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['gd-step'],
   mastery: { streak: 4, seconds: 35 },
   from: 'learning-rate',
-  deeper: [{ chapter: 'optimization', section: 'gradient-descent' }],
 };

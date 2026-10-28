@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'A router sends each token to a few of many MLPs: total parameters grow while the work per token does not.',
   prereqs: ['transformer-block', 'softmax'],
   mastery: { streak: 4, seconds: 55 },
-  deeper: [{ chapter: 'moe' }],
 };

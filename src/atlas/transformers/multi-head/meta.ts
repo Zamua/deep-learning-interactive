@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Several smaller attentions side by side, each free to look for something different, then joined back together.',
   prereqs: ['self-attention'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'transformer' }],
 };

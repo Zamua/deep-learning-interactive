@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'How many numbers make up a linear classifier: every weight plus every bias.',
   prereqs: ['linear-score', 'matmul-shapes'],
   mastery: { streak: 4, seconds: 30 },
-  deeper: [{ chapter: 'linear-classification', section: 'score-function' }],
 };

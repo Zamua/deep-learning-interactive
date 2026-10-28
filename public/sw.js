@@ -30,7 +30,7 @@ self.addEventListener('push', (e) => {
     const s = (await read('summary')) || { title: 'Atlas', body: 'A few minutes of practice keeps it fresh.' };
     const title = kind === 'test' ? 'Reminders are on' : s.title;
     const body = kind === 'test' ? `Atlas will remind you once a day. ${s.body}` : s.body;
-    await self.registration.showNotification(title, { body, icon: 'icon-192.png', tag: 'atlas', data: { url: './#/atlas/learn' } });
+    await self.registration.showNotification(title, { body, icon: 'icon-192.png', tag: 'atlas', data: { url: './#/atlas' } });
   })());
 });
 

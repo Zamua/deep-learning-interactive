@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'e to the average next-token loss: how many tokens the model is, in effect, choosing between.',
   prereqs: ['char-lm', 'exp-log'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'pretraining' }],
 };

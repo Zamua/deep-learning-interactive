@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['derivative'],
   from: 'derivative-rules',
   mastery: { streak: 5, seconds: 30 },
-  deeper: [{ chapter: 'math-kit', section: 'derivatives' }],
 };

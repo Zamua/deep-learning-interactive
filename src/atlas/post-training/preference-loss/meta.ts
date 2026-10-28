@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['cross-entropy', 'sigmoid-grad'],
   from: 'reward-model',
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'rlhf' }],
 };

@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Weight decay applied to the weights directly, not passed through Adam\'s rescaled gradient.',
   prereqs: ['adam', 'l2-reg'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'optimizers' }],
 };

@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Move each input a small step against its gradient: the update that walks a function downhill.',
   prereqs: ['gradient'],
   mastery: { streak: 5, seconds: 30 },
-  deeper: [{ chapter: 'optimization', section: 'gradient-descent' }],
 };

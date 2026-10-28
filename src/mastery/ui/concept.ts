@@ -1,5 +1,4 @@
 // One concept: its explainer, the learner's numbers, what it builds on and unlocks, and Practice.
-import { CHAPTERS } from '../../chapters/index';
 import { domainOf, hasExplainer, loadExplainer } from '../../atlas/index';
 import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
@@ -78,9 +77,4 @@ export function renderConcept(main: HTMLElement, learner: Learner, id: string): 
     const open = learner.status(u) !== 'locked';
     return h('a', { class: `at-pill${open ? '' : ' dim'}`, href: `#/atlas/${u}`, html: `${icon(open ? 'arrowRight' : 'lock')} ${graph.get(u)!.title}` });
   })));
-  const deeper = (c.deeper ?? []).map((x) => ({ x, meta: CHAPTERS.find((m) => m.id === x.chapter) })).filter((d) => d.meta);
-  if (deeper.length) {
-    root.append(h('h2', { class: 'at-h2' }, 'Go deeper'), h('div', { class: 'at-pills' }, ...deeper.map(({ x, meta }) =>
-      h('a', { class: 'at-pill', href: `#/${meta!.id}${x.section ? `/${x.section}` : ''}`, html: `${icon('book')} ${meta!.num}. ${meta!.title}` }))));
-  }
 }

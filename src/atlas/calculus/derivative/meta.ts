@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'The slope at a point as a rate: about how far the output moves for a small nudge, and which way.',
   prereqs: ['slope'],
   mastery: { streak: 4, seconds: 35 },
-  deeper: [{ chapter: 'math-kit', section: 'derivatives' }],
 };

@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Start from pure noise and walk back: estimate the clean image, blend it back one step less noisy, and add a little fresh noise.',
   prereqs: ['diffusion-loss'],
   mastery: { streak: 4, seconds: 50 },
-  deeper: [{ chapter: 'diffusion' }],
 };

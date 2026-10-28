@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['policy-gradient'],
   from: 'advantage',
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'policy-gradients' }],
 };

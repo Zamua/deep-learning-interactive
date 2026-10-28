@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Correct the running averages for their zero start, then step by the average gradient over its typical size: about η per parameter.',
   prereqs: ['adam-moments'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'nn-learning', section: 'updates' }],
 };

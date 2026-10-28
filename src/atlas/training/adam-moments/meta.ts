@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['momentum'],
   mastery: { streak: 4, seconds: 40 },
   from: 'adam',
-  deeper: [{ chapter: 'nn-learning', section: 'updates' }],
 };

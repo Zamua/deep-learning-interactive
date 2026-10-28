@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'The gradient of a class score with respect to the input pixels: which pixels would move the score most.',
   prereqs: ['backprop-graph', 'linear-score'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'visualizing' }],
 };

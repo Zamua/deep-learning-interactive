@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['learning-rate'],
   mastery: { streak: 4, seconds: 30 },
   from: 'lr-schedule',
-  deeper: [{ chapter: 'optimizers', section: 'schedules' }],
 };

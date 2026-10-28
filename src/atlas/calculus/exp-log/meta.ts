@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'ln turns products into sums, powers into factors and quotients into differences.',
   prereqs: ['e-and-ln'],
   mastery: { streak: 5, seconds: 30 },
-  deeper: [{ chapter: 'math-kit', section: 'exp-log' }],
 };

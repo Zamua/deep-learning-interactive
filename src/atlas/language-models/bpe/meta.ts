@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Start from bytes and keep merging the most frequent neighboring pair into a new token.',
   prereqs: ['embeddings'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'tokenization' }],
 };

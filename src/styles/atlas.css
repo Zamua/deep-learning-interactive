@@ -85,17 +85,6 @@
   background: var(--accent);
 }
 
-.at-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.at-actions .btn {
-  padding: 10px 16px;
-  font-size: 0.98rem;
-  text-decoration: none;
-}
-
 .at-tabs {
   display: flex;
   gap: 6px;
@@ -1004,9 +993,7 @@ body.at-on .side {
   font-size: 0.86rem;
   color: var(--ink-3);
 }
-.at-next {
-  margin-top: 6px;
-}
+
 .at-choice.right {
   border-color: var(--ok);
   background: linear-gradient(color-mix(in srgb, var(--ok) 9%, transparent), color-mix(in srgb, var(--ok) 9%, transparent)), var(--card);
@@ -1015,12 +1002,7 @@ body.at-on .side {
   border-color: var(--bad);
   background: linear-gradient(color-mix(in srgb, var(--bad) 9%, transparent), color-mix(in srgb, var(--bad) 9%, transparent)), var(--card);
 }
-.at-file {
-  margin-top: 40px;
-}
-.at-file p {
-  margin: 0 0 10px;
-}
+
 .at-prompt code,
 .at-steps code,
 .at-why code {
@@ -1463,7 +1445,6 @@ body.at-on .side {
   max-width: 420px;
   font-family: var(--font-ui);
 }
-
 
 /* ---------- tracks ---------- */
 

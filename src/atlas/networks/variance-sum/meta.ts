@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['mlp-forward'],
   mastery: { streak: 4, seconds: 30 },
   from: 'weight-init',
-  deeper: [{ chapter: 'nn-data-loss', section: 'init' }],
 };

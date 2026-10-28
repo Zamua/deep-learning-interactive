@@ -18,8 +18,6 @@ export interface ConceptMeta {
   mastery: MasteryBar;
   /** The concept this one was split off from: a learner who mastered that has mastered this. */
   from?: string;
-  /** Chapters of the other courses that go deeper. */
-  deeper?: { chapter: string; section?: string }[];
 }
 
 /** A concept as the course sees it: its meta plus the domain folder it lives in. */
@@ -37,7 +35,7 @@ export type Answer =
   | { kind: 'order'; items: string[] };
 
 export interface Problem {
-  /** Markdown dialect with KaTeX and color-linked symbols, as in chapters. */
+  /** Markdown dialect with KaTeX and color-linked symbols. */
   prompt: string;
   /** An optional listing shown with the prompt, CodePanel syntax. */
   code?: string;

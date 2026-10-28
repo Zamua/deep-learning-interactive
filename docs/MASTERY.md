@@ -1,18 +1,18 @@
-# The mastery course: design
+# Atlas: design
 
-A third course on the site, built differently from CS231n and DL26. Instead of chapters read
-in order, it is a graph of small concepts, each taught by a short voiced explainer and then
-practiced with generated problems until it is mastered. Mastery unlocks the concepts that
-build on it, and mastered concepts come back as spaced reviews. The subject is AI, from
-vectors to post-training, and the graph is meant to keep growing.
+An AI course built as a graph of small concepts, and the whole site. Each concept is taught by a
+short voiced explainer and then practiced with generated problems until it is mastered. Mastery
+unlocks the concepts that build on it, and mastered concepts come back as spaced reviews. The
+subject runs from vectors to post-training, and the graph is meant to keep growing.
 
-Working name: **Atlas** (course id `atlas`). Routes: `#/atlas` the map (`#/atlas/graph` as a
-graph), `#/atlas/learn[/<concept-id>]` a session (optionally starting with that concept),
-`#/atlas/place` the placement test, `#/atlas/<concept-id>` a concept and
-`#/atlas/<concept-id>/watch` its explainer, `#/atlas/new-track[/<concept-id>]` picking a track's
-target, `#/atlas/track/<concept-id>` a track and `#/atlas/track/<concept-id>/map` its map. A
-session or an explainer followed from a track carries the track's target as a last part:
-`#/atlas/learn/<concept-id>/<target>`, `#/atlas/<concept-id>/watch/<target>`.
+Routes: `#/atlas` the home, where any unknown address lands; `#/atlas/graph` and
+`#/atlas/list` the whole map; `#/atlas/learn[/<concept-id>]` a session (optionally starting with
+that concept); `#/atlas/place` the placement test; `#/atlas/next` choosing what to learn next;
+`#/atlas/<concept-id>` a concept and `#/atlas/<concept-id>/watch` its explainer;
+`#/atlas/new-track[/<concept-id>]` picking a track's target, `#/atlas/track/<concept-id>` a
+track and `#/atlas/track/<concept-id>/map` its map. A session or an explainer followed from a
+track carries the track's target as a last part: `#/atlas/learn/<concept-id>/<target>`,
+`#/atlas/<concept-id>/watch/<target>`.
 
 ## Concepts and the graph
 
@@ -47,8 +47,6 @@ export interface ConceptMeta {
   prereqs: string[];
   /** Mastered: the last `streak` answers all correct, averaging at most `seconds` each. */
   mastery: { streak: number; seconds: number };
-  /** Chapters of the other courses that go deeper. */
-  deeper?: { chapter: string; section?: string }[];
 }
 ```
 
@@ -61,8 +59,8 @@ The explainer is a lecture in miniature, using the same player, scene kit, symbo
 panel and lookup notes: 2 to 3 scenes, 8 to 20 beats, 1 to 3 minutes. It explains the one idea,
 working examples of the kind the practice will ask inside its scenes, so the first problem
 never comes as a surprise. Its last beat is `{ id: 'turn', say: 'Your turn.' }`, and the player
-then goes straight into practice: no worked example at the end, no recap. `docs/LECTURES.md`
-applies, except the shape: no intro or recap scenes, one idea, straight to it.
+then goes straight into practice: no worked example at the end, no recap. `docs/EXPLAINERS.md`
+is the craft: files, scenes, narration, lookup notes and review.
 
 **Nothing from later.** A concept's explainer and problems use only the concept and its
 prerequisite chain: no previews of what comes after ("later, in training...") and no examples
@@ -84,7 +82,7 @@ export interface Generator {
 }
 
 export interface Problem {
-  /** Markdown dialect with KaTeX and color-linked symbols, as in chapters. */
+  /** Markdown dialect with KaTeX and color-linked symbols. */
   prompt: string;
   /** An optional listing shown with the prompt, CodePanel syntax. */
   code?: string;
@@ -214,10 +212,13 @@ The account page (`#/account`) also saves both to a JSON file and loads one back
 
 ## Screens
 
-- **Map** (`#/atlas`): the session button with what it holds ("4 reviews, 2 new"), mastery
-  counts, and the graph by domain, nodes colored by state. Tapping a node opens its concept.
+- **Home** (`#/atlas`): due reviews first, then the tracks (or, with none, today's concept and
+  the short path around it), and a way into the whole map.
+- **Map** (`#/atlas/graph`, `#/atlas/list`): every concept by domain, colored by state.
+  Tapping a node opens its concept.
 - **Concept** (`#/atlas/<id>`): the explainer, the prerequisites and what it unlocks, the
-  learner's numbers (streak, average time, next review), Practice, and links to go deeper.
+  learner's numbers (streak, average time, next review), Practice, and a way to make it a
+  track.
 - **Problem**: the prompt, any listing, and an answer pad built for the answer's kind: a
   keypad for numbers, shapes and vectors, buttons for choices, so the phone keyboard never
   opens. After submitting: right or wrong, the worked solution, and the streak.
@@ -265,6 +266,6 @@ Twenty-one concepts, from vectors to one gradient step on a linear classifier:
 | optimization | sgd-linear | softmax-grad, linear-score, gd-step |
 | optimization | minibatch | gd-step |
 
-About 40 minutes of explainers in total. Later domains follow the other courses: backprop and
-computational graphs, networks, training, convolution, sequence models, attention and
-transformers, tokens and pretraining, scale, and post-training.
+About 40 minutes of explainers in total. Later domains followed: backprop and computational
+graphs, networks, training, convolution, sequence models, attention and transformers, tokens
+and pretraining, scale, post-training, inference, interpretability and the frontier.

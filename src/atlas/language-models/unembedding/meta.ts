@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'A last matrix scores every token in the vocabulary; often it is the embedding table itself.',
   prereqs: ['embeddings', 'linear-score'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'tokenization' }],
 };

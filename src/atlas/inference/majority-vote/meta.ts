@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['chain-of-thought', 'sampling'],
   mastery: { streak: 4, seconds: 35 },
   from: 'self-consistency',
-  deeper: [{ chapter: 'reasoning' }],
 };

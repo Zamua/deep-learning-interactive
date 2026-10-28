@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Do the math in 16-bit numbers and keep a 32-bit master copy of the weights.',
   prereqs: ['training-memory'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'optimizers' }],
 };

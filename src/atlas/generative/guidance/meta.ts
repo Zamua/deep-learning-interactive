@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Run the denoiser with and without the prompt, and step further in the direction the prompt points.',
   prereqs: ['diffusion-loss'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'diffusion' }],
 };

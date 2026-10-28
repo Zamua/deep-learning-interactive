@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'A classification loss on preference pairs, with no reward model and no sampling loop.',
   prereqs: ['reward-model', 'kl-penalty'],
   mastery: { streak: 4, seconds: 50 },
-  deeper: [{ chapter: 'dpo' }],
 };

@@ -1,17 +1,17 @@
-// Screenshots a lecture near the end of every beat (or of the named beats), for review.
-// Usage: node tools/lecture/shots.mjs <lecture-id | atlas-<concept-id>> <out-dir> [width=402] [height=874] [mobile=1] [scene/beat ...]
+// Screenshots an explainer near the end of every beat (or of the named beats), for review.
+// Usage: node tools/lecture/shots.mjs atlas-<concept-id> <out-dir> [width=402] [height=874] [mobile=1] [scene/beat ...]
 // Env: BASE=url, THEME=dark, FRAC=0.85 (how far into each beat)
 import { mkdirSync } from 'node:fs';
 import { chromium } from 'playwright';
 
 const [id, out, w = '402', h = '874', mobile = '1', ...only] = process.argv.slice(2);
 if (!id || !out) {
-  console.error('usage: node tools/lecture/shots.mjs <lecture-id> <out-dir> [w h mobile] [scene/beat ...]');
+  console.error('usage: node tools/lecture/shots.mjs atlas-<concept-id> <out-dir> [w h mobile] [scene/beat ...]');
   process.exit(2);
 }
 mkdirSync(out, { recursive: true });
 const base = process.env.BASE ?? 'http://127.0.0.1:5340/';
-const route = id.startsWith('atlas-') ? `atlas/${id.slice(6)}/watch` : `watch/${id}`;
+const route = `atlas/${id.replace(/^atlas-/, '')}/watch`;
 const browser = await chromium.launch({ channel: 'chrome' });
 const ctx = await browser.newContext({
   viewport: { width: +w, height: +h },

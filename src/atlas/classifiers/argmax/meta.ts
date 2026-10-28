@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'The position of the largest entry: which of several options scores highest.',
   prereqs: ['vector'],
   mastery: { streak: 4, seconds: 18 },
-  deeper: [{ chapter: 'math-kit', section: 'notation' }],
 };

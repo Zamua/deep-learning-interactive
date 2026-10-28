@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'ReLU, sigmoid and tanh: what each outputs, where each goes flat, and why ReLU won.',
   prereqs: ['neuron', 'sigmoid-grad'],
   mastery: { streak: 5, seconds: 25 },
-  deeper: [{ chapter: 'nn-architecture', section: 'activations' }],
 };

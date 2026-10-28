@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['derivative-rules'],
   from: 'gradient',
   mastery: { streak: 5, seconds: 35 },
-  deeper: [{ chapter: 'math-kit', section: 'gradient' }],
 };

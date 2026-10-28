@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['convnet-arch'],
   mastery: { streak: 4, seconds: 50 },
   from: 'iou',
-  deeper: [{ chapter: 'detection' }],
 };

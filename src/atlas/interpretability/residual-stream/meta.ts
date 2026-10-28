@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Every block reads from one running vector per token and adds its output back in.',
   prereqs: ['transformer-block'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'interpretability' }],
 };

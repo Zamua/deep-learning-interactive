@@ -1,7 +1,7 @@
 {
-  "name": "Deep learning, interactive",
-  "short_name": "Deep learning",
-  "description": "Two courses ten years apart: CS231n (2016) and DL26, its continuation.",
+  "name": "Atlas: AI by mastery",
+  "short_name": "Atlas",
+  "description": "AI by mastery: small concepts, voiced explainers and generated practice, from vectors to post-training.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

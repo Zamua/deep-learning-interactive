@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Split one model across GPUs: each matrix by its columns, or the stack by its layers.',
   prereqs: ['data-parallel', 'mlp-forward'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'parallelism' }],
 };

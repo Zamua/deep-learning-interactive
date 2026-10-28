@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'An encoder reads the input sequence into a state; a decoder writes the output from it, one token at a time.',
   prereqs: ['lstm', 'char-lm'],
   mastery: { streak: 4, seconds: 30 },
-  deeper: [{ chapter: 'seq2seq', section: 'encoder-decoder' }],
 };

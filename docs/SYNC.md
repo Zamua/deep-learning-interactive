@@ -10,9 +10,9 @@ the storage it used before, and the screens.
 | Record | Room key | Merge |
 | --- | --- | --- |
 | Atlas mastery, one entry per concept | `mastery/0` to `mastery/7` (a concept's slot is a hash of its id) | a mastered record beats one that is not; otherwise the later edit wins |
-| Lecture and explainer playback | `lectures/0` to `lectures/3` | the resume point: the later edit wins; heard stretches, per narration length: either device's |
-| Chapter reading depth | `reading` | the furthest read; the section last scrolled past: the later edit wins |
-| What was open last | `last` | the later edit wins |
+| Explainer playback | `lectures/0` to `lectures/3` | the resume point: the later edit wins; heard stretches, per narration length: either device's |
+| Chapter reading depth, from the retired chapter courses; read but no longer written | `reading` | the furthest read; the section last scrolled past: the later edit wins |
+| What was open last, likewise retired | `last` | the later edit wins |
 | Settings that follow the learner (how Atlas picks new concepts) | `prefs` | each: the later edit wins |
 | Atlas tracks followed, by target concept | `tracks` | each: the later add or remove wins |
 
@@ -33,8 +33,8 @@ the daily reminder (each device subscribes for itself).
 - `src/mastery/store.ts` and `src/core/progress.ts` read and write through the store; nothing else edits it.
 - `src/sync/ui.ts`: the account page (`#/account`): status, the code, Share link, linking with a code. A link
   `#/link/<code>` opens it with the code filled in and asks before linking.
-- Pages that only show progress (the index, course pages, the Atlas home, map and concept pages) draw again when another
-  device's records arrive. Sessions, players, chapters and the account page are left alone.
+- Pages that only show progress (the home, map, track and concept pages) draw again when another device's records
+  arrive. Sessions, explainers, the track picker and the account page are left alone.
 
 Edits are written to localStorage at once and uploaded about 15 s after they stop (at most a minute later), and right
 away when the page is hidden. Another device's edits arrive on its next pass: when the site opens, every 5 minutes while

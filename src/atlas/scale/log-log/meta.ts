@@ -7,5 +7,4 @@ export const meta: ConceptMeta = {
   prereqs: ['exp-log', 'loss-curves'],
   mastery: { streak: 4, seconds: 45 },
   from: 'power-laws',
-  deeper: [{ chapter: 'scaling-laws' }],
 };

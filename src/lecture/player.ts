@@ -25,9 +25,9 @@ export interface LectureDef {
 /** Where a lecture sits: its back link, its labels, and where the end card leads. */
 export interface LectureFrame {
   back: string;
-  /** Above the scene title, e.g. "Chapter 4 · Lecture". */
+  /** Above the scene title, e.g. "Calculus · Explainer". */
   kicker: string;
-  /** The poster's line before the running time, e.g. ["Chapter 4", "Lecture"]. */
+  /** The poster's line before the running time, e.g. ["Calculus", "Explainer"]. */
   poster: string[];
   /** Media session artist. */
   artist: string;
@@ -382,7 +382,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
     chip.innerHTML = `<span>${i + 1}</span>${s.title}`;
     listItems.forEach((b, k) => b.classList.toggle('on', k === i));
     if ('mediaSession' in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({ title: `${s.title}`, artist: frame.artist, album: 'cs231n interactive' });
+      navigator.mediaSession.metadata = new MediaMetadata({ title: `${s.title}`, artist: frame.artist, album: 'atlas interactive' });
     }
   }
 

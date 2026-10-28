@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Cut off the unlikely tail before sampling: keep the k likeliest tokens, or the fewest that hold p of the probability.',
   prereqs: ['sampling'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'pretraining' }],
 };

@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Several query heads share one key and value head, which shrinks the KV cache.',
   prereqs: ['multi-head', 'kv-cache'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'modern-transformer' }],
 };

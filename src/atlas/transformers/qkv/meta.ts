@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Three linear maps of each token: a query that asks, keys that answer, and values that get mixed.',
   prereqs: ['rnn-attention', 'matvec'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'seq2seq' }],
 };

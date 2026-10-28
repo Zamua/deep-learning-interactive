@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'A table with one vector per token: looking up a row is a one-hot vector times the table.',
   prereqs: ['matvec'],
   mastery: { streak: 4, seconds: 30 },
-  deeper: [{ chapter: 'rnn', section: 'char-model' }],
 };

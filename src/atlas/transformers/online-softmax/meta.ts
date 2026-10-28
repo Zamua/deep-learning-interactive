@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Keep a running max and sum, rescaling the sum whenever the max grows: how FlashAttention avoids storing the scores.',
   prereqs: ['softmax', 'attention-cost'],
   mastery: { streak: 4, seconds: 50 },
-  deeper: [{ chapter: 'modern-transformer' }],
 };

@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Charge the model for drifting from where it started: the log-ratio of the two models\' probabilities.',
   prereqs: ['policy-gradient', 'cross-entropy'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'policy-gradients' }],
 };

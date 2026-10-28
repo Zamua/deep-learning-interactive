@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: '(m, n) times (n, k) gives (m, k): which products work, and what shape comes out.',
   prereqs: ['matvec'],
   mastery: { streak: 5, seconds: 20 },
-  deeper: [{ chapter: 'numpy', section: 'math' }],
 };

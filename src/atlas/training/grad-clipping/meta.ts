@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'When the gradient is longer than a threshold, scale it down to that length and keep its direction.',
   prereqs: ['bptt', 'dot-product', 'gd-step'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'rnn' }],
 };

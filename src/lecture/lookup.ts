@@ -3,7 +3,7 @@ import { icon } from '../core/controls';
 import { h, onDispose } from '../core/dom';
 import { tex } from '../core/math';
 import type { SymbolMap } from '../core/symbols';
-import { LIBRARY } from '../lectures/glossary';
+import { LIBRARY } from './library';
 import { callKey, type GlossEntry, type Glossary, MODULES } from './glossary';
 import type { Beat } from './types';
 

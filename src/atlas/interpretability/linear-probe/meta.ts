@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Fit a linear classifier on hidden activations to test what they encode.',
   prereqs: ['residual-stream', 'linear-score'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'interpretability' }],
 };

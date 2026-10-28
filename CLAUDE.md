@@ -1,69 +1,62 @@
-# cs231n-course: notes for a coding agent
+# Atlas: notes for a coding agent
 
-A Vite + TypeScript static site (no framework) hosting interactive courses: CS231n (Winter
-2016), DL26, its continuation (transformers, scale, post-training), and Atlas, a mastery
-course built as a concept graph with generated problems. Hash routes: `#/` the course index,
-`#/<course-id>` a course's front page, `#/<chapter-id>[/<section-id>]` a chapter,
-`#/watch/<chapter-id>` its lecture, `#/atlas/...` the Atlas pages (see `docs/MASTERY.md`).
-Chapter ids are unique across courses.
-`docs/AUTHORING.md` is the chapter-writing contract and the API reference; read it before
-touching a chapter. `docs/DL26.md` is DL26's syllabus and replaces AUTHORING's course section
-for DL26 chapters.
+A Vite + TypeScript static site (no framework): Atlas, an AI course built as a concept graph,
+each concept a voiced explainer plus generated problems practiced to mastery. Hash routes:
+`#/atlas/...` (see `docs/MASTERY.md`) and `#/account` (sync); any other address lands on the
+Atlas home. `docs/MASTERY.md` is the design and the authoring contract, `docs/EXPLAINERS.md` the
+explainer craft, `docs/SYNC.md` progress sync.
 
 ## Commands
 
     npm run dev                          vite on 127.0.0.1:5340
     npm run build                        tsc --noEmit && vite build -> dist/
-    npm test                             Vitest (src/**/*.test.ts): mastery domain, sync model, every Atlas generator
+    npm test                             Vitest (src/**/*.test.ts): mastery domain, sync model, every generator
+    ATLAS_STRICT=1 npm test              also fails concepts with no explainer or no problems
     node tools/shot.mjs <route> <name> [w h mobile full]   Playwright + system Chrome screenshot
                                          (prints page errors; env SCROLL='.fig:2', THEME=dark)
-    node tools/lecture/build.mjs <id> [--check]   synthesize a lecture's narration (ElevenLabs via OpenRouter, or Kokoro);
-                                         an Atlas explainer's id is atlas-<concept-id>
-    node tools/lecture/shots.mjs <id> <dir> [w h mobile] [scene/beat ...]   screenshot every beat
-    node tools/lecture/lookup.mjs [<id> ...]   lookup terms still missing a note
+    node tools/lecture/build.mjs atlas-<concept-id> [--check]   synthesize an explainer's narration
+                                         (ElevenLabs via OpenRouter, or Kokoro)
+    node tools/lecture/shots.mjs atlas-<concept-id> <dir> [w h mobile] [scene/beat ...]   screenshot every beat
+    node tools/lecture/lookup.mjs [atlas-<concept-id> ...]   lookup terms still missing a note
 
 ## Layout
 
-- `src/core/`: the shared engine. `page.ts` (Page: prose, math cards, figures, callouts),
-  `code.ts` (Python highlighter + CodePanel with `{{slots}}` and `#@labels`), `math.ts`
-  (KaTeX + the small markdown dialect), `symbols.ts` (color-linked symbols and hover linking),
-  `plot.ts` (HiDPI canvas with data coordinates), `controls.ts`, `data.ts` (2-D toy sets,
-  CIFAR loader), `nn.ts` (small trainable MLP), `rand.ts`, `progress.ts` (each lecture's resume point and heard
-  time, each chapter's reading depth, kept in the synced progress store).
-- `src/chapters/index.ts`: `COURSES` (code, title, parts) and chapter metadata and order,
-  each chapter tagged with its `course`; chapter modules are found by
-  `import.meta.glob`, so a missing file shows as "still being written".
-- `src/chapters/<id>.ts`: one chapter each; `src/lib/<id>-*.ts` chapter helpers.
-- `public/data/`, `public/img/`: chapter assets.
-- `src/lecture/`: the lecture player (`player.ts`: theater, audio clock, controls; `scene.ts`:
+- `src/main.ts`: the shell (top bar, side menu of concepts, routing, redraw on synced progress).
+- `src/core/`: shared pieces. `code.ts` (Python highlighter + CodePanel with `{{slots}}` and
+  `#@labels`), `math.ts` (KaTeX + the small markdown dialect), `symbols.ts` (color-linked
+  symbols and tap-to-name), `plot.ts` (HiDPI canvas, theme colors), `controls.ts` (icons),
+  `rand.ts`, `progress.ts` (each explainer's resume point and heard time, in the synced store).
+- `src/lecture/`: the explainer player (`player.ts`: theater, audio clock, controls; `scene.ts`:
   beat-anchored easing and a drawing kit in stage units; `types.ts`: script and timing types;
-  `lookup.ts`: the cards for symbols and calls; `glossary.ts`: note types and `callKey`).
-  `src/lectures/<id>/`: one lecture per chapter. `docs/LECTURES.md` is the authoring guide.
-- `src/mastery/`: the Atlas engine. `domain/` is pure and unit tested (concept graph, student
-  model, scheduler, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
-  learner's records in the synced progress store; `ui/` renders the map, concept pages, sessions and
-  placement. `src/atlas/<domain>/<concept>/` holds each concept: `meta.ts`, `problems.ts`, and
-  an explainer (`script.ts`, `scenes.ts`, `explainer.ts`) played by the lecture player.
-  `docs/MASTERY.md` is the design and the authoring contract.
-- `src/sync/`: progress sync on hearthsync (`docs/SYNC.md`). `model.ts` holds the records and
-  their merges (pure, tested), `cloud.ts` the store and engine, `ui.ts` the account page
-  (`#/account`, `#/link/<code>`). Only `mastery/store.ts` and `core/progress.ts` edit the store.
+  `lookup.ts`: the cards for symbols and calls; `library.ts`: notes on common library calls).
+- `src/mastery/`: the engine. `domain/` is pure and unit tested (concept graph, student model,
+  scheduler, tracks, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
+  learner's records in the synced progress store; `ui/` renders the home, map, tracks, concept
+  pages, sessions and placement.
+- `src/atlas/<domain>/<concept>/`: each concept: `meta.ts`, `problems.ts`, and an explainer
+  (`script.ts`, `scenes.ts`, `explainer.ts`, generated `timing.json` + `narration.m4a`).
+  `src/atlas/symbols.ts` and `notation.ts` hold the course's symbols, code notes and notation.
+- `src/sync/`: progress sync on hearthsync. `model.ts` holds the records and their merges
+  (pure, tested), `cloud.ts` the store and engine, `ui.ts` the account page (`#/account`,
+  `#/link/<code>`). Only `mastery/store.ts` and `core/progress.ts` edit the store.
   Changing a record's shape needs a new `Model.version` (see hearthsync's README), never a quiet
   edit: older builds on the same account would write the old shape back.
+- `tools/timing-duration.mjs`: a Vite plugin; `timing.json?duration` imports only a narration's
+  length, so pages total explainer time without loading the explainers.
+- `push/`: the daily reminder Worker (Web Push).
 
 ## Invariants
 
-- A visualization never appears without its code (`p.figure`), and a display equation never
-  without its code (`p.math`). This is the product's core promise.
-- `Plot` draws first on the next frame (ResizeObserver), never in its constructor, so draw
-  callbacks may reference state declared after the plot.
+- A concept uses only itself and its prerequisite chain: its explainer, problems and lookup
+  notes never lean on a concept the learner may not have met (`docs/MASTERY.md`).
+- A display equation or a visual in an explainer never appears without its code: every scene
+  has a listing, and each beat lights the lines it talks about.
 - Symbol keys are `[A-Za-z][A-Za-z0-9]*`; they become CSS classes `sym-<key>` and TeX macros
   `\sym<key>`. TeX command names are letters only, so a key with a digit (`W1`) has no shorthand:
   write `\sym{W1}{W_1}`.
 - Theme colors are CSS variables read at draw time (`color('blue')`), so canvases follow dark
   mode; palette tokens must stay 6-digit hex for `withAlpha`/`rgbOf`.
-- Animation loops go through `f.loop` / `visibleLoop`, which pause off screen; the router
-  disposes everything registered with `onDispose` on navigation.
-- A lecture scene's `draw(s)` is a pure function of time; the narration track is the clock.
+- The router disposes everything registered with `onDispose` on navigation.
+- A scene's `draw(s)` is a pure function of time; the narration track is the clock.
   `timing.json` and `narration.m4a` are generated together from `script.ts` and must be
   rebuilt (and committed) whenever the narration text changes.

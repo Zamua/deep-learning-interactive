@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'At every step, softmax over the vocabulary predicts the next token; the loss adds up the cross-entropies.',
   prereqs: ['rnn-step', 'cross-entropy'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'rnn', section: 'char-model' }],
 };

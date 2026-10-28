@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Every GPU holds the whole model and a slice of the batch; their gradients are averaged before each step.',
   prereqs: ['minibatch'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'parallelism' }],
 };

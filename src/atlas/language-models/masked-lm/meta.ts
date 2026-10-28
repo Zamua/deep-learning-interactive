@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Hide some tokens and predict them from both sides, instead of predicting each token from the left only.',
   prereqs: ['gpt'],
   mastery: { streak: 4, seconds: 40 },
-  deeper: [{ chapter: 'pretraining' }],
 };

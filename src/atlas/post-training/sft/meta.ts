@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Train on conversations, counting the loss only on the assistant\'s tokens.',
   prereqs: ['gpt', 'transfer-learning'],
   mastery: { streak: 4, seconds: 45 },
-  deeper: [{ chapter: 'finetuning' }],
 };

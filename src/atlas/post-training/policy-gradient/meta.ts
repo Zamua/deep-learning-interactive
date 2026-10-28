@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Raise the log-probability of each sampled answer in proportion to its reward.',
   prereqs: ['log-trick'],
   mastery: { streak: 4, seconds: 50 },
-  deeper: [{ chapter: 'policy-gradients' }],
 };

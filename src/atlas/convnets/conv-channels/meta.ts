@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Each filter spans every input channel, and each filter makes one output channel.',
   prereqs: ['convolution'],
   mastery: { streak: 4, seconds: 25 },
-  deeper: [{ chapter: 'convnets', section: 'conv-layer' }],
 };

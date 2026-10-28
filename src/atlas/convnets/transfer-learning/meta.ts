@@ -6,5 +6,4 @@ export const meta: ConceptMeta = {
   blurb: 'Start from a network trained on a big dataset; retrain only the top with little data, more of it with more.',
   prereqs: ['convnet-arch', 'overfitting'],
   mastery: { streak: 4, seconds: 30 },
-  deeper: [{ chapter: 'convnets-practice', section: 'transfer' }],
 };
