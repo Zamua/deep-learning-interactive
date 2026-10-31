@@ -6,6 +6,7 @@ import { DurableObject } from 'cloudflare:workers';
 import { endpointFrom, subscriptionFrom } from './api';
 import { nextFire, type Reminder } from './schedule';
 import { encrypt, newSender, vapidAuth } from './webpush';
+import type { PushKind, PushPayload } from './wire';
 
 export interface Env {
   REMINDERS: DurableObjectNamespace<Reminders>;
@@ -99,8 +100,8 @@ export class Reminders extends DurableObject<Env> {
     else await this.ctx.storage.deleteAlarm();
   }
 
-  private async send(e: Entry, kind: 'daily' | 'test'): Promise<number> {
-    const body = await encrypt(new TextEncoder().encode(JSON.stringify({ kind })), e.p256dh, e.auth, await newSender());
+  private async send(e: Entry, kind: PushKind): Promise<number> {
+    const body = await encrypt(new TextEncoder().encode(JSON.stringify({ kind } satisfies PushPayload)), e.p256dh, e.auth, await newSender());
     const res = await fetch(e.endpoint, {
       method: 'POST',
       headers: {

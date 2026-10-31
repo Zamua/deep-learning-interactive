@@ -1,9 +1,11 @@
 // Atlas's service worker: offline use and reminders. The build prepends `self.__ATLAS_OFFLINE`, the list of files
-// to keep ({ files, audio }); in dev it is null and every request goes to the network.
+// to keep ({ files, audio }), null in dev, where every request goes to the network; and `self.__ATLAS_WIRE`,
+// src/offline/wire.json, the names the page and this worker share.
 //
 // The app (code, styles, fonts, every concept) is cached at install, so Atlas opens and practices with no
 // connection. Narration is cached the first time it plays, since all of it is far larger than the app.
 const OFFLINE = self.__ATLAS_OFFLINE;
+const WIRE = self.__ATLAS_WIRE;
 const APP = 'atlas-app';
 const AUDIO = 'atlas-audio';
 /** A page load waits this long for the network before falling back to the cached app. */
@@ -140,7 +142,7 @@ self.addEventListener('fetch', (e) => {
 
 /** Answers the settings menu: whether the app is cached, and how many narrations are. */
 self.addEventListener('message', (e) => {
-  if (!e.data || e.data.type !== 'offline-status' || !e.ports[0]) return;
+  if (!e.data || e.data.type !== WIRE.status || !e.ports[0]) return;
   e.waitUntil((async () => {
     if (!OFFLINE) return e.ports[0].postMessage({ ready: false, audio: 0, total: 0 });
     const app = await caches.open(APP);
@@ -153,16 +155,14 @@ self.addEventListener('message', (e) => {
 
 // Reminders. A push carries only its kind; the words come from what the page last saved, so no progress ever
 // leaves the device.
-const DB = 'atlas';
-const STORE = 'kv';
-
-function read(key) {
+function readSummary() {
+  const { db, store, key } = WIRE.summary;
   return new Promise((resolve) => {
-    const open = indexedDB.open(DB, 1);
-    open.onupgradeneeded = () => open.result.createObjectStore(STORE);
+    const open = indexedDB.open(db, 1);
+    open.onupgradeneeded = () => open.result.createObjectStore(store);
     open.onerror = () => resolve(undefined);
     open.onsuccess = () => {
-      const get = open.result.transaction(STORE, 'readonly').objectStore(STORE).get(key);
+      const get = open.result.transaction(store, 'readonly').objectStore(store).get(key);
       get.onsuccess = () => resolve(get.result);
       get.onerror = () => resolve(undefined);
     };
@@ -177,7 +177,7 @@ self.addEventListener('push', (e) => {
     } catch {
       /* an unreadable payload is still a reminder */
     }
-    const s = (await read('summary')) || { title: 'Atlas', body: 'A few minutes of practice keeps it fresh.' };
+    const s = (await readSummary()) || { title: 'Atlas', body: 'A few minutes of practice keeps it fresh.' };
     const title = kind === 'test' ? 'Reminders are on' : s.title;
     const body = kind === 'test' ? `Atlas will remind you once a day. ${s.body}` : s.body;
     await self.registration.showNotification(title, { body, icon: 'icon-192.png', tag: 'atlas', data: { url: './#/atlas' } });

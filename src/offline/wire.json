@@ -1,0 +1,4 @@
+{
+  "status": "offline-status",
+  "summary": { "db": "atlas", "store": "kv", "key": "summary" }
+}

@@ -46,11 +46,13 @@ explainer craft, `docs/SYNC.md` progress sync.
 - `src/offline/`: `sw.js`, the service worker (caches the app at install and narration as it
   plays, answers range requests from the cache, shows reminders), and `register.ts` (registers
   it once the first page draws; the settings menu's offline status). Plain JS: the build only
-  prefixes it.
+  prefixes it, with `wire.json`, the names the page and the worker share (the status message, and
+  where the next reminder's words are saved).
 - `tools/service-worker.mjs`: a Vite plugin; writes `dist/sw.js` prefixed with the files it keeps
   (every built file but narration, source maps and legacy font formats). The worker installs only
   once it has cached every listed file, so the host must serve them all.
-- `push/`: the daily reminder Worker (Web Push).
+- `push/`: the daily reminder Worker (Web Push). `push/src/wire.ts` types what the page sends it
+  and what a push carries to the service worker; `api.ts` reads request bodies at the boundary.
 
 ## Invariants
 

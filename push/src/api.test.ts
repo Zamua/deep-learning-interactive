@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { endpointFrom, subscriptionFrom } from './api';
+import type { EndpointBody, SubscriptionBody } from './wire';
 
 const endpoint = 'https://web.push.apple.com/QGx';
-const full = { subscription: { endpoint, keys: { p256dh: 'pk', auth: 'au' } }, time: '19:00', tz: 'America/New_York', lastActive: 5 };
+const full = { subscription: { endpoint, keys: { p256dh: 'pk', auth: 'au' } }, time: '19:00', tz: 'America/New_York', lastActive: 5 } satisfies SubscriptionBody;
 
 describe('endpointFrom', () => {
   it('reads the subscription endpoint or a bare one, and only push services', () => {
     expect(endpointFrom(full)).toBe(endpoint);
-    expect(endpointFrom({ endpoint })).toBe(endpoint);
+    expect(endpointFrom({ endpoint } satisfies EndpointBody)).toBe(endpoint);
     expect(endpointFrom({ endpoint: 'https://example.com/x' })).toBeNull();
     expect(endpointFrom({ subscription: null, endpoint })).toBe(endpoint);
   });

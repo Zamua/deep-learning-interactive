@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { offlineLists } from '../../tools/service-worker.mjs';
+import type { PushPayload } from '../../push/src/wire';
 import SOURCE from './sw.js?raw';
+import WIRE from './wire.json';
 
 const SCOPE = 'https://atlas.test/';
 
@@ -44,6 +46,40 @@ class FakeCaches {
 
 type Handler = (e: unknown) => void;
 
+/** IndexedDB as far as sw.js uses it: one object store per database, read by key. */
+function fakeIndexedDB(data: Map<string, Map<string, Map<string, unknown>>>) {
+  const later = (fn: () => void) => void Promise.resolve().then(fn);
+  const db = (name: string) => ({
+    createObjectStore: (store: string) => data.get(name)!.set(store, new Map()),
+    transaction: (store: string) => ({
+      objectStore: () => ({
+        get(key: string) {
+          const req: { result?: unknown; onsuccess?: () => void } = {};
+          later(() => {
+            req.result = data.get(name)?.get(store)?.get(key);
+            req.onsuccess?.();
+          });
+          return req;
+        },
+      }),
+    }),
+  });
+  return {
+    open(name: string) {
+      const req: { result?: ReturnType<typeof db>; onupgradeneeded?: () => void; onsuccess?: () => void } = {};
+      later(() => {
+        req.result = db(name);
+        if (!data.has(name)) {
+          data.set(name, new Map());
+          req.onupgradeneeded?.();
+        }
+        req.onsuccess?.();
+      });
+      return req;
+    },
+  };
+}
+
 /** A service worker global with an in-memory network and cache, running sw.js. */
 function boot(offline: { files: string[]; audio: string[] } | null) {
   const handlers = new Map<string, Handler>();
@@ -65,15 +101,18 @@ function boot(offline: { files: string[]; audio: string[] } | null) {
     return new Response(hit.body, { status: 200, headers: { 'Content-Type': hit.type } });
   };
   const caches = new FakeCaches();
+  const idb = new Map<string, Map<string, Map<string, unknown>>>();
+  const shown: { title: string; body: string }[] = [];
   const self = {
     __ATLAS_OFFLINE: offline,
-    registration: { scope: SCOPE },
+    __ATLAS_WIRE: WIRE,
+    registration: { scope: SCOPE, showNotification: async (title: string, o: { body: string }) => void shown.push({ title, body: o.body }) },
     location: { origin: new URL(SCOPE).origin },
     clients: { claim: async () => {} },
     skipWaiting: () => {},
     addEventListener: (type: string, fn: Handler) => handlers.set(type, fn),
   };
-  new Function('self', 'caches', 'fetch', SOURCE)(self, caches, fetch);
+  new Function('self', 'caches', 'fetch', 'indexedDB', SOURCE)(self, caches, fetch, fakeIndexedDB(idb));
 
   /** Dispatches an extendable event and waits for everything it extended. */
   async function extend(type: string, extra: object = {}) {
@@ -88,7 +127,7 @@ function boot(offline: { files: string[]; audio: string[] } | null) {
   const request = (path: string, init: { mode?: string; method?: string; range?: string } = {}) =>
     new FakeRequest(new URL(path, SCOPE).href, init.method ?? 'GET', init.mode ?? 'cors', init.range);
   const get = (path: string, init?: { mode?: string; method?: string; range?: string }) => extend('fetch', { request: request(path, init) });
-  return { net, fetches, env, caches, extend, get };
+  return { net, fetches, env, caches, idb, shown, extend, get };
 }
 
 class FakeRequest {
@@ -211,7 +250,7 @@ describe('offline service worker', () => {
     const ask = async () => {
       const ch = new MessageChannel();
       const got = new Promise((resolve) => (ch.port1.onmessage = (m) => resolve(m.data)));
-      await w.extend('message', { data: { type: 'offline-status' }, ports: [ch.port2] });
+      await w.extend('message', { data: { type: WIRE.status }, ports: [ch.port2] });
       const v = await got;
       ch.port1.close();
       return v;
@@ -220,6 +259,28 @@ describe('offline service worker', () => {
     await w.extend('install');
     await w.get('assets/narration-c3.m4a', { range: 'bytes=0-1' });
     expect(await ask()).toEqual({ ready: true, audio: 1, total: 1 });
+  });
+});
+
+describe('reminders', () => {
+  const push = (w: ReturnType<typeof boot>, payload: PushPayload) => w.extend('push', { data: { json: () => payload } });
+
+  it('words a reminder from the summary the page saved', async () => {
+    const w = boot(null);
+    const { db, store, key } = WIRE.summary;
+    w.idb.set(db, new Map([[store, new Map([[key, { title: 'Softmax', body: '2 of 3 right in a row so far.' }]])]]));
+    await push(w, { kind: 'daily' });
+    await push(w, { kind: 'test' });
+    expect(w.shown).toEqual([
+      { title: 'Softmax', body: '2 of 3 right in a row so far.' },
+      { title: 'Reminders are on', body: 'Atlas will remind you once a day. 2 of 3 right in a row so far.' },
+    ]);
+  });
+
+  it('still reminds when the page has saved nothing', async () => {
+    const w = boot(null);
+    await push(w, { kind: 'daily' });
+    expect(w.shown).toEqual([{ title: 'Atlas', body: 'A few minutes of practice keeps it fresh.' }]);
   });
 });
 

@@ -1,4 +1,5 @@
 // The page's side of offline use: installs the service worker (src/offline/sw.js) and asks it what it has saved.
+import WIRE from './wire.json';
 
 export interface OfflineStatus {
   /** Every file of the app is cached. */
@@ -31,6 +32,6 @@ export async function offlineStatus(): Promise<OfflineStatus | null> {
       window.clearTimeout(late);
       resolve(m.data as OfflineStatus);
     };
-    sw.postMessage({ type: 'offline-status' }, [ch.port2]);
+    sw.postMessage({ type: WIRE.status }, [ch.port2]);
   });
 }

@@ -1,6 +1,8 @@
 // Daily reminders through Web Push. The sender only learns this browser's push subscription, a
 // time of day and when the learner last practiced; the notification's words are written here
 // and saved for the service worker, so progress stays on the device.
+import type { EndpointBody, SubscriptionBody } from '../../push/src/wire';
+import WIRE from '../offline/wire.json';
 import type { Learner } from './learner';
 
 const PUSH_URL = import.meta.env.VITE_PUSH_URL as string | undefined;
@@ -54,7 +56,9 @@ async function api(method: string, path: string, body: unknown): Promise<Record<
 const lastActive = (learner: Learner) => Math.max(0, ...Object.values(learner.records).map((r) => r.last));
 
 async function register(learner: Learner, sub: PushSubscription, time: string): Promise<number> {
-  const r = await api('PUT', '/subscription', { subscription: sub.toJSON(), time, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, lastActive: lastActive(learner) });
+  const { endpoint, keys } = sub.toJSON();
+  if (!endpoint || !keys?.p256dh || !keys.auth) throw new Error('This browser gave a push subscription without keys. Turn reminders off and on again.');
+  const r = await api('PUT', '/subscription', { subscription: { endpoint, keys: { p256dh: keys.p256dh, auth: keys.auth } }, time, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, lastActive: lastActive(learner) } satisfies SubscriptionBody);
   return Number(r.next);
 }
 
@@ -79,7 +83,7 @@ export async function disableReminders(): Promise<ReminderPrefs> {
   const reg = await navigator.serviceWorker.getRegistration();
   const sub = await reg?.pushManager.getSubscription();
   if (sub) {
-    await api('DELETE', '/subscription', { endpoint: sub.endpoint }).catch(() => {});
+    await api('DELETE', '/subscription', { endpoint: sub.endpoint } satisfies EndpointBody).catch(() => {});
     await sub.unsubscribe().catch(() => false);
   }
   const p = { ...loadPrefs(), on: false, next: undefined };
@@ -93,7 +97,7 @@ export async function sendTest(): Promise<void> {
     savePrefs({ ...loadPrefs(), on: false, next: undefined });
     throw new Error('This browser dropped its reminder subscription. Turn reminders on again.');
   }
-  await api('POST', '/test', { endpoint: sub.endpoint });
+  await api('POST', '/test', { endpoint: sub.endpoint } satisfies EndpointBody);
 }
 
 /**
@@ -140,13 +144,14 @@ export function summary(learner: Learner): { title: string; body: string } {
 
 function saveSummary(learner: Learner): Promise<void> {
   const value = summary(learner);
+  const { db, store, key } = WIRE.summary;
   return new Promise((resolve) => {
-    const open = indexedDB.open('atlas', 1);
-    open.onupgradeneeded = () => open.result.createObjectStore('kv');
+    const open = indexedDB.open(db, 1);
+    open.onupgradeneeded = () => open.result.createObjectStore(store);
     open.onerror = () => resolve();
     open.onsuccess = () => {
-      const tx = open.result.transaction('kv', 'readwrite');
-      tx.objectStore('kv').put(value, 'summary');
+      const tx = open.result.transaction(store, 'readwrite');
+      tx.objectStore(store).put(value, key);
       tx.oncomplete = () => resolve();
       tx.onerror = () => resolve();
     };
