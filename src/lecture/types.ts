@@ -73,6 +73,12 @@ export function shownText(say: string): string {
 /** Words the voice misreads from their spelling, and how they should sound. */
 const SAY_AS: [RegExp, string][] = [[/\btanh\b/gi, 'tan-aitch']];
 
+/** Whether `timing` was synthesized from this script as it stands: the player plays silently on estimates when not. */
+export function timingMatches(script: LectureScript, timing: Timing | null): boolean {
+  const beats = script.scenes.flatMap((s) => s.beats.map((b) => [`${s.id}/${b.id}`, spokenText(b.say)] as const));
+  return !!timing && Object.keys(timing.beats).length === beats.length && beats.every(([k, said]) => timing.beats[k]?.[2] === said);
+}
+
 /** Voice text for a beat: the `spoken` half of every `{shown|spoken}`, with misread words respelled. */
 export function spokenText(say: string): string {
   return SAY_AS.reduce((t, [word, as]) => t.replace(word, as), say.replace(PAIR, '$2'));
