@@ -1,8 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after } from '../../backprop/draw';
-import { cells, columns, rowLabel } from '../../draw';
-import { caption, fmt, type Ink, rich } from '../draw';
+import { after, cells, cite, columns, rowLabel, stacked } from '../../draw';
+import { caption, fmt, rich } from '../draw';
 
 /** One anchor's row: similarities to its positive (0) and two negatives, over the temperature 0.4. */
 const SIM = [0.8, 0, 0.4];
@@ -15,11 +14,6 @@ const SLOPE = P.map((v, j) => (j ? v : v - 1));
 
 const ROLE: Ink[] = ['green', 'red', 'red'];
 const ROLES = ['positive', 'negative', 'negative'];
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 // ---- the circle: the anchor straight up, the positive and one negative on its right, the other on its left
 
@@ -88,9 +82,6 @@ function ring(s: Scene, g: Ring, o: { anchor: number; cands: number; roles?: str
     });
   });
 }
-
-/** Stack the figure over its captions on a narrow stage, put them side by side on a wide one. */
-const stacked = (s: Scene) => s.tall || s.w / s.h < 1.45;
 
 const pull: SceneDef = {
   draw(s) {

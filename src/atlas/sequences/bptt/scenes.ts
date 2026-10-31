@@ -1,15 +1,11 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after } from '../../networks/draw';
-import { box, chip, rich, type Ink } from '../draw';
+import { after, cite } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { box, chip } from '../draw';
 
 const SUB = '₀₁₂₃';
 const WORDS = ['dog', 'chases', 'cat'];
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 function caption(s: Scene, text: string, a: number, k: Ink = '--ink-2', y = 0.88) {
   s.alpha(a, () => s.text(text, s.w / 2, s.h * y, { size: s.tall ? 3.2 : 3.5, font: 'mono', weight: 600, color: s.c(k), halo: true }));

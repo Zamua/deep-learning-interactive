@@ -1,5 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { rich, type Ink } from '../draw';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
+import { cite } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
 
 const RAD = Math.PI / 180;
 const Q: [number, number] = [2, 1];
@@ -197,11 +198,6 @@ function after(s: Scene, id: string, f: number, dur = 0.5): number {
 /** A plain segment between two plane points. */
 function arrowless(s: Scene, F: Plane, a: readonly number[], b: readonly number[], k: Ink): void {
   s.line(...F.P(a[0]!, a[1]!), ...F.P(b[0]!, b[1]!), s.tint(k, 0.6), 0.3);
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 // ---- an arrow of length one: its tip is (cos, sin)

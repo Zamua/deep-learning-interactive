@@ -1,7 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after } from '../../backprop/draw';
-import { box, cells, columns, downArrows, rich, rowLabel } from '../modern-draw';
+import { after, cells, cite, columns, downArrows, rowLabel } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { box } from '../../sequences/draw';
 
 const X = [1, -5, 5, 7];
 const SQ = X.map((v) => v * v);
@@ -11,11 +12,6 @@ const SD = Math.sqrt(X.reduce((a, v) => a + (v - MEAN) ** 2, 0) / X.length);
 const SHIFT = X.map((v) => v + 3);
 const RS = Math.sqrt(SHIFT.reduce((a, v) => a + v * v, 0) / 4);
 const n = (v: number) => String(Number(v.toFixed(2))).replace('-', '−');
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A pipeline of step boxes joined by arrows; `gone` steps are drawn struck out. */
 function pipeline(s: Scene, y: number, steps: string[], k: 'purple' | 'teal', gone: boolean[] = [], a = 1): void {

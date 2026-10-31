@@ -1,18 +1,10 @@
-import { type Scene, type SceneDef, lerp } from '../../../lecture/scene';
-import type { Color } from '../../../core/symbols';
-import { after, Frame } from '../../networks/draw';
-import { cells, columns, downArrows, rowLabel } from '../modern-draw';
-
-type Ink = Color | `--${string}`;
+import { type Ink, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
+import { after, cells, cite, columns, downArrows, rowLabel } from '../../draw';
+import { Frame } from '../../networks/draw';
 
 const sig = (z: number) => 1 / (1 + Math.exp(-z));
 const swish = (z: number) => z * sig(z);
 const relu = (z: number) => Math.max(0, z);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Mono text, faded in by `a`. */
 function label(s: Scene, text: string, x: number, y: number, a: number, k: Ink = '--ink-2', o: { size?: number; align?: CanvasTextAlign; weight?: number } = {}) {

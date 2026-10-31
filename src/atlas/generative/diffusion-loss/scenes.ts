@@ -1,6 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { block, caption, fmt, type Ink, NOISE, noised, rich, shades, SMILEY, stroke } from '../draw';
+import { cite } from '../../draw';
+import { block, caption, fmt, NOISE, noised, rich, shades, SMILEY, stroke } from '../draw';
 
 const AB = 0.64;
 const SHADE = { lo: -2.2, hi: 2.2 };
@@ -24,11 +25,6 @@ const POOR = EPS.map((r) => r.map((v) => 0.2 * v + rng.randn()));
 const estimate = (g: number[][]) => XT.map((r, i) => r.map((v, j) => (v - Math.sqrt(1 - AB) * g[i]![j]!) / Math.sqrt(AB)));
 const X0HAT = estimate(GUESS);
 const X0POOR = estimate(POOR);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** An outline around pixel (i, j) of a picture drawn by `shades` at (cx, cy) with `px` units per pixel. */
 function ring(s: Scene, cx: number, cy: number, px: number, i: number, j: number, k: Ink) {

@@ -1,15 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { smooth } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { reluGlyph } from '../../networks/draw';
-import { type Ink, grid, rich, windowBox } from '../draw';
-
-/** Eased 0 -> 1 from a fraction `f` of the way through beat `id`, so it tracks the voice at any pace. */
-const after = (s: Scene, id: string, f: number, dur = 0.5) => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import { after, cite } from '../../draw';
+import { grid, rich, windowBox } from '../draw';
 
 const caption = (s: Scene, text: string, y: number, k: Ink = '--ink-2', size = 3.6) => s.text(text, s.w / 2, y, { size, font: 'mono', color: s.c(k), halo: true });
 
@@ -55,7 +47,6 @@ function block(s: Scene, cx: number, cy: number, side: number, depth: number, k:
   s.line(x + d, y - d, x + S + d, y - d, s.tint(k, 0.7), 0.3);
   s.line(x + S + d, y - d, x + S + d, y + S - d, s.tint(k, 0.7), 0.3);
 }
-
 
 /** Ten class scores as bars on a base line. */
 const SCORES = [0.35, 0.6, 0.25, 0.9, 0.4, 0.3, 0.5, 0.2, 0.45, 0.3];

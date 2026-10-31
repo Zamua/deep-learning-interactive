@@ -1,12 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { cells } from '../../draw';
-import { after, caption } from '../../networks/draw';
-import { type Ink, fmt, rich } from '../draw';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
+import { after, cells, cite } from '../../draw';
+import { caption } from '../../networks/draw';
+import { fmt, rich } from '../draw';
 
 /** The block diagram: x, the box F, the sum and y on one row, with the shortcut arching above. */
 function diagram(s: Scene, yD: number, o: { relu?: number } = {}): void {

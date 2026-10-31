@@ -1,8 +1,5 @@
 // Drawing helpers for the networks explainers, on top of the lecture Scene and src/atlas/draw.ts.
-import type { Color } from '../../core/symbols';
-import { type Scene, type TextOpts, smooth } from '../../lecture/scene';
-
-export type Ink = Color | `--${string}`;
+import { type Ink, type Scene, type TextOpts } from '../../lecture/scene';
 
 /** Maps a data window [x0, x1] by [y0, y1] onto a stage rectangle (px), y up. */
 export class Frame {
@@ -111,9 +108,6 @@ export function rich(s: Scene, runs: [string, Ink][], x: number, y: number, o: T
     cur += widths[i]!;
   });
 }
-
-/** Eased 0 -> 1 starting a fraction `f` of the way through beat `id`, so it tracks the voice at any pace. */
-export const after = (s: Scene, id: string, f: number, dur = 0.5): number => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
 
 /** The ReLU's bend drawn as a small glyph in a box centered on (x, y), with a dot at input `z` when given. */
 export function reluGlyph(s: Scene, x: number, y: number, w: number, h: number, k: Ink, o: { z?: number; dot?: Ink; on?: number } = {}): void {

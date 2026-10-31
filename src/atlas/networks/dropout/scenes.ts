@@ -1,18 +1,13 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
 import { Rng } from '../../../core/rand';
-import { cells, columns, rowLabel } from '../../draw';
-import { after, caption, unit } from '../draw';
+import { after, cells, cite, columns, rowLabel } from '../../draw';
+import { caption, unit } from '../draw';
 
 const H = [2, 1, 3, 2];
 const M = [1, 0, 1, 0];
 const P = 0.5;
 const fmt = (v: number) => String(v);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Random keep masks, one per 0.7 seconds while units blink in and out; each keeps some and drops some, so every frame shows both. */
 const MASKS = (() => {

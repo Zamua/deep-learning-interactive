@@ -1,9 +1,9 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
 import { Rng } from '../../../core/rand';
-import type { Ink } from '../../linear-algebra/draw';
-import { after, caption, Frame, reluGlyph } from '../../networks/draw';
-import { cells, columns, rich } from '../draw';
+import { after, cells, cite, columns, stacked } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { caption, Frame, reluGlyph } from '../../networks/draw';
 
 /** Feature 0, 1 and 2, in the order the script names them. */
 const FK: Color[] = ['teal', 'gold', 'green'];
@@ -13,14 +13,6 @@ const DIRS: [number, number][] = [
   [-0.5, R3],
   [-0.5, -R3],
 ];
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
-
-/** A plot beside its text lines on a wide stage, above them otherwise. */
-const stacked = (s: Scene) => s.tall || s.w / s.h < 1.45;
 
 /** A plot of the window `xr` by `yr`, scaled to fit, and the center and rows of its text lines. */
 function plot(s: Scene, xr: [number, number], yr: [number, number], frac: number) {

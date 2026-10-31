@@ -1,10 +1,8 @@
 import { type Scene, type SceneDef, lerp } from '../../../lecture/scene';
-import { bars, box, chip, columns, line, rich } from '../modern-draw';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import { bars, cite, columns } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { box, chip } from '../../sequences/draw';
+import { line } from '../modern-draw';
 
 /** One labelled bar from `left`, its value written just past its end. */
 function meter(s: Scene, y: number, frac: number, k: 'slate' | 'green' | 'red', label: string, value: string, a: number) {

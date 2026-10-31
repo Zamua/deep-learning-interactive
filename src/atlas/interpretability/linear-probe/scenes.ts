@@ -1,9 +1,10 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01, lerp, smooth } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
 import { Rng } from '../../../core/rand';
-import { after, Frame, rich, type Ink } from '../../networks/draw';
-import { cells, columns, num, verdict } from '../draw';
+import { after, cells, columns, stacked, verdict } from '../../draw';
+import { Frame, rich } from '../../networks/draw';
+import { num } from '../draw';
 
 type P = [number, number];
 
@@ -76,9 +77,6 @@ const WIGGLE: [P, P][] = (() => {
   }
   return segs;
 })();
-
-/** The plane goes under the text unless the stage is wide enough to hold the text beside it. */
-const stacked = (s: Scene) => s.tall || s.w / s.h < 1.45;
 
 function plane(s: Scene): Frame {
   const side = stacked(s) ? Math.min(s.w - 20 * s.u, s.h * 0.64) : Math.min(s.h * 0.84, s.w * 0.5);

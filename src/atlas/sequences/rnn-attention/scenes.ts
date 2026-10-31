@@ -1,8 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
-import { bars, cells, columns, rowLabel } from '../../draw';
-import { after } from '../../networks/draw';
-import { box, links, rich, type Ink } from '../draw';
+import { after, bars, cells, cite, columns, rowLabel } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { box, links } from '../draw';
 
 const SRC = ['je', 'suis', 'étudiant'];
 const OUT = ['I', 'am', 'a', 'student'];
@@ -33,11 +33,6 @@ const GRID = [
 const mono = (s: Scene, t: string, x: number, y: number, k: Ink, size = 3.4, align: CanvasTextAlign = 'center', weight = 600) =>
   s.text(t, x, y, { size, font: 'mono', weight, align, color: s.c(k), halo: true });
 const caption = (s: Scene, t: string, y: number, k: Ink = '--ink-2', size = 3.4) => mono(s, t, s.w / 2, y, k, size, 'center', 500);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 // ---- the bottleneck: a whole sentence through one fixed-size vector
 

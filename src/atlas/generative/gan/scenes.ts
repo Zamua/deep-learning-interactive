@@ -1,6 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { block, caption, Frame, rich, shades, stroke, type Ink } from '../draw';
+import { cite } from '../../draw';
+import { block, caption, Frame, rich, shades, stroke } from '../draw';
 
 /** A handwritten-looking digit on a 14 by 14 grid: the darkest of one or more pen strokes. */
 const glyph = (...lines: [number, number][][]): number[][] => {
@@ -22,11 +23,6 @@ const rng = new Rng(11);
 /** A smudgy fake: a wobbly 7 plus noise. */
 const FAKE = stroke(14, [[4, 4.5], [9.5, 3], [7.5, 8], [6, 11]], 1.2).map((r) => r.map((v) => Math.max(0, Math.min(1, 0.75 * v + 0.25 * rng.next()))));
 const NOISE = Array.from({ length: 6 }, () => [rng.randn()]);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number): void {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Eased in from `f` of the way through beat `id`, so a picture lands when the voice reaches it. */
 const late = (s: Scene, id: string, f: number, dur = 0.6) => s.ease(id, dur, f * (s.end(id) - s.at(id)));

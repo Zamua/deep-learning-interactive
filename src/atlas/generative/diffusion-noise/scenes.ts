@@ -2,22 +2,15 @@ import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
 import { caption, Frame, NOISE, noised, rich, shades, SMILEY } from '../draw';
+import { after, cite } from '../../draw';
 
 const SHADE = { lo: -2.2, hi: 2.2 };
 const N = 14;
 const PI = 7;
 const PJ = 7;
 
-/** 0 -> 1 once beat `id` is fraction `f` of the way through its spoken length. */
-const after = (s: Scene, id: string, f: number, dur = 0.5) => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
-
 /** Fades in at beat `from`, just after whatever it replaces has faded out at the same spot. */
 const swap = (s: Scene, from: string, until?: string) => s.ease(from, 0.5, 0.45) * (until ? 1 - s.ease(until, 0.4) : 1);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A box around pixel (PI, PJ) of a 14 by 14 image drawn at `g`, `px` stage units a pixel. */
 function mark(s: Scene, g: { l: number; t: number }, px: number) {

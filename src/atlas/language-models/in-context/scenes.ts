@@ -1,12 +1,7 @@
-import { lerp, type Scene, type SceneDef } from '../../../lecture/scene';
-import type { Ink } from '../draw';
-import { verdict } from '../../draw';
-import { note, rich } from '../draw';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import { type Ink, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
+import { cite, verdict } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { note } from '../draw';
 
 /** The model's weights: a 4 by 8 grid of shades centered on (cx, cy), `c` px per cell; `wob` stirs them. */
 function weights(s: Scene, cx: number, cy: number, c: number, wob = 0, phase = 0) {

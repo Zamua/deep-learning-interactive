@@ -1,16 +1,12 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { bars, cells, columns, rowLabel } from '../../draw';
-import { after } from '../../backprop/draw';
-import { fmt, push, rich, type Ink } from '../draw';
+import { after, bars, cells, cite, columns, rowLabel } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { fmt } from '../../training/draw';
+import { push } from '../draw';
 
 const P = String.raw`\sym{pi}{\pi}`;
 const TH0 = String.raw`\sym{theta}{\theta}_0`;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** One line of plain text across the stage, centered. */
 function caption(s: Scene, text: string, y: number, k: Ink, a: number, size = 3.2) {

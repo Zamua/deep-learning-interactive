@@ -1,11 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { columns } from '../../draw';
-import { mark, type Ink } from '../draw';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number): void {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
+import { cite, columns } from '../../draw';
+import { mark } from '../draw';
 
 /** One vote: each sample's check or cross, an arrow, and the majority's verdict. */
 function ballot(s: Scene, cx: number, y: number, oks: boolean[], gap: number, a: number[]): void {

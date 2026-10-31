@@ -1,5 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { rich, type Ink } from '../../linear-algebra/draw';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
+import { cite } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
 import { note } from '../../language-models/draw';
 
 type Row = { who: string; k: Ink; toks: string[] };
@@ -158,11 +159,6 @@ const SHOT: [string, Ink][] = [
 function line(s: Scene, x: number, y: number, text: string, k: Ink, w: number, size: number): void {
   s.rrect(x, y - 3.3 * s.u, w, 6.6 * s.u, 1.2, { fill: s.tint(k, 0.12), stroke: s.tint(k, 0.55), lw: 0.3 });
   s.text(text, x + 2.4 * s.u, y + 0.2 * s.u, { size, font: 'mono', weight: 600, align: 'left', color: s.c(k) });
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 /** Transcripts with calls, through gradient steps, into the weights. */

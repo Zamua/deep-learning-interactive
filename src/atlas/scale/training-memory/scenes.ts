@@ -1,6 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { after, caption } from '../../networks/draw';
-import { gpu, type Ink, mono, stack } from '../draw';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { caption } from '../../networks/draw';
+import { gpu, mono, stack } from '../draw';
 
 /** One parameter's training state in bytes, in the order the explainer counts it. */
 const PARTS = [
@@ -15,11 +16,6 @@ const SPANS = PARTS.map((_, i) => {
   const a = PARTS.slice(0, i).reduce((t, p) => t + p.n, 0);
   return [a, a + PARTS[i]!.n] as const;
 });
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 // ---- the puzzle: the weights fit on one GPU, training overflows it
 

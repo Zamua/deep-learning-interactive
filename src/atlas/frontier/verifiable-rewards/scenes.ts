@@ -1,10 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01 } from '../../../lecture/scene';
-import { after } from '../../backprop/draw';
-import { cells, columns, rowLabel } from '../../draw';
+import { after, cells, cite, columns, rowLabel } from '../../draw';
 import { rich } from '../../linear-algebra/draw';
-
-type Ink = Parameters<typeof rowLabel>[4];
 
 /** Typographic minus and fixed places. */
 const fmt = (v: number, places = 2) => (Math.abs(v) < 1e-9 ? '0' : v.toFixed(places).replace('-', '−'));
@@ -13,11 +10,6 @@ function stats(r: number[]): { mean: number; sd: number; adv: number[] } {
   const mean = r.reduce((a, b) => a + b, 0) / r.length;
   const sd = Math.sqrt(r.reduce((a, b) => a + (b - mean) ** 2, 0) / r.length);
   return { mean, sd, adv: r.map((x) => (sd > 0 ? (x - mean) / sd : 0)) };
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 /** Fades in just after beat `a` starts and out as beat `b` starts, so texts that share a place never overlap. */

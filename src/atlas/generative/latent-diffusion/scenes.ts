@@ -1,7 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { block, caption, funnel, picture, rich, shades, type Ink } from '../draw';
+import { cite } from '../../draw';
+import { block, caption, funnel, picture, rich, shades } from '../draw';
 
 /** Image side in drawn pixels, and the encoder's shrink per side: 64 by 64 pixels, 8 by 8 spots. */
 const N = 64;
@@ -102,11 +103,6 @@ function row(s: Scene, widths: number[], gap: number): number[] {
     x += (w + gap) * s.u;
     return c;
   });
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 /** An outline around patch (i, j) of an image drawn by `picture`. */

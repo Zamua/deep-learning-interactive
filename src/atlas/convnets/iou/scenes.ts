@@ -1,14 +1,9 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after } from '../../networks/draw';
-import { type Ink, rich } from '../draw';
+import { after, cite } from '../../draw';
+import { rich } from '../draw';
 import { type Box, iou } from '../box-iou/box';
 import { type Plane, plane, rect } from '../box-iou/plane';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** The overlap of two boxes that touch. */
 const overlap = (a: Box, b: Box): Box => [Math.max(a[0], b[0]), Math.max(a[1], b[1]), Math.min(a[2], b[2]), Math.min(a[3], b[3])];

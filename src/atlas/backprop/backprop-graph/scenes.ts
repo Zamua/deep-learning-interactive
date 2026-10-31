@@ -1,15 +1,11 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { after, band, beside, gate, type Ink, mono, name, NEURON, neuron, type P, pulse, runAfter, wire } from '../draw';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { band, beside, gate, mono, name, neuron, NEURON, type P, pulse, runAfter, wire } from '../draw';
 
 const R = 5;
 
 /** One line of working under the graph, `row` 0 or 1. */
 const line = (s: Scene, text: string, row: number, a: number, k: Ink = 'red') => s.alpha(a, () => mono(s, text, s.w / 2, s.h * (0.85 + 0.08 * row), k, 3.8, 'center', 600));
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 type Node = keyof typeof NEURON;
 /** The wires of f = (x z + c)^2 as neuron() draws them: ends, trims, and where along each its labels sit. */

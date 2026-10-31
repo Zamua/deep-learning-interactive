@@ -1,8 +1,6 @@
 // Drawing shared by the partials and gradient explainers: the bowl's contour plot and the term table.
-import type { Scene } from '../../../lecture/scene';
+import type { Ink, Scene } from '../../../lecture/scene';
 import { Frame, type Rect } from '../draw';
-
-type Ink = Parameters<Scene['c']>[0];
 
 /** The contour plot, and where its legend goes: below it on a phone, beside it on a desktop. */
 export function bowlLayout(s: Scene) {

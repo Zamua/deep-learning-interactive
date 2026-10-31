@@ -1,18 +1,14 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { cells, columns, rowLabel } from '../../draw';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
+import { after, cells, cite, columns, rowLabel } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { axes, curve, frame } from '../../optimization/draw';
+import { fmt } from '../../training/draw';
 import { ball } from '../../optimization/draw';
-import { after } from '../../backprop/draw';
-import { axes, curve, fmt, frame, type Ink, rich } from '../draw';
 
 const TOK = ['sure', 'thing', '!'];
 const PI = [0.6, 0.5, 0.37];
 const REF = [0.3, 0.1, 0.5];
 const LR = PI.map((p, i) => Math.log(p / REF[i]!));
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 const line = (s: Scene, runs: [string, Ink][], y: number, a: number, size = 3.2) => s.alpha(a, () => rich(s, runs, s.w / 2, y, { size }));
 

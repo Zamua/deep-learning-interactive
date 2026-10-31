@@ -1,5 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { rich, type Ink } from '../../linear-algebra/draw';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
+import { cite } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
 import { note } from '../../language-models/draw';
 
 /** The transcript of the worked task: the prompt, two calls with their results, the answer. */
@@ -98,11 +99,6 @@ const REACT: [string, Ink][] = [
   ['Action 1: Search[capital of Peru]', 'gold'],
   ['Observation 1: Lima', 'teal'],
 ];
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** An arrow's color: `k` when lit, dim ink otherwise. */
 const on2 = (s: Scene, on: number, k: Ink) => (on > 0.05 ? s.tint(k, 0.5 + 0.5 * on) : s.tint('--ink-3', 0.6));

@@ -1,9 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { smooth } from '../../../lecture/scene';
-import { bars, columns } from '../../draw';
-import type { Ink } from '../../linear-algebra/draw';
-import { after } from '../../networks/draw';
-import { rich } from '../modern-draw';
+import { after, bars, cite, columns } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
 import { gpu, mono, stack } from '../draw';
 
 const PARTS = [
@@ -28,11 +26,6 @@ interface Cut {
 const WHOLE: Cut = { c: 0, k: 0 };
 /** Weights, gradients, then Adam's three parts together. */
 const group = (i: number) => (i === 0 ? 0 : i === 1 ? 1 : 2);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Where the GPU rows sit: a bar from `x0`, one row per GPU, the 80 GB mark at `cap`. */
 function rowsAt(s: Scene) {

@@ -1,11 +1,5 @@
 // Drawing helpers for the interpretability explainers.
-import type { Scene } from '../../lecture/scene';
-import type { Ink } from '../linear-algebra/draw';
-
-export { cells, columns, rowLabel, verdict } from '../draw';
-export { rich } from '../linear-algebra/draw';
-export { box, chip } from '../sequences/draw';
-export { frame, type Frame } from '../optimization/draw';
+import type { Ink, Scene } from '../../lecture/scene';
 
 /** An attention arc above a row of tokens, from position x0 to x1, with its head at x1. */
 export function arc(s: Scene, x0: number, x1: number, y: number, rise: number, k: Ink, width = 0.45): void {

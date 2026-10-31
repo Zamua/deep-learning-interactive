@@ -1,5 +1,8 @@
 import { lerp, type Scene, type SceneDef } from '../../../lecture/scene';
-import { brace, chip, ghost, grid, type Grid, matrix, note, rich, stack, band } from '../draw';
+import { cite } from '../../draw';
+import { band, brace, ghost, grid, type Grid, matrix, rich } from '../../linear-algebra/draw';
+import { chip, stack } from '../../sequences/draw';
+import { note } from '../draw';
 
 const TOK = ['cats', 'chase', 'mice', 'dogs'];
 /** Each token's row: mice near h, cats at a right angle to it, chase pointing away. */
@@ -17,11 +20,6 @@ const TOP = S.indexOf(Math.max(...S));
 const HS = [H, [0, 1], [1, -1]];
 const SS = HS.map((h) => W.map((r) => dot(r, h)));
 const f = (v: number) => String(v).replace('-', '−');
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** The plane for d = 2, with its origin placed so every arrow and label fits both stages. */
 function frame(s: Scene) {

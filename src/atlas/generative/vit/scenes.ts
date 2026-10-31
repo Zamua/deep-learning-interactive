@@ -1,6 +1,6 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01, lerp } from '../../../lecture/scene';
-import { after } from '../../networks/draw';
+import { after, cite } from '../../draw';
 import { block, caption, picture } from '../draw';
 
 type RGB = [number, number, number];
@@ -39,11 +39,6 @@ const MEAN: string[] = Array.from({ length: 16 }, (_, k) => {
   for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) RGB32[r0 + i]![c0 + j]!.forEach((v, c) => (acc[c] += v / 64));
   return css(acc.map(Math.round) as RGB);
 });
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number): void {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Lines that cut the picture at `g` into `n` by `n` patches. */
 function cuts(s: Scene, g: { l: number; t: number; p: number }, n: number, a: number, lw = 0.7): void {

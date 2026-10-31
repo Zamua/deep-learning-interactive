@@ -1,9 +1,5 @@
 // Drawing helpers for the inference explainers: token chips, model passes, and tallies.
-import type { Scene } from '../../lecture/scene';
-import type { Ink } from '../linear-algebra/draw';
-
-export { brace, rich, type Ink } from '../linear-algebra/draw';
-export { box, chip, fmt } from '../sequences/draw';
+import type { Ink, Scene } from '../../lecture/scene';
 
 /** A chip just wide enough for its label, centered on (x, y). */
 export function word(s: Scene, x: number, y: number, t: string, k: Ink, o: { on?: number; size?: number; h?: number } = {}): void {

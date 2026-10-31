@@ -1,8 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
-import { bars, cells, columns, rowLabel } from '../../draw';
-import { after, caption } from '../../networks/draw';
+import { after, bars, cells, cite, columns, rowLabel } from '../../draw';
+import { caption } from '../../networks/draw';
 import { box, chip, fmt } from '../draw';
 
 const TOK = ['cat', 'dog', 'fish'];
@@ -15,11 +15,6 @@ const soft = (z: readonly number[]) => {
 const P = soft(S);
 const f2 = (v: number) => v.toFixed(2);
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Bars over cat, dog and fish, with the tokens named under them and, optionally, their ids. */
 function tokenBars(s: Scene, xs: number[], base: number, p: number[], o: { height: number; w?: number; hi?: number[]; size?: number; ids?: number; grow?: number }): void {

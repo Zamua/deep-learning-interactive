@@ -1,21 +1,10 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { smooth } from '../../../lecture/scene';
-import type { Color } from '../../../core/symbols';
-import { rich } from '../modern-draw';
-
-type Ink = Color | `--${string}`;
+import { type Ink, type Scene, type SceneDef } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
 
 const MH = String.raw`\sym{m}{\hat m}`;
 const VH = String.raw`\sym{v}{\hat v}`;
 const AW = String.raw`\symw \leftarrow \symw - \symeta\Big(${MH} / \sqrt{${VH}} + \symlam\,\symw\Big)`;
-
-/** Eased 0 -> 1 from a fraction `f` of the way through beat `id`, so it tracks the voice at any pace. */
-const after = (s: Scene, id: string, f: number, dur = 0.5) => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 function caption(s: Scene, text: string, y: number, k: Ink = '--ink-2', size = 3.6) {
   s.text(text, s.w / 2, y, { size, font: 'mono', color: s.c(k), halo: true });

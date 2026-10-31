@@ -1,6 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
-import { after, caption, Frame, reluGlyph, rich, unit, vcells } from '../draw';
+import { after } from '../../draw';
+import { caption, Frame, reluGlyph, rich, unit, vcells } from '../draw';
 
 /** Who introduced an idea, and when: small and italic, at (x, y). */
 function cite(s: Scene, text: string, a: number, x: number, y: number) {

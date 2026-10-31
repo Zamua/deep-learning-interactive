@@ -1,7 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after } from '../../networks/draw';
-import { type Ink, mono } from '../draw';
+import { after } from '../../draw';
+import { mono } from '../draw';
 
 const sup = (n: number) => String(n).replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]!);
 

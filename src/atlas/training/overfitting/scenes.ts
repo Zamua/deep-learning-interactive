@@ -1,6 +1,8 @@
-import { clamp01, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
-import { after, caption, Frame, type Ink } from '../../networks/draw';
-import { axes, curve, frame, key, xTicks, yTicks } from '../draw';
+import { clamp01, type Ink, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { caption, Frame } from '../../networks/draw';
+import { axes, curve, frame } from '../../optimization/draw';
+import { key, xTicks, yTicks } from '../draw';
 
 // The fit: eight noisy examples of a gentle pattern, and a curve that goes from flat, to the
 // pattern, to an exact fit through every dot (the pattern plus a polynomial through the leftovers).

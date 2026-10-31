@@ -1,6 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01 } from '../../../lecture/scene';
-import { block, caption, type Ink, picture } from '../../generative/draw';
+import { cite } from '../../draw';
+import { block, caption, picture } from '../../generative/draw';
 import { chips, row, rowWidth } from '../../post-training/draw';
 
 type RGB = [number, number, number];
@@ -37,11 +38,6 @@ function strip(s: Scene, cx: number, cy: number, w: number, vals: number[], k: I
 }
 
 const mono = (size: number, k: string, o: { align?: CanvasTextAlign; weight?: number } = {}) => ({ size, font: 'mono' as const, weight: o.weight ?? 600, align: o.align, color: k, halo: true });
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 // ---- two trained models, and two ways to join them
 

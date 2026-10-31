@@ -1,6 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { type Ink, mono } from '../draw';
+import { mono } from '../draw';
 
 const ALPHA = 0.1;
 const LOG_A = 2.4;

@@ -1,17 +1,9 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
-import { cells, columns, rowLabel } from '../../draw';
-import { after, caption, Frame } from '../../networks/draw';
-import { brace, ghost, type Ink, rich } from '../draw';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
-
-/** A plot beside its captions on a wide stage, above them otherwise. */
-const stacked = (s: Scene) => s.tall || s.w / s.h < 1.45;
+import { after, cells, cite, columns, rowLabel, stacked } from '../../draw';
+import { caption, Frame } from '../../networks/draw';
+import { brace, ghost, rich } from '../draw';
 
 /** A plot of the window `xr` by `yr`, scaled to fit, and where its captions go. */
 function plot(s: Scene, xr: [number, number], yr: [number, number], frac: number) {

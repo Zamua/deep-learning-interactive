@@ -1,8 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
 import { cells, rowLabel } from '../../draw';
-import { after } from '../../networks/draw';
-import { block, type Ink } from '../draw';
+import { after } from '../../draw';
+import { block } from '../draw';
 
 const CLS = ['cat', 'dog', 'car'];
 /** The teacher's scores for one cat image. */

@@ -1,9 +1,5 @@
 // Drawing helpers for the optimization explainers: functions plotted in a stage box, balls on them.
-import type { Color } from '../../core/symbols';
-import type { Scene } from '../../lecture/scene';
-import { smooth } from '../../lecture/scene';
-
-type Ink = Color | `--${string}`;
+import { type Ink, type Scene, smooth } from '../../lecture/scene';
 
 /** Data coordinates mapped into a stage rectangle (left, top, right, bottom in px). */
 export interface Frame {

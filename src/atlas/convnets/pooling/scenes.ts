@@ -1,6 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { after } from '../../networks/draw';
-import { type Grid, type Ink, grid, gridCells, rich, volume, windowBox } from '../draw';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { grid, type Grid, gridCells, rich, volume, windowBox } from '../draw';
 
 /** A filter's 4 x 4 map, built so that a shift of one pixel right keeps every window's max in its window. */
 const X = [
@@ -24,11 +24,6 @@ const label = (s: Scene, t: string, x: number, y: number, k: Ink, size = 3.6) =>
 
 function caption(s: Scene, text: string, y: number, k: Ink = '--ink-2', a = 1, size = 3.4) {
   s.alpha(a, () => s.text(text, s.w / 2, y, { size, font: 'mono', color: s.c(k), halo: true }));
-}
-
-/** Who found an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 /** Dashed lines between the four 2 x 2 windows of a 4 x 4 grid. */

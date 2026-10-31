@@ -1,7 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { clamp01 } from '../../../lecture/scene';
-import { after } from '../../networks/draw';
-import { box, chip, rich, type Ink } from '../draw';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { box, chip } from '../draw';
 
 const SRC = ['je', 'suis', 'étudiant'];
 const TGT = ['I', 'am', 'a', 'student'];

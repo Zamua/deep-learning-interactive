@@ -1,7 +1,7 @@
 import { Rng } from '../../../core/rand';
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { bars, cells, columns, rowLabel } from '../../draw';
-import { after, Frame, rich } from '../../networks/draw';
+import { after, bars, caption, cells, cite, columns, rowLabel } from '../../draw';
+import { Frame, rich } from '../../networks/draw';
 
 const ANS = ['56', '54', '64'];
 const PI = [0.5, 0.3, 0.2];
@@ -31,15 +31,6 @@ const PAIR = (() => {
   for (let i = 0; i < N - 1; i++) if (ONE[i] !== ONE[i + 1] && Math.abs(SET[i]!) < Math.abs(SET[best]!)) best = i;
   return best;
 })();
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
-
-function caption(s: Scene, text: string, y: number, k: Parameters<Scene['c']>[0] = '--ink-2', size = 3.4) {
-  s.text(text, s.w / 2, y, { size, font: 'mono', color: s.c(k), halo: true });
-}
 
 const model: SceneDef = {
   draw(s) {

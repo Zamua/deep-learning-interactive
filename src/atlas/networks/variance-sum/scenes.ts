@@ -1,14 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { cells, columns, rowLabel } from '../../draw';
-import { after, caption, Frame, rich, type Ink } from '../draw';
-
-const fmt = (v: number): string => String(v).replace('-', '−');
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import { after, cells, cite, columns, fmt, rowLabel } from '../../draw';
+import { caption, Frame, rich } from '../draw';
 
 // ---- swing: z as a sum of n terms of -1 or 1, over many examples
 

@@ -1,20 +1,11 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { lerp, smooth } from '../../../lecture/scene';
+import { type Ink, lerp, type Scene, type SceneDef, smooth } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { clipped, frame, type Frame } from '../../optimization/draw';
+import { key, series, xTicks, yTicks } from '../draw';
 import type { Color } from '../../../core/symbols';
 import { caption, rich } from '../../networks/draw';
-import { clipped, frame, key, series, xTicks, yTicks, type Frame } from '../draw';
-
-type Ink = Color | `--${string}`;
-
-/** Eased 0 -> 1 from a fraction `f` of the way through beat `id`, so it tracks the voice at any pace. */
-const after = (s: Scene, id: string, f: number, dur = 0.5) => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
 /** Linear 0 -> 1 over `dur` seconds, starting `delay` seconds into beat `id`. */
 const grow = (s: Scene, id: string, dur: number, delay = 0) => Math.max(0, Math.min(1, (s.since(id) - delay) / dur));
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 const M: Color = 'orange';
 const V: Color = 'teal';

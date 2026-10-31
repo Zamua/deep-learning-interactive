@@ -1,6 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { rich, type Ink } from '../draw';
+import { cite } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
 
 const RAD = Math.PI / 180;
 const Q = [2, 1];
@@ -8,11 +9,6 @@ const K = [1, 1];
 const turned = (p: number[], a: number) => [p[0]! * Math.cos(a * RAD) - p[1]! * Math.sin(a * RAD), p[0]! * Math.sin(a * RAD) + p[1]! * Math.cos(a * RAD)];
 const lenOf = (p: number[]) => Math.hypot(p[0]!, p[1]!);
 const angOf = (p: number[]) => Math.atan2(p[1]!, p[0]!) / RAD;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** One centered line of mono text. */
 function line(s: Scene, text: string, y: number, k: Ink, a: number, size = 3.3) {

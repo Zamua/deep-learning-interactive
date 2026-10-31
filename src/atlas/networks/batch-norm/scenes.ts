@@ -1,8 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { cells, columns, rowLabel } from '../../draw';
-import { after, caption, Frame, type Ink, matrix, rich } from '../draw';
+import { after, cells, cite, columns, rowLabel } from '../../draw';
+import { caption, Frame, matrix, rich } from '../draw';
 
 const X = [9, 3, 17, 11];
 const MU = 10;
@@ -15,11 +15,6 @@ const str = (v: number) => String(Math.round(v * 100) / 100).replace('-', '−')
 const sig = (z: number) => 1 / (1 + Math.exp(-z));
 /** The activation is drawn neutral: σ, in teal, is the standard deviation here. */
 const CURVE: Ink = 'slate';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Tick labels on the y axis. */
 function yTicks(s: Scene, F: Frame, ys: number[]) {

@@ -1,7 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { box, chip, fmt, grid, matrix, stack, type Ink } from '../draw';
-import { after } from '../../networks/draw';
+import { after, cite } from '../../draw';
+import { grid, matrix } from '../../linear-algebra/draw';
+import { box, chip, fmt, stack } from '../draw';
 
 const H0 = [0.5, -0.5];
 const X = [0, 1];
@@ -38,11 +39,6 @@ const CAT_FIRST = vec2(read(['cat', 'chases', 'dog']));
 
 const mono = (s: Scene, t: string, x: number, y: number, k: Ink, size = 3.4, weight = 600) =>
   s.text(t, x, y, { size, font: 'mono', weight, color: s.c(k), halo: true });
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 const caption = (s: Scene, text: string, k: Ink, a: number, y = 0.9) => s.alpha(a, () => mono(s, text, s.w / 2, s.h * y, k, 3.4, 500));
 

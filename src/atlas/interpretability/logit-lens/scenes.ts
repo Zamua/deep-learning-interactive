@@ -1,6 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { after } from '../../networks/draw';
-import { box, cells, chip, num, rich, rowLabel } from '../draw';
+import { after, cells, rowLabel } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { box, chip } from '../../sequences/draw';
+import { num } from '../draw';
 
 const TOKS = ['Paris', 'Milan', 'Rome'] as const;
 const KS = ['purple', 'slate', 'teal'] as const;

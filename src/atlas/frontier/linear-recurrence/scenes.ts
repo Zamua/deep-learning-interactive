@@ -1,7 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import type { Ink } from '../../linear-algebra/draw';
-import { after } from '../../networks/draw';
+import { after, cite } from '../../draw';
 import { fmt } from '../../sequences/draw';
 import { chain, sub } from './chain';
 
@@ -20,11 +19,6 @@ const YS = XS.map((_, t) => W.slice(0, t + 1).reduce((acc, w, k) => acc + w * XS
 
 const mono = (s: Scene, t: string, x: number, y: number, k: Ink, size = 3.4, align: CanvasTextAlign = 'center', weight = 600) => s.text(t, x, y, { size, font: 'mono', weight, align, color: s.c(k), halo: true });
 const Y = (s: Scene, f: number) => f * s.h;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A tanh recurrence as states and tanh boxes in a row: `lit(i)` fills state i, `on(t)` lights step t, `tanh` fades the boxes. */
 function tanhChain(s: Scene, y: number, o: { lit: (i: number) => number; on: (t: number) => number; tanh?: number; hot?: number; inputs?: boolean }) {

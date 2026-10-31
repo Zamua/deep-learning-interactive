@@ -1,9 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { lerp, smooth } from '../../../lecture/scene';
-import type { Color } from '../../../core/symbols';
-import { after, Frame } from '../draw';
-
-type Ink = Color | `--${string}`;
+import { type Ink, lerp, type Scene, type SceneDef, smooth } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { Frame } from '../draw';
 
 const E = Math.E;
 const LN2 = Math.log(2);

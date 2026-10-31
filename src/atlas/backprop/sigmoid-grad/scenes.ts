@@ -1,6 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after, Frame, gate, mono, name, pulse, runAfter, wire } from '../draw';
+import { after, cite } from '../../draw';
+import { Frame, gate, mono, name, pulse, runAfter, wire } from '../draw';
 
 const sig = (x: number) => 1 / (1 + Math.exp(-x));
 const slope = (x: number) => sig(x) * (1 - sig(x));
@@ -9,11 +10,6 @@ const slope = (x: number) => sig(x) * (1 - sig(x));
 function mark(s: Scene, F: Frame, x: number, y: number, text: string, k: 'teal' | 'red' | 'gold', align: CanvasTextAlign, dy = -4): void {
   F.dot(x, y, k);
   mono(s, text, F.X(x) + (align === 'left' ? 2.6 : align === 'right' ? -2.6 : 0) * s.u, F.Y(y) + dy * s.u, k, 3.8, align, 650);
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number): void {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 /** The sigmoid's plot between `top` and `bottom` (fractions of the stage height). */

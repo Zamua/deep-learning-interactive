@@ -1,14 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { cells, columns, rowLabel } from '../../draw';
-import { after } from '../../networks/draw';
-import { caption, Frame, fmt, type Ink, rich, shades, stroke } from '../draw';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import { after, cells, cite, columns, rowLabel } from '../../draw';
+import { caption, fmt, Frame, rich, shades, stroke } from '../draw';
 
 const lab = (s: Scene, t: string, x: number, y: number, k: Ink, o: { size?: number; align?: CanvasTextAlign } = {}) =>
   s.text(t, x, y, { size: o.size ?? 3.2, font: 'mono', weight: 650, align: o.align ?? 'center', color: s.c(k), halo: true });

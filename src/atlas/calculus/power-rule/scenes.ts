@@ -1,8 +1,6 @@
-import { type Scene, type SceneDef, clamp01, lerp, smooth } from '../../../lecture/scene';
-import type { Color } from '../../../core/symbols';
-import { after, Frame } from '../draw';
-
-type Ink = Color | `--${string}`;
+import { clamp01, type Ink, lerp, type Scene, type SceneDef, smooth } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { Frame } from '../draw';
 
 // ---- the pattern: slide the tangent, plot each slope below, and the dots land on 2x, then 3x²
 

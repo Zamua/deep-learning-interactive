@@ -1,7 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { after } from '../../networks/draw';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { push } from '../draw';
 import { cells, columns, rowLabel } from '../../draw';
-import { push, rich, type Ink } from '../draw';
 
 const Y = (s: Scene, v: number) => (v / 100) * s.h;
 /** A number with at most two places and a typographic minus: `1.5`, `−0.8`, `0.85`. */

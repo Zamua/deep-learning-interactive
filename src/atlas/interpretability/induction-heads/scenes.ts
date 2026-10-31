@@ -1,15 +1,11 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { smooth } from '../../../lecture/scene';
-import { bars } from '../../draw';
-import { after } from '../../networks/draw';
-import { arc, chip, columns, rich } from '../draw';
+import { after, bars, cite, columns } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { chip } from '../../sequences/draw';
+import { arc } from '../draw';
 
 const SEQ = ['K', 'D', 'R', 'A', 'M', 'K'];
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Token positions (plus one slot for the next token), the row's height and the notes' height. */
 function layout(s: Scene) {

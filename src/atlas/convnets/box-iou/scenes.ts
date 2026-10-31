@@ -1,7 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after } from '../../networks/draw';
-import { type Ink, rich } from '../draw';
+import { after } from '../../draw';
+import { rich } from '../draw';
 import { type Box, edges } from './box';
 import { type Plane, gridLines, plane, rect } from './plane';
 

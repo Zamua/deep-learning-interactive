@@ -1,10 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { smooth } from '../../../lecture/scene';
+import { type Ink, type Scene, type SceneDef, smooth } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { caption, Frame, rich } from '../../networks/draw';
 import type { Color } from '../../../core/symbols';
 import { cells, columns } from '../../draw';
-import { after, caption, Frame, rich } from '../../networks/draw';
-
-type Ink = Color | `--${string}`;
 
 const f = (v: number) => String(Math.round(v * 100) / 100);
 const fm = (v: number) => (v < 0 ? `−${f(-v)}` : f(v));

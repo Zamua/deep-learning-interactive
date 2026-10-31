@@ -1,9 +1,10 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
-import { cells, columns } from '../../draw';
-import { after, caption } from '../../networks/draw';
-import { axes, ball, clipped, curve, frame, key, series, xTicks, yTicks, type Frame } from '../draw';
+import { after, cells, cite, columns } from '../../draw';
+import { caption } from '../../networks/draw';
+import { axes, ball, clipped, curve, frame, type Frame } from '../../optimization/draw';
+import { key, series, xTicks, yTicks } from '../draw';
 
 // The valley f = A0 w0² + A1 w1²: gentle along w0, steep across w1.
 const A0 = 0.05;
@@ -67,11 +68,6 @@ function ground(s: Scene, F: Frame, a: number, low = 1): void {
     s.text('w₁ ↑', F.l + 2 * s.u, F.t + 3.5 * s.u, { ...ax, align: 'left' });
   });
   if (F.X(0) < F.r) s.alpha(low, () => s.circle(F.X(0), F.Y(0), 1 * s.u, { fill: s.c('red') }));
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number): void {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 const cy = (s: Scene) => s.h * 0.925;

@@ -1,10 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { clamp01, lerp } from '../../../lecture/scene';
-import type { Color } from '../../../core/symbols';
+import { clamp01, type Ink, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
+import { after } from '../../draw';
 import { cells, columns, rowLabel } from '../../draw';
-import { after } from '../../networks/draw';
-
-type Ink = Color | `--${string}`;
 
 const S = [2, 7, 1, 5];
 const NAMES = ['cat', 'dog', 'bird', 'fish'];

@@ -1,7 +1,8 @@
 import { lerp, type Scene, type SceneDef } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
-import { bars } from '../../draw';
-import { note, rich, spread } from '../draw';
+import { bars, cite } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { note, spread } from '../draw';
 
 const BYTE: Record<string, number> = { h: 104, u: 117, g: 103, s: 115, p: 112 };
 const T0 = ['h', 'u', 'g', 'h', 'u', 'g', 's', 'p', 'u', 'g'];
@@ -60,11 +61,6 @@ function pairBars(s: Scene, pairs: [string, number][], base: number, a: number, 
     bars(s, xs, base, pairs.map((p) => p[1]), 'purple', { max: 3, height: s.tall ? 20 : 22, w: 8, grow: a, fmt: (v) => String(v), hi: pairs.map((_, i) => (i === 0 ? top : 0)) });
     pairs.forEach(([l], i) => s.text(l, xs[i]!, base + 3.4 * s.u, { size: 2.7, font: 'mono', weight: 600, color: s.c(i === 0 && top > 0.5 ? 'purple' : '--ink-2') }));
   });
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 /** The 256 byte values as a 32 by 8 grid, the five this text uses lit. */

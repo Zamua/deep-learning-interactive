@@ -1,8 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { cells, columns } from '../../draw';
-import { after, caption } from '../../networks/draw';
-import { type Ink, grid, gridCells, rich, volume } from '../draw';
+import { after, cells, cite, columns } from '../../draw';
+import { caption } from '../../networks/draw';
+import { grid, gridCells, rich, volume } from '../draw';
 
 const RGB: Ink[] = ['red', 'green', 'blue'];
 const W3 = [['w', 'w', 'w'], ['w', 'w', 'w'], ['w', 'w', 'w']];
@@ -11,11 +11,6 @@ const KW: Ink[] = ['blue', 'teal', 'purple'];
 const X = [1, 1, 1, 6, 6, 6, 2];
 const FILTER = ['−1', '0', '1'];
 const CH = 8.5;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Fades in once a fraction `f` of beat `id` has been spoken. */
 const at = (s: Scene, id: string, f: number) => after(s, id, f, 0.6);
