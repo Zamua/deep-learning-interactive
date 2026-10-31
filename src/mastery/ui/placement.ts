@@ -8,6 +8,7 @@ import { ancestors, descendants, nextProbe } from '../domain/placement';
 import type { Learner } from '../learner';
 import { plural } from './common';
 import { ask, runFrame } from './session';
+import { routes } from '../../routes';
 
 /** Questions at most; the graph is usually settled sooner. */
 const MAX_QUESTIONS = 14;
@@ -67,7 +68,7 @@ export function renderPlacement(main: HTMLElement, learner: Learner): void {
       h('div', { class: 'at-kicker' }, 'Placement done'),
       h('h1', { class: 'at-title' }, placed.length ? `${plural(placed.length, 'concept')} placed` : 'Starting from the beginning'),
       h('p', { class: 'at-lede' }, frontier.length ? `Ready to learn next: ${frontier.slice(0, 4).join(', ')}${frontier.length > 4 ? ', and more' : ''}.` : 'Everything is placed.')));
-    frame.dock.append(h('a', { class: 'at-ghost', href: '#/atlas' }, 'See the map'), h('a', { class: 'at-check', href: '#/atlas/learn', html: `${icon('playFill')} Start learning` }));
+    frame.dock.append(h('a', { class: 'at-ghost', href: routes.home }, 'See the map'), h('a', { class: 'at-check', href: routes.learn(), html: `${icon('playFill')} Start learning` }));
   };
 
   start();

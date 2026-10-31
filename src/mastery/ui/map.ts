@@ -10,6 +10,7 @@ import { atlasRoot, dots, pickLink, plural, whenDue } from './common';
 import { graphView } from './graph-view';
 import { recentSection } from './history';
 import { tracksSection } from './tracks';
+import { routes } from '../../routes';
 
 /**
  * The Atlas front page: today's concept, the short path around it, and a way into the whole map. With tracks, the due
@@ -25,7 +26,7 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
 
   const lead = (kicker: string, t: string, sub: string, go: HTMLElement, alt?: HTMLElement) =>
     h('div', { class: 'lead at-lead' }, h('div', { class: 'lead-k' }, kicker), h('div', { class: 'lead-t' }, t), h('div', { class: 'lead-s' }, sub), h('div', { class: 'lead-actions' }, go, alt ?? ''));
-  const goBtn = (label: string, href = '#/atlas/learn') => h('a', { class: 'lead-go', href, html: `${icon('playFill')} ${label}` });
+  const goBtn = (label: string, href = routes.learn()) => h('a', { class: 'lead-go', href, html: `${icon('playFill')} ${label}` });
   const altBtn = (label: string, href: string, ic: string) => h('a', { class: 'lead-alt', href, html: `${icon(ic)} ${label}` });
   const opens = d.kind === 'review' || d.kind === 'done' ? [] : d.opens;
   const thenOpens = opens.length ? ` · then ${opens.map(title).join(', ')} opens` : '';
@@ -33,7 +34,7 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
     lead('Win it back', title(id), `Slipped on a review: ${need} right in a row win it back. ${streakNow} so far.`, goBtn('Practice'));
   const st = [...learner.statuses().values()];
   const mastered = st.filter((x) => x === 'mastered' || x === 'due' || x === 'slipping').length;
-  const mapLink = () => h('a', { class: 'at-maplink', href: '#/atlas/graph', html: `${icon('graph')} <span>The whole map</span><small>${mastered} of ${st.length} mastered</small>${icon('arrowRight')}` });
+  const mapLink = () => h('a', { class: 'at-maplink', href: routes.graph, html: `${icon('graph')} <span>The whole map</span><small>${mastered} of ${st.length} mastered</small>${icon('arrowRight')}` });
   void syncReminders(learner);
 
   const targets = learner.trackTargets;
@@ -41,17 +42,17 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
     const inTrack = (id: string) => targets.some((t) => trackConcepts(graph, t).includes(id));
     if (d.kind === 'review') root.append(lead('Reviews', `${plural(d.due, 'concept')} due`, reviewTime(learner), goBtn('Start reviews')));
     else if (d.kind === 'learning' && d.slipping) root.append(winBack(d.concept, d.need, d.streak));
-    else if (d.kind === 'learning' && !inTrack(d.concept)) root.append(lead('In progress', title(d.concept), `${d.streak} of ${d.need} right in a row${thenOpens}`, goBtn('Practice', `#/atlas/learn/${d.concept}`)));
+    else if (d.kind === 'learning' && !inTrack(d.concept)) root.append(lead('In progress', title(d.concept), `${d.streak} of ${d.need} right in a row${thenOpens}`, goBtn('Practice', routes.learn(d.concept))));
     root.append(...tracksSection(learner), pickLink('Or choose something else to learn'), ...recentSection(learner), mapLink());
     return;
   }
 
-  if (d.kind === 'start') root.append(lead('Start here', title(d.concept), 'The first concept: a short explainer, then practice.', goBtn('Start'), altBtn('Placement test', '#/atlas/place', 'compass')));
+  if (d.kind === 'start') root.append(lead('Start here', title(d.concept), 'The first concept: a short explainer, then practice.', goBtn('Start'), altBtn('Placement test', routes.place, 'compass')));
   else if (d.kind === 'learning' && d.slipping) root.append(winBack(d.concept, d.need, d.streak));
   else if (d.kind === 'learning') root.append(lead('In progress', title(d.concept), `${d.streak} of ${d.need} right in a row${thenOpens}`, goBtn('Practice')));
   else if (d.kind === 'new') root.append(lead('Up next', title(d.concept), graph.get(d.concept)!.blurb, goBtn('Start'), hasExplainerLink(d.concept)), pickLink('Or choose what to learn next'));
   else if (d.kind === 'review') root.append(lead('Review', `${plural(d.due, 'concept')} due`, `${reviewTime(learner)}${d.after ? ` Then ${title(d.after)}.` : ''}`, goBtn('Start reviews')));
-  else if (d.kind === 'done') root.append(lead('All caught up', 'Nothing is due', d.nextReview ? `Next review ${whenDue(d.nextReview)}.` : 'Everything here is mastered.', altBtn('See the map', '#/atlas/graph', 'graph')));
+  else if (d.kind === 'done') root.append(lead('All caught up', 'Nothing is due', d.nextReview ? `Next review ${whenDue(d.nextReview)}.` : 'Everything here is mastered.', altBtn('See the map', routes.graph, 'graph')));
   if (d.due && d.kind !== 'review') root.append(h('p', { class: 'at-small at-due' }, `Then ${plural(d.due, 'review')}, before anything new.`));
 
   // The path: the last two mastered, where you are, and what opens next.
@@ -59,7 +60,7 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
   const now = d.kind === 'done' ? undefined : d.kind === 'review' ? d.after : d.concept;
   const next = now ? [...opens, ...graph.dependents.get(now)!.filter((x) => !opens.includes(x))].slice(0, 2) : [];
   if (done.length || now) {
-    const step = (id: string, cls: string, sub: string) => h('a', { class: `at-step-p ${cls}`, href: `#/atlas/${id}` }, h('span', { class: 'at-step-t' }, title(id)), h('small', {}, sub));
+    const step = (id: string, cls: string, sub: string) => h('a', { class: `at-step-p ${cls}`, href: routes.concept(id) }, h('span', { class: 'at-step-t' }, title(id)), h('small', {}, sub));
     root.append(h('div', { class: 'home-lbl' }, 'Your path'), h('div', { class: 'at-path' },
       ...done.map((id) => {
         const r = learner.record(id);
@@ -69,7 +70,7 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
       ...next.map((id, i) => step(id, 'lock', i === 0 ? `opens after ${title(now!)}` : 'then this'))));
   }
   root.append(...recentSection(learner));
-  root.append(h('a', { class: 'at-maplink', href: '#/atlas/new-track', html: `${icon('target')} <span>Start a track</span><small>aim at any concept</small>${icon('arrowRight')}` }));
+  root.append(h('a', { class: 'at-maplink', href: routes.newTrack(), html: `${icon('target')} <span>Start a track</span><small>aim at any concept</small>${icon('arrowRight')}` }));
   root.append(mapLink());
 }
 
@@ -81,7 +82,7 @@ export function reviewTime(learner: Learner): string {
 }
 
 function hasExplainerLink(id: string): HTMLElement | undefined {
-  return hasExplainer(id) ? h('a', { class: 'lead-alt', href: `#/atlas/${id}/watch`, html: `${icon('playFill')} Explainer` }) : undefined;
+  return hasExplainer(id) ? h('a', { class: 'lead-alt', href: routes.watch(id), html: `${icon('playFill')} Explainer` }) : undefined;
 }
 
 /** Every concept, as a graph or as a list grouped by what to do with it. */
@@ -94,12 +95,12 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
   const count = (...want: Status[]) => ids(...want).length;
 
   root.append(
-    h('a', { class: 'at-back', href: '#/atlas', html: `${icon('arrowLeft')} Atlas` }),
+    h('a', { class: 'at-back', href: routes.home, html: `${icon('arrowLeft')} Atlas` }),
     h('h1', { class: 'home-title' }, 'The map'),
     h('p', { class: 'at-small' }, `${count('mastered', 'due', 'slipping')} of ${graph.order.length} mastered`));
   root.append(h('nav', { class: 'at-tabs', 'aria-label': 'View' },
-    h('a', { href: '#/atlas/graph', class: view === 'graph' ? 'on' : '', html: `${icon('graph')} Graph` }),
-    h('a', { href: '#/atlas/list', class: view === 'list' ? 'on' : '', html: `${icon('rows')} List` })));
+    h('a', { href: routes.graph, class: view === 'graph' ? 'on' : '', html: `${icon('graph')} Graph` }),
+    h('a', { href: routes.list, class: view === 'list' ? 'on' : '', html: `${icon('rows')} List` })));
 
   if (view === 'graph') {
     root.append(h('div', { class: 'at-legend' }, ...DOMAINS.map((d) => h('span', {}, h('i', { style: `background:var(--c-${d.color})` }), d.title))));
@@ -109,7 +110,7 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
 
   const row = (id: string, box: string, boxCls: string, right: HTMLElement | string, showDomain = true) => {
     const c = graph.get(id)!;
-    return h('a', { class: 'at-row', href: `#/atlas/${id}` },
+    return h('a', { class: 'at-row', href: routes.concept(id) },
       h('span', { class: `at-row-box ${boxCls}`, html: box }),
       h('span', { class: 'at-row-t' }, c.title, showDomain ? h('small', { style: `--dom:var(--c-${domainOf(c).color})` }, domainOf(c).title) : null),
       h('span', { class: 'at-row-r' }, right));
@@ -139,7 +140,7 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
       ? folded('mastered', `Mastered · ${count('mastered')}`, ids('mastered'), (id) => mastered(id, false))
       : section(`Mastered · ${count('mastered')}`, ids('mastered').map((id) => mastered(id, true)))),
   );
-  root.append(h('a', { class: 'at-maplink', href: '#/account', html: `${icon('devices')} <span>Sync across devices</span><small>your code, and a file copy</small>${icon('arrowRight')}` }));
+  root.append(h('a', { class: 'at-maplink', href: routes.account, html: `${icon('devices')} <span>Sync across devices</span><small>your code, and a file copy</small>${icon('arrowRight')}` }));
 }
 
 /** A section longer than this is folded by domain. */

@@ -12,32 +12,43 @@ import { renderNext } from './next';
 import { renderPlacement } from './placement';
 import { renderSession } from './session';
 import { renderTrack, renderTrackMap } from './tracks';
+import { routes, type Route } from '../../routes';
 
-export async function renderAtlas(main: HTMLElement, parts: string[], current: () => boolean): Promise<void> {
+export async function renderAtlas(main: HTMLElement, r: Exclude<Route, { page: 'account' }>, current: () => boolean): Promise<void> {
   const learner = new Learner(GRAPH);
-  const [a = '', b = '', third = ''] = parts;
-  const track = GRAPH.get(third) ? third : undefined;
-  if (!a) return renderHome(main, learner);
-  if (a === 'graph' || a === 'list') return renderMap(main, learner, a);
-  if (a === 'learn') return renderSession(main, learner, b || undefined, track);
-  if (a === 'new-track') return renderTrackMap(main, learner, 'pick', GRAPH.get(b) ? b : undefined);
-  if (a === 'track') {
-    if (!GRAPH.get(b)) return location.replace('#/atlas');
-    return third === 'map' ? renderTrackMap(main, learner, 'view', b) : renderTrack(main, learner, b);
+  const known = (id?: string) => (id && GRAPH.get(id) ? id : undefined);
+  switch (r.page) {
+    case 'home':
+      return renderHome(main, learner);
+    case 'graph':
+    case 'list':
+      return renderMap(main, learner, r.page);
+    case 'learn':
+      return renderSession(main, learner, r.concept, known(r.track));
+    case 'new-track':
+      return renderTrackMap(main, learner, 'pick', known(r.target));
+    case 'track':
+      if (!known(r.target)) return location.replace(routes.home);
+      return r.map ? renderTrackMap(main, learner, 'view', r.target) : renderTrack(main, learner, r.target);
+    case 'place':
+      return renderPlacement(main, learner);
+    case 'next':
+      return renderNext(main, learner);
+    case 'history':
+      return renderHistory(main, learner);
   }
-  if (a === 'place') return renderPlacement(main, learner);
-  if (a === 'next') return renderNext(main, learner);
-  if (a === 'history') return renderHistory(main, learner);
+  const a = r.concept;
   const c = GRAPH.get(a);
   if (!c) {
-    location.replace('#/atlas');
+    location.replace(routes.home);
     return;
   }
-  if (b !== 'watch') return renderConcept(main, learner, a);
+  if (r.page === 'concept') return renderConcept(main, learner, a);
+  const track = known(r.track);
 
   const pending = loadExplainer(a);
   if (!pending) {
-    location.replace(`#/atlas/${a}`);
+    location.replace(routes.concept(a));
     return;
   }
   main.append(h('div', { class: 'loading' }, 'Loading the explainer…'));
@@ -47,7 +58,7 @@ export async function renderAtlas(main: HTMLElement, parts: string[], current: (
   const locked = learner.status(a) === 'locked';
   const missing = c.prereqs.filter((p) => !learner.record(p).mastered).map((p) => GRAPH.get(p)!.title).join(' and ');
   mountLecture(main, def, {
-    back: `#/atlas/${a}`,
+    back: routes.concept(a),
     kicker: `${domainOf(c).title} · Explainer`,
     poster: [domainOf(c).title, 'Explainer'],
     artist: `Atlas: ${c.title}`,
@@ -55,7 +66,7 @@ export async function renderAtlas(main: HTMLElement, parts: string[], current: (
     notes: (marks, said) => notationIn(a, marks, said),
     // A locked concept cannot be practiced yet, so its explainer ends on what to master first.
     end: locked
-      ? { kicker: 'Not yet', title: `Master ${missing} first`, action: track ? 'See the track' : 'See the map', href: track ? `#/atlas/track/${track}` : '#/atlas' }
-      : { kicker: 'Your turn', title: 'Ready to practice?', action: 'Start practice', href: `#/atlas/learn/${a}${track ? `/${track}` : ''}` },
+      ? { kicker: 'Not yet', title: `Master ${missing} first`, action: track ? 'See the track' : 'See the map', href: track ? routes.track(track) : routes.home }
+      : { kicker: 'Your turn', title: 'Ready to practice?', action: 'Start practice', href: routes.learn(a, track) },
   });
 }

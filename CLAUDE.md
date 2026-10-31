@@ -22,6 +22,7 @@ explainer craft, `docs/SYNC.md` progress sync.
 ## Layout
 
 - `src/main.ts`: the shell (top bar, side menu of concepts, routing, redraw on synced progress).
+  `src/routes.ts` builds every address and parses them back; link with `routes.*`, never a literal.
 - `src/core/`: shared pieces. `code.ts` (Python highlighter + CodePanel with `{{slots}}` and
   `#@labels`), `math.ts` (KaTeX + the small markdown dialect), `symbols.ts` (color-linked
   symbols and tap-to-name), `plot.ts` (HiDPI canvas, theme colors), `controls.ts` (icons),

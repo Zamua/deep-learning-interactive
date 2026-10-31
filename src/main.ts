@@ -14,6 +14,7 @@ import { Learner } from './mastery/learner';
 import { startOffline } from './offline/register';
 import { applyTheme, settingsButton } from './settings';
 import { progressStore, startSync } from './sync/cloud';
+import { parseRoute, routes, type Route } from './routes';
 
 applyTheme();
 startSync();
@@ -38,7 +39,7 @@ const BRAND_MARK = (() => {
       cells += `<rect x="${j * 7}" y="${i * 7}" width="6" height="6" rx="1.6" style="fill:var(${j > i ? '--rule' : col[j]});fill-opacity:${j > i ? 1 : (0.3 + 0.7 * w[i]![j]!).toFixed(2)}"/>`;
   return `<svg viewBox="0 0 20 20" aria-hidden="true">${cells}</svg>`;
 })();
-const brand = h('a', { class: 'brand', href: '#/atlas' },
+const brand = h('a', { class: 'brand', href: routes.home },
   h('span', { class: 'brand-mark', html: BRAND_MARK }),
   h('span', { class: 'brand-name' }, ATLAS_COURSE.code.toLowerCase()),
   h('span', { class: 'brand-sub' }, 'interactive'));
@@ -52,29 +53,30 @@ let renderToken = 0;
 
 /** Atlas is the whole site: `#/atlas/...` and the account page; any other address lands on the Atlas home. */
 async function route(): Promise<void> {
-  const [, id = '', section = ''] = location.hash.replace(/^#\/?/, '#').split(/[#/]/);
-  if (id === 'atlas') return routeAtlas();
-  if (id === 'account' || id === 'link') return routeAccount(id === 'link' ? section : undefined);
-  history.replaceState(null, '', '#/atlas');
-  return routeAtlas();
+  let r = parseRoute(location.hash);
+  if (!r) {
+    history.replaceState(null, '', routes.home);
+    r = { page: 'home' };
+  }
+  return r.page === 'account' ? routeAccount(r.code) : routeAtlas(r);
 }
 
-async function routeAtlas(): Promise<void> {
-  const parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean).slice(1);
-  const key = ['atlas', ...parts].join('/');
+async function routeAtlas(r: Exclude<Route, { page: 'account' }>): Promise<void> {
+  const key = location.hash.replace(/\/+$/, '');
   if (key === currentId) return;
   const token = ++renderToken;
   disposeAll();
   currentId = key;
   main.innerHTML = '';
-  buildNav(parts[0] ?? '');
-  const c = parts[0] ? GRAPH.get(parts[0]) : undefined;
+  const shown = r.page === 'concept' || r.page === 'watch' ? r.concept : undefined;
+  buildNav(r.page === 'history' ? 'history' : shown ?? '');
+  const c = shown ? GRAPH.get(shown) : undefined;
   document.title = c ? `${c.title} · atlas interactive` : `${ATLAS_COURSE.code}: ${ATLAS_COURSE.title} · interactive`;
   window.scrollTo(0, 0);
   try {
     const { renderAtlas } = await import('./mastery/ui/index');
     if (token !== renderToken) return;
-    await renderAtlas(main, parts, () => token === renderToken);
+    await renderAtlas(main, r, () => token === renderToken);
   } catch (e) {
     console.error(e);
     if (await reloadIfStale()) return;
@@ -92,7 +94,7 @@ async function routeAccount(code?: string): Promise<void> {
   document.title = 'Sync across devices · atlas interactive';
   window.scrollTo(0, 0);
   // The code has done its job once read: keep it out of the history and of anything that shares this page.
-  if (code) history.replaceState(null, '', '#/account');
+  if (code) history.replaceState(null, '', routes.account);
   try {
     const { renderAccount } = await import('./sync/ui');
     if (token !== renderToken) return;
@@ -108,15 +110,17 @@ async function routeAccount(code?: string): Promise<void> {
  * Another device's progress arrived (or another tab's, or a link brought an account's): pages that only show progress
  * draw again where they were. Sessions, explainers, the track picker and the account page keep running as they are.
  */
+/** Pages that are under way, which synced progress never redraws. */
+const BUSY = new Set<Route['page']>(['account', 'learn', 'place', 'new-track', 'watch']);
+
 function redrawOnRemoteProgress(): void {
   let due = 0;
   progressStore().on((next, prev, source) => {
     if (source === 'app' || next.records === prev.records) return;
     window.clearTimeout(due);
     due = window.setTimeout(() => {
-      const [, a = '', b = '', c = ''] = location.hash.replace(/^#\/?/, '#').split(/[#/]/);
-      const busy = a !== 'atlas' || b === 'learn' || b === 'place' || b === 'new-track' || c === 'watch';
-      if (busy) return;
+      const page = parseRoute(location.hash)?.page;
+      if (!page || BUSY.has(page)) return;
       const y = scrollY;
       currentId = '';
       void route().then(() => window.scrollTo(0, y));
@@ -128,8 +132,8 @@ function redrawOnRemoteProgress(): void {
 function buildNav(active: string): void {
   nav.innerHTML = '';
   const st = new Learner(GRAPH).statuses();
-  nav.append(h('a', { class: 'side-course', href: '#/atlas' }, h('span', { class: 'side-course-code' }, ATLAS_COURSE.code), h('span', { class: 'side-course-title' }, ATLAS_COURSE.title)));
-  const hist = h('a', { class: `side-link${active === 'history' ? ' on' : ''}`, href: '#/atlas/history' }, h('span', { class: 'side-num', html: icon('clock') }), h('span', { class: 'side-title' }, 'History'));
+  nav.append(h('a', { class: 'side-course', href: routes.home }, h('span', { class: 'side-course-code' }, ATLAS_COURSE.code), h('span', { class: 'side-course-title' }, ATLAS_COURSE.title)));
+  const hist = h('a', { class: `side-link${active === 'history' ? ' on' : ''}`, href: routes.history }, h('span', { class: 'side-num', html: icon('clock') }), h('span', { class: 'side-title' }, 'History'));
   hist.addEventListener('click', () => setNav(false));
   nav.append(h('ul', { class: 'side-list' }, h('li', {}, hist)));
   for (const d of DOMAINS) {
@@ -138,7 +142,7 @@ function buildNav(active: string): void {
     for (const c of GRAPH.order.filter((x) => x.domain === d.id)) {
       const s = st.get(c.id)!;
       const mark = s === 'mastered' || s === 'due' ? h('span', { class: 'side-mark done', html: icon('check') }) : s === 'locked' ? h('span', { class: 'side-mark at-side-lock', html: icon('lock') }) : '';
-      const a = h('a', { href: `#/atlas/${c.id}`, class: `side-link${c.id === active ? ' on' : ''}${s === 'locked' ? ' soon' : ''}` },
+      const a = h('a', { href: routes.concept(c.id), class: `side-link${c.id === active ? ' on' : ''}${s === 'locked' ? ' soon' : ''}` },
         h('span', { class: 'side-num', style: `color:var(--c-${d.color})` }, '●'),
         h('span', { class: 'side-title' }, c.title),
         mark);

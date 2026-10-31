@@ -7,9 +7,10 @@ import { DAY } from '../domain/model';
 import type { Learner } from '../learner';
 import { atlasRoot, plural } from './common';
 import { paceSwitch } from './pace';
+import { routes } from '../../routes';
 
 /** Starting a concept opens its explainer first, when it has one. */
-export const startHref = (id: string): string => (hasExplainer(id) ? `#/atlas/${id}/watch` : `#/atlas/learn/${id}`);
+export const startHref = (id: string): string => (hasExplainer(id) ? routes.watch(id) : routes.learn(id));
 
 export function renderNext(main: HTMLElement, learner: Learner): void {
   const root = atlasRoot('at-map at-pick');
@@ -18,13 +19,13 @@ export function renderNext(main: HTMLElement, learner: Learner): void {
   const { deeper, different, open } = learner.choices();
   const title = (id: string) => graph.get(id)!.title;
   root.append(
-    h('a', { class: 'at-back', href: '#/atlas', html: `${icon('arrowLeft')} Atlas` }),
+    h('a', { class: 'at-back', href: routes.home, html: `${icon('arrowLeft')} Atlas` }),
     h('h1', { class: 'home-title' }, 'What next?'),
     h('p', { class: 'at-small' }, open.length ? `${plural(open.length, 'concept')} open to start. Each begins with its explainer.` : 'Nothing new is open yet.'));
 
   const recs = learner.records;
   const inProgress = graph.order.find((c) => learner.status(c.id) === 'learning' && recs[c.id]!.last === Math.max(...graph.order.filter((x) => learner.status(x.id) === 'learning').map((x) => recs[x.id]!.last)));
-  if (inProgress) root.append(h('p', { class: 'at-pick-now', html: `${icon('bolt')} <span>You are partway through <a href="#/atlas/learn/${inProgress.id}"></a>. Starting another leaves it waiting.</span>` }));
+  if (inProgress) root.append(h('p', { class: 'at-pick-now', html: `${icon('bolt')} <span>You are partway through <a href="${routes.learn(inProgress.id)}"></a>. Starting another leaves it waiting.</span>` }));
   root.querySelector('.at-pick-now a')?.append(inProgress!.title);
 
   const latest = graph.order.filter((c) => recs[c.id]?.mastered).sort((a, b) => recs[b.id]!.last - recs[a.id]!.last)[0];

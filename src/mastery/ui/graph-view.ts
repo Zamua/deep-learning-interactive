@@ -5,6 +5,7 @@ import { h, onDispose } from '../../core/dom';
 import type { ConceptGraph } from '../domain/graph';
 import { streak } from '../domain/model';
 import type { Learner } from '../learner';
+import { routes } from '../../routes';
 
 const NODE_H = 66;
 const ROW_GAP = 46;
@@ -40,7 +41,7 @@ export function graphView(learner: Learner, opts: { onTap?: (id: string) => void
       : s === 'learning' ? `<span class="at-dots">${Array.from({ length: c.mastery.streak }, (_, i) => `<i class="${i < streak(rec) ? 'on' : ''}"></i>`).join('')}</span>`
       : s === 'new' ? '<span>new</span>'
       : icon('lock');
-    const el = h('a', { class: `at-node st-${s}`, href: `#/atlas/${c.id}`, 'data-id': c.id, style: `--dom:var(--c-${domainOf(c).color})` },
+    const el = h('a', { class: `at-node st-${s}`, href: routes.concept(c.id), 'data-id': c.id, style: `--dom:var(--c-${domainOf(c).color})` },
       h('span', { class: 'at-node-t' }, c.title),
       h('span', { class: 'at-node-s', html: mark }));
     if (opts.onTap)

@@ -9,6 +9,7 @@ import { remindersPanel } from './mastery/ui/reminders';
 import { offlineStatus, offlineSupported } from './offline/register';
 import { syncEngine } from './sync/cloud';
 import { statusLine } from './sync/status';
+import { routes } from './routes';
 
 type Theme = 'system' | 'light' | 'dark';
 const THEME_KEY = 'cs231n.theme';
@@ -69,7 +70,7 @@ export function settingsButton(): HTMLElement {
 function syncRow(): { el: HTMLElement; stop: () => void } | null {
   const sync = syncEngine();
   if (!sync) return null;
-  const el = h('a', { class: 'set-item set-link', href: '#/account' });
+  const el = h('a', { class: 'set-item set-link', href: routes.account });
   const draw = () => {
     const line = statusLine(sync.status);
     el.className = `set-item set-link ${line.tone}`;

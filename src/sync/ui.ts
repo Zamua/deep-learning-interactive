@@ -8,6 +8,7 @@ import { exportSnapshot, importSnapshot } from '../mastery/store';
 import { progressStore, syncEngine } from './cloud';
 import { concepts, conceptsIn } from './model';
 import { statusLine } from './status';
+import { routes } from '../routes';
 
 const CODE_ERROR: Record<CodeError, string> = {
   symbol: 'That has a character no code uses.',
@@ -40,7 +41,7 @@ function codeHint(text: string): { tone: '' | 'ok' | 'bad'; text: string } {
   return { tone: 'bad', text: CODE_ERROR[r.error] };
 }
 
-const linkFor = (code: string): string => `${location.origin}${location.pathname}#/link/${formatCode(code).replace(/ /g, '-')}`;
+const linkFor = (code: string): string => `${location.origin}${location.pathname}${routes.link(formatCode(code))}`;
 
 const dayText = (t: number): string => new Date(t).toLocaleDateString([], { month: 'short', day: 'numeric' });
 
