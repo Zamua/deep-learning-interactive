@@ -1,5 +1,4 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { after, cite, fmt, rowLabel, verdict } from '../../draw';
 import { Frame } from '../../networks/draw';
 import { band, brace, ghost, grid, type Grid, matrix, rich } from '../draw';

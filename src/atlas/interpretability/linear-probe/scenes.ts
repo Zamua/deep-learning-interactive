@@ -1,8 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01, lerp, smooth } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
 import { Rng } from '../../../core/rand';
-import type { Ink } from '../../../lecture/scene';
 import { after, cells, columns, stacked, verdict } from '../../draw';
 import { Frame, rich } from '../../networks/draw';
 import { num } from '../draw';

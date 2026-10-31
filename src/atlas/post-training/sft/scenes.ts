@@ -1,6 +1,5 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01 } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
 import { after, cite, rowLabel } from '../../draw';
 import { rich } from '../../linear-algebra/draw';
 import { chips, row, type Row, rowWidth } from '../draw';

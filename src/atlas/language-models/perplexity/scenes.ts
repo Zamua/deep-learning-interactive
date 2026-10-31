@@ -1,5 +1,4 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { after, bars, cite, verdict } from '../../draw';
 import { rich } from '../../linear-algebra/draw';
 import { chip } from '../../sequences/draw';

@@ -1,7 +1,6 @@
-import type { Scene, SceneDef, TextOpts } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef, TextOpts } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import type { Ink } from '../../../lecture/scene';
 import { after, cite } from '../../draw';
 import { block, caption, Frame, noised, rich, shades, SMILEY } from '../draw';
 

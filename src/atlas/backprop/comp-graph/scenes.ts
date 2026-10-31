@@ -1,6 +1,5 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01 } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
 import { after, cite } from '../../draw';
 import { band, gate, mono, name, neuron, NEURON, type P, pulse, wire } from '../draw';
 

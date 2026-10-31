@@ -1,7 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
 import { Rng } from '../../../core/rand';
-import type { Ink } from '../../../lecture/scene';
 import { after, cells, cite, columns, stacked } from '../../draw';
 import { rich } from '../../linear-algebra/draw';
 import { caption, Frame, reluGlyph } from '../../networks/draw';

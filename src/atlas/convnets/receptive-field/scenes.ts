@@ -1,6 +1,5 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01 } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
 import { cite } from '../../draw';
 
 // ---- the image: 13 by 13 pixels holding a ring, centered on pixel (6, 6)

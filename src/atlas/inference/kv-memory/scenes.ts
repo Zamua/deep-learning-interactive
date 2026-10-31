@@ -1,7 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01, lerp } from '../../../lecture/scene';
 import { columns } from '../../draw';
-import type { Ink } from '../../../lecture/scene';
 import { after } from '../../draw';
 import { brace, rich } from '../../linear-algebra/draw';
 import { hbar, mark, word } from '../draw';

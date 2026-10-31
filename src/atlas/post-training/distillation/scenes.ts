@@ -1,7 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
 import { cells, rowLabel } from '../../draw';
-import type { Ink } from '../../../lecture/scene';
 import { after } from '../../draw';
 import { block } from '../draw';
 

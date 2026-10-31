@@ -1,6 +1,5 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { reluGlyph } from '../../networks/draw';
-import type { Ink } from '../../../lecture/scene';
 import { after, cite } from '../../draw';
 import { grid, rich, windowBox } from '../draw';
 

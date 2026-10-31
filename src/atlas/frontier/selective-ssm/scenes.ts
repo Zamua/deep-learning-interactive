@@ -1,6 +1,5 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
 import { after, cite } from '../../draw';
 import { fmt } from '../../sequences/draw';
 import { chain } from '../linear-recurrence/chain';

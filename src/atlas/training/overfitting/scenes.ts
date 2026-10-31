@@ -1,5 +1,4 @@
-import { clamp01, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
+import { clamp01, type Ink, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
 import { after } from '../../draw';
 import { caption, Frame } from '../../networks/draw';
 import { axes, curve, frame } from '../../optimization/draw';

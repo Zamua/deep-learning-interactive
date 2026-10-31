@@ -1,7 +1,6 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
-import type { Ink } from '../../../lecture/scene';
 import { after, cells, cite, columns, rowLabel, stacked } from '../../draw';
 import { caption, Frame } from '../../networks/draw';
 import { brace, ghost, rich } from '../draw';

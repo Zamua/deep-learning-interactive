@@ -1,5 +1,4 @@
-import { type Scene, type SceneDef } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
+import { type Ink, type Scene, type SceneDef } from '../../../lecture/scene';
 import { after, cite, columns, verdict } from '../../draw';
 import { axes, curve, frame } from '../../optimization/draw';
 import { key, xTicks } from '../../training/draw';

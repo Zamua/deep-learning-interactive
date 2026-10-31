@@ -1,6 +1,5 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01, lerp } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
 import { after, cells, columns } from '../../draw';
 import { box } from '../../sequences/draw';
 import { num } from '../draw';

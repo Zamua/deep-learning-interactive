@@ -1,6 +1,5 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
 import { band, gate, mono, wire } from '../../backprop/draw';
 import { after, cite } from '../../draw';
 import { rich } from '../../linear-algebra/draw';

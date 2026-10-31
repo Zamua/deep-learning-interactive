@@ -1,5 +1,4 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { cite } from '../../draw';
 import { rich } from '../../linear-algebra/draw';
 import { note } from '../../language-models/draw';

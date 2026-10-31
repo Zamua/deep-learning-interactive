@@ -1,6 +1,5 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01 } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
 import { after, cells, cite } from '../../draw';
 import { caption, reluGlyph, unit, vcells } from '../draw';
 import { pulse } from '../../backprop/draw';

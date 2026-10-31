@@ -1,6 +1,5 @@
 // Drawing helpers for the language-model explainers.
-import type { Scene } from '../../lecture/scene';
-import type { Ink } from '../../lecture/scene';
+import type { Ink, Scene } from '../../lecture/scene';
 
 /** x centers for `n` items `pitch` stage units apart, centered on `cx`. */
 export function spread(s: Scene, n: number, pitch: number, cx = s.w / 2): number[] {

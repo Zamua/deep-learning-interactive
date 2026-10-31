@@ -1,7 +1,6 @@
 // Drawing helpers for the post-training explainers: token chips sized to their text, and plain
 // rectangles standing for matrices.
-import type { Scene } from '../../lecture/scene';
-import type { Ink } from '../../lecture/scene';
+import type { Ink, Scene } from '../../lecture/scene';
 
 /** Where a row of token chips goes: each chip's center and width (px), laid out from `x0`. */
 export interface Row {

@@ -1,6 +1,5 @@
 // Drawing helpers for the inference explainers: token chips, model passes, and tallies.
-import type { Scene } from '../../lecture/scene';
-import type { Ink } from '../../lecture/scene';
+import type { Ink, Scene } from '../../lecture/scene';
 
 /** A chip just wide enough for its label, centered on (x, y). */
 export function word(s: Scene, x: number, y: number, t: string, k: Ink, o: { on?: number; size?: number; h?: number } = {}): void {

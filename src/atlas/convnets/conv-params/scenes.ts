@@ -1,6 +1,5 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
 import { after, cells, cite, columns } from '../../draw';
 import { caption } from '../../networks/draw';
 import { grid, gridCells, rich, volume } from '../draw';

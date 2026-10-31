@@ -1,6 +1,5 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
 import { smooth } from '../../../lecture/scene';
-import type { Ink } from '../../../lecture/scene';
 import { after, bars, cite, columns } from '../../draw';
 import { rich } from '../../linear-algebra/draw';
 import { gpu, mono, stack } from '../draw';

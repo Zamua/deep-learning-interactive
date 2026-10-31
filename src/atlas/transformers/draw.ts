@@ -1,7 +1,6 @@
 // Drawing helpers for the transformer explainers: subscripted names, short vectors as cell rows,
 // small matrices, attention grids and blocks that stand for whole matrices.
-import type { Scene, TextOpts } from '../../lecture/scene';
-import type { Ink } from '../../lecture/scene';
+import type { Ink, Scene, TextOpts } from '../../lecture/scene';
 
 /** `base` with a smaller, lowered `sub`, as one label: W with a Q under it. Returns its width. */
 export function sub(s: Scene, base: string, subscript: string, x: number, y: number, o: TextOpts & { k?: Ink } = {}): number {
