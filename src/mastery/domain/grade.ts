@@ -12,9 +12,13 @@ export interface Verdict {
   why?: string;
 }
 
-/** Reads `0.24`, `-1.5`, `.5`, `1/3`, `2e-3`, with typographic minus signs. */
+/** Thousands grouped with commas, as in `3,072`; any other comma could be a decimal comma, so is not read. */
+const GROUPED = /^[+-]?\d{1,3}(,\d{3})+(\.\d*)?$/;
+
+/** Reads `0.24`, `-1.5`, `.5`, `1/3`, `2e-3`, `3,072`, with typographic minus signs. */
 export function parseNumber(s: string): number | null {
-  const t = s.trim().replace(/[−–]/g, '-').replace(/,/g, '');
+  let t = s.trim().replace(/[−–]/g, '-');
+  if (GROUPED.test(t)) t = t.replace(/,/g, '');
   const num = /^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?$/i;
   if (num.test(t)) return Number(t);
   const frac = /^([+-]?(?:\d+\.?\d*|\.\d+))\s*\/\s*([+-]?(?:\d+\.?\d*|\.\d+))$/.exec(t);
@@ -53,6 +57,7 @@ export function grade(p: Problem, r: Response): Verdict {
   switch (a.kind) {
     case 'number': {
       const x = typeof r === 'string' ? parseNumber(r) : null;
+      if (x === null && typeof r === 'string' && /\d,\d/.test(r)) return { ok: false, unreadable: 'Use a point for decimals, like 0.5.' };
       if (x === null) return { ok: false, unreadable: 'Enter a number, like 0.25, -3 or 1/4.' };
       if (closeTo(x, a.value, a.places)) return { ok: true };
       return caught(p, (t) => typeof t === 'number' && closeTo(x, t, a.places));

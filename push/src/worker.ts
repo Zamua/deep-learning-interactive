@@ -3,8 +3,9 @@
 // keys, a reminder time and time zone, and when the learner last practiced; one Durable Object
 // holds them all and wakes on an alarm at the next reminder due.
 import { DurableObject } from 'cloudflare:workers';
-import { nextFire, validTime, validZone, type Reminder } from './schedule';
-import { encrypt, isPushEndpoint, newSender, vapidAuth } from './webpush';
+import { endpointFrom, subscriptionFrom } from './api';
+import { nextFire, type Reminder } from './schedule';
+import { encrypt, newSender, vapidAuth } from './webpush';
 
 export interface Env {
   REMINDERS: DurableObjectNamespace<Reminders>;
@@ -147,18 +148,13 @@ export default {
     const stub = env.REMINDERS.get(env.REMINDERS.idFromName('all'));
     const body = req.method === 'GET' ? {} : await readBody(req);
     if (!body) return json({ error: 'bad body' }, 400, h);
-    const endpoint = String((body.subscription as { endpoint?: unknown } | undefined)?.endpoint ?? body.endpoint ?? '');
-    if (!isPushEndpoint(endpoint)) return json({ error: 'not a push endpoint' }, 400, h);
+    const endpoint = endpointFrom(body);
+    if (!endpoint) return json({ error: 'not a push endpoint' }, 400, h);
 
     if (url.pathname === '/subscription' && req.method === 'PUT') {
-      const keys = (body.subscription as { keys?: { p256dh?: unknown; auth?: unknown } }).keys ?? {};
-      const time = String(body.time ?? '');
-      const tz = String(body.tz ?? '');
-      const lastActive = Number(body.lastActive ?? 0);
-      if (typeof keys.p256dh !== 'string' || typeof keys.auth !== 'string' || !validTime(time) || !validZone(tz) || !Number.isFinite(lastActive)) {
-        return json({ error: 'bad subscription' }, 400, h);
-      }
-      const r = await stub.upsert({ endpoint, p256dh: keys.p256dh, auth: keys.auth, time, tz, lastActive });
+      const sub = subscriptionFrom(body);
+      if (!sub) return json({ error: 'bad subscription' }, 400, h);
+      const r = await stub.upsert(sub);
       return json(r, 'error' in r ? 503 : 200, h);
     }
     if (url.pathname === '/subscription' && req.method === 'DELETE') {
