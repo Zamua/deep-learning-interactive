@@ -23,12 +23,14 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
   const title = (id: string) => graph.get(id)!.title;
   root.append(h('div', { class: 'home-kicker at-kicker-teal' }, 'Atlas'), h('h1', { class: 'home-title', html: 'AI by <em>mastery</em>.' }));
 
-  const c = d.concept ? graph.get(d.concept) : undefined;
   const lead = (kicker: string, t: string, sub: string, go: HTMLElement, alt?: HTMLElement) =>
     h('div', { class: 'lead at-lead' }, h('div', { class: 'lead-k' }, kicker), h('div', { class: 'lead-t' }, t), h('div', { class: 'lead-s' }, sub), h('div', { class: 'lead-actions' }, go, alt ?? ''));
   const goBtn = (label: string, href = '#/atlas/learn') => h('a', { class: 'lead-go', href, html: `${icon('playFill')} ${label}` });
   const altBtn = (label: string, href: string, ic: string) => h('a', { class: 'lead-alt', href, html: `${icon(ic)} ${label}` });
-  const opens = d.opens?.length ? ` · then ${d.opens.map(title).join(', ')} opens` : '';
+  const opens = d.kind === 'review' || d.kind === 'done' ? [] : d.opens;
+  const thenOpens = opens.length ? ` · then ${opens.map(title).join(', ')} opens` : '';
+  const winBack = (id: string, need: number, streakNow: number) =>
+    lead('Win it back', title(id), `Slipped on a review: ${need} right in a row win it back. ${streakNow} so far.`, goBtn('Practice'));
   const st = [...learner.statuses().values()];
   const mastered = st.filter((x) => x === 'mastered' || x === 'due' || x === 'slipping').length;
   const mapLink = () => h('a', { class: 'at-maplink', href: '#/atlas/graph', html: `${icon('graph')} <span>The whole map</span><small>${mastered} of ${st.length} mastered</small>${icon('arrowRight')}` });
@@ -38,28 +40,31 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
   if (targets.length) {
     const inTrack = (id: string) => targets.some((t) => trackConcepts(graph, t).includes(id));
     if (d.kind === 'review') root.append(lead('Reviews', `${plural(d.due, 'concept')} due`, reviewTime(learner), goBtn('Start reviews')));
-    else if (d.kind === 'learning' && d.slipping) root.append(lead('Win it back', c!.title, `Slipped on a review: ${d.need} right in a row win it back. ${d.streak} so far.`, goBtn('Practice')));
-    else if (d.kind === 'learning' && !inTrack(c!.id)) root.append(lead('In progress', c!.title, `${d.streak} of ${d.need} right in a row${opens}`, goBtn('Practice', `#/atlas/learn/${c!.id}`)));
+    else if (d.kind === 'learning' && d.slipping) root.append(winBack(d.concept, d.need, d.streak));
+    else if (d.kind === 'learning' && !inTrack(d.concept)) root.append(lead('In progress', title(d.concept), `${d.streak} of ${d.need} right in a row${thenOpens}`, goBtn('Practice', `#/atlas/learn/${d.concept}`)));
     root.append(...tracksSection(learner), pickLink('Or choose something else to learn'), ...recentSection(learner), mapLink());
     return;
   }
 
-  if (d.kind === 'start') root.append(lead('Start here', c!.title, 'The first concept: a short explainer, then practice.', goBtn('Start'), altBtn('Placement test', '#/atlas/place', 'compass')));
-  else if (d.kind === 'learning' && d.slipping) root.append(lead('Win it back', c!.title, `Slipped on a review: ${d.need} right in a row win it back. ${d.streak} so far.`, goBtn('Practice')));
-  else if (d.kind === 'learning') root.append(lead('In progress', c!.title, `${d.streak} of ${d.need} right in a row${opens}`, goBtn('Practice')));
-  else if (d.kind === 'new') root.append(lead('Up next', c!.title, `${c!.blurb}`, goBtn('Start'), hasExplainerLink(c!.id)), pickLink('Or choose what to learn next'));
+  if (d.kind === 'start') root.append(lead('Start here', title(d.concept), 'The first concept: a short explainer, then practice.', goBtn('Start'), altBtn('Placement test', '#/atlas/place', 'compass')));
+  else if (d.kind === 'learning' && d.slipping) root.append(winBack(d.concept, d.need, d.streak));
+  else if (d.kind === 'learning') root.append(lead('In progress', title(d.concept), `${d.streak} of ${d.need} right in a row${thenOpens}`, goBtn('Practice')));
+  else if (d.kind === 'new') root.append(lead('Up next', title(d.concept), graph.get(d.concept)!.blurb, goBtn('Start'), hasExplainerLink(d.concept)), pickLink('Or choose what to learn next'));
   else if (d.kind === 'review') root.append(lead('Review', `${plural(d.due, 'concept')} due`, `${reviewTime(learner)}${d.after ? ` Then ${title(d.after)}.` : ''}`, goBtn('Start reviews')));
-  else root.append(lead('All caught up', 'Nothing is due', d.nextReview ? `Next review ${whenDue(d.nextReview)}.` : 'Everything here is mastered.', altBtn('See the map', '#/atlas/graph', 'graph')));
+  else if (d.kind === 'done') root.append(lead('All caught up', 'Nothing is due', d.nextReview ? `Next review ${whenDue(d.nextReview)}.` : 'Everything here is mastered.', altBtn('See the map', '#/atlas/graph', 'graph')));
   if (d.due && d.kind !== 'review') root.append(h('p', { class: 'at-small at-due' }, `Then ${plural(d.due, 'review')}, before anything new.`));
 
   // The path: the last two mastered, where you are, and what opens next.
   const done = graph.order.filter((x) => learner.record(x.id).mastered).map((x) => x.id).sort((p, q) => learner.record(p).last - learner.record(q).last).slice(-2);
-  const now = d.kind === 'learning' || d.kind === 'new' || d.kind === 'start' ? d.concept : d.kind === 'review' ? d.after : undefined;
-  const next = now ? [...(d.opens ?? []), ...graph.dependents.get(now)!.filter((x) => !(d.opens ?? []).includes(x))].slice(0, 2) : [];
+  const now = d.kind === 'done' ? undefined : d.kind === 'review' ? d.after : d.concept;
+  const next = now ? [...opens, ...graph.dependents.get(now)!.filter((x) => !opens.includes(x))].slice(0, 2) : [];
   if (done.length || now) {
     const step = (id: string, cls: string, sub: string) => h('a', { class: `at-step-p ${cls}`, href: `#/atlas/${id}` }, h('span', { class: 'at-step-t' }, title(id)), h('small', {}, sub));
     root.append(h('div', { class: 'home-lbl' }, 'Your path'), h('div', { class: 'at-path' },
-      ...done.map((id) => step(id, 'done', learner.record(id).review ? `mastered · review ${whenDue(learner.record(id).review!.due)}` : 'mastered')),
+      ...done.map((id) => {
+        const r = learner.record(id);
+        return step(id, 'done', r.mastered ? `mastered · review ${whenDue(r.review.due)}` : 'mastered');
+      }),
       ...(now ? [step(now, 'now', d.kind === 'learning' ? `in progress · ${d.streak} of ${d.need}` : d.kind === 'review' ? 'after the reviews' : 'next to learn')] : []),
       ...next.map((id, i) => step(id, 'lock', i === 0 ? `opens after ${title(now!)}` : 'then this'))));
   }
@@ -118,7 +123,10 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
     })] : []);
   const rec = (id: string) => learner.record(id);
   const bar = (id: string) => graph.get(id)!.mastery.streak;
-  const mastered = (id: string, showDomain: boolean) => row(id, icon('check'), 'done', `review ${whenDue(rec(id).review!.due)}`, showDomain);
+  const mastered = (id: string, showDomain: boolean) => {
+    const r = rec(id);
+    return row(id, icon('check'), 'done', r.mastered ? `review ${whenDue(r.review.due)}` : '', showDomain);
+  };
   const needs = (id: string) => graph.get(id)!.prereqs.filter((p) => !rec(p).mastered).map((p) => graph.get(p)!.title);
 
   root.append(

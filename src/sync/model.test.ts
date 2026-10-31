@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { Local, canon, codeFromRoom, makeRng, memoryStorage, type Kind } from 'hearthsync';
 import { device, fakeWorld } from 'hearthsync/testing';
-import { emptyRecord, type ConceptRecord } from '../mastery/domain/model';
+import { emptyRecord, type ConceptRecord, type Mastered, type Unmastered } from '../mastery/domain/model';
 import {
-  LAST_KEY, MODEL, PREFS_KEY, READING_KEY, TRACKS_KEY, concepts, lastSeen, laterConcept, lecture, lectureEntries, lectureKey, masteryKey, model, orBits, paceOf, putConcepts, putLast, putLecture, putPace,
+  LAST_KEY, MODEL, PREFS_KEY, READING_KEY, TRACKS_KEY, conceptFrom, concepts, lastSeen, laterConcept, lecture, lectureEntries, lectureKey, masteryKey, model, orBits, paceOf, putConcepts, putLast, putLecture, putPace,
   putReading, putTrack, readEntry, trackList, type Rec,
 } from './model';
 
-const rec = (over: Partial<ConceptRecord> = {}): ConceptRecord => ({ ...emptyRecord(), ...over });
-const mastered = (last: number): ConceptRecord => rec({ attempts: 4, correct: 4, recent: [{ ok: true, t: 3 }], mastered: true, review: { due: last + 86_400_000, interval: 1, ease: 2.5, passed: 0 }, last });
+const rec = (over: Partial<Unmastered> = {}): Unmastered => ({ ...emptyRecord(), ...over });
+const mastered = (last: number): Mastered => ({ ...rec({ attempts: 4, correct: 4, recent: [{ ok: true, t: 3 }], last }), mastered: true, slipping: false, review: { due: last + 86_400_000, interval: 1, ease: 2.5, passed: 0 } });
 const fresh = () => new Local(memoryStorage(), model(() => []), { now: () => Date.UTC(2026, 9, 26) });
 
 /** Random records of each kind, from a few ids and stamps so merges collide. */
@@ -100,6 +100,18 @@ describe('the progress records', () => {
     expect(paceOf(l.store)).toBe('deep');
     l.edit((s, now) => putPace(s, now, 'broad'));
     expect(paceOf(l.store)).toBe('broad');
+  });
+});
+
+describe('conceptFrom', () => {
+  it('reads flags that cannot occur together as the mastery they imply', () => {
+    const r = rec({ attempts: 3, last: 50 });
+    const review = { due: 99, interval: 1, ease: 2.5, passed: 0 };
+    expect(conceptFrom(r)).toEqual(r);
+    expect(conceptFrom(mastered(50))).toEqual(mastered(50));
+    expect(conceptFrom({ ...r, review })).toEqual({ ...r, mastered: true, slipping: false, review });
+    expect(conceptFrom({ ...r, slipping: true, review })).toEqual({ ...r, mastered: true, slipping: true, review });
+    expect(conceptFrom({ ...r, mastered: true })).toEqual({ ...r, mastered: true, slipping: false, review: { due: 50 + 86_400_000, interval: 1, ease: 2.5, passed: 0 } });
   });
 });
 

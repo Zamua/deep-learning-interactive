@@ -8,26 +8,36 @@ import type { LogRow } from './snapshot';
 import { appendLog, loadPace, loadRecords, loadTracks, saveRecords, saveTrack } from './store';
 
 /** What the learner would do next, for a page to lead with. */
-export interface Today {
-  /** `start`: nothing done yet. `done`: nothing to learn and nothing due. */
-  kind: 'start' | 'learning' | 'new' | 'review' | 'done';
-  concept?: string;
-  /** Right in a row so far, and how many the concept needs. */
-  streak?: number;
-  need?: number;
-  /** Concepts that open once this one is mastered. */
-  opens?: string[];
+export type Today = {
   /** Reviews due now. */
   due: number;
-  /** For `review`: what to learn once the reviews are done. */
-  after?: string;
-  /** For `learning`: the concept slipped on a review and is being won back. */
-  slipping?: boolean;
-  /** When the next review falls due, for `done`. */
-  nextReview?: number;
   /** Epoch ms of the latest answer; 0 before any. */
   t: number;
-}
+} & (
+  | {
+      /** `start`: nothing done yet. `new`: the next concept to begin. `learning`: one under way. */
+      kind: 'start' | 'new' | 'learning';
+      concept: string;
+      /** Right in a row so far, and how many the concept needs. */
+      streak: number;
+      need: number;
+      /** Concepts that open once this one is mastered. */
+      opens: string[];
+      /** It slipped on a review and is being won back. */
+      slipping: boolean;
+    }
+  | {
+      kind: 'review';
+      concept: string;
+      /** What to learn once the reviews are done. */
+      after?: string;
+    }
+  | {
+      /** Nothing to learn and nothing due. */
+      kind: 'done';
+      nextReview?: number;
+    }
+);
 
 export class Learner {
   constructor(readonly graph: ConceptGraph, private readonly clock: () => number = Date.now) {
@@ -121,8 +131,8 @@ export class Learner {
       streak: streak(this.record(c.id)),
       need: pick.reason === 'slipping' ? recoveryStreak(c.mastery) : c.mastery.streak,
       opens,
+      slipping: pick.reason === 'slipping',
       due,
-      ...(pick.reason === 'slipping' ? { slipping: true } : {}),
       t,
     };
   }

@@ -8,7 +8,7 @@ import type { Concept } from './types';
 const bar = { streak: 3, seconds: 20 };
 const c = (id: string, prereqs: string[] = []): Concept => ({ id, title: id, blurb: '', domain: 'd', prereqs, mastery: bar });
 const T0 = 1_000_000_000_000;
-const answers = (oks: boolean[], at: number): ConceptRecord => oks.reduce((r, ok) => applyAnswer(r, bar, { ok, seconds: 5 }, at), emptyRecord());
+const answers = (oks: boolean[], at: number): ConceptRecord => oks.reduce((r: ConceptRecord, ok) => applyAnswer(r, bar, { ok, seconds: 5 }, at), emptyRecord());
 const mastered = (at = T0) => answers([true, true, true], at);
 
 // a and b are roots; c needs a, d needs a and b, t needs c and d; x stands apart
