@@ -3,10 +3,10 @@
 import { domainOf } from '../../atlas/index';
 import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
-import { DONE, lectureHistory } from '../../core/progress';
-import { DAY } from '../domain/model';
+import { DONE, lectureHistory } from '../../lecture/progress';
 import type { Learner } from '../learner';
 import { atlasRoot } from './common';
+import { ago, dayIndex, mmss } from '../../core/format';
 import { routes } from '../../routes';
 
 interface Seen {
@@ -16,8 +16,6 @@ interface Seen {
   watched?: { t: number; pos: number; dur: number; heard: number };
   practiced?: number;
 }
-
-const mmss = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
 
 /** Concepts with an explainer played or a problem answered, latest first. */
 function history(learner: Learner): Seen[] {
@@ -37,24 +35,6 @@ function history(learner: Learner): Seen[] {
   }
   return [...out.values()].sort((a, b) => b.t - a.t);
 }
-
-/** "just now", "12 min ago", "3 h ago", "yesterday", "4 days ago", then the date. */
-export function ago(t: number, now = Date.now()): string {
-  const min = Math.floor((now - t) / 60_000);
-  if (min < 1) return 'just now';
-  if (min < 60) return `${min} min ago`;
-  if (min < 24 * 60 && new Date(t).toDateString() === new Date(now).toDateString()) return `${Math.floor(min / 60)} h ago`;
-  const days = dayIndex(now) - dayIndex(t);
-  if (days <= 1) return 'yesterday';
-  if (days < 7) return `${days} days ago`;
-  return new Date(t).toLocaleDateString([], { month: 'short', day: 'numeric' });
-}
-
-/** Local calendar days since the epoch, so "yesterday" follows the clock on the wall. */
-const dayIndex = (t: number) => {
-  const d = new Date(t);
-  return Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() - new Date(1970, 0, 1).getTime()) / DAY);
-};
 
 /** Where an explainer stands: watched, or where it stopped. */
 function where(w: NonNullable<Seen['watched']>): string {

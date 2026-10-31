@@ -3,7 +3,7 @@
 import { domainOf, explainerSeconds, hasExplainer } from '../../atlas/index';
 import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
-import { lectureState } from '../../core/progress';
+import { lectureState, watched } from '../../lecture/progress';
 import { streak } from '../domain/model';
 import type { Track } from '../domain/tracks';
 import type { Learner } from '../learner';
@@ -11,9 +11,6 @@ import { atlasRoot, plural } from './common';
 import { explainerId } from './concept';
 import { graphView, lightTrack } from './graph-view';
 import { routes } from '../../routes';
-
-/** An explainer counts as watched from this share heard, as a session's intro does. */
-const WATCHED = 0.9;
 
 const heard = (id: string): number => lectureState(explainerId(id))?.heard ?? 0;
 
@@ -29,7 +26,7 @@ export function duration(seconds: number): string {
 /** The track's next concept: its explainer when not yet watched, else its practice, keeping the track along. */
 export function continueHref(learner: Learner, t: Track): string {
   const id = t.next!;
-  const watch = hasExplainer(id) && !learner.record(id).attempts && heard(id) < WATCHED;
+  const watch = hasExplainer(id) && !learner.record(id).attempts && !watched(explainerId(id));
   return watch ? routes.watch(id, t.target) : routes.learn(id, t.target);
 }
 

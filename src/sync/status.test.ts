@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { SyncStatus } from 'hearthsync';
-import { ago, statusLine } from './status';
+import { statusLine } from './status';
 
 const st = (over: Partial<SyncStatus>): SyncStatus => ({
   state: 'saved', problem: null, code: 'ABCD', tag: null, items: {}, unsaved: 0, savedAt: null, newer: false, retryAt: null, gone: [], ...over,
@@ -25,10 +25,5 @@ describe('the sync status line', () => {
       expect(short.split(' ').length).toBeLessThanOrEqual(2);
       expect(short).not.toBe('Offline');
     }
-  });
-
-  it('ages in minutes, then hours', () => {
-    expect(ago(0, 30_000)).toBe('just now');
-    expect(ago(0, 3 * 3_600_000)).toBe('3 h ago');
   });
 });

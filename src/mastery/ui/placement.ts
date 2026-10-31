@@ -4,7 +4,7 @@ import { domainOf, loadGenerators } from '../../atlas/index';
 import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
 import { Rng } from '../../core/rand';
-import { ancestors, descendants, nextProbe } from '../domain/placement';
+import { nextProbe } from '../domain/placement';
 import type { Learner } from '../learner';
 import { plural } from './common';
 import { ask, runFrame } from './session';
@@ -51,7 +51,7 @@ export function renderPlacement(main: HTMLElement, learner: Learner): void {
       const got = await ask(frame, { concept: id, problem, rng, tag });
       asked++;
       const pass = got.verdict.ok && got.seconds <= 2 * c.mastery.seconds;
-      for (const x of pass ? ancestors(g, id) : descendants(g, id)) if (!known.has(x)) known.set(x, pass);
+      for (const x of pass ? g.ancestors(id) : g.descendants(id)) if (!known.has(x)) known.set(x, pass);
       const settled = known.size / g.order.length;
       frame.setProgress(settled, 1, `${Math.round(settled * 100)}% placed`);
     }

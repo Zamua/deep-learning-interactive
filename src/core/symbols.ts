@@ -17,6 +17,9 @@ export interface SymbolDef {
 
 export type SymbolMap = Record<string, SymbolDef>;
 
+/** A symbol's name without its "W: " lead. */
+export const plainName = (name: string): string => name.replace(/^[^:]{1,14}:\s*/, '');
+
 const KEY = /^[A-Za-z][A-Za-z0-9]*$/;
 
 /** KaTeX macros for a symbol map: `\sym{key}{tex}` plus a `\sym<key>` shorthand per symbol. */

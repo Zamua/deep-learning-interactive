@@ -2,7 +2,8 @@ import { CodePanel } from '../core/code';
 import { icon } from '../core/controls';
 import { h, onDispose } from '../core/dom';
 import { tex } from '../core/math';
-import type { SymbolMap } from '../core/symbols';
+import { mmss } from '../core/format';
+import { plainName, type SymbolMap } from '../core/symbols';
 import { LIBRARY } from './library';
 import { callKey, type GlossEntry, type Glossary, MODULES } from './glossary';
 import type { Beat, Paper } from './types';
@@ -49,9 +50,6 @@ export interface LookupHost {
 
 const id = (t: Term) => `${t.kind}:${t.key}`;
 const sentence = (s: string) => `${s[0]!.toUpperCase()}${s.slice(1)}${/[.?!]$/.test(s) ? '' : '.'}`;
-const mmss = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
-/** A symbol's name without its "W: " lead. */
-const plainName = (name: string) => name.replace(/^[^:]{1,12}:\s*/, '');
 
 /** The term a code or mark element stands for, if any. */
 export function termOf(el: Element | null): Term | null {

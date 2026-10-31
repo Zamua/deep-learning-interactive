@@ -4,7 +4,7 @@ import { domainOf, hasExplainer, loadGenerators } from '../../atlas/index';
 import { CodePanel } from '../../core/code';
 import { icon } from '../../core/controls';
 import { h, onDispose } from '../../core/dom';
-import { lectureState } from '../../core/progress';
+import { watched } from '../../lecture/progress';
 import { Rng } from '../../core/rand';
 import { grade, type Response, type Verdict } from '../domain/grade';
 import { recoveryStreak, streak, type ConceptRecord } from '../domain/model';
@@ -294,7 +294,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       // A watched explainer is the introduction; otherwise offer it first.
       // The intro is skipped for a watched explainer, and when the session opened on this concept from its page or its explainer.
       const fresh = pick.reason === 'new' && !introduced.has(c.id);
-      if (fresh && c.id !== focus && (lectureState(explainerId(c.id))?.heard ?? 0) < 0.5) {
+      if (fresh && c.id !== focus && !watched(explainerId(c.id))) {
         introduced.add(c.id);
         await intro(c, pick);
       }

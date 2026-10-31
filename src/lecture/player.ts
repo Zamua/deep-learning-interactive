@@ -2,7 +2,7 @@ import '../styles/lecture.css';
 import { CodePanel } from '../core/code';
 import { icon } from '../core/controls';
 import { h, onDispose } from '../core/dom';
-import { DONE, LectureLog } from '../core/progress';
+import { DONE, LectureLog } from './progress';
 import { setMacros, tex } from '../core/math';
 import { Plot } from '../core/plot';
 import { codeIndex, linkSymbols, symbolMacros, type SymbolMap } from '../core/symbols';

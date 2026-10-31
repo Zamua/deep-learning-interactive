@@ -4,6 +4,7 @@
 import type { EndpointBody, SubscriptionBody } from '../../push/src/wire';
 import WIRE from '../offline/wire.json';
 import type { Learner } from './learner';
+import { getJson, setJson } from '../core/storage';
 
 const PUSH_URL = import.meta.env.VITE_PUSH_URL as string | undefined;
 const VAPID_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined;
@@ -22,20 +23,11 @@ export interface ReminderPrefs {
 }
 
 export function loadPrefs(): ReminderPrefs {
-  try {
-    return { on: false, time: '19:00', ...(JSON.parse(localStorage.getItem(PREFS) ?? '{}') as Partial<ReminderPrefs>) };
-  } catch {
-    return { on: false, time: '19:00' };
-  }
+  const v = getJson(PREFS);
+  return { on: false, time: '19:00', ...(v && typeof v === 'object' ? (v as Partial<ReminderPrefs>) : {}) };
 }
 
-function savePrefs(p: ReminderPrefs): void {
-  try {
-    localStorage.setItem(PREFS, JSON.stringify(p));
-  } catch {
-    /* private mode: the switch just won't stick */
-  }
-}
+const savePrefs = (p: ReminderPrefs): void => setJson(PREFS, p);
 
 /** `ok`: can subscribe. `install`: iOS Safari, which offers push only to an app on the home screen. `no`: unsupported or not configured. */
 export function pushSupport(): 'ok' | 'install' | 'no' {

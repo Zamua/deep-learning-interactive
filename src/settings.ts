@@ -10,17 +10,14 @@ import { offlineStatus, offlineSupported } from './offline/register';
 import { syncEngine } from './sync/cloud';
 import { statusLine } from './sync/status';
 import { routes } from './routes';
+import { getItem, setItem } from './core/storage';
 
 type Theme = 'system' | 'light' | 'dark';
 const THEME_KEY = 'cs231n.theme';
 
 function savedTheme(): Theme {
-  try {
-    const t = localStorage.getItem(THEME_KEY);
-    return t === 'light' || t === 'dark' ? t : 'system';
-  } catch {
-    return 'system';
-  }
+  const t = getItem(THEME_KEY);
+  return t === 'light' || t === 'dark' ? t : 'system';
 }
 
 export function applyTheme(t: Theme = savedTheme()): void {
@@ -29,12 +26,7 @@ export function applyTheme(t: Theme = savedTheme()): void {
 }
 
 function setTheme(t: Theme): void {
-  try {
-    if (t === 'system') localStorage.removeItem(THEME_KEY);
-    else localStorage.setItem(THEME_KEY, t);
-  } catch {
-    /* private mode: the choice just isn't kept */
-  }
+  setItem(THEME_KEY, t === 'system' ? null : t);
   applyTheme(t);
 }
 

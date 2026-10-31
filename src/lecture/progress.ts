@@ -60,6 +60,9 @@ export function lectureState(id: string): { pos: number; heard: number } | null 
   return { pos: at, heard: dur ? new LectureLog(id, dur).heardIn() : 0 };
 }
 
+/** Whether a lecture counts as watched: enough of it heard to be finished. */
+export const watched = (id: string): boolean => (lectureState(id)?.heard ?? 0) >= DONE;
+
 /** Stamps below this predate edit times: they came from storage that kept none. */
 const TIMED = 1e12;
 
