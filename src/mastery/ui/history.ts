@@ -7,6 +7,7 @@ import { DONE, lectureHistory } from '../../core/progress';
 import { DAY } from '../domain/model';
 import type { Learner } from '../learner';
 import { atlasRoot } from './common';
+import { routes } from '../../routes';
 
 interface Seen {
   id: string;
@@ -65,7 +66,7 @@ function row(learner: Learner, e: Seen, when: string): HTMLElement {
   const c = learner.graph.get(e.id)!;
   const done = !!e.watched && e.watched.heard >= DONE;
   const what = [e.watched ? where(e.watched) : '', e.practiced ? 'practiced' : ''].filter(Boolean).join(' · ');
-  return h('a', { class: 'at-row', href: e.watched ? `#/atlas/${e.id}/watch` : `#/atlas/${e.id}` },
+  return h('a', { class: 'at-row', href: e.watched ? routes.watch(e.id) : routes.concept(e.id) },
     h('span', { class: `at-row-box ${!e.watched ? 'learn' : done ? 'done' : 'new'}`, html: icon(!e.watched ? 'bolt' : done ? 'reset' : 'playFill') }),
     h('span', { class: 'at-row-t' }, c.title, h('small', { style: `--dom:var(--c-${domainOf(c).color})` }, what)),
     h('span', { class: 'at-row-r' }, when));
@@ -78,7 +79,7 @@ export function recentSection(learner: Learner): HTMLElement[] {
   return [
     h('div', { class: 'at-tracks-h' },
       h('div', { class: 'home-lbl' }, 'Recently watched'),
-      h('a', { class: 'at-track-add', href: '#/atlas/history' }, 'See all')),
+      h('a', { class: 'at-track-add', href: routes.history }, 'See all')),
     ...seen.map((e) => row(learner, e, ago(e.watched!.t))),
   ];
 }
@@ -89,7 +90,7 @@ export function renderHistory(main: HTMLElement, learner: Learner): void {
   main.append(root);
   const all = history(learner);
   root.append(
-    h('a', { class: 'at-back', href: '#/atlas', html: `${icon('arrowLeft')} Atlas` }),
+    h('a', { class: 'at-back', href: routes.home, html: `${icon('arrowLeft')} Atlas` }),
     h('h1', { class: 'home-title' }, 'History'),
     h('p', { class: 'at-small' }, all.length ? 'Explainers you played and concepts you practiced, on any of your devices. Tap one to go back to it.' : 'Nothing yet: explainers you play and concepts you practice show up here.'));
   const today = dayIndex(Date.now());

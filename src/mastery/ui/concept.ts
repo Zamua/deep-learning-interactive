@@ -6,6 +6,7 @@ import { lectureState } from '../../core/progress';
 import { meanTime, streak } from '../domain/model';
 import type { Learner } from '../learner';
 import { atlasRoot, dots, STATUS_LABEL, whenDue } from './common';
+import { routes } from '../../routes';
 
 export const explainerId = (concept: string) => `atlas-${concept}`;
 
@@ -21,7 +22,7 @@ export function renderConcept(main: HTMLElement, learner: Learner, id: string): 
   main.append(root);
 
   root.append(
-    h('a', { class: 'at-back', href: '#/atlas', html: `${icon('arrowLeft')} The map` }),
+    h('a', { class: 'at-back', href: routes.home, html: `${icon('arrowLeft')} The map` }),
     h('div', { class: 'at-kicker at-kicker-dom' }, `${d.title} · ${STATUS_LABEL[s]}`),
     h('h1', { class: 'at-title at-title-c' }, c.title),
     h('p', { class: 'at-lede' }, c.blurb));
@@ -30,7 +31,7 @@ export function renderConcept(main: HTMLElement, learner: Learner, id: string): 
     const ls = lectureState(explainerId(id));
     const sub = h('span', { class: 'at-ex-sub' }, ls && ls.heard >= 0.02 ? `${Math.round(ls.heard * 100)}% heard` : 'Watch it before your first problem');
     const k = h('span', { class: 'at-ex-k' }, 'Explainer');
-    root.append(h('a', { class: 'at-ex', href: `#/atlas/${id}/watch` },
+    root.append(h('a', { class: 'at-ex', href: routes.watch(id) },
       h('span', { class: 'at-ex-play', html: icon('playFill') }),
       h('span', { class: 'at-ex-body' }, k, sub),
       h('span', { class: 'at-ex-go', html: icon('arrowRight') })));
@@ -63,21 +64,21 @@ export function renderConcept(main: HTMLElement, learner: Learner, id: string): 
   const missing = c.prereqs.filter((p) => !learner.record(p).mastered).map((p) => graph.get(p)!.title);
   root.append(locked
     ? h('div', { class: 'at-cta at-cta-off', html: `${icon('lock')} Master ${missing.join(' and ')} first` })
-    : h('a', { class: 'at-cta', href: `#/atlas/learn/${id}`, html: `${s === 'mastered' ? 'Practice' : s === 'due' ? 'Review' : 'Practice'} ${c.title.toLowerCase()} ${icon('arrowRight')}` }));
+    : h('a', { class: 'at-cta', href: routes.learn(id), html: `${s === 'mastered' ? 'Practice' : s === 'due' ? 'Review' : 'Practice'} ${c.title.toLowerCase()} ${icon('arrowRight')}` }));
 
   if (!rec.mastered) {
     const followed = learner.trackTargets.includes(id);
-    root.append(h('a', { class: 'at-pick-link', href: followed ? `#/atlas/track/${id}` : `#/atlas/new-track/${id}`, html: icon('target') }, h('span', {}, followed ? 'Open its track' : 'Make it a track: everything it needs, in order')));
+    root.append(h('a', { class: 'at-pick-link', href: followed ? routes.track(id) : routes.newTrack(id), html: icon('target') }, h('span', {}, followed ? 'Open its track' : 'Make it a track: everything it needs, in order')));
   }
 
   const pill = (pid: string) => {
     const ok = learner.record(pid).mastered;
-    return h('a', { class: `at-pill${ok ? ' ok' : ''}`, href: `#/atlas/${pid}`, html: `${icon(ok ? 'check' : 'lock')} ${graph.get(pid)!.title}` });
+    return h('a', { class: `at-pill${ok ? ' ok' : ''}`, href: routes.concept(pid), html: `${icon(ok ? 'check' : 'lock')} ${graph.get(pid)!.title}` });
   };
   if (c.prereqs.length) root.append(h('h2', { class: 'at-h2' }, 'Builds on'), h('div', { class: 'at-pills' }, ...c.prereqs.map(pill)));
   const unlocks = graph.dependents.get(id)!;
   if (unlocks.length) root.append(h('h2', { class: 'at-h2' }, 'Unlocks'), h('div', { class: 'at-pills' }, ...unlocks.map((u) => {
     const open = learner.status(u) !== 'locked';
-    return h('a', { class: `at-pill${open ? '' : ' dim'}`, href: `#/atlas/${u}`, html: `${icon(open ? 'arrowRight' : 'lock')} ${graph.get(u)!.title}` });
+    return h('a', { class: `at-pill${open ? '' : ' dim'}`, href: routes.concept(u), html: `${icon(open ? 'arrowRight' : 'lock')} ${graph.get(u)!.title}` });
   })));
 }

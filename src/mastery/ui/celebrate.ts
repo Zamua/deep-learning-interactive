@@ -6,6 +6,7 @@ import { h, onDispose } from '../../core/dom';
 import { trackConcepts } from '../domain/tracks';
 import type { Learner } from '../learner';
 import { graphView } from './graph-view';
+import { routes } from '../../routes';
 
 /** Laid out wide, so the zoomed-out map is a page of rows rather than a thin column. */
 const MAP_W = 900;
@@ -34,7 +35,7 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
   const here = h('div', { class: 'at-cm-here' });
   const done = [...learner.statuses().values()].filter((s) => s === 'mastered' || s === 'due').length;
   const finished = !!track && trackConcepts(graph, track).every((x) => learner.record(x).mastered);
-  const along = track && !finished ? `/${track}` : '';
+  const along = track && !finished ? track : undefined;
   // A new concept opens on its explainer, never straight into its practice.
   const watch = !!next && hasExplainer(next);
   const go = h('button', { type: 'button', class: 'at-cm-go' },
@@ -42,7 +43,7 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
     next ? `Next: ${graph.get(next)!.title}` : 'Continue');
   const stay = next ? h('button', { type: 'button', class: 'at-cm-stay' }, 'Back to this session') : '';
   // Where the next new concept is Atlas's pick, the learner may prefer another.
-  const other = next && learner.status(next) === 'new' && learner.choices().open.length > 1 ? h('a', { class: 'at-cm-stay', href: '#/atlas/next' }, 'Choose something else') : '';
+  const other = next && learner.status(next) === 'new' && learner.choices().open.length > 1 ? h('a', { class: 'at-cm-stay', href: routes.next }, 'Choose something else') : '';
   const el = h('div', { class: 'at-cm', role: 'dialog', 'aria-label': `${c.title} mastered` },
     h('div', { class: 'at-cm-title', html: `${icon('sparkle')} ${c.title} mastered` }),
     view,
@@ -75,7 +76,7 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
   };
   go.addEventListener('click', () => {
     close();
-    if (next) location.hash = watch ? `#/atlas/${next}/watch${along}` : `#/atlas/${next}`;
+    if (next) location.hash = watch ? routes.watch(next, along) : routes.concept(next);
   });
   if (stay) stay.addEventListener('click', close);
   onDispose(close);

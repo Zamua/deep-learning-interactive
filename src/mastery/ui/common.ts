@@ -4,6 +4,7 @@ import { h } from '../../core/dom';
 import { md, setMacros } from '../../core/math';
 import { codeIndex, linkSymbols, symbolMacros } from '../../core/symbols';
 import { DAY, type Status } from '../domain/model';
+import { routes } from '../../routes';
 
 const symIdx = codeIndex(ALL_SYMBOLS);
 
@@ -51,7 +52,7 @@ export const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n ==
 
 /** A way to the page that lists every concept open to start. */
 export function pickLink(text: string): HTMLElement {
-  const a = h('a', { class: 'at-pick-link', href: '#/atlas/next', html: icon('compass') });
+  const a = h('a', { class: 'at-pick-link', href: routes.next, html: icon('compass') });
   a.append(h('span', {}, text));
   return a;
 }

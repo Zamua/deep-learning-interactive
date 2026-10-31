@@ -17,6 +17,7 @@ import { celebrate } from './celebrate';
 import { wireLookup } from './lookup';
 import { makePad } from './pads';
 import { syncReminders } from '../push';
+import { routes } from '../../routes';
 
 /** Problems per session: about fifteen minutes. */
 export const SESSION_LENGTH = 20;
@@ -30,7 +31,7 @@ export function runFrame(main: HTMLElement, cls: string): { root: HTMLElement; b
   const label = h('span', { class: 'at-run-n' });
   const lookup = h('button', { type: 'button', class: 'at-run-lk', 'aria-label': 'Symbols in this problem', 'aria-expanded': 'false', html: icon('book') });
   root.append(h('header', { class: 'at-run-top' },
-    h('a', { class: 'at-run-x', href: '#/atlas', 'aria-label': 'End the session', html: icon('close') }),
+    h('a', { class: 'at-run-x', href: routes.home, 'aria-label': 'End the session', html: icon('close') }),
     h('div', { class: 'at-run-bar' }, fill),
     label,
     lookup));
@@ -211,7 +212,7 @@ function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLEleme
   box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   return new Promise((resolve) => {
     const next = h('button', { type: 'button', class: 'at-check' }, 'Next');
-    if (!verdict.ok && hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-ghost', href: `#/atlas/${c.id}/watch${track ? `/${track}` : ''}`, html: `${icon('reset')} Rewatch the explainer` }));
+    if (!verdict.ok && hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-ghost', href: routes.watch(c.id, track), html: `${icon('reset')} Rewatch the explainer` }));
     frame.dock.append(next);
     const go = () => {
       window.removeEventListener('keydown', onKey);
@@ -397,7 +398,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       h('h1', { class: 'at-title' }, 'Nice work'),
       h('p', { class: 'at-lede' }, `${kept()} of ${reviews.size} kept.`),
       reviewList()));
-    frame.dock.append(h('a', { class: 'at-check', href: '#/atlas' }, 'Done'));
+    frame.dock.append(h('a', { class: 'at-check', href: routes.home }, 'Done'));
   };
 
   const intro = (c: Concept, pick: Pick): Promise<void> =>
@@ -426,7 +427,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         h('p', { class: 'at-small' }, `You will practice it until ${c.mastery.streak} in a row are right, about ${c.mastery.seconds} s each. Then the next concept opens.`),
         example,
         learner.choices().open.length > 1 ? pickLink('Not this one? Choose another') : ''));
-      if (hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-check', href: `#/atlas/${c.id}/watch${track ? `/${track}` : ''}`, html: `${icon('playFill')} Watch the explainer` }));
+      if (hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-check', href: routes.watch(c.id, track), html: `${icon('playFill')} Watch the explainer` }));
       frame.dock.append(start);
     });
 
@@ -462,7 +463,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
     frame.dock.append(backLink());
   };
 
-  const backLink = () => (track ? h('a', { class: 'at-check', href: `#/atlas/track/${track}` }, 'Back to the track') : h('a', { class: 'at-check', href: '#/atlas' }, 'Back to the map'));
+  const backLink = () => (track ? h('a', { class: 'at-check', href: routes.track(track) }, 'Back to the track') : h('a', { class: 'at-check', href: routes.home }, 'Back to the map'));
 
   void loop();
 }

@@ -10,6 +10,7 @@ import type { Learner } from '../learner';
 import { atlasRoot, plural } from './common';
 import { explainerId } from './concept';
 import { graphView, lightTrack } from './graph-view';
+import { routes } from '../../routes';
 
 /** An explainer counts as watched from this share heard, as a session's intro does. */
 const WATCHED = 0.9;
@@ -29,7 +30,7 @@ export function duration(seconds: number): string {
 export function continueHref(learner: Learner, t: Track): string {
   const id = t.next!;
   const watch = hasExplainer(id) && !learner.record(id).attempts && heard(id) < WATCHED;
-  return watch ? `#/atlas/${id}/watch/${t.target}` : `#/atlas/learn/${id}/${t.target}`;
+  return watch ? routes.watch(id, t.target) : routes.learn(id, t.target);
 }
 
 const color = (learner: Learner, id: string) => `var(--c-${domainOf(learner.graph.get(id)!).color})`;
@@ -49,7 +50,7 @@ export function tracksSection(learner: Learner): HTMLElement[] {
   const card = (t: Track) => {
     const next = h('div', { class: 'at-track-next' }, 'Next: ', h('b', {}, title(t.next!)), ` · about ${duration(t.seconds)} to go`);
     return h('div', { class: 'at-track', style: `--dom:${color(learner, t.target)}` },
-      h('a', { class: 'at-track-head', href: `#/atlas/track/${t.target}` },
+      h('a', { class: 'at-track-head', href: routes.track(t.target) },
         h('span', { class: 'at-track-ic', html: icon('target') }),
         h('b', {}, title(t.target)),
         h('span', { class: 'at-track-n' }, `${t.mastered} of ${t.ids.length}`)),
@@ -59,11 +60,11 @@ export function tracksSection(learner: Learner): HTMLElement[] {
   };
   const out = [h('div', { class: 'at-tracks-h' },
     h('div', { class: 'home-lbl' }, 'Your tracks'),
-    h('a', { class: 'at-track-add', href: '#/atlas/new-track', html: `${icon('plus')} New track` })),
+    h('a', { class: 'at-track-add', href: routes.newTrack(), html: `${icon('plus')} New track` })),
     ...going.map(card)];
   if (done.length) {
     const line = h('p', { class: 'at-track-fin', html: `${icon('check-circle')} <span>${done.length === 1 ? 'Finished' : `${done.length} finished`}: </span>` });
-    done.forEach((t, i) => line.lastElementChild!.append(i ? ', ' : '', h('a', { href: `#/atlas/track/${t.target}` }, title(t.target))));
+    done.forEach((t, i) => line.lastElementChild!.append(i ? ', ' : '', h('a', { href: routes.track(t.target) }, title(t.target))));
     out.push(line);
   }
   return out;
@@ -81,14 +82,14 @@ export function renderTrack(main: HTMLElement, learner: Learner, target: string)
   const following = learner.trackTargets.includes(target);
 
   root.append(
-    h('a', { class: 'at-back', href: '#/atlas', html: `${icon('arrowLeft')} Atlas` }),
+    h('a', { class: 'at-back', href: routes.home, html: `${icon('arrowLeft')} Atlas` }),
     h('div', { class: 'at-kicker at-kicker-dom at-trk-k', html: `${icon('target')} ${t.next ? 'Track' : 'Track complete'}` }),
     h('h1', { class: 'home-title' }, title(target)),
     h('p', { class: 'at-small' }, t.next ? `${t.mastered} of ${t.ids.length} mastered · about ${duration(t.seconds)} to go` : `All ${t.ids.length} concepts mastered.`),
     bar(t));
 
   const row = (id: string, cls: string, sub: string, mark = '') =>
-    h('a', { class: `at-tl-row ${cls}`, href: `#/atlas/${id}`, style: `--dom:${color(learner, id)}` },
+    h('a', { class: `at-tl-row ${cls}`, href: routes.concept(id), style: `--dom:${color(learner, id)}` },
       h('span', { class: 'at-tl-dot', html: mark }),
       h('span', { class: 'at-tl-t' }, title(id), h('small', {}, sub)));
   const masteredIds = t.ids.filter((id) => learner.record(id).mastered);
@@ -122,23 +123,23 @@ export function renderTrack(main: HTMLElement, learner: Learner, target: string)
     drop.addEventListener('click', () => {
       if (!window.confirm(`Remove the ${title(target)} track? Your mastery stays.`)) return;
       learner.follow(target, false);
-      location.hash = '#/atlas';
+      location.hash = routes.home;
     });
     root.append(drop);
   } else {
     const add = h('button', { type: 'button', class: 'at-trk-drop' }, 'Add this track to your home');
     add.addEventListener('click', () => {
       learner.follow(target);
-      location.hash = '#/atlas';
+      location.hash = routes.home;
     });
     root.append(add);
   }
 
   root.append(h('div', { class: 'at-trk-dock' },
-    h('a', { class: 'at-trk-map', href: `#/atlas/track/${target}/map`, html: `${icon('graph')} Map` }),
+    h('a', { class: 'at-trk-map', href: routes.trackMap(target), html: `${icon('graph')} Map` }),
     t.next
       ? h('a', { class: 'at-trk-go', href: continueHref(learner, t), html: `${icon('playFill')} <span></span>` })
-      : h('a', { class: 'at-trk-go', href: '#/atlas', html: `${icon('arrowLeft')} <span>Atlas</span>` })));
+      : h('a', { class: 'at-trk-go', href: routes.home, html: `${icon('arrowLeft')} <span>Atlas</span>` })));
   if (t.next) root.querySelector('.at-trk-go span')!.textContent = `Continue: ${title(t.next)}`;
 }
 
@@ -153,7 +154,7 @@ export function renderTrackMap(main: HTMLElement, learner: Learner, mode: 'pick'
   const title = (id: string) => graph.get(id)!.title;
   const sheet = h('div', { class: 'at-trk-sheet', hidden: true });
   const map = graphView(learner, mode === 'pick' ? { onTap: (id) => choose(id) } : {});
-  const back = mode === 'view' && target ? `#/atlas/track/${target}` : '#/atlas';
+  const back = mode === 'view' && target ? routes.track(target) : routes.home;
   const head = h('p', { class: 'at-small' });
   root.append(
     h('a', { class: 'at-back', href: back, html: `${icon('arrowLeft')} ${mode === 'view' ? 'Track' : 'Atlas'}` }),
@@ -183,11 +184,11 @@ export function renderTrackMap(main: HTMLElement, learner: Learner, mode: 'pick'
       lightTrack(map, null);
     });
     const go = followed
-      ? h('a', { class: 'at-trk-create', href: `#/atlas/track/${id}` }, 'Open track')
+      ? h('a', { class: 'at-trk-create', href: routes.track(id) }, 'Open track')
       : h('button', { type: 'button', class: 'at-trk-create', disabled: !t.next }, 'Create track');
     if (!followed) go.addEventListener('click', () => {
       learner.follow(id);
-      location.hash = `#/atlas/track/${id}`;
+      location.hash = routes.track(id);
     });
     sheet.append(
       h('div', { class: 'at-trk-sk', html: `${icon('target')} Target` }),
