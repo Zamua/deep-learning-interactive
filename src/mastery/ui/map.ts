@@ -11,6 +11,7 @@ import { graphView } from './graph-view';
 import { recentSection } from './history';
 import { tracksSection } from './tracks';
 import { routes } from '../../routes';
+import { getJson, setJson } from '../../core/storage';
 
 /**
  * The Atlas front page: today's concept, the short path around it, and a way into the whole map. With tracks, the due
@@ -148,11 +149,8 @@ const FOLD_OVER = 8;
 const OPEN_KEY = 'atlas.listOpen';
 
 function openFolds(): Set<string> {
-  try {
-    return new Set(JSON.parse(localStorage.getItem(OPEN_KEY) ?? '[]') as string[]);
-  } catch {
-    return new Set();
-  }
+  const v = getJson(OPEN_KEY);
+  return new Set(Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
 }
 
 /** One domain's rows behind a header that opens and closes them; which are open is kept per browser. */
@@ -171,11 +169,7 @@ function fold(key: string, title: string, color: string, n: number, rows: HTMLEl
     const all = openFolds();
     if (open) all.add(key);
     else all.delete(key);
-    try {
-      localStorage.setItem(OPEN_KEY, JSON.stringify([...all]));
-    } catch {
-      /* private mode: the fold just isn't remembered */
-    }
+    setJson(OPEN_KEY, [...all]);
   });
   return h('div', {}, head, body);
 }

@@ -96,9 +96,9 @@ async function routeAccount(code?: string): Promise<void> {
   // The code has done its job once read: keep it out of the history and of anything that shares this page.
   if (code) history.replaceState(null, '', routes.account);
   try {
-    const { renderAccount } = await import('./sync/ui');
+    const [{ renderAccount }, { progressFile }] = await Promise.all([import('./sync/ui'), import('./mastery/ui/progress-file')]);
     if (token !== renderToken) return;
-    renderAccount(main, code);
+    renderAccount(main, code, progressFile());
   } catch (e) {
     console.error(e);
     if (await reloadIfStale()) return;

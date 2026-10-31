@@ -80,4 +80,26 @@ export class ConceptGraph {
   get(id: string): Concept | undefined {
     return this.byId.get(id);
   }
+
+  /** `id` and every concept it needs, directly or through others. */
+  ancestors(id: string): Set<string> {
+    return closure(id, (x) => this.byId.get(x)?.prereqs ?? []);
+  }
+
+  /** `id` and every concept that needs it, directly or through others. */
+  descendants(id: string): Set<string> {
+    return closure(id, (x) => this.dependents.get(x) ?? []);
+  }
+}
+
+function closure(start: string, next: (id: string) => readonly string[]): Set<string> {
+  const seen = new Set<string>();
+  const stack = [start];
+  while (stack.length) {
+    const id = stack.pop()!;
+    if (seen.has(id)) continue;
+    seen.add(id);
+    stack.push(...next(id));
+  }
+  return seen;
 }

@@ -6,6 +6,7 @@ import { ALL_SYMBOLS, SCOPED } from '../../atlas/symbols';
 import { icon } from '../../core/controls';
 import { h, onDispose } from '../../core/dom';
 import { tex } from '../../core/math';
+import { plainName } from '../../core/symbols';
 
 interface Term {
   kind: 'sym' | 'nt';
@@ -98,20 +99,15 @@ function termOf(el: Element | null): [Term, Element] | null {
   return null;
 }
 
-function chain(id: string, seen = new Set<string>([id])): Set<string> {
-  for (const p of GRAPH.get(id)?.prereqs ?? []) if (!seen.has(p)) chain(p, seen.add(p));
-  return seen;
-}
-
 function card(t: Term, concept: string): Card | null {
   if (t.kind === 'sym') {
     const d = SCOPED[concept]?.[t.key] ?? ALL_SYMBOLS[t.key];
     if (!d) return null;
-    return { glyph: tex(`\\sym{${t.key}}{${d.tex ?? t.key}}`), name: d.name.replace(/^[^:]{1,14}:\s*/, ''), about: d.about ?? '' };
+    return { glyph: tex(`\\sym{${t.key}}{${d.tex ?? t.key}}`), name: plainName(d.name), about: d.about ?? '' };
   }
   const n = NOTATION[t.key];
   if (!n) return null;
-  const known = chain(concept);
+  const known = GRAPH.ancestors(concept);
   const from = GRAPH.order.filter((c) => n.from.includes(c.id) && known.has(c.id)).pop();
   return { glyph: tex(n.glyph), name: n.name, about: n.about, from: from && from.id !== concept ? from.title : undefined };
 }

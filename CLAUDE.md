@@ -26,10 +26,11 @@ explainer craft, `docs/SYNC.md` progress sync.
 - `src/core/`: shared pieces. `code.ts` (Python highlighter + CodePanel with `{{slots}}` and
   `#@labels`), `math.ts` (KaTeX + the small markdown dialect), `symbols.ts` (color-linked
   symbols and tap-to-name), `plot.ts` (HiDPI canvas, theme colors), `controls.ts` (icons),
-  `rand.ts`, `progress.ts` (each explainer's resume point and heard time, in the synced store).
+  `rand.ts`, `format.ts` (times as pages print them), `storage.ts` (localStorage that never throws).
 - `src/lecture/`: the explainer player (`player.ts`: theater, audio clock, controls; `scene.ts`:
   beat-anchored easing and a drawing kit in stage units; `types.ts`: script and timing types;
-  `lookup.ts`: the cards for symbols and calls; `library.ts`: notes on common library calls).
+  `lookup.ts`: the cards for symbols and calls; `library.ts`: notes on common library calls;
+  `progress.ts`: each explainer's resume point and heard time, in the synced store).
 - `src/mastery/`: the engine. `domain/` is pure and unit tested (concept graph, student model,
   scheduler, tracks, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
   learner's records in the synced progress store; `ui/` renders the home, map, tracks, concept
@@ -39,7 +40,7 @@ explainer craft, `docs/SYNC.md` progress sync.
   `src/atlas/symbols.ts` and `notation.ts` hold the course's symbols, code notes and notation.
 - `src/sync/`: progress sync on hearthsync. `model.ts` holds the records and their merges
   (pure, tested), `cloud.ts` the store and engine, `ui.ts` the account page (`#/account`,
-  `#/link/<code>`). Only `mastery/store.ts` and `core/progress.ts` edit the store.
+  `#/link/<code>`). Only `mastery/store.ts` and `lecture/progress.ts` edit the store.
   Changing a record's shape needs a new `Model.version` (see hearthsync's README), never a quiet
   edit: older builds on the same account would write the old shape back.
 - `tools/timing-duration.mjs`: a Vite plugin; `timing.json?duration` imports only a narration's

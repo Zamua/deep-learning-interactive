@@ -5,25 +5,12 @@ import { concepts, paceOf, putConcepts, putPace, putTrack, trackList } from '../
 import type { ConceptRecord } from './domain/model';
 import type { Pace } from './domain/scheduler';
 import { isLogRow, snapshotFrom, type LogRow, type Snapshot } from './snapshot';
+import { getJson, setJson } from '../core/storage';
 
 const LOG_KEY = 'atlas.log';
 /** Log rows kept; older ones are dropped first. */
 const LOG_CAP = 5000;
 
-const read = (k: string): unknown => {
-  try {
-    return JSON.parse(localStorage.getItem(k) ?? 'null') as unknown;
-  } catch {
-    return null;
-  }
-};
-const write = (k: string, v: unknown): void => {
-  try {
-    localStorage.setItem(k, JSON.stringify(v));
-  } catch {
-    /* private mode or full: the log lives for this page only */
-  }
-};
 
 /** Every concept's record; the same object until one changes. */
 export function loadRecords(): Record<string, ConceptRecord> {
@@ -50,12 +37,12 @@ export function saveTrack(target: string, follow: boolean): void {
 }
 
 export function loadLog(): LogRow[] {
-  const v = read(LOG_KEY);
+  const v = getJson(LOG_KEY);
   return Array.isArray(v) ? v.filter(isLogRow) : [];
 }
 
 export function appendLog(row: LogRow): void {
-  write(LOG_KEY, [...loadLog(), row].slice(-LOG_CAP));
+  setJson(LOG_KEY, [...loadLog(), row].slice(-LOG_CAP));
 }
 
 export function exportSnapshot(): Snapshot {
@@ -66,5 +53,5 @@ export function exportSnapshot(): Snapshot {
 export function importSnapshot(text: string): void {
   const s = snapshotFrom(text);
   saveRecords(s.records);
-  write(LOG_KEY, s.log.slice(-LOG_CAP));
+  setJson(LOG_KEY, s.log.slice(-LOG_CAP));
 }

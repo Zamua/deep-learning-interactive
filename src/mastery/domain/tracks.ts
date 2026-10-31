@@ -20,13 +20,7 @@ export interface Track {
 
 /** The target and every concept it needs, in graph order. */
 export function trackConcepts(graph: ConceptGraph, target: string): string[] {
-  const set = new Set<string>();
-  const walk = (id: string) => {
-    if (set.has(id)) return;
-    set.add(id);
-    graph.get(id)!.prereqs.forEach(walk);
-  };
-  walk(target);
+  const set = graph.ancestors(target);
   return graph.order.filter((c) => set.has(c.id)).map((c) => c.id);
 }
 

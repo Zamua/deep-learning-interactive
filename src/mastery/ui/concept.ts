@@ -2,7 +2,7 @@
 import { domainOf, hasExplainer, loadExplainer } from '../../atlas/index';
 import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
-import { lectureState } from '../../core/progress';
+import { lectureState } from '../../lecture/progress';
 import { meanTime, streak } from '../domain/model';
 import type { Learner } from '../learner';
 import { atlasRoot, dots, STATUS_LABEL, whenDue } from './common';

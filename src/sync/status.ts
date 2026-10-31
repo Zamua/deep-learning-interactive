@@ -1,5 +1,6 @@
 // What the sync status says, in words: one line for the settings menu and the account page.
 import type { SyncStatus } from 'hearthsync';
+import { ago } from '../core/format';
 
 export interface Line {
   tone: 'ok' | 'wait' | 'off' | 'bad';
@@ -9,14 +10,6 @@ export interface Line {
   /** The title in a word or two, for the settings menu's status line. */
   short: string;
   text: string;
-}
-
-export function ago(t: number, now: number): string {
-  const s = Math.max(0, (now - t) / 1000);
-  if (s < 60) return 'just now';
-  if (s < 3600) return `${Math.floor(s / 60)} min ago`;
-  if (s < 86_400) return `${Math.floor(s / 3600)} h ago`;
-  return new Date(t).toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
 export function statusLine(st: SyncStatus, now = Date.now()): Line {

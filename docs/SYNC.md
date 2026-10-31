@@ -30,7 +30,7 @@ the daily reminder (each device subscribes for itself).
 
 - `src/sync/model.ts`: the records, their repair from untrusted JSON, merges, and reads and edits of the store. Pure.
 - `src/sync/cloud.ts`: the store (localStorage under `progress.v2.`) and the engine, started once in `main.ts`.
-- `src/mastery/store.ts` and `src/core/progress.ts` read and write through the store; nothing else edits it.
+- `src/mastery/store.ts` and `src/lecture/progress.ts` read and write through the store; nothing else edits it.
 - `src/sync/ui.ts`: the account page (`#/account`): status, the code, Share link, linking with a code. A link
   `#/link/<code>` opens it with the code filled in and asks before linking.
 - Pages that only show progress (the home, map, track and concept pages) draw again when another device's records
