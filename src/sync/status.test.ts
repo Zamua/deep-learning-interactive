@@ -18,6 +18,15 @@ describe('the sync status line', () => {
     expect(statusLine(st({ savedAt: 1_000 }), 1_000 + 5 * 60_000)).toMatchObject({ tone: 'ok', text: 'Last synced 5 min ago.' });
   });
 
+  it('has a label of at most two words for every state, and never says only "Offline"', () => {
+    const all = [{ code: null }, { code: null, state: 'syncing' as const, unsaved: 2 }, { code: null, state: 'offline' as const }, { code: null, problem: 'rate' as const }, { state: 'offline' as const }, { state: 'error' as const }, { unsaved: 1 }, {}, { problem: 'lost' as const }, { problem: 'full' as const }, { newer: true }];
+    for (const over of all) {
+      const short = statusLine(st(over)).short;
+      expect(short.split(' ').length).toBeLessThanOrEqual(2);
+      expect(short).not.toBe('Offline');
+    }
+  });
+
   it('ages in minutes, then hours', () => {
     expect(ago(0, 30_000)).toBe('just now');
     expect(ago(0, 3 * 3_600_000)).toBe('3 h ago');

@@ -1,27 +1,24 @@
 // The daily reminder controls, shown in the settings menu.
+import { settingRow } from '../../core/controls';
 import { h } from '../../core/dom';
 import type { Learner } from '../learner';
 import { disableReminders, enableReminders, loadPrefs, pushSupport, sendTest, syncReminders } from '../push';
 
-/** The reminder time and switch, or how to get them on iOS; null when this browser has no push. */
+/**
+ * The settings menu's reminder row: a time and a switch, or on iOS Safari where to get them. Turning reminders on sends
+ * one test push, so the learner sees right away that they arrive. Null when this browser has no push.
+ */
 export function remindersPanel(learner: Learner): HTMLElement | null {
   const support = pushSupport();
   if (support === 'no') return null;
-  const box = h('div', { class: 'set-remind' });
-  if (support === 'install') {
-    box.append(h('p', { class: 'set-note' }, 'Reminders work once Atlas is on your home screen: tap Share, then Add to Home Screen, and open it from there.'));
-    return box;
-  }
+  if (support === 'install') return settingRow('bell', 'Reminder', h('span', { class: 'set-item-r' }, 'Add to Home Screen first'));
   let prefs = loadPrefs();
   const time = h('input', { type: 'time', class: 'set-time', value: prefs.time, 'aria-label': 'Reminder time' });
-  const toggle = h('button', { type: 'button', class: 'set-switch', role: 'switch' });
+  const toggle = h('button', { type: 'button', class: 'set-switch', role: 'switch', 'aria-label': 'Daily reminder' });
   const status = h('p', { class: 'set-note' });
-  const test = h('button', { type: 'button', class: 'set-test' }, 'Send a test');
-  const draw = (msg?: string) => {
+  const draw = (msg = '') => {
     toggle.setAttribute('aria-checked', String(prefs.on));
-    toggle.textContent = prefs.on ? 'On' : 'Off';
-    test.hidden = !prefs.on;
-    status.textContent = msg ?? (prefs.on ? `One nudge a day, skipped on days you practice.${prefs.next ? ` Next: ${new Date(prefs.next).toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' })}.` : ''}` : 'One nudge a day at this time, skipped on days you practice.');
+    status.textContent = msg;
   };
   const run = async (f: () => Promise<unknown>) => {
     toggle.disabled = true;
@@ -35,15 +32,15 @@ export function remindersPanel(learner: Learner): HTMLElement | null {
     }
     draw();
   };
-  toggle.addEventListener('click', () => void run(async () => (prefs = prefs.on ? await disableReminders() : await enableReminders(learner, time.value || '19:00'))));
+  toggle.addEventListener('click', () => void run(async () => {
+    const turningOn = !prefs.on;
+    prefs = turningOn ? await enableReminders(learner, time.value || '19:00') : await disableReminders();
+    if (turningOn) void sendTest().catch(() => {});
+  }));
   time.addEventListener('change', () => {
     if (prefs.on) void run(async () => (prefs = await enableReminders(learner, time.value || '19:00')));
     else prefs = { ...prefs, time: time.value };
   });
-  test.addEventListener('click', () => void sendTest().then(() => draw('Sent. It should arrive in a few seconds.'), (e: Error) => {
-    prefs = loadPrefs();
-    draw(e.message);
-  }));
   draw();
   // The saved switch can outlive the browser's subscription; the sync finds that out.
   void syncReminders(learner).catch(() => {}).then(() => {
@@ -51,6 +48,5 @@ export function remindersPanel(learner: Learner): HTMLElement | null {
     prefs = loadPrefs();
     draw();
   });
-  box.append(h('div', { class: 'set-row' }, time, toggle), status, test);
-  return box;
+  return h('div', {}, settingRow('bell', 'Reminder', time, toggle), status);
 }

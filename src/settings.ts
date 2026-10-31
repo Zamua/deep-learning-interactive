@@ -1,10 +1,10 @@
-// The settings menu behind the top bar's gear: the color theme, syncing progress, how Atlas picks new concepts,
-// Atlas's daily reminder, and what is saved for offline use.
+// The settings menu behind the top bar's gear: one line each for the color theme, how Atlas picks new concepts, the
+// daily reminder and sync (leading to the account page), and a footnote on offline use.
 import { GRAPH } from './atlas/index';
-import { icon } from './core/controls';
+import { icon, settingRow } from './core/controls';
 import { h } from './core/dom';
 import { Learner } from './mastery/learner';
-import { paceSwitch } from './mastery/ui/pace';
+import { paceRow } from './mastery/ui/pace';
 import { remindersPanel } from './mastery/ui/reminders';
 import { offlineStatus, offlineSupported } from './offline/register';
 import { syncEngine } from './sync/cloud';
@@ -38,7 +38,7 @@ function setTheme(t: Theme): void {
 }
 
 function themeSwitch(): HTMLElement {
-  const opts: [Theme, string][] = [['system', 'System'], ['light', 'Light'], ['dark', 'Dark']];
+  const opts: [Theme, string][] = [['system', 'Auto'], ['light', 'Light'], ['dark', 'Dark']];
   const seg = h('div', { class: 'set-seg', role: 'group', 'aria-label': 'Theme' });
   const draw = () => {
     for (const b of seg.children) b.setAttribute('aria-pressed', String(b.getAttribute('data-t') === savedTheme()));
@@ -55,7 +55,6 @@ function themeSwitch(): HTMLElement {
   return seg;
 }
 
-/** The gear button; it opens the menu as a dropdown beneath itself. */
 export function settingsButton(): HTMLElement {
   const btn = h('button', { class: 'icon-btn', type: 'button', 'aria-label': 'Settings', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', html: icon('gear') });
   let close: (() => void) | null = null;
@@ -66,38 +65,32 @@ export function settingsButton(): HTMLElement {
   return btn;
 }
 
-/** The sync status as one row leading to the account page; it follows the status while the menu is open. */
+/** The sync status as a line leading to the account page; it follows the status while the menu is open. */
 function syncRow(): { el: HTMLElement; stop: () => void } | null {
   const sync = syncEngine();
   if (!sync) return null;
-  const el = h('a', { class: 'set-sync', href: '#/account' });
+  const el = h('a', { class: 'set-item set-link', href: '#/account' });
   const draw = () => {
     const line = statusLine(sync.status);
-    el.className = `set-sync ${line.tone}`;
-    el.innerHTML = `<span class="set-sync-i">${icon(line.icon)}</span><span class="set-sync-t"><b></b><small>Your code and other devices</small></span>${icon('caret-right')}`;
-    el.querySelector('b')!.textContent = line.title;
+    el.className = `set-item set-link ${line.tone}`;
+    el.innerHTML = `<span class="set-item-i">${icon(line.icon)}</span><span class="set-item-l"></span><span class="set-item-r">Your code</span><span class="set-go">${icon('caret-right')}</span>`;
+    el.querySelector('.set-item-l')!.textContent = line.short;
   };
   draw();
   return { el, stop: sync.on('status', draw) };
 }
 
-/** What is saved for offline use, filled in once the service worker answers. */
-function offlineRow(): HTMLElement | null {
+/** A footnote on offline use, filled in once the service worker answers. */
+function offlineNote(): HTMLElement | null {
   if (!offlineSupported()) return null;
-  const el = h('div', { class: 'set-sync set-static wait' });
-  const draw = (tone: string, glyph: string, title: string, note: string) => {
-    el.className = `set-sync set-static ${tone}`;
-    el.innerHTML = `<span class="set-sync-i">${icon(glyph)}</span><span class="set-sync-t"><b></b><small></small></span>`;
-    el.querySelector('b')!.textContent = title;
-    el.querySelector('small')!.textContent = note;
+  const el = h('div', { class: 'set-foot' });
+  const draw = (ready: boolean) => {
+    el.className = `set-foot${ready ? ' ok' : ''}`;
+    el.innerHTML = icon(ready ? 'airplane' : 'download-simple');
+    el.append(ready ? 'Works offline' : 'Saving for offline…');
   };
-  draw('wait', 'download-simple', 'Saving Atlas for offline', 'Practice will work with no connection');
-  void offlineStatus().then((s) => {
-    if (!s) return;
-    const note = `Narration is saved as you play it: ${s.audio} of ${s.total}`;
-    if (s.ready) draw('ok', 'airplane', 'Works offline', note);
-    else draw('wait', 'download-simple', 'Saving Atlas for offline', note);
-  });
+  draw(false);
+  void offlineStatus().then((st) => draw(!!st?.ready));
   return el;
 }
 
@@ -105,15 +98,10 @@ function open(btn: HTMLElement, closed: () => void): () => void {
   const catcher = h('div', { class: 'set-catch' });
   const reminders = remindersPanel(new Learner(GRAPH));
   const sync = syncRow();
-  const offline = offlineRow();
+  const offline = offlineNote();
   const menu = h('div', { class: 'set-menu', role: 'dialog', 'aria-label': 'Settings' },
-    h('div', { class: 'set-sec' }, 'Appearance'),
-    themeSwitch(),
-    ...(sync ? [h('div', { class: 'set-sec' }, 'Sync'), sync.el] : []),
-    h('div', { class: 'set-sec' }, 'New concepts'),
-    paceSwitch(),
-    ...(reminders ? [h('div', { class: 'set-sec' }, 'Daily reminder'), reminders] : []),
-    ...(offline ? [h('div', { class: 'set-sec' }, 'Offline'), offline] : []));
+    h('div', { class: 'set-list' }, settingRow('circle-half', 'Theme', themeSwitch()), paceRow(), ...(reminders ? [reminders] : []), ...(sync ? [sync.el] : [])),
+    ...(offline ? [offline] : []));
   const onKey = (e: KeyboardEvent) => {
     if (e.key === 'Escape') close();
   };
