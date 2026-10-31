@@ -604,7 +604,9 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
       const wasPlaying = !audio.paused || root.classList.contains('waiting');
       clock.goSilent();
       root.classList.remove('waiting');
-      notice.textContent = `The narration failed to load, so the ${frame.noun} is running with captions only.`;
+      notice.textContent = navigator.onLine
+        ? `The narration failed to load, so the ${frame.noun} is running with captions only.`
+        : `You're offline, and narration is saved only once played, so the ${frame.noun} is running with captions only.`;
       if (wasPlaying) {
         void clock.play();
         onPlaying();

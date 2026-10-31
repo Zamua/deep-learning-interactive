@@ -43,6 +43,13 @@ explainer craft, `docs/SYNC.md` progress sync.
   edit: older builds on the same account would write the old shape back.
 - `tools/timing-duration.mjs`: a Vite plugin; `timing.json?duration` imports only a narration's
   length, so pages total explainer time without loading the explainers.
+- `src/offline/`: `sw.js`, the service worker (caches the app at install and narration as it
+  plays, answers range requests from the cache, shows reminders), and `register.ts` (registers
+  it once the first page draws; the settings menu's offline status). Plain JS: the build only
+  prefixes it.
+- `tools/service-worker.mjs`: a Vite plugin; writes `dist/sw.js` prefixed with the files it keeps
+  (every built file but narration, source maps and legacy font formats). The worker installs only
+  once it has cached every listed file, so the host must serve them all.
 - `push/`: the daily reminder Worker (Web Push).
 
 ## Invariants

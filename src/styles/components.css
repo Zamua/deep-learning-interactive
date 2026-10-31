@@ -748,6 +748,9 @@ a.btn {
 .set-sync:hover {
   border-color: var(--accent);
 }
+.set-sync.set-static:hover {
+  border-color: var(--rule);
+}
 .set-sync-i .ico {
   width: 22px;
   height: 22px;

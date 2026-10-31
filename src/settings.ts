@@ -1,11 +1,12 @@
-// The settings menu behind the top bar's gear: the color theme, syncing progress, how Atlas picks new concepts, and
-// Atlas's daily reminder.
+// The settings menu behind the top bar's gear: the color theme, syncing progress, how Atlas picks new concepts,
+// Atlas's daily reminder, and what is saved for offline use.
 import { GRAPH } from './atlas/index';
 import { icon } from './core/controls';
 import { h } from './core/dom';
 import { Learner } from './mastery/learner';
 import { paceSwitch } from './mastery/ui/pace';
 import { remindersPanel } from './mastery/ui/reminders';
+import { offlineStatus, offlineSupported } from './offline/register';
 import { syncEngine } from './sync/cloud';
 import { statusLine } from './sync/status';
 
@@ -80,17 +81,39 @@ function syncRow(): { el: HTMLElement; stop: () => void } | null {
   return { el, stop: sync.on('status', draw) };
 }
 
+/** What is saved for offline use, filled in once the service worker answers. */
+function offlineRow(): HTMLElement | null {
+  if (!offlineSupported()) return null;
+  const el = h('div', { class: 'set-sync set-static wait' });
+  const draw = (tone: string, glyph: string, title: string, note: string) => {
+    el.className = `set-sync set-static ${tone}`;
+    el.innerHTML = `<span class="set-sync-i">${icon(glyph)}</span><span class="set-sync-t"><b></b><small></small></span>`;
+    el.querySelector('b')!.textContent = title;
+    el.querySelector('small')!.textContent = note;
+  };
+  draw('wait', 'download-simple', 'Saving Atlas for offline', 'Practice will work with no connection');
+  void offlineStatus().then((s) => {
+    if (!s) return;
+    const note = `Narration is saved as you play it: ${s.audio} of ${s.total}`;
+    if (s.ready) draw('ok', 'airplane', 'Works offline', note);
+    else draw('wait', 'download-simple', 'Saving Atlas for offline', note);
+  });
+  return el;
+}
+
 function open(btn: HTMLElement, closed: () => void): () => void {
   const catcher = h('div', { class: 'set-catch' });
   const reminders = remindersPanel(new Learner(GRAPH));
   const sync = syncRow();
+  const offline = offlineRow();
   const menu = h('div', { class: 'set-menu', role: 'dialog', 'aria-label': 'Settings' },
     h('div', { class: 'set-sec' }, 'Appearance'),
     themeSwitch(),
     ...(sync ? [h('div', { class: 'set-sec' }, 'Sync'), sync.el] : []),
     h('div', { class: 'set-sec' }, 'New concepts'),
     paceSwitch(),
-    ...(reminders ? [h('div', { class: 'set-sec' }, 'Daily reminder'), reminders] : []));
+    ...(reminders ? [h('div', { class: 'set-sec' }, 'Daily reminder'), reminders] : []),
+    ...(offline ? [h('div', { class: 'set-sec' }, 'Offline'), offline] : []));
   const onKey = (e: KeyboardEvent) => {
     if (e.key === 'Escape') close();
   };

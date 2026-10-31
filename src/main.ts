@@ -11,6 +11,7 @@ import { ATLAS_COURSE, DOMAINS, GRAPH } from './atlas/index';
 import { icon } from './core/controls';
 import { disposeAll, h } from './core/dom';
 import { Learner } from './mastery/learner';
+import { startOffline } from './offline/register';
 import { applyTheme, settingsButton } from './settings';
 import { progressStore, startSync } from './sync/cloud';
 
@@ -177,4 +178,5 @@ window.addEventListener('hashchange', () => void route());
 redrawOnRemoteProgress();
 void route().then(() => {
   (window as unknown as { __ready: boolean }).__ready = true;
+  startOffline();
 });
