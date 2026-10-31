@@ -25,12 +25,16 @@ explainer craft, `docs/SYNC.md` progress sync.
   `src/routes.ts` builds every address and parses them back; link with `routes.*`, never a literal.
 - `src/core/`: shared pieces. `code.ts` (Python highlighter + CodePanel with `{{slots}}` and
   `#@labels`), `math.ts` (KaTeX + the small markdown dialect), `symbols.ts` (color-linked
-  symbols and tap-to-name), `plot.ts` (HiDPI canvas, theme colors), `controls.ts` (icons),
+  symbols and tap-to-name), `plot.ts` (the HiDPI stage canvas, theme colors), `controls.ts` (icons),
   `rand.ts`, `format.ts` (times as pages print them), `storage.ts` (localStorage that never throws).
-- `src/lecture/`: the explainer player (`player.ts`: theater, audio clock, controls; `scene.ts`:
-  beat-anchored easing and a drawing kit in stage units; `types.ts`: script and timing types;
-  `lookup.ts`: the cards for symbols and calls; `library.ts`: notes on common library calls;
-  `progress.ts`: each explainer's resume point and heard time, in the synced store).
+- `src/lecture/`: the explainer player. `player.ts` composes it from `theater.ts` (picture, marks,
+  code, caption), `playback.ts` (play state, saved place, wake lock) on `clock.ts` (the narration or
+  a wall clock), `timeline.ts` (the script laid out in time) and the controls: `gestures.ts` (tap,
+  double tap to skip, hold for 2x; a unit-tested state machine), `speed.ts`, `scrub.ts`,
+  `sections.ts`, `keys.ts`, `media-session.ts`, `poster.ts`; `prefs.ts` keeps speed and captions on
+  the device. `progress.ts`: each explainer's resume point and heard time, in the synced store.
+  `scene.ts`: beat-anchored easing and a drawing kit in stage units; `types.ts`: script and timing
+  types; `lookup.ts`: the cards for symbols and calls; `library.ts`: notes on common library calls.
 - `src/mastery/`: the engine. `domain/` is pure and unit tested (concept graph, student model,
   scheduler, tracks, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
   learner's records in the synced progress store; `ui/` renders the home, map, tracks, concept
@@ -66,7 +70,7 @@ explainer craft, `docs/SYNC.md` progress sync.
   `\sym<key>`. TeX command names are letters only, so a key with a digit (`W1`) has no shorthand:
   write `\sym{W1}{W_1}`.
 - Theme colors are CSS variables read at draw time (`color('blue')`), so canvases follow dark
-  mode; palette tokens must stay 6-digit hex for `withAlpha`/`rgbOf`.
+  mode; palette tokens must stay 6-digit hex for `withAlpha`.
 - The router disposes everything registered with `onDispose` on navigation.
 - A scene's `draw(s)` is a pure function of time; the narration track is the clock.
   `timing.json` and `narration.m4a` are generated together from `script.ts` and must be
