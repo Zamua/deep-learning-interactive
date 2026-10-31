@@ -17,7 +17,7 @@
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@fontsource-variable/source-serif-4": "^5.3.1",
     "@phosphor-icons/core": "^2.1.1",
-    "hearthsync": "github:Zamua/hearthsync#v0.3.0",
+    "hearthsync": "github:Zamua/hearthsync#v0.4.0",
     "katex": "^0.16.47"
   },
   "devDependencies": {
