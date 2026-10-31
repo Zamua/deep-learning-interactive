@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { big, bigText, D, DH, H, Q, shp, straps, T, traps, WK, WO, WQ, WV, X } from '../kit';
+import { big, commas, int, pick, shp, straps, traps } from '../../kit';
+import { D, DH, H, Q, T, WK, WO, WQ, WV, X } from '../kit';
 
 /** A width and a head count that divides it, larger with difficulty. */
 function dims(rng: Rng, d: number): [number, number] {
@@ -87,7 +87,7 @@ export const generators: Generator[] = [
         ts.push({ value: [h * t, dh], why: 'That stacks the heads one under another. They are joined side by side, so the token rows stay.' });
       }
       const sol: Record<typeof which, string[]> = {
-        W: [`Each head's queries have $${DH} = ${big(dm)} / ${h} = ${dh}$ entries.`, `Its $${WQ}$ turns a token $${X}$, ${bigText(dm)} numbers, into a query of ${dh}: one row per query entry, one column per entry of $${X}$, $${shp(ans)}$.`],
+        W: [`Each head's queries have $${DH} = ${big(dm)} / ${h} = ${dh}$ entries.`, `Its $${WQ}$ turns a token $${X}$, ${commas(dm)} numbers, into a query of ${dh}: one row per query entry, one column per entry of $${X}$, $${shp(ans)}$.`],
         Q: [`Each head's queries have $${DH} = ${big(dm)} / ${h} = ${dh}$ entries.`, `$${Q}$ stacks them one row per token: $${shp(ans)}$.`],
         A: ['Every head scores every token against every token, as a single attention does.', `So its weights are $(${T}, ${T}) = ${shp(ans)}$, whatever its width.`],
         head: [`Its weights, $(${t}, ${t})$, times its values, $(${t}, ${dh})$, give $${shp(ans)}$.`],

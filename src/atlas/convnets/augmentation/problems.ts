@@ -1,6 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { shuffled, traps } from '../kit';
+import { int, num, pick, shuffled, traps } from '../../kit';
 
 type T = 'hflip' | 'vflip' | 'rot180' | 'hue' | 'crop' | 'bright' | 'tilt' | 'shift';
 

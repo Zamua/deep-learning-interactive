@@ -1,6 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, vec } from '../../kit';
-import { D, F, big, clean, traps, vtraps, whys } from '../kit';
+import { big, clean, int, num, pick, traps, vec, vtraps } from '../../kit';
+import { whys } from '../../training/kit';
+import { D, F } from '../kit';
 
 /** Three unit directions 120 degrees apart in two dimensions, as the prompts give them. */
 const DIRS = [

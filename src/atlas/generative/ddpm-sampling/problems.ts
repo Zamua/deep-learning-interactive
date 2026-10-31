@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick, round, vec } from '../../kit';
-import { AB, EHAT, LEVELS, XT, big, bigText, clean, par, roots, shuffled, tenth, traps, vtraps } from '../kit';
+import { big, clean, commas, num, par, pick, round, shuffled, tenth, traps, vec, vtraps } from '../../kit';
+import { AB, EHAT, LEVELS, roots, XT } from '../kit';
 
 const XHAT = '\\sym{x0}{\\hat{x}_0}';
 const ABT = '\\sym{ab}{\\bar\\alpha_t}';
@@ -123,7 +123,7 @@ export const generators: Generator[] = [
     make(rng, d) {
       const T = pick(rng, [100, 250, 500, 1000, 2000, 4000]);
       const kind = d < 0.35 ? pick(rng, ['calls', 'fresh'] as const) : pick(rng, ['calls', 'fresh', 'skip', 'skip', 'skip-fresh'] as const);
-      const lead = `A diffusion model was trained with a ${bigText(T)}-step noise schedule. To make an image, a sampler starts from pure noise at step $t = ${big(T)}$`;
+      const lead = `A diffusion model was trained with a ${commas(T)}-step noise schedule. To make an image, a sampler starts from pure noise at step $t = ${big(T)}$`;
       if (kind === 'calls' || kind === 'fresh') {
         const calls = kind === 'calls';
         const v = calls ? T : T - 1;
@@ -135,18 +135,18 @@ export const generators: Generator[] = [
             calls
               ? [
                   { value: T - 1, why: 'That is how many times fresh noise goes in. The network runs on every step, the last one included.' },
-                  { value: T + 1, why: `That counts the levels from ${bigText(T)} down to 0. Each move from one level to the next is one step and one call.` },
+                  { value: T + 1, why: `That counts the levels from ${commas(T)} down to 0. Each move from one level to the next is one step and one call.` },
                   { value: 1, why: 'The network runs once per step, not once in all: every step needs its own noise guess.' },
                 ]
               : [
                   { value: T, why: `That is one per step. The last step, down to step 0, adds none: there $${AB0} = 1$, which leaves no noise share.` },
                   { value: 0, why: 'Every step but the last adds a little fresh noise.' },
-                  { value: T + 1, why: `That counts the levels from ${bigText(T)} down to 0. Fresh noise goes in once per step, and not on the last.` },
+                  { value: T + 1, why: `That counts the levels from ${commas(T)} down to 0. Fresh noise goes in once per step, and not on the last.` },
                 ],
           ),
           solution: calls
-            ? [`Steps go from ${bigText(T)} down to 1, each landing one level lower: ${bigText(T)} steps.`, `Each step runs the network once, on $${XT}$ and $t$: ${bigText(T)} calls.`]
-            : [`There are ${bigText(T)} steps, from ${bigText(T)} down to 1.`, `Every step adds fresh noise except the last, which lands on step 0 where $${AB0} = 1$: $${big(T)} - 1 = ${big(v)}$.`],
+            ? [`Steps go from ${commas(T)} down to 1, each landing one level lower: ${commas(T)} steps.`, `Each step runs the network once, on $${XT}$ and $t$: ${commas(T)} calls.`]
+            : [`There are ${commas(T)} steps, from ${commas(T)} down to 1.`, `Every step adds fresh noise except the last, which lands on step 0 where $${AB0} = 1$: $${big(T)} - 1 = ${big(v)}$.`],
         };
       }
       const k = pick(rng, [10, 20, 25, 50].filter((s) => T % s === 0 && T / s >= 4));
@@ -160,7 +160,7 @@ export const generators: Generator[] = [
           v,
           calls
             ? [
-                { value: steps + 1, why: `That counts the levels visited, 0 included. Each move between two of them is one call: ${bigText(steps)} moves.` },
+                { value: steps + 1, why: `That counts the levels visited, 0 included. Each move between two of them is one call: ${commas(steps)} moves.` },
                 { value: T, why: `That is without skipping. Stepping down by ${k} takes $${big(T)} / ${k}$ steps.` },
                 { value: steps - 1, why: 'That is how many times fresh noise goes in. The network runs on every step, the last one included.' },
               ]
@@ -171,8 +171,8 @@ export const generators: Generator[] = [
               ],
         ),
         solution: [
-          `Going down by ${k} from ${bigText(T)} to 0 takes $${big(T)} / ${k} = ${big(steps)}$ steps.`,
-          calls ? `One network call per step: ${bigText(steps)} calls.` : `Fresh noise goes in on every step but the last: $${big(steps)} - 1 = ${big(v)}$.`,
+          `Going down by ${k} from ${commas(T)} to 0 takes $${big(T)} / ${k} = ${big(steps)}$ steps.`,
+          calls ? `One network call per step: ${commas(steps)} calls.` : `Fresh noise goes in on every step but the last: $${big(steps)} - 1 = ${big(v)}$.`,
           'The blend can jump to any level, so a step may land many levels lower.',
         ],
       };
@@ -183,7 +183,7 @@ export const generators: Generator[] = [
     make(rng) {
       const T = pick(rng, [100, 250, 500, 1000, 4000]);
       const kind = pick(rng, ['order', 'start', 'last', 'fresh'] as const);
-      const lead = `A diffusion model with a ${bigText(T)}-step schedule makes a new image.`;
+      const lead = `A diffusion model with a ${commas(T)}-step schedule makes a new image.`;
       if (kind === 'order')
         return {
           prompt: `${lead} Put one sampling step, from step $t$ down to step $t - 1$, in order.`,
@@ -207,8 +207,8 @@ export const generators: Generator[] = [
           prompt: `${lead} What does the sampler start from, at step $t = ${big(T)}$?`,
           answer: shuffled(rng, [
             { text: 'Pure noise from `np.random.randn`, in the shape of an image', why: null },
-            { text: 'A training image with a little noise added', why: `Then it would only rebuild training images. At step ${bigText(T)} almost nothing of an image is left, so a new image starts from noise alone.` },
-            { text: 'An image of all zeros, the average pixel', why: `At step ${bigText(T)} the network was trained on pure noise of variance 1, not on zeros. The sampler starts from what that step looks like.` },
+            { text: 'A training image with a little noise added', why: `Then it would only rebuild training images. At step ${commas(T)} almost nothing of an image is left, so a new image starts from noise alone.` },
+            { text: 'An image of all zeros, the average pixel', why: `At step ${commas(T)} the network was trained on pure noise of variance 1, not on zeros. The sampler starts from what that step looks like.` },
             { text: `The network's estimate $${XHAT}$ of a clean image`, why: `The estimate comes out of a step. The first step needs an $${XT}$ to run the network on: pure noise.` },
           ]),
           solution: [

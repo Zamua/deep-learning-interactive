@@ -1,6 +1,8 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { clean, DK, dot, E2, k, placesFor, prods, q, softmax2, traps, useExp, vecT, vtraps } from '../kit';
+import { clean, dot, E2, int, num, pick, prods, round, traps, vtraps } from '../../kit';
+import { placesFor } from '../../networks/kit';
+import { useExp } from '../../sequences/kit';
+import { DK, k, q, softmax2, vecT } from '../kit';
 
 /** Lengths with whole square roots. */
 const ROOTS = [4, 9, 16, 25, 36, 64, 100, 144];

@@ -1,7 +1,7 @@
 import type { Generator, Problem } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick, round, vec } from '../../kit';
-import { clean, nonzero, placesFor, relu, traps } from '../kit';
+import { clean, int, nonzero, num, pick, round, traps, vec } from '../../kit';
+import { placesFor, relu } from '../kit';
 
 /** σ(a) and tanh(a) to two decimals, for the inputs the problems use. */
 const SIG: [number, number][] = [0.5, 1, 1.5, 2, 3, 4].map((a) => [a, round(1 / (1 + Math.exp(-a)), 2)]);

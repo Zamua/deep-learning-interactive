@@ -2,12 +2,6 @@
 import type { Rng } from '../../core/rand';
 import { num, round } from '../kit';
 
-export { clean, dot, mat, matvec, nonzero, ORD, par, placesFor, prods, straps, sum, terms, traps, vtraps } from '../networks/kit';
-export { big, bigText } from '../convnets/kit';
-export { probs, tenth } from '../optimization/kit';
-export { E2, useExp } from '../sequences/kit';
-export { shapeTex } from '../linear-algebra/kit';
-
 /**
  * TeX for the attention symbols. Keys that clash with a course-wide symbol (K, T, v) are written
  * with the generic `\sym{key}{tex}` so their per-concept notes apply.
@@ -30,9 +24,6 @@ export const H = '\\sym{heads}{h}';
 export const DH = '\\sym{dhead}{d_{\\text{head}}}';
 export const A = '\\sym{A}{A}';
 export const X = '\\symx';
-
-/** A shape in TeX without the one-axis comma: `(6, 64)`. */
-export const shp = (dims: readonly (number | string)[]): string => `(${dims.join(', ')})`;
 
 /** Weights from scores by softmax, with every exponential rounded as the prompt quotes it. */
 export function softmax2(e: readonly number[], mask?: readonly boolean[]): number[] {

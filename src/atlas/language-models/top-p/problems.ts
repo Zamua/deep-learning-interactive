@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round, vec } from '../../kit';
-import { big, commas, lit, traps, vtraps } from '../kit';
+import { big, commas, int, num, pick, round, traps, vec, vtraps } from '../../kit';
+import { lit } from '../../sequences/kit';
 
 const VOCABS = [
   ['the', 'a', 'my', 'one', 'this', 'that'],

@@ -1,7 +1,7 @@
 import type { Generator, Problem } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, ints, num, vec } from '../../kit';
-import { B2, clean, mat, matvec, nonzeros, par, relu, transpose, traps, vtraps, W1, W2 } from '../kit';
+import { clean, int, ints, mat, num, par, traps, vec, vtraps } from '../../kit';
+import { B2, matvec, nonzeros, relu, transpose, W1, W2 } from '../kit';
 
 interface Back {
   z: number[];

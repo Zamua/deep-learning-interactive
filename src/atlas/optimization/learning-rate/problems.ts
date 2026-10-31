@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { num, pick } from '../../kit';
-import { clean, nonzero, traps } from '../kit';
+import { clean, nonzero, num, pick, traps } from '../../kit';
 
 /** `a x^2`, or `a (x - m)^2` for a bowl slid to m, in TeX, with the 1 left out. */
 const bowl = (a: number, m = 0) => {

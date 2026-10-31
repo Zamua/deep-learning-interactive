@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, ints, num, pick, round, vec } from '../../kit';
-import { clean, placesFor, traps, vtraps } from '../kit';
+import { clean, int, ints, num, pick, round, traps, vec, vtraps } from '../../kit';
+import { placesFor } from '../kit';
 
 const P = 2;
 

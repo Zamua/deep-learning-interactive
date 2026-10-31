@@ -1,8 +1,8 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, ints, num, pick, round, vec } from '../../kit';
+import { big, clean, commas, int, ints, num, pick, round, traps, vec } from '../../kit';
 import { probs } from '../../optimization/kit';
-import { E, K, big, clean, commas, experts, traps } from '../modern-kit';
+import { E, experts, K } from '../modern-kit';
 
 /** Indices of the `k` largest entries, largest first. */
 const topk = (xs: readonly number[], k: number): number[] => xs.map((_, i) => i).sort((a, b) => xs[b]! - xs[a]!).slice(0, k);

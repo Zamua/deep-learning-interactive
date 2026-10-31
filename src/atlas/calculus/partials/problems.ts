@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { cleanTraps, joinSigned, paren } from '../kit';
+import { int, pick, traps } from '../../kit';
+import { joinSigned, paren } from '../kit';
 
 const P = (v: string) => `\\frac{\\partial \\symf}{\\partial ${v}}`;
 
@@ -25,7 +25,7 @@ export const generators: Generator[] = [
       const dv = a * u * u + 2 * c * v;
       const want = inU ? du : dv;
       const fTex = joinSigned([mono(a, 'u^2 v'), mono(c, 'v^2'), mono(k, 'u')]);
-      const traps = inU
+      const cands = inU
         ? [
             { value: dv, why: `That is the partial in $v$. The partial in $u$ holds $v$ fixed and moves only $u$.` },
             { value: 2 * a * u + k, why: `$v$ is held fixed, but it still multiplies: the partial of $${joinSigned([mono(a, 'u^2 v')])}$ in $u$ is $${joinSigned([mono(2 * a, 'uv')])}$.` },
@@ -37,7 +37,7 @@ export const generators: Generator[] = [
       return {
         prompt: `$\\symf(u, v) = ${fTex}$. What is $${P(inU ? 'u' : 'v')}$ at $(u, v) = (${u}, ${v})$?`,
         answer: { kind: 'number', value: want },
-        traps: cleanTraps(traps, want),
+        traps: traps(want, cands),
         solution: inU
           ? [
               `Hold $v$ fixed. $${term(a, 'u^2 v')}$ is $${term(a, 'v')}$ times $u^2$, so it gives $${term(a, 'v')} \\cdot 2u = ${term(2 * a, 'uv')}$.`,

@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { clean, dd, n, traps } from '../kit';
+import { clean, int, num, pick, round, traps } from '../../kit';
+import { dd, n } from '../kit';
 
 const sig = (x: number) => 1 / (1 + Math.exp(-x));
 const UP = dd('f', '\\sigma');

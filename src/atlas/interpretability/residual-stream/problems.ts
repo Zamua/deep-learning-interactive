@@ -1,7 +1,9 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, pick, vec } from '../../kit';
-import { D, add, big, clean, straps, vtraps, whys } from '../kit';
+import { big, clean, int, pick, straps, vec, vtraps } from '../../kit';
+import { add } from '../../networks/kit';
+import { whys } from '../../training/kit';
+import { D } from '../kit';
 
 const small = (rng: Rng, n: number, d: number) => Array.from({ length: n }, () => (d < 0.4 ? int(rng, -1, 2) : int(rng, -3, 3)));
 const sumAll = (vs: number[][]) => vs.reduce((a, v) => add(a, v));

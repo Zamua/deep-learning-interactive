@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick, vec } from '../../kit';
-import { choose, clean, PI, R, TH, vtraps } from '../kit';
+import { clean, num, pick, vec, vtraps } from '../../kit';
+import { choose, PI, R, TH } from '../kit';
 
 /** A question and three answers a model might sample for it. */
 const QUESTIONS: [string, string[]][] = [

@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { ints, num, pick, vec } from '../../kit';
-import { add, B1, B2, mat, matvec, prods, relu, straps, terms, transpose, vtraps, traps, W1, W2 } from '../kit';
+import { ints, mat, num, pick, prods, straps, terms, traps, vec, vtraps } from '../../kit';
+import { add, B1, B2, matvec, relu, transpose, W1, W2 } from '../kit';
 
 interface Net {
   x: number[];

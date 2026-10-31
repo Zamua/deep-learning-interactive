@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { pick } from '../../kit';
-import { EHAT, EPS, big, shp, shuffled, straps, traps } from '../kit';
+import { big, pick, shp, shuffled, straps, traps } from '../../kit';
+import { EHAT, EPS } from '../kit';
 
 const Z = '\\sym{z}{z}';
 const ZT = '\\sym{zt}{z_t}';

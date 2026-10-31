@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { num, pick } from '../../kit';
-import { big, bigText, choice, clean, traps } from '../kit';
+import { big, clean, commas, num, pick, traps } from '../../kit';
+import { choice } from '../kit';
 
 const FORMULA = '2 \\times \\text{layers} \\times \\text{tokens} \\times d \\times \\text{bytes}';
 
@@ -27,7 +27,7 @@ export const generators: Generator[] = [
       const batch = d >= 0.7 && rng.next() < 0.5 ? pick(rng, [2, 4, 8]) : 1;
       const total = 2 * m.layers * tokens * m.d * m.bytes * batch;
       const v = clean(total / 1e6);
-      const who = batch === 1 ? `one sequence of ${bigText(tokens)} tokens` : `${batch} sequences of ${bigText(tokens)} tokens each`;
+      const who = batch === 1 ? `one sequence of ${commas(tokens)} tokens` : `${batch} sequences of ${commas(tokens)} tokens each`;
       return {
         prompt: `A model has ${m.layers} layers and width $d = ${big(m.d)}$, and its KV cache stores each number in ${bytesWord(m.bytes)}. How many MB of cache does ${who} need?`,
         answer: { kind: 'number', value: v },
@@ -80,13 +80,13 @@ export const generators: Generator[] = [
       const B = d < 0.35 ? pick(rng, [2, 4, 8]) : pick(rng, [2, 4, 8, 16, 32]);
       const T2 = T * f;
       const v = clean(M * B * f);
-      const what = f === 1 ? `${B} sequences of ${bigText(T)} tokens each` : `${B} sequences of ${bigText(T2)} tokens each`;
+      const what = f === 1 ? `${B} sequences of ${commas(T)} tokens each` : `${B} sequences of ${commas(T2)} tokens each`;
       return {
-        prompt: `One sequence of ${bigText(T)} tokens needs ${num(M)} GB of KV cache. How many GB does the same model need for ${what}?`,
+        prompt: `One sequence of ${commas(T)} tokens needs ${num(M)} GB of KV cache. How many GB does the same model need for ${what}?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: M * f, why: `That is one sequence. Each of the ${B} keeps a cache of its own.` },
-          { value: M * B, why: `That keeps the old length. The cache grows with the tokens too: ${bigText(T2)} is ${num(f)} times ${bigText(T)}.` },
+          { value: M * B, why: `That keeps the old length. The cache grows with the tokens too: ${commas(T2)} is ${num(f)} times ${commas(T)}.` },
           { value: M + B * f, why: 'That adds the factors. The cache scales by them: multiply.' },
           { value: M * B * f * f, why: 'That grows with the square of the length. The cache keeps one key and one value per token, so it grows in proportion.' },
         ]),
@@ -118,7 +118,7 @@ export const generators: Generator[] = [
         ])
         .slice(0, 3);
       return {
-        prompt: `A model has ${layers} layers, width $d = ${big(width)}$ and a vocabulary of ${bigText(vocab)} tokens. Which change leaves the size of its KV cache the same?`,
+        prompt: `A model has ${layers} layers, width $d = ${big(width)}$ and a vocabulary of ${commas(vocab)} tokens. Which change leaves the size of its KV cache the same?`,
         answer: choice([right, ...wrong]),
         solution: [
           `The cache holds $${FORMULA}$, times the number of sequences.`,

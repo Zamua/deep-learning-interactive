@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick } from '../../kit';
-import { choose, clean, paren, PI, R, sumTex, TH, traps } from '../kit';
+import { clean, num, par, pick, terms, traps } from '../../kit';
+import { choose, PI, R, TH } from '../kit';
 
 /** A question and three answers a model might sample for it, the right one first. */
 const QUESTIONS: [string, string[]][] = [
@@ -61,7 +61,7 @@ export const generators: Generator[] = [
           { value: g, why: `That is the slope of the log. The slope of $${PI}(y)$ is $${PI}(y)$ times it.` },
           { value: clean(g / pv), why: `That divides by $${PI}(y)$. Undoing the log trick multiplies: $\\nabla ${PI} = ${PI}\\,\\nabla \\ln ${PI}$.` },
         ]),
-        solution: [`The log trick: $\\nabla ${PI} = ${PI}\\,\\nabla \\ln ${PI}$, since the slope of $\\ln u$ is $1/u$.`, `$${num(pv)} \\times ${paren(g)} = ${num(dp)}$.`],
+        solution: [`The log trick: $\\nabla ${PI} = ${PI}\\,\\nabla \\ln ${PI}$, since the slope of $\\ln u$ is $1/u$.`, `$${num(pv)} \\times ${par(g)} = ${num(dp)}$.`],
       };
     },
   },
@@ -72,8 +72,8 @@ export const generators: Generator[] = [
       const p = probs(rng, d < 0.7 ? 0 : 1);
       // The right answer comes first; harder levels give partial credit or a penalty for the others.
       const rs = d < 0.35 ? [1, 0, 0] : d < 0.7 ? [1, pick(rng, [0.5, -1]), 0] : [pick(rng, [1, 2]), pick(rng, [0, -1]), pick(rng, [-1, -2])];
-      const terms = p.map((x, i) => clean(x * rs[i]!));
-      const v = clean(terms.reduce((a, b) => a + b, 0));
+      const parts = p.map((x, i) => clean(x * rs[i]!));
+      const v = clean(parts.reduce((a, b) => a + b, 0));
       const list = ans.map((a, i) => `$${PI}(\\text{${a}}) = ${num(p[i]!)}$`).join(', ');
       const rew = ans.map((a, i) => `$${num(rs[i]!)}$ for \`${a}\``).join(', ');
       const mean = clean(rs.reduce((a, b) => a + b, 0) / 3);
@@ -87,8 +87,8 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `$J$ is each answer's probability times its reward, added up.`,
-          `The terms: ${ans.map((a, i) => `$${num(p[i]!)} \\times ${paren(rs[i]!)} = ${num(terms[i]!)}$`).join(', ')}.`,
-          `Add them: $${sumTex(terms)} = ${num(v)}$.`,
+          `The terms: ${ans.map((a, i) => `$${num(p[i]!)} \\times ${par(rs[i]!)} = ${num(parts[i]!)}$`).join(', ')}.`,
+          `Add them: $${terms(parts)} = ${num(v)}$.`,
         ],
       };
     },

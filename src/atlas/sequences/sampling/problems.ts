@@ -1,6 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, ints, num, pick, vec } from '../../kit';
-import { argmax, clean, E2, lit, onehot, traps, uniqueTop, useExp, vtraps } from '../kit';
+import { argmax, clean, E2, int, ints, num, pick, traps, vec, vtraps } from '../../kit';
+import { onehot } from '../../optimization/kit';
+import { lit, uniqueTop, useExp } from '../kit';
 
 const VOCABS = [
   ['the', 'a', 'cat', 'dog', 'sat'],

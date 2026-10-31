@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, ints, num, vec } from '../../kit';
-import { clean, dot, nonzero, nonzeros, prods, relu, terms, traps } from '../kit';
+import { clean, dot, int, ints, nonzero, num, prods, terms, traps, vec } from '../../kit';
+import { nonzeros, relu } from '../kit';
 
 interface Neuron {
   w: number[];

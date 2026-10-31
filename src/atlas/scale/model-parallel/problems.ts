@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { big, commas, shape, straps, traps, vtraps, whys } from '../kit';
+import { big, commas, int, num, pick, shp, straps, traps, vtraps } from '../../kit';
+import { whys } from '../../training/kit';
 
 const W1 = '\\sym{W1}{W_1}';
 const W2 = '\\sym{W2}{W_2}';
@@ -25,7 +25,7 @@ export const generators: Generator[] = [
       if (up) {
         const v = [dm, H / k];
         return {
-          prompt: `A layer's weight matrix $${W1}$ has shape ${shape([dm, H])} and is split by columns across ${k} GPUs. What shape is each GPU's piece?`,
+          prompt: `A layer's weight matrix $${W1}$ has shape ${shp([dm, H])} and is split by columns across ${k} GPUs. What shape is each GPU's piece?`,
           answer: { kind: 'shape', value: v },
           traps: straps(v, [
             { value: [dm / k, H], why: 'That splits the rows. Splitting by columns keeps every row and gives each GPU a block of the columns.' },
@@ -34,13 +34,13 @@ export const generators: Generator[] = [
           ]),
           solution: [
             `Splitting by columns keeps all ${commas(dm)} rows and divides the ${commas(H)} columns ${k} ways.`,
-            `$${big(H)} / ${k} = ${big(H / k)}$ columns each: shape ${shape(v)}. Each GPU computes ${commas(H / k)} of the outputs.`,
+            `$${big(H)} / ${k} = ${big(H / k)}$ columns each: shape ${shp(v)}. Each GPU computes ${commas(H / k)} of the outputs.`,
           ],
         };
       }
       const v = [H / k, dm];
       return {
-        prompt: `A layer's weight matrix $${W2}$ has shape ${shape([H, dm])} and is split by rows across ${k} GPUs. What shape is each GPU's piece?`,
+        prompt: `A layer's weight matrix $${W2}$ has shape ${shp([H, dm])} and is split by rows across ${k} GPUs. What shape is each GPU's piece?`,
         answer: { kind: 'shape', value: v },
         traps: straps(v, [
           { value: [H, dm / k], why: 'That splits the columns. Splitting by rows keeps every column and gives each GPU a block of the rows.' },
@@ -49,7 +49,7 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `Splitting by rows divides the ${commas(H)} rows ${k} ways and keeps all ${commas(dm)} columns.`,
-          `$${big(H)} / ${k} = ${big(H / k)}$ rows each: shape ${shape(v)}. Each GPU's rows read exactly the outputs it computed.`,
+          `$${big(H)} / ${k} = ${big(H / k)}$ rows each: shape ${shp(v)}. Each GPU's rows read exactly the outputs it computed.`,
         ],
       };
     },
@@ -156,7 +156,7 @@ export const generators: Generator[] = [
       const dm = pick(rng, [512, 1024, 2048]);
       const options = ['A partial sum of the output, which the GPUs add together', `A block of ${commas(dm / k)} of the outputs, each complete`, 'The whole output, the same on every GPU'];
       return {
-        prompt: `$${W2}$ has shape ${shape([4 * dm, dm])} and is split by rows across ${k} GPUs, each with its own ${commas((4 * dm) / k)} of the inputs. What does each GPU's product give?`,
+        prompt: `$${W2}$ has shape ${shp([4 * dm, dm])} and is split by rows across ${k} GPUs, each with its own ${commas((4 * dm) / k)} of the inputs. What does each GPU's product give?`,
         answer: {
           kind: 'choice',
           options,

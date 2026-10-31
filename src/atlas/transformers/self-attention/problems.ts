@@ -1,7 +1,9 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { A, clean, DK, DV, K, k, mat, placesFor, probs, Q, q, SENTENCES, shp, straps, sum, T, traps, v, V, vecT, vtraps } from '../kit';
+import { clean, int, mat, num, pick, shp, straps, sum, traps, vtraps } from '../../kit';
+import { placesFor } from '../../networks/kit';
+import { probs } from '../../optimization/kit';
+import { A, DK, DV, k, K, q, Q, SENTENCES, T, v, V, vecT } from '../kit';
 
 /** Three different sizes for T, d_k and d_v, growing with difficulty. */
 function sizes(rng: Rng, d: number): [number, number, number] {

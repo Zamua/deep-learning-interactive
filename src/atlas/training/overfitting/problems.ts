@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick, round } from '../../kit';
-import { big, clean, commas, fx, lossLog, texTable, traps, whys } from '../kit';
+import { big, clean, commas, num, pick, round, traps } from '../../kit';
+import { fx, lossLog, texTable, whys } from '../kit';
 
 export const generators: Generator[] = [
   {

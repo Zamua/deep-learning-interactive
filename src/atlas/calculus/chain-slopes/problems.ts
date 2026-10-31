@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { cleanTraps, paren, polyTex } from '../kit';
+import { int, num, pick, round, traps } from '../../kit';
+import { paren, polyTex } from '../kit';
 
 const D = (top: string, bot: string) => `\\frac{d${top}}{d${bot}}`;
 /** The inside `ax + b` as TeX. */
@@ -22,11 +22,11 @@ export const generators: Generator[] = [
         : [[D('u', '\\symx'), s1], [D('z', 'u'), s2]] as const;
       const shown = rng.shuffle([...links]);
       const outer = links[links.length - 1]![1];
-      const traps = [
+      const cands = [
         { value: round(s1 + s2 + (three ? s3 : 0), 4), why: 'That adds the local slopes. A nudge is scaled by each link in turn, so the slopes multiply.' },
         { value: outer, why: `That is only the last link's slope. The earlier link${three ? 's scale' : ' scales'} the nudge first.` },
       ];
-      if (s1 !== 0 && !three) traps.push({ value: round(s2 / s1, 4), why: 'That divides the slopes. Each link multiplies the nudge it receives, so the slopes multiply.' });
+      if (s1 !== 0 && !three) cands.push({ value: round(s2 / s1, 4), why: 'That divides the slopes. Each link multiplies the nudge it receives, so the slopes multiply.' });
       const mid = round(s3 * s2, 4);
       const work = three
         ? [
@@ -42,7 +42,7 @@ export const generators: Generator[] = [
       return {
         prompt: `$\\symx$ feeds $${names[0]}$${three ? ', $u$ feeds $v$,' : ','} and $${names[names.length - 2]}$ feeds $z$. At the current point, ${shown.map(([n, s]) => `$${n} = ${num(s)}$`).join(three ? ', ' : ' and ').replace(/, ([^,]*)$/, ' and $1')}. What is $${D('z', '\\symx')}$?`,
         answer: { kind: 'number', value: v },
-        traps: cleanTraps(traps, v),
+        traps: traps(v, cands),
         solution: [
           ...work,
           `A nudge of $0.01$ in $\\symx$ moves $z$ by about $${num(round(v * 0.01, 6))}$: ${num(v)} times as much.`,

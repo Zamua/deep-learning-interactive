@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { cleanTraps, paren } from '../kit';
+import { int, num, pick, round, traps } from '../../kit';
+import { paren } from '../kit';
 
 export const generators: Generator[] = [
   {
@@ -64,11 +64,11 @@ export const generators: Generator[] = [
       if (form === 'lnprod') {
         const b = d < 0.7 ? int(rng, 1, 5) : round(int(rng, 1, 30) / 10, 1);
         const v = round(a + b, 1);
-        const traps = [{ value: round(a * b, 2), why: 'That multiplies the powers. Multiplying exponentials adds their powers.' }];
+        const cands = [{ value: round(a * b, 2), why: 'That multiplies the powers. Multiplying exponentials adds their powers.' }];
         return {
           prompt: `What is $\\ln(e^{${num(a)}} \\cdot e^{${num(b)}})$?`,
           answer: { kind: 'number', value: v },
-          traps: cleanTraps(traps, v),
+          traps: traps(v, cands),
           solution: [`Multiplying exponentials adds the powers: $e^{${num(a)}} \\cdot e^{${num(b)}} = e^{${num(a)} + ${num(b)}} = e^{${num(v)}}$.`, `$\\ln$ undoes the exponential: $\\ln(e^{${num(v)}}) = ${num(v)}$.`],
         };
       }
@@ -96,11 +96,11 @@ export const generators: Generator[] = [
         const v = round(a + b + c, 1);
         const shown = form === 'triple' ? `${E(a)} \\cdot ${E(b)} \\cdot ${E(c)}` : `${E(a)} \\cdot ${E(b)}`;
         const sum = (form === 'triple' ? [a, b, c] : [a, b]).map((x, i) => (i ? paren(num(x)) : num(x))).join(' + ');
-        const traps = [{ value: round(form === 'triple' ? a * b * c : a * b, 2), why: 'That multiplies the powers. Multiplying exponentials adds their powers.' }];
+        const cands = [{ value: round(form === 'triple' ? a * b * c : a * b, 2), why: 'That multiplies the powers. Multiplying exponentials adds their powers.' }];
         return {
           prompt: `What number goes in the box: $${shown} = e^{\\square}$?`,
           answer: { kind: 'number', value: v },
-          traps: cleanTraps(traps, v),
+          traps: traps(v, cands),
           solution: [
             `Multiplying exponentials adds their powers: $${shown} = e^{${sum}}$.`,
             `$${sum} = ${num(v)}$.`,
@@ -109,12 +109,12 @@ export const generators: Generator[] = [
       }
       if (form === 'quot') {
         const v = round(a - b, 1);
-        const traps = [{ value: round(b - a, 1), why: 'That subtracts the wrong way round: the bottom power is taken away from the top one.' }];
-        if (b !== 0 && Number.isInteger(a / b)) traps.push({ value: round(a / b, 2), why: 'That divides the powers. Dividing exponentials subtracts their powers.' });
+        const cands = [{ value: round(b - a, 1), why: 'That subtracts the wrong way round: the bottom power is taken away from the top one.' }];
+        if (b !== 0 && Number.isInteger(a / b)) cands.push({ value: round(a / b, 2), why: 'That divides the powers. Dividing exponentials subtracts their powers.' });
         return {
           prompt: `What number goes in the box: $\\dfrac{${E(a)}}{${E(b)}} = e^{\\square}$?`,
           answer: { kind: 'number', value: v },
-          traps: cleanTraps(traps, v),
+          traps: traps(v, cands),
           solution: [
             `Dividing exponentials subtracts the bottom power from the top one: $\\dfrac{${E(a)}}{${E(b)}} = e^{${num(a)} - ${paren(num(b))}}$.`,
             `$${num(a)} - ${paren(num(b))} = ${num(v)}$.`,

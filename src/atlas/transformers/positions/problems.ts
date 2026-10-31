@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { big, D, mat, SENTENCES, tenth, traps, vecT, vtraps } from '../kit';
+import { big, int, mat, num, pick, tenth, traps, vtraps } from '../../kit';
+import { D, SENTENCES, vecT } from '../kit';
 
 const P = '\\sym{P}{P}';
 const TMAX = '\\sym{Tmax}{T_{\\max}}';

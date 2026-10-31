@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { ADV, choose, clean, E2, OLD, paren, PI, RHO, traps } from '../kit';
+import { clean, E2, int, num, par, pick, round, traps } from '../../kit';
+import { ADV, choose, OLD, PI, RHO } from '../kit';
 
 /** Old and new probabilities of one token, as the explainer's first example pairs them. */
 const PAIRS = [[0.2, 0.3], [0.4, 0.5], [0.5, 0.4], [0.2, 0.1], [0.25, 0.5], [0.4, 0.6], [0.5, 0.6], [0.8, 0.6], [0.3, 0.6], [0.6, 0.3]] as const;
@@ -98,7 +98,7 @@ export const generators: Generator[] = [
         ),
         solution: [
           ...first,
-          `The term is the ratio times the advantage: $${RHO}${ADV} = ${num(rho)} \\times ${paren(a)} = ${num(v)}$.`,
+          `The term is the ratio times the advantage: $${RHO}${ADV} = ${num(rho)} \\times ${par(a)} = ${num(v)}$.`,
           a > 0 ? 'The advantage is positive, so raising the objective makes this one more likely.' : 'The advantage is negative, so raising the objective makes this one less likely.',
         ],
       };

@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, vec } from '../../kit';
-import { clean, mat, mv, nonzero, paren, shapeTex, T2, traps, useTanh, vtraps } from '../kit';
+import { clean, int, mat, nonzero, num, par, pick, shp, traps, vec, vtraps } from '../../kit';
+import { mv, T2, useTanh } from '../kit';
 
 /** Pre-activations whose tanh a prompt can quote. */
 const NICE = [-2, -1.5, -1, -0.5, 0.5, 1, 1.5, 2];
@@ -50,9 +50,9 @@ export const generators: Generator[] = [
           ]),
           solution: [
             PRE,
-            `The memory term: $\\symWhh\\symh_{t-1} = ${num(whh)} \\times ${paren(h)} = ${num(clean(whh * h))}$.`,
+            `The memory term: $\\symWhh\\symh_{t-1} = ${num(whh)} \\times ${par(h)} = ${num(clean(whh * h))}$.`,
             `The input term: $\\symWxh\\symx_t = ${num(wxh)} \\times ${num(x)} = ${num(wxh * x)}$.`,
-            `Add them and the bias: $${num(clean(whh * h))} + ${paren(wxh * x)} + ${paren(b)} = ${num(a)}$.`,
+            `Add them and the bias: $${num(clean(whh * h))} + ${par(wxh * x)} + ${par(b)} = ${num(a)}$.`,
           ],
         };
       }
@@ -108,8 +108,8 @@ export const generators: Generator[] = [
             first ? STEP('1', '0') : STEP(),
             first
               ? `$\\symh_0 = 0$, so the memory term vanishes: $\\symWhh\\symh_0 = 0$.`
-              : `The memory term: $\\symWhh\\symh_{t-1} = ${num(whh)} \\times ${paren(h)} = ${num(clean(whh * h))}$.`,
-            `Pre-activation: $${num(clean(whh * h))} + ${paren(wxh)} \\times ${paren(x)} + ${paren(b)} = ${num(a)}$.`,
+              : `The memory term: $\\symWhh\\symh_{t-1} = ${num(whh)} \\times ${par(h)} = ${num(clean(whh * h))}$.`,
+            `Pre-activation: $${num(clean(whh * h))} + ${par(wxh)} \\times ${par(x)} + ${par(b)} = ${num(a)}$.`,
             `Squash it: $\\tanh(${num(a)}) \\approx ${num(v, 2)}$.`,
           ],
         };
@@ -152,7 +152,7 @@ export const generators: Generator[] = [
       const emb = !small && rng.int(2) === 0;
       const what = d < 0.35 ? pick(rng, ['Whh', 'Wxh'] as const) : pick(rng, ['Whh', 'Wxh', 'b', 'h'] as const);
       const setup = emb
-        ? `An RNN with $\\symH = ${H}$ hidden units reads tokens from an embedding table of shape $(V, \\symD) = ${shapeTex([V, D])}$.`
+        ? `An RNN with $\\symH = ${H}$ hidden units reads tokens from an embedding table of shape $(V, \\symD) = ${shp([V, D])}$.`
         : `An RNN has $\\symH = ${H}$ hidden units, and each input $\\symx_t$ has $\\symD = ${D}$ numbers.`;
       const W_XH = 'That is $\\symWxh$\'s shape, which multiplies $\\symx_t$. $\\symWhh$ multiplies $\\symh_{t-1}$, $\\symH$ numbers, and gives $\\symH$ numbers.';
       const cases = {
@@ -160,7 +160,7 @@ export const generators: Generator[] = [
           tex: '\\symWhh',
           value: [H, H],
           traps: [{ value: [H, D], why: W_XH }, { value: [D, D], why: '$\\symWhh$ never touches $\\symx_t$: it maps the old state, $\\symH$ numbers, to $\\symH$ numbers.' }],
-          sol: `$\\symWhh\\symh_{t-1}$ turns $\\symH = ${H}$ numbers into $\\symH = ${H}$: shape $${shapeTex([H, H])}$.`,
+          sol: `$\\symWhh\\symh_{t-1}$ turns $\\symH = ${H}$ numbers into $\\symH = ${H}$: shape $${shp([H, H])}$.`,
         },
         Wxh: {
           tex: '\\symWxh',
@@ -170,19 +170,19 @@ export const generators: Generator[] = [
             { value: [H, H], why: 'That is $\\symWhh$\'s shape. $\\symWxh$ multiplies the input, which has $\\symD$ numbers.' },
             ...(emb ? [{ value: [V, D], why: 'That is the embedding table. $\\symWxh$ maps one embedded token, $\\symD$ numbers, into the hidden state.' }] : []),
           ],
-          sol: `$\\symWxh\\symx_t$ turns $\\symD = ${D}$ numbers into $\\symH = ${H}$: shape $${shapeTex([H, D])}$, rows first.`,
+          sol: `$\\symWxh\\symx_t$ turns $\\symD = ${D}$ numbers into $\\symH = ${H}$: shape $${shp([H, D])}$, rows first.`,
         },
         b: {
           tex: '\\symb',
           value: [H],
           traps: [{ value: [D], why: `$\\symb$ is added to the pre-activation, which has one entry per hidden unit: $\\symH = ${H}$.` }, { value: [H, H], why: 'The bias is a vector, one number per hidden unit, not a matrix.' }],
-          sol: `$\\symb$ adds one number to each of the $\\symH = ${H}$ pre-activations: shape $${shapeTex([H])}$.`,
+          sol: `$\\symb$ adds one number to each of the $\\symH = ${H}$ pre-activations: shape $${shp([H])}$.`,
         },
         h: {
           tex: '\\symh_t',
           value: [H],
           traps: [{ value: [D], why: `That is the input's size. The state has one entry per hidden unit, $\\symH = ${H}$, whatever the input.` }, { value: [H, H], why: 'That is $\\symWhh$. The state itself is a vector.' }],
-          sol: `$\\symh_t = \\tanh(\\cdots)$ has one entry per hidden unit: shape $${shapeTex([H])}$.`,
+          sol: `$\\symh_t = \\tanh(\\cdots)$ has one entry per hidden unit: shape $${shp([H])}$.`,
         },
       }[what];
       return {

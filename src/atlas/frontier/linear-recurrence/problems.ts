@@ -1,9 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { bigText } from '../../convnets/kit';
 import { choice } from '../../inference/kit';
-import { clean, nonzero, paren, traps } from '../../optimization/kit';
+import { clean, commas, int, nonzero, num, par, pick, round, traps } from '../../kit';
 
 /** h_1 .. h_n from h_0, with `a` on the old state and `b` on the input. */
 function run(a: number, b: number, h0: number, xs: readonly number[]): number[] {
@@ -14,7 +12,7 @@ function run(a: number, b: number, h0: number, xs: readonly number[]): number[] 
 
 const xsTex = (xs: readonly number[]) => xs.map((x, i) => `$\\symx_{${i + 1}} = ${num(x)}$`).join(', ');
 const stepTex = (a: number, b: number, prev: number, x: number, t: number, h: number) =>
-  `Step ${t}: $\\symh_{${t}} = ${num(a)} \\times ${paren(prev)} + ${paren(b)} \\times ${paren(x)} = ${num(h)}$.`;
+  `Step ${t}: $\\symh_{${t}} = ${num(a)} \\times ${par(prev)} + ${par(b)} \\times ${par(x)} = ${num(h)}$.`;
 
 /** `|a|^k`, rounded to two places, and how a prompt quotes it. */
 const pow2 = (a: number, k: number) => round(Math.abs(a) ** k, 2) + 0;
@@ -58,7 +56,7 @@ export const generators: Generator[] = [
         solution: [
           'Each step computes $\\symh_t = a\\symh_{t-1} + b\\symx_t$: the old state times $a$, plus the input times $b$.',
           ...xs.map((x, i) => stepTex(a, b, hs[i]!, x, i + 1, hs[i + 1]!)),
-          ...(askY ? [`The output: $y_3 = c\\symh_3 = ${num(c)} \\times ${paren(h)} = ${num(ans)}$.`] : []),
+          ...(askY ? [`The output: $y_3 = c\\symh_3 = ${num(c)} \\times ${par(h)} = ${num(ans)}$.`] : []),
         ],
       };
     },
@@ -112,8 +110,8 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `An input $k$ steps back enters times $b$, is multiplied by $a$ at each of the $k$ steps after it, and is read out times $c$: weight $c\\,a^k b$.`,
-          k === 0 ? '$\\symx_t$ is the newest input: $k = 0$, so $a^0 = 1$.' : `$${target}$ is ${k} step${k === 1 ? '' : 's'} back: $${paren(a)}^{${k}} = ${num(pw)}$.`,
-          `So $${num(c)} \\times ${paren(pw)} \\times ${paren(b)} = ${num(ans)}$.`,
+          k === 0 ? '$\\symx_t$ is the newest input: $k = 0$, so $a^0 = 1$.' : `$${target}$ is ${k} step${k === 1 ? '' : 's'} back: $${par(a)}^{${k}} = ${num(pw)}$.`,
+          `So $${num(c)} \\times ${par(pw)} \\times ${par(b)} = ${num(ans)}$.`,
         ],
       };
     },
@@ -130,7 +128,7 @@ export const generators: Generator[] = [
       const prompt =
         rng.int(2) === 0
           ? `A linear recurrence has $a = ${num(a)}$. As an input falls further into the past, what happens to its weight in the output?`
-          : `A linear recurrence with $a = ${num(a)}$ reads ${bigText(n)} tokens. What happens to the first token's weight in the output as the tokens go by?`;
+          : `A linear recurrence with $a = ${num(a)}$ reads ${commas(n)} tokens. What happens to the first token's weight in the output as the tokens go by?`;
       const rate = `Every step back multiplies the weight by $a$, so its size goes as $|a|^k$, with $|a| = ${num(m)}$`;
       const wrong = [
         `$|a| = ${num(m)}$ is below 1, so the weight shrinks at every step back. Old inputs fade.`,
@@ -162,7 +160,7 @@ export const generators: Generator[] = [
       if (d < 0.5 || rng.int(2) === 0) {
         const a = pick(rng, [0.5, 0.9, 0.8, 0.99, 0.95]);
         return {
-          prompt: `A tanh RNN and a one-unit linear recurrence with $a = ${num(a)}$ each read ${bigText(n)} tokens. Why can the linear recurrence compute all ${bigText(n)} outputs at once?`,
+          prompt: `A tanh RNN and a one-unit linear recurrence with $a = ${num(a)}$ each read ${commas(n)} tokens. Why can the linear recurrence compute all ${commas(n)} outputs at once?`,
           answer: choice([
             { text: 'Without the tanh, each output is a weighted sum of the inputs with fixed weights', why: null },
             { text: 'It carries no state from step to step, so each output needs only its own input', why: 'It does carry a state, $\\symh_t = a\\symh_{t-1} + b\\symx_t$. Unrolled, that state is a weighted sum of every input so far.' },
@@ -172,12 +170,12 @@ export const generators: Generator[] = [
           solution: [
             'Unrolled, $y_t$ adds up the inputs, the one $k$ steps back weighted by $c\\,a^k b$.',
             'Those weights use only $a$, $b$ and $c$, so they are known before any input arrives.',
-            `So each of the ${bigText(n)} outputs is a weighted sum of the inputs, and all of them can be computed side by side.`,
+            `So each of the ${commas(n)} outputs is a weighted sum of the inputs, and all of them can be computed side by side.`,
           ],
         };
       }
       return {
-        prompt: `A tanh RNN reads ${bigText(n)} tokens. Why must it compute $\\symh_1$, then $\\symh_2$, and so on, one step at a time?`,
+        prompt: `A tanh RNN reads ${commas(n)} tokens. Why must it compute $\\symh_1$, then $\\symh_2$, and so on, one step at a time?`,
         answer: choice([
           { text: 'The tanh between steps keeps $\\symh_t$ from unrolling into a weighted sum of the inputs', why: null },
           { text: 'It uses a different weight matrix at every step, so each step is set up anew', why: 'Every step uses the same $\\symWhh$, $\\symWxh$ and $\\symb$. The order comes from the tanh, not from the weights.' },
@@ -187,7 +185,7 @@ export const generators: Generator[] = [
         solution: [
           'Each step computes $\\symh_t = \\tanh(\\symWhh\\symh_{t-1} + \\symWxh\\symx_t + \\symb)$.',
           'The tanh bends its input, so $\\symh_t$ cannot be written as a fixed weighted sum of the inputs.',
-          `So step $t$ has to wait for $\\symh_{t-1}$: all ${bigText(n)} steps run in order.`,
+          `So step $t$ has to wait for $\\symh_{t-1}$: all ${commas(n)} steps run in order.`,
         ],
       };
     },

@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick } from '../../kit';
-import { choice, clean, traps } from '../kit';
+import { clean, int, num, pick, traps } from '../../kit';
+import { choice } from '../kit';
 
 /** Accept (true) or reject for each of `k` drafted tokens, with the first rejection at `cut` (k for none). */
 function verdicts(rng: Rng, k: number, cut: number): boolean[] {

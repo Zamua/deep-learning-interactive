@@ -1,9 +1,8 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick } from '../../kit';
-import { big, bigText } from '../../convnets/kit';
 import { choice } from '../../inference/kit';
-import { clean, placesFor, traps } from '../../networks/kit';
+import { big, clean, commas, num, pick, traps } from '../../kit';
+import { placesFor } from '../../networks/kit';
 
 const TH = '\\sym{theta}{\\theta}';
 const S = '\\sym{stretch}{s}';
@@ -16,7 +15,7 @@ function lengths(rng: Rng, d: number): { base: number; f: number } {
   return d < 0.35 ? { base: pick(rng, [1000, 2000, 3000, 4000]), f: pick(rng, [2, 4]) } : { base: pick(rng, [1000, 2000, 2048, 4096]), f: pick(rng, [2, 4, 8]) };
 }
 
-const trained = (base: number) => `A model with rotary positions was trained on texts of up to ${bigText(base)} tokens`;
+const trained = (base: number) => `A model with rotary positions was trained on texts of up to ${commas(base)} tokens`;
 
 export const generators: Generator[] = [
   {
@@ -29,7 +28,7 @@ export const generators: Generator[] = [
         const th = pick(rng, f === 8 ? [0.2, 0.4, 0.8] : [0.1, 0.2, 0.4]);
         const ans = clean(th / f);
         return {
-          prompt: `${trained(base)} and is stretched to ${bigText(n)} with position interpolation. One pair turns by $${TH} = ${deg(th)}$ per position. After interpolation, how many degrees apart are that pair's angles at two neighboring positions?`,
+          prompt: `${trained(base)} and is stretched to ${commas(n)} with position interpolation. One pair turns by $${TH} = ${deg(th)}$ per position. After interpolation, how many degrees apart are that pair's angles at two neighboring positions?`,
           answer: { kind: 'number', value: ans },
           traps: traps(ans, [
             { value: th, why: `That is the spacing before interpolation. Each position is divided by $${S} = ${f}$, so neighbors sit $1/${f}$ of a step apart.` },
@@ -55,7 +54,7 @@ export const generators: Generator[] = [
       const places = placesFor(ans);
       if (mode === 'raw') {
         return {
-          prompt: `${trained(base)} and is run on a text of ${bigText(n)} tokens with no change. One pair turns by $${TH} = ${deg(th)}$ per position. By how many degrees is that pair turned at position ${bigText(m)}?`,
+          prompt: `${trained(base)} and is run on a text of ${commas(n)} tokens with no change. One pair turns by $${TH} = ${deg(th)}$ per position. By how many degrees is that pair turned at position ${commas(m)}?`,
           answer: { kind: 'number', value: ans, places },
           traps: traps(ans, [
             { value: (m / f) * th, why: `That divides the position by $${S} = ${f}$, which only position interpolation does. Here nothing changes.` },
@@ -65,16 +64,16 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `${trained(base)} and is stretched to ${bigText(n)} with position interpolation. One pair turns by $${TH} = ${deg(th)}$ per position. By how many degrees is that pair turned at position ${bigText(m)}?`,
+        prompt: `${trained(base)} and is stretched to ${commas(n)} with position interpolation. One pair turns by $${TH} = ${deg(th)}$ per position. By how many degrees is that pair turned at position ${commas(m)}?`,
         answer: { kind: 'number', value: ans, places },
         traps: traps(ans, [
-          { value: raw, why: `That leaves position ${bigText(m)} as it is: an angle training never made. Interpolation first divides the position by $${S} = ${f}$.` },
+          { value: raw, why: `That leaves position ${commas(m)} as it is: an angle training never made. Interpolation first divides the position by $${S} = ${f}$.` },
           { value: m * th * f, why: `That multiplies by $${S}$. Interpolation divides every position by $${S}$.` },
           { value: m / f, why: `That is the position the token turns as. Its angle is that times $${TH}$.` },
         ], places),
         solution: [
           `The stretch: $${S} = ${big(n)} / ${big(base)} = ${f}$.`,
-          `Position ${bigText(m)} turns as if at $${big(m)} / ${f} = ${big(m / f)}$.`,
+          `Position ${commas(m)} turns as if at $${big(m)} / ${f} = ${big(m / f)}$.`,
           `Its angle: $${big(m / f)} \\times ${deg(th)} = ${deg(ans)}$, inside the range training made. Unscaled it would be $${deg(raw)}$.`,
         ],
       };
@@ -98,7 +97,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `${trained(base)}. Position interpolation is to stretch it to read texts of ${bigText(n)} tokens. What is the stretch $${S}$?`,
+        prompt: `${trained(base)}. Position interpolation is to stretch it to read texts of ${commas(n)} tokens. What is the stretch $${S}$?`,
         answer: { kind: 'number', value: f },
         traps: traps(f, [
           { value: base / n, why: `That divides the trained length by the new one. $${S}$ is the new length over $${LT}$, more than 1.` },
@@ -116,16 +115,16 @@ export const generators: Generator[] = [
       const ans = (n - 1) / f;
       const places = placesFor(ans);
       return {
-        prompt: `${trained(base)} and reads a text of ${bigText(n)} tokens with position interpolation. Counting from 0, the text's last token is turned as if it sat at what position?${places ? ' Round to two decimals.' : ''}`,
+        prompt: `${trained(base)} and reads a text of ${commas(n)} tokens with position interpolation. Counting from 0, the text's last token is turned as if it sat at what position?${places ? ' Round to two decimals.' : ''}`,
         answer: { kind: 'number', value: ans, places },
         traps: traps(ans, [
-          { value: base, why: `That divides the length, ${bigText(n)}, by $${S}$. Counting from 0, the last token sits at ${bigText(n - 1)}.` },
+          { value: base, why: `That divides the length, ${commas(n)}, by $${S}$. Counting from 0, the last token sits at ${commas(n - 1)}.` },
           { value: n - 1, why: `That leaves the position as it is. Interpolation divides it by $${S} = ${f}$.` },
           { value: (n - 1) * f, why: `That multiplies by $${S}$. Interpolation divides every position by $${S}$.` },
         ], places),
         solution: [
           `The stretch: $${S} = ${big(n)} / ${big(base)} = ${f}$.`,
-          `Counting from 0, the last of ${bigText(n)} tokens sits at position ${bigText(n - 1)}.`,
+          `Counting from 0, the last of ${commas(n)} tokens sits at position ${commas(n - 1)}.`,
           `It turns as if at $${big(n - 1)} / ${f} = ${num(ans)}$, just below $${LT} = ${big(base)}$.`,
         ],
       };
@@ -139,10 +138,10 @@ export const generators: Generator[] = [
       const v = rng.int(3);
       if (v === 0) {
         return {
-          prompt: `${trained(base)} and is run on ${bigText(n)} tokens with no change. Why does quality collapse past position ${bigText(base - 1)}?`,
+          prompt: `${trained(base)} and is run on ${commas(n)} tokens with no change. Why does quality collapse past position ${commas(base - 1)}?`,
           answer: choice([
             { text: 'Slow pairs turn by angles they never reached in training', why: null },
-            { text: `There are no position vectors for positions past ${bigText(base - 1)}`, why: 'That is a learned position table, one row per position. Rotary positions compute each turn as $m\\sym{theta}{\\theta}$, at any position.' },
+            { text: `There are no position vectors for positions past ${commas(base - 1)}`, why: 'That is a learned position table, one row per position. Rotary positions compute each turn as $m\\sym{theta}{\\theta}$, at any position.' },
             { text: 'Past 360°, angles wrap around, so far tokens look near', why: 'Wrapping is nothing new: fast pairs go round many times in training. The trouble is slow pairs reaching angles they never had.' },
             { text: 'Turning makes the queries and keys longer at far positions', why: 'A turn keeps a pair\'s length. It only changes the angle.' },
           ]),
@@ -154,21 +153,21 @@ export const generators: Generator[] = [
       }
       if (v === 1) {
         return {
-          prompt: `${trained(base)}. What does position interpolation do so that it can read ${bigText(n)}?`,
+          prompt: `${trained(base)}. What does position interpolation do so that it can read ${commas(n)}?`,
           answer: choice([
             { text: `It divides every position by $${S} = ${f}$, so every angle stays in range`, why: null },
             { text: `It multiplies every $${TH}$ by ${f}, so each pair turns ${f} times faster`, why: 'That pushes the angles further out of range. Interpolation divides the positions, which shrinks the angles.' },
-            { text: `It keeps only the last ${bigText(base)} tokens of the text`, why: 'That would drop most of the text. Interpolation keeps every token and squeezes their positions.' },
+            { text: `It keeps only the last ${commas(base)} tokens of the text`, why: 'That would drop most of the text. Interpolation keeps every token and squeezes their positions.' },
             { text: 'It turns every pair by the same angle at every position', why: `Then queries and keys would carry no position at all. Each position still turns by its own angle, $m${TH} / ${S}$.` },
           ]),
-          solution: [`$${S} = ${big(n)} / ${big(base)} = ${f}$, and position $m$ turns by $m${TH} / ${S}$.`, `Divided by ${f}, every position up to ${bigText(n - 1)} lands below $${LT} = ${big(base)}$, so every angle is one training made.`],
+          solution: [`$${S} = ${big(n)} / ${big(base)} = ${f}$, and position $m$ turns by $m${TH} / ${S}$.`, `Divided by ${f}, every position up to ${commas(n - 1)} lands below $${LT} = ${big(base)}$, so every angle is one training made.`],
         };
       }
       return {
-        prompt: `${trained(base)} and is stretched to ${bigText(n)} with position interpolation, $${S} = ${f}$. Why is a short fine-tune still needed?`,
+        prompt: `${trained(base)} and is stretched to ${commas(n)} with position interpolation, $${S} = ${f}$. Why is a short fine-tune still needed?`,
         answer: choice([
           { text: `Neighbors now turn only $${TH} / ${f}$ apart, a finer spacing than training used`, why: null },
-          { text: `Positions past ${bigText(base - 1)} still turn by angles training never made`, why: `Interpolation divides every position by $${S}$, so every one lands below $${LT}$: its angles are all in range.` },
+          { text: `Positions past ${commas(base - 1)} still turn by angles training never made`, why: `Interpolation divides every position by $${S}$, so every one lands below $${LT}$: its angles are all in range.` },
           { text: `The stretch $${S}$ itself is learned during the fine-tune`, why: `$${S}$ is fixed: the new length over $${LT}$.` },
           { text: 'Queries and keys must grow longer to hold the extra positions', why: 'Turning never changes a pair\'s length, and the vectors keep their size.' },
         ]),

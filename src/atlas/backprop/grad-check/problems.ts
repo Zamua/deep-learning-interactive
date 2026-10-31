@@ -1,6 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { clean, traps } from '../kit';
+import { clean, int, num, pick, round, traps } from '../../kit';
 
 /** Decimals that show `v` to two significant figures. */
 const sigPlaces = (v: number) => Math.max(2, 1 - Math.floor(Math.log10(Math.abs(v))));

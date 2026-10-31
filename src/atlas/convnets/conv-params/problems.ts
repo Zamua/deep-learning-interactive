@@ -1,6 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { pick } from '../../kit';
-import { big, shp, shuffled, traps } from '../kit';
+import { big, pick, shp, shuffled, traps } from '../../kit';
 
 export const generators: Generator[] = [
   {

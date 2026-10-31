@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { cleanTraps, paren } from '../kit';
+import { int, num, pick, round, traps } from '../../kit';
+import { paren } from '../kit';
 
 /** The logs a prompt hands out, to two decimals. */
 const LN: Record<number, number> = { 2: 0.69, 3: 1.1, 5: 1.61, 7: 1.95 };
@@ -25,7 +25,7 @@ const sumOf = (ks: number[]) => r2(ks.reduce((a, k) => a + LN[k]!, 0));
 const CASES: LogCase[] = (() => {
   const out: LogCase[] = [];
   const keep = (c: LogCase, truth: number) => {
-    if (r2(c.value) === r2(truth)) out.push({ ...c, value: r2(c.value), traps: cleanTraps(c.traps, r2(c.value), 2) });
+    if (r2(c.value) === r2(truth)) out.push({ ...c, value: r2(c.value), traps: traps(r2(c.value), c.traps, 2) });
   };
   for (const a of PRIMES) {
     for (const b of PRIMES) {

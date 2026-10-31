@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick, round } from '../../kit';
-import { fx, lossLog, texTable, traps, whys } from '../kit';
+import { int, num, pick, round, traps } from '../../kit';
+import { fx, lossLog, texTable, whys } from '../kit';
 
 type Shape = 'slow' | 'good' | 'plateau' | 'explode' | 'noisy';
 

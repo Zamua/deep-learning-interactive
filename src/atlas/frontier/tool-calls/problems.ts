@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { big, bigText, choice, traps } from '../../inference/kit';
+import { choice } from '../../inference/kit';
+import { big, commas, int, pick, traps } from '../../kit';
 import { TOOLS, type Tool } from './tools';
 
 const called = (t: Tool) => `the call \`${t.call}\``;
@@ -18,7 +18,7 @@ export const generators: Generator[] = [
       const c = int(rng, 5, 12);
       const r = int(rng, 3, 12);
       const kind = d < 0.5 ? 'resume' : pick(rng, ['resume', 'wrote'] as const);
-      const setup = `A prompt of ${bigText(P)} tokens asks a model: “${t.q}” The model writes ${called(t)}, ${c} tokens with its markers, and the program adds ${result(t)}, ${r} tokens with its markers.`;
+      const setup = `A prompt of ${commas(P)} tokens asks a model: “${t.q}” The model writes ${called(t)}, ${c} tokens with its markers, and the program adds ${result(t)}, ${r} tokens with its markers.`;
       const u = P + c + r;
       if (kind === 'wrote') {
         const a = int(rng, 6, 20);
@@ -47,7 +47,7 @@ export const generators: Generator[] = [
           { value: c + r, why: 'That leaves out the prompt, which is still in the context.' },
         ]),
         solution: [
-          `The prompt is in the context: ${bigText(P)} tokens.`,
+          `The prompt is in the context: ${commas(P)} tokens.`,
           `The model's call stays in it too: ${c} more.`,
           `The program pastes the result after the call: ${r} more.`,
           `In all $${big(P)} + ${c} + ${r} = ${big(u)}$ tokens, every one in view when the model writes on.`,

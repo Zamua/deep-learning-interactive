@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round, vec } from '../../kit';
-import { choose, LN, sumTex, traps, useLn, vtraps } from '../kit';
+import { int, LN2, num, pick, round, terms, traps, useLn, vec, vtraps } from '../../kit';
+import { choose } from '../kit';
 
 /** Single-turn chats: the user's question and the assistant's reply, as tokens (the reply without `<end>`). */
 const CHATS: [string[], string[]][] = [
@@ -106,7 +106,7 @@ export const generators: Generator[] = [
       const toks = ['<user>', ...q2, '<asst>', ...words, '<end>'];
       const mine = toks.map((_, i) => i > q2.length + 1);
       const p = toks.map((t, i) => (i === 0 ? 0 : !mine[i] ? (t === '<asst>' ? pick(rng, [0.8, 0.9]) : pick(rng, [0.1, 0.2, 0.25, 0.4])) : t === '<end>' ? pick(rng, [0.5, 0.8, 0.9]) : pick(rng, [0.4, 0.5, 0.6, 0.8, 0.9])));
-      const nll = p.map((v) => (v ? -LN(v) : 0));
+      const nll = p.map((v) => (v ? -LN2(v) : 0));
       const graded = nll.filter((_, i) => mine[i]);
       const n = graded.length;
       const sum = round(graded.reduce((s, v) => s + v, 0), 2);
@@ -131,8 +131,8 @@ export const generators: Generator[] = [
         solution: [
           'The loss averages $-\\ln \\symp$ over the tokens with mask 1, the ones the assistant wrote.',
           `The assistant's tokens are ${toks.filter((_, i) => mine[i]).map((t) => `\`${t}\``).join(', ')}; the \`<user>\` and \`<asst>\` markers and the question get mask 0.`,
-          `Their losses: ${p.filter((_, i) => mine[i]).map((x) => `$-\\ln ${num(x)} \\approx ${num(-LN(x), 2)}$`).join(', ')}.`,
-          `Average them: $(${sumTex(graded, 2)}) / ${n} = ${num(sum, 2)} / ${n} \\approx ${num(v, 2)}$.`,
+          `Their losses: ${p.filter((_, i) => mine[i]).map((x) => `$-\\ln ${num(x)} \\approx ${num(-LN2(x), 2)}$`).join(', ')}.`,
+          `Average them: $(${terms(graded, 2)}) / ${n} = ${num(sum, 2)} / ${n} \\approx ${num(v, 2)}$.`,
         ],
       };
     },

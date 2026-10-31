@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { choose, clean, minus, SIG, traps } from '../kit';
+import { clean, int, minus, num, pick, traps } from '../../kit';
+import { choose, SIG } from '../kit';
 
 const r = '\\sym{r}{r}';
 const wTex = `${r}_w`;

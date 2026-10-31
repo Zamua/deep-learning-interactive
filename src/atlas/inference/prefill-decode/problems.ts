@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
+import { big, clean, commas, int, num, pick, traps } from '../../kit';
+import { choice } from '../kit';
 import type { Rng } from '../../../core/rand';
-import { big, bigText, choice, clean, traps } from '../kit';
 
 /** Model sizes in gigabytes and decode speeds in tokens per second, paired so the memory speed is a round number. */
 function speedSetup(rng: Rng): { params: number; gb: number; rate: number; bw: number } {
@@ -21,7 +21,7 @@ export const generators: Generator[] = [
       const P = d < 0.35 ? int(rng, 4, 30) : pick(rng, [int(rng, 20, 400), int(rng, 500, 4000)]);
       const n = d < 0.35 ? int(rng, 3, 12) : int(rng, 10, 600);
       const kind = d < 0.35 ? 'total' : pick(rng, ['total', 'decode', 'time'] as const);
-      const setup = `A prompt of ${bigText(P)} tokens goes into a language model, and it writes ${bigText(n)} new tokens.`;
+      const setup = `A prompt of ${commas(P)} tokens goes into a language model, and it writes ${commas(n)} new tokens.`;
       if (kind === 'time') {
         const pre = pick(rng, [20, 40, 50, 80, 100, 150, 200]);
         const dec = pick(rng, [5, 10, 20, 25, 40]);
@@ -52,8 +52,8 @@ export const generators: Generator[] = [
           { value: kind === 'total' ? n - 1 : 1, why: kind === 'total' ? 'That leaves out the prefill pass itself.' : 'Only the prompt runs in one pass. Each new token depends on the one before, so it needs a pass of its own.' },
         ]),
         solution: [
-          `The prefill runs all ${bigText(P)} prompt tokens in one pass and gives new token 1.`,
-          `Each later token depends on the one before it, so new tokens 2 to ${bigText(n)} take one decode pass each: $${big(n - 1)}$ passes.`,
+          `The prefill runs all ${commas(P)} prompt tokens in one pass and gives new token 1.`,
+          `Each later token depends on the one before it, so new tokens 2 to ${commas(n)} take one decode pass each: $${big(n - 1)}$ passes.`,
           kind === 'total' ? `In all $1 + ${big(n - 1)} = ${big(n)}$ passes.` : `So $${big(n - 1)}$ decode passes follow the prefill.`,
         ],
       };
@@ -69,7 +69,7 @@ export const generators: Generator[] = [
       const v = askMs ? ms : rate;
       const model = fromParams ? `a model of ${params} billion parameters stored at 2 bytes each` : `a model whose weights take ${gb} GB`;
       return {
-        prompt: `A GPU reads its memory at ${bigText(bw)} GB per second. It decodes one sequence with ${model}. ${askMs ? 'At least how many milliseconds does each new token take' : 'At most how many tokens per second can it write'}?`,
+        prompt: `A GPU reads its memory at ${commas(bw)} GB per second. It decodes one sequence with ${model}. ${askMs ? 'At least how many milliseconds does each new token take' : 'At most how many tokens per second can it write'}?`,
         answer: { kind: 'number', value: v },
         traps: traps(
           v,

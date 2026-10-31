@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { pick } from '../../kit';
-import { distinct, shapeTex } from '../kit';
+import { pick, shp } from '../../kit';
+import { distinct } from '../kit';
 
 /** Three different sizes, so no two dimensions can be confused by value. */
 function sizes(rng: Rng, d: number): [number, number, number] {
@@ -18,21 +18,21 @@ export const generators: Generator[] = [
       if (d >= 0.8 && rng.int(2) === 0) {
         const j = pick(rng, [2, 5, 16, 50].filter((v) => v !== m && v !== n && v !== k));
         return {
-          prompt: `$A$ has shape $${shapeTex([m, n])}$, $B$ has shape $${shapeTex([n, k])}$ and $C$ has shape $${shapeTex([k, j])}$. What is the shape of $ABC$?`,
+          prompt: `$A$ has shape $${shp([m, n])}$, $B$ has shape $${shp([n, k])}$ and $C$ has shape $${shp([k, j])}$. What is the shape of $ABC$?`,
           answer: { kind: 'shape', value: [m, j] },
           solution: [
             'Multiply two at a time: first $AB$, then that times $C$.',
-            `$AB$ is $${shapeTex([m, n])}$ times $${shapeTex([n, k])}$: the inner ${n}s match, and the outer dimensions give $${shapeTex([m, k])}$.`,
-            `$(AB)C$ is $${shapeTex([m, k])}$ times $${shapeTex([k, j])}$: the inner ${k}s match, and the outer dimensions give $${shapeTex([m, j])}$.`,
+            `$AB$ is $${shp([m, n])}$ times $${shp([n, k])}$: the inner ${n}s match, and the outer dimensions give $${shp([m, k])}$.`,
+            `$(AB)C$ is $${shp([m, k])}$ times $${shp([k, j])}$: the inner ${k}s match, and the outer dimensions give $${shp([m, j])}$.`,
           ],
         };
       }
       return {
-        prompt: `$A$ has shape $${shapeTex([m, n])}$ and $B$ has shape $${shapeTex([n, k])}$. What is the shape of $AB$?`,
+        prompt: `$A$ has shape $${shp([m, n])}$ and $B$ has shape $${shp([n, k])}$. What is the shape of $AB$?`,
         answer: { kind: 'shape', value: [m, k] },
         solution: [
           `The inner dimensions, $A$'s columns and $B$'s rows, are ${n} and ${n}: they match, so the product works.`,
-          `The outer dimensions give the result: $A$'s ${m} rows and $B$'s ${k} columns, shape $${shapeTex([m, k])}$.`,
+          `The outer dimensions give the result: $A$'s ${m} rows and $B$'s ${k} columns, shape $${shp([m, k])}$.`,
         ],
       };
     },
@@ -42,7 +42,7 @@ export const generators: Generator[] = [
     make(rng, d) {
       if (rng.int(2) === 0) {
         const [m, n, k] = sizes(rng, Math.min(d, 0.5));
-        const pair = (a: [number, number], b: [number, number]) => `$${shapeTex(a)}$ times $${shapeTex(b)}$`;
+        const pair = (a: [number, number], b: [number, number]) => `$${shp(a)}$ times $${shp(b)}$`;
         return {
           prompt: 'Which of these matrix products is defined?',
           answer: {
@@ -58,13 +58,13 @@ export const generators: Generator[] = [
           },
           solution: [
             `A product works when the first matrix's columns equal the second's rows: the inner dimensions.`,
-            `Only $${shapeTex([m, n])}$ times $${shapeTex([n, k])}$ has matching inner dimensions, ${n} and ${n}. It gives $${shapeTex([m, k])}$.`,
+            `Only $${shp([m, n])}$ times $${shp([n, k])}$ has matching inner dimensions, ${n} and ${n}. It gives $${shp([m, k])}$.`,
           ],
         };
       }
       const [m, n, k] = sizes(rng, d);
       return {
-        prompt: `$A$ has shape $${shapeTex([m, n])}$ and $B$ has shape $${shapeTex([k, n])}$. Which product has shape $${shapeTex([m, k])}$?`,
+        prompt: `$A$ has shape $${shp([m, n])}$ and $B$ has shape $${shp([k, n])}$. Which product has shape $${shp([m, k])}$?`,
         answer: {
           kind: 'choice',
           options: ['`A @ B.T`', '`A @ B`', '`B @ A.T`', '`B.T @ A`'],
@@ -72,13 +72,13 @@ export const generators: Generator[] = [
           why: [
             null,
             `The inner dimensions are ${n} and ${k}: $A$'s columns must equal $B$'s rows, and they do not. Transposing $B$ fixes that.`,
-            `That works, but gives shape $${shapeTex([k, m])}$: the same numbers laid out the other way. The outer dimensions come out in the order the matrices go in.`,
-            `$B^{\\top}$ is $${shapeTex([n, k])}$ and $A$ is $${shapeTex([m, n])}$: the inner pair ${k} and ${m} does not match.`,
+            `That works, but gives shape $${shp([k, m])}$: the same numbers laid out the other way. The outer dimensions come out in the order the matrices go in.`,
+            `$B^{\\top}$ is $${shp([n, k])}$ and $A$ is $${shp([m, n])}$: the inner pair ${k} and ${m} does not match.`,
           ],
         },
         solution: [
-          `$B^{\\top}$ has shape $${shapeTex([n, k])}$.`,
-          `$AB^{\\top}$ is $${shapeTex([m, n])}$ times $${shapeTex([n, k])}$: the inner ${n}s match and the result is $${shapeTex([m, k])}$.`,
+          `$B^{\\top}$ has shape $${shp([n, k])}$.`,
+          `$AB^{\\top}$ is $${shp([m, n])}$ times $${shp([n, k])}$: the inner ${n}s match and the result is $${shp([m, k])}$.`,
         ],
       };
     },
@@ -90,7 +90,7 @@ export const generators: Generator[] = [
       const kind = rng.int(3);
       if (kind === 0) {
         return {
-          prompt: `$A$ has shape $(${m}, q)$ and $B$ has shape $${shapeTex([n, k])}$. What must $q$ be for $AB$ to be defined?`,
+          prompt: `$A$ has shape $(${m}, q)$ and $B$ has shape $${shp([n, k])}$. What must $q$ be for $AB$ to be defined?`,
           answer: { kind: 'number', value: n },
           traps: [
             { value: k, why: `That is $B$'s number of columns. $A$'s columns must match $B$'s rows: ${n}.` },
@@ -101,7 +101,7 @@ export const generators: Generator[] = [
       }
       if (kind === 1) {
         return {
-          prompt: `$A$ has shape $${shapeTex([m, n])}$, $B$ has shape $(${n}, q)$, and $AB$ has shape $${shapeTex([m, k])}$. What is $q$?`,
+          prompt: `$A$ has shape $${shp([m, n])}$, $B$ has shape $(${n}, q)$, and $AB$ has shape $${shp([m, k])}$. What is $q$?`,
           answer: { kind: 'number', value: k },
           traps: [
             { value: n, why: `${n} is the inner dimension, which disappears. The result's columns come from $B$'s columns.` },
@@ -111,7 +111,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `$A$ has shape $(q, ${n})$, $B$ has shape $${shapeTex([n, k])}$, and $AB$ has shape $${shapeTex([m, k])}$. What is $q$?`,
+        prompt: `$A$ has shape $(q, ${n})$, $B$ has shape $${shp([n, k])}$, and $AB$ has shape $${shp([m, k])}$. What is $q$?`,
         answer: { kind: 'number', value: m },
         traps: [
           { value: n, why: `${n} is already $A$'s column count, the inner dimension. $A$'s rows set the result's rows.` },
@@ -126,28 +126,28 @@ export const generators: Generator[] = [
     make(rng, d) {
       const [m, n, k] = sizes(rng, d);
       const kind = d < 0.35 ? 0 : rng.int(3);
-      const given = `$A$ has shape $${shapeTex([m, n])}$ and $B$ has shape $${shapeTex([k, n])}$.`;
+      const given = `$A$ has shape $${shp([m, n])}$ and $B$ has shape $${shp([k, n])}$.`;
       if (kind === 1) {
         return {
           prompt: `${given} What is the shape of \`B @ A.T\`?`,
           answer: { kind: 'shape', value: [k, m] },
           traps: [{ value: [m, k], why: 'That is the shape of `A @ B.T`. The outer dimensions come out in the order the matrices go in: rows of $B$, then columns of $A^{\\top}$.' }],
-          solution: [`$A^{\\top}$ has shape $${shapeTex([n, m])}$.`, `$BA^{\\top}$ is $${shapeTex([k, n])}$ times $${shapeTex([n, m])}$: the ${n}s match, and the result is $${shapeTex([k, m])}$.`],
+          solution: [`$A^{\\top}$ has shape $${shp([n, m])}$.`, `$BA^{\\top}$ is $${shp([k, n])}$ times $${shp([n, m])}$: the ${n}s match, and the result is $${shp([k, m])}$.`],
         };
       }
       if (kind === 2) {
         return {
-          prompt: `$B$ has shape $${shapeTex([k, n])}$ and the vector \`v\` has shape $${shapeTex([n])}$. What is the shape of \`B @ v\`?`,
+          prompt: `$B$ has shape $${shp([k, n])}$ and the vector \`v\` has shape $${shp([n])}$. What is the shape of \`B @ v\`?`,
           answer: { kind: 'shape', value: [k] },
           traps: [{ value: [n], why: 'That is the length of `v`. Each row of $B$ dotted with `v` gives one number, so the result has one entry per row of $B$.' }],
-          solution: [`$Bv$ is $${shapeTex([k, n])}$ times a vector of ${n}: the ${n}s match.`, `One dot product per row of $B$: the result has shape $${shapeTex([k])}$.`],
+          solution: [`$Bv$ is $${shp([k, n])}$ times a vector of ${n}: the ${n}s match.`, `One dot product per row of $B$: the result has shape $${shp([k])}$.`],
         };
       }
       return {
         prompt: `${given} What is the shape of \`A @ B.T\`?`,
         answer: { kind: 'shape', value: [m, k] },
         traps: [{ value: [k, m], why: 'That is the shape of `B @ A.T`. The result keeps the outer dimensions in order: rows of $A$, then columns of $B^{\\top}$.' }],
-        solution: [`$B^{\\top}$ has shape $${shapeTex([n, k])}$.`, `$AB^{\\top}$ is $${shapeTex([m, n])}$ times $${shapeTex([n, k])}$: the inner ${n}s match, and the result is $${shapeTex([m, k])}$.`],
+        solution: [`$B^{\\top}$ has shape $${shp([n, k])}$.`, `$AB^{\\top}$ is $${shp([m, n])}$ times $${shp([n, k])}$: the inner ${n}s match, and the result is $${shp([m, k])}$.`],
       };
     },
   },

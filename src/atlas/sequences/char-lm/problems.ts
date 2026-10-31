@@ -1,7 +1,8 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round, vec } from '../../kit';
-import { argmax, clean, lit, lits, LN2, probs, traps, useLn } from '../kit';
+import { argmax, clean, int, LN2, num, pick, round, traps, useLn, vec } from '../../kit';
+import { probs } from '../../optimization/kit';
+import { lit, lits } from '../kit';
 
 const SHORT = ['cat', 'dog', 'sun', 'code', 'moon', 'tree', 'bird', 'fish', 'rain', 'star'];
 const MID = ['hello', 'model', 'token', 'river', 'apple', 'music', 'night', 'learn', 'paper', 'stone', 'water', 'tiger', 'lemon', 'dream'];

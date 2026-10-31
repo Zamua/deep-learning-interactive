@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round, vec } from '../../kit';
-import { BASE, choose, clean, paren, PI, R, sumTex, TH, traps } from '../kit';
+import { clean, int, num, par, pick, round, terms, traps, vec } from '../../kit';
+import { BASE, choose, PI, R, TH } from '../kit';
 
 const GLP = `\\nabla \\ln ${PI}(y)`;
 const DL = `\\dfrac{\\partial \\ln ${PI}(y)}{\\partial ${TH}_0}`;
@@ -29,11 +29,11 @@ export const generators: Generator[] = [
         const p = tenths(rng, n);
         const k = d < 0.35 ? n - 1 : rng.int(n);
         const g = p.map((_, i) => (i === k ? 0 : pick(rng, G)));
-        const terms = p.map((q, i) => clean(q * g[i]!));
-        const rest = clean(terms.reduce((x, y) => x + y, 0));
+        const parts = p.map((q, i) => clean(q * g[i]!));
+        const rest = clean(parts.reduce((x, y) => x + y, 0));
         const x = clean(-rest / p[k]!);
         if (rest === 0 || Math.abs(x) > 5 || Math.abs(round(x, 2) - x) > 1e-9) continue;
-        const known = terms.filter((_, i) => i !== k);
+        const known = parts.filter((_, i) => i !== k);
         return {
           prompt: `A model's ${n} answers have probabilities $${PI} = ${vec(p)}$, counting from 0. For one parameter $${TH}_0$, $${DL}$ is ${given(g, k)}. What is it for answer ${k}?`,
           answer: { kind: 'number', value: x },
@@ -44,7 +44,7 @@ export const generators: Generator[] = [
           ]),
           solution: [
             `Weighted by probability, the slopes of $\\ln ${PI}$ add up to zero: $\\sum_y ${PI}(y)\\,${DL} = 0$.`,
-            `The known terms: ${p.map((q, i) => (i === k ? '' : `$${num(q)} \\times ${paren(g[i]!)} = ${num(terms[i]!)}$`)).filter(Boolean).join(', ')}. Together: $${sumTex(known)} = ${num(rest)}$.`,
+            `The known terms: ${p.map((q, i) => (i === k ? '' : `$${num(q)} \\times ${par(g[i]!)} = ${num(parts[i]!)}$`)).filter(Boolean).join(', ')}. Together: $${terms(known)} = ${num(rest)}$.`,
             `So answer ${k}'s term must be $${num(clean(-rest))}$, to bring the total to zero.`,
             `Divide by its probability: $${num(clean(-rest))} / ${num(p[k]!)} = ${num(x)}$.`,
           ],
@@ -72,7 +72,7 @@ export const generators: Generator[] = [
           ]),
           solution: [
             `The probabilities add up to 1 whatever $${TH}$ is, so their slopes add up to the slope of a constant: 0.`,
-            `The known slopes add up to $${sumTex(known)} = ${num(rest)}$.`,
+            `The known slopes add up to $${terms(known)} = ${num(rest)}$.`,
             `So answer ${k}'s slope must cancel them: $${num(x)}$.`,
           ],
         };

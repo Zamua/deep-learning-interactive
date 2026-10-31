@@ -1,7 +1,6 @@
 // Turning pairs by whole-degree angles with the cosines and sines the prompts quote.
 import type { Rng } from '../../../core/rand';
-import { int, num } from '../../kit';
-import { clean, par } from '../kit';
+import { clean, int, num, par } from '../../kit';
 
 /** Angles in degrees with their cosine and sine, rounded as the prompts quote them. */
 export const TRIG: Record<number, [number, number]> = {

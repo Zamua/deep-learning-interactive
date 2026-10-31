@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { big, commas, lit, lits, shapeTex, traps } from '../kit';
+import { big, commas, int, pick, shp, traps } from '../../kit';
+import { lit, lits } from '../../sequences/kit';
 
 const WU = '\\sym{WU}{W_U}';
 const SENTENCES = [
@@ -82,9 +82,9 @@ export const generators: Generator[] = [
         answer: { kind: 'shape', value: st.v },
         traps: st.ts.filter((t) => t.value.join() !== st.v.join()),
         solution: [
-          `The ids are $${shapeTex([T])}$; the lookup and the position vectors make $${shapeTex([T, dim])}$.`,
-          `Every block keeps $${shapeTex([T, dim])}$; the unembedding makes $${shapeTex([T, V])}$, and softmax keeps that shape.`,
-          `That makes ${st.what} $${shapeTex(st.v)}$.`,
+          `The ids are $${shp([T])}$; the lookup and the position vectors make $${shp([T, dim])}$.`,
+          `Every block keeps $${shp([T, dim])}$; the unembedding makes $${shp([T, V])}$, and softmax keeps that shape.`,
+          `That makes ${st.what} $${shp(st.v)}$.`,
         ],
       };
     },
@@ -116,7 +116,7 @@ export const generators: Generator[] = [
             { value: T, why: 'That counts the rows. Each row holds a probability for every vocabulary token.' },
             { value: (T - 1) * V, why: 'The last position predicts too, so there are $T$ rows.' },
           ]),
-          solution: [`The output has shape $(T, V) = ${shapeTex([T, V])}$: one row per position, one entry per token.`, `$${big(T)} \\times ${big(V)} = ${big(v)}$ probabilities.`],
+          solution: [`The output has shape $(T, V) = ${shp([T, V])}$: one row per position, one entry per token.`, `$${big(T)} \\times ${big(V)} = ${big(v)}$ probabilities.`],
         };
       }
       const B = pick(rng, [2, 4, 8, 16, 32]);
@@ -179,11 +179,11 @@ export const generators: Generator[] = [
     make(rng, d) {
       const { T, dim, V, N } = sizes(rng, d);
       const items = [
-        `Look up each token id's row of $E$: $${shapeTex([T, dim])}$`,
-        `Add each position's vector: $${shapeTex([T, dim])}$`,
-        `Run ${N} causal transformer blocks: $${shapeTex([T, dim])}$`,
-        `Multiply by $${WU}$: ${commas(V)} scores per position, $${shapeTex([T, V])}$`,
-        `Softmax each row: next-token probabilities, $${shapeTex([T, V])}$`,
+        `Look up each token id's row of $E$: $${shp([T, dim])}$`,
+        `Add each position's vector: $${shp([T, dim])}$`,
+        `Run ${N} causal transformer blocks: $${shp([T, dim])}$`,
+        `Multiply by $${WU}$: ${commas(V)} scores per position, $${shp([T, V])}$`,
+        `Softmax each row: next-token probabilities, $${shp([T, V])}$`,
       ];
       return {
         prompt: `A decoder-only model with $d = ${big(dim)}$ and a vocabulary of $V = ${big(V)}$ reads $T = ${big(T)}$ token ids. Put its steps in order.`,

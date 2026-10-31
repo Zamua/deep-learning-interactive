@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, ints, num, pick, vec } from '../../kit';
-import { atraps, dot, mat, prods, shuffled, terms, traps } from '../kit';
+import { dot, int, ints, mat, num, pick, prods, shuffled, terms, traps, vec, vtraps } from '../../kit';
 
 const conv1d = (x: number[], w: number[]): number[] => Array.from({ length: x.length - w.length + 1 }, (_, i) => dot(x.slice(i, i + w.length), w));
 const sumOf = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
@@ -113,7 +112,7 @@ export const generators: Generator[] = [
       return {
         prompt: `What does the filter $\\symw = ${vec(w)}$ output as it slides along $\\symx = ${vec(x)}$?`,
         answer: { kind: 'vector', value: out },
-        traps: atraps(out, [
+        traps: vtraps(out, [
           { value: conv1d(x, [...w].reverse()), why: 'That flips the filter. A convolution layer slides it as it is: its first weight sits on the first entry of each window.' },
           { value: windows.map(sumOf), why: 'Those are the window sums, unweighted. Multiply each entry by the filter weight on top of it before adding.' },
           { value: out.slice(0, -1), why: `That stops one window early. The last window ends on the last entry, $\\symx_{${n - 1}}$, so there are ${out.length} outputs.` },

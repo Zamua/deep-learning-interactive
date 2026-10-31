@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round, vec } from '../../kit';
-import { AB, BLEND, EHAT, EPS, LEVELS, X0, XT, big, bigText, clean, par, roots, shuffled, sum, tenth, traps, vtraps } from '../kit';
+import { big, clean, commas, int, num, par, pick, round, shuffled, sum, tenth, traps, vec, vtraps } from '../../kit';
+import { AB, BLEND, EHAT, EPS, LEVELS, roots, X0, XT } from '../kit';
 
 export const generators: Generator[] = [
   {
@@ -69,7 +69,7 @@ export const generators: Generator[] = [
       const T = pick(rng, [100, 1000, 4000]);
       const t = int(rng, 1, T - 1);
       const kind = pick(rng, ['sees', 'asked', 'copy'] as const);
-      const lead = `A diffusion model is trained over ${bigText(T)} noise steps. One training image is noised to step $t = ${big(t)}$.`;
+      const lead = `A diffusion model is trained over ${commas(T)} noise steps. One training image is noised to step $t = ${big(t)}$.`;
       if (kind === 'sees')
         return {
           prompt: `${lead} What does the network get as its input?`,

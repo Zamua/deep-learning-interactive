@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { clean, dd, n, nonzero, par, tenth, traps, vtraps } from '../kit';
+import { clean, int, nonzero, par, pick, traps, vtraps } from '../../kit';
+import { dd, fractional, n } from '../kit';
 
 type Gate = 'add' | 'mul' | 'max';
 
@@ -13,7 +13,7 @@ const UP = D('q');
 function setup(rng: Rng, d: number, big = false): { a: number; c: number; g: number } {
   for (;;) {
     const lo = big ? 2 : 1;
-    const a = d < 0.35 ? int(rng, lo, 5) : d < 0.7 ? nonzero(rng, -4, 5) : rng.int(2) ? tenth(rng, -3, 3) : nonzero(rng, -5, 5);
+    const a = d < 0.35 ? int(rng, lo, 5) : d < 0.7 ? nonzero(rng, -4, 5) : rng.int(2) ? fractional(rng, -3, 3) : nonzero(rng, -5, 5);
     const c = d < 0.35 ? int(rng, lo, 5) : d < 0.7 ? nonzero(rng, -4, 5) : nonzero(rng, -5, 5);
     const g = d < 0.35 ? int(rng, 1, 3) : d < 0.7 ? nonzero(rng, -3, 4) : pick(rng, [0.5, -1.5, 2.5, -2, 3, 1.5]);
     if (a === c || (big && (Math.abs(a) < 2 || Math.abs(c) < 2))) continue;

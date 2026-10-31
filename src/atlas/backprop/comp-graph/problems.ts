@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { clean, n, par, traps } from '../kit';
+import { clean, int, num, par, pick, round, traps } from '../../kit';
+import { n } from '../kit';
 
 type Op = 'add' | 'mul' | 'max' | 'sq' | 'exp';
 /** One operation node: its name and its arguments, each an input, an earlier node or a constant. */

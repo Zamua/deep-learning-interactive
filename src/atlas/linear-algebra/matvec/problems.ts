@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, ints, pick, vec } from '../../kit';
-import { dot, mat, matrix, ORD, prodTex, shapeTex, sumTex } from '../kit';
+import { dot, int, ints, mat, ORD, pick, shp, terms, vec } from '../../kit';
+import { matrix, prodTex } from '../kit';
 
 const ROWS = [10, 100, 1000];
 const COLS = [48, 784, 3072, 12288];
@@ -48,7 +48,7 @@ export const generators: Generator[] = [
         traps: traps.filter((t) => t.value !== v),
         solution: [
           `Entry ${i} is row ${i} of $\\symW$, $${vec(W[i]!)}$, dotted with $\\symx$.`,
-          `Multiply matching entries and add: $${prodTex(W[i]!, x)} = ${sumTex(W[i]!.map((a, k) => a * x[k]!))} = ${v}$.`,
+          `Multiply matching entries and add: $${prodTex(W[i]!, x)} = ${terms(W[i]!.map((a, k) => a * x[k]!))} = ${v}$.`,
         ],
       };
     },
@@ -68,7 +68,7 @@ export const generators: Generator[] = [
       }
       if (rng.int(2) === 0) {
         return {
-          prompt: `$\\symW$ has shape $${shapeTex([m, n])}$ and $\\symx$ has ${n} entries. How many entries does $\\symW\\symx$ have?`,
+          prompt: `$\\symW$ has shape $${shp([m, n])}$ and $\\symx$ has ${n} entries. How many entries does $\\symW\\symx$ have?`,
           answer: { kind: 'number', value: m },
           traps: [
             { value: n, why: `That is the length of $\\symx$, which matches the columns. The result has one entry per row of $\\symW$.` },
@@ -78,7 +78,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `$\\symW$ has shape $${shapeTex([m, n])}$. How many entries must $\\symx$ have for $\\symW\\symx$ to be defined?`,
+        prompt: `$\\symW$ has shape $${shp([m, n])}$. How many entries must $\\symx$ have for $\\symW\\symx$ to be defined?`,
         answer: { kind: 'number', value: n },
         traps: [{ value: m, why: `That is the number of rows, the length of the result. Each row is dotted with $\\symx$, so $\\symx$ must be as long as a row.` }],
         solution: [`Each row of $\\symW$ is dotted with $\\symx$, and a dot product needs two vectors of the same length.`, `A row has one entry per column: ${n}. So $\\symx$ needs ${n} entries.`],
@@ -93,7 +93,7 @@ export const generators: Generator[] = [
       if (n >= m) n++;
       if (rng.int(2) === 0) {
         return {
-          prompt: `$\\symW$ has shape $${shapeTex([m, n])}$. Which vector can it multiply, as $\\symW\\symx$?`,
+          prompt: `$\\symW$ has shape $${shp([m, n])}$. Which vector can it multiply, as $\\symW\\symx$?`,
           answer: {
             kind: 'choice',
             options: [`An $\\symx$ with ${n} entries`, `An $\\symx$ with ${m} entries`, `An $\\symx$ with ${m * n} entries`],
@@ -104,12 +104,12 @@ export const generators: Generator[] = [
               `$\\symx$ needs one entry per column, not one per number in $\\symW$: every row is dotted with the same $\\symx$.`,
             ],
           },
-          solution: [`Shape $${shapeTex([m, n])}$: ${m} rows of ${n} entries each.`, `Each row is dotted with $\\symx$, so $\\symx$ needs ${n} entries; the result has ${m}.`],
+          solution: [`Shape $${shp([m, n])}$: ${m} rows of ${n} entries each.`, `Each row is dotted with $\\symx$, so $\\symx$ needs ${n} entries; the result has ${m}.`],
         };
       }
       const i = rng.int(Math.min(m, n));
       return {
-        prompt: `$\\symW$ has shape $${shapeTex([m, n])}$ and $\\symx$ has ${n} entries. What is entry ${i} of $\\symW\\symx$?`,
+        prompt: `$\\symW$ has shape $${shp([m, n])}$ and $\\symx$ has ${n} entries. What is entry ${i} of $\\symW\\symx$?`,
         answer: {
           kind: 'choice',
           options: [`Row ${i} of $\\symW$ dotted with $\\symx$`, `Column ${i} of $\\symW$ dotted with $\\symx$`, `Row ${i} of $\\symW$ times $\\symx[${i}]$`],

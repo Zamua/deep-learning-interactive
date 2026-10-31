@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, pick } from '../../kit';
-import { shuffled, traps } from '../kit';
+import { int, pick, shuffled, traps } from '../../kit';
 
 interface Layer {
   F: number;

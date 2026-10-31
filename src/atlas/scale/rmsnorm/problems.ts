@@ -1,7 +1,8 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { num, pick, round, vec } from '../../kit';
-import { D, big, clean, traps, vtraps, whys } from '../modern-kit';
+import { big, clean, num, pick, round, traps, vec, vtraps } from '../../kit';
+import { whys } from '../../training/kit';
+import { D } from '../modern-kit';
 
 /** Every arrangement and sign pattern of `base`. */
 function variants(base: number[]): number[][] {

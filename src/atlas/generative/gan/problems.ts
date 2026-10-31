@@ -1,6 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick, round } from '../../kit';
-import { LN2, clean, shuffled, traps } from '../kit';
+import { clean, LN2, num, pick, round, shuffled, traps } from '../../kit';
 
 const DX = (v: string) => `D(${v})`;
 const lnList = (ps: number[]) =>

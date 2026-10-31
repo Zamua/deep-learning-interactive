@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick, vec } from '../../kit';
-import { distinct, mat, matrix, ORD, shapeTex } from '../kit';
+import { int, mat, ORD, pick, shp, vec } from '../../kit';
+import { distinct, matrix } from '../kit';
 
 /** Rows and columns that differ, so swapping them is a visible mistake. */
 function dims(rng: Parameters<Generator['make']>[0], lo: number, hi: number): [number, number] {
@@ -32,8 +32,8 @@ export const generators: Generator[] = [
             prompt: `$$\\symW = ${mat(W)}$$\n\nWhat is the shape of $\\symW^{\\top}$?`,
             answer: { kind: 'shape', value: [n, m] },
             solution: [
-              `$\\symW$ has ${m} row${m > 1 ? 's' : ''} and ${n} column${n > 1 ? 's' : ''}: shape $${shapeTex([m, n])}$.`,
-              `Transposing turns rows into columns, so $\\symW^{\\top}$ has shape $${shapeTex([n, m])}$.`,
+              `$\\symW$ has ${m} row${m > 1 ? 's' : ''} and ${n} column${n > 1 ? 's' : ''}: shape $${shp([m, n])}$.`,
+              `Transposing turns rows into columns, so $\\symW^{\\top}$ has shape $${shp([n, m])}$.`,
             ],
           };
         }
@@ -43,7 +43,7 @@ export const generators: Generator[] = [
           solution: [
             `Rows run across: count them top to bottom. There ${m > 1 ? `are ${m}` : 'is 1'}.`,
             `Columns run down: count them left to right. There ${n > 1 ? `are ${n}` : 'is 1'}.`,
-            `Rows first: the shape is $${shapeTex([m, n])}$.`,
+            `Rows first: the shape is $${shp([m, n])}$.`,
           ],
         };
       }
@@ -52,15 +52,15 @@ export const generators: Generator[] = [
         return {
           prompt: `$\\symW$ stacks ${m} row vectors, each with ${n} entries. What is its shape?`,
           answer: { kind: 'shape', value: [m, n] },
-          solution: [`Each vector is one row, so there are ${m} rows.`, `Each row has ${n} entries, one per column: the shape is $${shapeTex([m, n])}$.`],
+          solution: [`Each vector is one row, so there are ${m} rows.`, `Each row has ${n} entries, one per column: the shape is $${shp([m, n])}$.`],
         };
       }
       if (d < 0.7) {
         const [m, n] = dims(rng, 2, 12);
         return {
-          prompt: `$\\symW$ has shape $${shapeTex([m, n])}$. What is the shape of $\\symW^{\\top}$?`,
+          prompt: `$\\symW$ has shape $${shp([m, n])}$. What is the shape of $\\symW^{\\top}$?`,
           answer: { kind: 'shape', value: [n, m] },
-          solution: [`Transposing turns each row into a column.`, `The ${m} rows become ${m} columns, and the ${n} columns become ${n} rows: $${shapeTex([n, m])}$.`],
+          solution: [`Transposing turns each row into a column.`, `The ${m} rows become ${m} columns, and the ${n} columns become ${n} rows: $${shp([n, m])}$.`],
         };
       }
       const C = pick(rng, ROWS);
@@ -68,7 +68,7 @@ export const generators: Generator[] = [
       return {
         prompt: `$\\symW$ stacks ${C} flattened images, one per row, and each image is ${what}. What is the shape of $\\symW$?`,
         answer: { kind: 'shape', value: [C, D] },
-        solution: [`One row per image: ${C} rows.`, `One column per number in an image: ${D} columns.`, `Rows first: $${shapeTex([C, D])}$.`],
+        solution: [`One row per image: ${C} rows.`, `One column per number in an image: ${D} columns.`, `Rows first: $${shp([C, D])}$.`],
       };
     },
   },
@@ -107,7 +107,7 @@ export const generators: Generator[] = [
         };
       }
       return {
-        prompt: `A matrix has shape $${shapeTex([m, n])}$. How many numbers does it hold?`,
+        prompt: `A matrix has shape $${shp([m, n])}$. How many numbers does it hold?`,
         answer: { kind: 'number', value: m * n },
         traps: [{ value: m + n, why: 'That adds the rows and columns. There is one number for every row and column pair, so multiply.' }],
         solution: [`${m} rows, each holding ${n} numbers.`, `$${m} \\times ${n} = ${m * n}$ numbers.`],
@@ -123,7 +123,7 @@ export const generators: Generator[] = [
       const i = wide ? int(rng, 0, m - 1) : int(rng, n, m - 1);
       const j = wide ? int(rng, m, n - 1) : int(rng, 0, n - 1);
       return {
-        prompt: `$\\symW$ has shape $${shapeTex([m, n])}$. Which of these is an entry of $\\symW$?`,
+        prompt: `$\\symW$ has shape $${shp([m, n])}$. Which of these is an entry of $\\symW$?`,
         answer: {
           kind: 'choice',
           options: [`$\\symW[${i}, ${j}]$`, `$\\symW[${j}, ${i}]$`, `$\\symW[${m}, ${n}]$`],
@@ -137,7 +137,7 @@ export const generators: Generator[] = [
           ],
         },
         solution: [
-          `Shape $${shapeTex([m, n])}$ means ${m} rows, indexed 0 to ${m - 1}, and ${n} columns, indexed 0 to ${n - 1}.`,
+          `Shape $${shp([m, n])}$ means ${m} rows, indexed 0 to ${m - 1}, and ${n} columns, indexed 0 to ${n - 1}.`,
           `$\\symW[${i}, ${j}]$ is row ${i}, column ${j}: both in range.`,
         ],
       };

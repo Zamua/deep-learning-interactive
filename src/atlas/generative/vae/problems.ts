@@ -1,6 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round, vec } from '../../kit';
-import { big, clean, par, shuffled, tenth, traps, vtraps } from '../kit';
+import { big, clean, int, num, par, pick, round, shuffled, tenth, traps, vec, vtraps } from '../../kit';
 
 const MU = '\\sym{mu}{\\mu}';
 const SIG = '\\sym{sigma}{\\sigma}';

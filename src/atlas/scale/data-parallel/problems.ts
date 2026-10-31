@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, ints, num, pick } from '../../kit';
-import { G, big, clean, commas, traps, vtraps, words } from '../kit';
+import { big, clean, commas, int, ints, num, pick, traps, vtraps } from '../../kit';
+import { G, words } from '../kit';
 
 const vecTex = (xs: readonly number[]) => `[${xs.map((x) => num(clean(x))).join(',\\ ')}]`;
 

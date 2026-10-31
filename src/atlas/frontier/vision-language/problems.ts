@@ -1,7 +1,6 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { pick } from '../../kit';
-import { big, bigText, shuffled, traps } from '../../generative/kit';
+import { big, commas, pick, shuffled, traps } from '../../kit';
 
 interface Img {
   h: number;
@@ -76,7 +75,7 @@ export const generators: Generator[] = [
       const first = dv * dm + dm;
       const v = mlp ? first + dm * dm + dm : first;
       const how = mlp
-        ? `The projection is a two-layer MLP: a map from ${bigText(dv)} to ${bigText(dm)} numbers, an activation, then a map from ${bigText(dm)} to ${bigText(dm)}, each map with a bias.`
+        ? `The projection is a two-layer MLP: a map from ${commas(dv)} to ${commas(dm)} numbers, an activation, then a map from ${commas(dm)} to ${commas(dm)}, each map with a bias.`
         : 'A linear projection, a weight matrix and a bias, maps each patch vector to the model\'s width.';
       const ts = [
         { value: mlp ? dv * dm + dm * dm : dv * dm, why: 'That counts the weights only. Every output number also has a bias.' },
@@ -90,13 +89,13 @@ export const generators: Generator[] = [
         traps: traps(v, ts),
         solution: mlp
           ? [
-              `First map: ${bigText(dv)} inputs times ${bigText(dm)} outputs, plus ${bigText(dm)} biases: $${big(dv)} \\times ${big(dm)} + ${big(dm)} = ${big(first)}$.`,
+              `First map: ${commas(dv)} inputs times ${commas(dm)} outputs, plus ${commas(dm)} biases: $${big(dv)} \\times ${big(dm)} + ${big(dm)} = ${big(first)}$.`,
               `Second map: $${big(dm)} \\times ${big(dm)} + ${big(dm)} = ${big(dm * dm + dm)}$.`,
               `Add them: $${big(first)} + ${big(dm * dm + dm)} = ${big(v)}$. The ${N} patches all share these.`,
             ]
           : [
-              `The weight matrix maps ${bigText(dv)} inputs to ${bigText(dm)} outputs: $${big(dv)} \\times ${big(dm)} = ${big(dv * dm)}$ weights.`,
-              `One bias per output: ${bigText(dm)} more, so $${big(dv * dm)} + ${big(dm)} = ${big(v)}$.`,
+              `The weight matrix maps ${commas(dv)} inputs to ${commas(dm)} outputs: $${big(dv)} \\times ${big(dm)} = ${big(dv * dm)}$ weights.`,
+              `One bias per output: ${commas(dm)} more, so $${big(dv * dm)} + ${big(dm)} = ${big(v)}$.`,
               `The ${N} patches all share this one projection, so the count does not depend on them.`,
             ],
       };
@@ -135,7 +134,7 @@ export const generators: Generator[] = [
       const dm = pick(rng, [2048, 4096, 5120]);
       const dv = pick(rng, [768, 1024]);
       const two = d >= 0.35 && rng.int(2) === 0;
-      const intro = `A vision-language model joins a trained vision transformer (patch vectors of ${bigText(dv)} numbers) to a trained language model (width ${bigText(dm)}) through a projection.`;
+      const intro = `A vision-language model joins a trained vision transformer (patch vectors of ${commas(dv)} numbers) to a trained language model (width ${commas(dm)}) through a projection.`;
       if (!two) {
         const cap = pick(rng, ['a dog catching a frisbee on a beach', 'two cups of coffee on a wooden table', 'a red bus on a rainy street', 'a cat asleep on a stack of books', 'snow on a mountain at sunrise', 'a child flying a kite in a park']);
         return {

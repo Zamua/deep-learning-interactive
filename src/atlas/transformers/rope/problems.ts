@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { clean, dot, DK, k, q, traps, vecT } from '../kit';
+import { clean, dot, int, num, pick, traps } from '../../kit';
+import { DK, k, q, vecT } from '../kit';
 import { cs, deg, pair, rot, times, TRIG } from '../rotation/trig';
 
 const TH = '\\sym{theta}{\\theta}';

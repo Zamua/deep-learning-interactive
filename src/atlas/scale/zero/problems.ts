@@ -1,7 +1,8 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick } from '../../kit';
-import { G, N, clean, traps, whys, words } from '../kit';
+import { clean, num, pick, traps } from '../../kit';
+import { whys } from '../../training/kit';
+import { G, N, words } from '../kit';
 
 const M = '\\sym{m}{m}';
 const V = '\\sym{v}{v}';

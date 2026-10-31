@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick } from '../../kit';
-import { cleanTraps, dPoly, evalPoly, paren, polyExpr, polyTex, type Term } from '../kit';
+import { int, num, pick, traps } from '../../kit';
+import { dPoly, evalPoly, paren, polyExpr, polyTex, type Term } from '../kit';
 
 /** A polynomial whose terms have distinct powers, highest first, ending in a constant. */
 function poly(rng: Rng, d: number, top = d < 0.65 ? 4 : 5, constant = d >= 0.3): Term[] {
@@ -45,7 +45,7 @@ export const generators: Generator[] = [
       const v = evalPoly(dts, x);
       const c0 = ts.find((t) => t.n === 0)?.c ?? 0;
       const noLower = ts.reduce((a, t) => a + (t.n > 0 ? t.c * t.n * x ** t.n : 0), 0);
-      const traps = [
+      const cands = [
         { value: noLower, why: `That multiplies by the power but keeps it: $n\\symx^{n}$ instead of $n\\symx^{n-1}$. The power drops by one.` },
         { value: v + c0, why: `That keeps the constant ${c0}. A constant is flat, so its derivative is 0.` },
         { value: evalPoly(ts, x), why: `That is $\\symf(${x})$, the value of the function. The question asks for its slope.` },
@@ -53,7 +53,7 @@ export const generators: Generator[] = [
       return {
         prompt: `$\\symf(\\symx) = ${polyTex(ts)}$. What is $\\symf'(${x})$?`,
         answer: { kind: 'number', value: v },
-        traps: cleanTraps(traps, v),
+        traps: traps(v, cands),
         solution: [
           ...ts.map(termStep),
           `So $\\symf'(\\symx) = ${polyTex(dts)}$.`,

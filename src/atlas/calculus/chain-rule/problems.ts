@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { cleanTraps, paren, polyExpr, polyTex } from '../kit';
+import { int, num, pick, round, traps } from '../../kit';
+import { paren, polyExpr, polyTex } from '../kit';
 
 const D = (top: string, bot: string) => `\\frac{d${top}}{d${bot}}`;
 const DZDX = D('z', '\\symx');
@@ -84,10 +84,10 @@ export const generators: Generator[] = [
         return {
           prompt: `${ask(`e^{${pw}}`, x0)} Use $${eC} \\approx ${E}$.`,
           answer: { kind: 'number', value: want, places: 2 },
-          traps: cleanTraps([
+          traps: traps(want, [
             { value: E, ...noInside },
             { value: k * x0, why: `That is the inside's slope alone. It still has to be multiplied by the outside's slope, $e^{u}$ at $u = ${c}$.` },
-          ], want),
+          ]),
           solution: steps(pw, 'e^{u}', kx, 'e^{u}', `e^{u} \\cdot ${k < 0 ? `(${kx})` : kx}`, `${kx}\\, e^{${pw}}`, `At $\\symx = ${x0}$, the inside is $${c}$: $${k} \\cdot ${paren(x0)} \\cdot ${eC} \\approx ${k * x0} \\times ${E} = ${num(want)}$.`),
         };
       }
@@ -102,7 +102,7 @@ export const generators: Generator[] = [
           return {
             prompt: ask(`\\ln(${ins})`, x0),
             answer: { kind: 'number', value: want },
-            traps: cleanTraps([{ value: 1 / u0, ...noInside }, { value: a / x0, ...xForU }], want),
+            traps: traps(want, [{ value: 1 / u0, ...noInside }, { value: a / x0, ...xForU }]),
             solution: steps(ins, '\\ln u', String(a), '\\dfrac{1}{u}', `\\dfrac{1}{u} \\cdot ${paren(a)} = \\dfrac{${a}}{u}`, `\\dfrac{${a}}{${ins}}`, `At $\\symx = ${x0}$, the inside is $${u0}$: $\\dfrac{${a}}{${u0}} = ${num(want)}$.`),
           };
         }
@@ -113,11 +113,11 @@ export const generators: Generator[] = [
         return {
           prompt: ask(`\\ln(${ins})`, x0),
           answer: { kind: 'number', value: want },
-          traps: cleanTraps([
+          traps: traps(want, [
             { value: 1 / u0, ...noInside },
             { value: 2 / u0, why: `The inside's slope is $2\\symx$, which is $${2 * x0}$ at $\\symx = ${x0}$, not 2.` },
             { value: 2 / x0, ...xForU },
-          ], want),
+          ]),
           solution: steps(ins, '\\ln u', '2\\symx', '\\dfrac{1}{u}', '\\dfrac{1}{u} \\cdot 2\\symx = \\dfrac{2\\symx}{u}', `\\dfrac{2\\symx}{${ins}}`, `At $\\symx = ${x0}$, the inside is $${u0}$: $\\dfrac{${2 * x0}}{${u0}} = ${num(want)}$.`),
         };
       }
@@ -134,7 +134,7 @@ export const generators: Generator[] = [
         return {
           prompt: ask(`(${ins})^{${n}}`, x0),
           answer: { kind: 'number', value: want },
-          traps: cleanTraps([{ value: outer, ...noInside }, { value: n * x0 ** (n - 1) * a, ...xForU }], want),
+          traps: traps(want, [{ value: outer, ...noInside }, { value: n * x0 ** (n - 1) * a, ...xForU }]),
           solution: steps(ins, `u^{${n}}`, String(a), `${n}${uPow}`, `${n}${uPow} \\cdot ${paren(a)} = ${n * a}${uPow}`, `${n * a}${pow(`(${ins})`, n - 1)}`, `At $\\symx = ${x0}$, the inside is $${u0}$: $${n * a} \\cdot ${pow(paren(u0), n - 1)} = ${want}$.`),
         };
       }
@@ -149,11 +149,11 @@ export const generators: Generator[] = [
       return {
         prompt: ask(`(${ins})^{${n}}`, x0),
         answer: { kind: 'number', value: want },
-        traps: cleanTraps([
+        traps: traps(want, [
           { value: outer, ...noInside },
           { value: outer * 2, why: `The inside's slope is $2\\symx$, which is $${2 * x0}$ at $\\symx = ${x0}$, not 2.` },
           { value: n * x0 ** (n - 1) * 2 * x0, ...xForU },
-        ], want),
+        ]),
         solution: steps(ins, `u^{${n}}`, '2\\symx', `${n}${uPow}`, `${n}${uPow} \\cdot 2\\symx = ${2 * n}\\symx\\, ${uPow}`, `${2 * n}\\symx${pow(`(${ins})`, n - 1)}`, `At $\\symx = ${x0}$, the inside is $${u0}$: $${2 * n} \\cdot ${paren(x0)} \\cdot ${pow(String(u0), n - 1)} = ${want}$.`),
       };
     },

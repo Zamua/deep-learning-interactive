@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { big, bigText, clean, DV, traps, vecT, vtraps } from '../kit';
+import { big, clean, commas, int, num, pick, round, traps, vtraps } from '../../kit';
+import { DV, vecT } from '../kit';
 
 const M = '\\sym{m}{m}';
 const L = '\\sym{l}{\\ell}';
@@ -187,7 +187,7 @@ export const generators: Generator[] = [
             correct: 0,
             why: [
               null,
-              `That is the row of ${bigText(t)} scores, and over every query, the $${T} \\times ${T}$ matrix it is built never to store.`,
+              `That is the row of ${commas(t)} scores, and over every query, the $${T} \\times ${T}$ matrix it is built never to store.`,
               'Without a running max there is nothing to subtract, so large scores overflow; and the output has to be built as it goes too.',
               `Each weight needs the final sum $${L}$, known only after the last tile, so $${L}$ and $${M}$ must be carried along.`,
             ],
@@ -203,7 +203,7 @@ export const generators: Generator[] = [
           prompt: `A head reads $${T} = ${big(t)}$ tokens with values of $${DV} = ${dv}$ numbers. While FlashAttention runs, how much does it keep for each query row?`,
           answer: {
             kind: 'choice',
-            options: [`A max, a sum and an output of ${dv} numbers, however long the input`, `All ${bigText(t)} scores of the row`, `A matrix of ${bigText(t)} by ${bigText(t)} scores`, 'A max and a sum: 2 numbers'],
+            options: [`A max, a sum and an output of ${dv} numbers, however long the input`, `All ${commas(t)} scores of the row`, `A matrix of ${commas(t)} by ${commas(t)} scores`, 'A max and a sum: 2 numbers'],
             correct: 0,
             why: [
               null,

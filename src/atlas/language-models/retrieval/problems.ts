@@ -1,7 +1,6 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { commas, traps } from '../kit';
+import { commas, int, num, pick, traps } from '../../kit';
 
 /** Vectors of size 1 with one-decimal entries, so every dot product is quick by hand. */
 const signs = (v: number[]): number[][] => {

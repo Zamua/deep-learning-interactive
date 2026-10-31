@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { clean, minus, nonzero, paren, tenth, traps, whys } from '../kit';
+import { clean, int, minus, nonzero, num, par, pick, tenth, traps } from '../../kit';
+import { whys } from '../kit';
 
 const RULE = '$\\symv \\leftarrow \\mu\\symv - \\symeta\\symg$, then $\\symw \\leftarrow \\symw + \\symv$';
 const plus = (a: number, b: number) => `${num(clean(a))} ${b < 0 ? '-' : '+'} ${num(clean(Math.abs(b)))}`;
@@ -30,7 +30,7 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `The update: ${RULE}.`,
-          `New velocity: $\\symv = \\mu\\symv - \\symeta\\symg = ${num(mu)} \\times ${paren(v0)} - ${num(eta)} \\times ${paren(g)} = ${minus(clean(mu * v0), clean(eta * g))} = ${num(v1)}$.`,
+          `New velocity: $\\symv = \\mu\\symv - \\symeta\\symg = ${num(mu)} \\times ${par(v0)} - ${num(eta)} \\times ${par(g)} = ${minus(clean(mu * v0), clean(eta * g))} = ${num(v1)}$.`,
           ...(askV ? [] : [`Move by it: $\\symw = ${plus(w, v1)} = ${num(w1)}$.`]),
           v0 === 0 ? 'From rest the first momentum step is the same as a plain gradient step.' : `The old velocity carried $${num(clean(mu * v0))}$ into this step on top of the new push $${num(clean(-eta * g))}$.`,
         ],
@@ -66,8 +66,8 @@ export const generators: Generator[] = [
             ]),
         solution: [
           `The update: ${RULE}.`,
-          `Step 1: $\\symv = -${num(eta)} \\times ${paren(g1)} = ${num(v1)}$, so $\\symw = ${plus(w0, v1)} = ${num(w1)}$.`,
-          `Step 2: $\\symv = ${num(mu)} \\times ${paren(v1)} - ${num(eta)} \\times ${paren(g2)} = ${num(v2)}$${askV ? '.' : `, so $\\symw = ${plus(w1, v2)} = ${num(w2)}$.`}`,
+          `Step 1: $\\symv = -${num(eta)} \\times ${par(g1)} = ${num(v1)}$, so $\\symw = ${plus(w0, v1)} = ${num(w1)}$.`,
+          `Step 2: $\\symv = ${num(mu)} \\times ${par(v1)} - ${num(eta)} \\times ${par(g2)} = ${num(v2)}$${askV ? '.' : `, so $\\symw = ${plus(w1, v2)} = ${num(w2)}$.`}`,
           `A plain gradient step would have moved $${num(clean(-eta * g2))}$ at step 2; momentum adds $${num(clean(mu * v1))}$ carried from step 1.`,
         ],
       };
@@ -146,7 +146,7 @@ export const generators: Generator[] = [
         solution: [
           'The velocity stops changing when a step gives back the same $\\symv$: $\\symv = \\mu\\symv - \\symeta\\symg$.',
           'Take $\\mu\\symv$ from both sides: $(1 - \\mu)\\symv = -\\symeta\\symg$, so $\\symv = -\\symeta\\symg / (1 - \\mu)$.',
-          `The plain step: $-\\symeta\\symg = -${num(eta)} \\times ${paren(g)} = ${num(clean(-eta * g))}$.`,
+          `The plain step: $-\\symeta\\symg = -${num(eta)} \\times ${par(g)} = ${num(clean(-eta * g))}$.`,
           `Divide by $1 - \\mu = ${num(clean(1 - mu))}$: $${num(clean(-eta * g))} / ${num(clean(1 - mu))} = ${num(v)}$.`,
           `That is $${num(factor)}$ times a plain step.`,
         ],

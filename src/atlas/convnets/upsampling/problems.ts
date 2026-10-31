@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, ints, num, pick, vec } from '../../kit';
-import { atraps, outSize, shp, shuffled, traps } from '../kit';
+import { int, ints, num, pick, shp, shuffled, traps, vec, vtraps } from '../../kit';
+import { outSize } from '../kit';
 
 /** Output width of a transposed convolution: S(W - 1) + F - 2P. */
 const upSize = (W: number, F: number, S: number, P: number): number => S * (W - 1) + F - 2 * P;
@@ -69,7 +69,7 @@ export const generators: Generator[] = [
       return {
         prompt: `A transposed convolution has filter $\\symw = ${vec(w)}$, stride $\\symS = ${S}$ and no padding. What does it output for the input $\\symx = ${vec(x)}$?`,
         answer: { kind: 'vector', value: v },
-        traps: atraps(v, [
+        traps: vtraps(v, [
           { value: stamp(x, w, S, (_, nv) => nv), why: 'That lets a later stamp replace an earlier one. Where stamps overlap, they add.' },
           { value: stamp(x, w, other), why: `That spaces the stamps ${other} apart. Each stamp starts $\\symS = ${S}$ after the one before.` },
           { value: stamp(x.map(() => 1), w, S), why: 'That stamps the filter as it is. Each stamp is the filter times its input value.' },
@@ -127,7 +127,7 @@ export const generators: Generator[] = [
           (mid ? ` Its convolutions shrink an image to $${shp([deep, H / f, Wd / f])}$, then transposed convolutions grow it back.` : '') +
           ' What is the shape of its output scores?',
         answer: { kind: 'shape', value: v },
-        traps: atraps(v, [
+        traps: vtraps(v, [
           { value: [C], why: 'That is one score per class for the whole image, as a classifier gives. Segmentation scores every pixel.' },
           { value: [3, H, Wd], why: 'That is the input\'s shape. The output has one channel per class, not one per color.' },
           { value: [H, Wd], why: 'That is the label map, one class per pixel. The scores have one channel per class.' },

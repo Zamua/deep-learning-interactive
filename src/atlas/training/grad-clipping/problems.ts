@@ -1,8 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round, vec } from '../../kit';
-import { vtraps } from '../../backprop/kit';
-import { clean, minus, traps, whys } from '../kit';
+import { clean, int, minus, num, pick, round, traps, vec, vtraps } from '../../kit';
+import { whys } from '../kit';
 
 const C = '\\sym{c}{c}';
 const NORM = '\\lVert\\symg\\rVert';

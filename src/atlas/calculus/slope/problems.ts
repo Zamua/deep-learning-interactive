@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { cleanTraps, paren, polyTex, type Term } from '../kit';
+import { int, num, pick, round, traps } from '../../kit';
+import { paren, polyTex, type Term } from '../kit';
 
 /** Exact to 4 decimals, so sums of short decimals compare cleanly. */
 const r4 = (x: number) => round(x, 4);
@@ -21,7 +21,7 @@ export const generators: Generator[] = [
       const f1 = f(x1);
       const rise = r4(f1 - f0);
       const v = r4(rise / h);
-      const traps = [
+      const cands = [
         { value: rise, why: `That is the rise, $${num(rise)}$. The slope divides it by the run, $${num(h)}$.` },
         { value: r4(h / rise), why: 'That is run over rise. The slope is rise over run.' },
         { value: -v, why: `That subtracts the wrong way round. The rise is the later value minus the earlier one: $${num(f1)} - ${paren(num(f0))}$.` },
@@ -29,7 +29,7 @@ export const generators: Generator[] = [
       return {
         prompt: `$\\symf(\\symx) = ${polyTex(ts)}$ has $\\symf(${num(x)}) = ${num(f0)}$ and $\\symf(${num(x1)}) = ${num(f1)}$. What is the slope between these two points?`,
         answer: { kind: 'number', value: v, places: 2 },
-        traps: rise === 0 ? [] : cleanTraps(traps, v, 2),
+        traps: rise === 0 ? [] : traps(v, cands, 2),
         solution: [
           `The run is the step in $\\symx$: $h = ${num(x1)} - ${paren(num(x))} = ${num(h)}$.`,
           `The rise is the later value minus the earlier one: $\\symf(${num(x1)}) - \\symf(${num(x)}) = ${num(f1)} - ${paren(num(f0))} = ${num(rise)}$.`,
@@ -60,14 +60,14 @@ export const generators: Generator[] = [
       }
       const at = form === 'point' ? int(rng, -3, 5) : null;
       const fAt = at === null ? 0 : slope * at + constant;
-      const traps = [{ value: constant, why: `That is the constant term: where the line crosses the vertical axis. It moves the line up or down without tilting it.` }];
-      if (at !== null) traps.push({ value: fAt, why: `That is $\\symf(${at})$, the height of the line there, not its slope.` });
+      const cands = [{ value: constant, why: `That is the constant term: where the line crosses the vertical axis. It moves the line up or down without tilting it.` }];
+      if (at !== null) cands.push({ value: fAt, why: `That is $\\symf(${at})$, the height of the line there, not its slope.` });
       return {
         prompt: at === null
           ? `For $\\symf(\\symx) = ${tex}$, what is $\\symf'(\\symx)$?`
           : `For $\\symf(\\symx) = ${tex}$, what is $\\symf'(${at})$?`,
         answer: { kind: 'number', value: slope },
-        traps: cleanTraps(traps, slope),
+        traps: traps(slope, cands),
         solution: [
           form === 'factor' ? `Multiply out: $\\symf(\\symx) = ${polyTex([{ c: slope, n: 1 }, { c: constant, n: 0 }])}$.` : form === 'half' ? `Split the fraction: $\\symf(\\symx) = ${num(slope)}\\symx ${constant < 0 ? '-' : '+'} ${num(Math.abs(constant))}$.` : `A straight line rises by the same amount for every step of 1 in $\\symx$.`,
           `The number multiplying $\\symx$ is that rise per step: the slope is $${num(slope)}$${at === null ? '' : ` everywhere, so $\\symf'(${at}) = ${num(slope)}$`}.`,

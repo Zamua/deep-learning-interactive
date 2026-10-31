@@ -1,7 +1,6 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, ints, num, pick, round, vec } from '../../kit';
-import { argmaxOf, par } from '../kit';
+import { argmax, int, ints, num, par, pick, round, vec } from '../../kit';
 
 const LN = (x: number) => round(Math.log(x), 2);
 const E = (x: number) => round(Math.exp(x), 2);
@@ -33,7 +32,7 @@ export const generators: Generator[] = [
       const p = probs(rng, n, d < 0.5 ? 10 : 20);
       const y = rng.int(n);
       const v = -LN(p[y]!);
-      const top = argmaxOf(p);
+      const top = argmax(p);
       const traps = [
         { value: LN(p[y]!), why: `That is $\\ln \\symp_{${y}}$ itself. The loss has a minus sign in front, so it is never negative.` },
         { value: p[y]!, why: 'That is the probability itself. The loss is minus its log.' },
@@ -61,7 +60,7 @@ export const generators: Generator[] = [
       const T = round(e.reduce((a, b) => a + b, 0), 2);
       const lnT = LN(T);
       const v = round(lnT - s[y]!, 2);
-      const top = argmaxOf(s);
+      const top = argmax(s);
       const distinct = [...new Set(s)].sort((a, b) => b - a);
       const traps = [
         { value: round(s[y]! - lnT, 2), why: 'That has the sign flipped. The loss is $\\ln T - \\syms_{\\symy}$, never negative.' },

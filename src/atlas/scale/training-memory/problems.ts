@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick, round } from '../../kit';
-import { N, big, clean, traps, words } from '../kit';
+import { big, clean, num, pick, round, traps } from '../../kit';
+import { N, words } from '../kit';
 
 /** Model sizes in billions, larger and less round with difficulty. */
 const size = (rng: Rng, d: number): number =>

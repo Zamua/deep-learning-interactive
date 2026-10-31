@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { cleanTraps, paren } from '../kit';
+import { int, num, pick, round, traps } from '../../kit';
+import { paren } from '../kit';
 
 export const generators: Generator[] = [
   {
@@ -66,18 +66,18 @@ export const generators: Generator[] = [
       const f0 = int(rng, -5, 20);
       const v = askValue ? (f0 * 100 + k * step) / 100 : change;
       const x1 = (x * 100 + step) / 100;
-      const traps = [
+      const cands = [
         { value: k, why: `That is the slope itself: the change per whole unit of $\\symx$. The nudge is only $${num(dx)}$ of a unit.` },
         { value: (k * step) / 10, why: `That is ten times too big: $${k} \\times ${paren(num(dx))} = ${num(change)}$.` },
       ];
-      if (askValue) traps.push({ value: change, why: `That is the change. Add it to $\\symf(${x}) = ${f0}$ for the new value.` });
-      if (step < 0 && !askValue) traps.push({ value: -v, why: 'The nudge goes to the left, so the change has the opposite sign to the slope.' });
+      if (askValue) cands.push({ value: change, why: `That is the change. Add it to $\\symf(${x}) = ${f0}$ for the new value.` });
+      if (step < 0 && !askValue) cands.push({ value: -v, why: 'The nudge goes to the left, so the change has the opposite sign to the slope.' });
       return {
         prompt: askValue
           ? `$\\symf(${x}) = ${f0}$ and $\\symf'(${x}) = ${k}$. About what is $\\symf(${num(x1)})$?`
           : `$\\symf'(${x}) = ${k}$. About how much does $\\symf$ change when $\\symx$ goes from $${x}$ to $${num(x1)}$?`,
         answer: { kind: 'number', value: v },
-        traps: cleanTraps(traps, v),
+        traps: traps(v, cands),
         solution: [
           `The nudge is $\\Delta \\symx = ${num(x1)} - ${paren(x)} = ${num(dx)}$.`,
           `Near $\\symx = ${x}$, $\\symf$ changes about $\\symf'(${x})$ times as much: $${k} \\times ${paren(num(dx))} = ${num(change)}$.`,

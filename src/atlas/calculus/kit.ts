@@ -42,11 +42,3 @@ export const signed = (v: number | string): string => {
 
 /** `(-2)` for negatives, so products read clearly. */
 export const paren = (v: number | string): string => (String(v).startsWith('-') ? `(${v})` : String(v));
-
-/** Traps that are finite and that the grader can tell from the answer and from each other (first kept). */
-export function cleanTraps(traps: { value: number; why: string }[], answer: number, places = 6): { value: number; why: string }[] {
-  const near = (a: number, b: number) => Math.abs(a - b) <= 10 ** -places;
-  const kept: { value: number; why: string }[] = [];
-  for (const t of traps) if (Number.isFinite(t.value) && !near(t.value, answer) && !kept.some((k) => near(k.value, t.value))) kept.push(t);
-  return kept;
-}

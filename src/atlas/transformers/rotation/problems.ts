@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { clean, k, q, vecT, vtraps } from '../kit';
+import { clean, int, num, pick, vtraps } from '../../kit';
+import { k, q, vecT } from '../kit';
 import { cs, deg, pair, rot, times, TRIG } from './trig';
 
 /** Two nonzero entries of different sizes, so a swap or a sign flip always shows. */

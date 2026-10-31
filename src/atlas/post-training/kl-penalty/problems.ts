@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { BETA, choose, clean, LN, minus, PI, R, REF, sumTex, traps, useLn } from '../kit';
+import { clean, int, LN2, minus, num, pick, round, terms, traps, useLn } from '../../kit';
+import { BETA, choose, PI, R, REF } from '../kit';
 
 const WORDS = ['the', 'answer', 'is', 'seven', 'because', 'cats', 'sleep', 'all', 'day', 'great', 'question', 'sure', 'here', 'it', 'goes', 'yes'];
 const P = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 0.9];
@@ -35,7 +35,7 @@ export const generators: Generator[] = [
       if (d < 0.35) {
         const [p, q] = rng.shuffle(P.slice()).slice(0, 2) as [number, number];
         const tok = words(rng, 1)[0]!;
-        const v = clean(LN(p) - LN(q));
+        const v = clean(LN2(p) - LN2(q));
         return {
           prompt: `The token \`${tok}\` has $${PI} = ${num(p)}$ and $${REF} = ${num(q)}$. What is its log-ratio? Round to two decimals.\n\nUse ${useLn([p, q])}.`,
           answer: { kind: 'number', value: v, places: 2 },
@@ -50,7 +50,7 @@ export const generators: Generator[] = [
           ),
           solution: [
             `The log of a ratio is a difference of logs: $${KL} = \\ln ${num(p)} - \\ln ${num(q)}$.`,
-            `$${minus(LN(p), LN(q), 2)} = ${num(v, 2)}$.`,
+            `$${minus(LN2(p), LN2(q), 2)} = ${num(v, 2)}$.`,
             v > 0 ? 'Positive: the model now likes this token more than the reference did, so it is charged.' : 'Negative: the model now likes this token less than the reference did.',
           ],
         };
@@ -71,7 +71,7 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `Each token's log-ratio is $\\ln ${PI} - \\ln ${REF}$: ${lp.map(([a, b], i) => `$${minus(a, b)} = ${num(each[i]!)}$`).join(', ')}.`,
-          `Add them: $${sumTex(each)} = ${num(v)}$.`,
+          `Add them: $${terms(each)} = ${num(v)}$.`,
           v > 0 ? 'Positive: overall the model likes this answer more than the reference does, so it is charged.' : 'Negative for this sample: the model likes it less than the reference does. Averaged over many samples, the sum is never negative.',
         ],
       };
@@ -97,7 +97,7 @@ export const generators: Generator[] = [
           { value: clean(beta * (Rv - kl)), why: `That scales the reward by $${BETA}$ too. Only the penalty is multiplied by $${BETA}$.` },
         ]),
         solution: [
-          ...(per ? [`Sum the log-ratios over the answer: $${sumTex(each)} = ${num(kl)}$.`] : []),
+          ...(per ? [`Sum the log-ratios over the answer: $${terms(each)} = ${num(kl)}$.`] : []),
           `The penalty: $${BETA} \\times ${num(kl)} = ${num(clean(beta * kl))}$.`,
           `The penalized reward: $${R} - ${BETA}\\,${KL} = ${minus(Rv, clean(beta * kl))} = ${num(v)}$.`,
         ],

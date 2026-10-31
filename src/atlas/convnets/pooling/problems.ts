@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, ints, num, pick } from '../../kit';
-import { atraps, mat, shp, shuffled, traps } from '../kit';
+import { int, ints, mat, num, pick, shp, shuffled, traps, vtraps } from '../../kit';
 
 type Op = 'max' | 'average';
 
@@ -34,7 +33,7 @@ export const generators: Generator[] = [
       return {
         prompt: `What does $2 \\times 2$ ${op} pooling with stride 2 output for this $4 \\times 4$ channel, read row by row?${op === 'average' ? ' Round to two decimals.' : ''}\n\n$$${mat(x)}$$`,
         answer: { kind: 'vector', value: v, places: op === 'average' ? 2 : undefined },
-        traps: atraps(v, [
+        traps: vtraps(v, [
           { value: ws.map((w) => pool(w, other(op))), why: `That is ${other(op)} pooling. This asks for the ${op} of each window.` },
           { value: [v[0]!, v[2]!, v[1]!, v[3]!], why: 'Right values, read column by column. Read the output row by row: top left, top right, then the bottom row.' },
           ...(op === 'average' ? [{ value: ws.map((w) => w.reduce((a, b) => a + b, 0)), why: 'Those are the window sums. Average pooling divides each by 4.' }] : []),
@@ -102,7 +101,7 @@ export const generators: Generator[] = [
       return {
         prompt: `An input of shape $${shp([C, H, H])}$ goes through $${F} \\times ${F}$ max pooling with stride ${S}. What is the output's shape?`,
         answer: { kind: 'shape', value: v },
-        traps: atraps(v, [
+        traps: vtraps(v, [
           { value: [C / 2, h, h], why: 'Pooling works on each channel separately: the number of channels stays the same.' },
           { value: [C, H, H], why: `That keeps the size. With stride ${S} the windows jump ${S} pixels, so the output shrinks.` },
           { value: [C, H - F + 1, H - F + 1], why: `That is stride 1. With stride ${S}, divide by ${S}: $(${H} - ${F}) / ${S} + 1$.` },

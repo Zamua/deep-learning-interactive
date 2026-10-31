@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round, vec } from '../../kit';
-import { AB, BLEND, EPS, LEVELS, X0, XT, big, bigText, clean, par, roots, shuffled, tenth, traps, vtraps } from '../kit';
+import { big, clean, commas, int, num, par, pick, round, shuffled, tenth, traps, vec, vtraps } from '../../kit';
+import { AB, BLEND, EPS, LEVELS, roots, X0, XT } from '../kit';
 
 export const generators: Generator[] = [
   {
@@ -123,7 +123,7 @@ export const generators: Generator[] = [
     make(rng) {
       const T = pick(rng, [100, 250, 500, 1000, 4000]);
       const kind = pick(rng, ['what', 'compare', 'compare', 'ends'] as const);
-      const lead = `A diffusion model noises images over ${bigText(T)} steps.`;
+      const lead = `A diffusion model noises images over ${commas(T)} steps.`;
       if (kind === 'what')
         return {
           prompt: `${lead} What does its noise schedule set?`,
@@ -140,7 +140,7 @@ export const generators: Generator[] = [
         };
       if (kind === 'ends')
         return {
-          prompt: `${lead} Where does a schedule's $${AB}$ start at the first step, and where does it end at step ${bigText(T)}?`,
+          prompt: `${lead} Where does a schedule's $${AB}$ start at the first step, and where does it end at step ${commas(T)}?`,
           answer: shuffled(rng, [
             { text: 'Near 1 at the start, and near 0 at the end', why: null },
             { text: 'Near 0 at the start, and near 1 at the end', why: `That is backwards. $${AB}$ is the share of the image left, so it starts high, with the image nearly clean.` },

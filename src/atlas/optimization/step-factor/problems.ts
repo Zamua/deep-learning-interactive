@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick, round } from '../../kit';
-import { clean, minus, nonzero, paren, traps } from '../kit';
+import { clean, int, minus, nonzero, num, par, pick, round, traps } from '../../kit';
 
 /** `a x^2` in TeX, with the 1 left out. */
 const bowl = (a: number) => `${a === 1 ? '' : num(a)}\\symx^2`;
@@ -59,10 +58,10 @@ export const generators: Generator[] = [
           { value: x0 - grad, why: 'That subtracts the whole gradient, leaving out $\\symeta$.' },
         ]),
         solution: [
-          `Here $a = ${num(a)}$, and the gradient of $a\\symx^2$ is $\\symf'(\\symx) = 2a\\symx = 2 \\times ${num(a)} \\times ${paren(x0)} = ${num(grad)}$.`,
-          `The step: $\\symeta \\times ${paren(grad)} = ${num(step)}$.`,
+          `Here $a = ${num(a)}$, and the gradient of $a\\symx^2$ is $\\symf'(\\symx) = 2a\\symx = 2 \\times ${num(a)} \\times ${par(x0)} = ${num(grad)}$.`,
+          `The step: $\\symeta \\times ${par(grad)} = ${num(step)}$.`,
           `$\\symx \\leftarrow ${minus(x0, step)} = ${num(v)}$.`,
-          `Check with the factor: $1 - 2a\\symeta = 1 - 2 \\times ${num(a)} \\times ${num(eta)} = ${num(r)}$, and $${num(r)} \\times ${paren(x0)} = ${num(v)}$.`,
+          `Check with the factor: $1 - 2a\\symeta = 1 - 2 \\times ${num(a)} \\times ${num(eta)} = ${num(r)}$, and $${num(r)} \\times ${par(x0)} = ${num(v)}$.`,
         ],
       };
     },
@@ -84,8 +83,8 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `Here $a = ${num(a)}$, so each step multiplies $\\symx$ by $1 - 2a\\symeta = 1 - 2 \\times ${num(a)} \\times ${num(eta)} = ${num(r)}$.`,
-          `One step: $${num(r)} \\times ${paren(x0)} = ${num(x1)}$.`,
-          `The second step multiplies by the same factor: $${num(r)} \\times ${paren(x1)} = ${num(v)}$.`,
+          `One step: $${num(r)} \\times ${par(x0)} = ${num(x1)}$.`,
+          `The second step multiplies by the same factor: $${num(r)} \\times ${par(x1)} = ${num(v)}$.`,
         ],
       };
     },

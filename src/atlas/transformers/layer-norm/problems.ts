@@ -1,7 +1,8 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { big, clean, mat, placesFor, sum, terms, traps, vecT, vtraps } from '../kit';
+import { big, clean, int, mat, num, pick, round, sum, terms, traps, vtraps } from '../../kit';
+import { placesFor } from '../../networks/kit';
+import { vecT } from '../kit';
 
 const xh = '\\hat{x}';
 const G = '\\symgamma';

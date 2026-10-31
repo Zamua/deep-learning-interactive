@@ -1,7 +1,8 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { num, pick } from '../../kit';
-import { D, big, straps, traps, whys } from '../modern-kit';
+import { big, num, pick, straps, traps } from '../../kit';
+import { whys } from '../../training/kit';
+import { D } from '../modern-kit';
 
 const DH = '\\sym{dhead}{d_{\\text{head}}}';
 const kv = (g: number) => `$\\sym{kvheads}{g} = ${g}$ key-value head${g === 1 ? '' : 's'}`;

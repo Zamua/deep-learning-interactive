@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { ALPHA, C, clean, ptraps, traps } from '../kit';
+import { clean, int, num, pick, round, traps } from '../../kit';
+import { ALPHA, C } from '../kit';
 
 /** 10^(-x) to two decimals, as the prompts give it. */
 const tenTo = (x: number): number => round(10 ** -x, 2);
@@ -21,11 +21,11 @@ export const generators: Generator[] = [
       return {
         prompt: `Two runs on log-log axes: $${C} = 10^{${u}}$ FLOPs ends at loss $\\symL = ${num(L1, 2)}$, and $${C} = 10^{${u + k}}$ FLOPs ends at $\\symL = ${num(L2, 2)}$. What is the slope of the straight line through them? Round to two decimals.\n\nUse $\\log_{10} ${num(L1, 2)} \\approx ${num(l1, 2)}$ and $\\log_{10} ${num(L2, 2)} \\approx ${num(l2, 2)}$.`,
         answer: { kind: 'number', value: v, places: 2 },
-        traps: ptraps(v, 2, [
+        traps: traps(v, [
           { value: alpha, why: 'The loss falls as compute grows, so the line slopes down: the slope is negative.' },
           { value: l2 - l1, why: `That is the drop in $\\log_{10}\\symL$. The run is ${k} powers of ten, so divide by ${k}.` },
           { value: (L2 - L1) / k, why: 'That uses the losses themselves. On log-log axes both coordinates are logs: use $\\log_{10}\\symL$.' },
-        ]),
+        ], 2),
         solution: [
           `On log-log axes the points are $(\\log_{10}${C}, \\log_{10}\\symL)$: $(${u}, ${num(l1, 2)})$ and $(${u + k}, ${num(l2, 2)})$.`,
           `The rise: $${num(l2, 2)} - ${num(l1, 2)} = ${num(clean(l2 - l1), 2)}$. The run: $${u + k} - ${u} = ${k}$.`,

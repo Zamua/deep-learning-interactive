@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { big, bigText, H, Q, T, traps, WK, WQ, WV } from '../kit';
+import { big, commas, int, pick, traps } from '../../kit';
+import { H, Q, T, WK, WQ, WV } from '../kit';
 
 export const generators: Generator[] = [
   {
@@ -72,8 +72,8 @@ export const generators: Generator[] = [
           ...(h > 1 ? [{ value: (2 * t * t) / 1e6, why: `That is one head. Each of the ${h} heads has its own matrix.` }] : []),
         ]),
         solution: [
-          `One score matrix: $${big(t)}^2 = ${big(t * t)}$ scores, at 2 bytes each: $${big(2 * t * t)}$ bytes, $${bigText((2 * t * t) / 1e6)}$ MB.`,
-          ...(h > 1 ? [`${h} heads: $${h} \\times ${bigText((2 * t * t) / 1e6)} = ${bigText(mb)}$ MB.`] : []),
+          `One score matrix: $${big(t)}^2 = ${big(t * t)}$ scores, at 2 bytes each: $${big(2 * t * t)}$ bytes, $${commas((2 * t * t) / 1e6)}$ MB.`,
+          ...(h > 1 ? [`${h} heads: $${h} \\times ${commas((2 * t * t) / 1e6)} = ${commas(mb)}$ MB.`] : []),
         ],
       };
     },

@@ -1,6 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { big, bigText, E2, SENTENCES, softmax2, T, traps, useExp, vecT, vtraps } from '../kit';
+import { big, commas, E2, int, num, pick, traps, vtraps } from '../../kit';
+import { useExp } from '../../sequences/kit';
+import { SENTENCES, softmax2, T, vecT } from '../kit';
 
 const sent = (ws: readonly string[]) => ws.map((w) => `\`${w}\``).join(' ');
 
@@ -76,7 +77,7 @@ export const generators: Generator[] = [
               `The same in one step: $${T}(${T} - 1)/2 = ${big(n)} \\times ${big(n - 1)} / 2 = ${big(hidden)}$.`,
             ]
           : [
-              `Row $i$ keeps tokens 0 to $i$: 1 entry in row 0, 2 in row 1, up to ${bigText(n)} in the last.`,
+              `Row $i$ keeps tokens 0 to $i$: 1 entry in row 0, 2 in row 1, up to ${commas(n)} in the last.`,
               `$1 + 2 + \\dots + ${big(n)} = ${T}(${T} + 1)/2$: pair the rows from the ends, each pair adding to $${T} + 1$.`,
               `$${big(n)} \\times ${big(n + 1)} = ${big(n * (n + 1))}$, and half of that is $${big(kept)}$.`,
             ],

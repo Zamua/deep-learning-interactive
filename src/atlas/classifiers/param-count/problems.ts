@@ -1,6 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { big } from '../kit';
+import { big, int, pick } from '../../kit';
 
 /** Image sizes whose flattened length is easy to work out: height, width, channels. */
 const IMAGES: [number, number, number][] = [
