@@ -1,6 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round, vec } from '../../kit';
-import { clean, tenth, vtraps } from '../kit';
+import { clean, int, num, pick, round, tenth, vec, vtraps } from '../../kit';
 
 /** Traps that differ from the answer by more than its rounding allows, and from each other. */
 function apart(v: number, places: number | undefined, ts: { value: number; why: string }[]): { value: number; why: string }[] {

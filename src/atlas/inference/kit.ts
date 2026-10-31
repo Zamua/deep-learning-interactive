@@ -1,9 +1,6 @@
 // Generator helpers shared by the inference concepts.
 import { num, round } from '../kit';
 
-export { clean, traps, vtraps } from '../optimization/kit';
-export { big, bigText } from '../convnets/kit';
-
 /** `b` to the `n`, rounded to `places`, and whether that rounding was exact. */
 export function power(b: number, n: number, places = 4): { v: number; exact: boolean } {
   const v = round(b ** n, places) + 0;

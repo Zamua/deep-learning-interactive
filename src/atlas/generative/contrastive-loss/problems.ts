@@ -1,7 +1,6 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, ints, num, pick, round, vec } from '../../kit';
-import { E2, LN2, clean, dot, par, shuffled, terms, traps } from '../kit';
+import { clean, dot, E2, int, ints, LN2, num, par, pick, round, shuffled, terms, traps, vec } from '../../kit';
 
 const TAU = '\\sym{tau}{\\tau}';
 

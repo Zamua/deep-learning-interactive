@@ -1,6 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick } from '../../kit';
-import { big, bigText, shuffled, traps } from '../kit';
+import { big, commas, num, pick, shuffled, traps } from '../../kit';
 
 const TASKS: [string, number][] = [
   ['flower species', 102],
@@ -19,7 +18,7 @@ export const generators: Generator[] = [
       const [task, C] = pick(rng, TASKS);
       const small = rng.int(2) === 0;
       const N = small ? pick(rng, [200, 500, 1000, 2000]) : pick(rng, [200000, 500000, 1000000]);
-      const n = bigText(N);
+      const n = commas(N);
       const whyD = `Its last layer scores ImageNet's 1,000 classes, not your ${C}: it needs a new last layer.`;
       return {
         prompt: `You start from ${PRE}. You want to label ${task}, ${C} classes, and you have ${n} labeled images of them. What should you do?`,
@@ -84,7 +83,7 @@ export const generators: Generator[] = [
       const N = pick(rng, [20000, 50000, 100000]);
       const small = eta / 10;
       return {
-        prompt: `A network was trained from scratch on ImageNet with learning rate $\\symeta = ${num(eta)}$. You now fine-tune all of its layers on ${bigText(N)} images of ${task}. Which learning rate makes sense?`,
+        prompt: `A network was trained from scratch on ImageNet with learning rate $\\symeta = ${num(eta)}$. You now fine-tune all of its layers on ${commas(N)} images of ${task}. Which learning rate makes sense?`,
         answer: shuffled(rng, [
           { text: `$\\symeta = ${num(small)}$, so the pretrained weights move only a little`, why: null },
           { text: `$\\symeta = ${num(eta * 10)}$, to move away from the old task quickly`, why: 'Big steps would wreck the pretrained filters in the first few updates, throwing away what they learned.' },
@@ -104,7 +103,7 @@ export const generators: Generator[] = [
       const dom = pick(rng, DOMAINS);
       const N = pick(rng, [300, 800, 2000, 5000]);
       return {
-        prompt: `You have ${bigText(N)} labeled ${dom}, which look nothing like ImageNet's photos, and ${PRE}. Which of its layers' features are most likely to carry over to your images?`,
+        prompt: `You have ${commas(N)} labeled ${dom}, which look nothing like ImageNet's photos, and ${PRE}. Which of its layers' features are most likely to carry over to your images?`,
         answer: shuffled(rng, [
           { text: 'The early layers, whose filters detect edges and simple textures', why: null },
           { text: 'The last layers, whose features are the most refined', why: 'The last layers are the most tuned to ImageNet\'s 1,000 classes: the most specific to the old task.' },

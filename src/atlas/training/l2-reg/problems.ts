@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, ints, num, pick, vec } from '../../kit';
-import { clean, minus, nonzero, paren, sum, sumTex, tenth, traps, vtraps } from '../kit';
+import { clean, int, ints, minus, nonzero, num, par, pick, sum, tenth, terms, traps, vec, vtraps } from '../../kit';
 
 /** Weights: small whole numbers at first, then negatives, then tenths. */
 function weights(rng: Rng, n: number, d: number): number[] {
@@ -15,7 +14,7 @@ function weights(rng: Rng, n: number, d: number): number[] {
 
 const lams = (rng: Rng, d: number) => pick(rng, d < 0.35 ? [0.1, 0.5, 1] : d < 0.7 ? [0.01, 0.05, 0.1, 0.2] : [0.001, 0.01, 0.05, 0.1]);
 const sq = (w: readonly number[]) => sum(w.map((x) => x * x));
-const squares = (w: readonly number[]) => w.map((x) => `${paren(x)}^2`).join(' + ');
+const squares = (w: readonly number[]) => w.map((x) => `${par(x)}^2`).join(' + ');
 const penaltyTex = '\\symlam \\sum_i \\symw_i^2';
 
 export const generators: Generator[] = [
@@ -41,7 +40,7 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `The L2 penalty is $${penaltyTex}$.`,
-          `Square each weight and add: $${squares(w)} = ${sumTex(w.map((x) => clean(x * x)))} = ${num(S)}$.`,
+          `Square each weight and add: $${squares(w)} = ${terms(w.map((x) => clean(x * x)))} = ${num(S)}$.`,
           `Times $\\symlam$: $${num(lam)} \\times ${num(S)} = ${num(R)}$.`,
           ...(data === null ? [] : [`Add the data loss: $${num(data)} + ${num(R)} = ${num(v)}$.`]),
         ],
@@ -101,8 +100,8 @@ export const generators: Generator[] = [
         ]),
         solution: [
           'With the penalty $\\symlam\\symw^2$, the step is $\\symw \\leftarrow \\symw - \\symeta(\\symg + 2\\symlam\\symw)$, with $\\symg$ the data gradient.',
-          `The full gradient is $\\symg + 2\\symlam\\symw = ${num(g)} + 2 \\times ${num(lam)} \\times ${paren(w)} = ${num(full)}$.`,
-          `The step: $\\symeta \\times ${paren(full)} = ${num(clean(eta * full))}$.`,
+          `The full gradient is $\\symg + 2\\symlam\\symw = ${num(g)} + 2 \\times ${num(lam)} \\times ${par(w)} = ${num(full)}$.`,
+          `The step: $\\symeta \\times ${par(full)} = ${num(clean(eta * full))}$.`,
           `$\\symw \\leftarrow ${minus(w, clean(eta * full))} = ${num(v)}$.`,
           ...(flat ? [`With no data gradient, each step multiplies $\\symw$ by $1 - 2\\symeta\\symlam = ${num(clean(1 - 2 * eta * lam))}$: weight decay.`] : []),
         ],

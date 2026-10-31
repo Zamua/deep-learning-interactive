@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, vec } from '../../kit';
-import { EPS, X0, XT, clean, nonzero, par, shuffled, sum, tenth, traps, vtraps } from '../kit';
+import { clean, int, nonzero, num, par, pick, shuffled, sum, tenth, traps, vec, vtraps } from '../../kit';
+import { EPS, X0, XT } from '../kit';
 
 const V = '\\sym{v}{v}';
 const VHAT = '\\sym{vhat}{\\hat{v}}';

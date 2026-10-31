@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, pick } from '../../kit';
-import { atraps, shp, shuffled, traps } from '../kit';
+import { int, pick, shp, shuffled, traps, vtraps } from '../../kit';
 
 interface Layer {
   C: number;
@@ -38,7 +37,7 @@ export const generators: Generator[] = [
       return {
         prompt: `An input of shape $${shp([L.C, L.H, L.W])}$ goes through a conv layer with ${describe(L)}. What is the output's shape?`,
         answer: { kind: 'shape', value: v },
-        traps: atraps(v, [
+        traps: vtraps(v, [
           { value: [L.C, h, w], why: 'That keeps the input\'s channels. Each filter makes one output channel, so the output has $\\symK$ channels.' },
           { value: [h, w, L.K], why: 'Right numbers, channels last. Write it channels first, as PyTorch does: channels, height, width.' },
           { value: [L.K, L.H, L.W], why: `That keeps the input's height and width. A $${L.F} \\times ${L.F}$ filter that stays inside fits only $${L.H} - ${L.F} + 1 = ${h}$ places down.` },
@@ -103,7 +102,7 @@ export const generators: Generator[] = [
       return {
         prompt: `A layer is built as \`conv = nn.Conv2d(${C}, ${K}, kernel_size=${F})\`. What is \`conv.weight.shape\`?`,
         answer: { kind: 'shape', value: v },
-        traps: atraps(v, [
+        traps: vtraps(v, [
           { value: [C, K, F, F], why: 'In and out are swapped. PyTorch stacks the filters along the first axis: out channels, in channels, height, width.' },
           { value: [K, F, F], why: `That leaves out each filter's depth. Every filter spans all ${C} input channel${C === 1 ? '' : 's'}, so the shape is out channels, in channels, height, width.` },
           { value: [F, F, C, K], why: 'That is the order TensorFlow uses. PyTorch writes out channels, in channels, height, width.' },

@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { ints, num, pick, vec } from '../../kit';
-import { atraps, clean, outSize, shp, shuffled } from '../kit';
+import { clean, ints, num, pick, shp, shuffled, vec, vtraps } from '../../kit';
+import { outSize } from '../kit';
 
 const relu = (v: number) => Math.max(0, v);
 
@@ -22,7 +22,7 @@ export const generators: Generator[] = [
       return {
         prompt: `In a residual block, $\\symx$ has shape $${shp([C, H, H])}$. $F$ is a $3 \\times 3$ conv with $${K}$ filters, stride ${S} and padding 1, a ReLU, and a $3 \\times 3$ conv with $${K}$ filters, stride 1 and padding 1. What shape must the shortcut output?`,
         answer: { kind: 'shape', value: v },
-        traps: atraps(v, [
+        traps: vtraps(v, [
           { value: [C, H, H], why: `That is $\\symx$ as it is. $F$ changes the shape here, so the shortcut needs a $1 \\times 1$ conv with $${K}$ filters and stride ${S} to match.` },
           { value: [K, H, H], why: `That forgets the stride: the first conv has stride ${S}, which shrinks the height and width.` },
           { value: [C, O, O], why: `That keeps $\\symx$'s channels. $F$ ends with $${K}$ filters, so the sum needs $${K}$ channels.` },
@@ -61,7 +61,7 @@ export const generators: Generator[] = [
           ? `A residual block applies a ReLU after its sum. Its input is $\\symx = ${vec(x)}$, and its layers give $F(\\symx) = ${vec(f)}$. What is its output $y$?`
           : `A residual block's input is $\\symx = ${vec(x)}$, and its layers give $F(\\symx) = ${vec(f)}$. What is its output $y$?`,
         answer: { kind: 'vector', value: v },
-        traps: atraps(v, [
+        traps: vtraps(v, [
           { value: f, why: 'That is $F(\\symx)$ alone: a plain layer. The shortcut adds $\\symx$ back.' },
           { value: x.map((a, i) => clean(a - f[i]!)), why: 'That subtracts $F(\\symx)$. The block adds it: $\\symx + F(\\symx)$.' },
           ...(withRelu ? [{ value: sum, why: 'That is the sum before the ReLU. Set its negative entries to 0.' }] : []),

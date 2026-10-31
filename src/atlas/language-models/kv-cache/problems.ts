@@ -1,6 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { big, commas, shapeTex, traps } from '../kit';
+import { big, commas, int, pick, shp, traps } from '../../kit';
 
 export const generators: Generator[] = [
   {
@@ -51,20 +50,20 @@ export const generators: Generator[] = [
             { value: [dim, T], why: 'That is the transpose. The cache grows by one row per token.' },
             { value: [dim], why: 'That is one token. The cache keeps a vector for every token so far.' },
           ],
-          solution: [`Each token has one ${what} vector of $d = ${dim}$ numbers per block.`, `After ${commas(T)} tokens the block stores ${commas(T)} of them, one row per token: $${shapeTex(v)}$.`],
+          solution: [`Each token has one ${what} vector of $d = ${dim}$ numbers per block.`, `After ${commas(T)} tokens the block stores ${commas(T)} of them, one row per token: $${shp(v)}$.`],
         };
       }
       if (kind === 1) {
         const v = [T + 1, dim];
         return {
-          prompt: `One block's cache of ${what}s has shape $${shapeTex([T, dim])}$. The model generates one more token. What is the cache's shape now?`,
+          prompt: `One block's cache of ${what}s has shape $${shp([T, dim])}$. The model generates one more token. What is the cache's shape now?`,
           answer: { kind: 'shape', value: v },
           traps: [
             { value: [T, dim], why: 'The new token\'s own key and value are added to the cache, so it grows by one row.' },
             { value: [T + 1, dim + 1], why: `The width is the vector size, $d = ${dim}$; only the number of rows grows.` },
             { value: [1, dim], why: 'That is only the new row. The earlier rows stay in the cache.' },
           ],
-          solution: ['Each step appends the new token\'s vector as a new row; nothing earlier is recomputed or removed.', `So $${shapeTex([T, dim])}$ becomes $${shapeTex(v)}$.`],
+          solution: ['Each step appends the new token\'s vector as a new row; nothing earlier is recomputed or removed.', `So $${shp([T, dim])}$ becomes $${shp(v)}$.`],
         };
       }
       const v = [L, T, dim];
@@ -76,7 +75,7 @@ export const generators: Generator[] = [
           { value: [L, T, T], why: 'That is the shape of every block\'s attention scores. The cache keeps one vector per token.' },
           { value: [L, dim], why: 'That keeps one vector per block. Every earlier token\'s vector stays.' },
         ],
-        solution: [`Each block stores one ${what} vector of ${dim} numbers per token: $${shapeTex([T, dim])}$.`, `With ${L} blocks stacked: $${shapeTex(v)}$.`],
+        solution: [`Each block stores one ${what} vector of ${dim} numbers per token: $${shp([T, dim])}$.`, `With ${L} blocks stacked: $${shp(v)}$.`],
       };
     },
   },

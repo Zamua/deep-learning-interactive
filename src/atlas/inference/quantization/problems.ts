@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick, round, vec } from '../../kit';
-import { choice, clean, traps, vtraps } from '../kit';
+import { clean, int, num, pick, round, traps, vec, vtraps } from '../../kit';
+import { choice } from '../kit';
 
 /** A weight between steps, 0.1 to 0.4 of a step from the nearest one, rounding to a nonzero integer in range. */
 function weight(rng: Rng, s: number, qmax: number, neg: boolean, places: number): number {

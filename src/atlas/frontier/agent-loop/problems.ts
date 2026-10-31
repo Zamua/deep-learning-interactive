@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { big, bigText, choice, traps } from '../../inference/kit';
+import { choice } from '../../inference/kit';
+import { big, commas, int, pick, traps } from '../../kit';
 import { TASKS } from './tasks';
 
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
@@ -25,7 +25,7 @@ export const generators: Generator[] = [
       const reads = Array.from({ length: n + 1 }, (_, t) => P + t * k);
       const plain = sum(reads);
       const kept = P + n * r;
-      const setup = `An agent starts from a prompt of ${bigText(P)} tokens. The model makes ${n} tool calls of ${c} tokens, each followed by a result of ${r} tokens, then writes its answer.`;
+      const setup = `An agent starts from a prompt of ${commas(P)} tokens. The model makes ${n} tool calls of ${c} tokens, each followed by a result of ${r} tokens, then writes its answer.`;
       const turns = `The model runs ${n + 1} turns: one for each of the ${n} calls, and one more for the answer.`;
       if (d >= 0.7 && rng.int(3) === 0) {
         const v = plain - kept;
@@ -56,7 +56,7 @@ export const generators: Generator[] = [
           ]),
           solution: [
             turns,
-            `Turn 1 prefills the prompt: ${bigText(P)} tokens.`,
+            `Turn 1 prefills the prompt: ${commas(P)} tokens.`,
             `Each call's keys and values went into the cache as the model wrote it, so each later turn prefills only the new result: ${r} tokens.`,
             `In all $${plus([P, ...Array(n).fill(r)])} = ${big(kept)}$ tokens.`,
           ],
@@ -73,8 +73,8 @@ export const generators: Generator[] = [
         ]),
         solution: [
           turns,
-          `Each turn prefills the whole context so far. Turn 1 reads the prompt, ${bigText(P)} tokens.`,
-          `Each call and its result add $${c} + ${r} = ${k}$ tokens, so every turn reads ${k} more than the one before: ${reads.map(bigText).join(', ')}.`,
+          `Each turn prefills the whole context so far. Turn 1 reads the prompt, ${commas(P)} tokens.`,
+          `Each call and its result add $${c} + ${r} = ${k}$ tokens, so every turn reads ${k} more than the one before: ${reads.map(commas).join(', ')}.`,
           `In all $${plus(reads)} = ${big(plain)}$ tokens.`,
         ],
       };
@@ -91,7 +91,7 @@ export const generators: Generator[] = [
         const rs = Array.from({ length: n }, () => Math.max(2, r + 5 * int(rng, -1, 2)));
         const v = P + sum(cs) + sum(rs);
         return {
-          prompt: `An agent starts from a prompt of ${bigText(P)} tokens. Its calls take ${cs.join(', ')} tokens, and their results ${rs.join(', ')} tokens, in that order. How many tokens are in the context after the result of call ${n}?`,
+          prompt: `An agent starts from a prompt of ${commas(P)} tokens. Its calls take ${cs.join(', ')} tokens, and their results ${rs.join(', ')} tokens, in that order. How many tokens are in the context after the result of call ${n}?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: P + sum(rs), why: 'That leaves out the calls. Each call the model writes stays in the context.' },
@@ -109,7 +109,7 @@ export const generators: Generator[] = [
       const k = c + r;
       const v = P + n * k;
       return {
-        prompt: `An agent starts from a prompt of ${bigText(P)} tokens. On every turn the model writes a call of ${c} tokens and the program appends a result of ${r} tokens. How many tokens are in the context after turn ${n}?`,
+        prompt: `An agent starts from a prompt of ${commas(P)} tokens. On every turn the model writes a call of ${c} tokens and the program appends a result of ${r} tokens. How many tokens are in the context after turn ${n}?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
           { value: P + n * r, why: 'That leaves out the calls. Each call the model writes stays in the context.' },

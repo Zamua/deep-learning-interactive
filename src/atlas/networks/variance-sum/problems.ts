@@ -1,6 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick } from '../../kit';
-import { clean, traps } from '../kit';
+import { clean, num, pick, traps } from '../../kit';
 
 /** Mean-0 values spread evenly over a symmetric set: the set, then whether its std is a whole number. */
 const SETS: [number[], boolean][] = [

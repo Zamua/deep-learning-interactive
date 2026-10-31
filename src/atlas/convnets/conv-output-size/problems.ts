@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick } from '../../kit';
-import { outSize, shuffled, traps } from '../kit';
+import { int, num, pick, shuffled, traps } from '../../kit';
+import { outSize } from '../kit';
 
 interface Setting {
   W: number;

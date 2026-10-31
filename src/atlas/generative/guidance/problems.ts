@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, vec } from '../../kit';
-import { EHAT, big, clean, par, shuffled, tenth, traps, vtraps } from '../kit';
+import { big, clean, int, num, par, pick, shuffled, tenth, traps, vec, vtraps } from '../../kit';
+import { EHAT } from '../kit';
 
 const EU = '\\sym{epsu}{\\epsilon_u}';
 const EC = '\\sym{epsc}{\\epsilon_c}';

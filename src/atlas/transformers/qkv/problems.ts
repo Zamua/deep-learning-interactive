@@ -1,7 +1,8 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { pick } from '../../kit';
-import { big, bigText, D, DK, dot, k, mat, matvec, prods, q, SENTENCES, shp, someInts, straps, traps, v, vecT, vtraps, WK, WQ, WV, X } from '../kit';
+import { big, commas, dot, mat, pick, prods, shp, straps, traps, vtraps } from '../../kit';
+import { matvec } from '../../networks/kit';
+import { D, DK, k, q, SENTENCES, someInts, v, vecT, WK, WQ, WV, X } from '../kit';
 
 type Role = 'q' | 'k' | 'v';
 const NAME: Record<Role, string> = { q: 'query', k: 'key', v: 'value' };
@@ -68,12 +69,12 @@ export const generators: Generator[] = [
         answer: { kind: 'shape', value: ans },
         traps: straps(ans, [
           { value: [dm, dk], why: `That is the transpose. $${MAT[role]}\\,${X}$ takes one dot product per row, so it needs one row per entry of $${VEC[role]}$ and one column per entry of $${X}$.` },
-          { value: [dm, dm], why: `That would keep all ${bigText(dm)} numbers. The ${NAME[role]} has only ${dk}, so $${MAT[role]}$ has ${dk} rows.` },
-          { value: [dk, dk], why: `$${MAT[role]}$ multiplies $${X}$, which has ${bigText(dm)} entries, so it needs ${bigText(dm)} columns.` },
+          { value: [dm, dm], why: `That would keep all ${commas(dm)} numbers. The ${NAME[role]} has only ${dk}, so $${MAT[role]}$ has ${dk} rows.` },
+          { value: [dk, dk], why: `$${MAT[role]}$ multiplies $${X}$, which has ${commas(dm)} entries, so it needs ${commas(dm)} columns.` },
         ]),
         solution: [
           `The ${NAME[role]} is $${VEC[role]} = ${MAT[role]}\\,${X}$, a matrix times a vector: each row of $${MAT[role]}$ is dotted with $${X}$ and gives one entry of $${VEC[role]}$.`,
-          `So $${MAT[role]}$ has ${dk} rows, one per entry of $${VEC[role]}$, and ${bigText(dm)} columns, one per entry of $${X}$: $${shp(ans)}$.`,
+          `So $${MAT[role]}$ has ${dk} rows, one per entry of $${VEC[role]}$, and ${commas(dm)} columns, one per entry of $${X}$: $${shp(ans)}$.`,
         ],
       };
     },

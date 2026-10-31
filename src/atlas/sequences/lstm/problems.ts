@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, vec } from '../../kit';
-import { clean, paren, T2, traps, useTanh, vtraps } from '../kit';
+import { clean, int, num, par, pick, traps, vec, vtraps } from '../../kit';
+import { T2, useTanh } from '../kit';
 
 const GATE_EASY = [0.5, 1];
 const GATE = [0.1, 0.2, 0.5, 0.8, 0.9];
@@ -45,9 +45,9 @@ export const generators: Generator[] = [
           ]),
           solution: [
             'The update is $c_t = f_t\\, c_{t-1} + i_t\\, g_t$.',
-            `Keep part of the old cell: $f_t\\, c_{t-1} = ${num(u.f)} \\times ${paren(u.c)} = ${num(clean(u.f * u.c))}$.`,
-            `Write part of the candidate: $i_t\\, g_t = ${num(u.i)} \\times ${paren(u.g)} = ${num(clean(u.i * u.g))}$.`,
-            `Add them: $c_t = ${num(clean(u.f * u.c))} + ${paren(clean(u.i * u.g))} = ${num(v)}$.`,
+            `Keep part of the old cell: $f_t\\, c_{t-1} = ${num(u.f)} \\times ${par(u.c)} = ${num(clean(u.f * u.c))}$.`,
+            `Write part of the candidate: $i_t\\, g_t = ${num(u.i)} \\times ${par(u.g)} = ${num(clean(u.i * u.g))}$.`,
+            `Add them: $c_t = ${num(clean(u.f * u.c))} + ${par(clean(u.i * u.g))} = ${num(v)}$.`,
           ],
         };
       }
@@ -64,7 +64,7 @@ export const generators: Generator[] = [
         ]),
         solution: [
           'The update is $c_t = f_t\\, c_{t-1} + i_t\\, g_t$, multiplying entry by entry; $o_t$ only matters for $\\symh_t$.',
-          ...us.map((u, k) => `Unit ${k}: $${num(u.f)} \\times ${paren(u.c)} + ${num(u.i)} \\times ${paren(u.g)} = ${num(v[k]!)}$.`),
+          ...us.map((u, k) => `Unit ${k}: $${num(u.f)} \\times ${par(u.c)} + ${num(u.i)} \\times ${par(u.g)} = ${num(v[k]!)}$.`),
           `So $c_t = ${vec(v)}$.`,
         ],
       };
@@ -168,7 +168,7 @@ export const generators: Generator[] = [
             { value: o * c, why: 'That scales the cell itself. The cell goes through tanh first: $\\symh_t = o_t \\tanh(c_t)$.' },
             { value: T2(c), why: 'That is $\\tanh(c_t)$ in full. The output gate scales it: $\\symh_t = o_t \\tanh(c_t)$.' },
           ]).filter((t) => Math.abs(t.value - v) >= 0.01),
-          solution: [`Squash the cell: $\\tanh(${num(c)}) \\approx ${num(T2(c), 2)}$.`, `Scale by the output gate: $\\symh_t = ${num(o)} \\times ${paren(T2(c))} \\approx ${num(v, 2)}$.`],
+          solution: [`Squash the cell: $\\tanh(${num(c)}) \\approx ${num(T2(c), 2)}$.`, `Scale by the output gate: $\\symh_t = ${num(o)} \\times ${par(T2(c))} \\approx ${num(v, 2)}$.`],
         };
       }
       for (;;) {
@@ -187,9 +187,9 @@ export const generators: Generator[] = [
             { value: o * T2(u.c), why: 'That uses the old cell. Update the cell first, then read $\\symh_t$ from the new one.' },
           ]).filter((t) => Math.abs(t.value - v) >= 0.01),
           solution: [
-            `Update the cell: $c_t = ${num(u.f)} \\times ${paren(u.c)} + ${num(u.i)} \\times ${paren(u.g)} = ${num(c)}$.`,
+            `Update the cell: $c_t = ${num(u.f)} \\times ${par(u.c)} + ${num(u.i)} \\times ${par(u.g)} = ${num(c)}$.`,
             `Squash it: $\\tanh(${num(c)}) \\approx ${num(T2(c), 2)}$.`,
-            `Scale by the output gate: $\\symh_t = ${num(o)} \\times ${paren(T2(c))} \\approx ${num(v, 2)}$.`,
+            `Scale by the output gate: $\\symh_t = ${num(o)} \\times ${par(T2(c))} \\approx ${num(v, 2)}$.`,
           ],
         };
       }

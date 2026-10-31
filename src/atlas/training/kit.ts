@@ -1,12 +1,6 @@
 // Generator helpers shared by the training concepts.
 import type { Rng } from '../../core/rand';
-import { int, num, pick, round } from '../kit';
-import { clean } from '../optimization/kit';
-
-export { big, clean, minus, nonzero, paren, tenth, traps, vtraps } from '../optimization/kit';
-
-/** A whole number for prose, with thousands commas: 50,000. */
-export const commas = (n: number): string => n.toLocaleString('en-US');
+import { clean, int, num, pick, round } from '../kit';
 
 /** A number to fixed places for TeX, with float noise dropped. */
 export const fx = (x: number, places: number): string => num(clean(x), places);
@@ -21,12 +15,6 @@ export function texTable(head: string[], rows: (string | number)[][]): string {
 /** `why` for a choice: `wrong(i)` for every option except the correct one, which gets null. */
 export const whys = (n: number, correct: number, wrong: (i: number) => string): (string | null)[] =>
   Array.from({ length: n }, (_, i) => (i === correct ? null : wrong(i)));
-
-/** Terms added up with their signs folded: `4 - 1 + 0`. */
-export const sumTex = (xs: readonly number[]): string =>
-  xs.map((v, i) => (i === 0 ? num(clean(v)) : v < 0 ? `- ${num(clean(-v))}` : `+ ${num(clean(v))}`)).join(' ');
-
-export const sum = (xs: readonly number[]): number => clean(xs.reduce((a, b) => a + b, 0));
 
 /**
  * Losses logged every `every` epochs: training falls throughout, validation falls to its

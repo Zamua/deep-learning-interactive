@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick, round } from '../../kit';
-import { shuffled, traps } from '../kit';
+import { int, num, pick, round, shuffled, traps } from '../../kit';
 import { type Box, iou } from '../box-iou/box';
 
 const L = (i: number): string => 'ABCDE'[i]!;

@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, vec } from '../../kit';
-import { clean, nonzero, paren, tenth, traps, vtraps } from '../kit';
+import { clean, int, nonzero, num, par, tenth, traps, vec, vtraps } from '../../kit';
 
 /** A 2-class, 2-feature classifier: W, b, x, y, the softmax output p and the score gradient ds. */
 function setup(rng: Rng, d: number) {
@@ -45,7 +44,7 @@ export const generators: Generator[] = [
         solution: [
           dsStep(o),
           `Score ${i} is $\\symW_{${i},0}\\symx_0 + \\symW_{${i},1}\\symx_1 + \\symb_{${i}}$, so nudging $${Wij(i, j)}$ moves it by $\\symx_{${j}}$ times as much.`,
-          `Chain rule: $\\partial \\symL / \\partial ${Wij(i, j)} = d\\syms_{${i}}\\, \\symx_{${j}} = ${paren(o.ds[i]!)} \\times ${paren(o.x[j]!)} = ${num(v)}$.`,
+          `Chain rule: $\\partial \\symL / \\partial ${Wij(i, j)} = d\\syms_{${i}}\\, \\symx_{${j}} = ${par(o.ds[i]!)} \\times ${par(o.x[j]!)} = ${num(v)}$.`,
         ],
       };
     },
@@ -68,7 +67,7 @@ export const generators: Generator[] = [
         solution: [
           dsStep(o),
           `Row ${k} belongs to class ${k}, so every weight in it takes $d\\syms_{${k}} = ${num(o.ds[k]!)}$.`,
-          `Column $j$ multiplies by its input $\\symx_j$: ${o.x.map((xj, j) => `$d${Wij(k, j)} = ${paren(o.ds[k]!)} \\times ${paren(xj)} = ${num(v[j]!)}$`).join(', ')}.`,
+          `Column $j$ multiplies by its input $\\symx_j$: ${o.x.map((xj, j) => `$d${Wij(k, j)} = ${par(o.ds[k]!)} \\times ${par(xj)} = ${num(v[j]!)}$`).join(', ')}.`,
           `So row ${k} is $d\\syms_{${k}}\\, \\symx = ${vec(v)}$.`,
         ],
       };

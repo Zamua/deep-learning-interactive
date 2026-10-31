@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { clean, fx, texTable, traps, vtraps, whys } from '../kit';
+import { clean, int, num, pick, round, traps, vtraps } from '../../kit';
+import { fx, texTable, whys } from '../kit';
 
 /** Fractional exponents a learner can be handed, as [fraction, 10^fraction given]. */
 const MANT: [number, number][] = [[0.3, 2], [0.5, 3.16], [0.7, 5], [0.9, 7.94]];

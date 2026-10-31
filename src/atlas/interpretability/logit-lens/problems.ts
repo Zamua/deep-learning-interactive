@@ -1,7 +1,8 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, pick, vec } from '../../kit';
-import { add, dot, prods, vtraps, whys } from '../kit';
+import { dot, int, pick, prods, vec, vtraps } from '../../kit';
+import { add } from '../../networks/kit';
+import { whys } from '../../training/kit';
 
 const VOCABS = [
   ['Paris', 'Rome', 'the', 'city'],

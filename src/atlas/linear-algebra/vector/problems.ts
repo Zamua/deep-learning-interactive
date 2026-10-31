@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, ints, num, pick, scale, vec } from '../../kit';
-import { distinct, ORD, par } from '../kit';
+import { int, ints, num, ORD, par, pick, scale, vec } from '../../kit';
+import { distinct } from '../kit';
 
 /** Entries at difficulty `d`: small whole numbers, then negatives, then halves. */
 function entries(rng: Rng, n: number, d: number): number[] {

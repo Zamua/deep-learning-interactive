@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick } from '../../kit';
-import { C, D, N, big, clean, norm, sci, sciOf, traps, words } from '../kit';
+import { big, clean, num, pick, traps } from '../../kit';
+import { C, D, N, norm, sci, sciOf, words } from '../kit';
 
 /** Model sizes in billions whose compute-optimal budget, 120 N², has a clean square root. */
 const SIZES = [[1, 10, 100], [2, 3, 5, 20, 30, 50], [4, 6, 7, 8, 40, 60, 70]];

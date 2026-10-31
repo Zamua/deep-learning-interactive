@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { clean, nonzero, paren, tenth, traps, whys } from '../kit';
+import { clean, int, nonzero, num, par, pick, tenth, traps } from '../../kit';
+import { whys } from '../kit';
 
 const M_RULE = 'm \\leftarrow \\beta_1 m + (1 - \\beta_1)\\,\\symg';
 const V_RULE = 'v \\leftarrow \\beta_2 v + (1 - \\beta_2)\\,\\symg^2';
@@ -37,8 +37,8 @@ export const generators: Generator[] = [
         solution: askM
           ? [
               `The update: $${M_RULE}$.`,
-              `$m = ${num(b1)} \\times ${paren(m0)} + ${num(clean(1 - b1))} \\times ${paren(g)}$.`,
-              `$= ${num(clean(b1 * m0))} + ${paren(clean((1 - b1) * g))} = ${num(m)}$.`,
+              `$m = ${num(b1)} \\times ${par(m0)} + ${num(clean(1 - b1))} \\times ${par(g)}$.`,
+              `$= ${num(clean(b1 * m0))} + ${par(clean((1 - b1) * g))} = ${num(m)}$.`,
               fresh ? 'Starting from 0, $m$ is only a tenth of the gradient: far too small.' : `It moved ${b1 === 0.9 ? 'a tenth' : 'a fifth'} of the way from $${num(m0)}$ toward the gradient $${num(g)}$.`,
             ]
           : [
@@ -71,9 +71,9 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `The update: $${M_RULE}$.`,
-          `Update 1, from $m = 0$: $m = ${num(b1)} \\times 0 + ${num(k)} \\times ${paren(g1)} = ${num(m1)}$.`,
-          `Update 2: $m = ${num(b1)} \\times ${paren(m1)} + ${num(k)} \\times ${paren(g2)}$.`,
-          `$= ${num(clean(b1 * m1))} + ${paren(clean(k * g2))} = ${num(m2)}$.`,
+          `Update 1, from $m = 0$: $m = ${num(b1)} \\times 0 + ${num(k)} \\times ${par(g1)} = ${num(m1)}$.`,
+          `Update 2: $m = ${num(b1)} \\times ${par(m1)} + ${num(k)} \\times ${par(g2)}$.`,
+          `$= ${num(clean(b1 * m1))} + ${par(clean(k * g2))} = ${num(m2)}$.`,
         ],
       };
     },
@@ -102,7 +102,7 @@ export const generators: Generator[] = [
         prompt: `For thousands of steps, parameter $${st}$'s gradient has been $${num(S)}$ every step, while parameter $${fl}$'s has ${flips}. With Adam's $\\beta_1 = 0.9$ and $\\beta_2 = 0.999$, about where have their $m$ and $v$ settled?`,
         answer: { kind: 'choice', options: opts, correct: 0, why: whys(4, 0, (i) => reasons[i]!) },
         solution: [
-          `A steady gradient of $${num(S)}$: $m$ levels off where $0.9\\,m + 0.1 \\times ${paren(S)} = m$, at $m = ${num(S)}$.`,
+          `A steady gradient of $${num(S)}$: $m$ levels off where $0.9\\,m + 0.1 \\times ${par(S)} = m$, at $m = ${num(S)}$.`,
           `Its square is $${num(G2)}$ every step, so its $v$ levels off at $${num(G2)}$.`,
           `A gradient that ${flips}: each push undoes the last inside $m$, so $m$ stays near 0.`,
           `Its squares are all $${num(G2)}$, so its $v$ still heads to $${num(G2)}$. $m$ tracks the direction; $v$ tracks the size.`,

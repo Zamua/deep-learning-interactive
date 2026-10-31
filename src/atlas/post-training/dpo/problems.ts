@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { BETA, choose, clean, LN, minus, PI, REF, SIG, traps, useSig } from '../kit';
+import { clean, int, LN2, minus, num, pick, traps } from '../../kit';
+import { BETA, choose, PI, REF, SIG, useSig } from '../kit';
 
 const YW = '\\sym{yw}{y_w}';
 const YL = '\\sym{yl}{y_l}';
@@ -16,7 +16,7 @@ function pair(rng: Rng, d: number, gap: number): [number, number] {
   return [clean(ref + gap), ref];
 }
 
-const lnSig = (zs: number[]) => [...new Set(zs.map(SIG))].sort((x, y) => y - x).map((p) => `$\\ln ${num(p, 2)} \\approx ${num(LN(p), 2)}$`).join(', ');
+const lnSig = (zs: number[]) => [...new Set(zs.map(SIG))].sort((x, y) => y - x).map((p) => `$\\ln ${num(p, 2)} \\approx ${num(LN2(p), 2)}$`).join(', ');
 
 export const generators: Generator[] = [
   {
@@ -51,7 +51,7 @@ export const generators: Generator[] = [
         const gl = d < 0.5 ? int(rng, -4, 2) : int(rng, -40, 20) / 10;
         const m = clean(beta * (gw - gl));
         if (Math.abs(m) > 3 || m === 0 || Math.abs(clean(m * 10) % 1) > 1e-9) continue;
-        const v = -LN(SIG(m));
+        const v = -LN2(SIG(m));
         const full = d >= 0.5;
         const [w1, w0] = pair(rng, d, gw);
         const [l1, l0] = pair(rng, d, gl);
@@ -64,7 +64,7 @@ export const generators: Generator[] = [
           traps: traps(
             v,
             [
-              { value: -LN(SIG(-m)), why: 'That swaps the two answers. The chosen answer\'s implicit reward comes first.' },
+              { value: -LN2(SIG(-m)), why: 'That swaps the two answers. The chosen answer\'s implicit reward comes first.' },
               { value: m, why: 'That is the margin inside the sigmoid. The loss is $-\\ln\\sigma$ of it.' },
               { value: SIG(m), why: 'That is $\\sigma$ of the margin: the probability the model gives the labeler\'s choice. The loss is minus its log.' },
             ],

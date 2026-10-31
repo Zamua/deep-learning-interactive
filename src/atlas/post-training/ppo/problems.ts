@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick } from '../../kit';
-import { ADV, choose, clean, EPS, OLD, paren, PI, RHO, traps } from '../kit';
+import { clean, num, par, pick, traps } from '../../kit';
+import { ADV, choose, EPS, OLD, PI, RHO } from '../kit';
 
 const clip = (x: number, e: number) => Math.min(1 + e, Math.max(1 - e, x));
 
@@ -37,9 +37,9 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `The clip range is $1 - ${EPS} = ${num(lo)}$ to $1 + ${EPS} = ${num(hi)}$.`,
-          `Unclipped: $${RHO}${ADV} = ${num(rho)} \\times ${paren(a)} = ${num(raw)}$.`,
+          `Unclipped: $${RHO}${ADV} = ${num(rho)} \\times ${par(a)} = ${num(raw)}$.`,
           hit
-            ? `Clipped: $${num(rho)}$ is ${rho > hi ? 'above' : 'below'} the range, so it becomes $${num(c)}$, and $${num(c)} \\times ${paren(a)} = ${num(cl)}$.`
+            ? `Clipped: $${num(rho)}$ is ${rho > hi ? 'above' : 'below'} the range, so it becomes $${num(c)}$, and $${num(c)} \\times ${par(a)} = ${num(cl)}$.`
             : `Clipped: $${num(rho)}$ is inside the range, so it stays, and the clipped term is $${num(cl)}$ too.`,
           hit ? `The term is the smaller of $${num(raw)}$ and $${num(cl)}$: $${num(v)}$.` : `Both terms are the same, so the term is $${num(v)}$.`,
           ...(hit ? [v === cl ? 'The clip took away the reward for moving further.' : 'The ratio moved the wrong way, so the unclipped term is the lower one and stays: clipping only ever removes a reward.'] : []),

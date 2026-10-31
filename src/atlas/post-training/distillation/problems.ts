@@ -1,7 +1,6 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, ints, num, pick, round, vec } from '../../kit';
-import { clean, E2, LN, traps, useLn } from '../kit';
+import { clean, E2, int, ints, LN2, num, pick, round, traps, useLn, vec } from '../../kit';
 
 const Q = '\\sym{q}{q}';
 
@@ -92,7 +91,7 @@ export const generators: Generator[] = [
       const q = tenths(rng, n);
       let p = tenths(rng, n);
       while (p.every((x, i) => x === q[i])) p = tenths(rng, n);
-      const nl = p.map((x) => -LN(x));
+      const nl = p.map((x) => -LN2(x));
       const terms = q.map((x, i) => clean(x * nl[i]!));
       const v = clean(terms.reduce((a, b) => a + b, 0));
       const t = top(q);
@@ -103,7 +102,7 @@ export const generators: Generator[] = [
           { value: nl[t]!, why: `That is $-\\ln \\symp_{${t}}$ alone, the loss with a hard label on the teacher's top class. Soft targets weight every class by $${Q}$.` },
           { value: nl.reduce((a, b) => a + b, 0), why: `That adds $-\\ln \\symp$ for every class without weighting each by $${Q}$.` },
           { value: -v, why: 'That drops the minus sign. Logs of probabilities are negative, so the loss is positive.' },
-          { value: p.reduce((a, x, i) => a - x * LN(q[i]!), 0), why: `That swaps the two. The teacher's $${Q}$ are the weights, and the log is of the student's $\\symp$.` },
+          { value: p.reduce((a, x, i) => a - x * LN2(q[i]!), 0), why: `That swaps the two. The teacher's $${Q}$ are the weights, and the log is of the student's $\\symp$.` },
         ], 2),
         solution: [
           `The loss is $\\symL = -\\sum_k ${Q}_k \\ln \\symp_k$, so each class adds $${Q}_k \\times (-\\ln \\symp_k)$: ${q.map((x, i) => `$${num(x)} \\times ${num(nl[i]!, 2)} = ${num(terms[i]!)}$`).join(', ')}.`,

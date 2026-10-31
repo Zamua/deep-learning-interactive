@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round, vec } from '../../kit';
-import { ADV, BASE, clean, minus, paren, PI, R, sumTex, TH, traps, vtraps } from '../kit';
+import { clean, int, minus, num, par, pick, round, terms, traps, vec, vtraps } from '../../kit';
+import { ADV, BASE, PI, R, TH } from '../kit';
 
 const GLP = `\\nabla \\ln ${PI}(y)`;
 
@@ -35,7 +35,7 @@ export const generators: Generator[] = [
           { value: v.map((x) => clean(-x)), why: `That is $${BASE} - ${R}$, the wrong way round. A reward above the baseline gives a positive advantage.` },
         ]),
         solution: [
-          ...(own ? [`The baseline is the mean reward: $(${sumTex(r)}) / ${n} = ${num(mean)}$.`] : []),
+          ...(own ? [`The baseline is the mean reward: $(${terms(r)}) / ${n} = ${num(mean)}$.`] : []),
           `The advantage is $${ADV} = ${R} - ${BASE}$, so subtract the baseline from each reward: ${r.map((x, i) => `$${minus(x, b)} = ${num(v[i]!)}$`).join(', ')}.`,
           `So $${ADV} = ${vec(v)}$: positive for answers better than expected, negative for worse.`,
         ],
@@ -62,7 +62,7 @@ export const generators: Generator[] = [
         ]),
         solution: [
           `The advantage: $${ADV} = ${R} - ${BASE} = ${minus(Rv, b)} = ${num(a)}$.`,
-          `The estimate is $${ADV}\\,${GLP}$, so its entry for $${TH}_0$ is $${num(a)} \\times ${paren(g)} = ${num(v)}$.`,
+          `The estimate is $${ADV}\\,${GLP}$, so its entry for $${TH}_0$ is $${num(a)} \\times ${par(g)} = ${num(v)}$.`,
           a > 0 ? 'The answer beat the baseline, so this pushes it up.' : 'The answer fell short of the baseline, so this pushes it down.',
         ],
       };

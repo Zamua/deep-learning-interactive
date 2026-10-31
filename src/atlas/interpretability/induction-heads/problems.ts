@@ -1,7 +1,8 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { pick } from '../../kit';
-import { repeatSeq, seqText, traps, whys } from '../kit';
+import { pick, traps } from '../../kit';
+import { whys } from '../../training/kit';
+import { repeatSeq, seqText } from '../kit';
 
 const lengthFor = (rng: Rng, d: number) => (d < 0.4 ? 6 : pick(rng, [7, 8, 9]));
 

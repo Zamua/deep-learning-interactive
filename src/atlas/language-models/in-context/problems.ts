@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { big, commas, lit, traps } from '../kit';
+import { big, commas, int, num, pick, round, traps } from '../../kit';
+import { lit } from '../../sequences/kit';
 
 /** Tasks a prompt can teach by example: an instruction and input => output pairs. */
 const TASKS: { does: string; head: string; pairs: [string, string][] }[] = [

@@ -1,6 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { MH, VH, clean, minus, paren, tenth, traps, whys } from '../modern-kit';
+import { clean, int, minus, num, par, pick, tenth, traps } from '../../kit';
+import { whys } from '../../training/kit';
+import { MH, VH } from '../modern-kit';
 
 const AW = `\\symw \\leftarrow \\symw - \\symeta\\big(${MH} / \\sqrt{${VH}} + \\symlam\\,\\symw\\big)`;
 
@@ -33,9 +34,9 @@ export const generators: Generator[] = [
           `AdamW steps $${AW}$.`,
           `$\\sqrt{${VH}} = \\sqrt{${num(v)}} = ${num(root)}$.`,
           `The Adam part: $${MH} / \\sqrt{${VH}} = ${num(m)} / ${num(root)} = ${num(k)}$.`,
-          `The decay: $\\symlam\\symw = ${num(lam)} \\times ${paren(w)} = ${num(decay)}$.`,
-          `Inside the bracket: $${num(k)} + ${paren(decay)} = ${num(inside)}$.`,
-          `Times $\\symeta$: $${num(eta)} \\times ${paren(inside)} = ${num(step)}$.`,
+          `The decay: $\\symlam\\symw = ${num(lam)} \\times ${par(w)} = ${num(decay)}$.`,
+          `Inside the bracket: $${num(k)} + ${par(decay)} = ${num(inside)}$.`,
+          `Times $\\symeta$: $${num(eta)} \\times ${par(inside)} = ${num(step)}$.`,
           step < 0
             ? `$\\symw \\leftarrow ${num(w)} - (${num(step)}) = ${minus(w, step)} = ${num(ans)}$: subtracting a negative step raises $\\symw$.`
             : `$\\symw \\leftarrow ${minus(w, step)} = ${num(ans)}$.`,

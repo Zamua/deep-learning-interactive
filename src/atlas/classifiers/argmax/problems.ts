@@ -1,7 +1,6 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, ints, num, pick, round, scale, vec } from '../../kit';
-import { argmaxOf } from '../kit';
+import { argmax, int, ints, num, pick, round, scale, vec } from '../../kit';
 
 const CAP = ['First', 'Second', 'Third', 'Fourth', 'Fifth'];
 
@@ -9,7 +8,7 @@ const CAP = ['First', 'Second', 'Third', 'Fourth', 'Fifth'];
 function entries(rng: Rng, n: number, d: number): number[] {
   for (;;) {
     const xs = d < 0.35 ? ints(rng, n, 0, 9) : d < 0.7 ? ints(rng, n, -5, 9) : ints(rng, n, -30, 60).map((v) => round(v / 10, 1));
-    if (argmaxOf(xs) >= 0) return xs;
+    if (argmax(xs) >= 0) return xs;
   }
 }
 
@@ -21,7 +20,7 @@ export const generators: Generator[] = [
     make(rng, d) {
       const n = scale(d, 3, 6);
       const s = entries(rng, n, d);
-      const k = argmaxOf(s);
+      const k = argmax(s);
       const v = s[k]!;
       const traps = [
         { value: v, why: 'That is the largest value itself. argmax asks where it is: its position.' },
@@ -51,7 +50,7 @@ export const generators: Generator[] = [
       const ok = rng.shuffle(Array.from({ length: R }, (_, i) => i < right));
       const rows = ok.map((good) => {
         const s = entries(rng, 3, Math.min(d, 0.5));
-        const k = argmaxOf(s);
+        const k = argmax(s);
         const y = good ? k : (k + 1 + rng.int(2)) % 3;
         return { s, k, y };
       });
@@ -80,7 +79,7 @@ export const generators: Generator[] = [
       const askArg = rng.int(2) === 0;
       for (;;) {
         const s = entries(rng, int(rng, 3, d < 0.5 ? 4 : 5), Math.min(d, 0.6));
-        const k = argmaxOf(s);
+        const k = argmax(s);
         const v = s[k]!;
         const j = argminOf(s);
         const u = s[j]!;

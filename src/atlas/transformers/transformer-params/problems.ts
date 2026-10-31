@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { big, bigText, D, traps, WK, WO, WQ, WV } from '../kit';
+import { big, commas, int, pick, traps } from '../../kit';
+import { D, WK, WO, WQ, WV } from '../kit';
 
 const W1 = '\\sym{W1}{W_1}';
 const W2 = '\\sym{W2}{W_2}';
@@ -61,14 +61,14 @@ export const generators: Generator[] = [
         prompt: `A transformer has $${NB} = ${n}$ blocks of width $${D} = ${big(dm)}$ and a vocabulary of $${VOC} = ${big(voc)}$ tokens. Ignoring biases and layer norms, about how many million parameters does it have?`,
         answer: { kind: 'number', value: v },
         traps: traps(v, [
-          { value: n * per, why: `That is the blocks alone. The embedding table adds $${VOC} \\times ${D} = ${bigText(emb)}$ million.` },
+          { value: n * per, why: `That is the blocks alone. The embedding table adds $${VOC} \\times ${D} = ${commas(emb)}$ million.` },
           { value: per + emb, why: `That counts one block. There are ${n}.` },
           { value: n * per + voc / 1e6, why: `That gives each token one number. Each gets a row of $${D}$ numbers: $${VOC} \\times ${D}$.` },
         ]),
         solution: [
-          `One block: $12${D}^2 = 12 \\times ${big(dm)}^2 = ${bigText(per)}$ million. ${n} blocks: $${bigText(n * per)}$ million.`,
-          `The embedding: $${VOC} \\times ${D} = ${big(voc)} \\times ${big(dm)} = ${bigText(emb)}$ million.`,
-          `In all: $${bigText(n * per)} + ${bigText(emb)} = ${bigText(v)}$ million.`,
+          `One block: $12${D}^2 = 12 \\times ${big(dm)}^2 = ${commas(per)}$ million. ${n} blocks: $${commas(n * per)}$ million.`,
+          `The embedding: $${VOC} \\times ${D} = ${big(voc)} \\times ${big(dm)} = ${commas(emb)}$ million.`,
+          `In all: $${commas(n * per)} + ${commas(emb)} = ${commas(v)}$ million.`,
         ],
       };
     },

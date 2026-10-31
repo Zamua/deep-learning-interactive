@@ -1,6 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick } from '../../kit';
-import { C, D, N, big, clean, norm, sci, sciOf, traps, whys, words } from '../kit';
+import { big, clean, num, pick, traps } from '../../kit';
+import { whys } from '../../training/kit';
+import { C, D, N, norm, sci, sciOf, words } from '../kit';
 
 /** The power of ten that brings a positive mantissa into [1, 10). */
 const shiftOf = (x: number): number => (x >= 100 ? 2 : x >= 10 ? 1 : 0);

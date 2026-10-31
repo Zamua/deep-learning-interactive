@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { num, vec } from '../../kit';
-import { clean, onehot, paren, probs, traps, vtraps } from '../kit';
+import { clean, num, par, traps, vec, vtraps } from '../../kit';
+import { onehot, probs } from '../kit';
 
 /** Probabilities, the correct option and the score gradient p - onehot(y). */
 function setup(rng: Rng, d: number) {
@@ -116,7 +116,7 @@ export const generators: Generator[] = [
         ]),
         solution: [
           'The entries of $\\symp - \\mathrm{onehot}(\\symy)$ add up to $1 - 1 = 0$: the probabilities add up to 1, and the one-hot vector takes exactly 1 away.',
-          `Add the others: $${g.filter((_, i) => i !== k).map((x, n) => (n ? paren(x) : num(x))).join(' + ')} = ${num(others)}$.`,
+          `Add the others: $${g.filter((_, i) => i !== k).map((x, n) => (n ? par(x) : num(x))).join(' + ')} = ${num(others)}$.`,
           `The missing entry cancels that sum: $${num(v)}$.`,
           v < 0 ? 'It is negative, so it belongs to the correct option: $\\symp_{\\symy} - 1$.' : 'It is positive, so it belongs to a wrong option: its entry is just its probability.',
         ],

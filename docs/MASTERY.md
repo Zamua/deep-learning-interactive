@@ -33,7 +33,9 @@ One folder per concept, found by `import.meta.glob`, so adding a concept is addi
 
 The domain is the folder; `DOMAINS` in `src/atlas/index.ts` lists them in map order.
 `src/atlas/symbols.ts` is the one symbol map for the whole course, `src/atlas/kit.ts` holds
-generator helpers and `src/atlas/draw.ts` a drawing kit for explainers. A symbol whose
+the generator helpers every domain shares (traps, sums, shapes, numbers in TeX), and
+`src/atlas/draw.ts` a drawing kit for explainers. A domain's own `kit.ts` keeps only what that
+domain needs; another domain that needs one of those helpers imports it from that kit directly. A symbol whose
 course-wide note would be wrong in a concept, or would name something outside its prerequisite
 chain, gets a per-concept entry in `SCOPED` in the same file: explainers pick it up through
 `lookupFor(script.id)`, and practice pages through the `data-concept` of the problem.

@@ -1,8 +1,8 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, ints, pick, scale, vec } from '../../kit';
-import { dot, par, prodTex, sumTex } from '../kit';
+import { dot, int, ints, par, pick, scale, terms, vec } from '../../kit';
+import { prodTex } from '../kit';
 
-const terms = (a: number[], b: (number | string)[]) => a.map((x, i) => `(${x})(${b[i]})`).join(' + ');
+const parts = (a: number[], b: (number | string)[]) => a.map((x, i) => `(${x})(${b[i]})`).join(' + ');
 
 export const generators: Generator[] = [
   {
@@ -21,7 +21,7 @@ export const generators: Generator[] = [
         traps: traps.filter((t) => t.value !== v),
         solution: [
           `Multiply matching entries: $${w.map((a, i) => `${par(a)} \\times ${par(x[i]!)} = ${a * x[i]!}`).join(',\\ ')}$.`,
-          `Add the products: $${sumTex(w.map((a, i) => a * x[i]!))} = ${v}$.`,
+          `Add the products: $${terms(w.map((a, i) => a * x[i]!))} = ${v}$.`,
         ],
       };
     },
@@ -43,7 +43,7 @@ export const generators: Generator[] = [
         answer: { kind: 'number', value: x[k]! },
         traps: traps.filter((t) => t.value !== x[k]),
         solution: [
-          `Write out the dot product: $${terms(w, shown)} = ${v}$.`,
+          `Write out the dot product: $${parts(w, shown)} = ${v}$.`,
           n === 2
             ? `Multiply the known pair: $${known[0]}$.`
             : `Multiply the known pairs: $${known.join(',\\ ')}$. They add up to $${rest}$.`,

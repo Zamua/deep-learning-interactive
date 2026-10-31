@@ -1,9 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick, vec } from '../../kit';
-import { mat, par } from '../../networks/kit';
-import { clean, nonzero, traps, vtraps } from '../kit';
-import { shuffled } from '../../convnets/kit';
+import { clean, int, mat, nonzero, num, par, pick, shuffled, traps, vec, vtraps } from '../../kit';
 
 const dd = (top: string, bot: string): string => `\\frac{\\partial ${top}}{\\partial ${bot}}`;
 const argmax = (xs: readonly number[]): number => xs.indexOf(Math.max(...xs));

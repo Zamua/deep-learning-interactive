@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, ints, num, pick, vec } from '../../kit';
-import { argmaxOf, dot, mat, prods, terms } from '../kit';
+import { argmax, dot, int, ints, mat, num, pick, prods, terms, vec } from '../../kit';
 
 /** Entry range by difficulty: whole numbers from 0 at first, then negatives. */
 const range = (d: number): [number, number] => (d < 0.35 ? [0, 3] : d < 0.7 ? [-2, 3] : [-3, 4]);
@@ -117,10 +116,10 @@ export const generators: Generator[] = [
         const b = fallback ? [1, 0, -2] : ints(rng, 3, -3, 3);
         const wx = W.map((r) => dot(r, x));
         const s = wx.map((v, k) => v + b[k]!);
-        const k = argmaxOf(s);
-        const m = argmaxOf(wx);
+        const k = argmax(s);
+        const m = argmax(wx);
         if (k < 0 || m < 0 || k === m) continue;
-        const nb = argmaxOf(b);
+        const nb = argmax(b);
         const why = s.map((v, i) => {
           if (i === k) return null;
           const below = `Its score is $\\syms_{${i}} = ${v}$, below class ${k}'s $${s[k]}$.`;

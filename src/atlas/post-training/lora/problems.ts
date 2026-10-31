@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick, round } from '../../kit';
-import { big, choose, straps, traps } from '../kit';
+import { big, num, pick, round, straps, traps } from '../../kit';
+import { choose } from '../kit';
 
 const B = '\\sym{B}{B}';
 const A = '\\sym{A}{A}';

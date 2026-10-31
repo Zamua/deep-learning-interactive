@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { ALPHA, C, clean, ptraps, traps } from '../kit';
+import { clean, int, num, pick, round, traps } from '../../kit';
+import { ALPHA, C } from '../kit';
 
 /** 10^(-x) to two decimals, as the prompts give it. */
 const tenTo = (x: number): number => round(10 ** -x, 2);
@@ -27,7 +27,7 @@ export const generators: Generator[] = [
       return {
         prompt: `A family of models follows a scaling law with $${ALPHA} = ${num(alpha)}$. One run ends at loss $\\symL = ${num(L)}$. What loss does a run with ${times.toLocaleString('en-US')} times its compute reach? Round to two decimals.\n\nUse ${given.join(top > 2 ? ', ' : ' and ')}.`,
         answer: { kind: 'number', value: v, places: 2 },
-        traps: ptraps(v, 2, tr),
+        traps: traps(v, tr, 2),
         solution: [
           `In $${LAW}$, each factor of ten in $${C}$ multiplies the loss by $10^{-${ALPHA}} = ${pow(alpha)}$.`,
           k === 1

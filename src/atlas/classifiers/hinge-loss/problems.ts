@@ -1,7 +1,6 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, ints, num, pick, round, vec } from '../../kit';
-import { par, sumOf, terms } from '../kit';
+import { int, ints, num, par, pick, round, sum, terms, vec } from '../../kit';
 
 /** Scores: whole numbers from 0 at first, then negatives, then halves. */
 function scores(rng: Rng, n: number, d: number): number[] {
@@ -29,12 +28,12 @@ export const generators: Generator[] = [
         const s = scores(rng, n, d);
         const y = rng.int(n);
         const ps = parts(s, y);
-        const L = sumOf(ps.map((p) => p.h));
+        const L = sum(ps.map((p) => p.h));
         if (L === 0) continue;
         const traps = [
           { value: L + 1, why: 'That includes the right class\'s own term, $\\max(0,\\ \\syms_{\\symy} - \\syms_{\\symy} + 1) = 1$. The sum skips $j = \\symy$.' },
-          { value: sumOf(ps.map((p) => p.t)), why: 'That adds the negative terms too. Each term goes through $\\max(0, \\cdot)$, so a class far below the right one adds 0, never less.' },
-          { value: sumOf(ps.map((p) => Math.max(0, p.t - 1))), why: 'That leaves out the margin. Each term is $\\syms_j - \\syms_{\\symy} + 1$: a wrong class within 1 of the right one still costs.' },
+          { value: sum(ps.map((p) => p.t)), why: 'That adds the negative terms too. Each term goes through $\\max(0, \\cdot)$, so a class far below the right one adds 0, never less.' },
+          { value: sum(ps.map((p) => Math.max(0, p.t - 1))), why: 'That leaves out the margin. Each term is $\\syms_j - \\syms_{\\symy} + 1$: a wrong class within 1 of the right one still costs.' },
         ];
         return {
           prompt: `The scores are $\\syms = ${vec(s)}$ and the right class is $\\symy = ${y}$, counting from 0. What is the hinge loss?`,
@@ -94,7 +93,7 @@ export const generators: Generator[] = [
           : kind === 'close'
             ? [`Class ${j} is only $0.5$ below: $${num(s[j]!)} - ${par(sy)} + 1 = ${num(worst.t)} > 0$.`, `Winning is not enough: class ${j} is within 1 of the right class and adds $${num(worst.t)}$.`, null, `${own} Here the loss comes from class ${j}.`]
             : [`Class ${j} scores above the right class, so its term is positive.`, `The top score is class ${j}'s $${num(s[j]!)}$, not the right class's.`, null, `${own} Here the loss comes from class ${j}.`];
-      const L = sumOf(ps.map((p) => p.h));
+      const L = sum(ps.map((p) => p.h));
       return {
         prompt: `The scores are $\\syms = ${vec(s)}$ and the right class is $\\symy = ${y}$, counting from 0. Is the hinge loss exactly zero?`,
         answer: {

@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick } from '../../kit';
-import { big, clean, traps } from '../kit';
+import { big, clean, int, num, pick, traps } from '../../kit';
 
 /** A dataset size and a batch size that divides it. */
 function sizes(rng: Rng, d: number): { N: number; B: number } {

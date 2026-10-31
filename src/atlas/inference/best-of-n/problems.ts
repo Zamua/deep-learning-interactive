@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { choice, clean, power, powTex, traps, usePowers } from '../kit';
+import { clean, int, num, pick, round, traps } from '../../kit';
+import { choice, power, powTex, usePowers } from '../kit';
 
 /** Checkers that can tell a right answer from a wrong one, at least sometimes. */
 const CHECKERS = ['runs the unit tests on each program', 'plugs each answer back into the equation', 'verifies each proof step by step', 'runs each SQL query and compares its result to the expected table'];

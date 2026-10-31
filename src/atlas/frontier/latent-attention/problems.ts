@@ -1,9 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { pick } from '../../kit';
-import { big } from '../../convnets/kit';
 import { choice } from '../../inference/kit';
-import { straps, traps } from '../../networks/kit';
+import { big, pick, straps, traps } from '../../kit';
 
 const H = '\\sym{heads}{h}';
 const G = '\\sym{kvheads}{g}';

@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { choice, clean, repeat, traps } from '../kit';
+import { clean, int, num, pick, traps } from '../../kit';
+import { choice, repeat } from '../kit';
 
 /** Questions whose final answer is a number, with a right answer and nearby wrong ones. */
 const QUESTIONS: [string, number, number[]][] = [

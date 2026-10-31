@@ -1,6 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, ints, pick, vec } from '../../kit';
-import { argmax, big, commas, lit, mat, matrix, prodTex, shapeTex, traps, vtraps } from '../kit';
+import { argmax, big, commas, int, ints, mat, pick, shp, traps, vec, vtraps } from '../../kit';
+import { matrix, prodTex } from '../../linear-algebra/kit';
+import { lit } from '../../sequences/kit';
 
 const WU = '\\sym{WU}{W_U}';
 const WORDS = [
@@ -61,32 +62,32 @@ export const generators: Generator[] = [
             { value: [V], why: 'That is the shape of the scores. The matrix has a whole row of $d$ weights for every token.' },
             { value: [V, V], why: `Each row is dotted with $\\symh$, so a row has $d = ${dim}$ entries, not $V$.` },
           ],
-          solution: [`The scores are $\\syms = ${WU}\\,\\symh$, one per token, so $${WU}$ has one row per token: $V = ${big(V)}$ rows.`, `Each row is dotted with $\\symh$, so it has $d = ${dim}$ entries: $${WU}$ is $${shapeTex([V, dim])}$, the same shape as the embedding table.`],
+          solution: [`The scores are $\\syms = ${WU}\\,\\symh$, one per token, so $${WU}$ has one row per token: $V = ${big(V)}$ rows.`, `Each row is dotted with $\\symh$, so it has $d = ${dim}$ entries: $${WU}$ is $${shp([V, dim])}$, the same shape as the embedding table.`],
         };
       }
       if (kind === 1) {
         const v = [V];
         return {
-          prompt: `The unembedding $${WU}$ has shape $${shapeTex([V, dim])}$, and the last vector $\\symh$ has $${dim}$ numbers. What is the shape of the scores $\\syms$?`,
+          prompt: `The unembedding $${WU}$ has shape $${shp([V, dim])}$, and the last vector $\\symh$ has $${dim}$ numbers. What is the shape of the scores $\\syms$?`,
           answer: { kind: 'shape', value: v },
           traps: [
             { value: [dim], why: `That is the shape of $\\symh$. The product takes one dot product per row of $${WU}$: one per token.` },
             { value: [V, dim], why: `That is the shape of $${WU}$. Times a vector, it gives one number per row.` },
           ],
-          solution: [`$\\syms = ${WU}\\,\\symh$ dots every row of $${WU}$ with $\\symh$.`, `There are $${big(V)}$ rows, one per token, so $\\syms$ has shape $${shapeTex([V])}$.`],
+          solution: [`$\\syms = ${WU}\\,\\symh$ dots every row of $${WU}$ with $\\symh$.`, `There are $${big(V)}$ rows, one per token, so $\\syms$ has shape $${shp([V])}$.`],
         };
       }
       const n = d < 0.7 ? int(rng, 3, 20) : pick(rng, [128, 256, 1024, 2048]);
       const v = [n, V];
       return {
-        prompt: `A model's last vectors for $${n}$ positions form an array of shape $${shapeTex([n, dim])}$, one row per position. The unembedding $${WU}$ has shape $${shapeTex([V, dim])}$. What is the shape of the scores?`,
+        prompt: `A model's last vectors for $${n}$ positions form an array of shape $${shp([n, dim])}$, one row per position. The unembedding $${WU}$ has shape $${shp([V, dim])}$. What is the shape of the scores?`,
         answer: { kind: 'shape', value: v },
         traps: [
           { value: [n, dim], why: 'That is the input. Each position gets one score per token, so the last axis becomes $V$.' },
           { value: [V, n], why: 'That puts tokens first. Each position\'s row of $d$ numbers becomes a row of $V$ scores.' },
           { value: [V], why: `That scores only one position. Every one of the ${n} positions gets its own row of scores.` },
         ],
-        solution: [`Each position's vector is scored on its own: $d = ${dim}$ numbers become $V = ${big(V)}$ scores.`, `With ${n} positions: $${shapeTex(v)}$.`],
+        solution: [`Each position's vector is scored on its own: $d = ${dim}$ numbers become $V = ${big(V)}$ scores.`, `With ${n} positions: $${shp(v)}$.`],
       };
     },
   },
@@ -112,7 +113,7 @@ export const generators: Generator[] = [
           { value: dim * dim, why: `That is $d \\times d$. Both matrices have one row per token: $V \\times d$.` },
         ]),
         solution: [
-          `$E$ and $${WU}$ both have shape $(V, d) = ${shapeTex([V, dim])}$: $${big(V)} \\times ${dim} = ${big(one)}$ numbers each.`,
+          `$E$ and $${WU}$ both have shape $(V, d) = ${shp([V, dim])}$: $${big(V)} \\times ${dim} = ${big(one)}$ numbers each.`,
           ['Tying uses one table for both jobs, so it saves one whole copy', 'Separate, they hold two copies', 'Tied, they are a single table'][kind]! + `: $${big(v)}$.`,
         ],
       };
@@ -127,7 +128,7 @@ export const generators: Generator[] = [
       const dim = pick(rng, [2, 3, 8, 16, 64]);
       const named = d < 0.5 ? `${lit(words[j]!)}, id ${j}` : `id ${j}`;
       return {
-        prompt: `The embedding table $E$ has shape $${shapeTex([V, dim])}$, and the unembedding is tied to it. The model's last vector is $\\symh$. What is the score of token ${named}?`,
+        prompt: `The embedding table $E$ has shape $${shp([V, dim])}$, and the unembedding is tied to it. The model's last vector is $\\symh$. What is the score of token ${named}?`,
         answer: {
           kind: 'choice',
           options: [`$\\symh$ dotted with row ${j} of $E$`, `$\\symh$ dotted with column ${j} of $E$`, `Entry ${j} of $\\symh$`, `Row ${j} of $E$`],

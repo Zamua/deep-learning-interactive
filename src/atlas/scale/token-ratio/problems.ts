@@ -1,6 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick } from '../../kit';
-import { D, N, big, clean, traps, whys, words } from '../kit';
+import { big, clean, num, pick, traps } from '../../kit';
+import { whys } from '../../training/kit';
+import { D, N, words } from '../kit';
 
 /** Model sizes in billions, as real models come. */
 const SIZES = [1, 2, 3, 7, 8, 13, 30, 65, 70, 175, 280];

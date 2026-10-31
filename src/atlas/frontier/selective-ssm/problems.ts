@@ -1,8 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { big, bigText } from '../../convnets/kit';
 import { choice } from '../../inference/kit';
-import { clean, paren, traps } from '../../optimization/kit';
+import { big, clean, commas, int, num, par, pick, round, traps } from '../../kit';
 
 /** e^(-Δ) to two places, as prompts quote it. */
 const decay = (dt: number) => round(Math.exp(-dt), 2) + 0;
@@ -55,7 +53,7 @@ export const generators: Generator[] = [
             `Step 1: $\\symh_0 = 0$, so $a_1$ has nothing to fade: $\\symh_1 = ${b === 1 ? '\\symx_1' : `${b} \\times ${xs[0]}`} = ${num(hs[1]!)}$.`,
             ...xs.slice(1).map((x, i) => {
               const t = i + 2;
-              return `Step ${t}: $\\symh_{${t}} = ${num(as[t - 1]!)} \\times ${paren(hs[t - 1]!)} + ${b === 1 ? '' : `${b} \\times `}${x} = ${num(hs[t]!)}$.`;
+              return `Step ${t}: $\\symh_{${t}} = ${num(as[t - 1]!)} \\times ${par(hs[t - 1]!)} + ${b === 1 ? '' : `${b} \\times `}${x} = ${num(hs[t]!)}$.`;
             }),
             ...(viaDelta && ans !== raw ? [`Rounded: $${last} \\approx ${num(ans, 2)}$.`] : []),
           ],
@@ -119,18 +117,18 @@ export const generators: Generator[] = [
         const T = pick(rng, [1000, 4000, 8000, 100_000]);
         const v = clean((layers * S * 2) / 1e6);
         return {
-          prompt: `A state space model has ${layers} layers, and each layer keeps a state of ${bigText(S)} numbers, stored in 2 bytes each. How many MB does its state take while generating with ${bigText(T)} tokens of context?`,
+          prompt: `A state space model has ${layers} layers, and each layer keeps a state of ${commas(S)} numbers, stored in 2 bytes each. How many MB does its state take while generating with ${commas(T)} tokens of context?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
-            { value: v * T, why: `That grows the state with the tokens. The state is a fixed set of numbers per layer, the same at ${bigText(T)} tokens as at one.` },
+            { value: v * T, why: `That grows the state with the tokens. The state is a fixed set of numbers per layer, the same at ${commas(T)} tokens as at one.` },
             { value: v / 2, why: 'That counts numbers, not bytes. Each number takes 2 bytes.' },
             { value: v / layers, why: `That is one layer's state. Each of the ${layers} layers keeps its own.` },
             { value: v * 2, why: 'That doubles it, as a KV cache doubles for keys and values. The state is one set of numbers per layer.' },
           ]),
           solution: [
-            `The state is a fixed ${bigText(S)} numbers per layer, whatever the length.`,
+            `The state is a fixed ${commas(S)} numbers per layer, whatever the length.`,
             `$${layers} \\times ${big(S)} \\times 2 = ${big(layers * S * 2)}$ bytes.`,
-            `A megabyte is a million bytes: $${num(v)}$ MB, at ${bigText(T)} tokens or at any other length.`,
+            `A megabyte is a million bytes: $${num(v)}$ MB, at ${commas(T)} tokens or at any other length.`,
           ],
         };
       }
@@ -144,19 +142,19 @@ export const generators: Generator[] = [
         const r = (2 * T * width) / S;
         if (r !== round(r, 1) || r < 2) continue;
         const v = clean(r);
-        const stateText = d >= 0.7 ? `a state of shape $(${big(ch)}, ${N})$ per layer` : `a state of ${bigText(S)} numbers per layer`;
+        const stateText = d >= 0.7 ? `a state of shape $(${big(ch)}, ${N})$ per layer` : `a state of ${commas(S)} numbers per layer`;
         return {
-          prompt: `A transformer and a state space model each have ${layers} layers and store each number in ${bytes} bytes. The transformer has width $d = ${big(width)}$ and keeps a KV cache; the state space model keeps ${stateText}. With ${bigText(T)} tokens of context, how many times as much memory does the KV cache take as the state?`,
+          prompt: `A transformer and a state space model each have ${layers} layers and store each number in ${bytes} bytes. The transformer has width $d = ${big(width)}$ and keeps a KV cache; the state space model keeps ${stateText}. With ${commas(T)} tokens of context, how many times as much memory does the KV cache take as the state?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: v / 2, why: 'That counts one vector per token per layer. The cache keeps two: a key and a value.' },
-            { value: (2 * width) / S, why: `That is one token's cache against the state. The cache holds all ${bigText(T)} tokens.` },
+            { value: (2 * width) / S, why: `That is one token's cache against the state. The cache holds all ${commas(T)} tokens.` },
             { value: S / (2 * T * width), why: 'That is the state over the cache, upside down.' },
             { value: v * layers, why: 'That counts the layers for the cache only. Both models keep their memory at every layer, so the layers cancel.' },
           ]),
           solution: [
             `Per layer, the cache holds $2 \\times \\text{tokens} \\times d = 2 \\times ${big(T)} \\times ${big(width)} = ${big(2 * T * width)}$ numbers.`,
-            ...(d >= 0.7 ? [`Per layer, the state holds $${big(ch)} \\times ${N} = ${big(S)}$ numbers.`] : [`Per layer, the state holds ${bigText(S)} numbers, at any length.`]),
+            ...(d >= 0.7 ? [`Per layer, the state holds $${big(ch)} \\times ${N} = ${big(S)}$ numbers.`] : [`Per layer, the state holds ${commas(S)} numbers, at any length.`]),
             `The layers and the bytes per number are the same for both, so they cancel: $${big(2 * T * width)} / ${big(S)} = ${big(v)}$.`,
           ],
         };
@@ -170,7 +168,7 @@ export const generators: Generator[] = [
       const f = pick(rng, [2, 3, 4, 10]);
       const T2 = T1 * f;
       return {
-        prompt: `A transformer with a KV cache and a state space model of the same depth generate text. Their context grows from ${bigText(T1)} to ${bigText(T2)} tokens. What happens to the memory each one keeps?`,
+        prompt: `A transformer with a KV cache and a state space model of the same depth generate text. Their context grows from ${commas(T1)} to ${commas(T2)} tokens. What happens to the memory each one keeps?`,
         answer: choice([
           { text: `The cache grows ${f} times; the state stays the same size`, why: null },
           { text: `The cache and the state both grow ${f} times`, why: 'The state is a fixed set of numbers per layer, updated in place at every token. It never grows with the length.' },

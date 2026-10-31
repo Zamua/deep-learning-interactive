@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { choose, clean, LN, minus, SIG, traps, useSig } from '../kit';
+import { clean, int, LN2, minus, num, pick, traps } from '../../kit';
+import { choose, SIG, useSig } from '../kit';
 
 const r = '\\sym{r}{r}';
 
@@ -19,7 +19,7 @@ function scores(rng: Rng, d: number): [number, number] {
 const ra = `${r}_a`;
 const rb = `${r}_b`;
 const ri = (who: string) => `${r}_${who}`;
-const useLnSig = (zs: number[]) => [...new Set(zs.map(SIG))].sort((x, y) => y - x).map((p) => `$\\ln ${num(p, 2)} \\approx ${num(LN(p), 2)}$`).join(', ');
+const useLnSig = (zs: number[]) => [...new Set(zs.map(SIG))].sort((x, y) => y - x).map((p) => `$\\ln ${num(p, 2)} \\approx ${num(LN2(p), 2)}$`).join(', ');
 
 export const generators: Generator[] = [
   {
@@ -28,7 +28,7 @@ export const generators: Generator[] = [
       const [a, b] = scores(rng, d);
       const aWins = rng.int(2) === 0;
       const z = clean(aWins ? a - b : b - a);
-      const v = -LN(SIG(z));
+      const v = -LN2(SIG(z));
       const w = aWins ? 'a' : 'b';
       const l = aWins ? 'b' : 'a';
       return {
@@ -37,8 +37,8 @@ export const generators: Generator[] = [
         traps: traps(
           v,
           [
-            { value: -LN(SIG(-z)), why: `That subtracts the scores the wrong way round: the loss uses the preferred answer's score minus the other's.` },
-            { value: LN(SIG(z)), why: 'That leaves out the minus sign. A loss is never negative.' },
+            { value: -LN2(SIG(-z)), why: `That subtracts the scores the wrong way round: the loss uses the preferred answer's score minus the other's.` },
+            { value: LN2(SIG(z)), why: 'That leaves out the minus sign. A loss is never negative.' },
             { value: SIG(z), why: `That is the probability the model gives answer ${w}. The loss is minus its log.` },
           ],
           2,

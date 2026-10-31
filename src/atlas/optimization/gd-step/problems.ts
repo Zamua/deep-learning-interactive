@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick, vec } from '../../kit';
-import { clean, minus, nonzero, paren, tenth, traps, vtraps } from '../kit';
+import { clean, int, minus, nonzero, num, par, pick, tenth, traps, vec, vtraps } from '../../kit';
 
 /** A point, a gradient and a step size, harder with difficulty. */
 function setup(rng: Rng, d: number): { w: number; g: number; eta: number } {
@@ -29,8 +28,8 @@ export const generators: Generator[] = [
         ]),
         solution: [
           'The update is $\\symw \\leftarrow \\symw - \\symeta\\,\\symg$.',
-          `The step: $\\symeta\\,\\symg = ${num(eta)} \\times ${paren(g)} = ${num(step)}$.`,
-          step < 0 ? `Subtract it: $${num(w)} - ${paren(step)} = ${minus(w, step)} = ${num(v)}$. Subtracting a negative adds.` : `Subtract it: $${minus(w, step)} = ${num(v)}$.`,
+          `The step: $\\symeta\\,\\symg = ${num(eta)} \\times ${par(g)} = ${num(step)}$.`,
+          step < 0 ? `Subtract it: $${num(w)} - ${par(step)} = ${minus(w, step)} = ${num(v)}$. Subtracting a negative adds.` : `Subtract it: $${minus(w, step)} = ${num(v)}$.`,
           signNote(g),
         ],
       };
@@ -115,13 +114,13 @@ export const generators: Generator[] = [
         ]),
         solution: one
           ? [
-              `The step moves $\\symw$ by $\\Delta\\symw = -\\symeta\\symg = -${num(eta)} \\times ${paren(g[0]!)} = ${num(clean(-eta * g[0]!))}$.`,
+              `The step moves $\\symw$ by $\\Delta\\symw = -\\symeta\\symg = -${num(eta)} \\times ${par(g[0]!)} = ${num(clean(-eta * g[0]!))}$.`,
               'Near the current point $\\symf$ changes by about the slope times the move: $\\Delta\\symf \\approx \\symg\\,\\Delta\\symw = -\\symeta\\symg^2$.',
-              `Here: $-${num(eta)} \\times ${paren(g[0]!)}^2 = ${num(v)}$.`,
+              `Here: $-${num(eta)} \\times ${par(g[0]!)}^2 = ${num(v)}$.`,
             ]
           : [
               'Each entry of $\\symw$ moves by $-\\symeta\\symg_i$ and adds about $\\symg_i \\times (-\\symeta\\symg_i) = -\\symeta\\symg_i^2$ to the change in $\\symf$.',
-              `Square each entry and add: $${g.map((x) => `${paren(x)}^2`).join(' + ')} = ${g.map((x) => num(x * x)).join(' + ')} = ${sq}$.`,
+              `Square each entry and add: $${g.map((x) => `${par(x)}^2`).join(' + ')} = ${g.map((x) => num(x * x)).join(' + ')} = ${sq}$.`,
               `Times $-\\symeta$: $\\Delta\\symf \\approx -${num(eta)} \\times ${sq} = ${num(v)}$, negative because every $\\symg_i^2$ is positive.`,
             ],
       };

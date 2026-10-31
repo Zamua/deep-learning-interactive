@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { clean, minus, nonzero, paren, tenth, traps, whys } from '../kit';
+import { clean, int, minus, nonzero, num, par, pick, round, tenth, traps } from '../../kit';
+import { whys } from '../kit';
 
 const STEP = '\\symw \\leftarrow \\symw - \\symeta\\,\\hat m / (\\sqrt{\\hat v} + \\epsilon)';
 
@@ -32,7 +32,7 @@ export const generators: Generator[] = [
         solution: [
           `The update: $${STEP}$.`,
           `$\\sqrt{\\hat v} = \\sqrt{${num(vh)}} = ${num(root)}$.`,
-          `The step: $\\symeta\\,\\hat m / \\sqrt{\\hat v} = ${num(eta)} \\times ${paren(mh)} / ${num(root)} = ${num(step)}$.`,
+          `The step: $\\symeta\\,\\hat m / \\sqrt{\\hat v} = ${num(eta)} \\times ${par(mh)} / ${num(root)} = ${num(step)}$.`,
           ...(askW ? [`$\\symw \\leftarrow ${minus(w, step)} = ${num(ans)}$.`] : []),
           `The ratio $\\hat m / \\sqrt{\\hat v} = ${num(k)}$ is the gradient in units of its own typical size, so the step is $${num(k)}$ times $\\symeta$.`,
         ],
@@ -81,8 +81,8 @@ export const generators: Generator[] = [
           { value: round((g1 + g2) / 2, 2), why: 'That is the plain mean of the two gradients. The running average weighs the newer one more: $0.1$ against $0.09$.' },
         ].filter((t) => Math.abs(t.value - ans) >= 0.01)),
         solution: [
-          `Step 1, from $m = 0$: $m = 0.9 \\times 0 + 0.1 \\times ${paren(g1)} = ${num(m1)}$.`,
-          `Step 2: $m = 0.9 \\times ${paren(m1)} + 0.1 \\times ${paren(g2)} = ${num(clean(0.9 * m1))} ${g2 < 0 ? '-' : '+'} ${num(clean(Math.abs(0.1 * g2)))} = ${num(m2)}$.`,
+          `Step 1, from $m = 0$: $m = 0.9 \\times 0 + 0.1 \\times ${par(g1)} = ${num(m1)}$.`,
+          `Step 2: $m = 0.9 \\times ${par(m1)} + 0.1 \\times ${par(g2)} = ${num(clean(0.9 * m1))} ${g2 < 0 ? '-' : '+'} ${num(clean(Math.abs(0.1 * g2)))} = ${num(m2)}$.`,
           'The correction at $t = 2$: $\\beta_1^2 = 0.9^2 = 0.81$, so $1 - \\beta_1^2 = 1 - 0.81 = 0.19$.',
           `$\\hat m = m / 0.19 = ${num(m2)} / 0.19 \\approx ${num(ans, 2)}$.`,
         ],

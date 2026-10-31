@@ -1,6 +1,8 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, ints, num, pick, vec } from '../../kit';
-import { argmax, clean, dot, E2, nonzero, onehot, probs, prodTex, traps, useExp, vtraps } from '../kit';
+import { argmax, clean, dot, E2, int, ints, nonzero, num, pick, traps, vec, vtraps } from '../../kit';
+import { prodTex } from '../../linear-algebra/kit';
+import { onehot, probs } from '../../optimization/kit';
+import { useExp } from '../kit';
 
 const states = (hs: readonly (readonly number[])[]): string => hs.map((h, j) => `$\\symh_{${j}} = ${vec(h)}$`).join(', ');
 const sumOf = (xs: readonly number[]): number => xs.reduce((a, b) => a + b, 0);

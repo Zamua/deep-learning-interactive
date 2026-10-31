@@ -2,16 +2,9 @@
 import type { Rng } from '../../core/rand';
 import { num } from '../kit';
 
-export { add, dot, prods, straps, traps, vtraps } from '../networks/kit';
-export { clean, nonzero } from '../optimization/kit';
-export { whys } from '../training/kit';
-
 /** TeX for the symbols these concepts add, through the generic `\sym{key}{tex}` macro. */
 export const D = '\\sym{d}{d}';
 export const F = '\\sym{f}{f}';
-
-/** A whole number for TeX with `{,}` thousands separators: `8{,}192`. */
-export const big = (n: number): string => num(n).replace(/\B(?=(\d{3})+(?!\d))/g, '{,}');
 
 /** Tokens in code font for prose: `K D R A`. */
 export const seqText = (xs: readonly string[]): string => `\`${xs.join(' ')}\``;

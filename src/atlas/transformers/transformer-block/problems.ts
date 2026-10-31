@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { big, bigText, clean, D, shp, straps, T, tenth, traps, vecT, vtraps, X } from '../kit';
+import { big, clean, commas, int, pick, shp, straps, tenth, traps, vtraps } from '../../kit';
+import { D, T, vecT, X } from '../kit';
 
 /** A sequence length and a width, larger with difficulty. */
 function dims(rng: Rng, d: number): [number, number] {
@@ -40,7 +40,7 @@ export const generators: Generator[] = [
         answer: { kind: 'order', items },
         solution: [
           `First the attention branch: layer norm, then multi-head attention, then add the input back: $${X} + \\mathrm{Attn}(\\mathrm{LN}(${X}))$.`,
-          `Then the MLP branch on that sum: layer norm, then the MLP (up to $4${D} = ${bigText(4 * dm)}$, ReLU, back to $${D}$), then add the sum back.`,
+          `Then the MLP branch on that sum: layer norm, then the MLP (up to $4${D} = ${commas(4 * dm)}$, ReLU, back to $${D}$), then add the sum back.`,
           `Every step but the MLP's middle keeps the shape $${io}$, so blocks can be stacked.`,
         ],
       };
@@ -63,13 +63,13 @@ export const generators: Generator[] = [
         answer: { kind: 'shape', value: ans },
         traps: straps(ans, [
           which === 'hidden'
-            ? { value: [t, dm], why: `The MLP first widens each token to $4${D} = ${bigText(4 * dm)}$.` }
+            ? { value: [t, dm], why: `The MLP first widens each token to $4${D} = ${commas(4 * dm)}$.` }
             : { value: [t, 4 * dm], why: `That is the MLP's hidden layer. It projects back down to $${D}$, so the block keeps the shape $${shp([t, dm])}$.` },
           { value: [t, t], why: `That is the shape of one head's attention weights. Each token still leaves with one vector of width $${D}$.` },
           { value: [ans[1]!, t], why: 'That is the transpose: one row per token.' },
         ]),
         solution: which === 'hidden'
-          ? [`The MLP acts on each token alone: it widens it from $${D} = ${bigText(dm)}$ to $4${D} = ${bigText(4 * dm)}$, applies the ReLU, then projects back.`, `So the hidden layer is $${shp(ans)}$.`]
+          ? [`The MLP acts on each token alone: it widens it from $${D} = ${commas(dm)}$ to $4${D} = ${commas(4 * dm)}$, applies the ReLU, then projects back.`, `So the hidden layer is $${shp(ans)}$.`]
           : [
               `Layer norm, attention, the adds and the MLP's output all keep one vector of width $${D}$ per token.`,
               `So ${ask} is $${shp(ans)}$, the same as the input.`,

@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { big, commas, lit, lits, traps } from '../kit';
+import { big, commas, int, pick, traps } from '../../kit';
+import { lit, lits } from '../../sequences/kit';
 
 const SENTENCES = [
   ['the', 'cat', 'sat', 'on', 'a', 'mat'],

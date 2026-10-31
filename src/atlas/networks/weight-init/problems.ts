@@ -1,7 +1,7 @@
 import type { Generator, Problem } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick, round } from '../../kit';
-import { clean, placesFor, traps } from '../kit';
+import { clean, int, num, pick, round, traps } from '../../kit';
+import { placesFor } from '../kit';
 
 const P = 2;
 const sqrt2 = '\\sqrt{2} \\approx 1.41';

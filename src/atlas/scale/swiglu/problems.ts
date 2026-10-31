@@ -1,6 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round, vec } from '../../kit';
-import { D, big, clean, traps, vtraps, whys } from '../modern-kit';
+import { big, clean, int, num, pick, round, traps, vec, vtraps } from '../../kit';
+import { whys } from '../../training/kit';
+import { D } from '../modern-kit';
 
 /** The sigmoid at the integers the problems use, to two decimals, as the prompts give it. */
 const SIG: Record<number, number> = { [-3]: 0.05, [-2]: 0.12, [-1]: 0.27, 0: 0.5, 1: 0.73, 2: 0.88, 3: 0.95 };

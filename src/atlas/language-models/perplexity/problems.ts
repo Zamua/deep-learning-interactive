@@ -1,6 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, round } from '../../kit';
-import { big, commas, traps } from '../kit';
+import { big, commas, int, num, pick, round, traps } from '../../kit';
 
 const LOW = [0.5, 0.25, 0.125];
 const PSET = [0.1, 0.2, 0.25, 0.4, 0.5, 0.6, 0.8, 0.9];

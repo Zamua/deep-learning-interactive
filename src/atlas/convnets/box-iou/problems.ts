@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick, round } from '../../kit';
-import { traps } from '../../networks/kit';
+import { int, num, pick, round, traps } from '../../kit';
 import { type Box, area, edges, hull, inter, iou, tex, union } from './box';
 
 type Kind = 'overlap' | 'nested' | 'apart';

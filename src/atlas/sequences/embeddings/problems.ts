@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick, vec } from '../../kit';
-import { lit, mat, ORD, shapeTex, tenth, vtraps } from '../kit';
+import { int, mat, ORD, pick, shp, tenth, vec, vtraps } from '../../kit';
+import { lit } from '../kit';
 
 const VOCABS = [
   ['the', 'cat', 'sat', 'on', 'mat'],
@@ -74,7 +74,7 @@ export const generators: Generator[] = [
           { value: V + dim, why: 'That adds $V$ and $d$. The table has $V$ rows of $d$ numbers each: multiply.' },
           { value: V, why: `That is one number per token. Each token has a whole row of $d = ${dim}$ numbers.` },
         ].filter((t) => t.value !== n),
-        solution: [`$E$ has one row per token and one column per dimension: shape $(V, d) = ${shapeTex([V, dim])}$.`, `$${big(V)} \\times ${dim} = ${big(n)}$ numbers.`],
+        solution: [`$E$ has one row per token and one column per dimension: shape $(V, d) = ${shp([V, dim])}$.`, `$${big(V)} \\times ${dim} = ${big(n)}$ numbers.`],
       };
     },
   },
@@ -90,10 +90,10 @@ export const generators: Generator[] = [
       const ids = single ? [n] : [B, n];
       const out = [...ids, dim];
       const given = single
-        ? `A sequence of token ids, \`ids\`, has shape $${shapeTex(ids)}$.`
-        : `An array of token ids, \`ids\`, has shape $${shapeTex(ids)}$.`;
+        ? `A sequence of token ids, \`ids\`, has shape $${shp(ids)}$.`
+        : `An array of token ids, \`ids\`, has shape $${shp(ids)}$.`;
       return {
-        prompt: `${given} The embedding table $E$ has shape $(V, d) = ${shapeTex([V, dim])}$. What is the shape of \`E[ids]\`?`,
+        prompt: `${given} The embedding table $E$ has shape $(V, d) = ${shp([V, dim])}$. What is the shape of \`E[ids]\`?`,
         answer: { kind: 'shape', value: out },
         traps: [
           { value: ids, why: 'That is the shape of the ids. Each id is replaced by a whole row of $d$ numbers, which adds an axis.' },
@@ -101,7 +101,7 @@ export const generators: Generator[] = [
           { value: [V, dim], why: 'That is the shape of $E$ itself. The lookup keeps the shape of the ids and adds $d$.' },
           ...(single ? [] : [{ value: [B, dim], why: `That loses the sequence axis. Every one of the ${n} ids in a sequence gets its own vector.` }]),
         ],
-        solution: [`Every id in \`ids\` is replaced by its row of $E$, which has $d = ${dim}$ numbers.`, `So the ids' shape $${shapeTex(ids)}$ gains a last axis of ${dim}: $${shapeTex(out)}$.`],
+        solution: [`Every id in \`ids\` is replaced by its row of $E$, which has $d = ${dim}$ numbers.`, `So the ids' shape $${shp(ids)}$ gains a last axis of ${dim}: $${shp(out)}$.`],
       };
     },
   },
@@ -113,7 +113,7 @@ export const generators: Generator[] = [
       const k = rng.int(V);
       const oh = Array.from({ length: V }, (_, i) => (i === k ? 1 : 0));
       return {
-        prompt: `An embedding table $E$ has shape $${shapeTex([V, dim])}$. Token id ${k}, written as a one-hot vector, is $${vec(oh)}$. Why does \`onehot @ E\` equal row ${k} of $E$?`,
+        prompt: `An embedding table $E$ has shape $${shp([V, dim])}$. Token id ${k}, written as a one-hot vector, is $${vec(oh)}$. Why does \`onehot @ E\` equal row ${k} of $E$?`,
         answer: {
           kind: 'choice',
           options: [

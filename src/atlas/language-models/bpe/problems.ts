@@ -1,7 +1,8 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick, scale, vec } from '../../kit';
-import { big, commas, lit, times, traps, vtraps } from '../kit';
+import { big, commas, int, pick, scale, traps, vec, vtraps } from '../../kit';
+import { lit } from '../../sequences/kit';
+import { times } from '../kit';
 
 const ALPHABETS = [
   ['a', 'b', 'c', 'd', 'e'],

@@ -1,7 +1,6 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, vec } from '../../kit';
-import { big, bigText, clean, shp, shuffled, straps, sum, tenth, traps } from '../kit';
+import { big, clean, commas, int, num, pick, shp, shuffled, straps, sum, tenth, traps, vec } from '../../kit';
 
 interface Input {
   /** What the input is, for the prompt. */
@@ -103,7 +102,7 @@ export const generators: Generator[] = [
         dec1: { name: "the decoder's first weight matrix, the one that reads the code", v: [H, k], mirror: [k, H] },
         dec2: { name: "the decoder's last weight matrix", v: [D, H], mirror: [H, D] },
       };
-      const sizes = `The encoder maps $\\symD = ${big(D)}$ inputs to $\\symH = ${H}$ hidden units, then to a code of $k = ${k}$. The decoder mirrors it, from ${k} back to ${H} and then ${bigText(D)}.`;
+      const sizes = `The encoder maps $\\symD = ${big(D)}$ inputs to $\\symH = ${H}$ hidden units, then to a code of $k = ${k}$. The decoder mirrors it, from ${k} back to ${H} and then ${commas(D)}.`;
       const w = W[ask]!;
       return {
         prompt: `${sizes} What is the shape of ${w.name}?`,

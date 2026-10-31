@@ -1,7 +1,6 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { pick } from '../../kit';
-import { big, shp, shuffled, straps, traps } from '../kit';
+import { big, pick, shp, shuffled, straps, traps } from '../../kit';
 
 interface Img {
   h: number;

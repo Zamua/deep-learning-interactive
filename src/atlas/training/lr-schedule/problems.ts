@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick, round } from '../../kit';
-import { big, clean, commas, traps, whys } from '../kit';
+import { big, clean, commas, num, pick, round, traps } from '../../kit';
+import { whys } from '../kit';
 
 /** Fractions t/T with cosines a learner can be handed, as [label, fraction, cos(pi t / T) given]. */
 const COS: [string, number, number][] = [

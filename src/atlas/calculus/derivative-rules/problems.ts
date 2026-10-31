@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick } from '../../kit';
-import { cleanTraps, dPoly, evalPoly, joinSigned, paren, polyExpr, polyTex, type Term } from '../kit';
+import { int, num, pick, traps } from '../../kit';
+import { dPoly, evalPoly, joinSigned, paren, polyExpr, polyTex, type Term } from '../kit';
 
 /** One sentence per term: what the power rule does to it. */
 function termStep(t: Term): string {
@@ -126,14 +126,14 @@ export const generators: Generator[] = [
         const lnPart = { neg: c < 0, body: `${C(c)}\\ln \\symx` };
         const fTex = joinSigned([...(pow ? [{ neg: pow.c < 0, body: polyTex([{ ...pow, c: Math.abs(pow.c) }]) }] : []), lnPart]);
         const dTex = joinSigned([...(pow ? [{ neg: pow.c < 0, body: polyTex(dPoly([{ ...pow, c: Math.abs(pow.c) }])) }] : []), { neg: c < 0, body: `\\dfrac{${Math.abs(c)}}{\\symx}` }]);
-        const traps = [
+        const cands = [
           { value: dPow + c, why: `That treats $\\ln \\symx$ like $\\symx$, whose slope is 1. The slope of $\\ln \\symx$ is $\\dfrac{1}{\\symx}$.` },
           { value: dPow + c * x, why: `That multiplies by $\\symx$. The slope of $\\ln \\symx$ is $\\dfrac{1}{\\symx}$, so divide by ${x}.` },
         ];
         return {
           prompt: `$\\symf(\\symx) = ${fTex}$. What is $\\symf'(${x})$?`,
           answer: { kind: 'number', value: v },
-          traps: cleanTraps(traps, v),
+          traps: traps(v, cands),
           solution: [
             ...(pow ? [termStep(pow)] : []),
             `$${c < 0 ? '-' : ''}${C(c)}\\ln \\symx$: the derivative of $\\ln \\symx$ is $\\dfrac{1}{\\symx}$, so this is $${c < 0 ? '-' : ''}\\dfrac{${Math.abs(c)}}{\\symx}$.`,
@@ -151,14 +151,14 @@ export const generators: Generator[] = [
       const body = `e^{${a}\\symx}`;
       const fTex = joinSigned([{ neg: c < 0, body: `${C(c)}${body}` }, ...(pow ? [{ neg: pow.c < 0, body: polyTex([{ ...pow, c: Math.abs(pow.c) }]) }] : [])]);
       const dTex = joinSigned([{ neg: ca < 0, body: `${Math.abs(ca)}${body}` }, ...(pow ? dPoly([pow]).map((t) => ({ neg: t.c < 0, body: polyTex([{ ...t, c: Math.abs(t.c) }]) })) : [])]);
-      const traps = [
+      const cands = [
         { value: c + dPow, why: `That leaves the ${a} where it was. The number multiplying $\\symx$ in the power comes out in front: $${body}$ becomes $${a}${body}$.` },
         { value: c, why: `That is $\\symf(0)$, the height at 0. The question asks for the slope.` },
       ];
       return {
         prompt: `$\\symf(\\symx) = ${fTex}$. What is $\\symf'(0)$?`,
         answer: { kind: 'number', value: v },
-        traps: cleanTraps(traps, v),
+        traps: traps(v, cands),
         solution: [
           `$${c < 0 ? '-' : ''}${C(c)}${body}$: the ${a} in the power comes out in front: $${paren(c)} \\times ${paren(a)} = ${ca}$, so $${ca}${body}$.`,
           ...(pow ? [termStep(pow)] : []),

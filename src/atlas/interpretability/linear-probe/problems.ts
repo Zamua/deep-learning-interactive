@@ -1,7 +1,7 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick, vec } from '../../kit';
-import { dot, nonzero, prods, traps, whys } from '../kit';
+import { dot, int, nonzero, num, pick, prods, traps, vec } from '../../kit';
+import { whys } from '../../training/kit';
 
 const PROPS = ['is this token part of a name', 'is the sentence in the past tense', 'is this token inside a quote', 'is the number even', 'is the text in French', 'is this word a noun'];
 const TENSES = ['past', 'present', 'future'];

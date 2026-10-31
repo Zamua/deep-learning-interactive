@@ -1,7 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
 import type { Rng } from '../../../core/rand';
-import { int, num, pick, vec } from '../../kit';
-import { clean, minus, nonzero, paren, tenth, traps, vtraps } from '../kit';
+import { clean, int, minus, nonzero, num, par, pick, tenth, traps, vec, vtraps } from '../../kit';
 
 /** A 2-class, 2-feature classifier mid-step: W, b, x, y, the softmax output p and the score gradient ds. */
 function setup(rng: Rng, d: number) {
@@ -49,8 +48,8 @@ export const generators: Generator[] = [
         solution: [
           dsStep(o),
           `$${Wij(i, j)}$ sits in row ${i}, so it takes $d\\syms_{${i}} = ${num(o.ds[i]!)}$; column ${j} takes $\\symx_{${j}} = ${num(o.x[j]!)}$.`,
-          `Its gradient: $d${Wij(i, j)} = d\\syms_{${i}}\\, \\symx_{${j}} = ${paren(o.ds[i]!)} \\times ${paren(o.x[j]!)} = ${num(dW)}$.`,
-          `Step against it: $${Wij(i, j)} - \\symeta\\, d${Wij(i, j)} = ${num(w)} - ${num(o.eta)} \\times ${paren(dW)} = ${minus(w, step)} = ${num(v)}$.`,
+          `Its gradient: $d${Wij(i, j)} = d\\syms_{${i}}\\, \\symx_{${j}} = ${par(o.ds[i]!)} \\times ${par(o.x[j]!)} = ${num(dW)}$.`,
+          `Step against it: $${Wij(i, j)} - \\symeta\\, d${Wij(i, j)} = ${num(w)} - ${num(o.eta)} \\times ${par(dW)} = ${minus(w, step)} = ${num(v)}$.`,
         ],
       };
     },
@@ -72,7 +71,7 @@ export const generators: Generator[] = [
         solution: [
           'Each bias adds straight into its own score, so its gradient is that score\'s gradient: $\\partial \\symL / \\partial \\symb = \\symp - \\mathrm{onehot}(\\symy)$.',
           dsStep(o),
-          ...o.b.map((b, k) => `Entry ${k} steps against its own gradient: $\\symb_{${k}} - \\symeta\\, d\\syms_{${k}} = ${num(b)} - ${num(o.eta)} \\times ${paren(o.ds[k]!)} = ${minus(b, clean(o.eta * o.ds[k]!))} = ${num(v[k]!)}$.`),
+          ...o.b.map((b, k) => `Entry ${k} steps against its own gradient: $\\symb_{${k}} - \\symeta\\, d\\syms_{${k}} = ${num(b)} - ${num(o.eta)} \\times ${par(o.ds[k]!)} = ${minus(b, clean(o.eta * o.ds[k]!))} = ${num(v[k]!)}$.`),
         ],
       };
     },

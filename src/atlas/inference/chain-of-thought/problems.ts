@@ -1,6 +1,6 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick } from '../../kit';
-import { big, bigText, choice, clean, traps } from '../kit';
+import { big, clean, commas, int, num, pick, traps } from '../../kit';
+import { choice } from '../kit';
 
 /** Tasks whose answer takes several steps, each built on the last. */
 const MULTI = [
@@ -38,7 +38,7 @@ export const generators: Generator[] = [
         const R = m * A;
         const v = m + 1;
         return {
-          prompt: `Asked directly, a model answers in ${A} tokens. With chain of thought it first writes ${bigText(R)} tokens of steps, then the same ${A}-token answer. Each token takes the same time to write. How many times as long does the reply with steps take?`,
+          prompt: `Asked directly, a model answers in ${A} tokens. With chain of thought it first writes ${commas(R)} tokens of steps, then the same ${A}-token answer. Each token takes the same time to write. How many times as long does the reply with steps take?`,
           answer: { kind: 'number', value: v },
           traps: traps(v, [
             { value: m, why: `That is the steps alone over the direct answer. The reply with steps writes the steps and then the ${A}-token answer too.` },
@@ -56,21 +56,21 @@ export const generators: Generator[] = [
       const extra = clean((R * t) / 1000);
       if (kind === 'extra') {
         return {
-          prompt: `A model writes one token every ${t} ms. Asked directly, it answers in ${A} tokens. With chain of thought it first writes ${bigText(R)} tokens of steps, then the same answer. How many seconds longer does the reply with steps take?`,
+          prompt: `A model writes one token every ${t} ms. Asked directly, it answers in ${A} tokens. With chain of thought it first writes ${commas(R)} tokens of steps, then the same answer. How many seconds longer does the reply with steps take?`,
           answer: { kind: 'number', value: extra },
           traps: traps(extra, [
             { value: total, why: 'That is the whole reply with steps. The direct reply writes the same answer tokens, so only the steps are extra.' },
             { value: R * t, why: 'That is in milliseconds. Divide by 1,000 for seconds.' },
           ]),
           solution: [
-            `The two replies end with the same ${A} answer tokens, so the extra time is the ${bigText(R)} tokens of steps.`,
+            `The two replies end with the same ${A} answer tokens, so the extra time is the ${commas(R)} tokens of steps.`,
             `$${big(R)} \\times ${t}\\text{ ms} = ${big(R * t)}\\text{ ms}$.`,
             `That is $${num(extra)}$ seconds.`,
           ],
         };
       }
       return {
-        prompt: `A model writes one token every ${t} ms. With chain of thought, it writes ${bigText(R)} tokens of steps and then a ${A}-token answer. How many seconds does the whole reply take?`,
+        prompt: `A model writes one token every ${t} ms. With chain of thought, it writes ${commas(R)} tokens of steps and then a ${A}-token answer. How many seconds does the whole reply take?`,
         answer: { kind: 'number', value: total },
         traps: traps(total, [
           { value: extra, why: `That counts the steps only. The ${A} answer tokens are written after them, one at a time like the rest.` },

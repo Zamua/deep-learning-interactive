@@ -1,7 +1,8 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { num, pick } from '../../kit';
-import { big, clean, commas, sci, traps, whys, words } from '../kit';
+import { big, clean, commas, num, pick, traps } from '../../kit';
+import { whys } from '../../training/kit';
+import { sci, words } from '../kit';
 
 const BYTES: Record<string, number> = { fp32: 4, bf16: 2, fp16: 2, fp8: 1 };
 

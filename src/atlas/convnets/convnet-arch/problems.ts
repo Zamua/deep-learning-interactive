@@ -1,6 +1,5 @@
 import type { Generator } from '../../../mastery/domain/types';
-import { pick } from '../../kit';
-import { atraps, big, shp, traps } from '../kit';
+import { big, pick, shp, traps, vtraps } from '../../kit';
 
 const conv = (K: number, F: number, P: number) => `a $${F} \\times ${F}$ conv with $${K}$ filters${P ? ` and padding ${P}` : ', no padding'}`;
 const POOL = 'a $2 \\times 2$ max pool with stride 2';
@@ -18,7 +17,7 @@ export const generators: Generator[] = [
         return {
           prompt: `An input of shape $${shp([C, H, H])}$ goes through two stages, each a conv layer, a ReLU and ${POOL}. The first conv has $${K}$ filters, the second $${K2}$; both are $3 \\times 3$ with padding 1. What shape comes out?`,
           answer: { kind: 'shape', value: v },
-          traps: atraps(v, [
+          traps: vtraps(v, [
             { value: [K2, H / 2, H / 2], why: 'That pools only once. Each stage ends in a pool, and each pool halves the height and width.' },
             { value: [K, H / 4, H / 4], why: `That keeps the first conv's channels. The second conv has $${K2}$ filters, so $${K2}$ channels come out.` },
             { value: [K2, H, H], why: 'That forgets the pools. Padding 1 keeps the size through each conv, but each pool halves it.' },
@@ -38,7 +37,7 @@ export const generators: Generator[] = [
       return {
         prompt: `An input of shape $${shp([C, H, H])}$ goes through ${conv(K, F, P)}, then a ReLU, then ${POOL}. What shape comes out?`,
         answer: { kind: 'shape', value: v },
-        traps: atraps(v, [
+        traps: vtraps(v, [
           { value: [K, h, h], why: 'That stops before the pool. The $2 \\times 2$ pool with stride 2 halves the height and width.' },
           { value: [C, h / 2, h / 2], why: `That keeps the input's channels. The conv's $${K}$ filters make $${K}$ channels.` },
           ...(P === 0 ? [{ value: [K, H / 2, H / 2], why: `That forgets that the conv shrinks the input: with no padding, $${H} - ${F} + 1 = ${h}$.` }] : []),

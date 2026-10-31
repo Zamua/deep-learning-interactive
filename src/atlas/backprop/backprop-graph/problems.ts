@@ -1,7 +1,7 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, pick } from '../../kit';
-import { clean, dd, n, par, traps, vtraps } from '../kit';
+import { clean, int, par, pick, traps, vtraps } from '../../kit';
+import { dd, n } from '../kit';
 
 type V = { x: number; y: number; z: number };
 const D = (v: string) => dd('f', v);

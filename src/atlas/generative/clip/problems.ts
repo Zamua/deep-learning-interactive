@@ -1,7 +1,6 @@
 import type { Rng } from '../../../core/rand';
 import type { Generator } from '../../../mastery/domain/types';
-import { int, num, pick, vec } from '../../kit';
-import { big, bigText, dot, par, shp, shuffled, straps, traps } from '../kit';
+import { big, commas, dot, int, num, par, pick, shp, shuffled, straps, traps, vec } from '../../kit';
 
 const CLASSES = [
   ['dog', 'cat', 'car'],
@@ -151,7 +150,7 @@ export const generators: Generator[] = [
       const K = pick(rng, [3, 10, 100, 1000].filter((k) => k !== M));
       const v = [M, K];
       return {
-        prompt: `To classify $${M}$ images into $${bigText(K)}$ classes, CLIP embeds the images as $Z$, shape $${shp([M, dm])}$, and one caption per class, "a photo of a ...", as $T$, shape $${shp([K, dm])}$. What is the shape of the score matrix, $Z$ times $T$ transposed?`,
+        prompt: `To classify $${M}$ images into $${commas(K)}$ classes, CLIP embeds the images as $Z$, shape $${shp([M, dm])}$, and one caption per class, "a photo of a ...", as $T$, shape $${shp([K, dm])}$. What is the shape of the score matrix, $Z$ times $T$ transposed?`,
         answer: { kind: 'shape', value: v },
         traps: straps(v, [
           { value: [K, M], why: 'That is the transpose, classes by images. $Z$ comes first, so its rows, the images, are the rows of the result.' },
