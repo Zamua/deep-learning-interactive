@@ -1,8 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { smooth } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
-import { cells, rowLabel, verdict } from '../../draw';
-import { after, Frame, rich } from '../../networks/draw';
+import { after, cells, rowLabel, stacked, verdict } from '../../draw';
+import { Frame, rich } from '../../networks/draw';
 
 interface Spec {
   x: number[];
@@ -148,9 +148,6 @@ const SHIPS: [number, number][] = [[1.8, 3.3], [2.5, 3.9], [2.3, 3.6], [2.7, 3.4
 const PLANES: [number, number][] = [[3.6, 1.7], [4.2, 2.3], [3.9, 1.4], [4.3, 1.8], [3.7, 2.4], [4.1, 2.7], [3.4, 2.1]];
 /** The final line: w = (1, 1), b = -4, so x₀ + x₁ = 4. */
 const WB = { w: [1, 1], b: -4 };
-
-/** The equation goes under the plane unless the stage is wide enough to hold it beside. */
-const stacked = (s: Scene) => s.tall || s.w / s.h < 1.45;
 
 /** The feature plane, square: at the top of a narrow stage, at the left of a wide one. */
 function plane(s: Scene): Frame {

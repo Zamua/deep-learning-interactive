@@ -1,9 +1,7 @@
-import { type Scene, type SceneDef, clamp01, lerp, smooth } from '../../../lecture/scene';
-import type { Color } from '../../../core/symbols';
-import { after, Frame, type Rect } from '../draw';
+import { clamp01, type Ink, lerp, type Scene, type SceneDef, smooth } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { Frame, type Rect } from '../draw';
 import { besideX, fill, ring, result, ROW, termRow } from './art';
-
-type Ink = Color | `--${string}`;
 
 const LEVELS = [0.5, 1.5, 3, 4.5, 6, 8];
 /** The bowl's height along the slice v = 1, and along the slice u = 1. */

@@ -1,7 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { cells, columns, rowLabel } from '../../draw';
-import { hbar, type Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { cells, cite, columns, rowLabel } from '../../draw';
+import { hbar } from '../draw';
 
 const W = [0.7, -0.33, 0.18];
 const S = 0.1;
@@ -9,11 +10,6 @@ const Q = W.map((w) => Math.round(w / S));
 const BACK = Q.map((q) => +(q * S).toFixed(1));
 const ERR = W.map((w, i) => Math.abs(w - BACK[i]!));
 const f = (v: number) => String(+v.toFixed(2)).replace('-', '−');
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A number line from l to r showing values in [lo, hi]; returns the map from value to x. */
 function axis(s: Scene, y: number, l: number, r: number, lo: number, hi: number, a = 1): (v: number) => number {

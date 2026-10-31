@@ -1,16 +1,12 @@
 import type { Color } from '../../../core/symbols';
 import { type Scene, type SceneDef, lerp, smooth } from '../../../lecture/scene';
 import { caption } from '../../networks/draw';
+import { cite } from '../../draw';
 
 // Colors follow the concept's symbols: cell teal, f red, i green, g gold, o purple; h gold, x orange.
 const CELL: Color = 'teal';
 const H: Color = 'gold';
 const GRAD: Color = 'red';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A small operator node on a wire: × or +. */
 function op(s: Scene, x: number, y: number, t: string, k: Color | '--ink-2' = '--ink-2'): void {

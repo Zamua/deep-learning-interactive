@@ -1,9 +1,10 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01, lerp, smooth } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { rowLabel } from '../../draw';
-import { after, caption } from '../../networks/draw';
-import { band, brace, ghost, grid, type Ink, matrix, rich } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite, rowLabel } from '../../draw';
+import { caption } from '../../networks/draw';
+import { band, brace, ghost, grid, matrix, rich } from '../draw';
 
 const W = [[1, 4, 2], [0, 3, 5]];
 const ROW = 'teal';
@@ -11,11 +12,6 @@ const COL = 'gold';
 const RGB = ['red', 'green', 'blue'] as const;
 
 const shapeRuns = (m: number, n: number | string): [string, Ink][] => [['(', '--ink-2'], [String(m), ROW], [', ', '--ink-2'], [String(n), COL], [')', '--ink-2']];
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 // ---- many photos: each flattened into a row of 48, the rows stacked into a grid
 

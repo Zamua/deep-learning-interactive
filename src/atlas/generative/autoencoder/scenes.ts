@@ -1,7 +1,6 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { cells, columns, rowLabel, verdict } from '../../draw';
-import { after } from '../../networks/draw';
+import { after, cells, cite, columns, rowLabel, verdict } from '../../draw';
 import { caption, fmt, funnel, rich, shades, stroke } from '../draw';
 
 /** The pen path of the handwritten 7, in grid units (column, row) of a 28 by 28 image. */
@@ -22,11 +21,6 @@ const REBUILT = DIGIT.map((r, i) =>
     return (0.85 * acc) / wsum;
   }),
 );
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A check or a cross with its text, centered on the stage. */
 function centered(s: Scene, ok: boolean, text: string, y: number, size = 3.4) {

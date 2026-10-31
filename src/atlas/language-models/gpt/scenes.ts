@@ -1,6 +1,9 @@
 import { lerp, type Scene, type SceneDef } from '../../../lecture/scene';
-import type { Ink } from '../draw';
-import { box, chip, note, rich, spread } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { cite } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { box, chip } from '../../sequences/draw';
+import { note, spread } from '../draw';
 
 const TEXT = ['cats', 'like', 'fresh', 'fish', 'daily'];
 const TOK = TEXT.slice(0, 4);
@@ -32,11 +35,6 @@ const X = E.map((r, i) => r.map((v, j) => v + POS[i]![j]!));
 const OUT = X.map((r) => r.map((v, j) => Math.tanh(v * 1.6 + (j - 1) * 0.4)));
 
 const cols = (s: Scene) => spread(s, 4, s.tall ? 20 : 25);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A token's vector: d = 3 cells stacked, shaded by value. */
 function vec(s: Scene, x: number, y: number, v: number[], k: Ink, on = 0): void {

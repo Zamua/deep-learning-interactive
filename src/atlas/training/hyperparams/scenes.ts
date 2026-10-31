@@ -1,7 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { cells, columns } from '../../draw';
-import { ball, curve, frame, hop, type Frame } from '../draw';
+import { caption, cells, columns } from '../../draw';
+import { ball, curve, frame, type Frame, hop } from '../../optimization/draw';
 
 const SUP: Record<string, string> = { '-': '⁻', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵' };
 const pow10 = (k: number) => `10${String(k).split('').map((c) => SUP[c] ?? c).join('')}`;
@@ -9,10 +9,6 @@ const pow10 = (k: number) => `10${String(k).split('').map((c) => SUP[c] ?? c).jo
 /** Who did it, and when: small, in a corner of the stage (a negative y counts up from the bottom). */
 function cite(s: Scene, text: string, a: number, y = 5) {
   s.alpha(a, () => s.text(text, s.w - 5 * s.u, y < 0 ? s.h + y * s.u : y * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
-
-function caption(s: Scene, text: string, y: number, k: Parameters<Scene['c']>[0] = '--ink-2', size = 3.4) {
-  s.text(text, s.w / 2, y, { size, font: 'mono', color: s.c(k), halo: true });
 }
 
 // ---- knobs: the weights are learned, the learning rate and batch size are chosen

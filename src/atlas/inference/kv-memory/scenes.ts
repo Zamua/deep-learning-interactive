@@ -1,9 +1,11 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01, lerp } from '../../../lecture/scene';
 import { columns } from '../../draw';
-import { after } from '../../networks/draw';
+import type { Ink } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { brace, rich } from '../../linear-algebra/draw';
+import { hbar, mark, word } from '../draw';
 import { gpu } from '../../scale/draw';
-import { brace, hbar, type Ink, mark, rich, word } from '../draw';
 
 /** The model: 32 layers, d = 4,000, 2 bytes per number, 8 billion parameters, on an 80 GB GPU. */
 const PER_TOKEN = 2 * 32 * 4000 * 2;

@@ -1,7 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { smooth } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { cells, columns } from '../../draw';
+import { cells, cite, columns } from '../../draw';
 import { block, caption, Frame, fmt, noised, rich, shades, subText } from '../draw';
 
 const EU = [0.2, -0.4];
@@ -15,11 +15,6 @@ const WIMGS = WALK.map((t) => noised(cosSched(t)));
 
 /** Eases in a fraction `f` of the way through beat `id`, so it follows the voice at any pace. */
 const after = (s: Scene, id: string, f: number, dur = 0.6) => s.ease(id, dur, f * (s.end(id) - s.at(id)));
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** The plane of noise guesses (two pixels), between `top` and `bottom`. */
 function plane(s: Scene, top: number, bottom: number): Frame {

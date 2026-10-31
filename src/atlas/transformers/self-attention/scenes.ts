@@ -1,8 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { columns } from '../../draw';
-import { after } from '../../networks/draw';
-import { heat, type Ink, mini, rich } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite, columns } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { heat, mini } from '../draw';
 
 const WORDS = ['cats', 'like', 'fish'];
 /** The weights: row i is how token i splits its attention. Rows add up to 1; columns do not. */
@@ -20,11 +21,6 @@ const OUT = A.map((r) => [0, 1].map((c) => r.reduce((a, w, j) => a + w * V[j]![c
 const COLS = [0, 1, 2].map((j) => A.reduce((a, r) => a + r[j]!, 0));
 const g = (v: number) => String(Math.round(v * 100) / 100);
 const blank = (m: number, n: number): string[][] => Array.from({ length: m }, () => Array.from({ length: n }, () => ''));
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A row of word boxes centered on `xs`. */
 function sentence(s: Scene, xs: number[], y: number, words: string[], k: Ink, on: number[] = [], w = 17) {

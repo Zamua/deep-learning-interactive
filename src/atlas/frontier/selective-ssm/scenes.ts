@@ -1,18 +1,13 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import type { Ink } from '../../linear-algebra/draw';
-import { after } from '../../networks/draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
 import { fmt } from '../../sequences/draw';
 import { chain } from '../linear-recurrence/chain';
 
 const mono = (s: Scene, t: string, x: number, y: number, k: Ink, size = 3.4, align: CanvasTextAlign = 'center', weight = 600) => s.text(t, x, y, { size, font: 'mono', weight, align, color: s.c(k), halo: true });
 const Y = (s: Scene, f: number) => f * s.h;
 const a2 = (v: number) => v.toFixed(2).replace(/0$/, '');
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** x centers for `n` items `pitch` stage units apart, centered on the stage. */
 const spread = (s: Scene, n: number, pitch: number) => Array.from({ length: n }, (_, i) => s.w / 2 + (i - (n - 1) / 2) * pitch * s.u);

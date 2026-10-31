@@ -1,16 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { lerp } from '../../../lecture/scene';
-import type { Color } from '../../../core/symbols';
-import { columns } from '../../draw';
-import { after, Frame, reluGlyph } from '../../networks/draw';
-import { heat, rich, stage } from '../draw';
-
-type Ink = Color | `--${string}`;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import { type Ink, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
+import { after, cite, columns, fmt } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { Frame, reluGlyph } from '../../networks/draw';
+import { heat, stage } from '../draw';
 
 /** Mono text centered on x, faded in by `a`. */
 function label(s: Scene, text: string, x: number, y: number, a: number, k: Ink = '--ink-2', o: { size?: number; align?: CanvasTextAlign; weight?: number } = {}) {
@@ -311,8 +303,6 @@ function vec(s: Scene, F: Frame, p: number[], q: number[], k: Ink, g: number, wi
   const y1 = lerp(p[1]!, q[1]!, g);
   s.arrow(F.X(p[0]!), F.Y(p[1]!), F.X(x1), F.Y(y1), s.c(k), width, 2.4);
 }
-
-const fmt = (v: number) => String(v).replace('-', '−');
 const vt = (v: number[]) => `[${v.map(fmt).join(', ')}]`;
 
 const flow: SceneDef = {

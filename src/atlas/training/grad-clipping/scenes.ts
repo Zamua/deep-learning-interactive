@@ -1,13 +1,7 @@
-import type { Color } from '../../../core/symbols';
-import { type Scene, type SceneDef, lerp } from '../../../lecture/scene';
-import { axes, ball, clipped, curve, frame, type Frame, xTicks, yTicks } from '../draw';
-
-type Ink = Color | `--${string}`;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import { type Ink, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
+import { cite } from '../../draw';
+import { axes, ball, clipped, curve, frame, type Frame } from '../../optimization/draw';
+import { xTicks, yTicks } from '../draw';
 
 /** A caption centered under the picture. */
 function caption(s: Scene, text: string, k: Ink, a: number, y = s.h - 5 * s.u) {

@@ -1,18 +1,12 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { cells, columns, downArrows, rowLabel } from '../../draw';
-import { after, Frame } from '../../networks/draw';
-import { type Ink, rich } from '../draw';
-
-const fmt = (v: number) => String(v).replace('-', '−');
+import type { Ink } from '../../../lecture/scene';
+import { after, cells, cite, columns, downArrows, fmt, rowLabel, stacked } from '../../draw';
+import { Frame } from '../../networks/draw';
+import { rich } from '../draw';
 const par = (v: number) => (v < 0 ? `(${fmt(v)})` : fmt(v));
 const sumText = (ps: number[]) => ps.map((p, i) => (i === 0 ? fmt(p) : p < 0 ? ` − ${-p}` : ` + ${p}`)).join('');
 const signInk = (v: number): Ink => (v > 0 ? 'green' : v < 0 ? 'red' : '--ink');
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 // ---- two arrows from the origin: agreement along each direction, added up
 
@@ -42,9 +36,6 @@ function halfBox(side: number): [number, number][] {
 }
 const POS = halfBox(1);
 const NEG = halfBox(-1);
-
-/** The plane beside its working on a wide stage, above it on a phone. */
-const stacked = (s: Scene) => s.tall || s.w / s.h < 1.45;
 
 function plane(s: Scene) {
   const u = s.u;

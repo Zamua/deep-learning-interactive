@@ -1,7 +1,10 @@
 import type { Color } from '../../../core/symbols';
 import { type Scene, type SceneDef, lerp } from '../../../lecture/scene';
-import { after, caption } from '../../networks/draw';
-import { cells, columns, frame, type Frame, num, rich } from '../draw';
+import { after, cells, cite, columns } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { caption } from '../../networks/draw';
+import { frame, type Frame } from '../../optimization/draw';
+import { num } from '../draw';
 
 // The toy: a stream of d = 2 numbers, x = [3, 1] = 2·v₁ + 1·v₄, from a dictionary of m = 8 directions.
 const X: Color = 'orange';
@@ -10,11 +13,6 @@ const V1: Color = 'gold';
 const V4: Color = 'teal';
 const XHAT: Color = 'green';
 const CODE = [0, 2, 0, 0, 1, 0, 0, 0];
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** The stream's plane: its two numbers as axes, near the top of the stage. */
 function plane(s: Scene): Frame {

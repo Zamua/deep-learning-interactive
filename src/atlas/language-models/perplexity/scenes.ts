@@ -1,14 +1,11 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { bars, verdict } from '../../draw';
-import { after } from '../../networks/draw';
-import { chip, type Ink, note, rich, spread } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, bars, cite, verdict } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { chip } from '../../sequences/draw';
+import { note, spread } from '../draw';
 
 const f2 = (v: number) => v.toFixed(2);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A check or a cross with its caption, centered on the stage as one line. */
 function centered(s: Scene, ok: boolean, text: string, y: number, size = 3.3) {

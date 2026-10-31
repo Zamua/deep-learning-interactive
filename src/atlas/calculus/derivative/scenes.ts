@@ -1,8 +1,6 @@
-import { type Scene, type SceneDef, lerp } from '../../../lecture/scene';
-import type { Color } from '../../../core/symbols';
-import { after, Frame, inset, note } from '../draw';
-
-type Ink = Color | `--${string}`;
+import { type Ink, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { Frame, inset, note } from '../draw';
 type Dom = [number, number, number, number];
 
 const f = (x: number) => x * x;

@@ -1,5 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { after, Frame, mono, type Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { Frame, mono } from '../draw';
 
 const sq = (x: number) => x * x;
 const cube = (x: number) => x * x * x;
@@ -42,11 +44,6 @@ function say(s: Scene, i: number, runs: [string, Ink][], a = 1, size = 3.6, plot
 /** The straight line through (x0, y0) with slope m, across the plot. */
 function line(F: Frame, x0: number, y0: number, m: number, k: Ink, width = 0.5, dash?: number[]): void {
   F.fn((x) => y0 + m * (x - x0), k, width, undefined, undefined, dash);
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 // ---- backprop's slope, with a slip in it, beside the curve it should touch

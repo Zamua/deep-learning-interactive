@@ -1,6 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01, lerp } from '../../../lecture/scene';
-import { type Ink, volume } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { cite } from '../../draw';
+import { volume } from '../draw';
 
 const RGB: Ink[] = ['red', 'green', 'blue'];
 const IN_STEP = 3;
@@ -23,11 +25,6 @@ function frame(s: Scene) {
 type F = ReturnType<typeof frame>;
 
 const label = (s: Scene, t: string, x: number, y: number, k: Ink, size = 3.4) => s.text(t, x, y, { size, font: 'mono', weight: 600, color: s.c(k), halo: true });
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Eases in a fraction `f` of the way through beat `id`, so it follows the voice at any pace. */
 const at = (s: Scene, id: string, f: number) => s.ease(id, 0.6, f * (s.end(id) - s.at(id)));

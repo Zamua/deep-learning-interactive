@@ -1,8 +1,8 @@
-import { type Scene, type SceneDef, lerp } from '../../../lecture/scene';
-import { after, Frame, type Rect } from '../../calculus/draw';
+import { type Ink, type Scene, type SceneDef, lerp } from '../../../lecture/scene';
+import { Frame, type Rect } from '../../calculus/draw';
+import { after, cite, stacked } from '../../draw';
 import { hop } from '../draw';
 
-type Ink = Parameters<Scene['c']>[0];
 type Pt = [number, number];
 
 const f = (u: number, v: number) => u * u + 2 * v * v;
@@ -23,14 +23,6 @@ for (let k = 0; k < 9; k++) {
   const g = grad(p);
   WALK.push([p[0] - ETA * g[0], p[1] - ETA * g[1]]);
 }
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
-
-/** The legend goes under the plot unless the stage is wide enough to hold it beside. */
-const stacked = (s: Scene) => s.tall || s.w / s.h < 1.45;
 
 /** The bowl from above, its formula and legend below it or beside it. */
 function layout(s: Scene) {

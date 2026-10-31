@@ -1,8 +1,5 @@
 // Drawing for the backprop explainers: gates as circles, wires carrying a value above and a gradient below.
-import type { Color } from '../../core/symbols';
-import { type Scene, clamp01, smooth } from '../../lecture/scene';
-
-export type Ink = Color | `--${string}`;
+import { clamp01, type Ink, type Scene } from '../../lecture/scene';
 /** A point of a graph: x across the graph's band (0 to 1), y as a fraction of the stage height. */
 export type P = [number, number];
 
@@ -150,9 +147,6 @@ export class Frame {
     this.s.circle(this.X(x), this.Y(y), r * this.s.u, { fill: this.s.c(k), stroke: this.s.c('--card'), lw: 0.35 });
   }
 }
-
-/** Eased 0 -> 1 starting a fraction `f` of the way through beat `id`, so it tracks the voice at any pace. */
-export const after = (s: Scene, id: string, f: number, dur = 0.5): number => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
 
 /** Linear 0 -> 1 over `dur` seconds, from a fraction `f` of the way through beat `id`. */
 export const runAfter = (s: Scene, id: string, f: number, dur = 1): number => clamp01((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);

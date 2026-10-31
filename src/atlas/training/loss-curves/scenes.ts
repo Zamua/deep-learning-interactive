@@ -1,15 +1,10 @@
-import { type Scene, type SceneDef, clamp01 } from '../../../lecture/scene';
+import { clamp01, type Ink, type Scene, type SceneDef } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { caption } from '../../networks/draw';
+import { axes, ball, clipped, curve, frame, type Frame, hop } from '../../optimization/draw';
+import { fmt, key, series, xTicks, yTicks } from '../draw';
 import type { Color } from '../../../core/symbols';
 import { Rng } from '../../../core/rand';
-import { after, caption } from '../../networks/draw';
-import { axes, ball, clipped, curve, fmt, frame, hop, key, series, xTicks, yTicks, type Frame } from '../draw';
-
-type Ink = Color | `--${string}`;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 const mono = (s: Scene, t: string, x: number, y: number, k: Ink, align: CanvasTextAlign = 'center', size = 3.2, weight = 600) =>
   s.text(t, x, y, { size, font: 'mono', weight, align, color: s.c(k), halo: true });

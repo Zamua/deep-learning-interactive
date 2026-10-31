@@ -1,14 +1,14 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { clamp01, lerp, smooth } from '../../../lecture/scene';
-import type { Ink } from '../../linear-algebra/draw';
-import { box, cells, columns, num } from '../draw';
+import { clamp01, lerp } from '../../../lecture/scene';
+import type { Ink } from '../../../lecture/scene';
+import { after, cells, columns } from '../../draw';
+import { box } from '../../sequences/draw';
+import { num } from '../draw';
 
 /** A paper's people and year, in italics at (x, y). */
 function cite(s: Scene, text: string, a: number, x: number, y: number) {
   s.alpha(a, () => s.text(text, x, y, { size: 3.1, italic: true, color: s.c('--ink-2'), halo: true }));
 }
-
-const after = (s: Scene, id: string, f: number, dur = 0.5) => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
 
 // ---- the stream: blocks stacked up one token's path, then seen as one vector that each block reads and adds to
 

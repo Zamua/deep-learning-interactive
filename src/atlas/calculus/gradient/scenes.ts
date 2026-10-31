@@ -1,9 +1,8 @@
 import { Rng } from '../../../core/rand';
-import { type Scene, type SceneDef, clamp01, lerp, smooth } from '../../../lecture/scene';
-import { after, Frame, type Rect } from '../draw';
+import { type Ink, type Scene, type SceneDef, clamp01, lerp, smooth } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { Frame, type Rect } from '../draw';
 import { fill, legendLine, result, ring, rings, termRow } from '../partials/art';
-
-type Ink = Parameters<Scene['c']>[0];
 
 const f = (u: number, v: number) => u * u + 2 * v * v;
 const P = [1, 1] as const;
@@ -13,11 +12,6 @@ const TH = Math.atan2(G[1], G[0]);
 const GN = Math.hypot(G[0], G[1]);
 /** The level direction at P: along the ring, at right angles to the gradient. */
 const T = [-G[1] / GN, G[0] / GN] as const;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** The bowl zoomed in around the point, its legend below it on a phone and beside it on a desktop. */
 function bowlLayout(s: Scene) {

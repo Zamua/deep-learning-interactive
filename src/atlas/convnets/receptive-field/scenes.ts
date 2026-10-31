@@ -1,6 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01 } from '../../../lecture/scene';
-import type { Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { cite } from '../../draw';
 
 // ---- the image: 13 by 13 pixels holding a ring, centered on pixel (6, 6)
 
@@ -8,11 +9,6 @@ const NI = 13;
 const C = 6;
 /** Brightness of each pixel, 0 to 1: a ring of radius about 4.6 pixels. */
 const RING: number[][] = Array.from({ length: NI }, (_, i) => Array.from({ length: NI }, (_, j) => clamp01(1 - Math.abs(Math.hypot(i - C, j - C) - 4.6) / 0.8)));
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 function caption(s: Scene, text: string, a: number, k: Ink = '--ink-2', y = 0.93) {
   s.alpha(a, () => s.text(text, s.w / 2, s.h * y, { size: 3.5, font: 'mono', weight: 600, color: s.c(k), halo: true }));

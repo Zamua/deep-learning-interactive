@@ -1,8 +1,5 @@
 // Plotting helpers for the calculus explainers, on top of the lecture Scene and src/atlas/draw.ts.
-import type { Color } from '../../core/symbols';
-import { type Scene, smooth } from '../../lecture/scene';
-
-type Ink = Color | `--${string}`;
+import { type Ink, type Scene } from '../../lecture/scene';
 export type Rect = [x: number, y: number, w: number, h: number];
 
 /** The stage inside margins given as fractions of its sides. */
@@ -115,6 +112,3 @@ export function node(s: Scene, x: number, y: number, label: string, k: Ink, on =
 export function note(s: Scene, F: Frame, text: string, row: number, k: Ink = '--ink', size = 4): void {
   s.text(text, F.X(F.dom[0]) + 3 * s.u, F.Y(F.dom[3]) + (4 + row * 7) * s.u, { size, font: 'mono', weight: 600, align: 'left', color: s.c(k), halo: true });
 }
-
-/** Eased 0 -> 1 starting a fraction `f` of the way through beat `id`, so it tracks the voice at any pace. */
-export const after = (s: Scene, id: string, f: number, dur = 0.5): number => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);

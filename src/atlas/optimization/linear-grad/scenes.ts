@@ -1,25 +1,18 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
+import type { Ink, Scene, SceneDef } from '../../../lecture/scene';
+import { after, cells, cite, columns } from '../../draw';
+import { caption, Frame, rich } from '../../networks/draw';
 import type { Color } from '../../../core/symbols';
-import { cells, columns } from '../../draw';
-import { after, caption, Frame, rich } from '../../networks/draw';
 
 const X = [2, 1];
 const DS = [-0.7, 0.7];
 const f = (v: number) => String(Math.round(v * 100) / 100);
 const fm = (v: number) => (v < 0 ? `−${f(-v)}` : f(v));
 
-type Ink = Color | `--${string}`;
-
 /** Eased in `frac` of the way through beat `id`, so a value lands as the voice says it. */
 const lateIn = (s: Scene, id: string, frac: number) => s.ease(id, 0.6, frac * (s.end(id) - s.at(id)));
 
 const mono = (s: Scene, t: string, x: number, y: number, k: Ink, size = 3.6, align: CanvasTextAlign = 'center', weight = 600) =>
   s.text(t, x, y, { size, font: 'mono', weight, align, color: s.c(k), halo: true });
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 // ---- linear scores' picture: two features, cats low and ships high, and the border where their scores tie
 

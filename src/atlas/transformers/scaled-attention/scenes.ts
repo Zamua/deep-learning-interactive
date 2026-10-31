@@ -1,9 +1,11 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { bars, cells, columns, downArrows, rowLabel } from '../../draw';
-import { after, Frame } from '../../networks/draw';
-import { type Ink, rich, vrow } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, bars, cells, cite, columns, downArrows, rowLabel } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { Frame } from '../../networks/draw';
+import { vrow } from '../draw';
 
 const soft = (e: number[]) => {
   const x = e.map(Math.exp);
@@ -13,11 +15,6 @@ const soft = (e: number[]) => {
 const f2 = (v: number) => v.toFixed(2);
 const sgn = (v: number) => (v < 0 ? `−${-v}` : String(v));
 const WORDS = ['cats', 'like', 'fish'];
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 function caption(s: Scene, text: string, y: number, k: Ink = '--ink-2', size = 3.3) {
   s.text(text, s.w / 2, y, { size, font: 'mono', color: s.c(k), halo: true });

@@ -1,6 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
-import { after, band, beside, gate, mono, name, type P, pulse, runAfter, wire } from '../draw';
+import { after } from '../../draw';
+import { band, beside, gate, mono, name, type P, pulse, runAfter, wire } from '../draw';
 
 const R = 7;
 const SIZE = 4.2;

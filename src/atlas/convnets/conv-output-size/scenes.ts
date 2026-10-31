@@ -1,8 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01, smooth } from '../../../lecture/scene';
-import { cells, columns } from '../../draw';
-import { after, caption } from '../../networks/draw';
-import { type Ink, rich } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cells, cite, columns } from '../../draw';
+import { caption } from '../../networks/draw';
+import { rich } from '../draw';
 
 const IN = [3, 1, 4, 1, 5, 9, 2];
 const PADDED = ['0', ...IN.map(String), '0'];
@@ -53,11 +54,6 @@ function hop(s: Scene, x0: number, x1: number, y: number, k: Ink, a: number, lif
     c.fillStyle = s.c(k);
     c.fill();
   });
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 /** Fades in once a fraction `f` of beat `id` has been spoken, so it follows the voice at any pace. */

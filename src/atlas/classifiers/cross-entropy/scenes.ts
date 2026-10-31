@@ -1,14 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { bars, cells, columns, downArrows, rowLabel } from '../../draw';
-import { after, caption } from '../../networks/draw';
+import { after, bars, cells, cite, columns, downArrows, rowLabel } from '../../draw';
+import { caption } from '../../networks/draw';
 
 const f2 = (v: number) => v.toFixed(2);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Probability bars with option numbers under them and a gold `y` tag under the right one. */
 function probBars(s: Scene, p: number[], yAt: number, o: { hi?: number[]; base?: number; tag?: number; fmt?: boolean } = {}) {

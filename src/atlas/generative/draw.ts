@@ -1,9 +1,6 @@
 // Drawing helpers for the generative explainers, on top of the lecture Scene and src/atlas/draw.ts.
 import { Rng } from '../../core/rand';
-import type { Color } from '../../core/symbols';
-import type { Scene, TextOpts } from '../../lecture/scene';
-
-export type Ink = Color | `--${string}`;
+import type { Ink, Scene, TextOpts } from '../../lecture/scene';
 
 /** Typographic minus for canvas text. */
 export const fmt = (v: number, places?: number): string => (places === undefined ? String(v) : v.toFixed(places)).replace(/^-/, '−');

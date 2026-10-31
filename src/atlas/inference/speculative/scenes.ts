@@ -1,9 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01, lerp } from '../../../lecture/scene';
-import { columns } from '../../draw';
-import { after } from '../../networks/draw';
-import type { Ink } from '../draw';
-import { hbar, mark, pass, rich, word } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite, columns } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { hbar, mark, pass, word } from '../draw';
 
 const GUESS = ['on', 'the', 'red', 'mat'];
 /** The large model's own pick at each guess, and one after the last. */
@@ -12,11 +12,6 @@ const OK = [true, true, false];
 const TOK = { size: 3.1, h: 6.8 };
 const DRAFT: Ink = 'purple';
 const LARGE: Ink = 'blue';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 function caption(s: Scene, text: string, y: number, k: Ink = '--ink-2', size = 3.2, weight = 600) {
   s.text(text, s.w / 2, y, { size, font: 'mono', weight, color: s.c(k), halo: true });

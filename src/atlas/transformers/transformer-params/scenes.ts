@@ -1,17 +1,14 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after, caption } from '../../networks/draw';
-import type { Ink } from '../draw';
-import { rich, sub } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { caption } from '../../networks/draw';
+import { sub } from '../draw';
 
 const ATT: Ink = 'teal';
 const MLP: Ink = 'gold';
 const EMB: Ink = 'orange';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** One d by d square, `q` stage units on a side, lit by `on`. */
 function square(s: Scene, x: number, y: number, q: number, k: Ink, on = 0, dashed = false) {

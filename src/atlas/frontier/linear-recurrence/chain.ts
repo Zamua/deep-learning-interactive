@@ -1,7 +1,7 @@
 // A one-unit recurrence drawn as a chain: states h_0..h_n in circles, each input in a chip below
 // its state, a decay label on every arrow between states.
 import type { Scene } from '../../../lecture/scene';
-import type { Ink } from '../../linear-algebra/draw';
+import type { Ink } from '../../../lecture/scene';
 
 export interface ChainSpec {
   y: number;

@@ -1,8 +1,10 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { verdict } from '../../draw';
-import { after, Frame } from '../../networks/draw';
-import { note, rich, type Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite, verdict } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { Frame } from '../../networks/draw';
+import { note } from '../draw';
 
 const QUESTION = 'When does the library open on Sundays?';
 const Q = [0.6, 0.8];
@@ -12,11 +14,6 @@ const PASSAGES: { text: string; short: string; v: number[]; score: number }[] = 
   { text: 'Parking is free after 6 pm.', short: 'parking', v: [0.8, -0.6], score: 0 },
 ];
 const vt = (v: number[]) => `[${v.map((x) => String(x).replace('-', '−')).join(', ')}]`;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A line of text in a soft box, left-aligned at x, `w` px wide. */
 function line(s: Scene, x: number, y: number, w: number, text: string, k: Ink, o: { on?: number; size?: number } = {}): void {

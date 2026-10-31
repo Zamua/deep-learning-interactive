@@ -1,18 +1,18 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after, band, gate, mono, wire } from '../../backprop/draw';
+import type { Ink } from '../../../lecture/scene';
+import { band, gate, mono, wire } from '../../backprop/draw';
+import { after, cite } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { axes, clipped, curve, frame, type Frame } from '../../optimization/draw';
+import { fmt } from '../../training/draw';
+import { push } from '../draw';
 import { ball } from '../../optimization/draw';
-import { axes, clipped, curve, type Frame, fmt, frame, type Ink, push, rich } from '../draw';
 
 const sig = (z: number) => 1 / (1 + Math.exp(-z));
 const nls = (z: number) => -Math.log(sig(z));
 /** The loss's slope in the gap: -(1 - sigma). */
 const dl = (z: number) => -(1 - sig(z));
-
-/** A paper's authors and year, top right, while `a` is on. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 function caption(s: Scene, text: string, y: number, k: Ink = '--ink-2', size = 3.4): void {
   s.text(text, s.w / 2, y, { size, font: 'mono', weight: 600, color: s.c(k), halo: true });

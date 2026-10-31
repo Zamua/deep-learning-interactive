@@ -1,17 +1,11 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { rowLabel, verdict } from '../../draw';
-import { after, Frame } from '../../networks/draw';
-import { band, brace, ghost, grid, type Grid, type Ink, matrix, rich } from '../draw';
-
-const fmt = (v: number) => String(v).replace('-', '−');
+import type { Ink } from '../../../lecture/scene';
+import { after, cite, fmt, rowLabel, verdict } from '../../draw';
+import { Frame } from '../../networks/draw';
+import { band, brace, ghost, grid, type Grid, matrix, rich } from '../draw';
 const par = (v: number) => (v < 0 ? `(${fmt(v)})` : fmt(v));
 const dot = (a: number[], b: number[]) => a.reduce((p, v, i) => p + v * b[i]!, 0);
 const terms = (r: number[], x: number[]) => r.map((v, i) => `${par(v)}×${par(x[i]!)}`).join(' + ');
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 function caption(s: Scene, text: string, x: number, y: number, k: Ink = '--ink-2', size = 3.4) {
   s.text(text, x, y, { size, font: 'mono', color: s.c(k), halo: true });

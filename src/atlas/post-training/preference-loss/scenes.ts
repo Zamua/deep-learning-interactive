@@ -1,18 +1,15 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after } from '../../backprop/draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { axes, curve, frame, type Frame } from '../../optimization/draw';
 import { ball } from '../../optimization/draw';
-import { axes, curve, type Frame, frame, type Ink, rich } from '../draw';
 
 const sig = (z: number) => 1 / (1 + Math.exp(-z));
 const nls = (z: number) => -Math.log(sig(z));
 const EA = Math.exp(2);
 const EB = Math.exp(1);
-
-/** A paper's authors and year, top right, while `a` is on. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A rounded card `w` by `h` units centered on (x, y), with a small title near its top; `on` lights its border. */
 function card(s: Scene, x: number, y: number, w: number, h: number, title: string, k: Ink, on = 0): void {

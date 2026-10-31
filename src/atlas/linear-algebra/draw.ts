@@ -1,9 +1,6 @@
 // Drawing helpers for the linear-algebra explainers: matrices as grids of cells, braces, and
 // text runs in several colors.
-import type { Color } from '../../core/symbols';
-import type { Scene, TextOpts } from '../../lecture/scene';
-
-export type Ink = Color | `--${string}`;
+import type { Ink, Scene, TextOpts } from '../../lecture/scene';
 
 /** Cell centers of an `m` by `n` grid centered on (cx, cy), `pw` by `ph` stage units apart. */
 export interface Grid {

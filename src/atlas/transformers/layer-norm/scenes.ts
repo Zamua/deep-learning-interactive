@@ -1,7 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { cells, columns, rowLabel, verdict } from '../../draw';
-import { after, caption } from '../../networks/draw';
-import { band, grid, type Ink, matrix, rich } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cells, cite, columns, rowLabel, verdict } from '../../draw';
+import { band, grid, matrix, rich } from '../../linear-algebra/draw';
+import { caption } from '../../networks/draw';
 
 const str = (v: number) => String(Math.round(v * 100) / 100).replace('-', '−');
 const signed = (v: number) => (v > 0 ? '+' : '') + str(v);
@@ -12,11 +13,6 @@ const norm = (xs: number[]) => {
 };
 const BN: Ink = 'gold';
 const LN: Ink = 'teal';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A number line from `lo` to `hi` across the stage at height y, ticks every `step`; returns the value-to-x map. */
 function axis(s: Scene, y: number, lo: number, hi: number, step: number, ticks = true): (v: number) => number {

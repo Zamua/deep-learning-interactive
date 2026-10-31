@@ -1,6 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { columns, verdict } from '../../draw';
-import { hbar, word, type Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { cite, columns, verdict } from '../../draw';
+import { hbar, word } from '../draw';
 
 /** Five sampled paths for 17 × 24: two step results, the final answer, and whether a step slipped. */
 type Run = [string, string, number, boolean];
@@ -13,11 +14,6 @@ const RUNS: Run[] = [
 ];
 const ANSWERS = RUNS.map((r) => r[2]);
 const GREEDY: Run = ['340', '68', 408, false];
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number): void {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** 0 -> 1 once beat `id` is fraction `f` of the way through its narration. */
 const cue = (s: Scene, id: string, f: number): number => Math.min(1, Math.max(0, (s.prog(id) - f) * 8));

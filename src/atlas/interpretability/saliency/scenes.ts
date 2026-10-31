@@ -1,8 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after, band, name, pulse, runAfter, wire, type P } from '../../backprop/draw';
-import type { Ink } from '../../linear-algebra/draw';
-import { cells, columns, rich, rowLabel } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { band, name, type P, pulse, runAfter, wire } from '../../backprop/draw';
+import { after, cells, cite, columns, fmt, rowLabel } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
 
 const X = [3, 1, 2, 1];
 const W = [
@@ -12,13 +13,7 @@ const W = [
 ];
 const S = W.map((r) => r.reduce((a, w, j) => a + w * X[j]!, 0));
 const G = W[0]!;
-const fmt = (v: number) => String(v).replace('-', '−');
 const sgn = (v: number) => (v > 0 ? `+${v}` : fmt(v));
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 function caption(s: Scene, text: string, a: number, k: Ink = '--ink-2', y = 0.92) {
   s.alpha(a, () => s.text(text, s.w / 2, s.h * y, { size: 3.4, font: 'mono', color: s.c(k), halo: true }));

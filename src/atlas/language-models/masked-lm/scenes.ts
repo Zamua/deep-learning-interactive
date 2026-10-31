@@ -1,6 +1,10 @@
 import { Rng } from '../../../core/rand';
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { chip, ghost, note, rich, spread, type Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { cite } from '../../draw';
+import { ghost, rich } from '../../linear-algebra/draw';
+import { chip } from '../../sequences/draw';
+import { note, spread } from '../draw';
 
 const TOK = ['the', 'cat', 'sat', 'on', 'a', 'mat'];
 const K = 2;
@@ -36,11 +40,6 @@ function selfLoop(s: Scene, x: number, y: number, k: Ink, a: number): void {
     c.lineWidth = 0.5 * s.u;
     c.stroke();
   });
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 const blank: SceneDef = {

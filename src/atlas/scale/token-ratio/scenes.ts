@@ -1,6 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { cells } from '../../draw';
-import { type Ink, mono } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { cells, cite } from '../../draw';
+import { mono } from '../draw';
 
 /** An illustrative final loss for 10^logN parameters on budget C: a floor plus a size and a data penalty, lowest near D = 20N. */
 const loss = (logN: number, C = 1.2e22) => {
@@ -10,11 +11,6 @@ const loss = (logN: number, C = 1.2e22) => {
 };
 const SIZES = [8.5, 9, 9.5, 10, 10.5, 11, 11.5];
 const sup = (n: number) => String(n).replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]!);
-
-/** Who measured it, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 function plot(s: Scene) {
   const l = (s.tall ? 12 : 16) * s.u;

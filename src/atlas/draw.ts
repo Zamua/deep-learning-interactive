@@ -1,8 +1,25 @@
 // A small drawing kit shared by the Atlas explainers, on top of the lecture Scene.
 import type { Color } from '../core/symbols';
-import type { Scene } from '../lecture/scene';
+import { smooth, type Ink, type Scene } from '../lecture/scene';
 
-type Ink = Color | `--${string}`;
+/** A source credit in the stage's top right corner, at opacity `a`. */
+export function cite(s: Scene, text: string, a: number): void {
+  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
+}
+
+/** A centered line of mono text at height `y`. */
+export function caption(s: Scene, text: string, y: number, k: Ink = '--ink-2', size = 3.4): void {
+  s.text(text, s.w / 2, y, { size, font: 'mono', color: s.c(k), halo: true });
+}
+
+/** Eases from 0 to 1 over `dur` seconds, starting a fraction `f` of the way through beat `id`. */
+export const after = (s: Scene, id: string, f: number, dur = 0.5): number => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
+
+/** Whether the stage is too narrow for side-by-side panels, which then stack. */
+export const stacked = (s: Scene): boolean => s.tall || s.w / s.h < 1.45;
+
+/** A number with a typographic minus sign. */
+export const fmt = (v: number): string => String(v).replace('-', '−');
 
 /** x centers for `n` columns around the stage's middle, `gap` stage units apart. */
 export function columns(s: Scene, n: number, gap: number): number[] {

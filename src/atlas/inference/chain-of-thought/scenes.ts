@@ -1,12 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { columns, verdict } from '../../draw';
-import { mark, pass, word, type Ink } from '../draw';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number): void {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import type { Ink } from '../../../lecture/scene';
+import { cite, columns, verdict } from '../../draw';
+import { mark, pass, word } from '../draw';
 
 /** 0 -> 1 once beat `id` is fraction `f` of the way through its narration. */
 const cue = (s: Scene, id: string, f: number): number => Math.min(1, Math.max(0, (s.prog(id) - f) * 8));

@@ -1,13 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01 } from '../../../lecture/scene';
-import { cells } from '../../draw';
-import type { Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { cells, cite } from '../../draw';
 import { gpu, mono } from '../draw';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Mono text where `_1` is drawn as a lowered small index: the mono face has no subscript glyphs. */
 function lab(s: Scene, text: string, x: number, y: number, o: { size?: number; k?: Ink; align?: CanvasTextAlign; weight?: number; halo?: boolean } = {}) {

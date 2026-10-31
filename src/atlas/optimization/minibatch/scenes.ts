@@ -1,13 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
 import { Rng } from '../../../core/rand';
-import { cells, columns } from '../../draw';
-import { after, caption, Frame } from '../../networks/draw';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import { after, cells, cite, columns } from '../../draw';
+import { caption, Frame } from '../../networks/draw';
 
 /** Samples scaled to mean 0 and spread exactly 1, so each row's scatter is what it claims. */
 function standard(rng: Rng, n: number): number[] {

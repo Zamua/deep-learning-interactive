@@ -1,9 +1,6 @@
 // Drawing helpers for the convnets explainers: grids of cells, sliding windows, volumes, and
 // text in colored runs.
-import type { Color } from '../../core/symbols';
-import type { Scene, TextOpts } from '../../lecture/scene';
-
-export type Ink = Color | `--${string}`;
+import type { Ink, Scene, TextOpts } from '../../lecture/scene';
 
 /** Cell centers of an `m` by `n` grid centered on (cx, cy), `pitch` stage units apart. */
 export interface Grid {

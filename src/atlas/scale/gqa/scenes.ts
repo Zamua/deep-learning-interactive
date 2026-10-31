@@ -1,14 +1,12 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import type { Ink } from '../../linear-algebra/draw';
-import { chip, columns, line, rich } from '../modern-draw';
+import type { Ink } from '../../../lecture/scene';
+import { cite, columns } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { chip } from '../../sequences/draw';
+import { line } from '../modern-draw';
 
 const H = 8;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 const pitch = (s: Scene) => (s.tall ? 11.5 : 13);
 

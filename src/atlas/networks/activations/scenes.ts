@@ -1,6 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
-import { after, caption, Frame, rich } from '../draw';
+import { after, cite } from '../../draw';
+import { caption, Frame, rich } from '../draw';
 
 const relu = (z: number) => Math.max(0, z);
 const sig = (z: number) => 1 / (1 + Math.exp(-z));
@@ -23,11 +24,6 @@ function yTicks(s: Scene, F: Frame, ys: number[]) {
 
 const step = (z: number) => (z > 0 ? 1 : 0);
 const STEP: Color = 'slate';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** The step: off below zero, on above, with the jump marked by an open and a filled end. */
 function stepCurve(s: Scene, F: Frame, k: Color, grow: number) {

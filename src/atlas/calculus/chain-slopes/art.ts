@@ -1,9 +1,6 @@
 // Drawing shared by the chained-slopes and chain-rule explainers: a row of nodes joined by arrows.
-import type { Color } from '../../../core/symbols';
-import type { Scene } from '../../../lecture/scene';
+import type { Ink, Scene } from '../../../lecture/scene';
 import { node } from '../draw';
-
-export type Ink = Color | `--${string}`;
 export const X3 = [0.17, 0.5, 0.83];
 export const X4 = [0.12, 0.38, 0.63, 0.88];
 const NODE_W = 12;

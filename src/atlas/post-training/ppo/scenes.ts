@@ -1,9 +1,11 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after } from '../../backprop/draw';
+import type { Ink } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { axes, clipped, curve, frame, type Frame } from '../../optimization/draw';
 import { columns } from '../../draw';
 import { ball } from '../../optimization/draw';
-import { axes, clipped, curve, frame, rich, type Frame, type Ink } from '../draw';
 
 const Y = (s: Scene, v: number) => (v / 100) * s.h;
 /** A number with at most two places and a typographic minus: `1.5`, `−0.8`, `0.85`. */

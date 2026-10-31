@@ -1,8 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01 } from '../../../lecture/scene';
-import { cells } from '../../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cells, cite } from '../../draw';
+import { caption, reluGlyph, unit, vcells } from '../draw';
 import { pulse } from '../../backprop/draw';
-import { after, caption, type Ink, reluGlyph, unit, vcells } from '../draw';
 
 // One example runs through every scene: x -> z = W1 x + b1 -> h = ReLU(z) -> s = W2 h + b2 -> L.
 const X = [1, 2];
@@ -17,11 +18,6 @@ const DZ = [0.5, 0];
 const DW1 = DZ.map((g) => X.map((v) => g * v));
 const str = (v: number) => (Object.is(v, -0) ? '0' : String(v).replace('-', '−'));
 const SUB = '₀₁';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 // ---- the network as a graph: x, z, h, s in two rows of units, the loss on the right
 

@@ -1,15 +1,12 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01 } from '../../../lecture/scene';
-import type { Ink } from '../draw';
-import { note, rich } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { cite } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { note } from '../draw';
 
 /** Generation steps; step t (row t) holds t tokens. */
 const N = 10;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** The staircase grid: room for 11 columns, so a second, upturned staircase can complete the rectangle. */
 function geom(s: Scene) {

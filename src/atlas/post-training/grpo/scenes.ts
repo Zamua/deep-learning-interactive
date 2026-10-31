@@ -1,18 +1,14 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { after } from '../../backprop/draw';
-import { cells, columns, verdict } from '../../draw';
-import { fmt, rich, type Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cells, cite, columns, verdict } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { fmt } from '../../training/draw';
 
 function stats(r: number[]): { mean: number; sd: number; adv: number[] } {
   const mean = r.reduce((a, b) => a + b, 0) / r.length;
   const sd = Math.sqrt(r.reduce((a, b) => a + (b - mean) ** 2, 0) / r.length);
   return { mean, sd, adv: r.map((x) => (sd > 0 ? (x - mean) / sd : 0)) };
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 /** Fades in just after beat `a` starts and out as beat `b` starts, so texts that share a place never overlap. */

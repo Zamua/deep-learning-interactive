@@ -2,15 +2,11 @@ import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
 import { caption } from '../../networks/draw';
-import { after, Frame, type Rect } from '../draw';
+import { after, cite } from '../../draw';
+import { Frame, type Rect } from '../draw';
 
 type View = [number, number, number, number];
 const E = Math.E;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** The plot: room on the left for heights, below for the years, the hops and a caption. */
 const box = (s: Scene): Rect => [13 * s.u, 11 * s.u, s.w - 30 * s.u, s.h - 36 * s.u];

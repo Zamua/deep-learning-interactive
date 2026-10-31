@@ -1,7 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { cells, rowLabel } from '../../draw';
-import { after, Frame } from '../../networks/draw';
-import { band, brace, chip, fmt, grid, type Grid, type Ink, matrix, rich, stack } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cells, cite, rowLabel } from '../../draw';
+import { band, brace, grid, type Grid, matrix, rich } from '../../linear-algebra/draw';
+import { Frame } from '../../networks/draw';
+import { chip, fmt, stack } from '../draw';
 
 const VOCAB = ['cat', 'car', 'dog', 'bus'];
 /** Each token's point: cat and dog close together, car and bus off in another direction. */
@@ -14,11 +16,6 @@ const E = [
 const DOG = 2;
 const INK: Ink[] = ['gold', 'teal', 'gold', 'teal'];
 const str = (v: number) => fmt(v);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 function caption(s: Scene, text: string, y: number, k: Ink = '--ink-2', size = 3.4, italic = false) {
   s.text(text, s.w / 2, y, { size, font: italic ? 'serif' : 'mono', italic, color: s.c(k), halo: true });

@@ -1,7 +1,8 @@
-import { type Scene, type SceneDef, smooth } from '../../../lecture/scene';
-import { columns, verdict } from '../../draw';
-import { axes, curve, frame, key, xTicks } from '../../training/draw';
-import type { Ink } from '../draw';
+import { type Scene, type SceneDef } from '../../../lecture/scene';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite, columns, verdict } from '../../draw';
+import { axes, curve, frame } from '../../optimization/draw';
+import { key, xTicks } from '../../training/draw';
 
 const ARROW = [
   '.......',
@@ -27,11 +28,6 @@ function pixels(s: Scene, cx: number, cy: number, size: number, g: boolean[][], 
   g.forEach((r, i) => r.forEach((on, j) => {
     if (on) s.rrect(x0 + j * p + 0.15 * s.u, y0 + i * p + 0.15 * s.u, p - 0.3 * s.u, p - 0.3 * s.u, 0.3, { fill: s.tint(k, 0.45 * light + 0.15) });
   }));
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 const THUMBS: { name: string; g: boolean[][]; light: number; ok: boolean; label: string }[] = [
@@ -77,9 +73,6 @@ const variety: SceneDef = {
     });
   },
 };
-
-/** Eased 0 -> 1 starting a fraction `f` of the way through beat `id`, so it tracks the voice at any pace. */
-const after = (s: Scene, id: string, f: number, dur = 0.5): number => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
 
 /** Index into `n` items, stepping through them as `f` runs from 0 to 1. */
 const step = (f: number, n: number): number => Math.min(n - 1, Math.max(0, Math.floor(f * n)));

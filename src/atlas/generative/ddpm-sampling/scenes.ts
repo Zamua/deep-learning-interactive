@@ -1,23 +1,17 @@
 import type { Scene, SceneDef, TextOpts } from '../../../lecture/scene';
-import { lerp, smooth } from '../../../lecture/scene';
+import { lerp } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
-import { block, caption, Frame, noised, rich, shades, SMILEY, type Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { block, caption, Frame, noised, rich, shades, SMILEY } from '../draw';
 
 const SHADE = { lo: -2.2, hi: 2.2 };
 const cosSched = (t: number) => Math.cos(((t / 1000) * Math.PI) / 2) ** 2;
 const WALK = [1000, 750, 500, 250, 0];
 const WIMGS = WALK.map((t) => noised(cosSched(t)));
 
-/** 0 -> 1 once beat `id` is fraction `f` of the way through its spoken length. */
-const after = (s: Scene, id: string, f: number, dur = 0.5) => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
-
 /** Fades in at beat `from`, just after whatever it replaces has faded out at the same spot. */
 const swap = (s: Scene, from: string, until?: string) => s.ease(from, 0.5, 0.45) * (until ? 1 - s.ease(until, 0.4) : 1);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Colored runs as one line, like `rich`, where a run marked `sub` is set as a subscript. */
 function runs(s: Scene, parts: [string, Ink, boolean?][], x: number, y: number, o: TextOpts = {}): void {

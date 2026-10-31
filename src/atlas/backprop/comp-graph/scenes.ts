@@ -1,17 +1,14 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01 } from '../../../lecture/scene';
-import { after, band, gate, type Ink, mono, name, NEURON, neuron, type P, pulse, wire } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { band, gate, mono, name, neuron, NEURON, type P, pulse, wire } from '../draw';
 
 const R = 5;
 const { x: X_IN, z: Z_IN, c: C_IN, mul: MUL, add: ADD, sq: SQ, out: OUT } = NEURON;
 
 /** Where a forward pulse is along a wire, from `start` seconds into beat `id`. */
 const travel = (s: Scene, id: string, start = 0, dur = 0.9) => clamp01((s.since(id) - start) / dur);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 const FORMULA = { tex: String.raw`f = (\symx z + c)^{2}`, x: 0.5, y: 0.11, size: 5.6 };
 

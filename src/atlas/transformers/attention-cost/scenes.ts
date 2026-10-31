@@ -1,16 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { smooth } from '../../../lecture/scene';
-import type { Color } from '../../../core/symbols';
-import { bars, columns } from '../../draw';
-import { after, caption } from '../../networks/draw';
-import { rich } from '../draw';
-
-type Ink = Color | `--${string}`;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number): void {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import { type Ink, type Scene, type SceneDef, smooth } from '../../../lecture/scene';
+import { after, bars, cite, columns } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { caption } from '../../networks/draw';
 
 /**
  * An m by n block of cells, `c` stage units each, top-left at (x, y). `shown` reveals cells in

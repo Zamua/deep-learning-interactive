@@ -1,17 +1,15 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { cells, columns, rowLabel, verdict } from '../../draw';
-import { after } from '../../backprop/draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cells, cite, columns, rowLabel, verdict } from '../../draw';
+import { brace, rich } from '../../linear-algebra/draw';
+import { axes, curve, frame } from '../../optimization/draw';
+import { fmt } from '../../training/draw';
+import { block } from '../draw';
 import { ball } from '../../optimization/draw';
-import { axes, block, brace, curve, fmt, frame, rich, type Ink } from '../draw';
 
 const sig = (z: number) => 1 / (1 + Math.exp(-z));
 const nls = (z: number) => -Math.log(sig(z));
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** One line of plain text across the stage, centered. */
 function caption(s: Scene, text: string, y: number, k: Ink, a: number, size = 3.2, italic = false) {

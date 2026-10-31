@@ -1,6 +1,5 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { bars, cells, columns, rowLabel } from '../../draw';
-import { after } from '../../networks/draw';
+import { after, bars, caption, cells, cite, columns, rowLabel } from '../../draw';
 import { push as arrowPush, row } from '../draw';
 
 const ANS = ['56', '54', '64'];
@@ -30,15 +29,6 @@ const SUM = E1.map((v, i) => Math.round((v + E2[i]!) * 10) / 10);
 const AVG = SUM.map((v) => v / 2);
 const f2 = (v: number) => v.toFixed(2);
 const f1 = (v: number) => (Math.abs(v) < 1e-9 ? '0' : v < 0 ? `−${-v}` : String(v));
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
-
-function caption(s: Scene, text: string, y: number, k: Parameters<Scene['c']>[0] = '--ink-2', size = 3.4) {
-  s.text(text, s.w / 2, y, { size, font: 'mono', color: s.c(k), halo: true });
-}
 
 /** `toks` as chips, wrapped into centered rows that fit the stage, from `y0`, each chip faded in by `a(i)`. */
 function cloud(s: Scene, toks: string[], y0: number, a: (i: number) => number) {

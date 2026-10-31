@@ -1,7 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { bars, cells, columns, rowLabel, verdict } from '../../draw';
-import { after, caption } from '../../networks/draw';
-import { heat, rich } from '../draw';
+import { after, bars, cells, cite, columns, rowLabel, verdict } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { caption } from '../../networks/draw';
+import { heat } from '../draw';
 
 const WORDS = ['cats', 'like', 'fresh', 'fish'];
 const NEXT = ['like', 'fresh', 'fish', '?'];
@@ -12,11 +13,6 @@ const E = [
   [1, 2, 1, 0],
   [0, 1, 2, 2],
 ];
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A quadratic curve from (x0, y) to (x1, y) bulging by `bulge` (negative is up), with an arrowhead at its end. */
 function arc(s: Scene, x0: number, x1: number, y: number, bulge: number, col: string, lw: number, dash?: number[]): [number, number] {

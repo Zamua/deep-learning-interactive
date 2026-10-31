@@ -2,7 +2,9 @@ import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
 import { Rng } from '../../../core/rand';
 import { cells } from '../../draw';
-import { after, caption, Frame, type Ink, rich, unit, vcells } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { caption, Frame, rich, unit, vcells } from '../draw';
 
 // One network runs through every scene: x -> h = ReLU(W1 x + b1) -> s = W2 h + b2.
 const W1 = [[1, -1], [-1, -1]];

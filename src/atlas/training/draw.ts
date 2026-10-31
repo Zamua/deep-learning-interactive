@@ -1,11 +1,6 @@
 // Drawing helpers for the training explainers: data series in a plot frame, ticks and a legend.
-import type { Color } from '../../core/symbols';
-import type { Scene } from '../../lecture/scene';
+import type { Ink, Scene } from '../../lecture/scene';
 import { clipped, type Frame } from '../optimization/draw';
-
-export { axes, ball, clipped, curve, frame, hop, type Frame } from '../optimization/draw';
-
-type Ink = Color | `--${string}`;
 
 /**
  * A polyline through data points. `upto` in [0, 1] reveals it left to right, ending on a

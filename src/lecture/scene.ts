@@ -2,6 +2,9 @@ import type { CodePanel } from '../core/code';
 import { type Plot, color, withAlpha } from '../core/plot';
 import type { Color } from '../core/symbols';
 
+/** What a scene paints with: a course color, or a theme CSS variable such as `--ink-2`. */
+export type Ink = Color | `--${string}`;
+
 /** A KaTeX (or plain text) overlay on the stage, positioned as fractions of its width and height. */
 export interface Mark {
   tex?: string;
@@ -120,10 +123,10 @@ export class Scene {
     this.code.set(name, v, false);
   }
 
-  c(k: Color | `--${string}`): string {
+  c(k: Ink): string {
     return color(k);
   }
-  tint(k: Color | `--${string}`, a: number): string {
+  tint(k: Ink, a: number): string {
     return withAlpha(color(k), a);
   }
   /** Runs `fn` with the canvas alpha multiplied by `a`. */
@@ -213,7 +216,7 @@ export class Scene {
     }
   }
   /** A number in a rounded cell, the lecture's way of drawing an array entry. */
-  cell(x: number, y: number, w: number, h: number, label: string, k: Color | `--${string}`, o: { on?: number; size?: number } = {}): void {
+  cell(x: number, y: number, w: number, h: number, label: string, k: Ink, o: { on?: number; size?: number } = {}): void {
     const on = o.on ?? 0;
     this.rrect(x, y, w, h, 1.2, { fill: this.tint(k, 0.1 + 0.22 * on), stroke: this.tint(k, 0.45 + 0.55 * on), lw: 0.3 + 0.25 * on });
     if (label) this.text(label, x + w / 2, y + h / 2 + this.u * 0.2, { font: 'mono', size: o.size ?? Math.min(h / this.u, w / this.u) * 0.42 });

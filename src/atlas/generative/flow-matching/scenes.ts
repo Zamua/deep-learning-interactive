@@ -1,6 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { cells, columns, rowLabel } from '../../draw';
-import { block, caption, Frame, fmt, rich, type Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { cells, cite, columns, rowLabel } from '../../draw';
+import { block, caption, fmt, Frame, rich } from '../draw';
 
 type P = [number, number];
 
@@ -75,11 +76,6 @@ function ends(s: Scene, F: Frame, o: { noise?: string; a?: number } = {}): void 
     F.dot(EPS[0], EPS[1], 'slate', 1.4);
     s.text(o.noise ?? 'ε = [−1, 2]', F.X(EPS[0]), F.Y(EPS[1]) - 4 * u, { ...t, color: s.c('slate') });
   });
-}
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number): void {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 /** Eased in from `f` of the way through beat `id`, so a picture lands when the voice reaches it. */

@@ -1,6 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
-import { after, beside, gate, type Ink, mono, name, pulse, runAfter, wire } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { beside, gate, mono, name, pulse, runAfter, wire } from '../draw';
 
 // The running example: z = W x, with the gradient dz arriving from above.
 const W = [

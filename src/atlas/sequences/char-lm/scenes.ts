@@ -1,7 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { bars, columns } from '../../draw';
-import { after, caption } from '../../networks/draw';
-import { box, chip, fmt, rich } from '../draw';
+import { after } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { caption } from '../../networks/draw';
+import { box, chip, fmt } from '../draw';
 
 const TEXT = ['h', 'e', 'l', 'l', 'o'];
 const VOCAB = ['h', 'e', 'l', 'o'];

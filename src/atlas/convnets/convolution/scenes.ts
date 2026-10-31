@@ -1,17 +1,12 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { clamp01, lerp, smooth } from '../../../lecture/scene';
-import { bars, cells, columns, rowLabel } from '../../draw';
-import { after } from '../../networks/draw';
-import { type Grid, type Ink, fmt, grid, gridCells, windowBox } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, bars, cells, cite, columns, rowLabel } from '../../draw';
+import { fmt, grid, type Grid, gridCells, windowBox } from '../draw';
 
 /** Slides `w` along `x` and takes a dot product at every position where it fits. */
 const conv1 = (x: number[], w: number[]): number[] =>
   x.slice(0, x.length - w.length + 1).map((_, i) => w.reduce((a, wk, k) => a + wk * x[i + k]!, 0));
-
-/** Who found an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 const gray = (v: number, max: number) => Math.round(28 + 212 * clamp01(v / max));
 

@@ -1,14 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { cells } from '../../draw';
-import { after, caption, Frame, type Ink, rich, unit, vcells } from '../draw';
-
-const fmt = (v: number): string => String(v).replace('-', '−');
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import type { Ink } from '../../../lecture/scene';
+import { after, cells, cite, fmt } from '../../draw';
+import { caption, Frame, rich, unit, vcells } from '../draw';
 
 const gauss = (sd: number, peak: number) => (z: number) => peak * Math.exp(-(z * z) / (2 * sd * sd));
 

@@ -1,8 +1,6 @@
 // Drawing helpers for the sequence-model explainers: tokens, step boxes and chains of them.
 import type { Scene } from '../../lecture/scene';
-import type { Ink } from '../linear-algebra/draw';
-
-export { band, brace, ghost, grid, matrix, rich, type Grid, type Ink } from '../linear-algebra/draw';
+import type { Ink } from '../../lecture/scene';
 
 /** A token in a small rounded chip, centered on (x, y). */
 export function chip(s: Scene, x: number, y: number, label: string, k: Ink, o: { w?: number; h?: number; on?: number; size?: number } = {}): void {

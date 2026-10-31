@@ -1,16 +1,13 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { type Ink, box, gpu, mono } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { cite } from '../../draw';
+import { box, gpu, mono } from '../draw';
 
 const KS = ['blue', 'orange', 'green', 'purple'] as const;
 const G0 = [2, -1, 3, 0];
 const G1 = [1, 3, 0, 4];
 const SUB = '₀₁₂₃';
 const f = (v: number) => String(v).replace('-', '−');
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A caption along the bottom of the stage. */
 function caption(s: Scene, text: string, a: number, k: Ink = '--ink-2') {

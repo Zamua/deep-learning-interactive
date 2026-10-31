@@ -1,16 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { lerp, smooth } from '../../../lecture/scene';
+import { type Ink, lerp, type Scene, type SceneDef, smooth } from '../../../lecture/scene';
+import { after, cells, cite } from '../../draw';
+import { Frame, rich } from '../../networks/draw';
 import type { Color } from '../../../core/symbols';
-import { cells } from '../../draw';
 import { Frame as Plane } from '../../calculus/draw';
-import { after, Frame, rich } from '../../networks/draw';
-
-type Ink = Color | `--${string}`;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 const mono = (s: Scene, t: string, x: number, y: number, k: Ink, o: { size?: number; align?: CanvasTextAlign; weight?: number } = {}) =>
   s.text(t, x, y, { size: o.size ?? 3.4, font: 'mono', weight: o.weight ?? 600, align: o.align ?? 'center', color: s.c(k), halo: true });

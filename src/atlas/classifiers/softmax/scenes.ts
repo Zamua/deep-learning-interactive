@@ -1,8 +1,5 @@
-import { type Scene, type SceneDef, lerp } from '../../../lecture/scene';
-import type { Color } from '../../../core/symbols';
-import { cells, downArrows, rowLabel, verdict } from '../../draw';
-
-type Ink = Color | `--${string}`;
+import { type Ink, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
+import { cells, cite, downArrows, rowLabel, verdict } from '../../draw';
 
 const NAMES = ['cat', 'dog', 'bird'];
 const S = [2, 1, -1];
@@ -12,11 +9,6 @@ const P = E.map((e) => e / TOTAL);
 const f2 = (v: number) => v.toFixed(2);
 /** Integers with a true minus sign. */
 const int = (v: number) => String(v).replace('-', '−');
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 const say = (s: Scene, text: string, x: number, y: number, k: Ink = '--ink-2', align: CanvasTextAlign = 'center', size = 3.4) =>
   s.text(text, x, y, { size, font: 'mono', weight: 600, align, color: s.c(k), halo: true });

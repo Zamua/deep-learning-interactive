@@ -1,8 +1,11 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { bars } from '../../draw';
-import { after, caption } from '../../networks/draw';
-import { chip, ghost, note, rich, spread, type Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, bars, cite } from '../../draw';
+import { ghost, rich } from '../../linear-algebra/draw';
+import { caption } from '../../networks/draw';
+import { chip } from '../../sequences/draw';
+import { note, spread } from '../draw';
 
 const TOK = ['cat', 'dog', 'fish', 'sofa', 'ran', 'blue'];
 const P = [0.4, 0.25, 0.15, 0.1, 0.06, 0.04];
@@ -12,11 +15,6 @@ const MAIN: [string, number][] = TOK.map((t, i) => [t, P[i]!]);
 const SURE: [string, number][] = [['time', 0.85], ['the', 0.05], ['ran', 0.04], ['blue', 0.03], ['sofa', 0.02], ['dog', 0.01]];
 const FLAT: [string, number][] = [['red', 0.24], ['blue', 0.2], ['green', 0.16], ['gold', 0.12], ['gray', 0.1], ['pink', 0.08], ['tan', 0.06], ['jade', 0.04]];
 const f2 = (v: number) => v.toFixed(2);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** How many of the most likely it takes for the running total to reach `p`. */
 function nucleus(items: [string, number][], p: number): number {

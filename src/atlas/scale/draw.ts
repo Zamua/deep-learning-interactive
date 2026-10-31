@@ -1,8 +1,5 @@
 // Drawing helpers for the scale explainers: labelled boxes, stacked byte bars and GPU cards.
-import type { Color } from '../../core/symbols';
-import type { Scene } from '../../lecture/scene';
-
-export type Ink = Color | `--${string}`;
+import type { Ink, Scene } from '../../lecture/scene';
 
 /** A filled, outlined box centered on (x, y), `w` by `h` stage units, with an optional label inside. */
 export function box(s: Scene, x: number, y: number, w: number, h: number, k: Ink, o: { label?: string; size?: number; on?: number; ink?: Ink; font?: 'mono' | 'ui' | 'serif' } = {}): void {

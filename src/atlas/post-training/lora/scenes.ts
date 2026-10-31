@@ -1,15 +1,12 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { after } from '../../networks/draw';
-import { block, brace, rich, type Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { brace, rich } from '../../linear-algebra/draw';
+import { block } from '../draw';
 
 /** Stage sizes, in units: W's side and the thin side of B and A. */
 const S = 34;
 const T = 5;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** x of W, the plus, B and A for `[W] + [B][A]`, centered on the stage. */
 function sum(s: Scene) {

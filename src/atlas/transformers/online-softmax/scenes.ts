@@ -1,8 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { bars, cells, columns, rowLabel } from '../../draw';
-import { after } from '../../networks/draw';
-import { fmt, heat, rich, type Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, bars, cells, cite, columns, rowLabel } from '../../draw';
+import { rich } from '../../linear-algebra/draw';
+import { fmt, heat } from '../draw';
 
 const S = [3, 4, 0];
 const MAX = 4;
@@ -13,11 +14,6 @@ const E = [0.37, 1, 0.02];
 const f2 = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(2));
 const f1 = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
 const K = { s: 'purple', m: 'orange', l: 'green', o: 'gold' } as const satisfies Record<string, Ink>;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A small T by T grid of scores with one query's row outlined, its top-left cell centered on (x, y). */
 function scoreGrid(s: Scene, x: number, y: number, n: number, cell: number, row: number) {

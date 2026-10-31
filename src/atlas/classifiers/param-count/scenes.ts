@@ -1,9 +1,7 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { clamp01, lerp, smooth } from '../../../lecture/scene';
+import { clamp01, type Ink, lerp, type Scene, type SceneDef, smooth } from '../../../lecture/scene';
+import { after, stacked } from '../../draw';
+import { Frame, rich } from '../../networks/draw';
 import type { Color } from '../../../core/symbols';
-import { after, Frame, rich } from '../../networks/draw';
-
-type Ink = Color | `--${string}`;
 
 const mono = (size: number, k: string, o: { align?: CanvasTextAlign; weight?: number } = {}) => ({ size, font: 'mono' as const, weight: o.weight ?? 600, align: o.align, color: k, halo: true });
 
@@ -17,9 +15,6 @@ const CATS: [number, number][] = [[0.8, 1.6], [1.4, 0.9], [1.1, 1.3], [1.7, 1.4]
 const SHIPS: [number, number][] = [[1.8, 3.3], [2.5, 3.9], [2.3, 3.6], [2.7, 3.4], [1.6, 3.8], [2.4, 3.1], [2, 4]];
 /** The order the input ring visits the points in. */
 const HOPS: [number, number][] = [SHIPS[6]!, CATS[1]!, SHIPS[2]!, CATS[4]!, SHIPS[0]!, CATS[5]!, SHIPS[3]!, CATS[2]!];
-
-/** The text goes under the plane unless the stage is wide enough to hold it beside. */
-const stacked = (s: Scene) => s.tall || s.w / s.h < 1.45;
 
 function plane(s: Scene): Frame {
   const st = stacked(s);

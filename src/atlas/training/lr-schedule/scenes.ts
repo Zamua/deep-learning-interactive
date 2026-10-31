@@ -1,9 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { lerp, smooth } from '../../../lecture/scene';
+import { type Ink, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { axes, ball, curve, frame, type Frame } from '../../optimization/draw';
+import { key, xTicks, yTicks } from '../draw';
 import type { Color } from '../../../core/symbols';
-import { axes, ball, curve, frame, key, xTicks, yTicks, type Frame } from '../draw';
-
-type Ink = Color | `--${string}`;
 
 const KC: Color = 'teal';
 const KL: Color = 'gold';
@@ -11,9 +10,6 @@ const HI = 0.1;
 /** Linear and cosine decay from HI to 0, at a fraction x of the way through. */
 const lin = (x: number) => HI * (1 - x);
 const cosr = (x: number) => 0.5 * HI * (1 + Math.cos(Math.PI * x));
-
-/** Eased 0 -> 1 from a fraction `f` of the way through beat `id`, so it tracks the voice at any pace. */
-const after = (s: Scene, id: string, f: number, dur = 0.5) => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
 const mono = (s: Scene, t: string, x: number, y: number, k: Ink, align: CanvasTextAlign = 'center', size = 3.2) =>
   s.text(t, x, y, { size, font: 'mono', weight: 600, align, color: s.c(k), halo: true });
 

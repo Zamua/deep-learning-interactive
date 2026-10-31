@@ -1,7 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
-import { after, Frame } from '../../networks/draw';
-import { type Ink, mono } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite, stacked } from '../../draw';
+import { Frame } from '../../networks/draw';
+import { mono } from '../draw';
 
 /** Gopher's budget as N × D, in billions of parameters times trillions of tokens (6ND ≈ 5.76 × 10²³). */
 const K = 96;
@@ -9,9 +11,6 @@ const K = 96;
 const BEST = Math.sqrt(K / 0.02);
 const GOPHER = { n: 280, d: 0.3 };
 const CHIN = { n: 70, d: 1.4 };
-
-/** Stack the figure over its text on a phone; put the text beside it on a wide stage. */
-const stacked = (s: Scene) => s.tall || s.w / s.h < 1.45;
 
 interface Lay {
   l: number;
@@ -65,11 +64,6 @@ function say(s: Scene, L: Lay, a: number, l1: [string, Ink], l2?: [string, Ink])
     mono(s, l1[0], L.tx, L.ty[0], { size: L.size, k: l1[1], weight: 650, halo: true });
     if (l2) mono(s, l2[0], L.tx, L.ty[1], { size: L.size, k: l2[1], weight: 600, halo: true });
   });
-}
-
-/** Who found it, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
 
 /** Eased 0 -> 1 across the fraction [f0, f1] of beat `id`. */

@@ -1,8 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
-import { columns } from '../../draw';
-import { after } from '../../networks/draw';
-import { brace, type Ink, mini, rich, slab, sub, vtext } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite, columns } from '../../draw';
+import { brace, rich } from '../../linear-algebra/draw';
+import { mini, slab, sub, vtext } from '../draw';
 
 const RAD = Math.PI / 180;
 const SUB = ['₀', '₁', '₂'];
@@ -18,11 +19,6 @@ const matvec = (M: number[][], x: number[]) => M.map((r) => dot(r, x));
 const mono = (s: Scene, t: string, x: number, y: number, k: Ink, size = 3.4, align: CanvasTextAlign = 'center', weight = 600) =>
   s.text(t, x, y, { size, font: 'mono', weight, align, color: s.c(k), halo: true });
 const caption = (s: Scene, t: string, y: number, k: Ink = '--ink-2', size = 3.4) => mono(s, t, s.w / 2, y, k, size, 'center', 500);
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 type P = (x: number, y: number) => [number, number];
 

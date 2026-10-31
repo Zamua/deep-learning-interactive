@@ -1,11 +1,8 @@
-import type { Scene, SceneDef } from '../../../lecture/scene';
-import { lerp } from '../../../lecture/scene';
-import type { Color } from '../../../core/symbols';
+import { type Ink, lerp, type Scene, type SceneDef } from '../../../lecture/scene';
+import { after } from '../../draw';
+import { rich } from '../../networks/draw';
 import { cells, columns, rowLabel } from '../../draw';
-import { after, rich } from '../../networks/draw';
 import { ball, curve, frame } from '../draw';
-
-type Ink = Color | `--${string}`;
 
 const S = [1.8, 1.1, 0];
 const Y = 1;

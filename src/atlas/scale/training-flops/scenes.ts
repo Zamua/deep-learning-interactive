@@ -1,7 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { cells } from '../../draw';
-import { after, caption, rich } from '../../networks/draw';
-import { gpu, type Ink, mono } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cells, cite } from '../../draw';
+import { caption, rich } from '../../networks/draw';
+import { gpu, mono } from '../draw';
 
 const W = [
   [1, 0, 2, -1],
@@ -12,11 +13,6 @@ const X = [2, 1, 3, 1];
 const Z = W.map((r) => r.reduce((a, w, j) => a + w * X[j]!, 0));
 const DZ = [2, -1, 1];
 const f = (v: number) => String(v).replace('-', '−');
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** Mono text shrunk, if need be, to fit `maxW` pixels. */
 function fit(s: Scene, text: string, x: number, y: number, maxW: number, o: { size: number; k?: Ink; weight?: number; align?: CanvasTextAlign }): void {

@@ -1,7 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
-import { after } from '../../networks/draw';
-import type { Ink } from '../../linear-algebra/draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
 import { sub } from '../../transformers/draw';
 
 const RAD = Math.PI / 180;
@@ -14,11 +14,6 @@ const txt = (s: Scene, t: string, x: number, y: number, k: Ink = '--ink-2', o: {
   s.text(t, x, y, { size: o.size ?? 3.2, font: o.font ?? 'mono', weight: o.weight ?? 600, align: o.align ?? 'center', color: s.c(k), halo: true });
 
 const commas = (n: number) => n.toLocaleString('en-US');
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 /** A circle of angles: the range training made shaded, and an arrow at `angle` degrees. */
 function dial(s: Scene, cx: number, cy: number, r: number, o: { seen: number; angle?: number; k?: Ink; label?: string; full?: boolean }): void {

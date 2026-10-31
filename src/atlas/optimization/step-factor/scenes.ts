@@ -1,12 +1,10 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { clamp01, smooth } from '../../../lecture/scene';
+import { clamp01 } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
-import { cells, columns } from '../../draw';
+import { after, cells, columns } from '../../draw';
 import { axes, ball, clipped, curve, frame, hop, type Frame } from '../draw';
 
 const fmt = (v: number) => String(Math.round(v * 1000) / 1000).replace('-', '−');
-/** Eased 0 -> 1 from a fraction `f` of the way through beat `id`, so it tracks the voice at any pace. */
-const after = (s: Scene, id: string, f: number, dur = 0.5) => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
 /** Linear 0 -> 1 over `dur` seconds from a fraction `f` of the way through beat `id`. */
 const from = (s: Scene, id: string, f: number, dur = 1.2) => clamp01((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
 

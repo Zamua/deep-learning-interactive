@@ -1,10 +1,7 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
-import { after, caption, Frame, type Ink, rich } from '../draw';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import type { Ink } from '../../../lecture/scene';
+import { after, cite } from '../../draw';
+import { caption, Frame, rich } from '../draw';
 
 const red = (s: Scene, t: string, x: number, y: number, size = 3.3, align: CanvasTextAlign = 'center') =>
   s.text(t, x, y, { size, font: 'mono', weight: 650, align, color: s.c('red'), halo: true });

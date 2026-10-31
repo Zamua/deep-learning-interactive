@@ -1,12 +1,9 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp } from '../../../lecture/scene';
-import { columns } from '../../draw';
-import { brace, fmt, mini, rich, sub, type Ink } from '../draw';
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
+import type { Ink } from '../../../lecture/scene';
+import { cite, columns } from '../../draw';
+import { brace, rich } from '../../linear-algebra/draw';
+import { fmt, mini, sub } from '../draw';
 
 // ---- scene 1: without positions, attention sees a bag of tokens
 

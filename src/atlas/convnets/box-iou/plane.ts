@@ -1,6 +1,6 @@
 // A coordinate grid for drawing boxes, shared by the box-iou and iou explainers.
 import type { Scene } from '../../../lecture/scene';
-import type { Ink } from '../draw';
+import type { Ink } from '../../../lecture/scene';
 import type { Box } from './box';
 
 /** A grid of whole-number coordinates, y down, and where the text goes: under it, or beside it on a wide stage. */

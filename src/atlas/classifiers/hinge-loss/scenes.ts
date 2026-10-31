@@ -1,7 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
 import type { Color } from '../../../core/symbols';
-import { after, Frame, rich } from '../../networks/draw';
+import { after, stacked } from '../../draw';
+import { Frame, rich } from '../../networks/draw';
 
 const neg = (t: string) => t.replace(/-/g, '−');
 const fmt = (v: number) => neg(String(+v.toFixed(1)));
@@ -22,9 +23,6 @@ const EDGE: { p: [number, number]; k: Color }[] = [{ p: [1.3, 1.7], k: 'gold' },
 /** The cat inside the margin, at score -0.5, and a clear one at -2. */
 const CLOSE: [number, number] = [1.7, 1.8];
 const CLEAR: [number, number] = [1, 1];
-
-/** The captions go under the plane unless the stage is wide enough to hold them beside. */
-const stacked = (s: Scene) => s.tall || s.w / s.h < 1.45;
 
 /** The feature plane, square: at the top of a narrow stage, at the left of a wide one. */
 function plane(s: Scene): Frame {

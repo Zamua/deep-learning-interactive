@@ -1,8 +1,8 @@
 import type { Scene, SceneDef } from '../../../lecture/scene';
 import { lerp, smooth } from '../../../lecture/scene';
-import { after } from '../../backprop/draw';
-import { cells, columns, rowLabel } from '../../draw';
-import { block, caption, crop, fmt, type Ink, PICS, picture, rich } from '../draw';
+import type { Ink } from '../../../lecture/scene';
+import { after, cells, cite, columns, rowLabel } from '../../draw';
+import { block, caption, crop, fmt, PICS, picture, rich } from '../draw';
 
 const KINDS = ['sun', 'tree', 'boat'] as const;
 /** Two crops of each picture: [row, column] of a 10 by 10 window. */
@@ -21,11 +21,6 @@ const SIM = [
 const ROLE: Ink[] = ['green', 'red', 'red'];
 const ROLES = ['positive', 'negative', 'negative'];
 const rad = (a: number) => (a * Math.PI) / 180;
-
-/** Who introduced an idea, and when: small, at the top right of the stage. */
-function cite(s: Scene, text: string, a: number) {
-  s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
-}
 
 // ---- two views of one photo, and what the encoder should do with them
 
