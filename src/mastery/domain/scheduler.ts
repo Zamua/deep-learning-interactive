@@ -56,6 +56,32 @@ export function statuses(graph: ConceptGraph, records: Records, now: number): Ma
   return new Map(graph.order.map((c) => [c.id, status(records[c.id], isUnlocked(graph, records, c.id), now)]));
 }
 
+/** A problem on a concept being learned, or on a prerequisite when the last few went wrong. */
+function learnPick(s: SessionState, id: string): Pick {
+  const { graph, records } = s;
+  const rec = records[id] ?? emptyRecord();
+  const lastFew = rec.recent.slice(-STUCK.of);
+  if (s.last === id && lastFew.length === STUCK.of && lastFew.filter((a) => !a.ok).length >= STUCK.misses) {
+    const pre = graph.get(id)!.prereqs.filter((p) => p !== s.last).sort((a, b) => streak(records[a]!) - streak(records[b]!))[0];
+    if (pre) return { concept: pre, reason: 'refresh', difficulty: DIFFICULTY.refresh, for: id };
+  }
+  return rec.attempts
+    ? { concept: id, reason: 'learning', difficulty: Math.min(1, streak(rec) / graph.get(id)!.mastery.streak) }
+    : { concept: id, reason: 'new', difficulty: 0 };
+}
+
+const slippingPick = (id: string): Pick => ({ concept: id, reason: 'slipping', difficulty: DIFFICULTY.slipping });
+const reviewPick = (id: string): Pick => ({ concept: id, reason: 'review', difficulty: DIFFICULTY.review });
+
+/** The problem for a concept the learner chose, as its status calls for; null while it is locked. */
+export function pickConcept(s: SessionState, id: string): Pick | null {
+  const st = status(s.records[id], isUnlocked(s.graph, s.records, id), s.now);
+  if (st === 'locked') return null;
+  if (st === 'slipping') return slippingPick(id);
+  if (st === 'due' || st === 'mastered') return reviewPick(id);
+  return learnPick(s, id);
+}
+
 /**
  * The next problem's concept, or null when nothing is due and nothing is left to learn. A fixed order, so a session
  * reads as blocks: concepts that slipped on a review, then every due review (foundations first), then the concept in
@@ -67,26 +93,13 @@ export function pickNext(s: SessionState): Pick | null {
   const ids = (want: Status) => graph.order.filter((c) => st.get(c.id) === want).map((c) => c.id);
   const recent = (a: string, b: string) => (records[b]?.last ?? 0) - (records[a]?.last ?? 0);
 
-  /** A problem on a concept being learned, or on a prerequisite when the last few went wrong. */
-  const learn = (id: string): Pick => {
-    const rec = records[id] ?? emptyRecord();
-    const lastFew = rec.recent.slice(-STUCK.of);
-    if (s.last === id && lastFew.length === STUCK.of && lastFew.filter((a) => !a.ok).length >= STUCK.misses) {
-      const pre = graph.get(id)!.prereqs.filter((p) => p !== s.last).sort((a, b) => streak(records[a]!) - streak(records[b]!))[0];
-      if (pre) return { concept: pre, reason: 'refresh', difficulty: DIFFICULTY.refresh, for: id };
-    }
-    return rec.attempts
-      ? { concept: id, reason: 'learning', difficulty: Math.min(1, streak(rec) / graph.get(id)!.mastery.streak) }
-      : { concept: id, reason: 'new', difficulty: 0 };
-  };
-
   const fs = s.focus ? st.get(s.focus) : undefined;
-  if (fs === 'learning' || fs === 'new') return learn(s.focus!);
+  if (fs === 'learning' || fs === 'new') return learnPick(s, s.focus!);
   if (!s.learnOnly) {
     const slipping = ids('slipping').sort(recent);
-    if (slipping.length) return { concept: slipping[0]!, reason: 'slipping', difficulty: DIFFICULTY.slipping };
+    if (slipping.length) return slippingPick(slipping[0]!);
     const due = ids('due').filter((id) => !s.reviewed?.has(id));
-    if (due.length) return { concept: due[0]!, reason: 'review', difficulty: DIFFICULTY.review };
+    if (due.length) return reviewPick(due[0]!);
   }
   const learning = ids('learning');
   const fresh = ids('new');
@@ -94,7 +107,7 @@ export function pickNext(s: SessionState): Pick | null {
   const scoped = !!s.within && [...learning, ...fresh].some((id) => s.within!.has(id));
   const pool = (list: string[]) => (scoped ? list.filter((id) => s.within!.has(id)) : list);
   const focus = pool(learning).sort(recent)[0];
-  if (focus) return learn(focus);
+  if (focus) return learnPick(s, focus);
 
   // Nothing in progress: start a new concept.
   const open = pool(fresh);

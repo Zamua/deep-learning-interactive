@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ConceptGraph } from './graph';
 import { applyAnswer, DAY, emptyRecord, type ConceptRecord } from './model';
-import { inheritSplits, isUnlocked, newChoices, pickNext, rankNew, type Records, type SessionState } from './scheduler';
+import { inheritSplits, isUnlocked, newChoices, pickConcept, pickNext, rankNew, type Records, type SessionState } from './scheduler';
 import type { Concept } from './types';
 
 const bar = { streak: 3, seconds: 20 };
@@ -87,6 +87,18 @@ describe('pickNext', () => {
 
   it('returns null when everything is mastered and nothing is due', () => {
     expect(pickNext(S(new ConceptGraph([c('a')]), { a: mastered(T0) }))).toBeNull();
+  });
+});
+
+describe('pickConcept', () => {
+  it('pitches a chosen concept as its status calls for, as pickNext would', () => {
+    const recs = { a: mastered(T0 - 2 * DAY), b: slipping(), c: answers([true, true], T0 - 10), e: mastered(T0 - 10) };
+    expect(pickConcept(S(G, recs), 'a')).toEqual({ concept: 'a', reason: 'review', difficulty: 0.7 });
+    expect(pickConcept(S(G, recs), 'b')).toEqual({ concept: 'b', reason: 'slipping', difficulty: 0.4 });
+    expect(pickConcept(S(G, recs), 'c')).toEqual({ concept: 'c', reason: 'learning', difficulty: 2 / 3 });
+    expect(pickConcept(S(G, recs), 'd')).toEqual({ concept: 'd', reason: 'new', difficulty: 0 });
+    expect(pickConcept(S(G, recs), 'e')).toEqual({ concept: 'e', reason: 'review', difficulty: 0.7 });
+    expect(pickConcept(S(G, recs), 'f')).toBeNull();
   });
 });
 

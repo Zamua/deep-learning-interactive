@@ -269,13 +269,6 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
   /** An end screen has no progress to show. */
   const end = (on: boolean) => frame.root.classList.toggle('at-run-end', on);
 
-  const firstPick = (): Pick | null => {
-    if (!focus || !learner.graph.get(focus) || learner.status(focus) === 'locked') return null;
-    const rec = learner.record(focus);
-    const s = learner.status(focus);
-    return { concept: focus, reason: s === 'slipping' ? 'slipping' : s === 'due' || s === 'mastered' ? 'review' : rec.attempts ? 'learning' : 'new', difficulty: rec.attempts ? Math.min(1, streak(rec) / learner.graph.get(focus)!.mastery.streak) : 0 };
-  };
-
   const openReviews = () => {
     inReviews = true;
     announced = false;
@@ -287,7 +280,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
   const loop = async () => {
     for (;;) {
       if (results.length >= SESSION_LENGTH) return summary();
-      const pick = (opened ? null : firstPick()) ?? learner.next(last, { focus, track, reviewed: new Set([...reviews].filter(([, v]) => v !== 'due').map(([id]) => id)) });
+      const pick = (opened || !focus ? null : learner.pick(focus)) ?? learner.next(last, { focus, track, reviewed: new Set([...reviews].filter(([, v]) => v !== 'due').map(([id]) => id)) });
       opened = true;
       const reviewing = !!pick && (pick.reason === 'review' || pick.reason === 'slipping');
       // Reviews run as one block; leaving it is a stop of its own, never a silent slide into new material.

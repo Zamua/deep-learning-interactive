@@ -10,6 +10,12 @@ describe('parsing', () => {
     expect(['', 'abc', '1/0', '1..2', '--1'].map(parseNumber)).toEqual([null, null, null, null, null]);
   });
 
+  it('reads commas only as thousands separators, never as a decimal comma', () => {
+    expect(['3,072', '-1,000,000', '12,345.5'].map(parseNumber)).toEqual([3072, -1000000, 12345.5]);
+    expect(['0,5', '1,5', '12,34', '1,0000', ',5', '1,'].map(parseNumber)).toEqual([null, null, null, null, null, null]);
+    expect(grade(P({ kind: 'number', value: 0.5 }), '0,5')).toEqual({ ok: false, unreadable: 'Use a point for decimals, like 0.5.' });
+  });
+
   it('reads shapes with any separator', () => {
     expect(['(10, 3072)', '10x3072', '10 × 3072', '[10,3072]', '(5,)'].map(parseShape)).toEqual([[10, 3072], [10, 3072], [10, 3072], [10, 3072], [5]]);
     expect(parseShape('(10, -1)')).toBeNull();

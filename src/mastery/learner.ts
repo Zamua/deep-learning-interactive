@@ -2,8 +2,10 @@
 // answer changes them. Persists through the store, which other devices of the account sync into.
 import type { ConceptGraph } from './domain/graph';
 import { applyAnswer, emptyRecord, placeMastered, recoveryStreak, status, streak, type ConceptRecord, type Status } from './domain/model';
-import { inheritSplits, isUnlocked, newChoices, pickNext, statuses, type NewChoices, type Pick } from './domain/scheduler';
+import { inheritSplits, isUnlocked, newChoices, pickConcept, pickNext, statuses, type NewChoices, type Pick } from './domain/scheduler';
 import { track, trackConcepts, type Track } from './domain/tracks';
+import type { LogRow } from './snapshot';
+import { appendLog, loadPace, loadRecords, loadTracks, saveRecords, saveTrack } from './store';
 
 /** What the learner would do next, for a page to lead with. */
 export interface Today {
@@ -26,7 +28,6 @@ export interface Today {
   /** Epoch ms of the latest answer; 0 before any. */
   t: number;
 }
-import { appendLog, loadPace, loadRecords, loadTracks, saveRecords, saveTrack, type LogRow } from './store';
 
 export class Learner {
   constructor(readonly graph: ConceptGraph, private readonly clock: () => number = Date.now) {
@@ -56,6 +57,11 @@ export class Learner {
   next(last?: string, session: { focus?: string; reviewed?: ReadonlySet<string>; track?: string } = {}): Pick | null {
     const { track: t, ...rest } = session;
     return pickNext({ graph: this.graph, records: this.records, now: this.clock(), last, pace: loadPace(), ...rest, within: this.within(t) });
+  }
+
+  /** The problem for a concept the learner chose; null while it is locked or unknown. */
+  pick(id: string): Pick | null {
+    return this.graph.get(id) ? pickConcept({ graph: this.graph, records: this.records, now: this.clock() }, id) : null;
   }
 
   /** The ways to go on to something new, and every concept open to start. */
