@@ -2,6 +2,7 @@ import { icon } from '../core/controls';
 import { h } from '../core/dom';
 import type { LectureFrame } from './player';
 import type { Playback } from './playback';
+import { mmss } from '../core/format';
 
 /** The card over the picture before the first play, offering to resume, and the one at the end. */
 export function mountPoster(o: {
@@ -13,7 +14,6 @@ export function mountPoster(o: {
   /** Share of the lecture heard so far. */
   heard: number;
   pb: Pick<Playback, 'play' | 'playFrom'>;
-  mmss(t: number): string;
 }): HTMLElement[] {
   const { frame, duration, saved, heard, pb } = o;
   const posterPlay = h('button', { class: 'lec-poster-play', type: 'button', html: `${icon('playFill')}<span>${saved ? 'Start over' : `Play the ${frame.noun}`}</span>` });
@@ -27,7 +27,7 @@ export function mountPoster(o: {
     else void pb.play();
   });
   if (saved > 0 && saved < duration) {
-    const resume = h('button', { class: 'lec-poster-play lec-resume', type: 'button', html: `${icon('playFill')}<span>Resume at ${o.mmss(saved)}</span>` });
+    const resume = h('button', { class: 'lec-poster-play lec-resume', type: 'button', html: `${icon('playFill')}<span>Resume at ${mmss(saved)}</span>` });
     resume.addEventListener('click', (e) => {
       e.stopPropagation();
       pb.playFrom(saved, true);

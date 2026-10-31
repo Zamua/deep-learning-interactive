@@ -49,7 +49,7 @@ export function mountTheater(
     return m;
   });
 
-  const plot = new Plot(stage, { square: false, domain: [0, 1, 0, 1] });
+  const plot = new Plot(stage);
   plot.canvas.classList.add('lec-canvas');
   stage.prepend(plot.canvas);
   // Marks size themselves in stage units, like the canvas drawing does.

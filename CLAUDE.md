@@ -25,7 +25,7 @@ explainer craft, `docs/SYNC.md` progress sync.
   `src/routes.ts` builds every address and parses them back; link with `routes.*`, never a literal.
 - `src/core/`: shared pieces. `code.ts` (Python highlighter + CodePanel with `{{slots}}` and
   `#@labels`), `math.ts` (KaTeX + the small markdown dialect), `symbols.ts` (color-linked
-  symbols and tap-to-name), `plot.ts` (HiDPI canvas, theme colors), `controls.ts` (icons),
+  symbols and tap-to-name), `plot.ts` (the HiDPI stage canvas, theme colors), `controls.ts` (icons),
   `rand.ts`, `format.ts` (times as pages print them), `storage.ts` (localStorage that never throws).
 - `src/lecture/`: the explainer player. `player.ts` composes it from `theater.ts` (picture, marks,
   code, caption), `playback.ts` (play state, saved place, wake lock) on `clock.ts` (the narration or
@@ -70,7 +70,7 @@ explainer craft, `docs/SYNC.md` progress sync.
   `\sym<key>`. TeX command names are letters only, so a key with a digit (`W1`) has no shorthand:
   write `\sym{W1}{W_1}`.
 - Theme colors are CSS variables read at draw time (`color('blue')`), so canvases follow dark
-  mode; palette tokens must stay 6-digit hex for `withAlpha`/`rgbOf`.
+  mode; palette tokens must stay 6-digit hex for `withAlpha`.
 - The router disposes everything registered with `onDispose` on navigation.
 - A scene's `draw(s)` is a pure function of time; the narration track is the clock.
   `timing.json` and `narration.m4a` are generated together from `script.ts` and must be

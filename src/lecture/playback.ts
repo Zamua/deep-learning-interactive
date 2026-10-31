@@ -218,16 +218,15 @@ export function mountPlayback(o: PlaybackOptions): Playback {
     audio.addEventListener('seeked', () => sync());
     // Keeps heard time and the saved place current while the screen is off and frames stop.
     audio.addEventListener('timeupdate', () => hearTo(clock.time()));
-  } else {
-    // A silent clock has no 'ended' event.
-    const check = window.setInterval(() => {
-      if (!clock.paused && clock.time() >= duration) {
-        clock.pause();
-        onEnded();
-      }
-    }, 250);
-    onDispose(() => window.clearInterval(check));
   }
+  // A silent clock has no 'ended' event: with no narration, or once the narration failed to load.
+  const check = window.setInterval(() => {
+    if (clock.silent && !clock.paused && clock.time() >= duration) {
+      clock.pause();
+      onEnded();
+    }
+  }, 250);
+  onDispose(() => window.clearInterval(check));
 
   const onVis = () => {
     if (document.visibilityState === 'visible' && !clock.paused) void wake(true);

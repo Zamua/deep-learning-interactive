@@ -2,6 +2,7 @@ import { icon } from '../core/controls';
 import { h, onDispose } from '../core/dom';
 import { DONE, type LectureLog } from './progress';
 import type { TScene } from './timeline';
+import { mmss } from '../core/format';
 
 export interface Sections {
   button: HTMLElement;
@@ -18,13 +19,12 @@ export function mountSections(o: {
   scenes: TScene[];
   log: Pick<LectureLog, 'heardIn'>;
   seek(t: number): void;
-  mmss(t: number): string;
 }): Sections {
   const { root, scenes } = o;
   const button = h('button', { class: 'lec-btn', type: 'button', 'aria-label': 'Sections', html: icon('list') });
   const list = h('div', { class: 'lec-list', role: 'dialog', 'aria-label': 'Sections' });
   const items = scenes.map((s, i) => {
-    const b = h('button', { type: 'button', class: 'lec-li' }, h('span', { class: 'lec-li-n' }, String(i + 1)), h('span', { class: 'lec-li-t' }, s.title), h('span', { class: 'lec-li-done', 'aria-label': 'heard', html: icon('check') }), h('span', { class: 'lec-li-time' }, o.mmss(s.start)));
+    const b = h('button', { type: 'button', class: 'lec-li' }, h('span', { class: 'lec-li-n' }, String(i + 1)), h('span', { class: 'lec-li-t' }, s.title), h('span', { class: 'lec-li-done', 'aria-label': 'heard', html: icon('check') }), h('span', { class: 'lec-li-time' }, mmss(s.start)));
     b.addEventListener('click', () => {
       o.seek(s.start + 0.01);
       toggle(false);

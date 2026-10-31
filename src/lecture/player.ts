@@ -1,7 +1,9 @@
 import '../styles/lecture.css';
 import { icon } from '../core/controls';
 import { h, onDispose } from '../core/dom';
+import { mmss } from '../core/format';
 import { setMacros } from '../core/math';
+import { getItem, setItem } from '../core/storage';
 import { linkSymbols, symbolMacros, type SymbolMap } from '../core/symbols';
 import { mountGestures } from './gestures';
 import type { Glossary } from './glossary';
@@ -47,40 +49,11 @@ export interface LectureFrame {
   notes?(marks: HTMLElement[], said: string): Note[];
 }
 
-const mmss = (t: number): string => {
-  const s = Math.max(0, Math.floor(t));
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-};
-
-const store = {
-  get(k: string): string | null {
-    try {
-      return localStorage.getItem(k);
-    } catch {
-      return null;
-    }
-  },
-  set(k: string, v: string): void {
-    try {
-      localStorage.setItem(k, v);
-    } catch {
-      /* private mode: position just isn't kept */
-    }
-  },
-  remove(k: string): void {
-    try {
-      localStorage.removeItem(k);
-    } catch {
-      /* private mode: nothing was kept */
-    }
-  },
-};
-
 /** Builds the full-screen lecture player for `def` into `host`. */
 export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureFrame): void {
   const { scenes, duration, exact } = layout(def.script, def.timing);
   const log = new LectureLog(def.script.id, duration);
-  const prefs = openPrefs(store);
+  const prefs = openPrefs({ get: getItem, set: setItem, remove: (k) => setItem(k, null) });
 
   document.body.classList.add('lec-on');
   onDispose(() => document.body.classList.remove('lec-on'));
@@ -141,7 +114,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
   const { clock } = pb;
   const speed = mountSpeed(root, clock, prefs);
   const overlays = mountGestures(stage, root, { live: pb.live, paused: () => clock.paused, toggle: pb.toggle, seekBy: pb.seekBy }, speed, prefs);
-  const sections = mountSections({ root, scenes, log, seek: pb.seek, mmss });
+  const sections = mountSections({ root, scenes, log, seek: pb.seek });
   const scrub = mountScrub({ root, scenes, duration, seek: pb.seek, seekBy: pb.seekBy, tip: (t) => `${mmss(t)} · ${scenes[sceneIndexAt(scenes, t)]!.title}` });
 
   const bar = h('div', { class: 'lec-bar' }, scrub.el,
@@ -208,7 +181,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
   });
   mediaActions(pb);
 
-  stage.append(...mountPoster({ title: def.script.title, frame, duration, saved: log.pos, heard: log.heardIn(), pb, mmss }));
+  stage.append(...mountPoster({ title: def.script.title, frame, duration, saved: log.pos, heard: log.heardIn(), pb }));
   theater.pose();
   showTime(0);
 

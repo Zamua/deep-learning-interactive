@@ -1,4 +1,4 @@
-import { type Beat, GAP, type LectureScript, type Timing, shownText, spokenText } from './types';
+import { type Beat, GAP, type LectureScript, type Timing, shownText, spokenText, timingMatches } from './types';
 
 export interface TBeat {
   id: string;
@@ -41,8 +41,7 @@ function captionChunks(text: string, max = 92): string[] {
  * silent), so an edited script stays watchable before its narration is rebuilt.
  */
 export function layout(script: LectureScript, timing: Timing | null): { scenes: TScene[]; duration: number; exact: boolean } {
-  const beats = script.scenes.flatMap((s) => s.beats.map((b) => [`${s.id}/${b.id}`, spokenText(b.say)] as const));
-  const exact = !!timing && Object.keys(timing.beats).length === beats.length && beats.every(([k, said]) => timing.beats[k]?.[2] === said);
+  const exact = timingMatches(script, timing);
   let t = 0;
   const scenes = script.scenes.map((s) => {
     const start = exact ? timing!.scenes[s.id]![0] : t;
