@@ -117,8 +117,8 @@ export type Answer =
 - **Choices** come from misconceptions, not noise: the shape with the transpose missing, the
   softmax without the exponential, the step taken uphill. A generator names what each wrong
   option means, so the solution can say "that is what you get if you forget the bias".
-- **Simulation problems**: a generator may run a tiny model (`src/core/nn.ts`, a 1-D
-  quadratic) and ask what happens: "with this learning rate, does the loss go down, oscillate
+- **Simulation problems**: a generator may run a tiny model itself (a few steps of gradient
+  descent on a 1-D quadratic, as `optimization/learning-rate` does) and ask what happens: "with this learning rate, does the loss go down, oscillate
   or blow up?". This is how conceptual topics get real, non-memorizable problems.
 
 ## The student model

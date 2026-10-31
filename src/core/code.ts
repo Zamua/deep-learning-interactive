@@ -196,7 +196,7 @@ export class CodePanel {
 }
 
 /** Compact number formatting for live code slots. */
-export function fmt(v: number, digits = 3): string {
+function fmt(v: number, digits = 3): string {
   if (Number.isInteger(v)) return String(v);
   if (v !== 0 && (Math.abs(v) < 1e-3 || Math.abs(v) >= 1e5)) return v.toExponential(1).replace('e+', 'e');
   return String(Number(v.toPrecision(digits)));

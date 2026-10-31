@@ -276,20 +276,6 @@ export function putLecture(s: Store, now: number, id: string, at: number, dur: n
   }).store;
 }
 
-export const readEntry = (s: Store, id: string): ReadEntry | undefined => (s.records[READING_KEY] as Reading | undefined)?.ch[id];
-
-/** How far a chapter has been read: `max` only grows, `at` follows the viewer. */
-export function putReading(s: Store, now: number, id: string, max: number, at: string): Store {
-  return putRecord(MODEL, s, READING_KEY, now, (held, t) => {
-    const ch = (held as Reading | null)?.ch ?? {};
-    return { ch: sorted({ ...ch, [id]: { max: Math.max(ch[id]?.max ?? 0, max), at: { val: at, t } } }) };
-  }).store;
-}
-
-export const lastSeen = (s: Store): Seen | null => (s.records[LAST_KEY] as LastSeen | undefined)?.at.val ?? null;
-
-export const putLast = (s: Store, now: number, seen: Seen): Store => putRecord(MODEL, s, LAST_KEY, now, (_, t) => ({ at: { val: seen, t } })).store;
-
 export const paceOf = (s: Store): Pace => (s.records[PREFS_KEY] as Prefs | undefined)?.pace?.val ?? 'deep';
 
 export const putPace = (s: Store, now: number, pace: Pace): Store =>
