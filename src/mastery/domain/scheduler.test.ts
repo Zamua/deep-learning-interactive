@@ -7,7 +7,7 @@ import type { Concept } from './types';
 const bar = { streak: 3, seconds: 20 };
 const c = (id: string, prereqs: string[] = [], domain = 'd'): Concept => ({ id, title: id, blurb: '', domain, prereqs, mastery: bar });
 const T0 = 1_000_000_000_000;
-const answers = (oks: boolean[], at: number, rec = emptyRecord()): ConceptRecord =>
+const answers = (oks: boolean[], at: number, rec: ConceptRecord = emptyRecord()): ConceptRecord =>
   oks.reduce((r, ok) => applyAnswer(r, bar, { ok, seconds: 5 }, at), rec);
 const mastered = (at = T0) => answers([true, true, true], at);
 const learning = (at: number) => answers([true], at);

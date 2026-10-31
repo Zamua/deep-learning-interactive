@@ -69,7 +69,7 @@ describe('reviews', () => {
     const r = applyAnswer(mastered, bar, { ok: false, seconds: 5 }, T0 + DAY);
     expect(status(r, true, T0 + DAY)).toBe('slipping');
     expect(r.review!.ease).toBeCloseTo(2.3);
-    let low: ConceptRecord = { ...mastered, review: { ...mastered.review!, ease: 1.4 } };
+    let low: ConceptRecord = { ...mastered, mastered: true, slipping: false, review: { ...mastered.review!, ease: 1.4 } };
     low = applyAnswer(low, bar, { ok: false, seconds: 5 }, T0 + DAY);
     expect(low.review!.ease).toBe(1.3);
   });

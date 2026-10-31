@@ -127,14 +127,15 @@ export function summary(learner: Learner): { title: string; body: string } {
   const due = d.due ? ` ${d.due} ${d.due === 1 ? 'review' : 'reviews'} due.` : '';
   // With tracks, what is new comes from the oldest one still under way, as on the home page.
   const track = learner.trackTargets.map((id) => learner.track(id, () => 0)).find((x) => x.next);
-  if (track && d.kind !== 'review' && !d.slipping) return { title: 'Atlas', body: `Next on your ${t(track.target)} track: ${t(track.next!)}.${due}` };
+  const slipping = d.kind === 'learning' && d.slipping;
+  if (track && d.kind !== 'review' && !slipping) return { title: 'Atlas', body: `Next on your ${t(track.target)} track: ${t(track.next!)}.${due}` };
   switch (d.kind) {
     case 'start':
-      return { title: 'Atlas', body: `Your first concept, ${t(d.concept!)}, takes a few minutes.` };
+      return { title: 'Atlas', body: `Your first concept, ${t(d.concept)}, takes a few minutes.` };
     case 'learning':
-      return { title: t(d.concept!), body: `${d.streak} of ${d.need} right in a row so far.${due} A few problems keep it going.` };
+      return { title: t(d.concept), body: `${d.streak} of ${d.need} right in a row so far.${due} A few problems keep it going.` };
     case 'new':
-      return { title: 'Atlas', body: `Next up: ${t(d.concept!)}.${due}` };
+      return { title: 'Atlas', body: `Next up: ${t(d.concept)}.${due}` };
     case 'review':
       return { title: 'Atlas', body: `${d.due} ${d.due === 1 ? 'concept is' : 'concepts are'} due for review.` };
     case 'done':

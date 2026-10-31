@@ -48,7 +48,7 @@ export function renderConcept(main: HTMLElement, learner: Learner, id: string): 
   if (s === 'mastered' || s === 'due') {
     root.append(h('div', { class: 'at-cells' },
       cell(h('span', { html: icon('check') }), 'mastered', 'ok'),
-      cell(s === 'due' ? 'today' : whenDue(rec.review!.due), 'next review'),
+      cell(s === 'due' || !rec.mastered ? 'today' : whenDue(rec.review.due), 'next review'),
       cell(String(rec.attempts), 'answered')));
   } else if (s !== 'locked') {
     const need = s === 'slipping' ? Math.ceil(bar.streak / 2) : bar.streak;

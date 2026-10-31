@@ -2,7 +2,7 @@
 // and what was open last. Each merges as a CRDT, so devices converge whatever order their edits arrive in. Pure: the
 // store and the network are hearthsync's.
 import { UNTIMED, canon, hash, importRecords, isObj, isStamp, lww, lwwOpt, putRecord, regFrom, type Fold, type Kind, type LocalStore, type Model, type Reg, type Stamp } from 'hearthsync';
-import type { Attempt, ConceptRecord, Review } from '../mastery/domain/model';
+import { firstReview, type Attempt, type ConceptRecord, type Review } from '../mastery/domain/model';
 import type { Pace } from '../mastery/domain/scheduler';
 
 /** A concept's record and the stamp of its last edit. */
@@ -92,7 +92,10 @@ export function conceptFrom(x: unknown): ConceptRecord | null {
   const recent = x.recent.slice(-MAX_RECENT).map(attemptFrom);
   const review = x.review === null ? null : reviewFrom(x.review);
   if (recent.some((a) => a === null) || (x.review !== null && review === null)) return null;
-  return { attempts: x.attempts, correct: x.correct, recent: recent as Attempt[], mastered: x.mastered, slipping: x.slipping, review, last: x.last };
+  const practice = { attempts: x.attempts, correct: x.correct, recent: recent as Attempt[], last: x.last };
+  if (!x.mastered && !x.slipping && !review) return { ...practice, mastered: false, slipping: false, review: null };
+  // Flags that cannot occur together read as the mastery they still imply: a review or a slip comes only after one.
+  return { ...practice, mastered: true, slipping: x.slipping, review: review ?? firstReview(x.last) };
 }
 
 const entryFrom = (x: unknown): ConceptEntry | null => {
