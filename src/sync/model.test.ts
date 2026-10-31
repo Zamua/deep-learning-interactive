@@ -1,11 +1,21 @@
 import { describe, expect, it } from 'vitest';
-import { Local, canon, codeFromRoom, makeRng, memoryStorage, type Kind } from 'hearthsync';
+import { Local, canon, codeFromRoom, makeRng, memoryStorage, putRecord, type Kind } from 'hearthsync';
 import { device, fakeWorld } from 'hearthsync/testing';
 import { emptyRecord, type ConceptRecord, type Mastered, type Unmastered } from '../mastery/domain/model';
 import {
-  LAST_KEY, MODEL, PREFS_KEY, READING_KEY, TRACKS_KEY, conceptFrom, concepts, lastSeen, laterConcept, lecture, lectureEntries, lectureKey, masteryKey, model, orBits, paceOf, putConcepts, putLast, putLecture, putPace,
-  putReading, putTrack, readEntry, trackList, type Rec,
+  LAST_KEY, MODEL, PREFS_KEY, READING_KEY, TRACKS_KEY, conceptFrom, concepts, laterConcept, lecture, lectureEntries, lectureKey, masteryKey, model, orBits, paceOf, putConcepts, putLecture, putPace,
+  putTrack, trackList, type LastSeen, type Reading, type Rec, type Seen, type Store,
 } from './model';
+
+// Records only older builds write: chapters read, and the last thing seen. The model still keeps and merges them.
+const readEntry = (s: Store, id: string) => (s.records[READING_KEY] as Reading | undefined)?.ch[id];
+const putReading = (s: Store, now: number, id: string, max: number, at: string): Store =>
+  putRecord(MODEL, s, READING_KEY, now, (held, t) => {
+    const ch = (held as Reading | null)?.ch ?? {};
+    return { ch: { ...ch, [id]: { max: Math.max(ch[id]?.max ?? 0, max), at: { val: at, t } } } };
+  }).store;
+const lastSeen = (s: Store): Seen | null => (s.records[LAST_KEY] as LastSeen | undefined)?.at.val ?? null;
+const putLast = (s: Store, now: number, seen: Seen): Store => putRecord(MODEL, s, LAST_KEY, now, (_, t) => ({ at: { val: seen, t } })).store;
 
 const rec = (over: Partial<Unmastered> = {}): Unmastered => ({ ...emptyRecord(), ...over });
 const mastered = (last: number): Mastered => ({ ...rec({ attempts: 4, correct: 4, recent: [{ ok: true, t: 3 }], last }), mastered: true, slipping: false, review: { due: last + 86_400_000, interval: 1, ease: 2.5, passed: 0 } });
