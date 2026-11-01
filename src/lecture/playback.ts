@@ -2,6 +2,7 @@ import { icon } from '../core/controls';
 import { onDispose } from '../core/dom';
 import type { LectureLog } from './progress';
 import { Clock } from './clock';
+import { type Effect, initial, next, type PlayEvent, type PlayState, type Silence, wantsPlay } from './playback-state';
 import { type TScene, jumpTarget, resumePoint } from './timeline';
 
 export interface Playback {
@@ -58,7 +59,22 @@ function screenWake(): (on: boolean) => Promise<void> {
   };
 }
 
-/** Plays, pauses and seeks the lecture, and keeps its place and heard time saved. */
+const SILENCE: Record<Silence, (noun: string) => string> = {
+  'cannot-play': (noun) => `The narration could not play here, so the ${noun} is running with captions only.`,
+  failed: (noun) => `The narration failed to load, so the ${noun} is running with captions only.`,
+  offline: (noun) => `You're offline, and narration is saved only once played, so the ${noun} is running with captions only.`,
+};
+
+const refusal = (e: unknown): 'blocked' | 'aborted' | 'failed' => {
+  const name = (e as DOMException | undefined)?.name;
+  // AbortError: a pause landed before playback began.
+  return name === 'NotAllowedError' ? 'blocked' : name === 'AbortError' ? 'aborted' : 'failed';
+};
+
+/**
+ * Plays, pauses and seeks the lecture, and keeps its place and heard time saved. The play state and its moves are
+ * playback-state.ts; this shell sends it events, performs the effects it returns and shows the state on `root`.
+ */
 export function mountPlayback(o: PlaybackOptions): Playback {
   const { scenes, duration, log, root, notice } = o;
   let audio: HTMLAudioElement | null = null;
@@ -71,11 +87,8 @@ export function mountPlayback(o: PlaybackOptions): Playback {
   if (!audio && import.meta.env.DEV) notice.textContent = 'Narration is out of date: run node tools/lecture/build.mjs. Playing silently.';
   const wake = screenWake();
 
-  let started = false;
-  let ended = false;
+  let state: PlayState = initial(audio ? 'narrated' : 'captions');
   let raf = 0;
-  /** Where playback stopped by a pause, until a seek moves it; play resumes from just before it. */
-  let pausedAt: number | null = null;
   // Heard time: only playback that ran on from the previous tick counts, never a seek's jump.
   let heardFrom: number | null = null;
   let savedAt = 0;
@@ -97,9 +110,22 @@ export function mountPlayback(o: PlaybackOptions): Playback {
     if (!clock.paused) raf = requestAnimationFrame(loop);
   }
 
-  function setPlayingUi(playing: boolean): void {
+  function savePos(): void {
+    // Before the first play the clock sits at 0 behind the poster; saving it would erase the resume point.
+    if (state.phase.kind === 'poster') return;
+    savedAt = performance.now();
+    log.save(clock.time());
+  }
+
+  function render(prev: PlayState | null): void {
+    const kind = state.phase.kind;
+    const playing = wantsPlay(state.phase);
+    root.classList.toggle('started', kind !== 'poster');
     root.classList.toggle('playing', playing);
-    root.classList.toggle('paused', !playing && started);
+    root.classList.toggle('paused', !playing && kind !== 'poster');
+    root.classList.toggle('waiting', kind === 'buffering');
+    root.classList.toggle('ended', kind === 'ended');
+    if (prev && wantsPlay(prev.phase) === playing) return;
     const ic = icon(playing ? 'pauseFill' : 'playFill');
     for (const b of o.buttons) {
       b.innerHTML = ic;
@@ -108,125 +134,69 @@ export function mountPlayback(o: PlaybackOptions): Playback {
     o.state(playing);
   }
 
-  async function play(): Promise<void> {
-    started = true;
-    root.classList.add('started');
-    if (ended) {
-      ended = false;
-      root.classList.remove('ended');
-      clock.seek(0);
-    }
-    if (pausedAt !== null) {
-      const p = resumePoint(scenes, pausedAt);
-      if (p < clock.time() - 0.01) clock.seek(p);
-    }
-    pausedAt = null;
-    try {
-      await clock.play();
-    } catch (e) {
-      // AbortError: a pause landed before playback began.
-      if (['NotAllowedError', 'AbortError'].includes((e as DOMException).name)) return;
-      clock.goSilent();
-      notice.textContent = `The narration could not play here, so the ${o.noun} is running with captions only.`;
-      await clock.play();
-    }
-    if (clock.silent) onPlaying();
-  }
-
-  function onPlaying(): void {
-    setPlayingUi(true);
-    void wake(true);
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(loop);
-  }
-
-  function pause(): void {
-    clock.pause();
-    if (clock.silent) onPaused();
-  }
-
-  function onPaused(): void {
-    pausedAt = clock.time();
-    setPlayingUi(false);
-    void wake(false);
-    savePos();
-    sync();
-  }
-
-  function onEnded(): void {
-    pausedAt = null;
-    o.ended();
-    ended = true;
-    root.classList.add('ended');
-    setPlayingUi(false);
-    void wake(false);
-    log.save(duration);
-    sync();
-  }
-
-  function toggle(): void {
-    if (clock.paused) void play();
-    else pause();
-  }
-
-  function seek(t: number): void {
-    pausedAt = null;
-    heardFrom = null;
-    if (ended) {
-      ended = false;
-      root.classList.remove('ended');
-    }
-    clock.seek(t);
-    sync();
-    if (!started) {
-      started = true;
-      root.classList.add('started');
-      setPlayingUi(false);
+  function perform(fx: Effect): void {
+    switch (fx.do) {
+      case 'seek':
+        heardFrom = null;
+        clock.seek(fx.t);
+        return;
+      case 'resume': {
+        const p = resumePoint(scenes, fx.at);
+        if (p < clock.time() - 0.01) clock.seek(p);
+        return;
+      }
+      case 'play':
+        clock.play().catch((e: unknown) => send({ type: 'play-refused', why: refusal(e) }));
+        return;
+      case 'pause':
+        clock.pause();
+        return;
+      case 'silence':
+        clock.goSilent();
+        notice.textContent = SILENCE[fx.why](o.noun);
+        return;
+      case 'wake':
+        void wake(fx.on);
+        return;
+      case 'frames':
+        cancelAnimationFrame(raf);
+        if (wantsPlay(state.phase) && !clock.paused) raf = requestAnimationFrame(loop);
+        else sync();
+        return;
+      case 'save':
+        savePos();
+        return;
+      case 'finish':
+        o.ended();
+        log.save(duration);
+        return;
+      default:
+        return absurd(fx);
     }
   }
 
-  function savePos(): void {
-    // Before the first play the clock sits at 0 behind the poster; saving it would erase the resume point.
-    if (!started) return;
-    savedAt = performance.now();
-    log.save(clock.time());
+  function send(e: PlayEvent): void {
+    const prev = state;
+    const [s, effects] = next(state, e);
+    state = s;
+    for (const fx of effects) perform(fx);
+    if (state !== prev) render(prev);
   }
 
   if (audio) {
-    audio.addEventListener('playing', () => {
-      root.classList.remove('waiting');
-      onPlaying();
-    });
-    audio.addEventListener('pause', () => {
-      if (!audio.ended) onPaused();
-    });
-    audio.addEventListener('waiting', () => root.classList.add('waiting'));
-    audio.addEventListener('ended', onEnded);
-    audio.addEventListener('error', () => {
-      if (clock.silent) return;
-      const wasPlaying = !audio.paused || root.classList.contains('waiting');
-      clock.goSilent();
-      root.classList.remove('waiting');
-      notice.textContent = navigator.onLine
-        ? `The narration failed to load, so the ${o.noun} is running with captions only.`
-        : `You're offline, and narration is saved only once played, so the ${o.noun} is running with captions only.`;
-      if (wasPlaying) {
-        void clock.play();
-        onPlaying();
-      }
-    });
+    // Media events arrive a task late: one whose moment has already passed (a pause the viewer undid, say) is dropped.
+    audio.addEventListener('playing', () => !audio.paused && send({ type: 'media-playing' }));
+    audio.addEventListener('pause', () => audio.paused && !audio.ended && send({ type: 'media-paused', t: clock.time() }));
+    audio.addEventListener('waiting', () => !audio.paused && send({ type: 'media-waiting' }));
+    audio.addEventListener('ended', () => send({ type: 'media-ended' }));
+    audio.addEventListener('error', () => send({ type: 'media-error', online: navigator.onLine }));
     audio.addEventListener('seeked', () => sync());
     // Keeps heard time and the saved place current while the screen is off and frames stop.
     audio.addEventListener('timeupdate', () => hearTo(clock.time()));
   }
   // A silent clock has no 'ended' event: with no narration, or once the narration failed to load.
-  const check = window.setInterval(() => {
-    if (clock.silent && !clock.paused && clock.time() >= duration) {
-      clock.pause();
-      onEnded();
-    }
-  }, 250);
-  onDispose(() => window.clearInterval(check));
+  const tick = window.setInterval(() => send({ type: 'tick', t: clock.time(), duration }), 250);
+  onDispose(() => window.clearInterval(tick));
 
   const onVis = () => {
     if (document.visibilityState === 'visible' && !clock.paused) void wake(true);
@@ -250,21 +220,24 @@ export function mountPlayback(o: PlaybackOptions): Playback {
     void wake(false);
   });
 
-  setPlayingUi(false);
+  render(null);
 
+  const play = async (): Promise<void> => send({ type: 'play' });
+  const pause = (): void => send({ type: 'pause', t: clock.time() });
+  const seek = (t: number): void => send({ type: 'seek', t });
   return {
     clock,
     play,
     pause,
-    toggle,
+    toggle: () => (wantsPlay(state.phase) ? pause() : void play()),
     seek,
     seekBy: (dt) => seek(clock.time() + dt),
     jump: (d) => seek(jumpTarget(scenes, clock.time(), d)),
-    playFrom(t, resume) {
-      clock.seek(t);
-      if (resume) pausedAt = t;
-      void play();
-    },
-    live: () => started && !ended,
+    playFrom: (t, resume) => send({ type: 'play', from: { t, resume } }),
+    live: () => state.phase.kind !== 'poster' && state.phase.kind !== 'ended',
   };
+}
+
+function absurd(fx: never): never {
+  throw new Error(`unknown effect ${JSON.stringify(fx)}`);
 }
