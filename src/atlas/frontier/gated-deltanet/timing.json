@@ -1,0 +1,31 @@
+{
+ "duration": 208.779,
+ "scenes": {
+  "forget": [0.0, 51.232],
+  "gate": [51.232, 100.366],
+  "run": [100.366, 149.006],
+  "results": [149.006, 208.779]
+ },
+ "beats": {
+  "forget/one": [0.7, 12.91, "The delta rule edits one key per token. That is precise, but when a text moves on to a new topic, every old pair goes stale, and the rule can only clear them one key at a time.", [[3.5, 4.0], [5.09, 5.46], [7.6, 7.93], [9.69, 10.02]]],
+  "forget/decay": [13.29, 25.925, "A selective state space model forgets the other way: each token multiplies the whole state by a decay, a, made from the token itself, so one token can fade the whole memory at once.", [[16.37, 16.93], [20.03, 20.29], [20.65, 20.94], [22.43, 22.84]]],
+  "forget/mamba2": [26.305, 38.896, "Its 2024 successor, Mamba2, by Tree Dao and Albert Gu, can be written as linear attention with that decay: S becomes a times S, plus v k transpose.", [[28.205, 28.425], [29.265, 29.465], [31.225, 31.535], [34.355, 34.885], [36.945, 37.135]]],
+  "forget/blunt": [39.276, 50.132, "But the decay is blunt: it fades every pair alike. With a at a half, both values halve. To forget one stale pair, it must fade them all.", [[40.816, 41.246], [43.026, 43.616], [45.096, 45.296], [46.576, 47.066], [48.626, 48.896]]],
+  "gate/both": [51.932, 64.171, "Gated DeltaNet does both. Each token first fades the whole state by alpha, a number between zero and one, made from the token the way a selective state space model makes its decay.", [[53.772, 54.392], [57.532, 57.882], [59.702, 60.002]]],
+  "gate/gate": [64.551, 72.438, "alpha is called a gate: like an LSTM's forget gate, it lets through a share of the memory, set by the input.", [[66.141, 66.801], [68.801, 69.231], [71.091, 71.281]]],
+  "gate/delta": [72.818, 80.765, "Then it applies the delta rule to the faded state: read what it now holds for the key, and write the difference, times beta.", [[75.788, 76.398], [78.288, 78.558], [79.628, 79.928]]],
+  "gate/rule": [81.145, 88.856, "Together: S gets alpha S, plus beta, times v minus alpha S k, times k transpose.", [[81.665, 82.155], [83.685, 83.915], [84.685, 84.905], [87.245, 87.455]]],
+  "gate/ends": [89.236, 99.266, "At alpha near zero, the old memory is wiped, and the token starts it afresh. At alpha of one, nothing fades, and it is the delta rule again.", [[90.716, 90.996], [92.446, 92.706], [94.426, 95.006], [96.096, 96.386], [97.366, 97.656]]],
+  "run/start": [101.066, 116.196, "Run one step. Key one, zero reads two, three, and key zero, one reads one, four. A token arrives with alpha of a half, beta of one, key one, zero and value four, one.", [[102.206, 102.846], [104.846, 105.016], [105.466, 105.826], [107.126, 107.316], [108.666, 109.256], [111.576, 111.916], [112.956, 113.296], [114.366, 114.596]]],
+  "run/fade": [116.576, 124.163, "First the fade: everything halves. Key one, zero now reads one, one and a half.", [[117.766, 118.346], [119.526, 120.066], [120.756, 121.206], [122.556, 122.716]]],
+  "run/diff": [124.543, 129.955, "Its difference from the new value, four, one, is three, minus a half.", [[126.343, 126.583], [127.043, 127.233], [127.653, 127.953], [128.653, 128.933]]],
+  "run/write": [130.335, 136.58, "Written along the key, it makes key one, zero read exactly four, one.", [[131.575, 131.815], [133.015, 133.325], [133.905, 134.065], [135.095, 135.275], [135.725, 136.095]]],
+  "run/k2": [136.96, 147.906, "Key zero, one was not written: it reads half of one, four, which is a half, two. The new pair is exact, and the rest has faded by alpha.", [[139.02, 139.61], [140.13, 140.28], [141.11, 141.29], [141.76, 142.09], [142.91, 143.15], [143.48, 144.19], [145.58, 145.89]]],
+  "results/paper": [149.706, 165.299, "Songlin Yang, Jan Kautz and Ali Hatamizadeh, at MIT and en vidia, proposed this gated delta rule in 2024. They trained models of one point three billion parameters on a hundred billion tokens to compare.", [[150.636, 150.866], [153.166, 153.436], [155.406, 155.666], [158.756, 159.446], [162.676, 162.846]]],
+  "results/needle": [165.679, 174.58, "One test hid a single fact, a key with its value, in a long text, and asked for it at the end: a needle in a haystack.", [[167.679, 168.129], [169.469, 169.709], [170.749, 171.029], [172.479, 173.109]]],
+  "results/repeat": [174.96, 183.337, "In filler that repeats, the delta rule kept the needle at every length, while Mamba2's decay faded it past two thousand tokens.", [[176.33, 176.6], [179.14, 179.5]]],
+  "results/essay": [183.717, 196.662, "Hidden in real essays, where every sentence might matter, plain DeltaNet fell behind past a thousand tokens: with nothing cleared, its pairs collided. The gated models held up longer.", [[185.357, 185.637], [187.457, 187.897], [191.157, 191.627], [192.607, 192.907], [194.167, 194.787]]],
+  "results/best": [197.042, 206.559, "Across language modelling, reasoning and recall, Gated DeltaNet beat both Mamba2 and DeltaNet, and trained about as fast as DeltaNet.", [[198.502, 198.702], [200.122, 200.442], [203.962, 204.242]]],
+  "results/turn": [206.939, 207.679, "Your turn.", []]
+ }
+}

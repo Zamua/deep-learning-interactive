@@ -1,0 +1,35 @@
+{
+ "duration": 267.591,
+ "scenes": {
+  "cache": [0.0, 48.742],
+  "drop": [48.742, 116.021],
+  "rnn": [116.021, 203.538],
+  "size": [203.538, 267.591]
+ },
+ "beats": {
+  "cache/grow": [0.7, 13.833, "While a transformer writes, each new token adds its key and value to the KV cache. Its query scores every key there, and the output, o, mixes the values by the softmax of those scores.", [[2.3, 2.54], [6.27, 6.81], [8.94, 9.23], [10.0, 10.23], [10.57, 10.87]]],
+  "cache/cost": [14.213, 22.942, "So the cache grows with every token, and token t makes t scores: the longer the text, the more each new token costs.", [[16.523, 16.893], [19.183, 19.703], [20.653, 20.933]]],
+  "cache/rnn": [23.322, 33.573, "A recurrent network pays the same at every step: it folds each token into one state of fixed size, and keeps nothing else. Could attention work like that?", [[26.232, 26.732], [30.052, 30.252], [31.472, 32.032]]],
+  "cache/block": [33.953, 47.642, "The softmax is what stands in the way. Its exponential, e to the power of q dot k, has to see the query before any key's term can be added in, so every key is kept for every query still to come.", [[36.173, 36.683], [37.803, 38.073], [40.003, 40.293], [43.913, 44.333]]],
+  "drop/plain": [49.442, 57.742, "So drop the softmax. Let each weight be the plain dot product, k dot q: no exponential, and no division.", [[51.002, 51.392], [53.752, 54.052], [55.052, 55.472], [56.512, 56.672]]],
+  "drop/sum": [58.122, 68.533, "The output is then each value times its key's score, added up: o equals the sum over the tokens of k i dot q, times v i.", [[61.532, 61.772], [62.312, 62.902], [67.032, 67.282]]],
+  "drop/regroup": [68.913, 82.25, "Look at one term: a number, k dot q, times a vector, v. It can be worked the other way round: first a matrix made from v and k alone, then that matrix times q.", [[69.973, 70.493], [71.053, 71.363], [72.313, 72.553], [73.453, 73.643], [74.023, 74.663], [76.443, 76.963], [79.873, 80.223]]],
+  "drop/outer": [82.63, 96.613, "That matrix is the outer product of v and k, written v k transpose: every entry of v times every entry of k, in a table with a row for each entry of v and a column for each entry of k.", [[85.8, 86.12], [87.98, 88.43], [89.67, 89.84], [91.48, 91.86], [94.34, 94.57]]],
+  "drop/S": [96.993, 107.515, "Add up those tables over every token so far, and call the sum S. Then the output is one matrix times the query: o equals S q.", [[99.883, 100.123], [101.023, 101.213], [101.653, 102.213], [105.353, 105.853]]],
+  "drop/fold": [107.895, 114.921, "And S never needs a query. Each key and value can be folded into it as they arrive, and then let go.", [[109.765, 110.315], [113.715, 113.945]]],
+  "rnn/rec": [116.721, 130.548, "So each step adds one table to the state, then reads the state with the query: S t equals S t minus one, plus v t k t transpose, and o t equals S t q t.", [[119.441, 119.861], [121.881, 122.361], [124.871, 125.191], [127.451, 127.861]]],
+  "rnn/linear": [130.928, 138.191, "That is a linear recurrence, with a whole matrix for its state and a decay of one: nothing in it fades.", [[132.718, 133.068], [134.858, 135.008], [136.228, 136.728]]],
+  "rnn/t1": [138.571, 152.391, "Try it with keys and values of two numbers. S starts at zeros. The first token has key one, zero and value two, three, so its table puts two, three in S's first column.", [[141.271, 141.901], [143.581, 144.141], [146.671, 146.861], [148.401, 148.771]]],
+  "rnn/t2": [152.771, 162.551, "The second has key zero, one and value one, four, which fills the second column. S now has rows two, one and three, four.", [[154.741, 154.941], [155.371, 155.561], [157.111, 157.421], [158.831, 159.461], [161.401, 161.601]]],
+  "rnn/q": [162.931, 175.662, "A query of one, one reads three, seven: each row of S dotted with q. The old sum agrees: one times two, three, plus one times one, four.", [[164.101, 164.611], [166.461, 167.071], [168.131, 168.301], [169.201, 169.801], [171.261, 171.741], [172.771, 172.991], [173.361, 173.701], [174.961, 175.191]]],
+  "rnn/recall": [176.042, 186.155, "And a query equal to the first key, one, zero, reads back exactly its value, two, three. The state is a memory from keys to values.", [[178.152, 178.422], [179.392, 179.772], [181.642, 181.952], [182.682, 183.352]]],
+  "rnn/paper": [186.535, 202.438, "Angelos Katharopoulos and colleagues showed this in 2020, in a paper titled Transformers are R N Ns. They also kept every number in the queries and keys positive, and divided by a total; later models often drop both.", [[190.225, 190.575], [191.585, 191.895], [194.095, 194.805], [198.425, 198.625], [199.985, 200.535]]],
+  "size/state": [204.238, 216.598, "Now the size. A head whose keys and values have d head numbers keeps a d head by d head state: at sixty four, four thousand and ninety six numbers, however long the text.", [[205.328, 205.938], [208.968, 209.208], [211.378, 211.928], [212.868, 213.088], [215.088, 215.348]]],
+  "size/cache": [216.978, 225.152, "Softmax attention's cache, for the same head, holds a key and a value for every token: a hundred and twenty eight numbers each.", [[218.778, 218.978], [219.818, 220.068], [222.708, 223.088]]],
+  "size/cross": [225.532, 235.099, "So by thirty two tokens, the cache is as big as the state. At four thousand, it is a hundred and twenty five times bigger, and still growing.", [[227.472, 227.682], [229.572, 230.142], [231.102, 231.322], [233.692, 233.982]]],
+  "size/work": [235.479, 243.811, "The work per token is fixed too: add one table, and read once, where softmax attention scores every token so far.", [[237.599, 238.179], [239.079, 239.249], [240.189, 240.569]]],
+  "size/train": [244.191, 255.429, "Training needs no loop: with every token known, all the outputs come at once from matrix products, as in a transformer. Only generating runs step by step.", [[245.721, 246.331], [247.681, 247.981], [250.771, 251.041], [252.141, 252.941]]],
+  "size/fast": [255.809, 265.371, "On very long sequences, Katharopoulos's linear transformers generated up to four thousand times faster than ordinary ones, with similar results.", [[257.519, 257.759], [263.839, 264.159]]],
+  "size/turn": [265.751, 266.491, "Your turn.", []]
+ }
+}
