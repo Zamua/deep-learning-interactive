@@ -1,0 +1,28 @@
+{
+ "duration": 173.099,
+ "scenes": {
+  "limit": [0.0, 59.282],
+  "mix": [59.282, 111.581],
+  "memory": [111.581, 173.099]
+ },
+ "beats": {
+  "limit/fixed": [0.7, 7.094, "Gated DeltaNet keeps a state of fixed size however long the text, and that is its strength.", [[3.69, 3.87], [5.21, 5.59]]],
+  "limit/cap": [7.474, 18.056, "It is also its limit. With keys of d k numbers, at most d k of them can be at right angles, so only that many pairs can be held perfectly apart.", [[9.044, 9.644], [11.384, 11.644], [14.434, 14.774]]],
+  "limit/share": [18.436, 27.721, "Across a hundred thousand tokens, most pairs must share the state: the gates and the delta rule choose what to keep, and some facts are lost.", [[20.616, 20.936], [22.876, 23.436], [25.916, 26.306]]],
+  "limit/drop": [28.101, 35.918, "In the needle test with real essays, even Gated DeltaNet found the needle less than a third of the time at eight thousand tokens.", [[30.101, 30.421]]],
+  "limit/cache": [36.298, 46.52, "Softmax attention keeps every key and value in its cache, so a query can still find a token from far back, at the price of a cache that grows with the text.", [[40.058, 40.448], [43.398, 43.808]]],
+  "limit/gap": [46.9, 58.182, "On real tasks that look facts up in long documents, Yang's team found pure recurrent models well behind transformers, while models that mixed in some attention beat both.", [[50.19, 50.59], [54.71, 55.16], [57.28, 57.43]]],
+  "mix/idea": [59.982, 69.683, "So mix them. Keep most layers recurrent, with fixed states, and make every few layers full softmax attention, with a cache of every token.", [[60.982, 61.452], [62.972, 63.172], [64.272, 64.622], [67.692, 67.962]]],
+  "mix/yang": [70.063, 80.236, "In 2024, Yang's team tried it with DeltaNet: swapping just two of its layers for full attention gave a model that beat a transformer of the same size.", [[71.333, 71.623], [73.553, 74.113], [76.853, 77.063]]],
+  "mix/qwen": [80.616, 94.07, "In 2025, the Qwen team at Alibaba built a large model this way, Qwen three Next: forty eight layers, in twelve groups of three Gated DeltaNet layers and one attention layer.", [[81.966, 82.196], [85.476, 86.026], [86.766, 87.366], [87.836, 88.176], [89.356, 89.646], [92.466, 92.666]]],
+  "mix/why": [94.45, 106.086, "Their reason: linear attention is fast but weak at recall, and standard attention is expensive and slow when generating. Three to one did better than either kind alone.", [[95.19, 95.71], [98.67, 99.08], [102.73, 103.32]]],
+  "mix/count": [106.466, 110.481, "So only twelve of the forty eight layers keep a KV cache.", []],
+  "memory/full": [112.281, 126.789, "Now the memory, for a made-up model with the same pattern: forty eight layers, d of four thousand, two bytes a number. As a transformer, it would need about seventy seven gigabytes of cache for a hundred thousand tokens.", [[113.191, 113.561], [115.631, 116.101], [117.081, 117.441], [118.731, 119.101], [120.331, 120.861], [121.831, 122.061]]],
+  "memory/formula": [127.169, 136.582, "That is two, for keys and values, times forty eight layers, a hundred thousand tokens, four thousand numbers each, and two bytes.", [[128.199, 128.479], [129.759, 130.129], [131.599, 131.969], [133.599, 133.929], [135.359, 135.619]]],
+  "memory/hybrid": [136.962, 143.072, "In the hybrid, only twelve layers keep a cache: a quarter of it, about nineteen gigabytes.", [[137.752, 138.032], [139.942, 140.362], [141.162, 141.482]]],
+  "memory/state": [143.452, 152.253, "The other thirty six keep states. At half a million numbers each, a megabyte, that is thirty six megabytes, at any length.", [[145.652, 146.182], [147.932, 148.192], [148.882, 149.172], [151.012, 151.282]]],
+  "memory/grow": [152.633, 162.607, "Double the context, and the cache doubles: it still grows in proportion to the tokens, four times slower than the transformer's. The states stay the same.", [[155.033, 155.563], [157.933, 158.353], [160.553, 161.063]]],
+  "memory/trade": [162.987, 170.879, "Fewer attention layers would shrink the cache further, but leave more of the recall to fixed states: the ratio is the trade-off.", [[165.797, 166.157], [168.727, 169.277]]],
+  "memory/turn": [171.259, 171.999, "Your turn.", []]
+ }
+}

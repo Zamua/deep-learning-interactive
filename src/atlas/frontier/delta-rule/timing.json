@@ -1,0 +1,36 @@
+{
+ "duration": 257.916,
+ "scenes": {
+  "pile": [0.0, 65.626],
+  "delta": [65.626, 136.784],
+  "beta": [136.784, 172.962],
+  "learn": [172.962, 257.916]
+ },
+ "beats": {
+  "pile/memory": [0.7, 11.94, "Linear attention's state is a memory from keys to values. Here key one, zero holds the value two, three, and key zero, one holds one, four.", [[4.48, 5.01], [5.38, 5.56], [6.22, 6.51], [8.79, 9.23], [10.52, 10.73]]],
+  "pile/again": [12.32, 22.635, "Now the first key comes back with a new value, four, one, as when a text changes a fact it gave before. Linear attention just adds another table.", [[14.98, 15.36], [16.33, 16.73], [19.55, 20.14]]],
+  "pile/pile": [23.015, 32.011, "Read that key now, and out comes six, four: the old value plus the new one, piled up. Nothing is ever overwritten.", [[24.255, 24.505], [26.375, 26.885], [28.705, 28.965], [29.565, 30.065]]],
+  "pile/angle": [32.391, 41.782, "And only keys at a right angle stay apart. A key between them, zero point six, zero point eight, reads back a mix of both values.", [[35.091, 35.771], [36.821, 37.101], [39.211, 39.571]]],
+  "pile/cap": [42.162, 51.112, "Keys of two numbers have room for only two directions at right angles. Store more pairs than a key has numbers, and the reads start to blend.", [[46.292, 46.762], [49.052, 49.352]]],
+  "pile/schlag": [51.492, 64.526, "In 2021, Imanol Schlag, Kazuki Irie and Yoorgen Schmidhoober pointed out both limits of linear attention, and a fix: before writing, read what the memory already holds.", [[52.752, 53.082], [53.982, 54.262], [55.242, 55.392], [56.642, 56.852], [59.192, 59.462], [60.482, 61.002], [61.892, 62.242]]],
+  "delta/old": [66.326, 75.028, "First, read what the memory holds for this key: S times k, here two, three. That is the old value.", [[66.836, 67.206], [69.396, 69.996], [71.146, 71.586], [71.956, 72.146], [72.506, 72.686], [73.076, 73.576]]],
+  "delta/delta": [75.408, 88.32, "Then take the difference between the new value and the old: four, one, minus two, three, is two, minus two. It is called the delta, after the Greek letter for a change.", [[78.618, 79.168], [79.628, 79.918], [80.318, 80.618], [81.438, 81.718], [82.168, 82.478], [83.158, 83.328], [84.028, 84.618], [86.018, 86.338]]],
+  "delta/write": [88.7, 95.35, "Write only that difference, as a table with the key: add the outer product of the delta and k.", [[90.36, 90.67], [92.05, 92.63]]],
+  "delta/check": [95.73, 105.931, "Read again: the old two, three, plus the delta, gives four, one. The new value replaces the old, instead of piling onto it.", [[96.42, 97.0], [97.94, 98.26], [98.73, 99.06], [99.96, 100.22], [101.0, 101.2], [101.58, 102.21], [104.17, 104.44]]],
+  "delta/rule": [106.311, 113.373, "That is the delta rule: S gets S, plus v minus S k, times k transpose.", [[107.741, 108.241], [109.451, 109.691], [111.661, 111.901]]],
+  "delta/unit": [113.753, 125.491, "The read moves by the delta times k dot k, so the value is replaced exactly when the key has length one. Today's models built on the rule scale every key to length one.", [[116.783, 117.253], [120.773, 121.473]]],
+  "delta/other": [125.871, 135.684, "A key at a right angle to k is left alone, since its dot product with k is zero: key zero, one still reads one, four.", [[128.861, 129.151], [131.561, 132.101], [132.971, 133.271]]],
+  "beta/beta": [137.484, 145.583, "One more piece: a write strength, beta, a number from zero to one that scales the difference before it is written.", [[138.404, 138.934], [139.844, 140.244], [140.734, 141.234], [142.874, 143.054]]],
+  "beta/one": [145.963, 151.546, "At one, the new value replaces the old: the key reads four, one.", [[146.623, 146.953], [148.943, 149.473], [150.293, 150.493], [150.923, 151.093]]],
+  "beta/half": [151.926, 158.499, "At a half, the read moves halfway, to three, two: a blend of old and new.", [[152.716, 152.966], [154.406, 154.876], [155.496, 155.846], [156.226, 156.706]]],
+  "beta/zero": [158.879, 163.835, "At zero, nothing is written, and the key still reads two, three.", [[159.659, 159.949], [160.959, 161.309], [162.659, 162.859]]],
+  "beta/made": [164.215, 171.862, "The model makes beta from each token, with learned weights and a sigmoid, so each token decides how firmly it is written.", [[166.475, 166.735], [168.585, 168.905]]],
+  "learn/error": [173.662, 181.695, "There is another way to see the rule. S times k is the memory's guess at v, and the guess minus v is its error.", [[175.432, 176.042], [178.962, 179.312]]],
+  "learn/loss": [182.075, 190.485, "Square the error's length and halve it, for a loss. Then take one step of gradient descent on it, with beta as the step size.", [[184.275, 184.535], [185.225, 185.815], [188.415, 188.695]]],
+  "learn/grad": [190.865, 207.93, "The loss's slope for the entry in row i, column j of S is the error's entry i, times k's entry j: the outer product. So the step adds minus beta, times the error, times k transpose: exactly the delta rule.", [[195.125, 195.425], [197.035, 197.275], [199.015, 199.455], [200.355, 200.955], [203.315, 203.505], [204.345, 204.505], [205.935, 206.425]]],
+  "learn/widrow": [208.31, 220.496, "The rule is old. In 1960, Bernard Widrow and Marcian Hoff trained adaptive circuits with it: nudge the weights by the error times the input, one example at a time.", [[209.56, 210.16], [211.27, 211.52], [213.43, 213.62], [215.37, 216.02], [218.6, 218.99]]],
+  "learn/fast": [220.876, 238.641, "So S is a set of weights that keeps learning while the model reads: fast weights, rewritten at every token, where the weights that make keys and values are slow, set in training. Hence Schlag's title: Linear Transformers Are Secretly Fast Weight Programmers.", [[225.036, 225.566], [226.406, 226.776], [228.466, 228.866], [231.526, 231.796], [232.726, 233.256], [234.566, 235.046]]],
+  "learn/deltanet": [239.021, 255.695, "They called the model a Delta Network. In 2024, Songlin Yang and colleagues found how to train DeltaNet in parallel over a whole text, and at one point three billion parameters it beat other recurrent models of its size at predicting text.", [[241.151, 241.751], [242.971, 243.221], [244.791, 244.991], [248.781, 249.251], [251.731, 252.021]]],
+  "learn/turn": [256.075, 256.816, "Your turn.", []]
+ }
+}

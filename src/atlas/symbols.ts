@@ -321,6 +321,14 @@ const ssm: SymbolMap = {
 
 const sig: SymbolDef = { color: 'teal', name: 'σ: the sigmoid', tex: '\\sigma', code: [], about: 'σ(z) = 1 / (1 + e⁻ᶻ) squashes any number into the range 0 to 1, with σ(0) = 0.5.' };
 
+/** A matrix state written by keys and values: linear attention, the delta rule and Gated DeltaNet. */
+const kvState: SymbolMap = {
+  ...pick(att, 'q k v K V T d dhead dk x'),
+  S: { color: 'blue', name: 'S: the state', about: 'A matrix with a row per entry of a value and a column per entry of a key, the same size at any length. A query reads it as S q.' },
+  o: { color: 'green', name: 'o: the output', about: 'What the query reads from the state: o = S q, every value weighted by its key\'s dot product with q.' },
+};
+const writeStrength: SymbolDef = { color: 'red', name: 'β: the write strength', tex: '\\beta', code: ['beta'], about: 'A number from 0 to 1, made from each token with learned weights and a sigmoid. It scales the difference v − S k before it is written: 1 replaces the value read at k, 0 leaves it.' };
+
 /**
  * Where a concept needs a symbol to mean something else, or to say only what its prerequisites
  * teach. Keys missing from ATLAS_SYMBOLS work too, through \sym{key}{tex}.
@@ -624,6 +632,26 @@ export const SCOPED: Record<string, SymbolMap> = {
     x: { color: 'orange', name: 'x: the prompt\'s vectors', about: 'One per token: the image tokens first, then the text.' },
     Tmax: { color: 'slate', name: 'T_max: the longest input', tex: 'T_{\\max}', code: ['T_max'], about: 'The most tokens the language model reads at once. Image tokens and text share it.' },
   },
+  'linear-attention': {
+    ...kvState,
+    S: { ...kvState.S!, about: 'The sum of every token\'s outer product v kᵀ, built as tokens arrive: Sₜ = Sₜ₋₁ + vₜkₜᵀ. A query reads it as S q. It holds d_head by d_head numbers per head, at any length.' },
+  },
+  'delta-rule': {
+    ...kvState,
+    S: { ...kvState.S!, name: 'S: the state, or fast weights', about: 'A memory from keys to values: S k reads the value stored at the key k. The delta rule rewrites it at every token, so it is a set of weights that learns while the model reads.' },
+    beta: writeStrength,
+    L: { color: 'red', name: 'L: the loss', code: ['L', 'loss'], about: 'Half the squared length of the error S k − v: zero when the memory already reads v at k. One gradient step on it, of size β, is the delta rule.' },
+  },
+  'gated-deltanet': {
+    ...kvState,
+    beta: writeStrength,
+    alpha: { color: 'teal', name: 'α: the gate', tex: '\\alpha', code: ['alpha'], about: 'A number from 0 to 1, made from each token: the share of the whole state kept before the delta rule writes. Near 0 wipes the memory; 1 keeps all of it.' },
+    a: { color: 'teal', name: 'a: the decay', about: 'Mamba2\'s decay, set by each token: it multiplies every pair in the state alike, S ← a S + v kᵀ.' },
+  },
+  'hybrid-attention': {
+    ...pick(kvState, 'S d dk'),
+    S: { ...kvState.S!, about: 'A Gated DeltaNet layer\'s memory: a d_k by d_v matrix per head, the same size at any length.' },
+  },
   'verifiable-rewards': {
     A: rl.A!,
     G: { color: 'slate', name: 'G: the group size', about: 'How many answers are sampled for one prompt.' },
@@ -807,6 +835,7 @@ export const SCOPED_GLOSSARY: Record<string, Glossary> = {
     generate: { is: 'runs the model on a context, one token at a time, until it writes the stop text' },
     run_tool: { is: 'reads the call between the markers, runs that tool and returns its result' },
   },
+  'hybrid-attention': { '.count': { is: 'how many items equal the one given', eg: "['a', 'b', 'a'].count('a')   # 2" } },
   'vision-language': {
     vit: { is: 'the trained vision transformer: one vector per patch, plus the class token' },
     gpt: { is: 'the decoder-only language model: reads the vectors and writes the reply' },
