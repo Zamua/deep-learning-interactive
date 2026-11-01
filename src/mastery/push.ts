@@ -12,22 +12,37 @@ const PREFS = 'atlas.reminders';
 /** Activity is reported at most this often, and whenever the day changes. */
 const SYNC_EVERY = 30 * 60_000;
 
-export interface ReminderPrefs {
-  on: boolean;
-  /** "HH:MM", local. */
-  time: string;
-  /** Epoch ms of the next reminder, as the sender last said. */
-  next?: number;
-  /** When activity was last reported. */
-  synced?: number;
-}
+/** The switch as this device last set it. On: the sender holds this browser's subscription, due `next`, told at `synced`. */
+export type ReminderPrefs = { on: false; time: string } | { on: true; time: string; next: number; synced: number };
+
+const num = (v: unknown): number => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
 
 export function loadPrefs(): ReminderPrefs {
-  const v = getJson(PREFS);
-  return { on: false, time: '19:00', ...(v && typeof v === 'object' ? (v as Partial<ReminderPrefs>) : {}) };
+  const v = getJson(PREFS) as Record<string, unknown> | null;
+  /** "HH:MM", local. */
+  const time = typeof v?.time === 'string' ? v.time : '19:00';
+  return v?.on === true ? { on: true, time, next: num(v.next), synced: num(v.synced) } : { on: false, time };
 }
 
 const savePrefs = (p: ReminderPrefs): void => setJson(PREFS, p);
+
+/** Off, keeping the chosen time: turned off, or the browser dropped the subscription. */
+const switchOff = (): ReminderPrefs => {
+  const p: ReminderPrefs = { on: false, time: loadPrefs().time };
+  savePrefs(p);
+  return p;
+};
+
+/**
+ * The reminder operations run one at a time. Each reads the prefs and the subscription only once it runs, so a sync
+ * that was out when the learner turned reminders off, or changed their time, cannot write the old state back.
+ */
+let queue: Promise<unknown> = Promise.resolve();
+function serial<T>(op: () => Promise<T>): Promise<T> {
+  const run = queue.then(op);
+  queue = run.catch(() => {});
+  return run;
+}
 
 /** `ok`: can subscribe. `install`: iOS Safari, which offers push only to an app on the home screen. `no`: unsupported or not configured. */
 export function pushSupport(): 'ok' | 'install' | 'no' {
@@ -56,60 +71,64 @@ async function register(learner: Learner, sub: PushSubscription, time: string): 
 
 /**
  * Turns reminders on. Call it straight from a tap: iOS grants notification permission only in
- * response to one, so the permission prompt comes before anything is awaited.
+ * response to one, so the permission prompt comes before anything is awaited or queued.
  */
-export async function enableReminders(learner: Learner, time: string): Promise<ReminderPrefs> {
-  const permission = await Notification.requestPermission();
-  if (permission !== 'granted') throw new Error('Notifications are turned off for this app in Settings.');
-  const reg = await navigator.serviceWorker.register('./sw.js');
-  await navigator.serviceWorker.ready;
-  const sub = (await reg.pushManager.getSubscription()) ?? (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uDecode(VAPID_KEY!) }));
-  await saveSummary(learner);
-  const next = await register(learner, sub, time);
-  const p = { on: true, time, next, synced: Date.now() };
-  savePrefs(p);
-  return p;
+export function enableReminders(learner: Learner, time: string): Promise<ReminderPrefs> {
+  const permission = Notification.requestPermission();
+  return serial(async () => {
+    if ((await permission) !== 'granted') throw new Error('Notifications are turned off for this app in Settings.');
+    const reg = await navigator.serviceWorker.register('./sw.js');
+    await navigator.serviceWorker.ready;
+    const sub = (await reg.pushManager.getSubscription()) ?? (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uDecode(VAPID_KEY!) }));
+    await saveSummary(learner);
+    const next = await register(learner, sub, time);
+    const p: ReminderPrefs = { on: true, time, next, synced: Date.now() };
+    savePrefs(p);
+    return p;
+  });
 }
 
-export async function disableReminders(): Promise<ReminderPrefs> {
-  const reg = await navigator.serviceWorker.getRegistration();
-  const sub = await reg?.pushManager.getSubscription();
-  if (sub) {
-    await api('DELETE', '/subscription', { endpoint: sub.endpoint } satisfies EndpointBody).catch(() => {});
-    await sub.unsubscribe().catch(() => false);
-  }
-  const p = { ...loadPrefs(), on: false, next: undefined };
-  savePrefs(p);
-  return p;
+const subscription = async (): Promise<PushSubscription | null> => (await (await navigator.serviceWorker.getRegistration())?.pushManager.getSubscription()) ?? null;
+
+export function disableReminders(): Promise<ReminderPrefs> {
+  return serial(async () => {
+    const sub = await subscription();
+    if (sub) {
+      await api('DELETE', '/subscription', { endpoint: sub.endpoint } satisfies EndpointBody).catch(() => {});
+      await sub.unsubscribe().catch(() => false);
+    }
+    return switchOff();
+  });
 }
 
-export async function sendTest(): Promise<void> {
-  const sub = await (await navigator.serviceWorker.getRegistration())?.pushManager.getSubscription();
-  if (!sub) {
-    savePrefs({ ...loadPrefs(), on: false, next: undefined });
-    throw new Error('This browser dropped its reminder subscription. Turn reminders on again.');
-  }
-  await api('POST', '/test', { endpoint: sub.endpoint } satisfies EndpointBody);
+export function sendTest(): Promise<void> {
+  return serial(async () => {
+    const sub = await subscription();
+    if (!sub) {
+      switchOff();
+      throw new Error('This browser dropped its reminder subscription. Turn reminders on again.');
+    }
+    await api('POST', '/test', { endpoint: sub.endpoint } satisfies EndpointBody);
+  });
 }
 
 /**
  * Keeps the reminder in step with practice: saves the words the next notification will use,
  * and tells the sender about today's practice so it can skip today's reminder.
  */
-export async function syncReminders(learner: Learner): Promise<void> {
-  if (pushSupport() !== 'ok') return;
-  await saveSummary(learner);
-  const p = loadPrefs();
-  if (!p.on) return;
-  const sub = await (await navigator.serviceWorker.getRegistration())?.pushManager.getSubscription();
-  if (!sub) {
-    savePrefs({ ...p, on: false, next: undefined });
-    return;
-  }
-  const newDay = p.synced !== undefined && new Date(p.synced).toDateString() !== new Date().toDateString();
-  if (!newDay && p.synced && Date.now() - p.synced < SYNC_EVERY) return;
-  const next = await register(learner, sub, p.time);
-  savePrefs({ ...p, next, synced: Date.now() });
+export function syncReminders(learner: Learner): Promise<void> {
+  if (pushSupport() !== 'ok') return Promise.resolve();
+  return serial(async () => {
+    await saveSummary(learner);
+    const p = loadPrefs();
+    if (!p.on) return;
+    const sub = await subscription();
+    if (!sub) return void switchOff();
+    const newDay = new Date(p.synced).toDateString() !== new Date().toDateString();
+    if (!newDay && Date.now() - p.synced < SYNC_EVERY) return;
+    const next = await register(learner, sub, p.time);
+    savePrefs({ ...p, next, synced: Date.now() });
+  });
 }
 
 /** What the next reminder will say, written from this device's progress. */
