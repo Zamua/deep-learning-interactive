@@ -65,32 +65,54 @@ export class Reminders extends DurableObject<Env> {
     const e = await this.ctx.storage.get<Entry>(key);
     if (!e) return { error: 'unknown' };
     if (Date.now() - e.lastTest < 60_000) return { error: 'too soon' };
-    e.lastTest = Date.now();
-    const status = await this.send(e, 'test');
+    // Stamped before the push goes out, so a second test meanwhile is refused and no write after it can undo an upsert.
+    await this.ctx.storage.put(key, { ...e, lastTest: Date.now() });
+    let status: number;
+    try {
+      status = await this.send(e, 'test');
+    } catch {
+      return { error: 'unreachable' };
+    }
     if (status === 404 || status === 410) await this.ctx.storage.delete(key);
-    else await this.ctx.storage.put(key, e);
     return { status };
   }
 
+  /** Sends the reminders due now. One subscription's failure never stops the others, nor the next alarm. */
   async alarm(): Promise<void> {
     const now = Date.now();
-    const all = await this.ctx.storage.list<Entry>({ prefix: 'e:' });
-    for (const [key, e] of all) {
-      if (e.next > now + SLACK) continue;
-      // Re-checked here: the learner may have practiced since this reminder was scheduled.
-      const due = nextFire({ ...e, lastSent: 0 }, now - SLACK) <= now + SLACK;
-      if (due) {
-        const status = await this.send(e, 'daily');
-        if (status === 404 || status === 410) {
-          await this.ctx.storage.delete(key);
-          continue;
-        }
-        e.lastSent = now;
+    try {
+      for (const key of (await this.ctx.storage.list<Entry>({ prefix: 'e:' })).keys()) {
+        await this.remind(key, now).catch((err: unknown) => console.log('reminder failed', String(err)));
       }
-      e.next = nextFire(e, now);
-      await this.ctx.storage.put(key, e);
+    } finally {
+      await this.schedule();
     }
-    await this.schedule();
+  }
+
+  /** One subscription's reminder, if due. The entry is read again after the push, as an upsert or remove may land meanwhile. */
+  private async remind(key: string, now: number): Promise<void> {
+    const e = await this.ctx.storage.get<Entry>(key);
+    if (!e || e.next > now + SLACK) return;
+    // Re-checked here: the learner may have practiced since this reminder was scheduled.
+    const due = nextFire({ ...e, lastSent: 0 }, now - SLACK) <= now + SLACK;
+    if (due) {
+      let status = 0;
+      try {
+        status = await this.send(e, 'daily');
+      } catch (err) {
+        // Counted as sent: today's reminder is given up rather than retried at every alarm.
+        console.log('push failed', new URL(e.endpoint).host, String(err));
+      }
+      if (status === 404 || status === 410) {
+        await this.ctx.storage.delete(key);
+        return;
+      }
+    }
+    const cur = await this.ctx.storage.get<Entry>(key);
+    if (!cur) return;
+    const entry: Entry = { ...cur, lastSent: due ? now : cur.lastSent };
+    entry.next = nextFire(entry, now);
+    await this.ctx.storage.put(key, entry);
   }
 
   private async schedule(): Promise<void> {
@@ -165,9 +187,9 @@ export default {
     if (url.pathname === '/test' && req.method === 'POST') {
       const r = await stub.test(endpoint);
       if ('error' in r) {
-        return r.error === 'unknown'
-          ? json({ error: 'The reminder service has no subscription for this browser. Turn reminders off and on again.' }, 404, h)
-          : json({ error: 'One test a minute. Try again shortly.' }, 429, h);
+        if (r.error === 'unknown') return json({ error: 'The reminder service has no subscription for this browser. Turn reminders off and on again.' }, 404, h);
+        if (r.error === 'unreachable') return json({ error: 'The push service could not be reached. Try again shortly.' }, 502, h);
+        return json({ error: 'One test a minute. Try again shortly.' }, 429, h);
       }
       if (r.status < 200 || r.status >= 300) return json({ error: `The push service refused the test (${r.status}).` }, 502, h);
       return json(r, 200, h);
