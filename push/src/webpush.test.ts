@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { b64u, encrypt, isPushEndpoint, vapidAuth } from './webpush';
+import { b64u, canEncryptTo, encrypt, isPushEndpoint, vapidAuth } from './webpush';
 
 // RFC 8291 section 5: the message, keys and resulting body.
 const RFC = {
@@ -54,5 +54,13 @@ describe('isPushEndpoint', () => {
     expect(isPushEndpoint('https://evil.example.com/fcm.googleapis.com')).toBe(false);
     expect(isPushEndpoint('http://fcm.googleapis.com/x')).toBe(false);
     expect(isPushEndpoint('not a url')).toBe(false);
+  });
+});
+
+describe('canEncryptTo', () => {
+  it('accepts a real browser key and refuses a point of the right length off the curve', async () => {
+    const k = (await crypto.subtle.generateKey({ name: 'ECDH', namedCurve: 'P-256' }, true, ['deriveBits'])) as CryptoKeyPair;
+    expect(await canEncryptTo(b64u.encode(new Uint8Array((await crypto.subtle.exportKey('raw', k.publicKey)) as ArrayBuffer)))).toBe(true);
+    expect(await canEncryptTo(b64u.encode(new Uint8Array([4, ...new Array(64).fill(7)])))).toBe(false);
   });
 });
