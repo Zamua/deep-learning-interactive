@@ -87,8 +87,9 @@ export function mapSearch(learner: Learner, host: MapSearchHost): HTMLElement {
 
   input.addEventListener('input', update);
   input.addEventListener('focus', () => {
-    // Up under the top bar, so the matches have the screen above the keyboard.
-    root.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    // Up under the top bar, so the matches have the screen above the keyboard. Safari scrolls to a focused field on its
+    // own, which cancels a scroll started in the same task, so this one waits for the next.
+    window.setTimeout(() => root.scrollIntoView({ block: 'start', behavior: 'smooth' }), 60);
     if (input.value) open(true);
   });
   input.addEventListener('keydown', (e) => {
