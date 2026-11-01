@@ -1,13 +1,14 @@
 // The Atlas front page, and the whole map as a graph or a list.
 import { domainOf, DOMAINS, hasExplainer } from '../../atlas/index';
 import { icon } from '../../core/controls';
-import { h } from '../../core/dom';
+import { h, onDispose } from '../../core/dom';
 import { streak, type Status } from '../domain/model';
 import { trackConcepts } from '../domain/tracks';
 import type { Learner } from '../learner';
 import { syncReminders } from '../push';
 import { atlasRoot, dots, pickLink, plural, whenDue } from './common';
-import { graphView } from './graph-view';
+import { graphView, lightTrack } from './graph-view';
+import { mapSearch } from './map-search';
 import { recentSection } from './history';
 import { tracksSection } from './tracks';
 import { routes } from '../../routes';
@@ -104,10 +105,26 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
     h('a', { href: routes.list, class: view === 'list' ? 'on' : '', html: `${icon('rows')} List` })));
 
   if (view === 'graph') {
+    const map = graphView(learner);
+    let opening = 0;
+    onDispose(() => window.clearTimeout(opening));
+    root.append(mapSearch(learner, {
+      light: (found) => lightTrack(map, found?.length ? { ids: new Set(found), target: found[0]! } : null),
+      pick: (id) => {
+        const node = map.querySelector<HTMLElement>(`[data-id="${CSS.escape(id)}"]`);
+        if (!node) return void (location.hash = routes.concept(id));
+        lightTrack(map, { ids: new Set([id]), target: id });
+        node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // The map pans to it first, so the learner sees where it sits; then it opens as a tap would.
+        opening = window.setTimeout(() => node.click(), 450);
+      },
+    }));
     root.append(h('div', { class: 'at-legend' }, ...DOMAINS.map((d) => h('span', {}, h('i', { style: `background:var(--c-${d.color})` }), d.title))));
-    root.append(graphView(learner));
+    root.append(map);
     return;
   }
+
+  root.append(mapSearch(learner, { light: () => {}, pick: (id) => void (location.hash = routes.concept(id)) }));
 
   const row = (id: string, box: string, boxCls: string, right: HTMLElement | string, showDomain = true) => {
     const c = graph.get(id)!;

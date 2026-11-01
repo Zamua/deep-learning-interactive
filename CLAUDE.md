@@ -13,6 +13,7 @@ explainer craft, `docs/SYNC.md` progress sync.
     npm test                             Vitest (src/**/*.test.ts): mastery domain, sync model, every generator
     ATLAS_STRICT=1 npm test              also fails concepts with no explainer or no problems
     npm run check                        tsc (app and push/) + ATLAS_STRICT tests: what CI runs, and main requires
+    node tools/e2e/map-search.mjs <base> [png]   phone e2e of the map search against a dev or preview server
     node tools/shot.mjs <route> <name> [w h mobile full]   Playwright + system Chrome screenshot
                                          (prints page errors; env SCROLL='.fig:2', THEME=dark)
     node tools/lecture/build.mjs atlas-<concept-id> [--check]   synthesize an explainer's narration
