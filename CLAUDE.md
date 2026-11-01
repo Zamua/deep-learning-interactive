@@ -28,7 +28,8 @@ explainer craft, `docs/SYNC.md` progress sync.
   symbols and tap-to-name), `plot.ts` (the HiDPI stage canvas, theme colors), `controls.ts` (icons),
   `rand.ts`, `format.ts` (times as pages print them), `storage.ts` (localStorage that never throws).
 - `src/lecture/`: the explainer player. `player.ts` composes it from `theater.ts` (picture, marks,
-  code, caption), `playback.ts` (play state, saved place, wake lock) on `clock.ts` (the narration or
+  code, caption), `playback.ts` (the shell for `playback-state.ts`, the play state as one pure,
+  event-tested machine; saved place, wake lock) on `clock.ts` (the narration or
   a wall clock), `timeline.ts` (the script laid out in time) and the controls: `gestures.ts` (tap,
   double tap to skip, hold for 2x; a unit-tested state machine), `speed.ts`, `scrub.ts`,
   `sections.ts`, `keys.ts`, `media-session.ts`, `poster.ts`; `prefs.ts` keeps speed and captions on
