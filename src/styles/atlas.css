@@ -168,6 +168,9 @@
   color: var(--ink-3);
   cursor: pointer;
 }
+.at-search-x[hidden] {
+  display: none;
+}
 .at-search-x .ico {
   width: 18px;
   height: 18px;
