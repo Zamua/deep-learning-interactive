@@ -6,6 +6,7 @@ import { icon } from '../core/controls';
 import { h, onDispose } from '../core/dom';
 import { progressStore, syncEngine } from './cloud';
 import { concepts, conceptsIn } from './model';
+import { busy, next, start, type LinkEffect, type LinkEvent, type LinkStep, type Peek } from './link-steps';
 import { statusLine } from './status';
 import { routes } from '../routes';
 
@@ -56,8 +57,7 @@ function flash(b: HTMLButtonElement, done: string): void {
   window.setTimeout(() => (b.innerHTML = was), 1600);
 }
 
-/** The account page; `typed` is a code from a link, offered for linking at once. */
-/** `fileCopy` is the part that saves the learner's progress to a file and loads it back. */
+/** The account page; `typed` is a code from a link, offered for linking at once, and `fileCopy` saves progress to a file and loads it back. */
 export function renderAccount(main: HTMLElement, typed: string | undefined, fileCopy: HTMLElement): void {
   const sync = syncEngine();
   const root = h('div', { class: 'home home-b ac', 'data-page': 'account' });
@@ -220,43 +220,74 @@ function linker(typed?: string): HTMLElement {
     hint.className = `ac-hint ${tone}`;
     hint.textContent = text;
   };
-  input.addEventListener('input', () => {
-    peek.hidden = true;
-    const r = codeHint(input.value);
-    say(r.tone, r.text);
-  });
+
+  let step: LinkStep = start;
+  const send = (e: LinkEvent) => {
+    const prev = step;
+    const [s, effects] = next(step, e);
+    step = s;
+    for (const fx of effects) perform(fx);
+    if (step !== prev) draw(prev);
+  };
+  const perform = (fx: LinkEffect) => {
+    if (fx.do === 'clear') input.value = '';
+    else if (!sync) return;
+    else if (fx.do === 'look') {
+      sync.peekCode(fx.text).then(
+        (p) => send({ type: 'peeked', text: fx.text, same: p.same, peek: { theirs: mastered(p.records), mine: mastered(progressStore().store.records).n } }),
+        (err: unknown) => send({ type: 'failed', text: fx.text, message: failText(err) }),
+      );
+    } else {
+      sync.linkCode(fx.text).then(
+        (r) => send({ type: 'linked', text: fx.text, mastered: Object.values(concepts(progressStore().store)).filter((x) => x.mastered).length, pending: r.pending }),
+        (err: unknown) => send({ type: 'failed', text: fx.text, message: failText(err) }),
+      );
+    }
+  };
+  const question = (q: Peek, linking: boolean): HTMLElement[] => {
+    const { n, last } = q.theirs;
+    const link = h('button', { type: 'button', class: 'btn btn-primary', disabled: linking, html: `${icon('devices')} Link this device` });
+    const cancel = h('button', { type: 'button', class: 'btn', disabled: linking }, 'Cancel');
+    link.addEventListener('click', () => send({ type: 'link' }));
+    cancel.addEventListener('click', () => send({ type: 'cancel' }));
+    return [
+      h('p', {}, `That account has ${n === 1 ? '1 concept' : `${n} concepts`} mastered${last ? `, last practiced ${dayText(last)}` : ''}. `,
+        q.mine ? `This device's progress (${q.mine === 1 ? '1 concept' : `${q.mine} concepts`} mastered) joins it, and from then on the two stay in step.` : 'Linking brings it here, and from then on the two stay in step.'),
+      h('div', { class: 'ac-actions' }, link, cancel),
+    ];
+  };
+  const draw = (prev: LinkStep) => {
+    input.disabled = go.disabled = busy(step);
+    const asking = step.kind === 'confirm' || step.kind === 'linking' ? step : null;
+    if (asking) peek.replaceChildren(...question(asking.peek, asking.kind === 'linking'));
+    peek.hidden = !asking;
+    // On a phone the question lands below the fold; a link from another device opens straight onto it.
+    if (step.kind === 'confirm' && prev.kind === 'looking') peek.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    switch (step.kind) {
+      case 'typing': {
+        const r = codeHint(step.text);
+        return say(r.tone, r.text);
+      }
+      case 'looking':
+        return say('', 'Looking up that code…');
+      case 'confirm':
+        return say(step.error ? 'bad' : '', step.error ?? '');
+      case 'linking':
+        return say('', '');
+      case 'linked':
+        return say('ok', `Linked. ${step.mastered === 1 ? '1 concept' : `${step.mastered} concepts`} mastered here now.${step.pending ? ' Some of it is still uploading.' : ''}`);
+      case 'same':
+        return say('ok', 'That is this device\'s own code: it is already linked.');
+      case 'failed':
+        return say('bad', step.message);
+    }
+  };
+
+  input.addEventListener('input', () => send({ type: 'edit', text: input.value }));
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!sync) return say('bad', 'This copy of the site has no account server.');
-    const text = input.value;
-    go.disabled = true;
-    say('', 'Looking up that code…');
-    sync.peekCode(text).then((p) => {
-      if (p.same) return say('ok', 'That is this device\'s own code: it is already linked.');
-      say('', '');
-      const { n, last } = mastered(p.records);
-      const mine = mastered(progressStore().store.records).n;
-      const link = h('button', { type: 'button', class: 'btn btn-primary', html: `${icon('devices')} Link this device` }) as HTMLButtonElement;
-      const cancel = h('button', { type: 'button', class: 'btn' }, 'Cancel');
-      peek.innerHTML = '';
-      peek.append(
-        h('p', {}, `That account has ${n === 1 ? '1 concept' : `${n} concepts`} mastered${last ? `, last practiced ${dayText(last)}` : ''}. `,
-          mine ? `This device's progress (${mine === 1 ? '1 concept' : `${mine} concepts`} mastered) joins it, and from then on the two stay in step.` : 'Linking brings it here, and from then on the two stay in step.'),
-        h('div', { class: 'ac-actions' }, link, cancel));
-      peek.hidden = false;
-      // On a phone the question lands below the fold; a link from another device opens straight onto it.
-      peek.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      cancel.addEventListener('click', () => (peek.hidden = true));
-      link.addEventListener('click', () => {
-        link.disabled = true;
-        sync.linkCode(text).then((r) => {
-          peek.hidden = true;
-          input.value = '';
-          const now = Object.values(concepts(progressStore().store)).filter((x) => x.mastered).length;
-          say('ok', `Linked. ${now === 1 ? '1 concept' : `${now} concepts`} mastered here now.${r.pending ? ' Some of it is still uploading.' : ''}`);
-        }, (err: unknown) => say('bad', failText(err))).finally(() => (link.disabled = false));
-      });
-    }, (err: unknown) => say('bad', failText(err))).finally(() => (go.disabled = false));
+    send({ type: 'submit', text: input.value });
   });
   if (typed) {
     input.value = loginCode(codeSymbols(typed));
