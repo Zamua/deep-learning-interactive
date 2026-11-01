@@ -93,6 +93,15 @@ describe('the reminder alarm', () => {
     for (const e of storage.m.values()) expect((e as { next: number }).next).toBeGreaterThan(NOW);
   });
 
+  it('drops a subscription whose keys no push can be encrypted to, even when they are the right length', async () => {
+    const { r, storage } = await reminders();
+    const offCurve = b64u.encode(new Uint8Array([4, ...new Array(64).fill(7)]));
+    await seed(storage, r, [sub(1, { p256dh: offCurve, auth: b64u.encode(new Uint8Array(16)) }), sub(2, await browserKeys())]);
+    await r.alarm();
+    expect(sent).toEqual(['https://web.push.apple.com/2']);
+    expect(storage.m.size).toBe(1);
+  });
+
   it('does not bring back a subscription removed while its reminder was sending', async () => {
     const { r, storage } = await reminders();
     const s = sub(1, await browserKeys());

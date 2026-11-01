@@ -46,6 +46,16 @@ export async function newSender(): Promise<Sender> {
   return { keys, salt: crypto.getRandomValues(new Uint8Array(16)) };
 }
 
+/** Whether `p256dh` is a P-256 point a push can be encrypted to; one of the right length may still lie off the curve. */
+export async function canEncryptTo(p256dh: string): Promise<boolean> {
+  try {
+    await crypto.subtle.importKey('raw', b64u.decode(p256dh), { name: 'ECDH', namedCurve: 'P-256' }, false, []);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Encrypts `plaintext` for one subscription as a single aes128gcm record. `p256dh` and `auth`
  * are the subscription's keys, base64url as the browser gives them.

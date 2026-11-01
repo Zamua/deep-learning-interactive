@@ -5,7 +5,7 @@
 import { DurableObject } from 'cloudflare:workers';
 import { endpointFrom, subscriptionFrom } from './api';
 import { nextFire, type Reminder } from './schedule';
-import { encrypt, newSender, vapidAuth } from './webpush';
+import { canEncryptTo, encrypt, newSender, vapidAuth } from './webpush';
 import type { PushKind, PushPayload } from './wire';
 
 export interface Env {
@@ -122,8 +122,14 @@ export class Reminders extends DurableObject<Env> {
     else await this.ctx.storage.deleteAlarm();
   }
 
+  /** The push service's answer; 410 also when no push can be encrypted to the entry's keys, which is as good as gone. */
   private async send(e: Entry, kind: PushKind): Promise<number> {
-    const body = await encrypt(new TextEncoder().encode(JSON.stringify({ kind } satisfies PushPayload)), e.p256dh, e.auth, await newSender());
+    let body: Uint8Array;
+    try {
+      body = await encrypt(new TextEncoder().encode(JSON.stringify({ kind } satisfies PushPayload)), e.p256dh, e.auth, await newSender());
+    } catch {
+      return 410;
+    }
     const res = await fetch(e.endpoint, {
       method: 'POST',
       headers: {
@@ -176,7 +182,7 @@ export default {
 
     if (url.pathname === '/subscription' && req.method === 'PUT') {
       const sub = subscriptionFrom(body);
-      if (!sub) return json({ error: 'bad subscription' }, 400, h);
+      if (!sub || !(await canEncryptTo(sub.p256dh))) return json({ error: 'bad subscription' }, 400, h);
       const r = await stub.upsert(sub);
       return json(r, 'error' in r ? 503 : 200, h);
     }
