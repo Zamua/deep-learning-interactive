@@ -278,9 +278,16 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
     }
   };
 
+  // The one driver of the session: every screen is a step it awaits, so no tap can start a second run of it.
   const loop = async () => {
     for (;;) {
-      if (results.length >= SESSION_LENGTH) return summary();
+      if (results.length >= SESSION_LENGTH) {
+        await summary();
+        end(false);
+        results.length = 0;
+        masteredNow.length = 0;
+        showProgress();
+      }
       const pick = (opened || !focus ? null : learner.pick(focus)) ?? learner.next(last, { focus, track, reviewed: new Set([...reviews].filter(([, v]) => v !== 'due').map(([id]) => id)) });
       opened = true;
       const reviewing = !!pick && (pick.reason === 'review' || pick.reason === 'slipping');
@@ -431,7 +438,8 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       frame.dock.append(start);
     });
 
-  const summary = () => {
+  /** The session's results; resolves when the learner keeps going. */
+  const summary = () => new Promise<void>((resolve) => {
     end(true);
     const right = results.filter((r) => r.ok).length;
     frame.body.innerHTML = '';
@@ -442,15 +450,9 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       masteredNow.length ? h('p', { class: 'at-lede', html: `Mastered: <b>${masteredNow.map((id) => learner.graph.get(id)!.title).join(', ')}</b>.` }) : h('p', { class: 'at-lede' }, 'No new mastery this time; the streaks carry over to the next session.'),
       reviews.size ? h('p', { class: 'at-small' }, `Reviews: ${kept()} of ${reviews.size} kept.`) : ''));
     const again = h('button', { type: 'button', class: 'at-ghost' }, 'Keep going');
-    again.addEventListener('click', () => {
-      end(false);
-      results.length = 0;
-      masteredNow.length = 0;
-      showProgress();
-      void loop();
-    });
+    again.addEventListener('click', () => resolve());
     frame.dock.append(again, backLink());
-  };
+  });
 
   const caughtUp = () => {
     end(true);
