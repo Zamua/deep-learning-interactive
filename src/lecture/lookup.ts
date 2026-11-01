@@ -113,14 +113,13 @@ export function mountLookup(host: LookupHost): { showScene(): void; tick(t: numb
   host.root.append(scrim, sheet);
   host.bar.append(back);
 
-  let open = false;
-  let resume = false;
+  /** The sheet, while open: whether closing it resumes the playback it paused. */
+  let opened: { resume: boolean } | null = null;
   let returnTo: number | null = null;
 
   function show(content: HTMLElement[], label: string): void {
-    if (!open) {
-      open = true;
-      resume = host.playing();
+    if (!opened) {
+      opened = { resume: host.playing() };
       host.pause();
       host.root.classList.add('lk-open');
     }
@@ -131,8 +130,9 @@ export function mountLookup(host: LookupHost): { showScene(): void; tick(t: numb
   }
 
   function close(andResume = true): void {
-    if (!open) return;
-    open = false;
+    if (!opened) return;
+    const { resume } = opened;
+    opened = null;
     host.root.classList.remove('lk-open');
     if (andResume && resume) host.play();
   }
@@ -231,7 +231,7 @@ export function mountLookup(host: LookupHost): { showScene(): void; tick(t: numb
     card(t);
   });
   const onKey = (e: KeyboardEvent) => {
-    if (open && e.key === 'Escape') {
+    if (opened && e.key === 'Escape') {
       e.stopImmediatePropagation();
       close();
     }
