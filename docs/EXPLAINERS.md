@@ -35,7 +35,7 @@ points on a graph, a line between them, then `w · x + b` as that line, with `w`
 
 ## Files
 
-In the concept's folder, `src/atlas/<domain>/<concept-id>/`:
+In the concept's folder, `src/courses/<course>/<domain>/<concept-id>/`:
 
     script.ts      narration, code listings and line cues (pure data, no imports except
                    `import type`: the narration builder loads it in Node); id `atlas-<concept-id>`
@@ -120,14 +120,14 @@ notice and plays silently on estimated timing, so visuals can be worked on befor
 Tapping a symbol or a call in the code panel opens a card, and the book button lists every one
 in the scene. Every term the code shows needs a note:
 
-- a symbol needs `about` in `src/atlas/symbols.ts`: a sentence or two beyond `name`, such as its
+- a symbol needs `about` in `src/courses/dl/symbols.ts`: a sentence or two beyond `name`, such as its
   role, its shape here, or where the name comes from (a concept whose meaning differs gets a
   `SCOPED` entry);
 - a call needs a `GlossEntry` (`src/lecture/glossary.ts`): `is`, a short lower-case phrase shown
   in the list, plus optional `more` and `eg`. Keys follow `callKey`: `np.random.randn` for a
   module function, `.reshape` for a method, `softmax` for a bare name. Calls shared by every
   explainer live in `src/lecture/library.ts`; names a listing defines get a note in
-  `src/atlas/symbols.ts`, course-wide or per concept in `SCOPED`.
+  `src/courses/dl/symbols.ts`, course-wide or per concept in `SCOPED`.
 
     node tools/lecture/lookup.mjs [atlas-<concept-id> ...]    # terms still without a note (dev server running)
 

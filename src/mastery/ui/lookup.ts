@@ -1,8 +1,7 @@
 // What a symbol means, in practice: tap one for its card, or open the sheet listing every symbol
-// on screen. Covers the colored `\sym` letters and the notation in src/atlas/notation.ts.
-import { GRAPH } from '../../atlas/index';
-import { NOTATION } from '../../atlas/notation';
-import { ALL_SYMBOLS, SCOPED } from '../../atlas/symbols';
+// on screen. Covers the colored `\sym` letters and the notation in each course's notation.ts.
+import type { Course } from '../../courses/course';
+import { symbolsOf } from '../../courses/symbols';
 import { icon } from '../../core/controls';
 import { h, onDispose } from '../../core/dom';
 import { tex } from '../../core/math';
@@ -50,8 +49,9 @@ const tag = (el: Element | null | undefined, key: string) => {
  * Marks the notation in rendered math under `root` (idempotent), so a tap can name it, and the
  * plain letters that `concept` gives a scoped meaning but its text writes without `\\sym`.
  */
-export function markNotation(root: HTMLElement, concept: string): void {
-  const scoped = Object.entries(SCOPED[concept] ?? {}).flatMap(([k, d]) => {
+export function markNotation(course: Course, root: HTMLElement, concept: string): void {
+  const { scoped: byConcept, notation } = symbolsOf(course.id);
+  const scoped = Object.entries(byConcept[concept] ?? {}).flatMap(([k, d]) => {
     const l = letter(d.tex ?? k);
     return l ? [{ key: k, base: l[0], sub: l[1] }] : [];
   });
@@ -85,7 +85,7 @@ export function markNotation(root: HTMLElement, concept: string): void {
     if (GLYPHS[t]) tag(el, GLYPHS[t]);
     else if (t === 'e' && el.classList.contains('mathnormal') && el.nextElementSibling?.classList.contains('msupsub')) tag(el.parentElement, 'exp');
   }
-  for (const el of root.querySelectorAll('.nt')) if (![...el.classList].some((c) => c.startsWith('nt-') && c !== 'nt-u' && NOTATION[c.slice(3)])) el.classList.remove('nt');
+  for (const el of root.querySelectorAll('.nt')) if (![...el.classList].some((c) => c.startsWith('nt-') && c !== 'nt-u' && notation[c.slice(3)])) el.classList.remove('nt');
 }
 
 function termOf(el: Element | null): [Term, Element] | null {
@@ -99,42 +99,44 @@ function termOf(el: Element | null): [Term, Element] | null {
   return null;
 }
 
-function card(t: Term, concept: string): Card | null {
+function card(course: Course, t: Term, concept: string): Card | null {
+  const { all, scoped, notation } = symbolsOf(course.id);
   if (t.kind === 'sym') {
-    const d = SCOPED[concept]?.[t.key] ?? ALL_SYMBOLS[t.key];
+    const d = scoped[concept]?.[t.key] ?? all[t.key];
     if (!d) return null;
     return { glyph: tex(`\\sym{${t.key}}{${d.tex ?? t.key}}`), name: plainName(d.name), about: d.about ?? '' };
   }
-  const n = NOTATION[t.key];
+  const n = notation[t.key];
   if (!n) return null;
-  const known = GRAPH.ancestors(concept);
-  const from = GRAPH.order.filter((c) => n.from.includes(c.id) && known.has(c.id)).pop();
+  const known = course.graph.ancestors(concept);
+  const from = course.graph.order.filter((c) => n.from.includes(c.id) && known.has(c.id)).pop();
   return { glyph: tex(n.glyph), name: n.name, about: n.about, from: from && from.id !== concept ? from.title : undefined };
 }
 
 const keyOf = (t: Term) => `${t.kind}:${t.key}`;
 
 /** The notation an explainer scene of `concept` uses in its marks or captions, as cards. */
-export function notationIn(concept: string, marks: Element[], said: string): Card[] {
+export function notationIn(course: Course, concept: string, marks: Element[], said: string): Card[] {
+  const { notation } = symbolsOf(course.id);
   const keys = new Set<string>();
   for (const m of marks) {
     // On a copy: the tags would otherwise pick up practice's underline styles on the stage.
     const c = m.cloneNode(true) as HTMLElement;
-    markNotation(c, concept);
+    markNotation(course, c, concept);
     for (const el of c.querySelectorAll('.nt')) {
       const t = termOf(el);
       if (t?.[0].kind === 'nt') keys.add(t[0].key);
     }
   }
-  for (const [k, n] of Object.entries(NOTATION)) if (n.shown.test(said)) keys.add(k);
-  return Object.keys(NOTATION).filter((k) => keys.has(k)).map((k) => card({ kind: 'nt', key: k }, concept)!);
+  for (const [k, n] of Object.entries(notation)) if (n.shown.test(said)) keys.add(k);
+  return Object.keys(notation).filter((k) => keys.has(k)).map((k) => card(course, { kind: 'nt', key: k }, concept)!);
 }
 
 /**
  * Wires symbol lookup into a practice frame: a tap on a symbol in `body` opens its card, and
  * `button` opens a sheet of every symbol on screen. `body.dataset.concept` picks scoped meanings.
  */
-export function wireLookup(root: HTMLElement, body: HTMLElement, button: HTMLElement): void {
+export function wireLookup(course: Course, root: HTMLElement, body: HTMLElement, button: HTMLElement): void {
   let close: (() => void) | null = null;
   let sheetOpen = false;
   const dismiss = () => close?.();
@@ -143,12 +145,12 @@ export function wireLookup(root: HTMLElement, body: HTMLElement, button: HTMLEle
     const seen = new Map<string, Term>();
     for (const el of body.querySelectorAll('.sym, .nt, .ltr')) {
       const t = termOf(el);
-      if (t && card(t[0], concept())) seen.set(keyOf(t[0]), t[0]);
+      if (t && card(course, t[0], concept())) seen.set(keyOf(t[0]), t[0]);
     }
     return [...seen.values()];
   };
   const refresh = () => {
-    markNotation(body, concept());
+    markNotation(course, body, concept());
     button.hidden = !terms().length;
   };
   const watch = new MutationObserver(refresh);
@@ -175,7 +177,7 @@ export function wireLookup(root: HTMLElement, body: HTMLElement, button: HTMLEle
   };
 
   const showCard = (t: Term, at: Element) => {
-    const c = card(t, concept());
+    const c = card(course, t, concept());
     if (!c) return;
     const el = h('div', { class: 'at-lk-card', role: 'dialog', 'aria-label': c.name },
       h('div', { class: 'at-lk-row' }, h('span', { class: 'at-lk-glyph', html: c.glyph }), h('span', { class: 'at-lk-name' }, c.name)),
@@ -196,7 +198,7 @@ export function wireLookup(root: HTMLElement, body: HTMLElement, button: HTMLEle
   const showSheet = () => {
     const ts = terms();
     const row = (t: Term) => {
-      const c = card(t, concept())!;
+      const c = card(course, t, concept())!;
       return h('div', { class: 'at-lk-item' },
         h('span', { class: 'at-lk-glyph', html: c.glyph }),
         h('span', { class: 'at-lk-name' }, c.name),

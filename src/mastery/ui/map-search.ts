@@ -1,8 +1,6 @@
 // The map's search: a field that finds concepts as the learner types, lists the best matches and lights them on the map.
-import { domainOf } from '../../atlas/index';
 import { icon } from '../../core/controls';
 import { h, onDispose } from '../../core/dom';
-import { routes } from '../../routes';
 import { searchConcepts, type Hit } from '../domain/search';
 import type { Learner } from '../learner';
 import { STATUS_LABEL } from './common';
@@ -69,8 +67,8 @@ export function mapSearch(learner: Learner, host: MapSearchHost): HTMLElement {
     clear.hidden = !input.value;
     list.replaceChildren(...hits.map((hit, i) => {
       const c = graph.get(hit.id)!;
-      const d = domainOf(c);
-      const a = h('a', { href: routes.concept(c.id), tabindex: '-1' },
+      const d = learner.course.domainOf(c);
+      const a = h('a', { href: learner.course.routes.concept(c.id), tabindex: '-1' },
         h('i', { class: 'at-search-dot', style: `background:var(--c-${d.color})` }),
         h('span', { class: 'at-search-b' }, titleOf(c.title, hit), h('small', {}, `${d.title} · ${STATUS_LABEL[learner.status(c.id)]}`)));
       a.addEventListener('click', (e) => {

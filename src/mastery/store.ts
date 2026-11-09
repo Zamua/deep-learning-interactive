@@ -2,13 +2,13 @@
 // this device.
 import { editProgress, progressStore } from '../sync/cloud';
 import { concepts, paceOf, putConcepts, putPace, putTrack, trackList } from '../sync/model';
+import type { Course } from '../courses/course';
 import type { ConceptRecord } from './domain/model';
 import type { Pace } from './domain/scheduler';
 import { isLogRow, snapshotFrom, type LogRow, type Snapshot } from './snapshot';
 import { getJson, setJson } from '../core/storage';
 
-const LOG_KEY = 'atlas.log';
-/** Log rows kept; older ones are dropped first. */
+/** Log rows kept per course; older ones are dropped first. */
 const LOG_CAP = 5000;
 
 
@@ -36,22 +36,26 @@ export function saveTrack(target: string, follow: boolean): void {
   if (follow !== loadTracks().includes(target)) editProgress((s, now) => putTrack(s, now, target, follow));
 }
 
-export function loadLog(): LogRow[] {
-  const v = getJson(LOG_KEY);
+/** A course's answer log on this device, under its `logKey`. */
+export function loadLog(key: string): LogRow[] {
+  const v = getJson(key);
   return Array.isArray(v) ? v.filter(isLogRow) : [];
 }
 
-export function appendLog(row: LogRow): void {
-  setJson(LOG_KEY, [...loadLog(), row].slice(-LOG_CAP));
+export function appendLog(key: string, row: LogRow): void {
+  setJson(key, [...loadLog(key), row].slice(-LOG_CAP));
 }
 
-export function exportSnapshot(): Snapshot {
-  return { version: 1, records: loadRecords(), log: loadLog() };
+/** The courses a progress file covers: where each one's answers are kept, and which concepts are its own. */
+type LogOwner = Pick<Course, 'logKey' | 'owns'>;
+
+export function exportSnapshot(courses: readonly LogOwner[]): Snapshot {
+  return { version: 1, records: loadRecords(), log: courses.flatMap((c) => loadLog(c.logKey)).sort((a, b) => a[0] - b[0]) };
 }
 
 /** Adds a progress file's records as this device's latest edits, and takes its log; throws on anything that is not one. */
-export function importSnapshot(text: string): void {
+export function importSnapshot(text: string, courses: readonly LogOwner[]): void {
   const s = snapshotFrom(text);
   saveRecords(s.records);
-  setJson(LOG_KEY, s.log.slice(-LOG_CAP));
+  for (const c of courses) setJson(c.logKey, s.log.filter((row) => c.owns(row[1])).slice(-LOG_CAP));
 }

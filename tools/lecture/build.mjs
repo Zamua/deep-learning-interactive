@@ -25,14 +25,14 @@ if (!id) {
   console.error('usage: node tools/lecture/build.mjs atlas-<concept-id> [--dry | --check]');
   process.exit(2);
 }
-// An explainer lives in its concept's folder: src/atlas/<domain>/<concept>/.
+// An explainer lives in its concept's folder: src/courses/<course>/<domain>/<concept>/.
 const atlas = id.replace(/^atlas-/, '');
-const domain = readdirSync(join(root, 'src/atlas'), { withFileTypes: true }).find((d) => d.isDirectory() && existsSync(join(root, 'src/atlas', d.name, atlas, 'script.ts')));
+const domain = readdirSync(join(root, 'src/courses/dl'), { withFileTypes: true }).find((d) => d.isDirectory() && existsSync(join(root, 'src/courses/dl', d.name, atlas, 'script.ts')));
 if (!domain) {
   console.error(`no explainer script for concept ${atlas}`);
   process.exit(2);
 }
-const dir = `src/atlas/${domain.name}/${atlas}`;
+const dir = `src/courses/dl/${domain.name}/${atlas}`;
 const { script } = await import(pathToFileURL(join(root, dir, 'script.ts')).href);
 const { GAP, spokenText } = await import(pathToFileURL(join(root, 'src/lecture/types.ts')).href);
 

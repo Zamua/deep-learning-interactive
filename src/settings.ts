@@ -1,6 +1,6 @@
 // The settings menu behind the top bar's gear: one line each for the color theme, how Atlas picks new concepts, the
 // daily reminder and sync (leading to the account page), and a footnote on offline use.
-import { GRAPH } from './atlas/index';
+import { FIRST } from './courses/index';
 import { icon, settingRow } from './core/controls';
 import { h } from './core/dom';
 import { Learner } from './mastery/learner';
@@ -89,7 +89,7 @@ function offlineNote(): HTMLElement | null {
 
 function open(btn: HTMLElement, closed: () => void): () => void {
   const catcher = h('div', { class: 'set-catch' });
-  const reminders = remindersPanel(new Learner(GRAPH));
+  const reminders = remindersPanel(new Learner(FIRST));
   const sync = syncRow();
   const offline = offlineNote();
   const menu = h('div', { class: 'set-menu', role: 'dialog', 'aria-label': 'Settings' },

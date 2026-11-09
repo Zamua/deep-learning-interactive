@@ -1,12 +1,13 @@
 // Atlas progress as a file: saved outside the account, and loaded back.
 import { h } from '../../core/dom';
+import { COURSES } from '../../courses/index';
 import { exportSnapshot, importSnapshot } from '../store';
 
 /** Atlas progress saved to a file, or added from one. */
 export function progressFile(): HTMLElement {
   const save = h('button', { type: 'button', class: 'btn' }, 'Save progress to a file');
   save.addEventListener('click', () => {
-    const url = URL.createObjectURL(new Blob([JSON.stringify(exportSnapshot())], { type: 'application/json' }));
+    const url = URL.createObjectURL(new Blob([JSON.stringify(exportSnapshot(COURSES))], { type: 'application/json' }));
     const a = h('a', { href: url, download: `atlas-progress-${new Date().toISOString().slice(0, 10)}.json` });
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -19,7 +20,7 @@ export function progressFile(): HTMLElement {
     const f = input.files?.[0];
     if (!f) return;
     try {
-      importSnapshot(await f.text());
+      importSnapshot(await f.text(), COURSES);
       msg.className = 'ac-hint ok';
       msg.textContent = 'Loaded. Its concepts are now this account\'s latest progress.';
     } catch (e) {

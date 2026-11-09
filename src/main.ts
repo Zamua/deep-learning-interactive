@@ -7,14 +7,15 @@ import 'katex/dist/katex.min.css';
 import './styles/base.css';
 import './styles/components.css';
 
-import { ATLAS_COURSE, DOMAINS, GRAPH } from './atlas/index';
+import type { Course } from './courses/course';
+import { courseById, FIRST } from './courses/index';
 import { icon } from './core/controls';
 import { disposeAll, h } from './core/dom';
 import { Learner } from './mastery/learner';
 import { startOffline } from './offline/register';
 import { applyTheme, settingsButton } from './settings';
 import { progressStore, startSync } from './sync/cloud';
-import { parseRoute, routes, type Route } from './routes';
+import { parseRoute, routes, type CourseRoute, type Route } from './routes';
 
 applyTheme();
 startSync();
@@ -39,9 +40,9 @@ const BRAND_MARK = (() => {
       cells += `<rect x="${j * 7}" y="${i * 7}" width="6" height="6" rx="1.6" style="fill:var(${j > i ? '--rule' : col[j]});fill-opacity:${j > i ? 1 : (0.3 + 0.7 * w[i]![j]!).toFixed(2)}"/>`;
   return `<svg viewBox="0 0 20 20" aria-hidden="true">${cells}</svg>`;
 })();
-const brand = h('a', { class: 'brand', href: routes.home },
+const brand = h('a', { class: 'brand', href: FIRST.routes.home },
   h('span', { class: 'brand-mark', html: BRAND_MARK }),
-  h('span', { class: 'brand-name' }, ATLAS_COURSE.code.toLowerCase()),
+  h('span', { class: 'brand-name' }, FIRST.code.toLowerCase()),
   h('span', { class: 'brand-sub' }, 'interactive'));
 
 const top = h('header', { class: 'topbar' }, menuBtn, brand, h('div', { class: 'topbar-spacer' }), settingsButton());
@@ -51,17 +52,17 @@ app.append(top, nav, scrim, main);
 let currentId = '';
 let renderToken = 0;
 
-/** Atlas is the whole site: `#/atlas/...` and the account page; any other address lands on the Atlas home. */
+/** A course's pages and the account page; any other address, or an unknown course, lands on the first course's home. */
 async function route(): Promise<void> {
-  let r = parseRoute(location.hash);
-  if (!r) {
-    history.replaceState(null, '', routes.home);
-    r = { page: 'home' };
-  }
-  return r.page === 'account' ? routeAccount(r.code) : routeAtlas(r);
+  const r = parseRoute(location.hash);
+  if (r?.page === 'account') return routeAccount(r.code);
+  const course = r && courseById(r.course);
+  if (r && course) return routeCourse(r, course);
+  history.replaceState(null, '', FIRST.routes.home);
+  return routeCourse({ course: FIRST.id, page: 'home' }, FIRST);
 }
 
-async function routeAtlas(r: Exclude<Route, { page: 'account' }>): Promise<void> {
+async function routeCourse(r: CourseRoute, course: Course): Promise<void> {
   const key = location.hash.replace(/\/+$/, '');
   if (key === currentId) return;
   const token = ++renderToken;
@@ -69,9 +70,9 @@ async function routeAtlas(r: Exclude<Route, { page: 'account' }>): Promise<void>
   currentId = key;
   main.innerHTML = '';
   const shown = r.page === 'concept' || r.page === 'watch' ? r.concept : undefined;
-  buildNav(r.page === 'history' ? 'history' : shown ?? '');
-  const c = shown ? GRAPH.get(shown) : undefined;
-  document.title = c ? `${c.title} · atlas interactive` : `${ATLAS_COURSE.code}: ${ATLAS_COURSE.title} · interactive`;
+  buildNav(course, r.page === 'history' ? 'history' : shown ?? '');
+  const c = shown ? course.graph.get(shown) : undefined;
+  document.title = c ? `${c.title} · atlas interactive` : `${course.code}: ${course.title} · interactive`;
   window.scrollTo(0, 0);
   try {
     const { renderAtlas } = await import('./mastery/ui/index');
@@ -90,7 +91,7 @@ async function routeAccount(code?: string): Promise<void> {
   disposeAll();
   currentId = code ? `link/${code}` : 'account';
   main.innerHTML = '';
-  buildNav('');
+  buildNav(FIRST, '');
   document.title = 'Sync across devices · atlas interactive';
   window.scrollTo(0, 0);
   // The code has done its job once read: keep it out of the history and of anything that shares this page.
@@ -129,20 +130,21 @@ function redrawOnRemoteProgress(): void {
 }
 
 /** The side menu: every concept by domain, marked mastered or locked. */
-function buildNav(active: string): void {
+function buildNav(course: Course, active: string): void {
+  const { graph, routes: pages } = course;
   nav.innerHTML = '';
-  const st = new Learner(GRAPH).statuses();
-  nav.append(h('a', { class: 'side-course', href: routes.home }, h('span', { class: 'side-course-code' }, ATLAS_COURSE.code), h('span', { class: 'side-course-title' }, ATLAS_COURSE.title)));
-  const hist = h('a', { class: `side-link${active === 'history' ? ' on' : ''}`, href: routes.history }, h('span', { class: 'side-num', html: icon('clock') }), h('span', { class: 'side-title' }, 'History'));
+  const st = new Learner(course).statuses();
+  nav.append(h('a', { class: 'side-course', href: pages.home }, h('span', { class: 'side-course-code' }, course.code), h('span', { class: 'side-course-title' }, course.title)));
+  const hist = h('a', { class: `side-link${active === 'history' ? ' on' : ''}`, href: pages.history }, h('span', { class: 'side-num', html: icon('clock') }), h('span', { class: 'side-title' }, 'History'));
   hist.addEventListener('click', () => setNav(false));
   nav.append(h('ul', { class: 'side-list' }, h('li', {}, hist)));
-  for (const d of DOMAINS) {
+  for (const d of course.domains) {
     nav.append(h('div', { class: 'side-part' }, d.title));
     const ul = h('ul', { class: 'side-list' });
-    for (const c of GRAPH.order.filter((x) => x.domain === d.id)) {
+    for (const c of graph.order.filter((x) => x.domain === d.id)) {
       const s = st.get(c.id)!;
       const mark = s === 'mastered' || s === 'due' ? h('span', { class: 'side-mark done', html: icon('check') }) : s === 'locked' ? h('span', { class: 'side-mark at-side-lock', html: icon('lock') }) : '';
-      const a = h('a', { href: routes.concept(c.id), class: `side-link${c.id === active ? ' on' : ''}${s === 'locked' ? ' soon' : ''}` },
+      const a = h('a', { href: pages.concept(c.id), class: `side-link${c.id === active ? ' on' : ''}${s === 'locked' ? ' soon' : ''}` },
         h('span', { class: 'side-num', style: `color:var(--c-${d.color})` }, '●'),
         h('span', { class: 'side-title' }, c.title),
         mark);
@@ -151,7 +153,7 @@ function buildNav(active: string): void {
     }
     nav.append(ul);
   }
-  nav.append(h('div', { class: 'side-foot' }, `${GRAPH.order.length} concepts, and growing.`));
+  nav.append(h('div', { class: 'side-foot' }, `${graph.order.length} concepts, and growing.`));
 }
 
 /**

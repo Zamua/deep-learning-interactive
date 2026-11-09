@@ -1,9 +1,9 @@
 # Atlas: notes for a coding agent
 
-A Vite + TypeScript static site (no framework): Atlas, an AI course built as a concept graph,
-each concept a voiced explainer plus generated problems practiced to mastery. Hash routes:
-`#/atlas/...` (see `docs/MASTERY.md`) and `#/account` (sync); any other address lands on the
-Atlas home. `docs/MASTERY.md` is the design and the authoring contract, `docs/EXPLAINERS.md` the
+A Vite + TypeScript static site (no framework): Atlas, courses built as concept graphs, each
+concept a voiced explainer plus generated problems practiced to mastery. Hash routes: `#/atlas/...`
+(the first course, `dl`), `#/c/<course>/...` (any other; see `docs/MASTERY.md`) and `#/account`
+(sync); any other address lands on the first course's home. `docs/MASTERY.md` is the design and the authoring contract, `docs/EXPLAINERS.md` the
 explainer craft, `docs/SYNC.md` progress sync.
 
 ## Commands
@@ -24,7 +24,8 @@ explainer craft, `docs/SYNC.md` progress sync.
 ## Layout
 
 - `src/main.ts`: the shell (top bar, side menu of concepts, routing, redraw on synced progress).
-  `src/routes.ts` builds every address and parses them back; link with `routes.*`, never a literal.
+  `src/routes.ts` builds every address and parses them back; link with a course's `routes.*`
+  (site pages: `routes.*`), never a literal.
 - `src/core/`: shared pieces. `code.ts` (Python highlighter + CodePanel with `{{slots}}` and
   `#@labels`), `math.ts` (KaTeX + the small markdown dialect), `symbols.ts` (color-linked
   symbols and tap-to-name), `plot.ts` (the HiDPI stage canvas, theme colors), `controls.ts` (icons),
@@ -42,9 +43,13 @@ explainer craft, `docs/SYNC.md` progress sync.
   scheduler, tracks, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
   learner's records in the synced progress store; `ui/` renders the home, map, tracks, concept
   pages, sessions and placement.
-- `src/atlas/<domain>/<concept>/`: each concept: `meta.ts`, `problems.ts`, and an explainer
+- `src/courses/`: the courses. `course.ts` says what a course is; `index.ts` finds every course and
+  concept by glob and builds them (`COURSES`, `courseById`, `FIRST`); `symbols.ts` hands a course's
+  symbols to the pages, imported only by them so they stay out of the main chunk. A course is
+  `<course>/course.ts` (title, domains, `idPrefix`) and its concept folders.
+- `src/courses/<course>/<domain>/<concept>/`: each concept: `meta.ts`, `problems.ts`, and an explainer
   (`script.ts`, `scenes.ts`, `explainer.ts`, generated `timing.json` + `narration.m4a`).
-  `src/atlas/symbols.ts` and `notation.ts` hold the course's symbols, code notes and notation.
+  `<course>/symbols.ts` and `notation.ts` hold a course's symbols, code notes and notation.
 - `src/sync/`: progress sync on hearthsync. `model.ts` holds the records and their merges
   (pure, tested), `cloud.ts` the store and engine, `ui.ts` the account page (`#/account`,
   `#/link/<code>`). Only `mastery/store.ts` and `lecture/progress.ts` edit the store.
@@ -65,6 +70,10 @@ explainer craft, `docs/SYNC.md` progress sync.
 
 ## Invariants
 
+- A concept's id is its folder name after its course's `idPrefix`, and it names the learner's
+  records. `dl` has no prefix and no id with a dot, which is how `course.owns` keeps one course's
+  records from another's. Renaming a concept or changing a prefix strands what learners have done.
+  An explainer's id is `atlas-<full id>`.
 - A concept uses only itself and its prerequisite chain: its explainer, problems and lookup
   notes never lean on a concept the learner may not have met (`docs/MASTERY.md`).
 - A display equation or a visual in an explainer never appears without its code: every scene

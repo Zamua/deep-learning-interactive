@@ -1,5 +1,6 @@
 // The learner's side of the course: their records, what each concept's status is, and how an
 // answer changes them. Persists through the store, which other devices of the account sync into.
+import type { Course } from '../courses/course';
 import type { ConceptGraph } from './domain/graph';
 import { applyAnswer, emptyRecord, placeMastered, recoveryStreak, status, streak, type ConceptRecord, type Status } from './domain/model';
 import { inheritSplits, isUnlocked, newChoices, pickConcept, pickNext, statuses, type NewChoices, type Pick } from './domain/scheduler';
@@ -40,15 +41,25 @@ export type Today = {
 );
 
 export class Learner {
-  constructor(readonly graph: ConceptGraph, private readonly clock: () => number = Date.now) {
-    const loaded = loadRecords();
-    const next = inheritSplits(graph, loaded, clock());
+  readonly graph: ConceptGraph;
+  private held?: Record<string, ConceptRecord>;
+  private mine: Record<string, ConceptRecord> = {};
+
+  constructor(readonly course: Course, private readonly clock: () => number = Date.now) {
+    this.graph = course.graph;
+    const loaded = this.records;
+    const next = inheritSplits(this.graph, loaded, clock());
     if (next !== loaded) saveRecords(Object.fromEntries(Object.entries(next).filter(([id, r]) => loaded[id] !== r)));
   }
 
-  /** As the store holds them now, so records another device synced in show up. */
+  /** This course's records as the store holds them now, so records another device synced in show up. */
   get records(): Record<string, ConceptRecord> {
-    return loadRecords();
+    const all = loadRecords();
+    if (all !== this.held) {
+      this.held = all;
+      this.mine = Object.fromEntries(Object.entries(all).filter(([id]) => this.course.owns(id)));
+    }
+    return this.mine;
   }
 
   status(id: string): Status {
@@ -108,7 +119,7 @@ export class Learner {
     saveRecords({ [id]: rec });
     const row: LogRow = [now, id, generator, a.ok ? 1 : 0, Math.round(a.seconds * 1000)];
     if (a.help) row.push(1);
-    appendLog(row);
+    appendLog(this.course.logKey, row);
     return rec;
   }
 
