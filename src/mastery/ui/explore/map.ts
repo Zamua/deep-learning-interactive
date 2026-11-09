@@ -40,6 +40,9 @@ function placeOf(learner: Learner): string | undefined {
   return line.find((c) => learner.status(c.id) === 'learning')?.id ?? leadGoal(learner)?.next ?? line.find((c) => learner.status(c.id) === 'new')?.id;
 }
 
+/** How far below a region's top edge its zoomed-out title reaches, on screen. */
+const TITLE_ROOM = 15;
+
 export function mountGraph(box: HTMLElement, learner: Learner, kind: GraphKind): GraphHandle {
   const { course, graph } = learner;
   const memo = `${course.id}/${kind}`;
@@ -193,9 +196,13 @@ export function mountGraph(box: HTMLElement, learner: Learner, kind: GraphKind):
       const w = CARD.w * v.z;
       const h = CARD.h * v.z;
       if (L < 2) {
+        // Above the concept, unless that is where its chapter's title is written.
+        const region = L === 0 ? regionAt(geo, n.x + CARD.w / 2, n.y + CARD.h / 2) : null;
+        const clash = !!region && y - 25 < region.y * v.z + v.ty + TITLE_ROOM;
+        const pinY = clash ? y + h + 14 : y - 14;
         s += `<rect class="ex-ring" x="${x - 3}" y="${y - 3}" width="${w + 6}" height="${h + 6}" rx="5"/>`
-          + `<circle class="ex-pin-bg" cx="${x + w / 2}" cy="${y - 14}" r="9.5"/>`
-          + `<use class="ex-pin" href="#ex-pin" x="${x + w / 2 - 11}" y="${y - 25}" width="22" height="22"/>`;
+          + `<circle class="ex-pin-bg" cx="${x + w / 2}" cy="${pinY}" r="9.5"/>`
+          + `<use class="ex-pin" href="#ex-pin" x="${x + w / 2 - 11}" y="${pinY - 11}" width="22" height="22"/>`;
       } else if (!selected) {
         const lx = x + w / 2 - 41;
         const ly = y - 30;
