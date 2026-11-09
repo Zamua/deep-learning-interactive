@@ -7,7 +7,7 @@ import type { Course } from './courses/course';
 import { courseById } from './courses/index';
 import { icon } from './core/controls';
 import { disposeAll, h } from './core/dom';
-import { startOffline } from './offline/register';
+import { checkForNewWorker, startOffline } from './offline/register';
 import { applyTheme } from './theme';
 import { progressStore, startSync } from './sync/cloud';
 import { parseRoute, routes, type CourseRoute, type Route, type SitePage } from './routes';
@@ -150,9 +150,31 @@ async function reloadIfStale(): Promise<boolean> {
   return true;
 }
 
+/** Time away after which coming back looks for a new build. */
+const AWAY = 60_000;
+
+/**
+ * iOS resumes an installed app without loading anything, so without this it keeps its old build until it is force
+ * closed. Looks for a new build at launch and on coming back, and moves to it unless something is under way.
+ */
+function followNewBuilds(): void {
+  const check = () => {
+    checkForNewWorker();
+    const page = parseRoute(location.hash)?.page;
+    if (page && !BUSY.has(page)) void reloadIfStale();
+  };
+  let hiddenAt = 0;
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') hiddenAt = Date.now();
+    else if (hiddenAt && Date.now() - hiddenAt >= AWAY) check();
+  });
+  check();
+}
+
 window.addEventListener('hashchange', () => void route());
 redrawOnRemoteProgress();
 void route().then(() => {
   (window as unknown as { __ready: boolean }).__ready = true;
   startOffline();
+  followNewBuilds();
 });

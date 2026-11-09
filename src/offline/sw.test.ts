@@ -44,6 +44,9 @@ class FakeCaches {
   }
 }
 
+/** Lets the work a handler started without waiting for it finish. */
+const settle = () => new Promise((resolve) => setTimeout(resolve, 5));
+
 type Handler = (e: unknown) => void;
 
 /** IndexedDB as far as sw.js uses it: one object store per database, read by key. */
@@ -103,12 +106,13 @@ function boot(offline: { files: string[]; audio: string[] } | null) {
   const caches = new FakeCaches();
   const idb = new Map<string, Map<string, Map<string, unknown>>>();
   const shown: { title: string; body: string }[] = [];
+  const pages: { url: string; navigate: (to: string) => Promise<void> }[] = [];
   const self = {
     __ATLAS_OFFLINE: offline,
     __ATLAS_WIRE: WIRE,
     registration: { scope: SCOPE, showNotification: async (title: string, o: { body: string }) => void shown.push({ title, body: o.body }) },
     location: { origin: new URL(SCOPE).origin },
-    clients: { claim: async () => {} },
+    clients: { claim: async () => {}, matchAll: async () => pages },
     skipWaiting: () => {},
     addEventListener: (type: string, fn: Handler) => handlers.set(type, fn),
   };
@@ -127,7 +131,7 @@ function boot(offline: { files: string[]; audio: string[] } | null) {
   const request = (path: string, init: { mode?: string; method?: string; range?: string } = {}) =>
     new FakeRequest(new URL(path, SCOPE).href, init.method ?? 'GET', init.mode ?? 'cors', init.range);
   const get = (path: string, init?: { mode?: string; method?: string; range?: string }) => extend('fetch', { request: request(path, init) });
-  return { net, fetches, env, caches, idb, shown, extend, get };
+  return { net, fetches, env, caches, idb, shown, pages, extend, get };
 }
 
 class FakeRequest {
@@ -137,64 +141,113 @@ class FakeRequest {
   }
 }
 
-const OFFLINE = { files: ['index.html', 'assets/index-a1.js', 'assets/ui-b2.css', 'icon-192.png'], audio: ['assets/narration-c3.m4a'] };
+const OFFLINE = { files: ['index.html', 'assets/index-a1.js', 'assets/ui-b2.css', 'assets/concept-d4.js', 'icon-192.png'], audio: ['assets/narration-c3.m4a'] };
 const url = (f: string) => new URL(f, SCOPE).href;
+const SHELL = '<script src="./assets/index-a1.js"></script><link href="./assets/ui-b2.css">';
 
 describe('offline service worker', () => {
   let w: ReturnType<typeof boot>;
+  /** Installs and activates, then waits for the background save, as a launch does. */
+  const installed = async () => {
+    await w.extend('install');
+    await w.extend('activate');
+    await w.get('./', { mode: 'navigate' });
+  };
+  const app = () => w.caches.open('atlas-app');
+  const shellText = async () => (await (await app()).match(url('index.html')))!.text();
   beforeEach(() => {
     w = boot(OFFLINE);
-    w.net.set(url('index.html'), { body: '<p>shell</p>', type: 'text/html' });
+    w.net.set(url('index.html'), { body: SHELL, type: 'text/html' });
     w.net.set(url('assets/index-a1.js'), { body: 'js', type: 'text/javascript' });
     w.net.set(url('assets/ui-b2.css'), { body: 'css', type: 'text/css' });
+    w.net.set(url('assets/concept-d4.js'), { body: 'concept', type: 'text/javascript' });
     w.net.set(url('icon-192.png'), { body: 'png', type: 'image/png' });
     w.net.set(url('assets/narration-c3.m4a'), { body: '0123456789', type: 'audio/mp4' });
   });
 
-  it('caches every app file at install, but not the narration', async () => {
+  it('installs on the shell, its unhashed files and what it names, not the whole app', async () => {
     await w.extend('install');
-    const app = await w.caches.open('atlas-app');
-    expect([...app.m.keys()].sort()).toEqual(OFFLINE.files.map(url).sort());
-    expect(w.fetches.every((f) => f.cache === 'reload')).toBe(true);
+    expect([...(await app()).m.keys()].sort()).toEqual(['index.html', 'assets/index-a1.js', 'assets/ui-b2.css', 'icon-192.png'].map(url).sort());
+  });
+
+  it('saves the rest after taking over, but not the narration', async () => {
+    await installed();
+    expect([...(await app()).m.keys()].sort()).toEqual(OFFLINE.files.map(url).sort());
+    expect(w.fetches.filter((f) => f.cache).every((f) => f.cache === 'reload')).toBe(true);
     expect(w.caches.m.get('atlas-audio')?.m.size ?? 0).toBe(0);
   });
 
-  it('downloads again only files whose names are not content hashed', async () => {
-    await w.extend('install');
+  it('downloads again at install only files whose names are not content hashed', async () => {
+    await installed();
     w.fetches.length = 0;
     await w.extend('install');
     expect(w.fetches.map((f) => f.url).sort()).toEqual([url('icon-192.png'), url('index.html')]);
   });
 
-  it('fails the install when a file cannot be fetched, keeping the old shell', async () => {
-    await w.extend('install');
-    w.net.set(url('index.html'), { body: '<p>new</p>', type: 'text/html' });
+  it('fetches nothing more on later launches once the app is saved', async () => {
+    await installed();
+    w.fetches.length = 0;
+    await w.get('./', { mode: 'navigate' });
+    expect(w.fetches.map((f) => f.url)).toEqual([url('./')]);
+  });
+
+  it('fails the install when a file the shell names cannot be fetched, keeping the old shell', async () => {
+    await installed();
+    await (await app()).delete(url('assets/ui-b2.css'));
     w.net.delete(url('assets/ui-b2.css'));
-    await (await w.caches.open('atlas-app')).delete(url('assets/ui-b2.css'));
+    w.net.set(url('index.html'), { body: `${SHELL}<!-- new -->`, type: 'text/html' });
     await expect(w.extend('install')).rejects.toThrow(/404/);
-    expect(await (await (await w.caches.open('atlas-app')).match(url('index.html')))!.text()).toBe('<p>shell</p>');
+    expect(await shellText()).toBe(SHELL);
+  });
+
+  it('leaves the shell alone when the site already serves another build', async () => {
+    await installed();
+    w.net.set(url('index.html'), { body: '<script src="./assets/index-z9.js"></script>', type: 'text/html' });
+    await expect(w.extend('install')).rejects.toThrow(/another build/);
+    expect(await shellText()).toBe(SHELL);
+  });
+
+  it('keeps what arrived and the previous build when a file is missing, and finishes on the next launch', async () => {
+    await (await app()).put(url('assets/index-old.js'), new Response('old'));
+    w.net.delete(url('assets/concept-d4.js'));
+    await installed();
+    expect(await (await app()).match(url('assets/index-old.js'))).toBeDefined();
+    expect(await (await app()).match(url('assets/concept-d4.js'))).toBeUndefined();
+    expect(await shellText()).toBe(SHELL);
+    w.net.set(url('assets/concept-d4.js'), { body: 'concept', type: 'text/javascript' });
+    await w.get('./', { mode: 'navigate' });
+    expect(await (await app()).match(url('assets/concept-d4.js'))).toBeDefined();
+    expect(await (await app()).match(url('assets/index-old.js'))).toBeUndefined();
   });
 
   it('opens the cached app with no connection', async () => {
-    await w.extend('install');
+    await installed();
     w.env.online = false;
     const page = await w.get('./', { mode: 'navigate' });
-    expect(await page!.text()).toBe('<p>shell</p>');
+    expect(await page!.text()).toBe(SHELL);
     expect(await (await w.get('assets/index-a1.js'))!.text()).toBe('js');
   });
 
   it('prefers the network for pages when it answers', async () => {
-    await w.extend('install');
+    await installed();
     w.net.set(url('index.html'), { body: '<p>new</p>', type: 'text/html' });
     const page = await w.get('index.html', { mode: 'navigate' });
     expect(await page!.text()).toBe('<p>new</p>');
   });
 
   it('serves app files from the cache without the network', async () => {
-    await w.extend('install');
+    await installed();
     w.fetches.length = 0;
     expect(await (await w.get('assets/ui-b2.css'))!.text()).toBe('css');
     expect(w.fetches).toEqual([]);
+  });
+
+  it('still serves the previous build to a page that was opened on it', async () => {
+    await (await app()).put(url('assets/old-e5.js'), new Response('old chunk'));
+    w.net.delete(url('assets/concept-d4.js'));
+    await installed();
+    w.env.online = false;
+    expect(await (await w.get('assets/old-e5.js'))!.text()).toBe('old chunk');
   });
 
   it('streams narration from the network the first time and keeps the whole track', async () => {
@@ -226,18 +279,38 @@ describe('offline service worker', () => {
     expect([whole.status, await whole.text()]).toEqual([200, '0123456789']);
   });
 
-  it('drops files the current build no longer names when it activates', async () => {
-    await w.extend('install');
-    const app = await w.caches.open('atlas-app');
-    await app.put(url('assets/index-old.js'), new Response('old'));
+  it('drops files the current build no longer names once all of it is saved', async () => {
     const audio = await w.caches.open('atlas-audio');
     await audio.put(url('assets/narration-old.m4a'), new Response('old'));
     await audio.put(url('assets/narration-c3.m4a'), new Response('0123456789'));
+    await (await app()).put(url('assets/index-old.js'), new Response('old'));
     await w.caches.open('elsewhere');
-    await w.extend('activate');
-    expect([...app.m.keys()].sort()).toEqual(OFFLINE.files.map(url).sort());
+    await installed();
+    expect([...(await app()).m.keys()].sort()).toEqual(OFFLINE.files.map(url).sort());
     expect([...audio.m.keys()]).toEqual([url('assets/narration-c3.m4a')]);
-    expect(await w.caches.keys()).toEqual(['atlas-app', 'atlas-audio']);
+    expect((await w.caches.keys()).sort()).toEqual(['atlas-app', 'atlas-audio', 'atlas-moved']);
+  });
+
+  it('moves a page from before this worker onto the new build, once', async () => {
+    const went: string[] = [];
+    w.pages.push({ url: url('#/atlas'), navigate: async (to) => void went.push(to) });
+    await (await app()).put(url('assets/index-old.js'), new Response('old'));
+    await w.extend('install');
+    await w.extend('activate');
+    await settle();
+    expect(went).toEqual([url('#/atlas')]);
+    await w.extend('activate');
+    await settle();
+    expect(went).toHaveLength(1);
+  });
+
+  it('leaves the page alone on a first install, where it is already this build', async () => {
+    const went: string[] = [];
+    w.pages.push({ url: url('#/'), navigate: async (to) => void went.push(to) });
+    await w.extend('install');
+    await w.extend('activate');
+    await settle();
+    expect(went).toEqual([]);
   });
 
   it('leaves other requests to the browser', async () => {
@@ -256,7 +329,7 @@ describe('offline service worker', () => {
       return v;
     };
     expect(await ask()).toEqual({ ready: false, audio: 0, total: 1 });
-    await w.extend('install');
+    await installed();
     await w.get('assets/narration-c3.m4a', { range: 'bytes=0-1' });
     expect(await ask()).toEqual({ ready: true, audio: 1, total: 1 });
   });
