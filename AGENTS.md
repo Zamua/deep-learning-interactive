@@ -24,6 +24,17 @@ explainer craft, `docs/SYNC.md` progress sync.
 
 A new course goes through the `/make-course` skill (`.claude/skills/make-course/`).
 
+Design and motion skills, vendored and pinned (`.claude/skills/THIRD-PARTY.md`): `animate` to build motion, `choreograph`
+when several things move together, `gestures` for drags and sheets, `animation-performance` for dropped frames,
+`animation-vocabulary` to name an effect, `find-animation-opportunities` and `improve-animations` to survey (both
+read-only), `review-animations` on a diff with motion, `remove-animations` to subtract, `break-ui` for worst-case data,
+`prototype` for variants to flip through, `emil-design-eng` for the design philosophy. `review-animations`,
+`remove-animations`, `prototype` and `emil-design-eng` run only when asked for.
+They assume React and Motion in places: this site is plain TypeScript and CSS, and a new dependency is the owner's call.
+Where one disagrees with the rules here, these win: nothing moves when content lands, Reduce Motion means no motion that
+is not needed (never leave content hidden behind a removed animation), Phosphor icons, no em dashes, and
+`code-review:code-review` for review.
+
 ## Layout
 
 - `src/main.ts`: the shell (routing; redraw on synced progress). A book's home draws from the entry chunk, and every other page stands behind a placeholder at its own size until it has what it waits for.
