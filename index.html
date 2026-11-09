@@ -77,7 +77,7 @@
           },
           explore: function () {
             function tab(label, on) { return '<span class="ex-tab' + (on ? ' on' : '') + '">' + label + '</span>'; }
-            return '<div class="ex"><div class="ex-head"><span></span><span class="ex-title"><i class="sk" style="width:128px;height:16px;margin:0 auto"></i></span><span></span></div><nav class="ex-seg">' + tab('Chapters', true) + tab('Map') + tab('List') + tab('Goals') + tab('History') + '</nav><div class="ex-box"></div><div class="ex-legend"></div></div>';
+            return '<div class="ex"><div class="ex-head"><span></span><span class="ex-title"><i class="sk" style="width:128px;height:16px;margin:0 auto"></i></span><span></span></div><nav class="ex-seg">' + tab('Map', true) + tab('Chapters') + tab('List') + tab('Goals') + tab('History') + '</nav><div class="ex-box"></div><div class="ex-legend"></div></div>';
           },
           page: function () {
             return '<div class="lib"><div class="lib-brand">Atlas</div>' + line('52%', 30, 'margin-top:14px') + line('76%', 15, 'margin-top:10px') + '<span class="sk" style="height:52px;margin-top:22px;border-radius:26px"></span>' + repeat(6, function () { return '<span class="sk" style="height:46px;margin-top:12px"></span>'; }) + '</div>';

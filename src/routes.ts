@@ -1,7 +1,7 @@
 // Every address in the app: what pages link to, and the one reading of an address the router goes by.
 
 /** The views of the one place for looking around a book. */
-export const EXPLORE_VIEWS = ['chapters', 'map', 'list', 'goals', 'history'] as const;
+export const EXPLORE_VIEWS = ['map', 'chapters', 'list', 'goals', 'history'] as const;
 export type ExploreView = (typeof EXPLORE_VIEWS)[number];
 
 /** The course that was once the whole site. Its addresses stay `#/atlas/...`, so old links and reminders still work. */
@@ -32,7 +32,7 @@ export function coursePages(course: string) {
   const base = course === FIRST_COURSE ? '#/atlas' : `#/c/${course}`;
   return {
     home: base,
-    explore: (view: ExploreView = 'chapters') => `${base}/explore/${view}`,
+    explore: (view: ExploreView = 'map') => `${base}/explore/${view}`,
     graph: `${base}/graph`,
     part: (id: string) => `${base}/graph/${id}`,
     list: `${base}/list`,
@@ -68,7 +68,7 @@ const SITE = new Set<string>(['review', 'path', 'settings']);
 function coursePage(course: string, [a = '', b = '', c = '']: string[]): CourseRoute {
   if (!a) return { course, page: 'home' };
   if (FIXED.has(a)) return { course, page: a as 'list' };
-  if (a === 'explore') return { course, page: 'explore', view: (EXPLORE_VIEWS as readonly string[]).includes(b) ? (b as ExploreView) : 'chapters' };
+  if (a === 'explore') return { course, page: 'explore', view: (EXPLORE_VIEWS as readonly string[]).includes(b) ? (b as ExploreView) : 'map' };
   if (a === 'graph') return { course, page: 'graph', part: b || undefined };
   if (a === 'learn') return { course, page: 'learn', concept: b || undefined, track: (b && c) || undefined };
   if (a === 'new-track') return { course, page: 'new-track', target: b || undefined };

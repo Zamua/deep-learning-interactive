@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { courseById } from '../../../courses/index';
-import { CARD, centerOn, clampView, fitView, geoOf, hitNode, layoutChapters, layoutMap, lodOf, packRow, shortLines, zoomAround, type Geometry } from './layout';
+import { CARD, centerOn, clampView, fitView, geoOf, hitNode, layoutChapters, lodOf, packRow, shortLines, zoomAround, type Geometry } from './layout';
 
 const box = { w: 402, h: 700 };
 const books = [courseById('dl')!, courseById('nix')!].map((c) => ({ name: c.title, course: c, geo: geoOf(c) }));
@@ -12,18 +12,14 @@ const overlap = (g: Geometry) => {
 
 describe.each(books)('$name', ({ course, geo }) => {
   const chapters = layoutChapters(geo);
-  const map = layoutMap(geo);
 
-  it('places every concept once, in both drawings', () => {
-    for (const g of [chapters, map]) {
-      expect(Object.keys(g.nodes).sort()).toEqual(course.graph.order.map((c) => c.id).sort());
-      expect(g.edges.length).toBe(course.graph.order.reduce((a, c) => a + c.prereqs.length, 0));
-    }
+  it('places every concept once', () => {
+    expect(Object.keys(chapters.nodes).sort()).toEqual(course.graph.order.map((c) => c.id).sort());
+    expect(chapters.edges.length).toBe(course.graph.order.reduce((a, c) => a + c.prereqs.length, 0));
   });
 
   it('never lets two cards touch', () => {
     expect(overlap(chapters)).toEqual([]);
-    expect(overlap(map)).toEqual([]);
   });
 
   it('holds each chapter inside its region, regions apart and in tour order', () => {
@@ -45,53 +41,23 @@ describe.each(books)('$name', ({ course, geo }) => {
     expect(chapters.spine.length).toBe(chapters.regions.length - 1);
   });
 
-  it('draws every prerequisite above what needs it on the map', () => {
-    for (const e of map.edges) expect(map.nodes[e.a]!.y).toBeLessThan(map.nodes[e.b]!.y);
-    expect(map.regions).toEqual([]);
-  });
-
   it('keeps the drawing inside its own bounds', () => {
-    for (const g of [chapters, map]) {
-      for (const n of Object.values(g.nodes)) {
-        expect(n.x).toBeGreaterThanOrEqual(-1e-6);
-        expect(n.y).toBeGreaterThanOrEqual(-1e-6);
-        expect(n.x + CARD.w).toBeLessThanOrEqual(g.W + 1e-6);
-        expect(n.y + CARD.h).toBeLessThanOrEqual(g.H + 1e-6);
-      }
+    for (const n of Object.values(chapters.nodes)) {
+      expect(n.x).toBeGreaterThanOrEqual(-1e-6);
+      expect(n.y).toBeGreaterThanOrEqual(-1e-6);
+      expect(n.x + CARD.w).toBeLessThanOrEqual(chapters.W + 1e-6);
+      expect(n.y + CARD.h).toBeLessThanOrEqual(chapters.H + 1e-6);
     }
   });
 
-  it('fits the whole of either drawing inside a phone box', () => {
-    for (const g of [chapters, map]) {
-      const v = fitView(g, box);
-      expect(g.W * v.z).toBeLessThanOrEqual(box.w);
-      expect(g.H * v.z).toBeLessThanOrEqual(box.h);
-    }
+  it('fits the whole drawing inside a phone box', () => {
+    const v = fitView(chapters, box);
+    expect(chapters.W * v.z).toBeLessThanOrEqual(box.w);
+    expect(chapters.H * v.z).toBeLessThanOrEqual(box.h);
   });
 
   it('is the same every time', () => {
     expect(layoutChapters(geo)).toEqual(chapters);
-    expect(layoutMap(geo)).toEqual(map);
-  });
-});
-
-describe('the map of the largest course on a phone', () => {
-  const dl = books[0]!.geo;
-  const map = layoutMap(dl);
-
-  it('fits on one screen at a scale a tile can still be seen at', () => {
-    const v = fitView(map, box);
-    expect(map.H * v.z).toBeLessThanOrEqual(700);
-    expect(CARD.w * v.z).toBeGreaterThan(20);
-  });
-
-  it('wraps a layer only as far as it must', () => {
-    const rows = new Set(Object.values(map.nodes).map((n) => n.y));
-    const depths = new Map<string, number>();
-    const byId = new Map(dl.concepts.map((c) => [c.id, c]));
-    const d = (id: string): number => depths.get(id) ?? (depths.set(id, Math.max(-1, ...byId.get(id)!.prereqs.map(d)) + 1), depths.get(id)!);
-    dl.concepts.forEach((c) => d(c.id));
-    expect(rows.size).toBeLessThanOrEqual(Math.max(...depths.values()) + 1 + 6);
   });
 });
 
@@ -99,7 +65,6 @@ describe('Nix on a phone', () => {
   it('reads at full detail with no zooming', () => {
     const nix = books[1]!.geo;
     expect(lodOf(fitView(layoutChapters(nix), box).z)).toBe(2);
-    expect(lodOf(fitView(layoutMap(nix), box).z)).toBe(2);
   });
 });
 

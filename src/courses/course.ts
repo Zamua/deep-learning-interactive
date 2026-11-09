@@ -1,4 +1,5 @@
 // What a course is to the site: its description in `<course>/course.ts`, and the same with its concepts found and graphed.
+import type { Color } from '../core/symbols';
 import type { LectureDef } from '../lecture/player';
 import type { ConceptGraph } from '../mastery/domain/graph';
 import type { Concept, Generator } from '../mastery/domain/types';
@@ -7,6 +8,8 @@ import type { CoursePages } from '../routes';
 export interface Domain {
   id: string;
   title: string;
+  /** Marks its concepts on the map. */
+  color?: Color;
 }
 
 /** What a course's `course.ts` exports as `course`. */

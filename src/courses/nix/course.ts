@@ -6,9 +6,9 @@ export const course: CourseDef = {
   cover: '#35466b',
   idPrefix: 'nix.',
   domains: [
-    { id: 'language', title: 'The language' },
-    { id: 'store', title: 'The store' },
-    { id: 'packages', title: 'Packages' },
-    { id: 'flakes', title: 'Flakes' },
+    { id: 'language', title: 'The language', color: 'blue' },
+    { id: 'store', title: 'The store', color: 'purple' },
+    { id: 'packages', title: 'Packages', color: 'gold' },
+    { id: 'flakes', title: 'Flakes', color: 'teal' },
   ],
 };

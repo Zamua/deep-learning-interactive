@@ -34,7 +34,7 @@ export async function renderAtlas(main: HTMLElement, r: CourseRoute, current: ()
       return renderPlacement(main, learner);
     // Addresses of pages that became part of Explore or the home.
     case 'graph':
-      return replaceRoute(routes.explore('chapters'));
+      return replaceRoute(routes.explore('map'));
     case 'list':
       return replaceRoute(routes.explore('list'));
     case 'history':

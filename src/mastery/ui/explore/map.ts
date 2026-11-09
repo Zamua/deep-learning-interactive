@@ -1,5 +1,5 @@
-// Explore's two drawings of a course: Chapters (regions in tour order, the tour as a line through them) and Map (the
-// complete graph as one drawing). Both zoom semantically over one geometry: tiles, then short titles, then full cards.
+// Explore's Chapters: regions in tour order, the tour as a line through them, zooming semantically over one geometry:
+// tiles, then short titles, then full cards.
 import { icon } from '../../../core/controls';
 import { escapeHtml as esc } from '../../../core/dom';
 import { streak, type Status } from '../../domain/model';
@@ -8,10 +8,8 @@ import { roman } from '../common';
 import { openConceptSheet } from '../concept-sheet';
 import { leadGoal, nextStep, tour } from '../next-step';
 import { pinSymbol, symbolOf } from './glyphs';
-import { CARD, centerOn, edgePath, fitView, geoOf, hitNode, layoutChapters, layoutMap, lodOf, nearestRegion, regionAt, regionView, shortLines, type Geometry, type Lod, type Region, type View } from './layout';
+import { CARD, centerOn, edgePath, fitView, geoOf, hitNode, layoutChapters, lodOf, nearestRegion, regionAt, regionView, shortLines, type Geometry, type Lod, type Region, type View } from './layout';
 import { Stage } from './stage';
-
-export type GraphKind = 'chapters' | 'map';
 
 export interface GraphHandle {
   /** Flies to where the learner is. */
@@ -32,7 +30,7 @@ const DONE: ReadonlySet<Status> = new Set<Status>(['mastered', 'due', 'slipping'
 const SYMBOLS = ['check', 'clock', 'lock', 'reset'].map((g) => symbolOf(icon(g), `ex-${g}`)).join('') + pinSymbol;
 
 /** The concept the learner is on: a review block comes first on the line, but the place on the map is what follows it. */
-function placeOf(learner: Learner): string | undefined {
+export function placeOf(learner: Learner): string | undefined {
   const step = nextStep(learner);
   if ('concept' in step) return step.concept;
   if (step.kind !== 'review') return undefined;
@@ -43,11 +41,11 @@ function placeOf(learner: Learner): string | undefined {
 /** How far below a region's top edge its zoomed-out title reaches, on screen. */
 const TITLE_ROOM = 15;
 
-export function mountGraph(box: HTMLElement, learner: Learner, kind: GraphKind): GraphHandle {
+export function mountChapters(box: HTMLElement, learner: Learner): GraphHandle {
   const { course, graph } = learner;
-  const memo = `${course.id}/${kind}`;
+  const memo = course.id;
   let found = geometries.get(memo);
-  if (!found) geometries.set(memo, (found = kind === 'chapters' ? layoutChapters(geoOf(course)) : layoutMap(geoOf(course))));
+  if (!found) geometries.set(memo, (found = layoutChapters(geoOf(course))));
   const geo: Geometry = found;
   const st = learner.statuses();
   const statusOf = (id: string): Status => st.get(id) ?? 'locked';
@@ -61,7 +59,7 @@ export function mountGraph(box: HTMLElement, learner: Learner, kind: GraphKind):
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('class', 'ex-svg');
   svg.setAttribute('role', 'img');
-  svg.setAttribute('aria-label', `${kind === 'chapters' ? 'Chapters' : 'Map'} of ${course.title}: ${learner.masteredCount()} of ${graph.order.length} concepts mastered. The List view has the same concepts as text.`);
+  svg.setAttribute('aria-label', `Chapters of ${course.title}: ${learner.masteredCount()} of ${graph.order.length} concepts mastered. The List view has the same concepts as text.`);
   svg.innerHTML = `<defs>${SYMBOLS}</defs><g class="ex-world"></g><g class="ex-over"></g>`;
   const world = svg.querySelector('.ex-world')!;
   const over = svg.querySelector('.ex-over')!;
@@ -266,7 +264,6 @@ export function mountGraph(box: HTMLElement, learner: Learner, kind: GraphKind):
       if (lodOf(v.z) === 0) {
         const r = regionAt(geo, wx, wy);
         if (r) stage.flyTo(regionView(r, stage.size()));
-        else if (kind === 'map') stage.flyTo({ z: 0.75, tx: size.w / 2 - wx * 0.75, ty: size.h / 2 - wy * 0.75 });
         return;
       }
       const id = hitNode(geo, wx, wy, 14 / v.z);
