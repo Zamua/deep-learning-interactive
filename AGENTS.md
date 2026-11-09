@@ -110,6 +110,9 @@ is not needed (never leave content hidden behind a removed animation), Phosphor 
   write `\sym{W1}{W_1}`.
 - Theme colors are CSS variables read at draw time (`color('blue')`), so canvases follow dark
   mode; palette tokens must stay 6-digit hex for `withAlpha`.
+- **Look:** warm cream paper with an orange accent, Fraunces for titles and buttons, Source Serif 4 for text (both
+  bundled, variable, optical-size axis). Each chapter's colour (`CourseDef.domains[].color`) shows on its tour row and on the
+  Map. Tokens live in `src/styles/base.css`; the first-paint copy is inlined from it by `tools/shell.mjs`.
 - The router disposes everything registered with `onDispose` on navigation.
 - A scene's `draw(s)` is a pure function of time; the narration track is the clock.
   `timing.json` and `narration.m4a` are generated together from `script.ts` and must be
