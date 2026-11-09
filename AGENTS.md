@@ -1,9 +1,9 @@
 # Atlas: notes for a coding agent
 
 A Vite + TypeScript static site (no framework): Atlas, courses built as concept graphs, each
-concept a voiced explainer plus generated problems practiced to mastery. Hash routes: `#/` (the
-shelf), `#/review`, `#/path`, `#/settings`, `#/atlas/...` (the first course, `dl`), `#/c/<course>/...`
-(any other; see `docs/MASTERY.md`) and `#/account` (sync); any other address lands on the shelf. `docs/MASTERY.md` is the design and the authoring contract, `docs/EXPLAINERS.md` the
+concept a voiced explainer plus generated problems practiced to mastery. Hash routes: `#/` opens the book last read,
+`#/atlas` is the first book's home and `#/c/<course>` another's, `#/atlas/explore/<view>`, `#/settings` and `#/account` (see
+`docs/MASTERY.md`). `docs/MASTERY.md` is the design and the authoring contract, `docs/EXPLAINERS.md` the
 explainer craft, `docs/SYNC.md` progress sync.
 
 ## Commands
@@ -13,7 +13,6 @@ explainer craft, `docs/SYNC.md` progress sync.
     npm test                             Vitest (src/**/*.test.ts): mastery domain, sync model, every generator
     ATLAS_STRICT=1 npm test              also fails concepts with no explainer or no problems
     npm run check                        tsc (app and push/) + ATLAS_STRICT tests: what CI runs, and main requires
-    node tools/e2e/map-search.mjs <base> [png]   phone e2e of the map search against a dev or preview server
     node tools/shot.mjs <route> <name> [w h mobile full]   Playwright + system Chrome screenshot
                                          (prints page errors; env SCROLL='.fig:2', THEME=dark)
     node tools/lecture/build.mjs atlas-<concept-id> [--check]   synthesize an explainer's narration
@@ -27,13 +26,14 @@ A new course goes through the `/make-course` skill (`.claude/skills/make-course/
 
 ## Layout
 
-- `src/main.ts`: the shell (four tabs, a rail on desktop; routing; redraw on synced progress). The Shelf draws from
-  the entry chunk, and every other page stands behind a placeholder at its own size until it has what it waits for.
+- `src/main.ts`: the shell (routing; redraw on synced progress). A book's home draws from the entry chunk, and every other page stands behind a placeholder at its own size until it has what it waits for.
   `index.html` holds the placeholders and paints the first one before any other file arrives: `tools/shell.mjs` inlines
   copies of `base.css` and `library.css` with `src/styles/shell.css`, adds the books, and loads the stylesheet so it does
   not hold back the paint. `src/core/waiting.ts` adds the stalled and failed notes with Retry. `shell.css` holds copies of the practice
   and explainer frames: change them with the originals in `atlas.css` and `lecture.css`.
   `src/theme.ts`: the color theme.
+  `src/core/back.ts`: Back pops the way the learner came (`data-back`), and one step's parts replace each other
+  (`data-replace`).
   `src/routes.ts` builds every address and parses them back; link with a course's `routes.*`
   (site pages: `routes.*`), never a literal.
 - `src/core/`: shared pieces. `code.ts` (CodePanel with `{{slots}}` and `#@labels`),
@@ -53,8 +53,8 @@ A new course goes through the `/make-course` skill (`.claude/skills/make-course/
   types; `lookup.ts`: the cards for symbols and calls; `library.ts`: notes on common library calls.
 - `src/mastery/`: the engine. `domain/` is pure and unit tested (concept graph, student model,
   scheduler, tracks, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
-  learner's records in the synced progress store; `ui/` renders the shelf, Review, Path, Settings, a
-  course's front page, the part map, tracks, concept pages, sessions and placement.
+  learner's records in the synced progress store; `ui/` renders a book's home (`hub.ts`), Explore (`explore/`), the
+  concept sheet, Settings, sessions and placement. `next-step.ts` is the only answer to "what next".
 - `src/courses/`: the courses. `course.ts` says what a course is; `index.ts` finds every course and
   concept by glob and builds them (`COURSES`, `courseById`, `FIRST`); `symbols.ts` hands a course's
   symbols to the pages, imported only by them so they stay out of the main chunk. A course is

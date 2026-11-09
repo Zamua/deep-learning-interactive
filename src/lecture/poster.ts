@@ -43,7 +43,7 @@ export function mountPoster(o: {
     h('div', { class: 'lec-poster-kicker' }, frame.end.kicker),
     h('h2', { class: 'lec-end-title' }, frame.end.title),
     h('div', { class: 'lec-poster-actions' },
-      h('a', { class: 'btn btn-primary', href: frame.end.href, html: `${frame.end.action} ${icon('arrowRight')}` }),
+      h('a', { class: 'btn btn-primary', href: frame.end.href, 'data-replace': '', html: `${frame.end.action} ${icon('arrowRight')}` }),
       replay));
   return [poster, endcard];
 }

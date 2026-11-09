@@ -1,0 +1,113 @@
+// One concept, over the page it was tapped on: where it sits, where the learner stands, what it builds on, and the one
+// thing to do about it. It never changes the address, so closing it leaves everything as it was.
+import '../../styles/explore.css';
+import { icon } from '../../core/controls';
+import { h } from '../../core/dom';
+import { recoveryStreak, streak } from '../domain/model';
+import type { Learner } from '../learner';
+import { dots, roman, whenDue } from './common';
+import { stepHref } from './next-step';
+import { openSheet } from './sheet';
+
+export interface ConceptSheetOptions {
+  /** Makes Builds on and Unlocks chips that call this; without it they are plain text. */
+  onChip?: (id: string) => void;
+  /** After it closes, however it was closed. */
+  onClose?: () => void;
+}
+
+let current: { close: () => void; quiet: () => void } | null = null;
+
+/** Where the learner stands, as one line. */
+function standing(learner: Learner, id: string): HTMLElement | string {
+  const { graph } = learner;
+  const c = graph.get(id)!;
+  const rec = learner.record(id);
+  switch (learner.status(id)) {
+    case 'mastered':
+      return `Mastered. Next review ${whenDue(rec.review!.due)}.`;
+    case 'due':
+      return 'Mastered. A review is due.';
+    case 'slipping':
+      return `Slipped on a review. ${streak(rec)} of ${recoveryStreak(c.mastery)} in a row win it back.`;
+    case 'learning':
+      return h('span', { class: 'cs-stand' }, dots(streak(rec), c.mastery.streak), `${streak(rec)} of ${c.mastery.streak} in a row`);
+    case 'new':
+      return 'Open to start.';
+    case 'locked':
+      return `Master ${c.prereqs.filter((p) => !learner.record(p).mastered).map((p) => graph.get(p)!.title).join(' and ')} first.`;
+  }
+}
+
+function relation(learner: Learner, label: string, ids: readonly string[], onChip?: (id: string) => void): HTMLElement[] {
+  if (!ids.length) return [];
+  const title = (id: string) => learner.graph.get(id)!.title;
+  if (!onChip) return [h('div', { class: 'sh-lab' }, label), h('p', { class: 'cs-text' }, ids.map(title).join(', '))];
+  return [h('div', { class: 'sh-lab' }, label), h('div', { class: 'cs-chips' }, ...ids.map((id) => {
+    const chip = h('button', { type: 'button', class: 'cs-chip' }, title(id));
+    chip.addEventListener('click', () => onChip(id));
+    return chip;
+  }))];
+}
+
+/** The label and link for what to do next with a concept, or nothing while it is locked. */
+function primary(learner: Learner, id: string): HTMLElement | null {
+  const status = learner.status(id);
+  if (status === 'locked') return null;
+  const pages = learner.course.routes;
+  const href = stepHref(learner, id);
+  const minutes = Math.round(learner.course.explainerSeconds(id) / 60);
+  const label = href === pages.watch(id)
+    ? `Watch the explainer${minutes ? `, ${minutes} min` : ''}`
+    : status === 'due' ? 'Review' : status === 'mastered' ? 'Practice again' : 'Practice';
+  return h('a', { class: 'lib-btn', href, html: `${icon('play')}<span>${label}</span>` });
+}
+
+/** The deliberate way to aim at a concept; nothing to aim at once it is mastered. */
+function goalToggle(learner: Learner, id: string): HTMLElement | null {
+  const followed = () => learner.trackTargets.includes(id);
+  if (learner.record(id).mastered && !followed()) return null;
+  const words = h('span', {});
+  const btn = h('button', { type: 'button', class: 'cs-goal', html: icon('target') }, words);
+  const draw = () => {
+    words.textContent = followed() ? 'Remove this goal' : 'Make it a goal';
+  };
+  btn.addEventListener('click', () => {
+    learner.follow(id, !followed());
+    draw();
+  });
+  draw();
+  return btn;
+}
+
+export function openConceptSheet(learner: Learner, id: string, opts: ConceptSheetOptions = {}): void {
+  const { course, graph } = learner;
+  const c = graph.get(id);
+  if (!c) return;
+  if (current) {
+    current.quiet();
+    current.close();
+    current = null;
+  }
+  const chapter = course.domains.filter((d) => graph.order.some((x) => x.domain === d.id)).findIndex((d) => d.id === c.domain);
+  const body = h('div', { class: 'cs', 'data-concept': id },
+    h('div', { class: 'lib-kick' }, `${roman(chapter + 1)} · ${course.domainOf(c).title}`),
+    h('h3', {}, c.title),
+    h('p', {}, c.blurb),
+    h('div', { class: 'cs-meta' }, standing(learner, id)),
+    ...relation(learner, 'Builds on', c.prereqs, opts.onChip),
+    ...relation(learner, 'Unlocks', graph.dependents.get(id) ?? [], opts.onChip),
+    primary(learner, id),
+    goalToggle(learner, id));
+  const close = openSheet(c.title, body);
+  const sheet = body.closest<HTMLElement>('.sh')!;
+  const watch = new MutationObserver(() => {
+    if (sheet.isConnected) return;
+    watch.disconnect();
+    if (current === mine) current = null;
+    opts.onClose?.();
+  });
+  watch.observe(document.body, { childList: true });
+  const mine = { close, quiet: () => watch.disconnect() };
+  current = mine;
+}

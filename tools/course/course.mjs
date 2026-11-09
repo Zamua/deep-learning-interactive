@@ -40,6 +40,10 @@ function outlineIssues(o) {
     if (!c.title?.trim() || !c.blurb?.trim()) out.push(`${c.id}: needs a title and a blurb`);
   }
   for (const d of domains) if (!concepts.some((c) => c.domain === d)) out.push(`domain ${d} has no concepts`);
+  // The chapters in order are the book's tour, so a concept may only build on its own chapter or an earlier one.
+  const place = new Map(o.domains.map((d, i) => [d.id, i]));
+  const home = new Map(concepts.map((c) => [c.id, c.domain]));
+  for (const c of concepts) for (const p of c.prereqs) if (place.get(home.get(p)) > place.get(c.domain)) out.push(`${c.id} needs ${p}, from a later domain`);
   const issues = graphIssues(concepts);
   out.push(...issues);
   if (!issues.length && concepts.length) {

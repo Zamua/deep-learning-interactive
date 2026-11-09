@@ -7,10 +7,8 @@ import { codeIndex, linkSymbols, symbolMacros } from '../../core/symbols';
 import { DAY, type Status } from '../domain/model';
 import type { Learner } from '../learner';
 
-export { plural, progressBar } from './bits';
+export { dueCount, plural, progressBar, reviewMinutes, roman, whenDue } from './bits';
 
-/** How many of a learner's concepts wait on a review. */
-export const dueCount = (learner: Learner): number => [...learner.statuses().values()].filter((s) => s === 'due' || s === 'slipping').length;
 
 const seen = new Map<string, ReturnType<typeof dressing>>();
 
@@ -64,21 +62,9 @@ export function dots(k: number, n: number): HTMLElement {
   return el;
 }
 
-/** "today", "tomorrow", "in 3 days", for a future time. */
-export function whenDue(due: number, now = Date.now()): string {
-  const days = Math.ceil((due - now) / DAY);
-  return days <= 0 ? 'today' : days === 1 ? 'tomorrow' : `in ${days} days`;
-}
 
 
-const NUMERALS: [number, string][] = [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
 
-/** A part's number as a book would print it. */
-export function roman(n: number): string {
-  let out = '';
-  for (const [value, mark] of NUMERALS) for (; n >= value; n -= value) out += mark;
-  return out;
-}
 
 const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
 
@@ -86,16 +72,3 @@ const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eig
 export const spell = (n: number): string => WORDS[n] ?? String(n);
 
 export const sentence = (s: string): string => s[0]!.toUpperCase() + s.slice(1);
-
-/** The minutes the due reviews take: one problem each, at about the pace a concept's bar asks for. */
-export function reviewMinutes(learner: Learner): number {
-  const st = learner.statuses();
-  return learner.graph.order.filter((c) => st.get(c.id) === 'due').reduce((a, c) => a + c.mastery.seconds * 1.5, 0) / 60;
-}
-
-/** A way to the page that lists every concept open to start. */
-export function pickLink(course: Course, text: string): HTMLElement {
-  const a = h('a', { class: 'at-pick-link', href: course.routes.next, html: icon('compass') });
-  a.append(h('span', {}, text));
-  return a;
-}

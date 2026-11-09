@@ -1,7 +1,7 @@
 import { type Ink, lerp, type Scene, type SceneDef } from '../../../../lecture/scene';
 import { cite } from '../../draw';
 import { axes, ball, clipped, curve, frame, type Frame } from '../../optimization/draw';
-import { xTicks, yTicks } from '../draw';
+import { xTicks, yTicks } from '../../training/draw';
 
 /** A caption centered under the picture. */
 function caption(s: Scene, text: string, k: Ink, a: number, y = s.h - 5 * s.u) {

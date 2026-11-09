@@ -1,8 +1,8 @@
-// The moment a concept is mastered: the whole map, a zoom onto it, what it just unlocked and what
-// comes next. Continue (or a tap anywhere) skips it at any point.
+// The moment a concept is mastered: the whole map, a zoom onto it, what it just unlocked and what comes next. One
+// button, which goes back along the way the learner came.
 import { icon } from '../../core/controls';
+import { goBack } from '../../core/back';
 import { h, onDispose } from '../../core/dom';
-import { trackConcepts } from '../domain/tracks';
 import type { Learner } from '../learner';
 import { graphView } from './graph-view';
 
@@ -22,8 +22,8 @@ export function haptic(): void {
   label.remove();
 }
 
-/** Plays the moment over `host` and resolves when the learner moves on; `track` is the target of the track followed. */
-export function celebrate(host: HTMLElement, learner: Learner, id: string, unlocked: string[], next: string | undefined, track?: string): Promise<void> {
+/** Plays the moment over `host`; `next` is what the book goes on to. */
+export function celebrate(host: HTMLElement, learner: Learner, id: string, unlocked: string[], next: string | undefined): void {
   const graph = learner.graph;
   const c = graph.get(id)!;
   const map = graphView(learner);
@@ -32,27 +32,15 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
   const view = h('div', { class: 'at-cm-view' }, stage);
   const here = h('div', { class: 'at-cm-here' });
   const done = [...learner.statuses().values()].filter((s) => s === 'mastered' || s === 'due').length;
-  const finished = !!track && trackConcepts(graph, track).every((x) => learner.record(x).mastered);
-  const along = track && !finished ? track : undefined;
-  // A new concept opens on its explainer, never straight into its practice.
-  const watch = !!next && learner.course.hasExplainer(next);
-  const go = h('button', { type: 'button', class: 'at-cm-go' },
-    watch ? h('span', { class: 'at-cm-play', html: icon('playFill') }) : '',
-    next ? `Next: ${graph.get(next)!.title}` : 'Continue');
-  const stay = next ? h('button', { type: 'button', class: 'at-cm-stay' }, 'Back to this session') : '';
-  // Where the next new concept is Atlas's pick, the learner may prefer another.
-  const other = next && learner.status(next) === 'new' && learner.choices().open.length > 1 ? h('a', { class: 'at-cm-stay', href: learner.course.routes.next }, 'Choose something else') : '';
+  const go = h('button', { type: 'button', class: 'at-cm-go' }, 'Continue');
   const el = h('div', { class: 'at-cm', role: 'dialog', 'aria-label': `${c.title} mastered` },
     h('div', { class: 'at-cm-title', html: `${icon('sparkle')} ${c.title} mastered` }),
     view,
     here,
     h('div', { class: 'at-cm-cap' },
-      finished ? `Track complete: ${graph.get(track!)!.title} · ` : '',
       `${done} of ${graph.order.length} concepts mastered`,
       unlocked.length ? ` · ${unlocked.length} unlocked` : ''),
-    go,
-    other,
-    stay);
+    go);
   host.append(el);
   haptic();
 
@@ -64,19 +52,15 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
 
   const timers: number[] = [];
   const at = (ms: number, f: () => void) => timers.push(window.setTimeout(f, ms));
-  let finish!: () => void;
-  const out = new Promise<void>((resolve) => (finish = resolve));
   const close = () => {
     timers.forEach(clearTimeout);
     el.classList.add('out');
     window.setTimeout(() => el.remove(), 200);
-    finish();
   };
   go.addEventListener('click', () => {
     close();
-    if (next) location.hash = watch ? learner.course.routes.watch(next, along) : learner.course.routes.concept(next);
+    goBack(learner.course.routes.home);
   });
-  if (stay) stay.addEventListener('click', close);
   onDispose(close);
 
   // Positions only exist once the map has laid itself out, a frame after it is in the page.
@@ -146,5 +130,4 @@ export function celebrate(host: HTMLElement, learner: Learner, id: string, unloc
       });
     }
   }));
-  return out;
 }

@@ -4,40 +4,26 @@ import './styles/base.css';
 import './styles/components.css';
 
 import type { Course } from './courses/course';
-import { courseById } from './courses/index';
+import { courseById, FIRST } from './courses/index';
 import { icon } from './core/controls';
+import { noteArrival, wireBackLinks } from './core/back';
 import { disposeAll, h } from './core/dom';
 import { loadNote, patiently, stylesReady } from './core/waiting';
-import { renderShelf } from './mastery/ui/shelf';
+import { getItem } from './core/storage';
+import { Learner } from './mastery/learner';
+import { LAST_BOOK, renderHub } from './mastery/ui/hub';
 import { checkForNewWorker, startOffline } from './offline/register';
 import { applyTheme } from './theme';
 import { progressStore, startSync } from './sync/cloud';
-import { parseRoute, routes, type CourseRoute, type Route, type SitePage } from './routes';
+import { parseRoute, routes, type CourseRoute, type Route } from './routes';
 
 applyTheme();
 startSync();
 
-type Tab = 'shelf' | 'review' | 'path' | 'settings';
-const TABS: [Tab, string, string, string][] = [
-  ['shelf', 'books', 'Shelf', routes.shelf],
-  ['review', 'stack', 'Review', routes.review],
-  ['path', 'compass', 'Path', routes.path],
-  ['settings', 'gear', 'Settings', routes.settings],
-];
-
 const app = document.getElementById('app')!;
 const main = h('main', { class: 'main', id: 'main' });
-const links = TABS.map(([id, glyph, label, href]) => h('a', { class: 'tab', href, 'data-tab': id, html: `${icon(glyph)}<span>${label}</span>` }));
-app.replaceChildren(h('nav', { class: 'tabs', 'aria-label': 'Sections' }, ...links), main);
-
-function setTab(tab: Tab): void {
-  for (const a of links) {
-    const on = a.dataset.tab === tab;
-    a.classList.toggle('on', on);
-    if (on) a.setAttribute('aria-current', 'page');
-    else a.removeAttribute('aria-current');
-  }
-}
+app.replaceChildren(main);
+wireBackLinks();
 
 let currentId = '';
 let renderToken = 0;
@@ -49,14 +35,13 @@ type Render = () => void | Promise<void>;
  * Shows the page `load` brings, unless the address already shows it. A placeholder stands in at the page's size until
  * the page has everything it waits for, and a load that stalls or fails says so and offers a retry.
  */
-async function show(key: string, title: string, tab: Tab, load: () => Promise<Render>): Promise<void> {
+async function show(key: string, title: string, load: () => Promise<Render>): Promise<void> {
   if (key === currentId) return;
   const token = ++renderToken;
   disposeAll();
   currentId = key;
   const stand = h('div', { class: 'sk-wrap', html: window.atlasBoot.placeholder(window.atlasBoot.kindOf(location.hash)) });
   main.replaceChildren(stand);
-  setTab(tab);
   document.title = `${title} · Atlas`;
   window.scrollTo(0, 0);
   try {
@@ -71,37 +56,40 @@ async function show(key: string, title: string, tab: Tab, load: () => Promise<Re
   }
 }
 
-/** A course's pages, the site's, and the account's; any other address, or an unknown course, lands on the shelf. */
+/** A course's pages, settings, and the account's. Any other address, the old tabs included, opens the book last read. */
 async function route(): Promise<void> {
+  noteArrival();
   const r = parseRoute(location.hash);
   if (r?.page === 'account') return routeAccount(r.code);
-  if (r && !('course' in r)) return routeSite(r.page);
-  const course = r && courseById(r.course);
-  if (r && course) return routeCourse(r, course);
-  history.replaceState(null, '', routes.shelf);
-  return routeSite('shelf');
+  if (r?.page === 'settings') return routeSettings();
+  const course = r && 'course' in r ? courseById(r.course) : undefined;
+  if (r && 'course' in r && course) return routeCourse(r, course);
+  const book = courseById(getItem(LAST_BOOK) ?? '') ?? FIRST;
+  history.replaceState(history.state, '', book.routes.home);
+  return routeCourse({ course: book.id, page: 'home' }, book);
 }
 
-const SITE_TITLE: Record<SitePage, string> = { shelf: 'Library', review: 'Review', path: 'Your path', settings: 'Settings' };
-
-function routeSite(page: SitePage): Promise<void> {
-  return show(page, SITE_TITLE[page], page, async () => {
-    if (page === 'shelf') return () => renderShelf(main);
+function routeSettings(): Promise<void> {
+  return show('settings', 'Settings', async () => {
     const [{ renderSite }] = await Promise.all([import('./mastery/ui/index'), stylesReady()]);
-    return () => renderSite(main, page);
+    return () => renderSite(main, 'settings');
   });
-}
-
-/** The tab a course's page sits under. */
-function tabOf(r: CourseRoute): Tab {
-  if (r.page === 'track' || r.page === 'new-track' || r.page === 'place') return 'path';
-  return r.page === 'history' ? 'review' : 'shelf';
 }
 
 function routeCourse(r: CourseRoute, course: Course): Promise<void> {
   const shown = r.page === 'concept' || r.page === 'watch' ? r.concept : undefined;
   const c = shown ? course.graph.get(shown) : undefined;
-  return show(location.hash.replace(/\/+$/, ''), c ? c.title : course.title, tabOf(r), async () => {
+  const key = location.hash.replace(/\/+$/, '');
+  const title = c ? c.title : course.title;
+  // A concept's address opens its sheet over the book's home, so old links keep working.
+  if (r.page === 'home' || r.page === 'concept') {
+    return show(key, title, async () => () => {
+      const learner = new Learner(course);
+      renderHub(main, learner);
+      if (c) void import('./mastery/ui/concept-sheet').then((m) => m.openConceptSheet(learner, c.id));
+    });
+  }
+  return show(key, title, async () => {
     const [{ renderAtlas }] = await Promise.all([import('./mastery/ui/index'), stylesReady()]);
     const token = renderToken;
     return () => renderAtlas(main, r, () => token === renderToken);
@@ -109,7 +97,7 @@ function routeCourse(r: CourseRoute, course: Course): Promise<void> {
 }
 
 function routeAccount(code?: string): Promise<void> {
-  return show(code ? `link/${code}` : 'account', 'Sync across devices', 'settings', async () => {
+  return show(code ? `link/${code}` : 'account', 'Sync across devices', async () => {
     // The code has done its job once read: keep it out of the history and of anything that shares this page.
     if (code) history.replaceState(null, '', routes.account);
     const [{ renderAccount }, { progressFile }] = await Promise.all([import('./sync/ui'), import('./mastery/ui/progress-file'), stylesReady()]);
@@ -122,7 +110,7 @@ function routeAccount(code?: string): Promise<void> {
  * draw again where they were. Sessions, explainers, the track picker, settings and the account page keep running as they are.
  */
 /** Pages that are under way, which synced progress never redraws. */
-const BUSY = new Set<Route['page']>(['account', 'settings', 'learn', 'place', 'new-track', 'watch']);
+const BUSY = new Set<Route['page']>(['account', 'settings', 'learn', 'place', 'new-track', 'watch', 'explore']);
 
 function redrawOnRemoteProgress(): void {
   let due = 0;
@@ -131,7 +119,7 @@ function redrawOnRemoteProgress(): void {
     window.clearTimeout(due);
     due = window.setTimeout(() => {
       const page = parseRoute(location.hash)?.page;
-      if (!page || BUSY.has(page)) return;
+      if (!page || BUSY.has(page) || document.querySelector('.sh')) return;
       const y = scrollY;
       currentId = '';
       void route().then(() => window.scrollTo(0, y));

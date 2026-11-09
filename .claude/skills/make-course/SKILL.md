@@ -30,7 +30,7 @@ Write `outline.json` outside the repo:
 }
 ```
 
-Ids are lowercase with hyphens and hold no dot, and `idPrefix` is the course id plus a dot. `cover` is a dark color (the check rejects a light one). Prereqs name concepts in this course only: a concept taught here must be a fact the reader can use, small enough for a 2 to 4 minute explainer. The graph must be connected and free of cycles.
+Ids are lowercase with hyphens and hold no dot, and `idPrefix` is the course id plus a dot. `cover` is a dark color (the check rejects a light one). Prereqs name concepts in this course only: a concept taught here must be a fact the reader can use, small enough for a 2 to 4 minute explainer. The graph must be connected and free of cycles, and a concept may only build on its own domain or an earlier one, because the domains in order are the book's tour.
 
 ```
 node tools/course/course.mjs check outline.json

@@ -16,8 +16,6 @@ export interface Lit {
 
 const lighters = new WeakMap<HTMLElement, (lit: Lit | null) => void>();
 
-/** Lights a track on a map from `graphView`, or clears it. */
-export const lightTrack = (map: HTMLElement, lit: Lit | null): void => lighters.get(map)?.(lit);
 
 /** `onTap` takes over a node's tap, which otherwise opens its concept. */
 export function graphView(learner: Learner, opts: { onTap?: (id: string) => void } = {}): HTMLElement {

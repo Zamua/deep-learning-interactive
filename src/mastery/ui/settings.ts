@@ -1,13 +1,12 @@
-// Settings: one line each for the color theme, how Atlas picks new concepts, the daily reminder, sync (leading to the
+// Settings: one line each for the color theme, the daily reminder, sync (leading to the
 // account page) and the source code, and a footnote on offline use.
-import { icon, settingRow } from '../../core/controls';
+import { backRow, icon, settingRow } from '../../core/controls';
 import { h, onDispose } from '../../core/dom';
 import { offlineStatus, offlineSupported, type OfflineStatus } from '../../offline/register';
 import { routes } from '../../routes';
 import { syncEngine } from '../../sync/cloud';
 import { statusLine } from '../../sync/status';
 import { savedTheme, setTheme, type Theme } from '../../theme';
-import { paceRow } from './pace';
 import { reminderBook, remindersPanel } from './reminders';
 
 function themeSwitch(): HTMLElement {
@@ -83,8 +82,8 @@ export function renderSettings(main: HTMLElement): void {
   const sync = syncRow();
   const offline = offlineNote();
   main.append(h('div', { class: 'lib lib-settings' },
-    h('div', { class: 'lib-brand' }, 'Atlas'),
+    backRow(routes.shelf, 'Atlas'),
     h('h1', {}, 'Settings'),
-    h('div', { class: 'set-list lib-card' }, settingRow('circle-half', 'Theme', themeSwitch()), paceRow(), ...(reminders ? [reminders] : []), ...(sync ? [sync] : []), sourceRow()),
+    h('div', { class: 'set-list lib-card' }, settingRow('circle-half', 'Theme', themeSwitch()), ...(reminders ? [reminders] : []), ...(sync ? [sync] : []), sourceRow()),
     ...(offline ? [offline] : [])));
 }

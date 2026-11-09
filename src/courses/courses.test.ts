@@ -106,3 +106,11 @@ for (const course of COURSES) {
     }
   });
 }
+
+describe('the tour', () => {
+  it.each(COURSES.map((c) => [c.id, c] as const))('%s: no concept needs one from a later chapter', (_, course) => {
+    const at = (domain: string) => course.domains.findIndex((d) => d.id === domain);
+    const late = course.concepts.flatMap((c) => c.prereqs.filter((p) => at(course.graph.get(p)!.domain) > at(c.domain)).map((p) => `${c.id} needs ${p}`));
+    expect(late).toEqual([]);
+  });
+});
