@@ -1,7 +1,7 @@
 {
-  "name": "Atlas: AI by mastery",
+  "name": "Atlas",
   "short_name": "Atlas",
-  "description": "AI by mastery: small concepts, voiced explainers and generated practice, from vectors to post-training.",
+  "description": "Courses built as maps of small concepts, each with a voiced explainer and generated practice.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
