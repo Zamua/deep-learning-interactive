@@ -169,18 +169,12 @@ export function mountGraph(box: HTMLElement, learner: Learner, kind: GraphKind):
     world.innerHTML = s;
   }
 
-  function titleLines(text: string, width: number): string[] {
-    const lines: string[] = [];
-    let line = '';
-    for (const word of text.split(' ')) {
-      const next = line ? `${line} ${word}` : word;
-      if (line && measure.measureText(next).width > width && lines.length < 1) {
-        lines.push(line);
-        line = word;
-      } else line = next;
-    }
-    lines.push(line);
-    return lines;
+  /** As much of `text` as fits `width` on one line. Fonts differ by device, so this measures rather than wrapping blind. */
+  function fitLine(text: string, width: number): string {
+    if (measure.measureText(text).width <= width) return text;
+    let t = text;
+    while (t && measure.measureText(`${t}…`).width > width) t = t.slice(0, -1);
+    return `${t.trimEnd()}…`;
   }
 
   function drawOver(v: View, L: Lod): void {
@@ -189,7 +183,7 @@ export function mountGraph(box: HTMLElement, learner: Learner, kind: GraphKind):
       for (const r of geo.regions) {
         const x = r.x * v.z + v.tx + 6;
         const y = r.y * v.z + v.ty + 11;
-        titleLines(`${roman(r.index + 1)}  ${r.title}`, r.w * v.z - 11).forEach((t, i) => (s += `<text class="ex-o-t" x="${x}" y="${y + i * 11}">${esc(t)}</text>`));
+        s += `<text class="ex-o-t" x="${x}" y="${y}">${esc(fitLine(`${roman(r.index + 1)}  ${r.title}`, r.w * v.z - 11))}</text>`;
       }
     }
     if (here) {
