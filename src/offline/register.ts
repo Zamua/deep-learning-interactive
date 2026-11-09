@@ -21,6 +21,11 @@ export function startOffline(): void {
   if (installed) void navigator.storage?.persist?.().catch(() => false);
 }
 
+/** Looks for a new service worker, which the browser otherwise does only when a page loads. */
+export function checkForNewWorker(): void {
+  if (offlineSupported()) void navigator.serviceWorker.getRegistration().then((r) => r?.update()).catch(() => {});
+}
+
 /** What the active service worker holds, or null while none is active yet. */
 export async function offlineStatus(): Promise<OfflineStatus | null> {
   const sw = (await navigator.serviceWorker.getRegistration().catch(() => undefined))?.active;

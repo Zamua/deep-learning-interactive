@@ -2,12 +2,17 @@
 // to keep ({ files, audio }), null in dev, where every request goes to the network; and `self.__ATLAS_WIRE`,
 // src/offline/wire.json, the names the page and this worker share.
 //
-// The app (code, styles, fonts, every concept) is cached at install, so Atlas opens and practices with no
-// connection. Narration is cached the first time it plays, since all of it is far larger than the app.
+// A new worker needs only the shell and the files it names, so it can install and take over during the short sessions
+// iOS allows an installed app, and on a connection too slow to beat PAGE_WAIT. The rest of the app (styles, fonts, every
+// concept) is saved in the background, picking up on the next launch where it stopped. Once saved, Atlas opens and
+// practices with no connection. Narration is cached the first time it plays, since all of it is far larger than the
+// app. This file touches Cache Storage only: progress lives in localStorage and is never its concern.
 const OFFLINE = self.__ATLAS_OFFLINE;
 const WIRE = self.__ATLAS_WIRE;
 const APP = 'atlas-app';
 const AUDIO = 'atlas-audio';
+/** Its one entry says this install's older pages have been moved onto a build that keeps itself current. */
+const MOVED = 'atlas-moved';
 /** A page load waits this long for the network before falling back to the cached app. */
 const PAGE_WAIT = 4000;
 /** Parallel downloads while caching the app. */
@@ -19,6 +24,8 @@ const audioFiles = new Set(OFFLINE ? OFFLINE.audio.map(url) : []);
 const SHELL = url('index.html');
 
 const HASHED = url('assets/');
+/** This build's entry script, which only this build's shell names. */
+const ENTRY = OFFLINE ? OFFLINE.files.find((f) => /^assets\/index-[\w-]+\.js$/.test(f)) : undefined;
 
 async function get(u) {
   const res = await fetch(u, { cache: 'reload' });
@@ -26,38 +33,91 @@ async function get(u) {
   return res;
 }
 
-async function cacheApp() {
-  const cache = await caches.open(APP);
-  // Files under assets/ have content-hashed names, so a cached one is current; the rest are fetched again.
-  const missing = [];
-  for (const u of appFiles) if (u !== SHELL && (!u.startsWith(HASHED) || !(await cache.match(u)))) missing.push(u);
+/** Runs `job` on each item, a few at a time. */
+async function inPool(items, job) {
   let next = 0;
   const worker = async () => {
-    while (next < missing.length) {
-      const u = missing[next++];
-      await cache.put(u, await get(u));
-    }
+    while (next < items.length) await job(items[next++]);
   };
   await Promise.all(Array.from({ length: POOL }, worker));
-  // The shell goes in last: until the whole build is cached, the old shell keeps naming files that are.
-  await cache.put(SHELL, await get(SHELL));
+}
+
+/** Saves this build's shell, its unhashed files and what the shell names, the shell last so that it never names a missing file. */
+async function saveShell() {
+  const cache = await caches.open(APP);
+  const res = await get(SHELL);
+  const html = await res.clone().text();
+  if (!html.includes(ENTRY)) throw new Error('the site serves another build');
+  const named = [...html.matchAll(/(?:src|href)="(?:\.\/)?(assets\/[^"]+)"/g)].map((m) => url(m[1])).filter((u) => appFiles.has(u));
+  const unhashed = [...appFiles].filter((u) => u !== SHELL && !u.startsWith(HASHED));
+  const held = await Promise.all(named.map((u) => cache.match(u)));
+  await inPool([...unhashed, ...named.filter((_, i) => !held[i])], async (u) => cache.put(u, await get(u)));
+  await cache.put(SHELL, res);
+}
+
+/** Saves what is still missing of this build; once all of it is here, drops the previous build. */
+async function saveRest() {
+  const cache = await caches.open(APP);
+  const missing = [];
+  for (const u of appFiles) if (!(await cache.match(u))) missing.push(u);
+  let incomplete = false;
+  await inPool(missing, async (u) => {
+    try {
+      await cache.put(u, await get(u));
+    } catch {
+      incomplete = true;
+    }
+  });
+  if (!incomplete) await prune();
 }
 
 /** Drops what the current build no longer names, and caches of other names. */
 async function prune() {
-  for (const name of await caches.keys()) if (name !== APP && name !== AUDIO) await caches.delete(name);
+  for (const name of await caches.keys()) if (name !== APP && name !== AUDIO && name !== MOVED) await caches.delete(name);
   for (const [name, keep] of [[APP, appFiles], [AUDIO, audioFiles]]) {
     const cache = await caches.open(name);
     for (const req of await cache.keys()) if (!keep.has(req.url)) await cache.delete(req);
   }
 }
 
+let appSaving = null;
+
+/** One run of `saveRest` at a time; a failure is retried on the next launch. */
+function keepApp() {
+  appSaving ??= saveRest()
+    .catch(() => {})
+    .finally(() => (appSaving = null));
+  return appSaving;
+}
+
+/**
+ * A page from before this worker cannot reload itself, and on a slow connection its launch was answered from the cache.
+ * The first worker of this kind moves such pages to the build it just saved, once; later builds' pages move themselves.
+ */
+async function moveOlderPages() {
+  const moved = await caches.open(MOVED);
+  if (await moved.match(url(MOVED))) return;
+  await moved.put(url(MOVED), new Response(''));
+  const held = await (await caches.open(APP)).keys();
+  if (!held.some((r) => r.url.startsWith(HASHED) && !appFiles.has(r.url))) return;
+  for (const c of await self.clients.matchAll({ type: 'window' })) await c.navigate(c.url).catch(() => {});
+}
+
 self.addEventListener('install', (e) => {
   self.skipWaiting();
-  if (OFFLINE) e.waitUntil(cacheApp());
+  if (OFFLINE) e.waitUntil(saveShell());
 });
 
-self.addEventListener('activate', (e) => e.waitUntil(Promise.all([self.clients.claim(), OFFLINE ? prune() : null])));
+// Neither job below is part of activation: requests wait for activation to end, and a navigation is itself a request.
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    self.clients.claim().then(() => {
+      if (!OFFLINE) return;
+      void moveOlderPages();
+      void keepApp();
+    }),
+  );
+});
 
 /** The network's page when it answers in time, else the cached app. */
 async function page(req) {
@@ -72,6 +132,11 @@ async function page(req) {
   }
   const cached = await (await caches.open(APP)).match(SHELL);
   return cached ?? net;
+}
+
+/** A file of the previous build, for its shell while this build is still being saved. */
+async function heldFile(req, key) {
+  return (await (await caches.open(APP)).match(key)) ?? fetch(req);
 }
 
 async function appFile(req, key) {
@@ -134,10 +199,15 @@ self.addEventListener('fetch', (e) => {
   if (!OFFLINE || e.request.method !== 'GET') return;
   const u = new URL(e.request.url);
   if (u.origin !== self.location.origin) return;
-  if (e.request.mode === 'navigate') return e.respondWith(page(e.request));
+  if (e.request.mode === 'navigate') {
+    e.respondWith(page(e.request));
+    e.waitUntil(keepApp());
+    return;
+  }
   const key = u.origin + u.pathname;
   if (appFiles.has(key)) return e.respondWith(appFile(e.request, key));
   if (audioFiles.has(key)) return audio(e, key);
+  if (key.startsWith(HASHED)) e.respondWith(heldFile(e.request, key));
 });
 
 /** Answers the settings menu: whether the app is cached, and how many narrations are. */

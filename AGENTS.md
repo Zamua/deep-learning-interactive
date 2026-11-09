@@ -65,14 +65,17 @@ A new course goes through the `/make-course` skill (`.claude/skills/make-course/
   edit: older builds on the same account would write the old shape back.
 - `tools/timing-duration.mjs`: a Vite plugin; `timing.json?duration` imports only a narration's
   length, so pages total explainer time without loading the explainers.
-- `src/offline/`: `sw.js`, the service worker (caches the app at install and narration as it
-  plays, answers range requests from the cache, shows reminders), and `register.ts` (registers
-  it once the first page draws; the settings page's offline status). Plain JS: the build only
+- `src/offline/`: `sw.js`, the service worker (installs on the shell and what it names so it takes
+  over at once, saves the rest in the background across launches and narration as it plays, answers range requests from the cache, shows
+  reminders), and `register.ts` (registers it once the first page draws; the settings page's offline
+  status). `main.ts` looks for a new build at launch and after a minute away, because iOS resumes an
+  installed app without loading anything. Plain JS: the build only
   prefixes it, with `wire.json`, the names the page and the worker share (the status message, and
   where the next reminder's words are saved).
 - `tools/service-worker.mjs`: a Vite plugin; writes `dist/sw.js` prefixed with the files it keeps
-  (every built file but narration, source maps and legacy font formats). The worker installs only
-  once it has cached every listed file, so the host must serve them all.
+  (every built file but narration, source maps and legacy font formats). The app counts as saved,
+  and the old build's files go, only once every listed file has arrived, so the host must serve
+  them all.
 - `push/`: the daily reminder Worker (Web Push). `push/src/wire.ts` types what the page sends it
   and what a push carries to the service worker; `api.ts` reads request bodies at the boundary.
 
