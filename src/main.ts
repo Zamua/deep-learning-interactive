@@ -7,6 +7,8 @@ import type { Course } from './courses/course';
 import { courseById } from './courses/index';
 import { icon } from './core/controls';
 import { disposeAll, h } from './core/dom';
+import { loadNote, patiently, stylesReady } from './core/waiting';
+import { renderShelf } from './mastery/ui/shelf';
 import { checkForNewWorker, startOffline } from './offline/register';
 import { applyTheme } from './theme';
 import { progressStore, startSync } from './sync/cloud';
@@ -26,7 +28,7 @@ const TABS: [Tab, string, string, string][] = [
 const app = document.getElementById('app')!;
 const main = h('main', { class: 'main', id: 'main' });
 const links = TABS.map(([id, glyph, label, href]) => h('a', { class: 'tab', href, 'data-tab': id, html: `${icon(glyph)}<span>${label}</span>` }));
-app.append(h('nav', { class: 'tabs', 'aria-label': 'Sections' }, ...links), main);
+app.replaceChildren(h('nav', { class: 'tabs', 'aria-label': 'Sections' }, ...links), main);
 
 function setTab(tab: Tab): void {
   for (const a of links) {
@@ -40,23 +42,32 @@ function setTab(tab: Tab): void {
 let currentId = '';
 let renderToken = 0;
 
-/** Replaces the page with what `draw` puts there, unless the address already shows it. `current` turns false once the learner has moved on. */
-async function show(key: string, title: string, tab: Tab, draw: (current: () => boolean) => Promise<void>): Promise<void> {
+/** Draws a page, once what it needs has loaded. */
+type Render = () => void | Promise<void>;
+
+/**
+ * Shows the page `load` brings, unless the address already shows it. A placeholder stands in at the page's size until
+ * the page has everything it waits for, and a load that stalls or fails says so and offers a retry.
+ */
+async function show(key: string, title: string, tab: Tab, load: () => Promise<Render>): Promise<void> {
   if (key === currentId) return;
   const token = ++renderToken;
   disposeAll();
   currentId = key;
-  main.innerHTML = '';
+  const stand = h('div', { class: 'sk-wrap', html: window.atlasBoot.placeholder(window.atlasBoot.kindOf(location.hash)) });
+  main.replaceChildren(stand);
   setTab(tab);
   document.title = `${title} · Atlas`;
   window.scrollTo(0, 0);
   try {
-    await draw(() => token === renderToken);
+    const render = await patiently(load());
+    if (token !== renderToken) return;
+    await render();
+    if (token === renderToken) stand.remove();
   } catch (e) {
     console.error(e);
     if (await reloadIfStale()) return;
-    main.innerHTML = '';
-    main.append(h('div', { class: 'fig-error' }, `This page failed to load: ${(e as Error).message}`));
+    if (token === renderToken) loadNote('This page could not load. Check your connection.');
   }
 }
 
@@ -74,9 +85,10 @@ async function route(): Promise<void> {
 const SITE_TITLE: Record<SitePage, string> = { shelf: 'Library', review: 'Review', path: 'Your path', settings: 'Settings' };
 
 function routeSite(page: SitePage): Promise<void> {
-  return show(page, SITE_TITLE[page], page, async (current) => {
-    const { renderSite } = await import('./mastery/ui/index');
-    if (current()) renderSite(main, page);
+  return show(page, SITE_TITLE[page], page, async () => {
+    if (page === 'shelf') return () => renderShelf(main);
+    const [{ renderSite }] = await Promise.all([import('./mastery/ui/index'), stylesReady()]);
+    return () => renderSite(main, page);
   });
 }
 
@@ -89,18 +101,19 @@ function tabOf(r: CourseRoute): Tab {
 function routeCourse(r: CourseRoute, course: Course): Promise<void> {
   const shown = r.page === 'concept' || r.page === 'watch' ? r.concept : undefined;
   const c = shown ? course.graph.get(shown) : undefined;
-  return show(location.hash.replace(/\/+$/, ''), c ? c.title : course.title, tabOf(r), async (current) => {
-    const { renderAtlas } = await import('./mastery/ui/index');
-    if (current()) await renderAtlas(main, r, current);
+  return show(location.hash.replace(/\/+$/, ''), c ? c.title : course.title, tabOf(r), async () => {
+    const [{ renderAtlas }] = await Promise.all([import('./mastery/ui/index'), stylesReady()]);
+    const token = renderToken;
+    return () => renderAtlas(main, r, () => token === renderToken);
   });
 }
 
 function routeAccount(code?: string): Promise<void> {
-  return show(code ? `link/${code}` : 'account', 'Sync across devices', 'settings', async (current) => {
+  return show(code ? `link/${code}` : 'account', 'Sync across devices', 'settings', async () => {
     // The code has done its job once read: keep it out of the history and of anything that shares this page.
     if (code) history.replaceState(null, '', routes.account);
-    const [{ renderAccount }, { progressFile }] = await Promise.all([import('./sync/ui'), import('./mastery/ui/progress-file')]);
-    if (current()) renderAccount(main, code, progressFile());
+    const [{ renderAccount }, { progressFile }] = await Promise.all([import('./sync/ui'), import('./mastery/ui/progress-file'), stylesReady()]);
+    return () => renderAccount(main, code, progressFile());
   });
 }
 
@@ -177,4 +190,6 @@ void route().then(() => {
   (window as unknown as { __ready: boolean }).__ready = true;
   startOffline();
   followNewBuilds();
+  // The other pages' code, while nothing is waiting on it.
+  void import('./mastery/ui/index').catch(() => {});
 });

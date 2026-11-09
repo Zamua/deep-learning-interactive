@@ -66,10 +66,8 @@ export async function renderAtlas(main: HTMLElement, r: CourseRoute, current: ()
     location.replace(routes.concept(a));
     return;
   }
-  main.append(h('div', { class: 'loading' }, 'Loading the explainer…'));
   const [def, { mountLecture }] = await Promise.all([pending, import('../../lecture/player')]);
   if (!current()) return;
-  main.innerHTML = '';
   const locked = learner.status(a) === 'locked';
   const missing = c.prereqs.filter((p) => !learner.record(p).mastered).map((p) => graph.get(p)!.title).join(' and ');
   mountLecture(main, def, {

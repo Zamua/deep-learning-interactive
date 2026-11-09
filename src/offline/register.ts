@@ -4,6 +4,9 @@ import WIRE from './wire.json';
 export interface OfflineStatus {
   /** Every file of the app is cached. */
   ready: boolean;
+  /** Files of the app saved so far, of `filesTotal`. */
+  files: number;
+  filesTotal: number;
   /** Narration tracks cached, of `total`. */
   audio: number;
   total: number;

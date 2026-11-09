@@ -13,6 +13,9 @@ export function reminderBook(): Learner {
   return books.find((b) => dueCount(b) > 0) ?? books.reduce((a, b) => (last(b) > last(a) ? b : a));
 }
 
+/** Keeps this device's reminder in step with the book it speaks for. */
+export const syncBookReminders = (): Promise<void> => syncReminders(reminderBook());
+
 /**
  * The settings menu's reminder row: a time and a switch, or on iOS Safari where to get them. Turning reminders on sends
  * one test push, so the learner sees right away that they arrive. Null when this browser has no push.

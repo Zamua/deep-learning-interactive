@@ -2,7 +2,7 @@
 // account page) and the source code, and a footnote on offline use.
 import { icon, settingRow } from '../../core/controls';
 import { h, onDispose } from '../../core/dom';
-import { offlineStatus, offlineSupported } from '../../offline/register';
+import { offlineStatus, offlineSupported, type OfflineStatus } from '../../offline/register';
 import { routes } from '../../routes';
 import { syncEngine } from '../../sync/cloud';
 import { statusLine } from '../../sync/status';
@@ -55,17 +55,26 @@ function sourceRow(): HTMLElement {
     h('span', { class: 'set-go', html: icon('arrow-square-out') }));
 }
 
-/** A footnote on offline use, filled in once the service worker answers. */
+/** How often the note on offline use looks again while the app is saving. */
+const OFFLINE_POLL_MS = 3_000;
+
+/** A footnote on offline use: how far saving has got, once the service worker answers. Saving never holds anything up. */
 function offlineNote(): HTMLElement | null {
   if (!offlineSupported()) return null;
   const el = h('div', { class: 'set-foot' });
-  const draw = (ready: boolean) => {
-    el.className = `set-foot${ready ? ' ok' : ''}`;
-    el.innerHTML = icon(ready ? 'airplane' : 'download-simple');
-    el.append(ready ? 'Works offline' : 'Saving for offline…');
+  const draw = (st: OfflineStatus | null) => {
+    el.className = `set-foot${st?.ready ? ' ok' : ''}`;
+    el.innerHTML = icon(st?.ready ? 'airplane' : 'download-simple');
+    el.append(st?.ready ? 'Works offline' : st?.filesTotal ? `Saving for offline: ${st.files} of ${st.filesTotal}` : 'Saving for offline…');
   };
-  draw(false);
-  void offlineStatus().then((st) => draw(!!st?.ready));
+  draw(null);
+  const look = () => void offlineStatus().then((st) => {
+    draw(st);
+    if (st?.ready) window.clearInterval(poll);
+  });
+  const poll = window.setInterval(look, OFFLINE_POLL_MS);
+  onDispose(() => window.clearInterval(poll));
+  look();
   return el;
 }
 

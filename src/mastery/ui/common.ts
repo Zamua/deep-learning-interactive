@@ -7,6 +7,8 @@ import { codeIndex, linkSymbols, symbolMacros } from '../../core/symbols';
 import { DAY, type Status } from '../domain/model';
 import type { Learner } from '../learner';
 
+export { plural, progressBar } from './bits';
+
 /** How many of a learner's concepts wait on a review. */
 export const dueCount = (learner: Learner): number => [...learner.statuses().values()].filter((s) => s === 'due' || s === 'slipping').length;
 
@@ -68,7 +70,6 @@ export function whenDue(due: number, now = Date.now()): string {
   return days <= 0 ? 'today' : days === 1 ? 'tomorrow' : `in ${days} days`;
 }
 
-export const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
 const NUMERALS: [number, string][] = [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
 
@@ -90,13 +91,6 @@ export const sentence = (s: string): string => s[0]!.toUpperCase() + s.slice(1);
 export function reviewMinutes(learner: Learner): number {
   const st = learner.statuses();
   return learner.graph.order.filter((c) => st.get(c.id) === 'due').reduce((a, c) => a + c.mastery.seconds * 1.5, 0) / 60;
-}
-
-/** A thin bar for how much of something is done. */
-export function progressBar(done: number, total: number, cls: string): HTMLElement {
-  const fill = h('i');
-  fill.style.width = `${total ? (done / total) * 100 : 0}%`;
-  return h('div', { class: cls, role: 'progressbar', 'aria-valuenow': String(done), 'aria-valuemax': String(total) }, fill);
 }
 
 /** A way to the page that lists every concept open to start. */
