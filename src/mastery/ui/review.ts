@@ -4,7 +4,7 @@ import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
 import { comingUp, type ReviewDay } from '../domain/coming-up';
 import { Learner } from '../learner';
-import { plural, reviewMinutes, sentence, spell } from './common';
+import { dueCount, plural, reviewMinutes, sentence, spell } from './common';
 
 function dayName({ t, days }: ReviewDay): string {
   if (days === 0) return 'Later today';
@@ -16,8 +16,7 @@ export function renderReview(main: HTMLElement): void {
   const now = Date.now();
   const books = COURSES.map((c) => {
     const learner = new Learner(c);
-    const due = [...learner.statuses().values()].filter((s) => s === 'due' || s === 'slipping').length;
-    return { learner, due };
+    return { learner, due: dueCount(learner) };
   });
   const dueBooks = books.filter((b) => b.due);
   const total = dueBooks.reduce((a, b) => a + b.due, 0);

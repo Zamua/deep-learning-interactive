@@ -1,0 +1,30 @@
+{
+ "duration": 115.449,
+ "scenes": {
+  "needs": [0.0, 28.623],
+  "scan": [28.623, 59.847],
+  "closure": [59.847, 87.678],
+  "copy": [87.678, 115.449]
+ },
+ "beats": {
+  "needs/ask": [0.7, 6.45, "You built curl, and it runs. Copy just its folder to another machine, and it may not start at all.", [[2.37, 2.87], [4.97, 5.25]]],
+  "needs/lean": [6.83, 13.812, "A program leans on other things: shared libraries, certificates, a shell. Most systems hope those are already there.", [[8.51, 8.89], [11.18, 11.69]]],
+  "needs/refs": [14.192, 21.483, "Nix does not hope. For every store path, it records which other store paths that one points at. Those are its references.", [[15.372, 15.842], [16.842, 17.072], [19.692, 20.142]]],
+  "needs/list": [21.863, 27.523, "Here is curl, with a few of its references: OpenSSL, zlib and lib S S H two.", [[23.913, 24.403], [25.413, 25.603]]],
+  "scan/who": [29.323, 32.154, "Nobody writes that list by hand. Nix finds it.", [[30.973, 31.293]]],
+  "scan/hash": [32.534, 38.331, "Every input of a build has a hash in its store path, and hashes that long do not turn up by accident.", [[35.184, 35.714]]],
+  "scan/scan": [38.711, 43.968, "So after a build, Nix reads the output, byte by byte, looking for the hash of each input.", [[39.611, 39.771], [40.851, 41.131], [41.971, 42.291]]],
+  "scan/hit": [44.348, 49.998, "The hash of OpenSSL is inside the curl binary, so curl references OpenSSL.", [[47.408, 47.818]]],
+  "scan/miss": [50.378, 58.747, "The compiler was an input too, but its hash is nowhere in the result. It was needed to build curl, not to run it, so it is not a reference.", [[52.038, 52.328], [54.268, 54.848], [56.228, 56.448], [57.168, 57.408]]],
+  "closure/more": [60.547, 66.715, "References have references of their own. OpenSSL points at the C library, and so does zlib.", [[62.667, 63.237], [65.467, 65.747]]],
+  "closure/walk": [67.095, 74.99, "Start at one path and follow every arrow, until there is nowhere new to go. Every path you touched, the start included, is its closure.", [[69.405, 69.715], [71.205, 71.845], [72.965, 73.115], [74.005, 74.155]]],
+  "closure/once": [75.37, 81.543, "A path counts once, however many arrows reach it. The C library is one folder, shared by all of them.", [[78.02, 78.56], [80.28, 80.47]]],
+  "closure/cmd": [81.923, 83.779, "Query requisites prints the closure.", []],
+  "closure/count": [84.159, 86.578, "For this small curl, that is five store paths.", [[85.079, 85.279]]],
+  "copy/whole": [88.378, 91.822, "A closure is complete: nothing inside it points outside it.", [[89.638, 89.948]]],
+  "copy/unit": [92.202, 97.072, "That makes it the thing you copy. Nix copy sends a path and everything in its closure.", [[93.732, 94.212]]],
+  "copy/skip": [97.452, 106.016, "If the server already has a path, Nix skips it: the name says it is the same one. Here the C library stays put, and four paths go across.", [[99.082, 99.362], [100.162, 100.602], [102.182, 102.712], [104.382, 104.612]]],
+  "copy/run": [106.396, 113.242, "Every reference still points at the same place under slash nix slash store, so curl runs there exactly as it ran here.", [[110.206, 110.676]]],
+  "copy/turn": [113.622, 114.349, "Your turn.", []]
+ }
+}

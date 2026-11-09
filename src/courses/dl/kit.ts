@@ -1,13 +1,9 @@
 // Helpers for problem generators in every domain: random numbers, rounding, traps, and TeX for numbers, sums,
 // vectors, matrices and shapes. A domain's own kit.ts keeps only what that domain needs alone.
-import type { Rng } from '../../core/rand';
+import { int, type Rng } from '../../core/rand';
 import { closeTo } from '../../mastery/domain/grade';
 
-/** An integer in [lo, hi]. */
-export const int = (rng: Rng, lo: number, hi: number): number => lo + rng.int(hi - lo + 1);
-
-/** One of the items. */
-export const pick = <T>(rng: Rng, xs: readonly T[]): T => xs[rng.int(xs.length)]!;
+export { int, pick } from '../../core/rand';
 
 /** `n` integers in [lo, hi], never all equal. */
 export function ints(rng: Rng, n: number, lo: number, hi: number, distinct = false): number[] {

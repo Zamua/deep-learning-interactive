@@ -30,3 +30,9 @@ export class Rng {
     return a;
   }
 }
+
+/** An integer in [lo, hi]. */
+export const int = (rng: Rng, lo: number, hi: number): number => lo + rng.int(hi - lo + 1);
+
+/** One of the items. */
+export const pick = <T>(rng: Rng, xs: readonly T[]): T => xs[rng.int(xs.length)]!;

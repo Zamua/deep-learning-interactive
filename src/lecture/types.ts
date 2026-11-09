@@ -1,4 +1,5 @@
-// Pure data, no imports: tools/lecture/build.mjs loads lecture scripts in Node.
+// Pure data, type imports only: tools/lecture/build.mjs loads lecture scripts in Node.
+import type { Lang } from '../core/highlight';
 
 /**
  * One narrated line. `say` is both spoken and captioned; `{shown|spoken}` gives the caption
@@ -19,6 +20,8 @@ export interface SceneScript {
   /** The listing beside the visual, in CodePanel syntax (`#@label`, `{{slot:init}}`). */
   code: string;
   codeTitle: string;
+  /** The listing's language; Python when left out. */
+  lang?: Lang;
   beats: Beat[];
 }
 

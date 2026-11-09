@@ -1,0 +1,29 @@
+{
+ "duration": 118.146,
+ "scenes": {
+  "grows": [0.0, 21.109],
+  "roots": [21.109, 61.042],
+  "live": [61.042, 88.836],
+  "collect": [88.836, 118.146]
+ },
+ "beats": {
+  "grows/grow": [0.7, 6.195, "Nothing in the store is ever changed, and nothing leaves on its own. Every build adds folders.", [[2.61, 2.84], [4.14, 4.66]]],
+  "grows/upgrade": [6.575, 10.767, "Upgrade curl, and the new curl gets a new folder. The old one is still there.", [[9.205, 9.655]]],
+  "grows/count": [11.146, 15.168, "Keep going, and it adds up. This machine has over six thousand paths.", [[12.556, 12.976]]],
+  "grows/danger": [15.548, 20.009, "But you cannot delete a folder because it looks old. Something may still point at it.", [[18.018, 18.448]]],
+  "roots/promise": [21.809, 28.832, "So Nix starts from a list of what must stay. Each entry on it is a garbage collector root, or G C root for short.", [[23.909, 24.499], [26.799, 27.129]]],
+  "roots/result": [29.212, 34.063, "Build something, and Nix leaves a link called result in your folder. That link is a root.", [[32.532, 33.012]]],
+  "roots/profile": [34.443, 44.007, "A profile is the set of programs you have installed. Each time it changes, Nix keeps the old set as a numbered generation, and every generation is a root.", [[37.063, 37.663], [38.943, 39.223], [41.843, 42.213]]],
+  "roots/gcroots": [44.387, 52.414, "The third kind is any link under slash nix slash var slash nix slash G C roots. Add one there, and you have made a root by hand.", [[49.337, 49.927], [50.657, 51.007]]],
+  "roots/query": [52.794, 59.942, "Query roots tells you what is holding a path. Here, OpenSSL is held by a result link and by a generation.", [[54.884, 55.514], [55.874, 56.174], [58.524, 58.814]]],
+  "live/walk": [61.742, 67.735, "To find what stays, start at each root and take its closure. Everything those walks reach is called live.", [[62.762, 62.972], [64.882, 65.422]]],
+  "live/list": [68.115, 72.108, "You already have the tool. Query requisites prints the closure of one root.", [[69.255, 69.685]]],
+  "live/rest": [72.488, 78.174, "Whatever no walk reached is garbage. Here, that is the old curl and the old OpenSSL.", [[74.438, 74.888], [75.218, 75.488]]],
+  "live/safe": [78.554, 87.736, "Deleting garbage is safe, and you already know why. A closure is complete: nothing inside it points outside it. So nothing live can point at garbage.", [[80.074, 80.244], [81.514, 82.054], [83.274, 83.594], [85.464, 85.844]]],
+  "collect/held": [89.536, 96.298, "Now say your previous generation still lists the old curl. A generation is a root, so the old curl is live.", [[92.646, 93.206], [94.566, 94.786]]],
+  "collect/gc": [96.678, 102.903, "nix store dash dash G C deletes whatever is not live. With that root in place, the old curl stays.", [[100.058, 100.598], [101.588, 101.808]]],
+  "collect/d": [103.283, 108.97, "nix collect garbage dash D first deletes your old generations. That takes the roots away.", [[105.003, 105.233], [107.203, 107.693]]],
+  "collect/cost": [109.35, 115.939, "Then it collects, and the old curl is gone. You get the space back, and you can no longer go back to those generations.", [[111.58, 112.14], [113.2, 113.49]]],
+  "collect/turn": [116.319, 117.046, "Your turn.", []]
+ }
+}

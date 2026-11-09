@@ -1,6 +1,5 @@
 // Settings: one line each for the color theme, how Atlas picks new concepts, the daily reminder and sync (leading to the
 // account page), and a footnote on offline use.
-import { FIRST } from '../../courses/index';
 import { icon, settingRow } from '../../core/controls';
 import { h, onDispose } from '../../core/dom';
 import { offlineStatus, offlineSupported } from '../../offline/register';
@@ -8,9 +7,8 @@ import { routes } from '../../routes';
 import { syncEngine } from '../../sync/cloud';
 import { statusLine } from '../../sync/status';
 import { savedTheme, setTheme, type Theme } from '../../theme';
-import { Learner } from '../learner';
 import { paceRow } from './pace';
-import { remindersPanel } from './reminders';
+import { reminderBook, remindersPanel } from './reminders';
 
 function themeSwitch(): HTMLElement {
   const opts: [Theme, string][] = [['system', 'Auto'], ['light', 'Light'], ['dark', 'Dark']];
@@ -61,7 +59,7 @@ function offlineNote(): HTMLElement | null {
 }
 
 export function renderSettings(main: HTMLElement): void {
-  const reminders = remindersPanel(new Learner(FIRST));
+  const reminders = remindersPanel(reminderBook());
   const sync = syncRow();
   const offline = offlineNote();
   main.append(h('div', { class: 'lib lib-settings' },

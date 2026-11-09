@@ -1,0 +1,29 @@
+{
+ "duration": 119.045,
+ "scenes": {
+  "clash": [0.0, 29.646],
+  "folder": [29.646, 64.524],
+  "hash": [64.524, 94.9],
+  "into": [94.9, 119.045]
+ },
+ "beats": {
+  "clash/two": [0.7, 8.653, "Two programs need OpenSSL, but different versions of it. The first wants three point four. The second wants one point one.", [[2.8, 3.05], [4.16, 4.64], [6.43, 6.87]]],
+  "clash/shared": [9.033, 16.956, "Most systems keep libraries in one shared folder, like slash user slash lib. That folder has one place for OpenSSL.", [[11.773, 12.113], [13.763, 14.353]]],
+  "clash/overwrite": [17.336, 23.842, "Install one point one, and it replaces three point four. The second program works, and the first one breaks.", [[18.846, 19.106], [20.776, 21.366]]],
+  "clash/want": [24.222, 28.546, "So we want something a shared folder cannot do: every version, kept at once.", [[26.412, 26.892]]],
+  "folder/own": [30.346, 35.935, "Nix gives every build its own folder, all of them under one directory: slash nix slash store.", [[32.346, 32.626], [34.016, 34.456]]],
+  "folder/make": [36.315, 43.419, "The smallest way to make one is built-ins dot to file. It takes a name and some text, and writes the text into the store.", [[39.355, 39.905], [41.595, 41.885]]],
+  "folder/read": [43.799, 50.893, "What comes back is a store path: the store, then a hash, which is a fixed-length fingerprint, then a dash and the name you gave it.", [[45.279, 45.849], [46.449, 46.599], [48.809, 49.179]]],
+  "folder/hash": [51.273, 58.471, "The hash is always thirty two characters, in an alphabet of digits and letters with four missing: e, o, u and t.", [[53.323, 53.663], [56.073, 56.623], [57.013, 57.193]]],
+  "folder/ro": [58.851, 63.424, "Once a path is in the store, it is read-only. Nix never changes it in place.", [[60.221, 60.421], [61.331, 61.781]]],
+  "hash/from": [65.224, 69.667, "That hash is not random. Nix computes it from everything that went into the path.", [[66.774, 67.204]]],
+  "hash/diff": [70.047, 74.328, "Change one character of the input, and the hash comes out completely different.", [[71.737, 72.197]]],
+  "hash/side": [74.708, 81.345, "So two versions of a library get two different folders. They sit side by side, and neither one can touch the other.", [[77.578, 78.078], [79.498, 79.788]]],
+  "hash/same": [81.725, 84.965, "Now run the first one again. Same input, same path.", [[83.005, 83.365]]],
+  "hash/skip": [85.345, 93.8, "That gives Nix a shortcut. If the path is already in the store, the work is done. If a shared cache has it, Nix fetches it and builds nothing.", [[86.915, 87.425], [90.125, 90.595], [91.795, 92.085]]],
+  "into/file": [95.6, 99.051, "You can put files of your own in the store, too. Here is a small one.", [[97.65, 98.04]]],
+  "into/insert": [99.431, 109.521, "Inside a string, a dollar sign and braces insert a value. Insert a local path, and Nix copies that file into the store, and the string becomes the new store path.", [[100.351, 100.581], [102.981, 103.591], [104.791, 105.121], [107.201, 107.561]]],
+  "into/where": [109.901, 116.838, "The hash follows the contents, not where the file came from. The same file from two folders lands at one store path.", [[111.491, 111.781], [113.121, 113.651]]],
+  "into/turn": [117.218, 117.945, "Your turn.", []]
+ }
+}

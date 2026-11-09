@@ -1,0 +1,31 @@
+{
+ "duration": 126.868,
+ "scenes": {
+  "recipe": [0.0, 29.994],
+  "stages": [29.994, 56.072],
+  "build": [56.072, 87.546],
+  "string": [87.546, 126.868]
+ },
+ "beats": {
+  "recipe/problem": [0.7, 7.305, "A store path is named by what went into it. So before Nix can name a build, every input has to be written down.", [[3.01, 3.5], [5.06, 5.39]]],
+  "recipe/recipe": [7.685, 15.733, "That written-down recipe is a derivation. You make one by calling a function, also named derivation, with an attribute set.", [[10.025, 10.615], [12.405, 12.715], [14.225, 14.525]]],
+  "recipe/name": [16.113, 18.224, "The name goes on the end of the store path.", []],
+  "recipe/system": [18.604, 23.347, "The system says what kind of machine can run this build. Here, it is the one you are on.", [[21.084, 21.544], [21.904, 22.174]]],
+  "recipe/builder": [23.727, 28.894, "The builder is the program to run, and args are what it gets. Here a shell runs one line.", [[25.387, 25.617], [26.947, 27.387]]],
+  "stages/eval": [30.694, 40.311, "Evaluate that, and nothing gets built. Nix writes the recipe into the store, as a file ending in dot D R V. That step is called instantiating.", [[32.724, 33.204], [35.094, 35.374], [37.764, 38.334]]],
+  "stages/know": [40.691, 46.895, "And Nix already knows the output path. It comes from the recipe, so there is no need to wait for a result.", [[42.721, 43.321], [44.541, 44.801]]],
+  "stages/none": [47.275, 49.785, "That path has a name, but nothing is there yet.", [[48.275, 48.535]]],
+  "stages/realise": [50.165, 54.972, "The second stage is called realising. It runs the recipe, and fills in that path.", [[52.105, 52.605], [53.695, 53.905]]],
+  "build/out": [56.772, 64.0, "The builder has to put its result somewhere. Nix hands it the path in a variable called dollar out, and the builder must write there.", [[58.802, 59.372], [62.202, 62.542]]],
+  "build/sealed": [64.38, 69.51, "The build runs sealed off, in what Nix calls a sandbox. On Linux, that is the default.", [[67.35, 67.83]]],
+  "build/no": [69.89, 74.491, "It has no network. It cannot see your home folder, or slash user slash lib.", [[70.84, 71.26], [72.65, 72.84]]],
+  "build/only": [74.871, 79.371, "It sees the store paths the recipe declares, and a temporary folder to work in.", [[77.331, 77.701]]],
+  "build/trust": [79.751, 86.446, "Nothing went into the result that the recipe does not name. That is why a path named from the recipe can be trusted.", [[81.231, 81.521], [82.911, 83.451]]],
+  "string/need": [88.246, 97.619, "Now a second recipe needs the output of the first. Import reads another file and gives back its value, and here that value is the first derivation.", [[91.336, 91.906], [94.796, 95.196]]],
+  "string/insert": [97.999, 103.309, "Insert a derivation into a string with a dollar sign and braces, and you get its output path.", [[101.599, 102.029]]],
+  "string/context": [103.689, 111.142, "But the string also carries something you cannot see: a note that it depends on that derivation. Nix calls this string context.", [[106.249, 106.649], [108.749, 109.299]]],
+  "string/record": [111.522, 119.616, "Hand that string to a new recipe, and the note becomes part of it. Ask the new dot D R V what it depends on, and there is the first one.", [[113.342, 113.642], [115.002, 115.612], [118.242, 118.542]]],
+  "string/order": [119.996, 124.661, "So Nix knows to realise hello first and world second, and nobody had to tell it.", [[123.156, 123.516]]],
+  "string/turn": [125.041, 125.768, "Your turn.", []]
+ }
+}

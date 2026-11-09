@@ -1,9 +1,9 @@
 # Atlas: design
 
-An AI course built as a graph of small concepts, and the whole site. Each concept is taught by a
+A site of courses, each built as a graph of small concepts. Each concept is taught by a
 short voiced explainer and then practiced with generated problems until it is mastered. Mastery
 unlocks the concepts that build on it, and mastered concepts come back as spaced reviews. The
-subject runs from vectors to post-training, and the graph is meant to keep growing.
+first course runs from vectors to post-training, and its graph is meant to keep growing.
 
 Routes: `#/` the shelf, where any unknown address lands; `#/review`, `#/path` and `#/settings` the
 other tabs; `#/atlas` a course's front page; `#/atlas/graph[/<part>]` the map of one part;
@@ -26,7 +26,7 @@ they form must be acyclic. Concepts belong to a domain (`linear-algebra`, `calcu
 A site holds several courses, each a folder under `src/courses/` with a `course.ts` (its title, domains in map order
 and `idPrefix`). A concept's full id is that prefix and its folder name. The first course, `dl`, has none, and keeps
 the addresses (`#/atlas/...`) and the answer log it had before there were others; another course's pages are at
-`#/c/<course>/...` under full ids (`#/c/nix/nix.derivation/watch`).
+`#/c/<course>/...` under full ids (`#/c/nix/nix.derivations/watch`).
 
 One folder per concept, found by `import.meta.glob`, so adding a concept is adding a folder:
 

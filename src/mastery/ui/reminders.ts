@@ -1,8 +1,17 @@
 // The daily reminder controls, shown in the settings menu.
+import { COURSES } from '../../courses/index';
 import { settingRow } from '../../core/controls';
 import { h } from '../../core/dom';
-import type { Learner } from '../learner';
+import { Learner } from '../learner';
 import { disableReminders, enableReminders, loadPrefs, pushSupport, sendTest, syncReminders } from '../push';
+import { dueCount } from './common';
+
+/** The book a reminder speaks for: the first with reviews due, else the one practiced last. */
+export function reminderBook(): Learner {
+  const books = COURSES.map((c) => new Learner(c));
+  const last = (b: Learner) => Math.max(0, ...Object.values(b.records).map((r) => r.last));
+  return books.find((b) => dueCount(b) > 0) ?? books.reduce((a, b) => (last(b) > last(a) ? b : a));
+}
 
 /**
  * The settings menu's reminder row: a time and a switch, or on iOS Safari where to get them. Turning reminders on sends

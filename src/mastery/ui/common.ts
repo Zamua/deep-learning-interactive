@@ -7,6 +7,9 @@ import { codeIndex, linkSymbols, symbolMacros } from '../../core/symbols';
 import { DAY, type Status } from '../domain/model';
 import type { Learner } from '../learner';
 
+/** How many of a learner's concepts wait on a review. */
+export const dueCount = (learner: Learner): number => [...learner.statuses().values()].filter((s) => s === 'due' || s === 'slipping').length;
+
 const seen = new Map<string, ReturnType<typeof dressing>>();
 
 function dressing(course: Course) {

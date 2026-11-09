@@ -2,7 +2,7 @@
 
 Every concept opens with a short voiced explainer. It is not a video file: it is a timeline that
 the narration track drives, drawn live with the site's own canvas and code panel, so it stays
-sharp, small, and in the course's colors. Route: `#/atlas/<concept-id>/watch`. What an explainer
+sharp, small, and in the course's colors. Route: a concept's page plus `/watch`, such as `#/atlas/<concept-id>/watch`. What an explainer
 may teach, and its length, are in `docs/MASTERY.md`; this is the craft.
 
 ## Intuition first
@@ -104,7 +104,7 @@ listing that shows the same idea as code.
 The script's `model` and `voice` pick the speech engine: `elevenlabs/eleven-v4` with a preset
 voice such as `george` goes through OpenRouter's `/api/v1/audio/speech` (key in
 `OPENROUTER_API_KEY`, or in the file `OPENROUTER_KEY_FILE` names; about $40 per million
-characters, so a 2-minute explainer is about 7 cents), and `kokoro` runs Kokoro locally for free. Each clip is
+characters, so a 2-minute explainer is about 7 cents), and `kokoro` (with `voice: 'af_heart'`, `speed: 1`) runs Kokoro locally for free. Each clip is
 cached by model, voice and text, so a rebuild only pays for the beats that changed. Read the `--dry`
 output aloud before the first build: a beat rephrased after voicing is paid for twice. `--check` lists beats whose transcript drifts from the script; most
 hits are just digits written as numerals, but read them for real mispronunciations. Defaults:
@@ -115,10 +115,17 @@ hits are just digits written as numerals, but read them for real mispronunciatio
 Edit the script and the player notices that the timing no longer matches: in dev it shows a
 notice and plays silently on estimated timing, so visuals can be worked on before rebuilding.
 
+## Listings
+
+A scene's `lang` sets how its listing is colored: `python` by default, `nix`, or `shell`. In a shell
+listing a line that starts `$ ` is a command and any other line is what it printed. `#@label` line
+tags work in all three, because each language comments with `#`.
+
 ## Lookup notes
 
-Tapping a symbol or a call in the code panel opens a card, and the book button lists every one
-in the scene. Every term the code shows needs a note:
+Tapping a symbol or a call in a Python listing opens a card, and the book button lists every one
+in the scene. Other languages have no cards yet, so their concepts set `symbols: {}`. In the deep
+learning course every term the code shows needs a note:
 
 - a symbol needs `about` in `src/courses/dl/symbols.ts`: a sentence or two beyond `name`, such as its
   role, its shape here, or where the name comes from (a concept whose meaning differs gets a

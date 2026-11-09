@@ -1,0 +1,32 @@
+{
+ "duration": 134.562,
+ "scenes": {
+  "hole": [0.0, 33.916],
+  "curry": [33.916, 70.833],
+  "pattern": [70.833, 109.646],
+  "deps": [109.646, 134.562]
+ },
+ "beats": {
+  "hole/fixed": [0.7, 9.281, "This hello is tied to one zlib, a compression library. To build it against another zlib, you would copy the whole set and change one line.", [[2.79, 3.06], [4.2, 4.83], [6.42, 6.75], [7.96, 8.13]]],
+  "hole/hole": [9.661, 13.944, "What you want is a package with a hole in it, to fill in later. That is a function.", [[12.571, 13.021]]],
+  "hole/syntax": [14.324, 22.356, "A function is a name for its argument, a colon, and a body. x colon x plus one takes x and returns x plus one.", [[16.224, 16.514], [17.874, 18.524]]],
+  "hole/call": [22.736, 29.828, "To call a function, write the argument after it, with a space between. The parentheses here only mark where the function ends.", [[23.736, 24.026], [25.246, 25.486], [26.486, 27.046]]],
+  "hole/value": [30.208, 32.816, "Forty one goes in, and forty two comes out.", [[31.338, 31.578]]],
+  "curry/only": [34.616, 38.867, "A Nix function takes exactly one argument. So how do you add two numbers?", [[37.086, 37.466]]],
+  "curry/nest": [39.247, 45.823, "You return another function. a colon b colon a plus b takes a, and gives back a function that takes b.", [[40.657, 41.187], [43.557, 43.897]]],
+  "curry/partial": [46.203, 53.723, "So add two is already a value: a function waiting for b. Giving only the first argument is called partial application.", [[48.093, 48.533], [49.903, 50.433]]],
+  "curry/space": [54.103, 59.304, "And add two three is two calls, left to right: add two, then apply what comes back to three.", [[56.433, 57.003]]],
+  "curry/map": [59.684, 69.733, "Partial application goes well with map. It takes a function and a list, which is values in square brackets with spaces between, and applies the function to each one.", [[61.914, 62.484], [64.124, 64.474], [67.614, 67.954]]],
+  "pattern/named": [71.533, 79.857, "Packages have many inputs, and you could never remember their order. So a package takes one argument, a set, and the inputs go in by name.", [[73.113, 73.403], [75.133, 75.653], [77.423, 77.573], [78.013, 78.333]]],
+  "pattern/pattern": [80.237, 87.064, "A set pattern, before the colon, lists the names the function expects. Each name becomes a variable in the body.", [[82.017, 82.327], [84.277, 84.837]]],
+  "pattern/default": [87.444, 94.7, "In a pattern, a question mark gives a default, used when the caller leaves that name out. Version falls back to one point oh.", [[89.874, 90.194], [92.204, 92.754]]],
+  "pattern/missing": [95.08, 99.174, "Leave out a name with no default, and the call fails, telling you which name.", [[96.74, 97.05], [98.04, 98.22]]],
+  "pattern/extra": [99.554, 102.506, "Pass a name the pattern does not list, and that fails too.", [[101.254, 101.534]]],
+  "pattern/dots": [102.886, 108.546, "Three dots allow extras. And args at in front names the whole set, so you can still reach them.", [[104.446, 104.886], [106.966, 107.266]]],
+  "deps/shape": [110.346, 116.337, "Now write hello as a function. Its arguments are what it depends on, and its body describes a build.", [[112.116, 112.646], [114.476, 114.776]]],
+  "deps/gcc": [116.717, 120.969, "Call it with G C C, a compiler, and zlib, and you get one build.", [[118.097, 118.337], [119.647, 119.967]]],
+  "deps/clang": [121.349, 126.857, "Call the same function with clang, and you get another. The package was not copied or changed.", [[123.089, 123.349], [124.139, 124.669]]],
+  "deps/whole": [127.237, 132.355, "That is the usual shape of a Nix package: a function from its dependencies to a build.", [[129.527, 129.987]]],
+  "deps/turn": [132.735, 133.462, "Your turn.", []]
+ }
+}
