@@ -27,7 +27,12 @@ A new course goes through the `/make-course` skill (`.claude/skills/make-course/
 
 ## Layout
 
-- `src/main.ts`: the shell (four tabs, a rail on desktop; routing; redraw on synced progress).
+- `src/main.ts`: the shell (four tabs, a rail on desktop; routing; redraw on synced progress). The Shelf draws from
+  the entry chunk, and every other page stands behind a placeholder at its own size until it has what it waits for.
+  `index.html` holds the placeholders and paints the first one before any other file arrives: `tools/shell.mjs` inlines
+  copies of `base.css` and `library.css` with `src/styles/shell.css`, adds the books, and loads the stylesheet so it does
+  not hold back the paint. `src/core/waiting.ts` adds the stalled and failed notes with Retry. `shell.css` holds copies of the practice
+  and explainer frames: change them with the originals in `atlas.css` and `lecture.css`.
   `src/theme.ts`: the color theme.
   `src/routes.ts` builds every address and parses them back; link with a course's `routes.*`
   (site pages: `routes.*`), never a literal.

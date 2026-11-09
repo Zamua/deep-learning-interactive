@@ -5,6 +5,7 @@ import { icon } from '../../core/controls';
 import type { Course } from '../../courses/course';
 import { COURSES } from '../../courses/index';
 import { h, onDispose } from '../../core/dom';
+import { loadNote, patiently } from '../../core/waiting';
 import { watched } from '../../lecture/progress';
 import { Rng } from '../../core/rand';
 import { grade, type Response, type Verdict } from '../domain/grade';
@@ -306,7 +307,10 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         await intro(c, pick);
       }
       let list = gens.get(c.id);
-      if (!list) gens.set(c.id, (list = await learner.course.loadGenerators(c.id)));
+      if (!list) {
+        frame.body.innerHTML = window.atlasBoot.placeholder('problem');
+        gens.set(c.id, (list = await patiently(learner.course.loadGenerators(c.id))));
+      }
       if (!list.length) {
         frame.body.innerHTML = '';
         frame.body.append(h('p', { class: 'at-lede' }, `${c.title} has no problems yet.`));
@@ -470,5 +474,5 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
 
   const backLink = () => (track ? h('a', { class: 'at-check', href: learner.course.routes.track(track) }, 'Back to the track') : h('a', { class: 'at-check', href: learner.course.routes.home }, 'Back to the map'));
 
-  void loop();
+  loop().catch(() => loadNote('This problem could not load. Check your connection.'));
 }

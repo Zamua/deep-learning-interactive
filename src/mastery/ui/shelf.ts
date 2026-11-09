@@ -2,9 +2,7 @@
 import { COURSES } from '../../courses/index';
 import { h } from '../../core/dom';
 import { Learner } from '../learner';
-import { syncReminders } from '../push';
-import { plural, progressBar } from './common';
-import { reminderBook } from './reminders';
+import { plural, progressBar } from './bits';
 
 function cover(learner: Learner): HTMLElement {
   const { course, graph } = learner;
@@ -15,11 +13,10 @@ function cover(learner: Learner): HTMLElement {
 }
 
 export function renderShelf(main: HTMLElement): void {
-  void syncReminders(reminderBook());
+  // Nothing the shelf draws may wait on the network, and this module loads with the first paint.
+  void import('./reminders').then((r) => r.syncBookReminders()).catch(() => {});
   main.append(h('div', { class: 'lib lib-wide' },
     h('div', { class: 'lib-brand' }, 'Atlas'),
     h('h1', {}, 'Library'),
-    h('p', { class: 'lib-sub' }, 'Choose a book to open.'),
-    h('h2', { class: 'lib-cap' }, 'All courses'),
     h('div', { class: 'lib-grid' }, ...COURSES.map((c) => cover(new Learner(c))))));
 }

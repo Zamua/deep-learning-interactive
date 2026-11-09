@@ -16,7 +16,7 @@ const MOVED = 'atlas-moved';
 /** A page load waits this long for the network before falling back to the cached app. */
 const PAGE_WAIT = 4000;
 /** Parallel downloads while caching the app. */
-const POOL = 8;
+const POOL = 4;
 
 const url = (file) => new URL(file, self.registration.scope).href;
 const appFiles = new Set(OFFLINE ? OFFLINE.files.map(url) : []);
@@ -214,12 +214,12 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('message', (e) => {
   if (!e.data || e.data.type !== WIRE.status || !e.ports[0]) return;
   e.waitUntil((async () => {
-    if (!OFFLINE) return e.ports[0].postMessage({ ready: false, audio: 0, total: 0 });
+    if (!OFFLINE) return e.ports[0].postMessage({ ready: false, files: 0, filesTotal: 0, audio: 0, total: 0 });
     const app = await caches.open(APP);
     const held = new Set((await app.keys()).map((r) => r.url));
-    const ready = [...appFiles].every((u) => held.has(u));
+    const files = [...appFiles].filter((u) => held.has(u)).length;
     const saved = (await (await caches.open(AUDIO)).keys()).length;
-    e.ports[0].postMessage({ ready, audio: saved, total: audioFiles.size });
+    e.ports[0].postMessage({ ready: files === appFiles.size, files, filesTotal: appFiles.size, audio: saved, total: audioFiles.size });
   })());
 });
 

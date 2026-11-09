@@ -328,10 +328,10 @@ describe('offline service worker', () => {
       ch.port1.close();
       return v;
     };
-    expect(await ask()).toEqual({ ready: false, audio: 0, total: 1 });
+    expect(await ask()).toEqual({ ready: false, files: 0, filesTotal: 5, audio: 0, total: 1 });
     await installed();
     await w.get('assets/narration-c3.m4a', { range: 'bytes=0-1' });
-    expect(await ask()).toEqual({ ready: true, audio: 1, total: 1 });
+    expect(await ask()).toEqual({ ready: true, files: 5, filesTotal: 5, audio: 1, total: 1 });
   });
 });
 
