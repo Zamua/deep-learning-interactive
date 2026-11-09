@@ -8,6 +8,7 @@ describe('routes', () => {
     const cases: [string, Route][] = [
       [pages.home, { course, page: 'home' }],
       [pages.graph, { course, page: 'graph' }],
+      [pages.part('calculus'), { course, page: 'graph', part: 'calculus' }],
       [pages.list, { course, page: 'list' }],
       [pages.history, { course, page: 'history' }],
       [pages.next, { course, page: 'next' }],
@@ -22,6 +23,10 @@ describe('routes', () => {
       [pages.trackMap('attention'), { course, page: 'track', target: 'attention', map: true }],
       [pages.newTrack(), { course, page: 'new-track' }],
       [pages.newTrack('attention'), { course, page: 'new-track', target: 'attention' }],
+      [routes.shelf, { page: 'shelf' }],
+      [routes.review, { page: 'review' }],
+      [routes.path, { page: 'path' }],
+      [routes.settings, { page: 'settings' }],
       [routes.account, { page: 'account' }],
       [routes.link('ab3 k9z'), { page: 'account', code: 'ab3-k9z' }],
     ];
@@ -29,7 +34,7 @@ describe('routes', () => {
   });
 
   it('reads an address outside the app as null', () => {
-    expect(parseRoute('')).toBeNull();
+    expect(parseRoute('')).toEqual({ page: 'shelf' });
     expect(parseRoute('#/chapters/3')).toBeNull();
     expect(parseRoute('#/atlas/')).toEqual({ course: FIRST_COURSE, page: 'home' });
   });

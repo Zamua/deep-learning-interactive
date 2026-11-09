@@ -38,8 +38,7 @@ export function mapSearch(learner: Learner, host: MapSearchHost): HTMLElement {
   const fit = () => {
     // The list ends above the on-screen keyboard: the visual viewport is what is left of the screen.
     const vv = window.visualViewport;
-    const room = (vv ? vv.height + vv.offsetTop : innerHeight) - list.getBoundingClientRect().top - 12;
-    list.style.maxHeight = `${Math.max(160, room)}px`;
+    list.style.setProperty('--room', `${(vv ? vv.height + vv.offsetTop : innerHeight) - list.getBoundingClientRect().top - 12}px`);
   };
   const open = (on: boolean) => {
     list.hidden = !on || !hits.length;
@@ -69,7 +68,6 @@ export function mapSearch(learner: Learner, host: MapSearchHost): HTMLElement {
       const c = graph.get(hit.id)!;
       const d = learner.course.domainOf(c);
       const a = h('a', { href: learner.course.routes.concept(c.id), tabindex: '-1' },
-        h('i', { class: 'at-search-dot', style: `background:var(--c-${d.color})` }),
         h('span', { class: 'at-search-b' }, titleOf(c.title, hit), h('small', {}, `${d.title} · ${STATUS_LABEL[learner.status(c.id)]}`)));
       a.addEventListener('click', (e) => {
         e.preventDefault();
@@ -85,7 +83,7 @@ export function mapSearch(learner: Learner, host: MapSearchHost): HTMLElement {
 
   input.addEventListener('input', update);
   input.addEventListener('focus', () => {
-    // Up under the top bar, so the matches have the screen above the keyboard. Safari scrolls to a focused field on its
+    // Up to the top of the screen, so the matches have the screen above the keyboard. Safari scrolls to a focused field on its
     // own, which cancels a scroll started in the same task, so this one waits for the next.
     window.setTimeout(() => root.scrollIntoView({ block: 'start', behavior: 'smooth' }), 60);
     if (input.value) open(true);

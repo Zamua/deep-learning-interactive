@@ -1,9 +1,9 @@
 # Atlas: notes for a coding agent
 
 A Vite + TypeScript static site (no framework): Atlas, courses built as concept graphs, each
-concept a voiced explainer plus generated problems practiced to mastery. Hash routes: `#/atlas/...`
-(the first course, `dl`), `#/c/<course>/...` (any other; see `docs/MASTERY.md`) and `#/account`
-(sync); any other address lands on the first course's home. `docs/MASTERY.md` is the design and the authoring contract, `docs/EXPLAINERS.md` the
+concept a voiced explainer plus generated problems practiced to mastery. Hash routes: `#/` (the
+shelf), `#/review`, `#/path`, `#/settings`, `#/atlas/...` (the first course, `dl`), `#/c/<course>/...`
+(any other; see `docs/MASTERY.md`) and `#/account` (sync); any other address lands on the shelf. `docs/MASTERY.md` is the design and the authoring contract, `docs/EXPLAINERS.md` the
 explainer craft, `docs/SYNC.md` progress sync.
 
 ## Commands
@@ -23,7 +23,8 @@ explainer craft, `docs/SYNC.md` progress sync.
 
 ## Layout
 
-- `src/main.ts`: the shell (top bar, side menu of concepts, routing, redraw on synced progress).
+- `src/main.ts`: the shell (four tabs, a rail on desktop; routing; redraw on synced progress).
+  `src/theme.ts`: the color theme.
   `src/routes.ts` builds every address and parses them back; link with a course's `routes.*`
   (site pages: `routes.*`), never a literal.
 - `src/core/`: shared pieces. `code.ts` (Python highlighter + CodePanel with `{{slots}}` and
@@ -41,8 +42,8 @@ explainer craft, `docs/SYNC.md` progress sync.
   types; `lookup.ts`: the cards for symbols and calls; `library.ts`: notes on common library calls.
 - `src/mastery/`: the engine. `domain/` is pure and unit tested (concept graph, student model,
   scheduler, tracks, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
-  learner's records in the synced progress store; `ui/` renders the home, map, tracks, concept
-  pages, sessions and placement.
+  learner's records in the synced progress store; `ui/` renders the shelf, Review, Path, Settings, a
+  course's front page, the part map, tracks, concept pages, sessions and placement.
 - `src/courses/`: the courses. `course.ts` says what a course is; `index.ts` finds every course and
   concept by glob and builds them (`COURSES`, `courseById`, `FIRST`); `symbols.ts` hands a course's
   symbols to the pages, imported only by them so they stay out of the main chunk. A course is
@@ -59,7 +60,7 @@ explainer craft, `docs/SYNC.md` progress sync.
   length, so pages total explainer time without loading the explainers.
 - `src/offline/`: `sw.js`, the service worker (caches the app at install and narration as it
   plays, answers range requests from the cache, shows reminders), and `register.ts` (registers
-  it once the first page draws; the settings menu's offline status). Plain JS: the build only
+  it once the first page draws; the settings page's offline status). Plain JS: the build only
   prefixes it, with `wire.json`, the names the page and the worker share (the status message, and
   where the next reminder's words are saved).
 - `tools/service-worker.mjs`: a Vite plugin; writes `dist/sw.js` prefixed with the files it keeps

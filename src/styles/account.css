@@ -19,7 +19,7 @@
   gap: 10px;
   margin: 30px 0 10px;
   font-size: 0.76rem;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -46,7 +46,7 @@
   min-width: 0;
 }
 .ac-status b {
-  font-weight: 650;
+  font-weight: 400;
   color: var(--ink);
 }
 .ac-status > span:last-child > span {
@@ -80,7 +80,7 @@
   background: var(--paper-2);
   font-family: var(--font-mono);
   font-size: clamp(1rem, 4.6vw, 1.25rem);
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.06em;
   color: var(--ink);
 }
@@ -173,7 +173,7 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 10px;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--ink);
 }
 .ac-pm-k .ico {

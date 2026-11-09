@@ -5,8 +5,9 @@ short voiced explainer and then practiced with generated problems until it is ma
 unlocks the concepts that build on it, and mastered concepts come back as spaced reviews. The
 subject runs from vectors to post-training, and the graph is meant to keep growing.
 
-Routes: `#/atlas` the home, where any unknown address lands; `#/atlas/graph` and
-`#/atlas/list` the whole map; `#/atlas/learn[/<concept-id>]` a session (optionally starting with
+Routes: `#/` the shelf, where any unknown address lands; `#/review`, `#/path` and `#/settings` the
+other tabs; `#/atlas` a course's front page; `#/atlas/graph[/<part>]` the map of one part;
+`#/atlas/list` every concept as a list; `#/atlas/learn[/<concept-id>]` a session (optionally starting with
 that concept); `#/atlas/place` the placement test; `#/atlas/next` choosing what to learn next;
 `#/atlas/history` everything watched or practiced lately; `#/atlas/<concept-id>` a concept and
 `#/atlas/<concept-id>/watch` its explainer;
@@ -166,14 +167,14 @@ problem in a fixed order, so a session reads as blocks:
    longest ago, never practiced first. Then by depth, then by how many concepts it unlocks.
 
 The first two are the review block. Its header counts "Review 2 of 5", and it ends the session
-on a "Reviews done" screen that lists how each review went and leads back to the home page, where
+on a "Reviews done" screen that lists how each review went and leads back to the course's front page, where
 the learner picks what comes next. A session opened on a concept (its page, or the end of its
-explainer) stays on that concept until it is mastered, and the reviews follow. The home pages
-lead with due reviews whenever there are any.
+explainer) stays on that concept until it is mastered, and the reviews follow. The front page
+leads with due reviews whenever there are any.
 
 The learner can also choose: `#/atlas/next` ("What next?") offers the next step along the chain
 (Go deeper), the best start in another domain (Something different), and every concept open to
-start, each opening on its explainer, with the deep or broad switch. The Atlas home, the mastery
+start, each opening on its explainer, with the deep or broad switch. A course's front page, the mastery
 moment and a new concept's intro link to it.
 
 A concept's first problem comes after its explainer, which the learner may skip.
@@ -199,10 +200,10 @@ long the rest takes. A learner may follow several tracks at once.
   length is read from `timing.json` at build time) and its bar's remaining answers at 1.5 times
   their target time.
 
-With tracks, the home shows due reviews (or a concept slipping, or one in progress outside every
-track), then a card per track under way (progress, next concept, time left, Continue), a line
-for the finished ones, and the whole map. Without any, the home is as below, with a link to start
-one. The tracks followed sync across devices (`docs/SYNC.md`).
+With tracks, a course's front page leads with due reviews (or a concept slipping, or one in
+progress outside every track), else Continue on the first track under way. The Path tab shows that
+track's next steps, the other goals and the finished ones; with none, it invites setting a goal.
+The tracks followed sync across devices (`docs/SYNC.md`).
 
 ## Placement
 
@@ -223,13 +224,16 @@ The account page (`#/account`) also saves both to a JSON file and loads one back
 
 ## Screens
 
-- **Home** (`#/atlas`): due reviews first, then the tracks (or, with none, today's concept and
-  the short path around it), and a way into the whole map.
+- **Shelf** (`#/`): every course as a cover with its progress.
+- **Course** (`#/atlas`): what to do now, then the contents by part.
+- **Review** (`#/review`): what is due across every course, what comes up next, past sessions.
+- **Path** (`#/path`): the way to the goal being followed, and how to change it.
 - **History** (`#/atlas/history`): explainers played and concepts practiced, latest first and
-  grouped by day, each with where it stopped; the home shows the last three explainers. Read
+  grouped by day, each with where it stopped. Read
   from the synced playback and mastery records, so it spans devices; nothing extra is stored.
-- **Map** (`#/atlas/graph`, `#/atlas/list`): every concept by domain, colored by state.
-  Tapping a node opens its concept.
+- **Map** (`#/atlas/graph/<part>`): one part at a time, its concepts laid out by what builds on
+  what, with the earlier concepts it opens from. `#/atlas/list` is every concept by what to do with
+  it. Tapping one opens it. Picking a track still draws the whole graph.
 - **Concept** (`#/atlas/<id>`): the explainer, the prerequisites and what it unlocks, the
   learner's numbers (streak, average time, next review), Practice, and a way to make it a
   track.

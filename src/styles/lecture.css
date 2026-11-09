@@ -49,20 +49,20 @@ body.lec-on {
   flex: 1;
 }
 .lec-kicker {
-  font: 600 10.5px/1.2 var(--font-ui);
-  letter-spacing: 0.12em;
+  font: 400 11px/1.2 var(--font-ui);
+  letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: var(--accent-ink);
+  color: var(--ink-3);
 }
 .lec-scene-title {
-  font: 560 17px/1.25 var(--font-display);
+  font: 400 17px/1.25 var(--font-display);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .lec-count {
   flex: none;
-  font: 500 12px var(--font-mono);
+  font: 500 12px var(--font-body);
   color: var(--ink-3);
 }
 
@@ -422,10 +422,14 @@ canvas.lec-canvas {
   opacity: 0.6;
 }
 .lec-play {
-  color: var(--ink);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--paper);
 }
 .lec-speed {
-  font: 600 13.5px var(--font-mono);
+  font: 600 13.5px var(--font-body);
   min-width: 52px;
 }
 .lec.boost-locked .lec-speed {
@@ -439,7 +443,7 @@ canvas.lec-canvas {
 }
 .lec-time {
   margin-left: 6px;
-  font: 500 13px var(--font-mono);
+  font: 500 13px var(--font-body);
   color: var(--ink-2);
   white-space: nowrap;
 }
@@ -485,7 +489,7 @@ canvas.lec-canvas {
 .lec-li-n {
   width: 22px;
   color: var(--ink-3);
-  font: 600 12px var(--font-mono);
+  font: 600 12px var(--font-body);
   text-align: right;
 }
 .lec-li-t {
@@ -504,7 +508,7 @@ canvas.lec-canvas {
 }
 .lec-li-time {
   color: var(--ink-3);
-  font: 500 12px var(--font-mono);
+  font: 500 12px var(--font-body);
 }
 
 .lec-notice {

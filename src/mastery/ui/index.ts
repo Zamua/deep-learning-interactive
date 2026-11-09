@@ -1,18 +1,30 @@
-// A course's routes: the map, its graph view, a session, the placement test, what to learn next, tracks, history, a concept
-// and its explainer. A session or an explainer may carry the target of the track it follows as its last part.
+// The site's pages (shelf, review, path, settings) and a course's: its front page, the map and list, a session, the
+// placement test, what to learn next, tracks, history, a concept and its explainer. A session or an explainer may carry
+// the target of the track it follows as its last part.
 import '../../styles/atlas.css';
+import '../../styles/library.css';
 import { courseById } from '../../courses/index';
 import { h } from '../../core/dom';
 import { Learner } from '../learner';
 import { renderConcept } from './concept';
 import { notationIn } from './lookup';
-import { renderHome, renderMap } from './map';
+import { renderCourse } from './course';
+import { renderList } from './list';
+import { renderPart } from './part-map';
+import { renderPath } from './path';
+import { renderReview } from './review';
+import { renderSettings } from './settings';
+import { renderShelf } from './shelf';
 import { renderHistory } from './history';
 import { renderNext } from './next';
 import { renderPlacement } from './placement';
 import { renderSession } from './session';
 import { renderTrack, renderTrackMap } from './tracks';
-import type { CourseRoute } from '../../routes';
+import type { CourseRoute, SitePage } from '../../routes';
+
+const SITE: Record<SitePage, (main: HTMLElement) => void> = { shelf: renderShelf, review: renderReview, path: renderPath, settings: renderSettings };
+
+export const renderSite = (main: HTMLElement, page: SitePage): void => SITE[page](main);
 
 export async function renderAtlas(main: HTMLElement, r: CourseRoute, current: () => boolean): Promise<void> {
   const course = courseById(r.course)!;
@@ -21,10 +33,11 @@ export async function renderAtlas(main: HTMLElement, r: CourseRoute, current: ()
   const known = (id?: string) => (id && graph.get(id) ? id : undefined);
   switch (r.page) {
     case 'home':
-      return renderHome(main, learner);
+      return renderCourse(main, learner);
     case 'graph':
+      return renderPart(main, learner, r.part);
     case 'list':
-      return renderMap(main, learner, r.page);
+      return renderList(main, learner);
     case 'learn':
       return renderSession(main, learner, r.concept, known(r.track));
     case 'new-track':
@@ -63,7 +76,7 @@ export async function renderAtlas(main: HTMLElement, r: CourseRoute, current: ()
     back: routes.concept(a),
     kicker: `${course.domainOf(c).title} · Explainer`,
     poster: [course.domainOf(c).title, 'Explainer'],
-    artist: `Atlas: ${c.title}`,
+    artist: `${course.title}: ${c.title}`,
     noun: 'explainer',
     notes: (marks, said) => notationIn(course, a, marks, said),
     // A locked concept cannot be practiced yet, so its explainer ends on what to master first.

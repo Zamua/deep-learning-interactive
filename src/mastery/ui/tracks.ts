@@ -1,4 +1,4 @@
-// Tracks: a target concept and the way to it. The home lists them, the map picks a target (#/atlas/new-track) or
+// Tracks: a target concept and the way to it. The path page leads with them, the map picks a target (#/atlas/new-track) or
 // shows one (#/atlas/track/<id>/map), and a track's page (#/atlas/track/<id>) lists what is left.
 import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
@@ -28,41 +28,11 @@ export function continueHref(learner: Learner, t: Track): string {
   return watch ? learner.course.routes.watch(id, t.target) : learner.course.routes.learn(id, t.target);
 }
 
-const color = (learner: Learner, id: string) => `var(--c-${learner.course.domainOf(learner.graph.get(id)!).color})`;
 
 function bar(t: Track): HTMLElement {
   const fill = h('i');
   fill.style.width = `${(t.mastered / t.ids.length) * 100}%`;
   return h('div', { class: 'at-track-bar', role: 'progressbar', 'aria-valuenow': String(t.mastered), 'aria-valuemax': String(t.ids.length) }, fill);
-}
-
-/** The home's tracks: a card for each one under way, then a line naming the finished ones. */
-export function tracksSection(learner: Learner): HTMLElement[] {
-  const all = learner.trackTargets.map((id) => trackOf(learner, id));
-  const going = all.filter((t) => t.next);
-  const done = all.filter((t) => !t.next);
-  const title = (id: string) => learner.graph.get(id)!.title;
-  const card = (t: Track) => {
-    const next = h('div', { class: 'at-track-next' }, 'Next: ', h('b', {}, title(t.next!)), ` · about ${duration(t.seconds)} to go`);
-    return h('div', { class: 'at-track', style: `--dom:${color(learner, t.target)}` },
-      h('a', { class: 'at-track-head', href: learner.course.routes.track(t.target) },
-        h('span', { class: 'at-track-ic', html: icon('target') }),
-        h('b', {}, title(t.target)),
-        h('span', { class: 'at-track-n' }, `${t.mastered} of ${t.ids.length}`)),
-      bar(t),
-      next,
-      h('a', { class: 'at-track-go', href: continueHref(learner, t), html: `${icon('playFill')} Continue` }));
-  };
-  const out = [h('div', { class: 'at-tracks-h' },
-    h('div', { class: 'home-lbl' }, 'Your tracks'),
-    h('a', { class: 'at-track-add', href: learner.course.routes.newTrack(), html: `${icon('plus')} New track` })),
-    ...going.map(card)];
-  if (done.length) {
-    const line = h('p', { class: 'at-track-fin', html: `${icon('check-circle')} <span>${done.length === 1 ? 'Finished' : `${done.length} finished`}: </span>` });
-    done.forEach((t, i) => line.lastElementChild!.append(i ? ', ' : '', h('a', { href: learner.course.routes.track(t.target) }, title(t.target))));
-    out.push(line);
-  }
-  return out;
 }
 
 /** One track: how far along it is, what is mastered, and each concept left in order, with Continue. */
@@ -72,19 +42,18 @@ export function renderTrack(main: HTMLElement, learner: Learner, target: string)
   const st = learner.statuses();
   const title = (id: string) => graph.get(id)!.title;
   const root = atlasRoot(learner.course, 'at-map at-trk');
-  root.style.setProperty('--dom', color(learner, target));
   main.append(root);
   const following = learner.trackTargets.includes(target);
 
   root.append(
-    h('a', { class: 'at-back', href: learner.course.routes.home, html: `${icon('arrowLeft')} Atlas` }),
+    h('a', { class: 'at-back', href: learner.course.routes.home, html: `${icon('arrowLeft')} ${learner.course.title}` }),
     h('div', { class: 'at-kicker at-kicker-dom at-trk-k', html: `${icon('target')} ${t.next ? 'Track' : 'Track complete'}` }),
     h('h1', { class: 'home-title' }, title(target)),
     h('p', { class: 'at-small' }, t.next ? `${t.mastered} of ${t.ids.length} mastered · about ${duration(t.seconds)} to go` : `All ${t.ids.length} concepts mastered.`),
     bar(t));
 
   const row = (id: string, cls: string, sub: string, mark = '') =>
-    h('a', { class: `at-tl-row ${cls}`, href: learner.course.routes.concept(id), style: `--dom:${color(learner, id)}` },
+    h('a', { class: `at-tl-row ${cls}`, href: learner.course.routes.concept(id) },
       h('span', { class: 'at-tl-dot', html: mark }),
       h('span', { class: 'at-tl-t' }, title(id), h('small', {}, sub)));
   const masteredIds = t.ids.filter((id) => learner.record(id).mastered);
@@ -122,7 +91,7 @@ export function renderTrack(main: HTMLElement, learner: Learner, target: string)
     });
     root.append(drop);
   } else {
-    const add = h('button', { type: 'button', class: 'at-trk-drop' }, 'Add this track to your home');
+    const add = h('button', { type: 'button', class: 'at-trk-drop' }, 'Add this track to your path');
     add.addEventListener('click', () => {
       learner.follow(target);
       location.hash = learner.course.routes.home;
@@ -134,8 +103,8 @@ export function renderTrack(main: HTMLElement, learner: Learner, target: string)
     h('a', { class: 'at-trk-map', href: learner.course.routes.trackMap(target), html: `${icon('graph')} Map` }),
     t.next
       ? h('a', { class: 'at-trk-go', href: continueHref(learner, t), html: `${icon('playFill')} <span></span>` })
-      : h('a', { class: 'at-trk-go', href: learner.course.routes.home, html: `${icon('arrowLeft')} <span>Atlas</span>` })));
-  if (t.next) root.querySelector('.at-trk-go span')!.textContent = `Continue: ${title(t.next)}`;
+      : h('a', { class: 'at-trk-go', href: learner.course.routes.home, html: `${icon('arrowLeft')} <span></span>` })));
+  root.querySelector('.at-trk-go span')!.textContent = t.next ? `Continue: ${title(t.next)}` : learner.course.title;
 }
 
 /**
@@ -152,7 +121,7 @@ export function renderTrackMap(main: HTMLElement, learner: Learner, mode: 'pick'
   const back = mode === 'view' && target ? learner.course.routes.track(target) : learner.course.routes.home;
   const head = h('p', { class: 'at-small' });
   root.append(
-    h('a', { class: 'at-back', href: back, html: `${icon('arrowLeft')} ${mode === 'view' ? 'Track' : 'Atlas'}` }),
+    h('a', { class: 'at-back', href: back, html: `${icon('arrowLeft')} ${mode === 'view' ? 'Track' : learner.course.title}` }),
     h('h1', { class: 'home-title' }, mode === 'pick' ? 'New track' : title(target!)),
     head,
     map,
@@ -169,7 +138,6 @@ export function renderTrackMap(main: HTMLElement, learner: Learner, mode: 'pick'
     const followed = learner.trackTargets.includes(id);
     sheet.hidden = false;
     sheet.innerHTML = '';
-    sheet.style.setProperty('--dom', color(learner, id));
     const info = t.next
       ? `${plural(t.ids.length, 'concept')} on the way${t.mastered ? `, ${t.mastered} already mastered` : ''}. About ${duration(t.seconds)} to go.`
       : `You have mastered all ${t.ids.length} already.`;

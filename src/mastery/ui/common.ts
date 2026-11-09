@@ -5,6 +5,7 @@ import { h } from '../../core/dom';
 import { md, setMacros } from '../../core/math';
 import { codeIndex, linkSymbols, symbolMacros } from '../../core/symbols';
 import { DAY, type Status } from '../domain/model';
+import type { Learner } from '../learner';
 
 const seen = new Map<string, ReturnType<typeof dressing>>();
 
@@ -65,6 +66,35 @@ export function whenDue(due: number, now = Date.now()): string {
 }
 
 export const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+
+const NUMERALS: [number, string][] = [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+
+/** A part's number as a book would print it. */
+export function roman(n: number): string {
+  let out = '';
+  for (const [value, mark] of NUMERALS) for (; n >= value; n -= value) out += mark;
+  return out;
+}
+
+const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+
+/** A small count in words, as a sentence reads; larger ones stay digits. */
+export const spell = (n: number): string => WORDS[n] ?? String(n);
+
+export const sentence = (s: string): string => s[0]!.toUpperCase() + s.slice(1);
+
+/** The minutes the due reviews take: one problem each, at about the pace a concept's bar asks for. */
+export function reviewMinutes(learner: Learner): number {
+  const st = learner.statuses();
+  return learner.graph.order.filter((c) => st.get(c.id) === 'due').reduce((a, c) => a + c.mastery.seconds * 1.5, 0) / 60;
+}
+
+/** A thin bar for how much of something is done. */
+export function progressBar(done: number, total: number, cls: string): HTMLElement {
+  const fill = h('i');
+  fill.style.width = `${total ? (done / total) * 100 : 0}%`;
+  return h('div', { class: cls, role: 'progressbar', 'aria-valuenow': String(done), 'aria-valuemax': String(total) }, fill);
+}
 
 /** A way to the page that lists every concept open to start. */
 export function pickLink(course: Course, text: string): HTMLElement {

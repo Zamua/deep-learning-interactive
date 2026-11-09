@@ -38,7 +38,7 @@ the daily reminder (each device subscribes for itself).
 - `src/mastery/store.ts` and `src/lecture/progress.ts` read and write through the store; nothing else edits it.
 - `src/sync/ui.ts`: the account page (`#/account`): status, the code, Share link, linking with a code. A link
   `#/link/<code>` opens it with the code filled in and asks before linking.
-- Pages that only show progress (the home, map, track and concept pages) draw again when another device's records
+- Pages that only show progress (the shelf, Review, Path, a course's front page, its map, track and concept pages) draw again when another device's records
   arrive. Sessions, explainers, the track picker and the account page are left alone.
 
 Edits are written to localStorage at once and uploaded about 15 s after they stop (at most a minute later), and right

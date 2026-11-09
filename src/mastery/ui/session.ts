@@ -231,14 +231,14 @@ function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLEleme
   });
 }
 
-/** The tag above a problem: the concept, its domain color, and the streak toward the bar. */
-function problemTag(learner: Learner, c: Concept, pick: Pick, rec: ConceptRecord): HTMLElement {
+/** The tag above a problem: the concept and the streak toward the bar. */
+function problemTag(c: Concept, pick: Pick, rec: ConceptRecord): HTMLElement {
   const n = pick.reason === 'slipping' ? recoveryStreak(c.mastery) : c.mastery.streak;
   const right =
     pick.reason === 'review' ? h('span', { html: `${icon('clock')} review` })
     : pick.reason === 'refresh' ? h('span', { html: `${icon('reset')} refresher` })
     : h('span', {}, dots(Math.min(streak(rec), n), n), ` ${Math.min(streak(rec), n)} of ${n} in a row`);
-  return h('div', { class: 'at-tag', style: `--dom:var(--c-${learner.course.domainOf(c).color})` }, h('b', {}, c.title), right);
+  return h('div', { class: 'at-tag' }, h('b', {}, c.title), right);
 }
 
 /** How a concept's review went this session. `due`: not reached yet; `slipped`: missed, being won back. */
@@ -314,7 +314,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       const gen = list[rng.int(list.length)]!;
       const problem = gen.make(rng, pick.difficulty);
       const before = learner.record(c.id);
-      const tag = problemTag(learner, c, pick, before);
+      const tag = problemTag(c, pick, before);
       const got = await ask(learner.course, frame, {
         concept: c.id,
         problem,
@@ -329,7 +329,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       if (after.mastered && !before.mastered) masteredNow.push(c.id);
       if (pick.reason === 'review') reviews.set(c.id, got.help ? 'helped' : after.slipping ? 'slipped' : 'passed');
       else if (pick.reason === 'slipping' && !after.slipping) reviews.set(c.id, 'recovered');
-      tag.replaceWith(problemTag(learner, c, pick, after));
+      tag.replaceWith(problemTag(c, pick, after));
       results.push({ id: c.id, ok: got.verdict.ok });
       last = c.id;
       showProgress();
@@ -425,7 +425,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         example.replaceWith(box);
         fitMath(box);
       });
-      frame.body.append(h('div', { class: 'at-intro', style: `--dom:var(--c-${learner.course.domainOf(c).color})` },
+      frame.body.append(h('div', { class: 'at-intro' },
         h('div', { class: 'at-kicker at-kicker-dom' }, `New concept · ${learner.course.domainOf(c).title}`),
         h('h1', { class: 'at-title at-title-c' }, c.title),
         h('p', { class: 'at-lede' }, c.blurb),

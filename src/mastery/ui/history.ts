@@ -5,7 +5,7 @@ import { h } from '../../core/dom';
 import { DONE, lectureHistory } from '../../lecture/progress';
 import type { Learner } from '../learner';
 import { atlasRoot } from './common';
-import { ago, dayIndex, mmss } from '../../core/format';
+import { dayIndex, mmss } from '../../core/format';
 
 interface Seen {
   id: string;
@@ -46,20 +46,8 @@ function row(learner: Learner, e: Seen, when: string): HTMLElement {
   const what = [e.watched ? where(e.watched) : '', e.practiced ? 'practiced' : ''].filter(Boolean).join(' · ');
   return h('a', { class: 'at-row', href: e.watched ? learner.course.routes.watch(e.id) : learner.course.routes.concept(e.id) },
     h('span', { class: `at-row-box ${!e.watched ? 'learn' : done ? 'done' : 'new'}`, html: icon(!e.watched ? 'bolt' : done ? 'reset' : 'playFill') }),
-    h('span', { class: 'at-row-t' }, c.title, h('small', { style: `--dom:var(--c-${learner.course.domainOf(c).color})` }, what)),
+    h('span', { class: 'at-row-t' }, c.title, h('small', {}, what)),
     h('span', { class: 'at-row-r' }, when));
-}
-
-/** The home's last few explainers, with a way to the whole history; nothing before the first one is played. */
-export function recentSection(learner: Learner): HTMLElement[] {
-  const seen = history(learner).filter((e) => e.watched).slice(0, 3);
-  if (!seen.length) return [];
-  return [
-    h('div', { class: 'at-tracks-h' },
-      h('div', { class: 'home-lbl' }, 'Recently watched'),
-      h('a', { class: 'at-track-add', href: learner.course.routes.history }, 'See all')),
-    ...seen.map((e) => row(learner, e, ago(e.watched!.t))),
-  ];
 }
 
 /** Everything watched or practiced, grouped by day. */
@@ -68,7 +56,7 @@ export function renderHistory(main: HTMLElement, learner: Learner): void {
   main.append(root);
   const all = history(learner);
   root.append(
-    h('a', { class: 'at-back', href: learner.course.routes.home, html: `${icon('arrowLeft')} Atlas` }),
+    h('a', { class: 'at-back', href: learner.course.routes.home, html: `${icon('arrowLeft')} ${learner.course.title}` }),
     h('h1', { class: 'home-title' }, 'History'),
     h('p', { class: 'at-small' }, all.length ? 'Explainers you played and concepts you practiced, on any of your devices. Tap one to go back to it.' : 'Nothing yet: explainers you play and concepts you practice show up here.'));
   const today = dayIndex(Date.now());

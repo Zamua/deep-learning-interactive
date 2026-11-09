@@ -1,83 +1,57 @@
-import '@fontsource-variable/fraunces/opsz.css';
-import '@fontsource-variable/fraunces/opsz-italic.css';
-import '@fontsource-variable/source-serif-4/opsz.css';
-import '@fontsource-variable/source-serif-4/opsz-italic.css';
 import '@fontsource-variable/jetbrains-mono';
 import 'katex/dist/katex.min.css';
 import './styles/base.css';
 import './styles/components.css';
 
 import type { Course } from './courses/course';
-import { courseById, FIRST } from './courses/index';
+import { courseById } from './courses/index';
 import { icon } from './core/controls';
 import { disposeAll, h } from './core/dom';
-import { Learner } from './mastery/learner';
 import { startOffline } from './offline/register';
-import { applyTheme, settingsButton } from './settings';
+import { applyTheme } from './theme';
 import { progressStore, startSync } from './sync/cloud';
-import { parseRoute, routes, type CourseRoute, type Route } from './routes';
+import { parseRoute, routes, type CourseRoute, type Route, type SitePage } from './routes';
 
 applyTheme();
 startSync();
 
+type Tab = 'shelf' | 'review' | 'path' | 'settings';
+const TABS: [Tab, string, string, string][] = [
+  ['shelf', 'books', 'Shelf', routes.shelf],
+  ['review', 'stack', 'Review', routes.review],
+  ['path', 'compass', 'Path', routes.path],
+  ['settings', 'gear', 'Settings', routes.settings],
+];
+
 const app = document.getElementById('app')!;
 const main = h('main', { class: 'main', id: 'main' });
-const nav = h('nav', { class: 'side', 'aria-label': 'Concepts' });
-const scrim = h('div', { class: 'scrim' });
-const menuBtn = h('button', { class: 'icon-btn menu-btn', type: 'button', 'aria-label': 'Concepts', html: icon('menu') });
+const links = TABS.map(([id, glyph, label, href]) => h('a', { class: 'tab', href, 'data-tab': id, html: `${icon(glyph)}<span>${label}</span>` }));
+app.append(h('nav', { class: 'tabs', 'aria-label': 'Sections' }, ...links), main);
 
-const setNav = (open: boolean) => document.body.classList.toggle('nav-open', open);
-menuBtn.addEventListener('click', () => setNav(!document.body.classList.contains('nav-open')));
-scrim.addEventListener('click', () => setNav(false));
-
-/** The site icon's mark: a causal attention pattern in the symbol colors, drawn with theme variables. */
-const BRAND_MARK = (() => {
-  const w = [[1, 0, 0], [0.4, 0.6, 0], [0.2, 0.3, 0.5]];
-  const col = ['--c-blue', '--c-orange', '--c-green'];
-  let cells = '';
-  for (let i = 0; i < 3; i++)
-    for (let j = 0; j < 3; j++)
-      cells += `<rect x="${j * 7}" y="${i * 7}" width="6" height="6" rx="1.6" style="fill:var(${j > i ? '--rule' : col[j]});fill-opacity:${j > i ? 1 : (0.3 + 0.7 * w[i]![j]!).toFixed(2)}"/>`;
-  return `<svg viewBox="0 0 20 20" aria-hidden="true">${cells}</svg>`;
-})();
-const brand = h('a', { class: 'brand', href: FIRST.routes.home },
-  h('span', { class: 'brand-mark', html: BRAND_MARK }),
-  h('span', { class: 'brand-name' }, FIRST.code.toLowerCase()),
-  h('span', { class: 'brand-sub' }, 'interactive'));
-
-const top = h('header', { class: 'topbar' }, menuBtn, brand, h('div', { class: 'topbar-spacer' }), settingsButton());
-
-app.append(top, nav, scrim, main);
+function setTab(tab: Tab): void {
+  for (const a of links) {
+    const on = a.dataset.tab === tab;
+    a.classList.toggle('on', on);
+    if (on) a.setAttribute('aria-current', 'page');
+    else a.removeAttribute('aria-current');
+  }
+}
 
 let currentId = '';
 let renderToken = 0;
 
-/** A course's pages and the account page; any other address, or an unknown course, lands on the first course's home. */
-async function route(): Promise<void> {
-  const r = parseRoute(location.hash);
-  if (r?.page === 'account') return routeAccount(r.code);
-  const course = r && courseById(r.course);
-  if (r && course) return routeCourse(r, course);
-  history.replaceState(null, '', FIRST.routes.home);
-  return routeCourse({ course: FIRST.id, page: 'home' }, FIRST);
-}
-
-async function routeCourse(r: CourseRoute, course: Course): Promise<void> {
-  const key = location.hash.replace(/\/+$/, '');
+/** Replaces the page with what `draw` puts there, unless the address already shows it. `current` turns false once the learner has moved on. */
+async function show(key: string, title: string, tab: Tab, draw: (current: () => boolean) => Promise<void>): Promise<void> {
   if (key === currentId) return;
   const token = ++renderToken;
   disposeAll();
   currentId = key;
   main.innerHTML = '';
-  const shown = r.page === 'concept' || r.page === 'watch' ? r.concept : undefined;
-  buildNav(course, r.page === 'history' ? 'history' : shown ?? '');
-  const c = shown ? course.graph.get(shown) : undefined;
-  document.title = c ? `${c.title} · atlas interactive` : `${course.code}: ${course.title} · interactive`;
+  setTab(tab);
+  document.title = `${title} · Atlas`;
   window.scrollTo(0, 0);
   try {
-    const { renderAtlas } = await import('./mastery/ui/index');
-    if (token !== renderToken) return;
-    await renderAtlas(main, r, () => token === renderToken);
+    await draw(() => token === renderToken);
   } catch (e) {
     console.error(e);
     if (await reloadIfStale()) return;
@@ -86,33 +60,56 @@ async function routeCourse(r: CourseRoute, course: Course): Promise<void> {
   }
 }
 
-async function routeAccount(code?: string): Promise<void> {
-  const token = ++renderToken;
-  disposeAll();
-  currentId = code ? `link/${code}` : 'account';
-  main.innerHTML = '';
-  buildNav(FIRST, '');
-  document.title = 'Sync across devices · atlas interactive';
-  window.scrollTo(0, 0);
-  // The code has done its job once read: keep it out of the history and of anything that shares this page.
-  if (code) history.replaceState(null, '', routes.account);
-  try {
+/** A course's pages, the site's, and the account's; any other address, or an unknown course, lands on the shelf. */
+async function route(): Promise<void> {
+  const r = parseRoute(location.hash);
+  if (r?.page === 'account') return routeAccount(r.code);
+  if (r && !('course' in r)) return routeSite(r.page);
+  const course = r && courseById(r.course);
+  if (r && course) return routeCourse(r, course);
+  history.replaceState(null, '', routes.shelf);
+  return routeSite('shelf');
+}
+
+const SITE_TITLE: Record<SitePage, string> = { shelf: 'Library', review: 'Review', path: 'Your path', settings: 'Settings' };
+
+function routeSite(page: SitePage): Promise<void> {
+  return show(page, SITE_TITLE[page], page, async (current) => {
+    const { renderSite } = await import('./mastery/ui/index');
+    if (current()) renderSite(main, page);
+  });
+}
+
+/** The tab a course's page sits under. */
+function tabOf(r: CourseRoute): Tab {
+  if (r.page === 'track' || r.page === 'new-track' || r.page === 'place') return 'path';
+  return r.page === 'history' ? 'review' : 'shelf';
+}
+
+function routeCourse(r: CourseRoute, course: Course): Promise<void> {
+  const shown = r.page === 'concept' || r.page === 'watch' ? r.concept : undefined;
+  const c = shown ? course.graph.get(shown) : undefined;
+  return show(location.hash.replace(/\/+$/, ''), c ? c.title : course.title, tabOf(r), async (current) => {
+    const { renderAtlas } = await import('./mastery/ui/index');
+    if (current()) await renderAtlas(main, r, current);
+  });
+}
+
+function routeAccount(code?: string): Promise<void> {
+  return show(code ? `link/${code}` : 'account', 'Sync across devices', 'settings', async (current) => {
+    // The code has done its job once read: keep it out of the history and of anything that shares this page.
+    if (code) history.replaceState(null, '', routes.account);
     const [{ renderAccount }, { progressFile }] = await Promise.all([import('./sync/ui'), import('./mastery/ui/progress-file')]);
-    if (token !== renderToken) return;
-    renderAccount(main, code, progressFile());
-  } catch (e) {
-    console.error(e);
-    if (await reloadIfStale()) return;
-    main.append(h('div', { class: 'fig-error' }, `This page failed to load: ${(e as Error).message}`));
-  }
+    if (current()) renderAccount(main, code, progressFile());
+  });
 }
 
 /**
  * Another device's progress arrived (or another tab's, or a link brought an account's): pages that only show progress
- * draw again where they were. Sessions, explainers, the track picker and the account page keep running as they are.
+ * draw again where they were. Sessions, explainers, the track picker, settings and the account page keep running as they are.
  */
 /** Pages that are under way, which synced progress never redraws. */
-const BUSY = new Set<Route['page']>(['account', 'learn', 'place', 'new-track', 'watch']);
+const BUSY = new Set<Route['page']>(['account', 'settings', 'learn', 'place', 'new-track', 'watch']);
 
 function redrawOnRemoteProgress(): void {
   let due = 0;
@@ -127,33 +124,6 @@ function redrawOnRemoteProgress(): void {
       void route().then(() => window.scrollTo(0, y));
     }, 150);
   });
-}
-
-/** The side menu: every concept by domain, marked mastered or locked. */
-function buildNav(course: Course, active: string): void {
-  const { graph, routes: pages } = course;
-  nav.innerHTML = '';
-  const st = new Learner(course).statuses();
-  nav.append(h('a', { class: 'side-course', href: pages.home }, h('span', { class: 'side-course-code' }, course.code), h('span', { class: 'side-course-title' }, course.title)));
-  const hist = h('a', { class: `side-link${active === 'history' ? ' on' : ''}`, href: pages.history }, h('span', { class: 'side-num', html: icon('clock') }), h('span', { class: 'side-title' }, 'History'));
-  hist.addEventListener('click', () => setNav(false));
-  nav.append(h('ul', { class: 'side-list' }, h('li', {}, hist)));
-  for (const d of course.domains) {
-    nav.append(h('div', { class: 'side-part' }, d.title));
-    const ul = h('ul', { class: 'side-list' });
-    for (const c of graph.order.filter((x) => x.domain === d.id)) {
-      const s = st.get(c.id)!;
-      const mark = s === 'mastered' || s === 'due' ? h('span', { class: 'side-mark done', html: icon('check') }) : s === 'locked' ? h('span', { class: 'side-mark at-side-lock', html: icon('lock') }) : '';
-      const a = h('a', { href: pages.concept(c.id), class: `side-link${c.id === active ? ' on' : ''}${s === 'locked' ? ' soon' : ''}` },
-        h('span', { class: 'side-num', style: `color:var(--c-${d.color})` }, '●'),
-        h('span', { class: 'side-title' }, c.title),
-        mark);
-      a.addEventListener('click', () => setNav(false));
-      ul.append(h('li', {}, a));
-    }
-    nav.append(ul);
-  }
-  nav.append(h('div', { class: 'side-foot' }, `${graph.order.length} concepts, and growing.`));
 }
 
 /**

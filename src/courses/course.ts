@@ -1,5 +1,4 @@
 // What a course is to the site: its description in `<course>/course.ts`, and the same with its concepts found and graphed.
-import type { Color } from '../core/symbols';
 import type { LectureDef } from '../lecture/player';
 import type { ConceptGraph } from '../mastery/domain/graph';
 import type { Concept, Generator } from '../mastery/domain/types';
@@ -8,15 +7,15 @@ import type { CoursePages } from '../routes';
 export interface Domain {
   id: string;
   title: string;
-  color: Color;
 }
 
 /** What a course's `course.ts` exports as `course`. */
 export interface CourseDef {
-  code: string;
   title: string;
-  era: string;
+  /** One line under the title on the course's cover. */
   blurb: string;
+  /** The cover's color, as `#rrggbb`. Light paper text sits on it, so it must be dark. */
+  cover: string;
   /**
    * Put before every concept id of this course, in the synced records and the addresses, so courses never share a
    * record: `nix.` makes `derivation` the id `nix.derivation`. A concept's `meta.ts` writes the short id, and so do its
