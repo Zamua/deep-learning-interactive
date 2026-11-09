@@ -23,7 +23,12 @@ on random records), so devices converge whatever order their edits arrive in.
 The only loss: a concept practiced on two devices while both are offline keeps one device's answers for it (the later,
 or the mastered). Mastery is never lost, so a concept that opened never locks again.
 
-Stays on the device: the answer log (`atlas.log`), the theme, the player's speed and captions, folded map sections, and
+Every course shares these records: a concept's id says whose it is (the first course's ids have no dot, another
+course's start with its prefix, `nix.derivation`). A concept practiced and watched takes about 0.6 KiB, so a room's 256 KiB holds
+about 400 of them across every course.
+
+Stays on the device: the answer log (`atlas.log`, and `atlas.log.<course>` for a course with a prefix, so one course
+never pushes out another's rows), the theme, the player's speed and captions, folded map sections, and
 the daily reminder (each device subscribes for itself).
 
 ## How it runs

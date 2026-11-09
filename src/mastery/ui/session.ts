@@ -1,8 +1,8 @@
 // A practice session: the scheduler picks each problem, the learner answers on a pad, and the
 // feedback shows the worked solution. Also the shared problem screen the placement test uses.
-import { domainOf, hasExplainer, loadGenerators } from '../../atlas/index';
 import { CodePanel } from '../../core/code';
 import { icon } from '../../core/controls';
+import type { Course } from '../../courses/course';
 import { h, onDispose } from '../../core/dom';
 import { watched } from '../../lecture/progress';
 import { Rng } from '../../core/rand';
@@ -17,21 +17,20 @@ import { celebrate } from './celebrate';
 import { wireLookup } from './lookup';
 import { makePad } from './pads';
 import { syncReminders } from '../push';
-import { routes } from '../../routes';
 
 /** Problems per session: about fifteen minutes. */
 export const SESSION_LENGTH = 20;
 
 /** The full-screen frame a session or placement runs in: a header with progress, a scrolling body, a dock for keys. */
-export function runFrame(main: HTMLElement, cls: string): { root: HTMLElement; body: HTMLElement; dock: HTMLElement; setProgress(done: number, total: number, label: string): void } {
+export function runFrame(main: HTMLElement, course: Course, cls: string): { root: HTMLElement; body: HTMLElement; dock: HTMLElement; setProgress(done: number, total: number, label: string): void } {
   document.body.classList.add('at-on');
   onDispose(() => document.body.classList.remove('at-on'));
-  const root = atlasRoot(`at-run ${cls}`, 'atlas', false);
+  const root = atlasRoot(course, `at-run ${cls}`, 'atlas', false);
   const fill = h('i', {});
   const label = h('span', { class: 'at-run-n' });
   const lookup = h('button', { type: 'button', class: 'at-run-lk', 'aria-label': 'Symbols in this problem', 'aria-expanded': 'false', html: icon('book') });
   root.append(h('header', { class: 'at-run-top' },
-    h('a', { class: 'at-run-x', href: routes.home, 'aria-label': 'End the session', html: icon('close') }),
+    h('a', { class: 'at-run-x', href: course.routes.home, 'aria-label': 'End the session', html: icon('close') }),
     h('div', { class: 'at-run-bar' }, fill),
     label,
     lookup));
@@ -39,7 +38,7 @@ export function runFrame(main: HTMLElement, cls: string): { root: HTMLElement; b
   const dock = h('div', { class: 'at-run-dock' });
   root.append(body, dock);
   main.append(root);
-  wireLookup(root, body, lookup);
+  wireLookup(course, root, body, lookup);
   return {
     root,
     body,
@@ -63,7 +62,7 @@ export interface Asked {
  * Shows a problem and resolves with the learner's checked answer. Unreadable input is
  * explained in place and never resolves. Time spent with the page hidden does not count.
  */
-export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { concept: string; problem: Problem; tag: HTMLElement; rng: Rng; worked?: () => Problem; target?: number; note?: string }): Promise<Asked> {
+export function ask(course: Course, frame: { body: HTMLElement; dock: HTMLElement }, opts: { concept: string; problem: Problem; tag: HTMLElement; rng: Rng; worked?: () => Problem; target?: number; note?: string }): Promise<Asked> {
   const { problem: p, rng } = opts;
   frame.body.dataset.concept = opts.concept;
   frame.body.innerHTML = '';
@@ -71,7 +70,7 @@ export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { con
   frame.body.scrollTop = 0;
   return new Promise((resolve) => {
     const check = h('button', { type: 'button', class: 'at-check', disabled: true }, 'Check');
-    const pad = makePad(p.answer, rng, render, () => submit());
+    const pad = makePad(p.answer, rng, (s) => render(course, s), () => submit());
     const msg = h('div', { class: 'at-msg', role: 'status' });
     const hint = h('div', { class: 'at-hint' },
       opts.target ? h('span', { html: `${icon('clock')} target ${opts.target} s` }) : h('span', {}));
@@ -84,15 +83,15 @@ export function ask(frame: { body: HTMLElement; dock: HTMLElement }, opts: { con
       workedBox.innerHTML = '';
       workedBox.append(
         h('div', { class: 'at-worked-k' }, 'A similar one, worked out. This answer will not count toward your streak.'),
-        h('div', { class: 'at-prompt at-prompt-sm', html: render(w.prompt) }),
-        solutionList(w.solution));
+        h('div', { class: 'at-prompt at-prompt-sm', html: render(course, w.prompt) }),
+        solutionList(course, w.solution));
       stuck.remove();
       fitMath(workedBox);
       // On a phone the keypad covers the lower half, where the steps land.
       workedBox.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     });
     if (opts.note) frame.body.append(h('div', { class: 'at-transition' }, opts.note));
-    frame.body.append(opts.tag, h('div', { class: 'at-prompt', html: render(p.prompt) }));
+    frame.body.append(opts.tag, h('div', { class: 'at-prompt', html: render(course, p.prompt) }));
     if (p.code) frame.body.append(new CodePanel(p.code, { bare: true }).el);
     frame.body.append(pad.display, msg, hint, workedBox);
     if (stuck) frame.body.append(stuck);
@@ -145,8 +144,8 @@ export function fitMath(root: HTMLElement): void {
   });
 }
 
-export function solutionList(steps: string[]): HTMLElement {
-  return h('ol', { class: 'at-steps' }, ...steps.map((s) => h('li', { html: render(s) })));
+export function solutionList(course: Course, steps: string[]): HTMLElement {
+  return h('ol', { class: 'at-steps' }, ...steps.map((s) => h('li', { html: render(course, s) })));
 }
 
 /** The right answer, written the way the learner would have entered it. */
@@ -186,8 +185,8 @@ function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLEleme
   if (!verdict.ok) {
     box.append(inline
       ? h('div', { class: 'at-yours' }, h('span', { class: 'bad' }, responseText(a, got.response)), h('span', { class: 'good' }, answerText(a)))
-      : h('div', { class: 'at-right', html: `The answer: ${render(answerText(a))}` }));
-    if (verdict.why) box.append(h('p', { class: 'at-why', html: render(verdict.why) }));
+      : h('div', { class: 'at-right', html: `The answer: ${render(learner.course, answerText(a))}` }));
+    if (verdict.why) box.append(h('p', { class: 'at-why', html: render(learner.course, verdict.why) }));
   }
   const news: HTMLElement[] = [];
   if (after.mastered && !before.mastered) {
@@ -199,7 +198,7 @@ function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLEleme
   } else if (after.slipping && !before.slipping) {
     news.push(h('div', { class: 'at-news warn', html: `${icon('reset')} ${c.title} needs ${recoveryStreak(c.mastery)} right in a row to count as mastered again.` }));
   }
-  const steps = solutionList(p.solution);
+  const steps = solutionList(learner.course, p.solution);
   let solution: HTMLElement = steps;
   if (verdict.ok) {
     const more = h('button', { type: 'button', class: 'at-stuck' }, 'See the worked solution');
@@ -212,7 +211,7 @@ function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLEleme
   box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   return new Promise((resolve) => {
     const next = h('button', { type: 'button', class: 'at-check' }, 'Next');
-    if (!verdict.ok && hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-ghost', href: routes.watch(c.id, track), html: `${icon('reset')} Rewatch the explainer` }));
+    if (!verdict.ok && learner.course.hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-ghost', href: learner.course.routes.watch(c.id, track), html: `${icon('reset')} Rewatch the explainer` }));
     frame.dock.append(next);
     const go = () => {
       window.removeEventListener('keydown', onKey);
@@ -233,13 +232,13 @@ function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLEleme
 }
 
 /** The tag above a problem: the concept, its domain color, and the streak toward the bar. */
-function problemTag(c: Concept, pick: Pick, rec: ConceptRecord): HTMLElement {
+function problemTag(learner: Learner, c: Concept, pick: Pick, rec: ConceptRecord): HTMLElement {
   const n = pick.reason === 'slipping' ? recoveryStreak(c.mastery) : c.mastery.streak;
   const right =
     pick.reason === 'review' ? h('span', { html: `${icon('clock')} review` })
     : pick.reason === 'refresh' ? h('span', { html: `${icon('reset')} refresher` })
     : h('span', {}, dots(Math.min(streak(rec), n), n), ` ${Math.min(streak(rec), n)} of ${n} in a row`);
-  return h('div', { class: 'at-tag', style: `--dom:var(--c-${domainOf(c).color})` }, h('b', {}, c.title), right);
+  return h('div', { class: 'at-tag', style: `--dom:var(--c-${learner.course.domainOf(c).color})` }, h('b', {}, c.title), right);
 }
 
 /** How a concept's review went this session. `due`: not reached yet; `slipped`: missed, being won back. */
@@ -247,7 +246,7 @@ type ReviewState = 'due' | 'passed' | 'helped' | 'slipped' | 'recovered';
 
 /** `track`: the target of the track the session follows, whose concepts it learns while any is left. */
 export function renderSession(main: HTMLElement, learner: Learner, focus?: string, track?: string): void {
-  const frame = runFrame(main, 'at-session-run');
+  const frame = runFrame(main, learner.course, 'at-session-run');
   const rng = new Rng((Date.now() ^ (Math.random() * 2 ** 32)) >>> 0);
   const gens = new Map<string, Generator[]>();
   const introduced = new Set<string>();
@@ -306,7 +305,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         await intro(c, pick);
       }
       let list = gens.get(c.id);
-      if (!list) gens.set(c.id, (list = await loadGenerators(c.id)));
+      if (!list) gens.set(c.id, (list = await learner.course.loadGenerators(c.id)));
       if (!list.length) {
         frame.body.innerHTML = '';
         frame.body.append(h('p', { class: 'at-lede' }, `${c.title} has no problems yet.`));
@@ -315,8 +314,8 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       const gen = list[rng.int(list.length)]!;
       const problem = gen.make(rng, pick.difficulty);
       const before = learner.record(c.id);
-      const tag = problemTag(c, pick, before);
-      const got = await ask(frame, {
+      const tag = problemTag(learner, c, pick, before);
+      const got = await ask(learner.course, frame, {
         concept: c.id,
         problem,
         rng,
@@ -330,7 +329,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       if (after.mastered && !before.mastered) masteredNow.push(c.id);
       if (pick.reason === 'review') reviews.set(c.id, got.help ? 'helped' : after.slipping ? 'slipped' : 'passed');
       else if (pick.reason === 'slipping' && !after.slipping) reviews.set(c.id, 'recovered');
-      tag.replaceWith(problemTag(c, pick, after));
+      tag.replaceWith(problemTag(learner, c, pick, after));
       results.push({ id: c.id, ok: got.verdict.ok });
       last = c.id;
       showProgress();
@@ -405,7 +404,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       h('h1', { class: 'at-title' }, 'Nice work'),
       h('p', { class: 'at-lede' }, `${kept()} of ${reviews.size} kept.`),
       reviewList()));
-    frame.dock.append(h('a', { class: 'at-check', href: routes.home }, 'Done'));
+    frame.dock.append(h('a', { class: 'at-check', href: learner.course.routes.home }, 'Done'));
   };
 
   const intro = (c: Concept, pick: Pick): Promise<void> =>
@@ -413,28 +412,28 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       frame.body.dataset.concept = c.id;
       frame.body.innerHTML = '';
       frame.dock.innerHTML = '';
-      const start = h('button', { type: 'button', class: hasExplainer(c.id) ? 'at-ghost' : 'at-check' }, 'Start practicing');
+      const start = h('button', { type: 'button', class: learner.course.hasExplainer(c.id) ? 'at-ghost' : 'at-check' }, 'Start practicing');
       start.addEventListener('click', () => resolve());
       const example = h('button', { type: 'button', class: 'at-stuck' }, 'Show a worked example first');
       example.addEventListener('click', async () => {
-        const list = gens.get(c.id) ?? (await loadGenerators(c.id));
+        const list = gens.get(c.id) ?? (await learner.course.loadGenerators(c.id));
         gens.set(c.id, list);
         const g = list[0];
         if (!g) return;
         const w = g.make(new Rng(rng.int(2 ** 31)), pick.difficulty);
-        const box = h('div', { class: 'at-worked' }, h('div', { class: 'at-prompt at-prompt-sm', html: render(w.prompt) }), solutionList(w.solution));
+        const box = h('div', { class: 'at-worked' }, h('div', { class: 'at-prompt at-prompt-sm', html: render(learner.course, w.prompt) }), solutionList(learner.course, w.solution));
         example.replaceWith(box);
         fitMath(box);
       });
-      frame.body.append(h('div', { class: 'at-intro', style: `--dom:var(--c-${domainOf(c).color})` },
-        h('div', { class: 'at-kicker at-kicker-dom' }, `New concept · ${domainOf(c).title}`),
+      frame.body.append(h('div', { class: 'at-intro', style: `--dom:var(--c-${learner.course.domainOf(c).color})` },
+        h('div', { class: 'at-kicker at-kicker-dom' }, `New concept · ${learner.course.domainOf(c).title}`),
         h('h1', { class: 'at-title at-title-c' }, c.title),
         h('p', { class: 'at-lede' }, c.blurb),
         h('p', { class: 'at-why' }, whyNew(c.id, last)),
         h('p', { class: 'at-small' }, `You will practice it until ${c.mastery.streak} in a row are right, about ${c.mastery.seconds} s each. Then the next concept opens.`),
         example,
-        learner.choices().open.length > 1 ? pickLink('Not this one? Choose another') : ''));
-      if (hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-check', href: routes.watch(c.id, track), html: `${icon('playFill')} Watch the explainer` }));
+        learner.choices().open.length > 1 ? pickLink(learner.course, 'Not this one? Choose another') : ''));
+      if (learner.course.hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-check', href: learner.course.routes.watch(c.id, track), html: `${icon('playFill')} Watch the explainer` }));
       frame.dock.append(start);
     });
 
@@ -465,7 +464,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
     frame.dock.append(backLink());
   };
 
-  const backLink = () => (track ? h('a', { class: 'at-check', href: routes.track(track) }, 'Back to the track') : h('a', { class: 'at-check', href: routes.home }, 'Back to the map'));
+  const backLink = () => (track ? h('a', { class: 'at-check', href: learner.course.routes.track(track) }, 'Back to the track') : h('a', { class: 'at-check', href: learner.course.routes.home }, 'Back to the map'));
 
   void loop();
 }

@@ -22,19 +22,24 @@ A concept is the smallest idea that can be practiced on its own: "the dot produc
 they form must be acyclic. Concepts belong to a domain (`linear-algebra`, `calculus`,
 `classifiers`, `optimization`, ...) that groups them on the map.
 
+A site holds several courses, each a folder under `src/courses/` with a `course.ts` (its title, domains in map order
+and `idPrefix`). A concept's full id is that prefix and its folder name. The first course, `dl`, has none, and keeps
+the addresses (`#/atlas/...`) and the answer log it had before there were others; another course's pages are at
+`#/c/<course>/...` under full ids (`#/c/nix/nix.derivation/watch`).
+
 One folder per concept, found by `import.meta.glob`, so adding a concept is adding a folder:
 
-    src/atlas/<domain>/<concept>/meta.ts       pure data: id, title, prereqs, mastery bar (eager)
-    src/atlas/<domain>/<concept>/problems.ts   problem generators (lazy)
-    src/atlas/<domain>/<concept>/script.ts     explainer narration (the lecture format), id `atlas-<concept>`
-    src/atlas/<domain>/<concept>/scenes.ts     explainer visuals
-    src/atlas/<domain>/<concept>/explainer.ts  wires script, scenes, timing and audio (copy softmax's)
-    src/atlas/<domain>/<concept>/timing.json   generated with narration.m4a
+    src/courses/<course>/<domain>/<concept>/meta.ts       pure data: id, title, prereqs, mastery bar (eager)
+    src/courses/<course>/<domain>/<concept>/problems.ts   problem generators (lazy)
+    src/courses/<course>/<domain>/<concept>/script.ts     explainer narration (the lecture format), id `atlas-<full id>`
+    src/courses/<course>/<domain>/<concept>/scenes.ts     explainer visuals
+    src/courses/<course>/<domain>/<concept>/explainer.ts  wires script, scenes, timing and audio (copy softmax's)
+    src/courses/<course>/<domain>/<concept>/timing.json   generated with narration.m4a
 
-The domain is the folder; `DOMAINS` in `src/atlas/index.ts` lists them in map order.
-`src/atlas/symbols.ts` is the one symbol map for the whole course, `src/atlas/kit.ts` holds
+The domain is the folder; `domains` in the course's `course.ts` lists them in map order.
+`src/courses/dl/symbols.ts` is the one symbol map for the whole course, `src/courses/dl/kit.ts` holds
 the generator helpers every domain shares (traps, sums, shapes, numbers in TeX), and
-`src/atlas/draw.ts` a drawing kit for explainers (`cite`, `caption`, `after`, cells and bars). A
+`src/courses/dl/draw.ts` a drawing kit for explainers (`cite`, `caption`, `after`, cells and bars). A
 domain's own `kit.ts` and `draw.ts` keep only what that domain needs; another domain that needs
 one of those helpers imports it from that file directly, never through a re-export. A symbol whose
 course-wide note would be wrong in a concept, or would name something outside its prerequisite
@@ -238,8 +243,8 @@ The account page (`#/account`) also saves both to a JSON file and loads one back
   model, the scheduler, placement, the graders and the expression parser.
 - `src/mastery/learner.ts` and `store.ts`: the learner's records, through the progress store.
 - `src/mastery/ui/`: the map, concept page, session runner, placement and answer pads.
-- `src/atlas/`: the content, one folder per concept.
-- `src/atlas/atlas.test.ts`: fails on a cycle, a missing prerequisite or a misnamed folder,
+- `src/courses/`: the content, one folder per concept.
+- `src/courses/courses.test.ts`: fails on a cycle, a missing prerequisite or a misnamed folder,
   and runs every generator over many seeds and difficulties: its own answer must pass its
   grader, its traps must differ from the answer, its TeX must render, a seed must reproduce
   its problem, and it must vary. `ATLAS_STRICT=1` also fails concepts with no explainer or no

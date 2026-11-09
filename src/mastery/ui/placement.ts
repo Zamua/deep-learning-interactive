@@ -1,6 +1,5 @@
 // The placement test. A fast right answer marks a concept and everything it builds on as known;
 // a miss marks it and everything built on it as not yet known.
-import { domainOf, loadGenerators } from '../../atlas/index';
 import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
 import { Rng } from '../../core/rand';
@@ -8,7 +7,6 @@ import { nextProbe } from '../domain/placement';
 import type { Learner } from '../learner';
 import { plural } from './common';
 import { ask, runFrame } from './session';
-import { routes } from '../../routes';
 
 /** Questions at most; the graph is usually settled sooner. */
 const MAX_QUESTIONS = 14;
@@ -16,7 +14,7 @@ const DIFFICULTY = 0.6;
 
 export function renderPlacement(main: HTMLElement, learner: Learner): void {
   const g = learner.graph;
-  const frame = runFrame(main, 'at-place-run');
+  const frame = runFrame(main, learner.course, 'at-place-run');
   const rng = new Rng((Date.now() ^ (Math.random() * 2 ** 32)) >>> 0);
   const known = new Map<string, boolean>();
   let asked = 0;
@@ -40,15 +38,15 @@ export function renderPlacement(main: HTMLElement, learner: Learner): void {
       const id = asked < MAX_QUESTIONS ? nextProbe(g, known) : null;
       if (!id) return finish();
       const c = g.get(id)!;
-      const gens = await loadGenerators(id);
+      const gens = await learner.course.loadGenerators(id);
       if (!gens.length) {
         known.set(id, false);
         continue;
       }
       const gen = gens[rng.int(gens.length)]!;
       const problem = gen.make(rng, DIFFICULTY);
-      const tag = h('div', { class: 'at-tag', style: `--dom:var(--c-${domainOf(c).color})` }, h('b', {}, c.title), h('span', {}, `question ${asked + 1}`));
-      const got = await ask(frame, { concept: id, problem, rng, tag });
+      const tag = h('div', { class: 'at-tag', style: `--dom:var(--c-${learner.course.domainOf(c).color})` }, h('b', {}, c.title), h('span', {}, `question ${asked + 1}`));
+      const got = await ask(learner.course, frame, { concept: id, problem, rng, tag });
       asked++;
       const pass = got.verdict.ok && got.seconds <= 2 * c.mastery.seconds;
       for (const x of pass ? g.ancestors(id) : g.descendants(id)) if (!known.has(x)) known.set(x, pass);
@@ -68,7 +66,7 @@ export function renderPlacement(main: HTMLElement, learner: Learner): void {
       h('div', { class: 'at-kicker' }, 'Placement done'),
       h('h1', { class: 'at-title' }, placed.length ? `${plural(placed.length, 'concept')} placed` : 'Starting from the beginning'),
       h('p', { class: 'at-lede' }, frontier.length ? `Ready to learn next: ${frontier.slice(0, 4).join(', ')}${frontier.length > 4 ? ', and more' : ''}.` : 'Everything is placed.')));
-    frame.dock.append(h('a', { class: 'at-ghost', href: routes.home }, 'See the map'), h('a', { class: 'at-check', href: routes.learn(), html: `${icon('playFill')} Start learning` }));
+    frame.dock.append(h('a', { class: 'at-ghost', href: learner.course.routes.home }, 'See the map'), h('a', { class: 'at-check', href: learner.course.routes.learn(), html: `${icon('playFill')} Start learning` }));
   };
 
   start();
