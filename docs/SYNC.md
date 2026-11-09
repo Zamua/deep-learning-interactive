@@ -13,7 +13,7 @@ the storage it used before, and the screens.
 | Explainer playback | `lectures/0` to `lectures/3` | the resume point: the later edit wins; heard stretches, per narration length: either device's |
 | Chapter reading depth, from the retired chapter courses; read but no longer written | `reading` | the furthest read; the section last scrolled past: the later edit wins |
 | What was open last, likewise retired | `last` | the later edit wins |
-| Settings that follow the learner (how Atlas picks new concepts) | `prefs` | each: the later edit wins |
+| Settings that follow the learner (kept for older builds; nothing reads them now) | `prefs` | each: the later edit wins |
 | Atlas tracks followed, by target concept | `tracks` | each: the later add or remove wins |
 
 Records are spread over a few keys so an upload carries a slice of them, and so a room (256 keys, 256 KiB) holds every
@@ -39,8 +39,8 @@ the daily reminder (each device subscribes for itself).
 - `src/sync/ui.ts`: the account page (`#/account`): status, the code and Share, then closed rows for linking with a code,
   a password manager, a file copy and how sync works. A link `#/link/<code>` opens it with the code filled in and asks
   before linking, and a link pasted into the code field counts as its code.
-- Pages that only show progress (the shelf, Review, Path, a course's front page, its map, track and concept pages) draw again when another device's records
-  arrive. Sessions, explainers, the track picker and the account page are left alone.
+- Pages that only show progress (a book's home) draw again when another device's records arrive. Sessions, explainers,
+  Explore, Settings and the account page are left alone.
 
 Edits are written to localStorage at once and uploaded about 15 s after they stop (at most a minute later), and right
 away when the page is hidden. Another device's edits arrive on its next pass: when the site opens, every 5 minutes while

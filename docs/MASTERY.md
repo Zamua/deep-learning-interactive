@@ -5,16 +5,12 @@ short voiced explainer and then practiced with generated problems until it is ma
 unlocks the concepts that build on it, and mastered concepts come back as spaced reviews. The
 first course runs from vectors to post-training, and its graph is meant to keep growing.
 
-Routes: `#/` the shelf, where any unknown address lands; `#/review`, `#/path` and `#/settings` the
-other tabs; `#/atlas` a course's front page; `#/atlas/graph[/<part>]` the map of one part;
-`#/atlas/list` every concept as a list; `#/atlas/learn[/<concept-id>]` a session (optionally starting with
-that concept); `#/atlas/place` the placement test; `#/atlas/next` choosing what to learn next;
-`#/atlas/history` everything watched or practiced lately; `#/atlas/<concept-id>` a concept and
-`#/atlas/<concept-id>/watch` its explainer;
-`#/atlas/new-track[/<concept-id>]` picking a track's target, `#/atlas/track/<concept-id>` a
-track and `#/atlas/track/<concept-id>/map` its map. A session or an explainer followed from a
-track carries the track's target as a last part: `#/atlas/learn/<concept-id>/<target>`,
-`#/atlas/<concept-id>/watch/<target>`.
+Routes: `#/` opens the book last read, and any unknown address lands there; `#/atlas` a book's home (another book's
+is `#/c/<course>`); `#/atlas/explore/<view>` Explore, with the views `chapters`, `map`, `list`, `goals` and `history`;
+`#/atlas/learn/<concept-id>` one step of practice and `#/atlas/learn` the reviews due; `#/atlas/<concept-id>/watch` an
+explainer; `#/atlas/<concept-id>` a concept's sheet over the home; `#/atlas/place` the placement test; `#/settings` and
+`#/account`. Addresses of pages since folded into these (`graph`, `list`, `history`, `next`, `track`, `new-track`,
+`#/review`, `#/path`) still work and redirect.
 
 ## Concepts and the graph
 
@@ -154,35 +150,28 @@ Watching an explainer does not count toward mastery; only answers do.
 
 ## Sessions
 
-`#/atlas/learn` runs a session: about 15 minutes, problem after problem. The scheduler picks each
-problem in a fixed order, so a session reads as blocks:
+The app is one straight line: open the book, one obvious next thing, do it, return to the same place, next thing.
+`src/mastery/ui/next-step.ts` is the only answer to "what next", in this order:
 
-1. Concepts that slipped on a review, until won back (a recovery streak, half the bar).
-2. Every due review, one problem each, foundations first (prerequisites before what builds on
-   them). A review that needed the worked example stays due for the next session.
-3. The concept in progress, until mastered; three misses in four send the learner to a
-   prerequisite for one problem first.
-4. A new concept, by the learner's pace (a synced setting, deep by default). Deep: what the
-   latest mastery unlocked, then the domain of the latest practice. Broad: the domain practiced
-   longest ago, never practiced first. Then by depth, then by how many concepts it unlocks.
+1. Reviews: concepts that slipped until won back (a recovery streak, half the bar), then every due review, one problem
+   each, foundations first. A review that needed the worked example stays due for the next session.
+2. The concept in progress.
+3. The next concept: along the goal the book leads with when one is set, else the first open one on the tour, the
+   chapters in order and each in graph order. A chapter never needs a concept from a later one.
 
-The first two are the review block. Its header counts "Review 2 of 5", and it ends the session
-on a "Reviews done" screen that lists how each review went and leads back to the course's front page, where
-the learner picks what comes next. A session opened on a concept (its page, or the end of its
-explainer) stays on that concept until it is mastered, and the reviews follow. The front page
-leads with due reviews whenever there are any.
+**One step is one concept.** Start opens its explainer, or practice once that has been heard; the step ends when the
+concept is mastered, on the mastery moment and its one button. `#/atlas/learn` without a concept is the block of
+reviews, counted "Review 2 of 5". It runs across every book and ends on one "Reviews done" list.
 
-The learner can also choose: `#/atlas/next` ("What next?") offers the next step along the chain
-(Go deeper), the best start in another domain (Something different), and every concept open to
-start, each opening on its explainer, with the deep or broad switch. A course's front page, the mastery
-moment and a new concept's intro link to it.
+**Back goes back.** Every arrow and X returns along the way the learner came, falling back to the book's home
+(`src/core/back.ts`). The parts of one step replace each other in the history, so X leaves the step whole.
 
 A concept's first problem comes after its explainer, which the learner may skip.
 
 ## Tracks
 
 A track is a target concept and everything it needs: the target and its prerequisites, all the
-way down. The learner picks the target on the map (or from a concept's page); its set lights up
+way down. The learner picks the target from a concept's sheet; its set lights up
 and the rest dims, with how many concepts it holds, how many are already mastered and about how
 long the rest takes. A learner may follow several tracks at once.
 
@@ -192,22 +181,18 @@ long the rest takes. A learner may follow several tracks at once.
 - **Reviews stay outside tracks.** They are due across everything mastered, and the home leads
   with them whatever tracks are followed.
 - **A track drives what is new.** Its next concept is the one in progress on it, else the best
-  new one by the learner's pace among its own. Continue opens that concept's explainer (its
-  practice once watched or started). A session followed from a track learns the track's concepts
-  while any is left, and the mastery moment leads to the track's next one; once a track is
-  finished, sessions go back to the whole map.
+  new one among its own. Start opens that concept's explainer (its practice once heard). Once a
+  track is finished the book goes back to the tour.
 - **The estimate** adds up, for each concept left, its explainer's unheard minutes (the narration
   length is read from `timing.json` at build time) and its bar's remaining answers at 1.5 times
   their target time.
 
-With tracks, a course's front page leads with due reviews (or a concept slipping, or one in
-progress outside every track), else Continue on the first track under way. The Path tab shows that
-track's next steps, the other goals and the finished ones; with none, it invites setting a goal.
-The tracks followed sync across devices (`docs/SYNC.md`).
+A book's home leads with one goal, the first set with something left; the others wait in Explore's Goals.
+The goals followed sync across devices (`docs/SYNC.md`).
 
 ## Placement
 
-A first visit offers a placement test: it walks the graph in topological order, jumping
+A book's home offers a placement test until the first answer, and Explore after that: it walks the graph in topological order, jumping
 ahead after fast correct answers and back after misses, and marks what it confirms as
 mastered with an early review, so a mistaken placement surfaces within days. Retaking it never
 lowers a concept's state.
@@ -224,19 +209,14 @@ The account page (`#/account`) also saves both to a JSON file and loads one back
 
 ## Screens
 
-- **Shelf** (`#/`): every course as a cover with its progress.
-- **Course** (`#/atlas`): what to do now, then the contents by part.
-- **Review** (`#/review`): what is due across every course, what comes up next, past sessions.
-- **Path** (`#/path`): the way to the goal being followed, and how to change it.
-- **History** (`#/atlas/history`): explainers played and concepts practiced, latest first and
-  grouped by day, each with where it stopped. Read
-  from the synced playback and mastery records, so it spans devices; nothing extra is stored.
-- **Map** (`#/atlas/graph/<part>`): one part at a time, its concepts laid out by what builds on
-  what, with the earlier concepts it opens from. `#/atlas/list` is every concept by what to do with
-  it. Tapping one opens it. Picking a track still draws the whole graph.
-- **Concept** (`#/atlas/<id>`): the explainer, the prerequisites and what it unlocks, the
-  learner's numbers (streak, average time, next review), Practice, and a way to make it a
-  track.
+- **Home** (`#/atlas`): the book's name (which opens the switcher), Explore, the gear, one card with the next thing,
+  and the tour: the chapter in progress open as a line, the chapters behind it folded, the rest opening in place.
+- **Explore** (`#/atlas/explore/<view>`): the one place for looking around, entered on purpose and never by the main
+  path. Chapters shows the book as regions in tour order; Map the whole graph with no regions; List every concept by
+  what to do with it; Goals what is followed; History what was played and practiced, read from the synced records so
+  it spans devices. Each has the same sheet on a tap.
+- **Concept sheet**: opened over wherever the learner is, and closing returns them there exactly: what it is, where they
+  stand, what it builds on, the next action, and a way to make it a goal.
 - **Problem**: the prompt, any listing, and an answer pad built for the answer's kind: a
   keypad for numbers, shapes and vectors, buttons for choices, so the phone keyboard never
   opens. After submitting: right or wrong, the worked solution, and the streak.
@@ -246,7 +226,7 @@ The account page (`#/account`) also saves both to a JSON file and loads one back
 - `src/mastery/domain/`: pure, no DOM, unit tested: the graph and its checks, the student
   model, the scheduler, placement, the graders and the expression parser.
 - `src/mastery/learner.ts` and `store.ts`: the learner's records, through the progress store.
-- `src/mastery/ui/`: the map, concept page, session runner, placement and answer pads.
+- `src/mastery/ui/`: the home, Explore, the concept sheet, the session runner, placement and answer pads.
 - `src/courses/`: the content, one folder per concept.
 - `src/courses/courses.test.ts`: fails on a cycle, a missing prerequisite or a misnamed folder,
   and runs every generator over many seeds and difficulties: its own answer must pass its

@@ -31,10 +31,8 @@
   --c-gold: #745400;
   --c-slate: #4f5b69;
 
-  /* What the navigation takes from the page: tabs along the bottom of a phone, a rail down the side of a wide screen. */
-  --tabs-h: 62px;
-  --tabs-clear: calc(var(--tabs-h) + env(safe-area-inset-bottom));
-  --rail-w: 92px;
+  /* What the home indicator takes from the page. */
+  --tabs-clear: env(safe-area-inset-bottom);
   --measure: 690px;
   color-scheme: light;
 }
@@ -138,43 +136,6 @@ button {
   background: var(--hl);
 }
 
-/* ---------- navigation: tabs, or a rail on a wide screen ---------- */
-
-.tabs {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 30;
-  display: flex;
-  justify-content: space-around;
-  padding: 9px 0 calc(9px + env(safe-area-inset-bottom));
-  background: var(--paper);
-  border-top: 1px solid var(--rule);
-}
-
-.tab {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  min-width: 64px;
-  color: var(--ink-3);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-decoration: none;
-  text-transform: uppercase;
-}
-
-.tab .ico {
-  width: 23px;
-  height: 23px;
-}
-
-.tab.on {
-  color: var(--ink);
-}
-
 .icon-btn {
   display: grid;
   place-items: center;
@@ -207,26 +168,6 @@ button {
 .main {
   min-height: 100vh;
   padding-bottom: var(--tabs-clear);
-}
-
-@media (min-width: 900px) {
-  .tabs {
-    top: 0;
-    right: auto;
-    width: var(--rail-w);
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 24px;
-    padding: 28px 0;
-    border-top: 0;
-    border-right: 1px solid var(--rule);
-  }
-  :root {
-    --tabs-clear: 0px;
-  }
-  .main {
-    margin-left: var(--rail-w);
-  }
 }
 
 .loading {

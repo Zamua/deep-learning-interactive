@@ -1,6 +1,6 @@
 // A Vite plugin: puts into the page what its first paint needs, so that paint waits on no other request: copies of the
 // shared styles (the originals still load, in their usual order, so the cascade is unchanged), the placeholders' styles,
-// the books and tab icons they draw. And it keeps the stylesheet from holding back the paint.
+// the books and icons they draw. And it keeps the stylesheet from holding back the paint.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
@@ -19,7 +19,7 @@ export function books() {
   });
 }
 
-const TABS = { shelf: 'books', review: 'stack', path: 'compass', settings: 'gear' };
+const ICONS = { caret: 'caret-down', graph: 'graph', gear: 'gear-six' };
 const iconOf = (name) => readFileSync(join(root, 'node_modules/@phosphor-icons/core/assets/light', `${name}-light.svg`), 'utf8').replace('<svg ', '<svg class="ico" aria-hidden="true" ');
 
 /** Safe inside a <script>: nothing in it can end the element. */
@@ -37,7 +37,7 @@ export function shell() {
         return out
           .replace('<!-- shell-styles -->', () => `<style>${css}</style>`)
           .replace('/*atlas-books*/[]', () => json(books()))
-          .replace('/*atlas-tabs*/{}', () => json(Object.fromEntries(Object.entries(TABS).map(([k, v]) => [k, iconOf(v)]))));
+          .replace('/*atlas-icons*/{}', () => json(Object.fromEntries(Object.entries(ICONS).map(([k, v]) => [k, iconOf(v)]))));
       },
     },
   };

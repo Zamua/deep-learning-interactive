@@ -66,7 +66,7 @@ export function mountLecture(host: HTMLElement, def: LectureDef, frame: LectureF
   const sceneTitle = h('div', { class: 'lec-scene-title' });
   const sceneCount = h('div', { class: 'lec-count' });
   const top = h('header', { class: 'lec-top' },
-    h('a', { class: 'lec-back', href: frame.back, 'aria-label': 'Back', html: icon('arrowLeft') }),
+    h('a', { class: 'lec-back', href: frame.back, 'data-back': '', 'aria-label': 'Back', html: icon('arrowLeft') }),
     h('div', { class: 'lec-titles' },
       h('div', { class: 'lec-kicker' }, frame.kicker),
       sceneTitle),

@@ -66,7 +66,7 @@ export function renderPlacement(main: HTMLElement, learner: Learner): void {
       h('div', { class: 'at-kicker' }, 'Placement done'),
       h('h1', { class: 'at-title' }, placed.length ? `${plural(placed.length, 'concept')} placed` : 'Starting from the beginning'),
       h('p', { class: 'at-lede' }, frontier.length ? `Ready to learn next: ${frontier.slice(0, 4).join(', ')}${frontier.length > 4 ? ', and more' : ''}.` : 'Everything is placed.')));
-    frame.dock.append(h('a', { class: 'at-ghost', href: learner.course.routes.home }, 'See the map'), h('a', { class: 'at-check', href: learner.course.routes.learn(), html: `${icon('playFill')} Start learning` }));
+    frame.dock.append(h('a', { class: 'at-check', href: learner.course.routes.learn(), html: `${icon('playFill')} Start learning` }));
   };
 
   start();
