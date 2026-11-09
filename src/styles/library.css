@@ -985,3 +985,30 @@ html[data-theme='dark'] .scrim {
   height: 18px;
   color: var(--accent);
 }
+
+/* Warm look: display face for titles and buttons, and each chapter's colour on its tour row. */
+.lib h1,
+.lib h2,
+.lib h3,
+.hb-book,
+.lib-card-t,
+.lib-btn,
+.sh h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.tr-ch span {
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+.tr-ch b,
+.tr-ch small {
+  color: var(--dom, var(--ink-3));
+}
+.tr-ch b {
+  font-weight: 700;
+}
+.tr-ch.now span {
+  color: var(--dom, var(--accent));
+}

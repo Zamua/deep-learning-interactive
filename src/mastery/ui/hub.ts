@@ -96,7 +96,7 @@ function tourList(learner: Learner, now: string | undefined): HTMLElement {
     const { d, concepts } = parts[i]!;
     const held = concepts.filter(mastered).length;
     const here = i === open;
-    const row = h('button', { type: 'button', class: `tr-ch${here ? ' now' : held ? '' : i > open ? ' later' : ''}`, 'aria-expanded': String(here) },
+    const row = h('button', { type: 'button', class: `tr-ch${here ? ' now' : held ? '' : i > open ? ' later' : ''}`, 'aria-expanded': String(here), ...(d.color ? { style: `--dom:var(--c-${d.color})` } : {}) },
       h('b', {}, roman(i + 1)), h('span', {}, d.title), h('i'), h('small', {}, `${held} / ${concepts.length}`));
     const line = stops(learner, concepts, now);
     line.hidden = !here;
