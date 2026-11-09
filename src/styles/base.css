@@ -232,7 +232,7 @@ button {
 .loading {
   font-family: var(--font-ui);
   color: var(--ink-3);
-  padding: 40px 0;
+  padding: 40px 22px;
 }
 
 /* Punctuation glued into the end of inline math reads as text, not as math. */
