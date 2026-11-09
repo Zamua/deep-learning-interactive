@@ -235,6 +235,7 @@ export function mountGraph(box: HTMLElement, learner: Learner, kind: GraphKind):
     selected = id;
     paint(stage.view, true);
     openConceptSheet(learner, id, {
+      reading: true,
       onChip: select,
       onClose: () => {
         selected = null;

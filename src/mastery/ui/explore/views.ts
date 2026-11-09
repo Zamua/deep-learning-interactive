@@ -21,7 +21,7 @@ function rowsOpenSheets(host: HTMLElement, learner: Learner): void {
     const r = parseRoute(a.getAttribute('href') ?? '');
     if (r && (r.page === 'concept' || r.page === 'watch')) {
       e.preventDefault();
-      openConceptSheet(learner, r.concept);
+      openConceptSheet(learner, r.concept, { reading: true });
     }
   });
 }
@@ -32,7 +32,7 @@ export function listView(host: HTMLElement, learner: Learner): void {
   host.querySelector('.at-back')?.remove();
   host.querySelector('.home-title')?.remove();
   const inside = host.querySelector('.at-search');
-  inside?.replaceWith(mapSearch(learner, { light: () => {}, pick: (id) => openConceptSheet(learner, id) }));
+  inside?.replaceWith(mapSearch(learner, { light: () => {}, pick: (id) => openConceptSheet(learner, id, { reading: true }) }));
   rowsOpenSheets(host, learner);
 }
 
@@ -57,7 +57,7 @@ export function goalsView(host: HTMLElement, learner: Learner): void {
   const { graph, course } = learner;
   const title = (id: string) => graph.get(id)!.title;
   const draw = () => {
-    const open = (id: string) => openConceptSheet(learner, id, { onClose: draw });
+    const open = (id: string) => openConceptSheet(learner, id, { reading: true, onClose: draw });
     const goals = learner.trackTargets.map((id) => trackOf(learner, id));
     const going = goals.filter((t) => t.next);
     const reached = goals.filter((t) => !t.next);
