@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { next, start, type LinkEvent, type LinkStep } from './link-steps';
+import { next, start, type LinkEvent, type LinkStep, codeFromPaste } from './link-steps';
 
 const peek = { theirs: { n: 3, last: 9 }, mine: 1 };
 function run(...events: LinkEvent[]): { s: LinkStep; fx: string[] } {
@@ -41,5 +41,16 @@ describe('linking by code', () => {
 
   it('says so when the code is this device own', () => {
     expect(run({ type: 'submit', text: 'A' }, { type: 'peeked', text: 'A', same: true, peek }).s).toEqual({ kind: 'same' });
+  });
+});
+
+describe('codeFromPaste', () => {
+  it('takes the code out of a shared link', () => {
+    expect(codeFromPaste('https://example.test/#/link/ABCD%20EFGH')).toBe('ABCD EFGH');
+    expect(codeFromPaste('https://example.test/#/link/ABCD-EFGH')).toBe('ABCD-EFGH');
+  });
+
+  it('leaves a typed code alone', () => {
+    expect(codeFromPaste('ABCD-EFGH')).toBe('ABCD-EFGH');
   });
 });

@@ -2,6 +2,17 @@
 // the events, runs the effects (the lookups and the link itself) and draws the step.
 
 /** What a code's account holds, next to this device's own progress. */
+/** The code in what was pasted: a shared link carries one, and the share sheet's Copy gives the link. Anything else is left as it is. */
+export function codeFromPaste(text: string): string {
+  const m = /#\/link\/([^?#\s]+)/.exec(text);
+  if (!m) return text;
+  try {
+    return decodeURIComponent(m[1]!);
+  } catch {
+    return m[1]!;
+  }
+}
+
 export interface Peek {
   /** Concepts mastered there, and its latest practice. */
   theirs: { n: number; last: number };
