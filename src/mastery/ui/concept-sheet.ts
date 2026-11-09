@@ -12,6 +12,8 @@ import { openSheet } from './sheet';
 export interface ConceptSheetOptions {
   /** Makes Builds on and Unlocks chips that call this; without it they are plain text. */
   onChip?: (id: string) => void;
+  /** Lists the papers behind the concept. Explore only: the main path has no links that lead away. */
+  reading?: boolean;
   /** After it closes, however it was closed. */
   onClose?: () => void;
 }
@@ -99,6 +101,13 @@ export function openConceptSheet(learner: Learner, id: string, opts: ConceptShee
     ...relation(learner, 'Unlocks', graph.dependents.get(id) ?? [], opts.onChip),
     primary(learner, id),
     goalToggle(learner, id));
+  if (opts.reading) {
+    void course.loadExplainer(id)?.then((def) => {
+      const papers = def.script.papers ?? [];
+      if (papers.length) body.append(h('div', { class: 'sh-lab' }, 'Reading'), ...papers.map((p) =>
+        h('a', { class: 'lib-paper', href: p.url, target: '_blank', rel: 'noopener' }, h('b', {}, p.title), h('small', {}, `${p.who}, ${p.year}`))));
+    }).catch(() => {});
+  }
   const close = openSheet(c.title, body);
   const sheet = body.closest<HTMLElement>('.sh')!;
   const watch = new MutationObserver(() => {
