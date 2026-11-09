@@ -1,0 +1,35 @@
+{
+ "duration": 150.482,
+ "scenes": {
+  "facts": [0.0, 46.173],
+  "reach": [46.173, 79.01],
+  "merge": [79.01, 116.813],
+  "share": [116.813, 150.482]
+ },
+ "beats": {
+  "facts/ask": [0.7, 6.317, "A build tool has to be told things. What is this program called? Which version? Where is its source?", [[2.61, 3.0], [4.16, 4.49], [5.18, 5.37]]],
+  "facts/facts": [6.697, 9.669, "Put together, a package is a bundle of named facts.", [[7.347, 7.597]]],
+  "facts/compute": [10.049, 20.476, "And the facts are connected. The file name repeats the version, and other packages will need this one. Fixed text cannot say that, so Nix has a small language of its own.", [[11.299, 11.829], [13.619, 13.889], [15.769, 16.379], [17.969, 18.239]]],
+  "facts/set": [20.856, 31.392, "Its main shape is the attribute set: names, each bound to a value, between curly braces. Nix evaluates an expression like this, which means it works out its value.", [[22.836, 23.306], [23.866, 24.086], [26.806, 27.366], [29.536, 29.806]]],
+  "facts/semi": [31.772, 38.002, "A semicolon ends every binding, the last one too. Leave one out and Nix stops with a syntax error.", [[33.672, 33.852], [34.752, 35.312]]],
+  "facts/dot": [38.382, 45.073, "A dot selects one value. dot version gives two point one two, and the comment underneath shows what Nix printed.", [[39.902, 40.422], [42.482, 42.812]]],
+  "reach/nest": [46.873, 52.327, "A value can be another set. Packages keep their extra facts in one, usually called meta.", [[48.293, 48.803], [50.913, 51.173]]],
+  "reach/sugar": [52.707, 59.787, "A dotted name on the left is shorthand for that nesting. Write meta dot license, and Nix builds the inner set for you.", [[55.697, 56.277], [57.787, 58.087]]],
+  "reach/walk": [60.167, 63.139, "Selection walks the same path, one dot at a time.", [[61.737, 62.107]]],
+  "reach/miss": [63.519, 67.331, "Ask for a name that is not there, and evaluation stops with an error.", [[65.189, 65.549]]],
+  "reach/or": [67.711, 72.822, "The word or gives a fallback instead. If the name is missing, you get what comes after it.", [[69.771, 70.301], [71.331, 71.581]]],
+  "reach/has": [73.202, 77.91, "A question mark only asks: is this name in the set? You get true or false.", [[74.792, 75.172], [76.182, 76.552]]],
+  "merge/over": [79.71, 84.266, "Often you want the same package with one fact changed: hello, at a newer version.", [[82.37, 82.81]]],
+  "merge/update": [84.646, 90.099, "The double slash operator merges two sets: the whole left one, with the right one laid over it.", [[87.066, 87.486], [88.436, 88.686]]],
+  "merge/wins": [90.479, 97.185, "A name that is on both sides takes the value from the right. Names on only one side come through unchanged.", [[92.079, 92.359], [93.799, 94.369]]],
+  "merge/top": [97.565, 104.62, "But only the top level merges. Meta is one name here, so the right side's meta replaces the left side's meta whole.", [[99.315, 99.835], [101.095, 101.365]]],
+  "merge/gone": [105.0, 108.337, "Nothing went inside to combine them, and the license is gone.", [[106.75, 107.09]]],
+  "merge/names": [108.717, 115.713, "A set has no order of its own. built-ins dot attr names lists its names sorted, whatever order you wrote them in.", [[110.457, 110.997], [113.887, 114.237]]],
+  "share/repeat": [117.513, 122.672, "Back to that file name. It repeats the version, so changing one means remembering the other.", [[118.723, 119.183], [120.283, 120.463]]],
+  "share/plain": [123.052, 128.743, "You might try to use the version right there. In a plain set, it fails: bindings cannot see each other.", [[124.982, 125.362], [126.682, 127.042]]],
+  "share/rec": [129.123, 134.091, "Put the word reck in front, short for recursive, and every binding can see every other.", [[130.433, 130.703], [131.823, 132.163]]],
+  "share/inherit": [134.471, 142.94, "Meta wants a version field with the same value. Inherit version copies that name in from around it, so you skip writing version equals version.", [[136.911, 137.511], [140.211, 140.521]]],
+  "share/out": [143.32, 148.275, "What comes out is an ordinary set of facts, and the version is now written in one place.", [[145.73, 146.1]]],
+  "share/turn": [148.655, 149.382, "Your turn.", []]
+ }
+}

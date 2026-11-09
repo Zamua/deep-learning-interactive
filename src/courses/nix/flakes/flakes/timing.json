@@ -1,0 +1,36 @@
+{
+ "duration": 166.839,
+ "scenes": {
+  "drift": [0.0, 31.337],
+  "shape": [31.337, 76.756],
+  "lock": [76.756, 114.102],
+  "pure": [114.102, 166.839]
+ },
+ "beats": {
+  "drift/file": [0.7, 5.784, "Here is a short file that gives you GNU Hello from nix packages. It looks complete.", [[4.46, 4.88]]],
+  "drift/angle": [6.164, 11.991, "But look at the name in angle brackets. That name is not in the file. Nix looks it up on this machine.", [[8.164, 8.554], [10.064, 10.474]]],
+  "drift/channel": [12.371, 18.774, "It finds a channel: a copy of nix packages this machine last updated whenever somebody got round to it.", [[13.391, 13.891], [16.921, 17.231]]],
+  "drift/two": [19.154, 25.56, "So a laptop updated in March and a server updated in June read the same file, and build different things.", [[21.064, 21.364], [24.034, 24.404]]],
+  "drift/want": [25.94, 30.237, "What you want is a file that says exactly which nix packages it means.", [[27.2, 27.39], [28.39, 28.72]]],
+  "shape/file": [32.037, 40.082, "A flake is a folder with a file called flake dot nix. That file is an attribute set with three parts, and the first is a description.", [[35.177, 35.707], [38.257, 38.587]]],
+  "shape/inputs": [40.462, 46.98, "Inputs says what the flake depends on, by U R L. This one is a branch of nix packages on GitHub.", [[42.442, 42.742], [43.682, 44.252]]],
+  "shape/outputs": [47.36, 53.725, "Outputs is a function. Nix fetches every input and passes them in by name. Self is the flake itself.", [[48.59, 49.01], [51.74, 52.14]]],
+  "shape/set": [54.105, 61.131, "Legacy packages is where nix packages keeps its packages, one set per system. The odd name is only history.", [[57.385, 57.745], [58.995, 59.475]]],
+  "shape/ret": [61.511, 67.554, "The function returns an attribute set. A package goes under packages, then its system, then a name.", [[63.631, 64.111], [65.761, 66.071], [66.821, 66.971]]],
+  "shape/known": [67.934, 75.656, "That shape is the same in every flake, so tools know where to look. Nix build dot hash default builds exactly that attribute.", [[69.944, 70.204], [71.524, 72.104]]],
+  "lock/first": [77.456, 85.129, "A branch moves. So the first time you use a flake, Nix turns that branch into one exact commit, and writes it in flake dot lock.", [[78.356, 78.806], [80.416, 80.596], [83.156, 83.486]]],
+  "lock/rev": [85.509, 88.029, "Here is the pin. Rev is the exact commit.", [[86.339, 86.619]]],
+  "lock/hash": [88.409, 93.959, "N A R hash is a hash of what that commit contains, so a download that differs is rejected.", [[91.349, 91.739]]],
+  "lock/commit": [94.339, 103.09, "You commit this file to git, next to flake dot nix. Now everyone who checks out the repository evaluates against the same nix packages.", [[95.719, 96.159], [97.639, 98.179], [100.589, 100.749]]],
+  "lock/moves": [103.47, 106.904, "The branch keeps moving, and your builds stay exactly where they were.", [[104.63, 104.97]]],
+  "lock/update": [107.284, 113.001, "When you want newer packages, nix flake update moves the pin. It is a change you choose, and commit.", [[108.644, 108.884], [110.624, 111.114]]],
+  "pure/err": [114.802, 120.827, "Here is the classic surprise. In a git repository this fails, with flake dot nix sitting right there.", [[116.401, 116.791], [118.651, 118.922]]],
+  "pure/tracked": [121.207, 128.384, "A flake only sees files git tracks. A file git does not know about does not exist, as far as Nix is concerned.", [[123.437, 123.937], [126.547, 126.777]]],
+  "pure/why": [128.764, 134.592, "That is on purpose. A stray local file can never slip into a build nobody else can reproduce.", [[129.844, 130.354], [132.854, 133.004]]],
+  "pure/build": [134.972, 141.233, "Add the file and it builds. Dot hash default means the flake in this folder, and its output called default.", [[136.402, 136.882], [139.322, 139.662]]],
+  "pure/run": [141.613, 147.442, "A flake can live anywhere. Nix run, then a GitHub address fetches one, builds it and runs it.", [[142.843, 143.413], [144.073, 144.263], [145.933, 146.143]]],
+  "pure/pure": [147.822, 157.582, "Evaluation is pure as well. Inside a flake there is no nix packages in angle brackets, no current system, and environment variables read as empty.", [[149.692, 150.272], [153.682, 154.012], [155.022, 155.352]]],
+  "pure/end": [157.962, 164.632, "So what a flake builds depends only on its tracked files and its pinned inputs, and those are the same on every machine.", [[161.072, 161.232], [162.282, 162.702]]],
+  "pure/turn": [165.012, 165.739, "Your turn.", []]
+ }
+}

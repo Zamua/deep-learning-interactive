@@ -7,10 +7,11 @@
 // Env: TTS_PY, KOKORO_DIR, OPENROUTER_API_KEY or OPENROUTER_KEY_FILE, TTS_CACHE, WHISPER_MODEL;
 // tools/lecture/local.env (KEY=value lines, untracked) supplies any that are unset.
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { findExplainer } from './find.mjs';
 
 const root = resolve(import.meta.dirname, '../..');
 const localEnv = join(import.meta.dirname, 'local.env');
@@ -25,14 +26,12 @@ if (!id) {
   console.error('usage: node tools/lecture/build.mjs atlas-<concept-id> [--dry | --check]');
   process.exit(2);
 }
-// An explainer lives in its concept's folder: src/courses/<course>/<domain>/<concept>/.
-const atlas = id.replace(/^atlas-/, '');
-const domain = readdirSync(join(root, 'src/courses/dl'), { withFileTypes: true }).find((d) => d.isDirectory() && existsSync(join(root, 'src/courses/dl', d.name, atlas, 'script.ts')));
-if (!domain) {
-  console.error(`no explainer script for concept ${atlas}`);
+const found = findExplainer(id);
+if (!found) {
+  console.error(`no explainer script for ${id}`);
   process.exit(2);
 }
-const dir = `src/courses/dl/${domain.name}/${atlas}`;
+const { dir } = found;
 const { script } = await import(pathToFileURL(join(root, dir, 'script.ts')).href);
 const { GAP, spokenText } = await import(pathToFileURL(join(root, 'src/lecture/types.ts')).href);
 

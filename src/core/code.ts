@@ -1,13 +1,5 @@
-import { escapeHtml, h } from './dom';
-
-const KEYWORDS = new Set(
-  'and as assert break class continue def del elif else except False finally for from global if import in is lambda None nonlocal not or pass raise return True try while with yield'.split(' '),
-);
-const BUILTINS = new Set('print range len int float str list dict tuple zip enumerate min max sum abs self super isinstance sorted reversed map'.split(' '));
-
-/** Sentinel bracketing a live slot index inside source text, outside any real character range. */
-const LIVE_OPEN = '';
-const LIVE_CLOSE = '';
+import { h } from './dom';
+import { highlightLine, LIVE_CLOSE, LIVE_OPEN, type Lang, type Slot, type TokState } from './highlight';
 
 export function dedent(src: string): string {
   const lines = src.replace(/\t/g, '    ').split('\n');
@@ -20,7 +12,7 @@ export function dedent(src: string): string {
 interface Parsed {
   lines: string[];
   labels: Map<string, number[]>;
-  slots: { name: string; init: string }[];
+  slots: Slot[];
 }
 
 /** Strips `#@label` line tags and turns `{{name}}` / `{{name:init}}` into live-slot sentinels. */
@@ -43,83 +35,18 @@ function parse(src: string): Parsed {
   return { lines, labels, slots };
 }
 
-type TokState = { inTriple: string | null };
-
-/** Highlights one line of Python. Identifiers in `symIdx` get the matching `sym-*` class. */
-function highlightLine(line: string, st: TokState, symIdx: Map<string, string>, slots: Parsed['slots']): string {
-  let out = '';
-  let i = 0;
-  const span = (cls: string, s: string) => `<span class="${cls}">${escapeHtml(s)}</span>`;
-  const slot = (s: string) =>
-    s.replace(new RegExp(`${LIVE_OPEN}(\\d+)${LIVE_CLOSE}`, 'g'), (_, n: string) => {
-      const sl = slots[Number(n)]!;
-      return `<span class="live" data-live="${sl.name}">${escapeHtml(sl.init)}</span>`;
-    });
-  if (st.inTriple) {
-    const end = line.indexOf(st.inTriple);
-    if (end < 0) return span('tk-str', line);
-    out += span('tk-str', line.slice(0, end + 3));
-    i = end + 3;
-    st.inTriple = null;
-  }
-  while (i < line.length) {
-    const rest = line.slice(i);
-    let m: RegExpMatchArray | null;
-    if (rest[0] === LIVE_OPEN) {
-      const end = rest.indexOf(LIVE_CLOSE);
-      out += slot(rest.slice(0, end + 1));
-      i += end + 1;
-    } else if (rest[0] === '#') {
-      out += slot(span('tk-com', rest));
-      break;
-    } else if ((m = rest.match(/^[rbfu]?("""|''')/i))) {
-      const q = m[1]!;
-      const end = rest.indexOf(q, m[0].length);
-      if (end < 0) {
-        out += span('tk-str', rest);
-        st.inTriple = q;
-        break;
-      }
-      out += span('tk-str', rest.slice(0, end + 3));
-      i += end + 3;
-    } else if ((m = rest.match(/^[rbfu]?(['"])(?:\\.|(?!\1).)*\1?/i))) {
-      out += slot(span('tk-str', m[0]));
-      i += m[0].length;
-    } else if ((m = rest.match(/^(?:\d+\.?\d*(?:e[-+]?\d+)?|\.\d+(?:e[-+]?\d+)?)j?/i))) {
-      out += span('tk-num', m[0]);
-      i += m[0].length;
-    } else if ((m = rest.match(/^[A-Za-z_]\w*/))) {
-      const w = m[0];
-      const prev = line.slice(0, i).trimEnd();
-      const sym = symIdx.get(w);
-      if (sym && !prev.endsWith('.')) out += `<span class="sym sym-${sym}">${w}</span>`;
-      else if (KEYWORDS.has(w)) out += span('tk-kw', w);
-      else if (prev.endsWith('def') || prev.endsWith('class')) out += span('tk-def', w);
-      else if (BUILTINS.has(w)) out += span('tk-bi', w);
-      else if (line.slice(i + w.length).startsWith('(')) out += span('tk-fn', w);
-      else out += escapeHtml(w);
-      i += w.length;
-    } else if ((m = rest.match(/^[-+*/%=<>!&|^~@:]+/))) {
-      out += span('tk-op', m[0]);
-      i += m[0].length;
-    } else {
-      out += escapeHtml(rest[0]!);
-      i += 1;
-    }
-  }
-  return out;
-}
-
 export interface CodeOptions {
   /** Shown in the panel's tab, e.g. "linear_classifier.py". */
   title?: string;
   symIdx?: Map<string, string>;
   /** Hide line numbers (for one- or two-line snippets). */
   bare?: boolean;
+  /** The listing's language; Python unless a course says otherwise. */
+  lang?: Lang;
 }
 
 /**
- * A read-only Python listing that a figure can drive: `highlight()` lights lines by `#@label`
+ * A read-only listing that a figure can drive: `highlight()` lights lines by `#@label`
  * or number, `set()` rewrites a `{{slot}}` so the listing always shows the values the figure uses.
  */
 export class CodePanel {
@@ -133,16 +60,17 @@ export class CodePanel {
     const p = parse(src);
     this.labels = p.labels;
     const st: TokState = { inTriple: null };
+    const lang = opts.lang ?? 'python';
     this.body = h('div', { class: 'code-body' });
     p.lines.forEach((line, i) => {
       const row = h('div', { class: 'ln' });
       if (!opts.bare) row.append(h('span', { class: 'ln-no' }, String(i + 1)));
-      row.append(h('span', { class: 'ln-src', html: highlightLine(line, st, opts.symIdx ?? new Map(), p.slots) || ' ' }));
+      row.append(h('span', { class: 'ln-src', html: highlightLine[lang](line, st, opts.symIdx ?? new Map(), p.slots) || ' ' }));
       this.rows.push(row);
       this.body.append(row);
     });
     this.el = h('div', { class: `code${opts.bare ? ' code-bare' : ''}` });
-    if (opts.title) this.el.append(h('div', { class: 'code-tab' }, h('span', { class: 'code-tab-name' }, opts.title), h('span', { class: 'code-tab-lang' }, 'python')));
+    if (opts.title) this.el.append(h('div', { class: 'code-tab' }, h('span', { class: 'code-tab-name' }, opts.title), h('span', { class: 'code-tab-lang' }, lang)));
     this.el.append(this.body);
     this.body.querySelectorAll<HTMLElement>('.live').forEach((e) => {
       const n = e.dataset.live!;

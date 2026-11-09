@@ -1,9 +1,10 @@
 // The library: every course on the shelf as a cover, with how far along the learner is.
-import { COURSES, FIRST } from '../../courses/index';
+import { COURSES } from '../../courses/index';
 import { h } from '../../core/dom';
 import { Learner } from '../learner';
 import { syncReminders } from '../push';
 import { plural, progressBar } from './common';
+import { reminderBook } from './reminders';
 
 function cover(learner: Learner): HTMLElement {
   const { course, graph } = learner;
@@ -14,7 +15,7 @@ function cover(learner: Learner): HTMLElement {
 }
 
 export function renderShelf(main: HTMLElement): void {
-  void syncReminders(new Learner(FIRST));
+  void syncReminders(reminderBook());
   main.append(h('div', { class: 'lib lib-wide' },
     h('div', { class: 'lib-brand' }, 'Atlas'),
     h('h1', {}, 'Library'),

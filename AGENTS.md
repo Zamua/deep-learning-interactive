@@ -20,6 +20,10 @@ explainer craft, `docs/SYNC.md` progress sync.
                                          (ElevenLabs via OpenRouter, or Kokoro)
     node tools/lecture/shots.mjs atlas-<concept-id> <dir> [w h mobile] [scene/beat ...]   screenshot every beat
     node tools/lecture/lookup.mjs [atlas-<concept-id> ...]   lookup terms still missing a note
+    node tools/course/course.mjs check|scaffold <outline.json>   validate an outline, or write its folders
+    node tools/course/course.mjs status <course>   what each concept is still missing
+
+A new course goes through the `/make-course` skill (`.claude/skills/make-course/`).
 
 ## Layout
 
@@ -27,8 +31,9 @@ explainer craft, `docs/SYNC.md` progress sync.
   `src/theme.ts`: the color theme.
   `src/routes.ts` builds every address and parses them back; link with a course's `routes.*`
   (site pages: `routes.*`), never a literal.
-- `src/core/`: shared pieces. `code.ts` (Python highlighter + CodePanel with `{{slots}}` and
-  `#@labels`), `math.ts` (KaTeX + the small markdown dialect), `symbols.ts` (color-linked
+- `src/core/`: shared pieces. `code.ts` (CodePanel with `{{slots}}` and `#@labels`),
+  `highlight.ts` (one line at a time, for Python, Nix and shell; a course adds a language here),
+  `math.ts` (KaTeX + the small markdown dialect), `symbols.ts` (color-linked
   symbols and tap-to-name), `plot.ts` (the HiDPI stage canvas, theme colors), `controls.ts` (icons),
   `rand.ts`, `format.ts` (times as pages print them), `storage.ts` (localStorage that never throws).
 - `src/lecture/`: the explainer player. `player.ts` composes it from `theater.ts` (picture, marks,
@@ -38,7 +43,8 @@ explainer craft, `docs/SYNC.md` progress sync.
   double tap to skip, hold for 2x; a unit-tested state machine), `speed.ts`, `scrub.ts`,
   `sections.ts`, `keys.ts`, `media-session.ts`, `poster.ts`; `prefs.ts` keeps speed and captions on
   the device. `progress.ts`: each explainer's resume point and heard time, in the synced store.
-  `scene.ts`: beat-anchored easing and a drawing kit in stage units; `types.ts`: script and timing
+  `scene.ts`: beat-anchored easing and a drawing kit in stage units; `draw.ts`: helpers any course's
+  scenes share (a course's own are in `<course>/draw.ts`); `types.ts`: script and timing
   types; `lookup.ts`: the cards for symbols and calls; `library.ts`: notes on common library calls.
 - `src/mastery/`: the engine. `domain/` is pure and unit tested (concept graph, student model,
   scheduler, tracks, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
@@ -47,7 +53,8 @@ explainer craft, `docs/SYNC.md` progress sync.
 - `src/courses/`: the courses. `course.ts` says what a course is; `index.ts` finds every course and
   concept by glob and builds them (`COURSES`, `courseById`, `FIRST`); `symbols.ts` hands a course's
   symbols to the pages, imported only by them so they stay out of the main chunk. A course is
-  `<course>/course.ts` (title, domains, `idPrefix`) and its concept folders.
+  `<course>/course.ts` (title, domains, `idPrefix`) and its concept folders. `bank.ts` turns
+  hand-written multiple-choice questions into a generator.
 - `src/courses/<course>/<domain>/<concept>/`: each concept: `meta.ts`, `problems.ts`, and an explainer
   (`script.ts`, `scenes.ts`, `explainer.ts`, generated `timing.json` + `narration.m4a`).
   `<course>/symbols.ts` and `notation.ts` hold a course's symbols, code notes and notation.

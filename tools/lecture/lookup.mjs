@@ -2,21 +2,23 @@
 // symbols without `about`. Exits 1 if any are missing. Needs the dev server.
 // Usage: node tools/lecture/lookup.mjs [atlas-<concept-id> ...]
 // Env: BASE=url
-import { existsSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
 import { chromium } from 'playwright';
+import { explainers, findExplainer } from './find.mjs';
 
-const dir = join(import.meta.dirname, '../../src/courses/dl');
-const all = readdirSync(dir, { withFileTypes: true }).filter((d) => d.isDirectory())
-  .flatMap((d) => readdirSync(join(dir, d.name), { withFileTypes: true }).filter((c) => c.isDirectory() && existsSync(join(dir, d.name, c.name, 'script.ts'))).map((c) => `atlas-${c.name}`));
-const ids = process.argv.slice(2).length ? process.argv.slice(2) : all;
+const ids = process.argv.slice(2).length ? process.argv.slice(2) : explainers().map((e) => e.id);
 const base = process.env.BASE ?? 'http://127.0.0.1:5340/';
 const browser = await chromium.launch({ channel: 'chrome' });
 const page = await browser.newPage();
 page.on('pageerror', (e) => console.log('pageerror', e.message));
 let missing = 0;
 for (const id of ids) {
-  await page.goto(`${base}#/atlas/${id.replace(/^atlas-/, '')}/watch`);
+  const found = findExplainer(id);
+  if (!found) {
+    console.log(`${id}: no explainer script`);
+    missing++;
+    continue;
+  }
+  await page.goto(`${base}#/${found.watch}`);
   await page.waitForFunction((id) => window.__lec && location.hash.includes(id.replace(/^atlas-/, '')), id);
   const scenes = await page.evaluate(() => window.__lec.lookup());
   const gaps = new Map();

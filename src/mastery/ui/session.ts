@@ -3,6 +3,7 @@
 import { CodePanel } from '../../core/code';
 import { icon } from '../../core/controls';
 import type { Course } from '../../courses/course';
+import { COURSES } from '../../courses/index';
 import { h, onDispose } from '../../core/dom';
 import { watched } from '../../lecture/progress';
 import { Rng } from '../../core/rand';
@@ -10,8 +11,8 @@ import { grade, type Response, type Verdict } from '../domain/grade';
 import { recoveryStreak, streak, type ConceptRecord } from '../domain/model';
 import type { Pick } from '../domain/scheduler';
 import type { Answer, Concept, Generator, Problem } from '../domain/types';
-import type { Learner } from '../learner';
-import { atlasRoot, dots, pickLink, plural, render } from './common';
+import { Learner } from '../learner';
+import { atlasRoot, dots, dueCount, pickLink, plural, render } from './common';
 import { explainerId } from './concept';
 import { celebrate } from './celebrate';
 import { wireLookup } from './lookup';
@@ -92,7 +93,7 @@ export function ask(course: Course, frame: { body: HTMLElement; dock: HTMLElemen
     });
     if (opts.note) frame.body.append(h('div', { class: 'at-transition' }, opts.note));
     frame.body.append(opts.tag, h('div', { class: 'at-prompt', html: render(course, p.prompt) }));
-    if (p.code) frame.body.append(new CodePanel(p.code, { bare: true }).el);
+    if (p.code) frame.body.append(new CodePanel(p.code, { bare: true, lang: p.lang }).el);
     frame.body.append(pad.display, msg, hint, workedBox);
     if (stuck) frame.body.append(stuck);
     frame.dock.append(pad.keys, check);
@@ -404,7 +405,10 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
       h('h1', { class: 'at-title' }, 'Nice work'),
       h('p', { class: 'at-lede' }, `${kept()} of ${reviews.size} kept.`),
       reviewList()));
-    frame.dock.append(h('a', { class: 'at-check', href: learner.course.routes.home }, 'Done'));
+    // Reviews span every book, so finishing one book's leads into the next book's.
+    const next = COURSES.find((c) => c.id !== learner.course.id && dueCount(new Learner(c)) > 0);
+    if (next) frame.dock.append(h('a', { class: 'at-check', href: next.routes.learn() }, `Review ${next.title}`));
+    frame.dock.append(h('a', { class: next ? 'at-ghost' : 'at-check', href: learner.course.routes.home }, 'Done'));
   };
 
   const intro = (c: Concept, pick: Pick): Promise<void> =>

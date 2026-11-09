@@ -1,4 +1,5 @@
 // The mastery course's vocabulary: concepts, problems and answers.
+import type { Lang } from '../../core/highlight';
 import type { Rng } from '../../core/rand';
 
 /** The bar a concept must clear: the last `streak` answers all correct, averaging at most `seconds`. */
@@ -39,6 +40,8 @@ export interface Problem {
   prompt: string;
   /** An optional listing shown with the prompt, CodePanel syntax. */
   code?: string;
+  /** The listing's language; Python when left out. */
+  lang?: Lang;
   answer: Answer;
   /** The worked solution, one step per entry. */
   solution: string[];

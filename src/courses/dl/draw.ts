@@ -1,22 +1,12 @@
-// A small drawing kit shared by the Atlas explainers, on top of the lecture Scene.
-import type { Color } from '../../core/symbols';
-import { smooth, type Ink, type Scene } from '../../lecture/scene';
+// The deep learning course's drawing kit, on top of the lecture Scene and the kit every course shares.
+import type { Ink, Scene } from '../../lecture/scene';
+
+export { after, caption, stacked, verdict } from '../../lecture/draw';
 
 /** A source credit in the stage's top right corner, at opacity `a`. */
 export function cite(s: Scene, text: string, a: number): void {
   s.alpha(a, () => s.text(text, s.w - 5 * s.u, 5 * s.u, { size: 3.1, italic: true, align: 'right', color: s.c('--ink-2'), halo: true }));
 }
-
-/** A centered line of mono text at height `y`. */
-export function caption(s: Scene, text: string, y: number, k: Ink = '--ink-2', size = 3.4): void {
-  s.text(text, s.w / 2, y, { size, font: 'mono', color: s.c(k), halo: true });
-}
-
-/** Eases from 0 to 1 over `dur` seconds, starting a fraction `f` of the way through beat `id`. */
-export const after = (s: Scene, id: string, f: number, dur = 0.5): number => smooth((s.t - s.at(id) - f * (s.end(id) - s.at(id))) / dur);
-
-/** Whether the stage is too narrow for side-by-side panels, which then stack. */
-export const stacked = (s: Scene): boolean => s.tall || s.w / s.h < 1.45;
 
 /** A number with a typographic minus sign. */
 export const fmt = (v: number): string => String(v).replace('-', '−');
@@ -58,11 +48,4 @@ export function bars(s: Scene, xs: number[], base: number, vals: number[], k: In
 /** A down arrow between rows, from y0 to y1, at each x. */
 export function downArrows(s: Scene, xs: number[], y0: number, y1: number, k: Ink = '--ink-3'): void {
   for (const x of xs) s.arrow(x, y0, x, y1, s.c(k), 0.35, 2);
-}
-
-/** A check or a cross with a caption, for "does it pass?" moments. */
-export function verdict(s: Scene, ok: boolean, text: string, x: number, y: number, size = 3.8): void {
-  const k: Color = ok ? 'green' : 'red';
-  s.text(ok ? '✓' : '✗', x, y, { size: size * 1.2, font: 'ui', weight: 700, color: s.c(k) });
-  s.text(text, x + size * 1.4 * s.u, y, { size, align: 'left', color: s.c('--ink-2') });
 }

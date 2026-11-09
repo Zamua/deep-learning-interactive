@@ -3,6 +3,7 @@
 // Env: BASE=url, THEME=dark, FRAC=0.85 (how far into each beat)
 import { mkdirSync } from 'node:fs';
 import { chromium } from 'playwright';
+import { findExplainer } from './find.mjs';
 
 const [id, out, w = '402', h = '874', mobile = '1', ...only] = process.argv.slice(2);
 if (!id || !out) {
@@ -11,7 +12,11 @@ if (!id || !out) {
 }
 mkdirSync(out, { recursive: true });
 const base = process.env.BASE ?? 'http://127.0.0.1:5340/';
-const route = `atlas/${id.replace(/^atlas-/, '')}/watch`;
+const route = findExplainer(id)?.watch;
+if (!route) {
+  console.error(`no explainer script for ${id}`);
+  process.exit(2);
+}
 const browser = await chromium.launch({ channel: 'chrome' });
 const ctx = await browser.newContext({
   viewport: { width: +w, height: +h },

@@ -36,7 +36,7 @@ export function mountTheater(
   const marks = h('div', { class: 'lec-marks', 'aria-hidden': 'true' });
   const chip = h('div', { class: 'lec-chip', 'aria-hidden': 'true' });
   const symIdx = codeIndex(def.symbols);
-  const panels = def.script.scenes.map((s) => new CodePanel(s.code, { title: s.codeTitle, symIdx }));
+  const panels = def.script.scenes.map((s) => new CodePanel(s.code, { title: s.codeTitle, symIdx, lang: s.lang }));
   const markEls = def.script.scenes.map((s) => {
     const m = new Map<string, HTMLElement>();
     for (const [k, mk] of Object.entries(def.scenes[s.id]?.marks ?? {})) {

@@ -1,0 +1,32 @@
+{
+ "duration": 118.614,
+ "scenes": {
+  "onboard": [0.0, 28.415],
+  "mkshell": [28.415, 52.515],
+  "enter": [52.515, 80.639],
+  "team": [80.639, 118.614]
+ },
+ "beats": {
+  "onboard/join": [0.7, 6.143, "A teammate joins your project. The readme says: install Go and Node, then run the tests.", [[2.33, 2.7], [3.58, 3.88]]],
+  "onboard/mine": [6.523, 11.77, "You have one Go and one Node. They install newer ones. It happens to work for both of you.", [[8.163, 8.513], [9.803, 10.133]]],
+  "onboard/break": [12.15, 16.688, "Then the build server, with an older Node, fails on code that passes for you both.", [[13.09, 13.24], [14.08, 14.49]]],
+  "onboard/global": [17.068, 22.295, "The tools were installed by hand, for the whole machine, so every machine drifts its own way.", [[18.758, 19.088], [19.948, 20.268]]],
+  "onboard/want": [22.675, 27.315, "You want the project to say which tools it needs, and everyone to get exactly those.", [[24.995, 25.335]]],
+  "mkshell/shell": [29.115, 36.283, "A flake can say that. Beside packages, it can have a dev shells output: a development environment for each system.", [[30.345, 30.825], [31.785, 31.975], [33.655, 34.065]]],
+  "mkshell/mk": [36.663, 43.778, "Make shell is a small wrapper around make derivation. It gives you an environment to enter, not a package to install.", [[39.683, 40.253], [42.033, 42.353]]],
+  "mkshell/pkgs": [44.158, 47.621, "Packages lists the tools you want on path. Here, Go and Node.", [[46.008, 46.468]]],
+  "mkshell/hook": [48.001, 51.415, "Shell hook is a bit of bash that runs each time someone enters.", []],
+  "enter/enter": [53.215, 56.725, "Nix develop reads that output and drops you into a new shell.", [[54.975, 55.365]]],
+  "enter/hook": [57.105, 58.304, "Your hook runs first.", []],
+  "enter/where": [58.684, 64.034, "Go is on path now, and it comes from the store. It is an ordinary store path, like any other.", [[59.884, 60.054], [61.144, 61.684], [63.184, 63.344]]],
+  "enter/nothing": [64.414, 69.89, "Nothing was installed globally. Another terminal, open at this moment, has no Go at all.", [[66.124, 66.654], [68.594, 68.834]]],
+  "enter/exit": [70.27, 72.998, "Leave the shell, and Go is gone from your environment.", [[70.98, 71.26]]],
+  "enter/stay": [73.378, 79.539, "But the store path has not gone anywhere. Next time you enter, it is already there, and the shell starts at once.", [[75.248, 75.828], [76.818, 76.978], [77.888, 78.188]]],
+  "team/one": [81.339, 85.986, "For one tool, once, there is nix shell. It puts rip grep on path, and that is all.", [[83.299, 83.799]]],
+  "team/diff": [86.366, 91.383, "Nix develop is for a project: the tools it lists, plus everything a build of it would have.", [[88.126, 88.526]]],
+  "team/team": [91.763, 97.071, "And since the flake has a lockfile, everyone on the project gets the same versions of all of it.", [[93.423, 93.833], [95.123, 95.273]]],
+  "team/gc": [97.451, 108.35, "One catch. Garbage collection deletes store paths that nothing needs any more, and nix store G C runs it. Your shell's tools are ordinary store paths, so they can go too.", [[98.181, 98.641], [102.071, 102.361], [104.201, 104.781]]],
+  "team/root": [108.73, 116.407, "A root is something that tells the collector to keep a path. Dash dash profile saves the environment to a file that acts as one.", [[111.5, 112.17], [113.45, 113.6]]],
+  "team/turn": [116.787, 117.514, "Your turn.", []]
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "duration": 130.111,
+ "scenes": {
+  "big": [0.0, 31.822],
+  "lazy": [31.822, 69.406],
+  "self": [69.406, 102.02],
+  "pkgs": [102.02, 130.111]
+ },
+ "beats": {
+  "big/big": [0.7, 6.983, "The Nix package collection is one enormous expression, with a huge number of packages defined inside it.", [[3.88, 4.31]]],
+  "big/ask": [7.363, 13.638, "You ask it for one package, and it answers in moments. To see how, we need one more piece of the language.", [[8.773, 9.033], [10.363, 10.873], [11.573, 11.783]]],
+  "big/let": [14.018, 19.79, "The word let gives names to values, and those names exist only in the expression after the word in.", [[15.988, 16.398]]],
+  "big/order": [20.17, 25.425, "The bindings can use each other, in any order. Here b uses a, and a is written after it.", [[22.35, 22.91], [24.04, 24.26]]],
+  "big/value": [25.805, 30.722, "These are not steps to run from the top. They are definitions. And the result is three.", [[27.835, 28.225], [29.215, 29.515]]],
+  "lazy/throw": [32.522, 37.348, "The function throw stops evaluation with an error. At least, it does when it runs.", [[35.202, 35.662], [36.142, 36.332]]],
+  "lazy/let": [37.728, 44.138, "Here x is a throw, and the whole expression is still one. Nothing asked for x, so Nix never worked it out.", [[40.778, 41.298]]],
+  "lazy/thunk": [44.518, 51.352, "A binding holds a promise of its value: how to compute it, if anyone ever needs it. That promise is called a thunk.", [[46.728, 47.088], [47.888, 48.098], [49.278, 49.778]]],
+  "lazy/set": [51.732, 56.822, "Sets work the same way. One value here is a throw, and selecting the other is fine.", [[52.992, 53.462], [55.012, 55.282]]],
+  "lazy/bang": [57.202, 60.045, "Select the throw itself, and that is when it goes off.", [[58.482, 58.762]]],
+  "lazy/names": [60.425, 64.845, "built-ins dot attr names reads only the names, so the values stay untouched.", [[62.925, 63.255]]],
+  "lazy/len": [65.225, 68.306, "And a list knows its length without computing what is in it.", [[66.605, 66.925]]],
+  "self/how": [70.106, 76.817, "Values wait, so a binding can mention a name whose value is not worked out yet. It can even mention the set it is in.", [[70.986, 71.216], [74.576, 75.096]]],
+  "self/ok": [77.197, 83.954, "Here z reads x dot y out of its own set. That works: computing z needs only y, and y is there.", [[79.857, 80.387], [80.957, 81.267]]],
+  "self/rec": [84.334, 90.637, "Reck, from before, relies on the same thing. The value of a waits until something asks, and then b is there.", [[86.674, 87.204], [89.344, 89.604]]],
+  "self/bad": [91.017, 96.931, "The trouble starts only when a value truly needs itself. To get x, Nix has to get x first.", [[94.027, 94.557], [95.197, 95.437]]],
+  "self/err": [97.311, 100.92, "There is no way out of that, and Nix stops with infinite recursion.", [[98.461, 98.811]]],
+  "pkgs/mini": [102.72, 109.213, "Here is the package collection in miniature: one big set, where each package is a value that can name the others.", [[104.78, 105.34], [106.18, 106.56]]],
+  "pkgs/ask": [109.594, 114.943, "Ask for curl, and Nix works out curl. Curl needs zlib, so zlib is worked out too.", [[111.584, 112.084], [113.104, 113.303]]],
+  "pkgs/broken": [115.323, 120.194, "The broken package sits in the same set, and it does no harm. Nobody asked for it.", [[117.343, 117.643], [118.613, 119.073]]],
+  "pkgs/scale": [120.574, 127.904, "Scale that up. The collection can define every package it has, and Nix computes only the ones you ask for, and what those need.", [[121.324, 121.804], [124.244, 124.524], [126.724, 126.974]]],
+  "pkgs/turn": [128.284, 129.011, "Your turn.", []]
+ }
+}
