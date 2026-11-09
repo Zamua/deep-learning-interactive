@@ -1,5 +1,5 @@
-// Settings: one line each for the color theme, how Atlas picks new concepts, the daily reminder and sync (leading to the
-// account page), and a footnote on offline use.
+// Settings: one line each for the color theme, how Atlas picks new concepts, the daily reminder, sync (leading to the
+// account page) and the source code, and a footnote on offline use.
 import { icon, settingRow } from '../../core/controls';
 import { h, onDispose } from '../../core/dom';
 import { offlineStatus, offlineSupported } from '../../offline/register';
@@ -44,6 +44,17 @@ function syncRow(): HTMLElement | null {
   return el;
 }
 
+const SOURCE = 'https://github.com/Zamua/deep-learning-interactive';
+
+/** The source code; it opens outside the app, so an installed Atlas keeps its place. */
+function sourceRow(): HTMLElement {
+  return h('a', { class: 'set-item set-link', href: SOURCE, target: '_blank', rel: 'noopener' },
+    h('span', { class: 'set-item-i', html: icon('github-logo') }),
+    h('span', { class: 'set-item-l' }, 'Source code'),
+    h('span', { class: 'set-item-r' }, 'GitHub'),
+    h('span', { class: 'set-go', html: icon('arrow-square-out') }));
+}
+
 /** A footnote on offline use, filled in once the service worker answers. */
 function offlineNote(): HTMLElement | null {
   if (!offlineSupported()) return null;
@@ -65,6 +76,6 @@ export function renderSettings(main: HTMLElement): void {
   main.append(h('div', { class: 'lib lib-settings' },
     h('div', { class: 'lib-brand' }, 'Atlas'),
     h('h1', {}, 'Settings'),
-    h('div', { class: 'set-list lib-card' }, settingRow('circle-half', 'Theme', themeSwitch()), paceRow(), ...(reminders ? [reminders] : []), ...(sync ? [sync] : [])),
+    h('div', { class: 'set-list lib-card' }, settingRow('circle-half', 'Theme', themeSwitch()), paceRow(), ...(reminders ? [reminders] : []), ...(sync ? [sync] : []), sourceRow()),
     ...(offline ? [offline] : [])));
 }
