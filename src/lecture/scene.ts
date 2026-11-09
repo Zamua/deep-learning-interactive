@@ -30,8 +30,8 @@ export const smooth = (v: number): number => {
 export const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
 
 const FONTS = {
-  display: "'Fraunces Variable', Georgia, serif",
-  serif: "'Source Serif 4 Variable', Georgia, serif",
+  display: "'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif",
+  serif: "'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif",
   mono: "'JetBrains Mono Variable', ui-monospace, monospace",
   ui: 'system-ui, -apple-system, sans-serif',
 };

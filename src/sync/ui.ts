@@ -2,7 +2,7 @@
 // device to a code from another one. Also a file copy of Atlas progress, kept outside any account.
 import '../styles/account.css';
 import { CODE_LENGTH, SyncError, codeSymbols, formatCode, parseCode, type CodeError, type SyncStatus } from 'hearthsync';
-import { icon } from '../core/controls';
+import { backRow, icon } from '../core/controls';
 import { h, onDispose } from '../core/dom';
 import { progressStore, syncEngine } from './cloud';
 import { concepts, conceptsIn } from './model';
@@ -60,11 +60,11 @@ function flash(b: HTMLButtonElement, done: string): void {
 /** The account page; `typed` is a code from a link, offered for linking at once, and `fileCopy` saves progress to a file and loads it back. */
 export function renderAccount(main: HTMLElement, typed: string | undefined, fileCopy: HTMLElement): void {
   const sync = syncEngine();
-  const root = h('div', { class: 'home home-b ac', 'data-page': 'account' });
+  const root = h('div', { class: 'lib ac', 'data-page': 'account' });
   main.append(root);
   root.append(
-    h('div', { class: 'home-kicker' }, 'Your progress'),
-    h('h1', { class: 'home-title', html: 'Sync across <em>devices</em>.' }),
+    backRow(routes.settings, 'Settings'),
+    h('h1', {}, 'Sync across devices'),
     h('p', { class: 'ac-lede' }, 'Progress is saved on this device first and backed up to your account in the background. Your code opens the same account on another device. There is no sign-up: the code is the account.'));
 
   const status = h('div', { class: 'ac-status' });

@@ -45,7 +45,7 @@ export function renderPlacement(main: HTMLElement, learner: Learner): void {
       }
       const gen = gens[rng.int(gens.length)]!;
       const problem = gen.make(rng, DIFFICULTY);
-      const tag = h('div', { class: 'at-tag', style: `--dom:var(--c-${learner.course.domainOf(c).color})` }, h('b', {}, c.title), h('span', {}, `question ${asked + 1}`));
+      const tag = h('div', { class: 'at-tag' }, h('b', {}, c.title), h('span', {}, `question ${asked + 1}`));
       const got = await ask(learner.course, frame, { concept: id, problem, rng, tag });
       asked++;
       const pass = got.verdict.ok && got.seconds <= 2 * c.mastery.seconds;

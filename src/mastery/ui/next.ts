@@ -17,7 +17,7 @@ export function renderNext(main: HTMLElement, learner: Learner): void {
   const { deeper, different, open } = learner.choices();
   const title = (id: string) => graph.get(id)!.title;
   root.append(
-    h('a', { class: 'at-back', href: learner.course.routes.home, html: `${icon('arrowLeft')} Atlas` }),
+    h('a', { class: 'at-back', href: learner.course.routes.home, html: `${icon('arrowLeft')} ${learner.course.title}` }),
     h('h1', { class: 'home-title' }, 'What next?'),
     h('p', { class: 'at-small' }, open.length ? `${plural(open.length, 'concept')} open to start. Each begins with its explainer.` : 'Nothing new is open yet.'));
 
@@ -30,7 +30,7 @@ export function renderNext(main: HTMLElement, learner: Learner): void {
   const lastIn = (domain: string) => Math.max(0, ...graph.order.filter((c) => c.domain === domain && recs[c.id]?.attempts).map((c) => recs[c.id]!.last));
   const card = (kicker: string, id: string, why: string) => {
     const c = graph.get(id)!;
-    return h('a', { class: 'at-pick-card', href: startHref(learner, id), style: `--dom:var(--c-${learner.course.domainOf(c).color})` },
+    return h('a', { class: 'at-pick-card', href: startHref(learner, id) },
       h('span', { class: 'at-pick-k' }, kicker),
       h('span', { class: 'at-pick-t' }, c.title),
       h('span', { class: 'at-pick-b' }, c.blurb),
@@ -55,7 +55,7 @@ export function renderNext(main: HTMLElement, learner: Learner): void {
     for (const d of learner.course.domains) {
       const mine = open.filter((id) => graph.get(id)!.domain === d.id);
       if (!mine.length) continue;
-      root.append(h('div', { class: 'at-pick-dom', style: `--dom:var(--c-${d.color})` }, d.title), ...mine.map((id) =>
+      root.append(h('div', { class: 'at-pick-dom' }, d.title), ...mine.map((id) =>
         h('a', { class: 'at-row', href: startHref(learner, id) },
           h('span', { class: 'at-row-box new', html: icon('playFill') }),
           h('span', { class: 'at-row-t' }, title(id)),

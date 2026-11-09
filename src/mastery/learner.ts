@@ -70,6 +70,17 @@ export class Learner {
     return statuses(this.graph, this.records, this.clock());
   }
 
+  /** How many concepts are mastered, whether or not a review is due. */
+  masteredCount(): number {
+    return [...this.statuses().values()].filter((s) => s === 'mastered' || s === 'due' || s === 'slipping').length;
+  }
+
+  /** The concept the learner is on, if there is one still to learn. */
+  current(): string | undefined {
+    const d = this.today();
+    return d.kind === 'done' ? undefined : d.kind === 'review' ? d.after : d.concept;
+  }
+
   record(id: string): ConceptRecord {
     return this.records[id] ?? emptyRecord();
   }

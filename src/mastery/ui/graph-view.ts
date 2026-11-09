@@ -39,7 +39,7 @@ export function graphView(learner: Learner, opts: { onTap?: (id: string) => void
       : s === 'learning' ? `<span class="at-dots">${Array.from({ length: c.mastery.streak }, (_, i) => `<i class="${i < streak(rec) ? 'on' : ''}"></i>`).join('')}</span>`
       : s === 'new' ? '<span>new</span>'
       : icon('lock');
-    const el = h('a', { class: `at-node st-${s}`, href: learner.course.routes.concept(c.id), 'data-id': c.id, style: `--dom:var(--c-${learner.course.domainOf(c).color})` },
+    const el = h('a', { class: `at-node st-${s}`, href: learner.course.routes.concept(c.id), 'data-id': c.id },
       h('span', { class: 'at-node-t' }, c.title),
       h('span', { class: 'at-node-s', html: mark }));
     if (opts.onTap)
