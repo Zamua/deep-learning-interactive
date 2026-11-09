@@ -6,7 +6,7 @@ unlocks the concepts that build on it, and mastered concepts come back as spaced
 first course runs from vectors to post-training, and its graph is meant to keep growing.
 
 Routes: `#/` opens the book last read, and any unknown address lands there; `#/atlas` a book's home (another book's
-is `#/c/<course>`); `#/atlas/explore/<view>` Explore, with the views `chapters`, `map`, `list`, `goals` and `history`;
+is `#/c/<course>`); `#/atlas/explore/<view>` Explore, with the views `map`, `chapters`, `list`, `goals` and `history`;
 `#/atlas/learn/<concept-id>` one step of practice and `#/atlas/learn` the reviews due; `#/atlas/<concept-id>/watch` an
 explainer; `#/atlas/<concept-id>` a concept's sheet over the home; `#/atlas/place` the placement test; `#/settings` and
 `#/account`. Addresses of pages since folded into these (`graph`, `list`, `history`, `next`, `track`, `new-track`,
@@ -212,7 +212,8 @@ The account page (`#/account`) also saves both to a JSON file and loads one back
 - **Home** (`#/atlas`): the book's name (which opens the switcher), Explore, the gear, one card with the next thing,
   and the tour: the chapter in progress open as a line, the chapters behind it folded, the rest opening in place.
 - **Explore** (`#/atlas/explore/<view>`): the one place for looking around, entered on purpose and never by the main
-  path. Chapters shows the book as regions in tour order; Map the whole graph with no regions; List every concept by
+  path. It opens on Map, the whole graph as one page as wide as the screen that scrolls down; Chapters shows the book as
+  regions in tour order, to pan and zoom; List every concept by
   what to do with it; Goals what is followed; History what was played and practiced, read from the synced records so
   it spans devices. Each has the same sheet on a tap.
 - **Concept sheet**: opened over wherever the learner is, and closing returns them there exactly: what it is, where they

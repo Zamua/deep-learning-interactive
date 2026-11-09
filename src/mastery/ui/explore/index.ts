@@ -7,10 +7,11 @@ import { EXPLORE_VIEWS, type ExploreView } from '../../../routes';
 import type { Learner } from '../../learner';
 import { mapSearch } from '../map-search';
 import { locateGlyph } from './glyphs';
-import { LEGEND, mountGraph, type GraphHandle } from './map';
+import { LEGEND, mountChapters } from './map';
 import { goalsView, historyView, listView } from './views';
+import { mountWholeMap } from './whole-map';
 
-const LABEL: Record<ExploreView, string> = { chapters: 'Chapters', map: 'Map', list: 'List', goals: 'Goals', history: 'History' };
+const LABEL: Record<ExploreView, string> = { map: 'Map', chapters: 'Chapters', list: 'List', goals: 'Goals', history: 'History' };
 
 export function renderExplore(main: HTMLElement, learner: Learner, view: ExploreView): void {
   const pages = learner.course.routes;
@@ -37,10 +38,11 @@ export function renderExplore(main: HTMLElement, learner: Learner, view: Explore
     return;
   }
 
-  const box = h('div', { class: 'ex-box' });
+  // Map is one page that scrolls down, as it always was; Chapters is a drawing to pan and zoom.
+  const box = h('div', { class: view === 'map' ? 'ex-scroll' : 'ex-box' });
   const panel = h('div', { class: 'ex-find', hidden: true });
   root.append(box, panel, h('div', { class: 'ex-legend' }, ...LEGEND.map(([k, t]) => h('span', {}, h('i', { class: k }), t))));
-  const graph: GraphHandle = mountGraph(box, learner, view);
+  const graph = view === 'map' ? mountWholeMap(box, learner) : mountChapters(box, learner);
   panel.append(mapSearch(learner, {
     light: (ids) => graph.light(ids),
     pick: (id) => {

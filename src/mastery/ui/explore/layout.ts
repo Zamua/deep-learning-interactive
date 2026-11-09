@@ -214,8 +214,6 @@ function spineOf(regions: readonly Region[]): string[] {
 
 // ---- the whole graph ----
 
-const MAP = { gx: 14, gy: 46, passes: 6, minPerRow: 4, maxPerRow: 16 };
-
 /** Positions in order that sit closest to `want` while staying `step` apart: pools adjacent violators of the spacing. */
 export function packRow(want: readonly number[], step: number): number[] {
   const blocks: { sum: number; n: number }[] = [];
@@ -233,91 +231,6 @@ export function packRow(want: readonly number[], step: number): number[] {
   const out: number[] = [];
   for (const b of blocks) for (let k = 0; k < b.n; k++) out.push(b.sum / b.n + out.length * step);
   return out;
-}
-
-/** Concepts by depth, each layer sorted by where its neighbors sit, so edges cross less. */
-function orderedLayers(course: GeoCourse): { layers: string[][]; prereqs: Map<string, readonly string[]>; dependents: Map<string, string[]> } {
-  const prereqs = new Map(course.concepts.map((c) => [c.id, c.prereqs]));
-  const dependents = new Map<string, string[]>(course.concepts.map((c) => [c.id, []]));
-  for (const c of course.concepts) for (const p of c.prereqs) dependents.get(p)!.push(c.id);
-  const depth = new Map<string, number>();
-  const depthOf = (id: string): number => {
-    let d = depth.get(id);
-    if (d === undefined) depth.set(id, (d = Math.max(-1, ...prereqs.get(id)!.map(depthOf)) + 1));
-    return d;
-  };
-  const layers: string[][] = [];
-  for (const c of course.concepts) (layers[depthOf(c.id)] ??= []).push(c.id);
-  const rank = new Map<string, number>();
-  const note = () => layers.forEach((l) => l.forEach((id, i) => rank.set(id, (i + 0.5) / l.length)));
-  note();
-  const sweep = (l: string[], next: (id: string) => readonly string[]) => {
-    const at = (id: string) => {
-      const ns = next(id);
-      return ns.length ? ns.reduce((a, n) => a + rank.get(n)!, 0) / ns.length : rank.get(id)!;
-    };
-    const keyed = new Map(l.map((id) => [id, at(id)]));
-    l.sort((a, b) => keyed.get(a)! - keyed.get(b)!);
-    l.forEach((id, i) => rank.set(id, (i + 0.5) / l.length));
-  };
-  for (let pass = 0; pass < MAP.passes; pass++) {
-    for (const l of layers.slice(1)) sweep(l, (id) => prereqs.get(id)!);
-    for (const l of [...layers].reverse().slice(1)) sweep(l, (id) => dependents.get(id)!);
-  }
-  for (const l of layers.slice(1)) sweep(l, (id) => prereqs.get(id)!);
-  return { layers, prereqs, dependents };
-}
-
-function placeRows(rows: readonly string[][], prereqs: Map<string, readonly string[]>, dependents: Map<string, string[]>): Map<string, number> {
-  const step = CARD.w + MAP.gx;
-  const x = new Map<string, number>();
-  rows.forEach((row) => row.forEach((id, i) => x.set(id, (i - (row.length - 1) / 2) * step)));
-  const settle = (row: string[], next: (id: string) => readonly string[], resort: boolean) => {
-    const want = new Map(row.map((id) => {
-      const ns = next(id);
-      return [id, ns.length ? ns.reduce((a, n) => a + x.get(n)!, 0) / ns.length : x.get(id)!] as const;
-    }));
-    const ordered = resort ? [...row].sort((a, b) => want.get(a)! - want.get(b)!) : row;
-    packRow(ordered.map((id) => want.get(id)!), step).forEach((v, i) => x.set(ordered[i]!, v));
-    if (resort) row.splice(0, row.length, ...ordered);
-  };
-  const working = rows.map((r) => [...r]);
-  for (let pass = 0; pass < MAP.passes; pass++) {
-    const resort = pass < 3;
-    for (const r of working.slice(1)) settle(r, (id) => prereqs.get(id)!, resort);
-    for (const r of [...working].reverse().slice(1)) settle(r, (id) => dependents.get(id)!, resort);
-  }
-  for (const r of working.slice(1)) settle(r, (id) => prereqs.get(id)!, false);
-  return x;
-}
-
-/** The complete graph as one drawing: a row for every depth, prerequisites above, wrapped only as far as fits a phone. */
-export function layoutMap(course: GeoCourse, view: Box = TARGET): Geometry {
-  const { layers, prereqs, dependents } = orderedLayers(course);
-  const present = layers.filter(Boolean);
-  const widest = Math.max(...present.map((l) => l.length));
-  let best: { z: number; rows: string[][]; x: Map<string, number>; W: number; H: number; min: number } | null = null;
-  for (let perRow = Math.min(MAP.minPerRow, widest); perRow <= Math.min(MAP.maxPerRow, widest); perRow++) {
-    const rows = present.flatMap((l) => Array.from({ length: Math.ceil(l.length / perRow) }, (_, i) => l.slice(i * perRow, (i + 1) * perRow)));
-    const x = placeRows(rows, prereqs, dependents);
-    const xs = [...x.values()];
-    const min = Math.min(...xs);
-    const W = Math.max(...xs) - min + CARD.w;
-    const H = rows.length * (CARD.h + MAP.gy) - MAP.gy;
-    const z = Math.min(view.w / W, view.h / H);
-    if (!best || z >= best.z - 1e-6) best = { z, rows, x, W, H, min };
-  }
-  const { rows, x, W, H, min } = best!;
-  const titled = new Map(course.concepts.map((c) => [c.id, c]));
-  const nodes: Record<string, Spot> = {};
-  rows.forEach((row, k) => {
-    for (const id of row) {
-      const c = titled.get(id)!;
-      nodes[id] = { id, x: x.get(id)! - min, y: k * (CARD.h + MAP.gy), title: c.title, lines: wrapTitle(c.title, 18), chapter: c.domain };
-    }
-  });
-  const edges = course.concepts.flatMap((c) => c.prereqs.map((a) => ({ a, b: c.id, cross: false })));
-  return { W, H, nodes, edges, regions: [], spine: [] };
 }
 
 // ---- looking at it ----
