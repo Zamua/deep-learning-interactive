@@ -200,6 +200,7 @@ code.sym,
   font-family: var(--font-ui);
   font-size: 14px;
   color: var(--c-red);
+  margin: 22px;
   padding: 12px;
   border: 1px dashed var(--c-red);
   border-radius: 10px;

@@ -7,7 +7,7 @@
   --warn: var(--c-gold);
   width: min(720px, 100% - 32px);
   margin: 0 auto;
-  padding: 26px 0 80px;
+  padding: calc(26px + env(safe-area-inset-top)) 0 80px;
   font-family: var(--font-body);
   -webkit-tap-highlight-color: transparent;
 }
