@@ -62,11 +62,14 @@ is not needed (never leave content hidden behind a removed animation), Phosphor 
   `scene.ts`: beat-anchored easing and a drawing kit in stage units; `draw.ts`: helpers any course's
   scenes share (a course's own are in `<course>/draw.ts`); `types.ts`: script and timing
   types; `lookup.ts`: the cards for symbols and calls; `library.ts`: notes on common library calls.
-- `src/landing/`: the shelf at `#/`. Each course is a book lying flat, spine out; a tap stands it up beside its blurb,
-  `CourseDef.about`, its chapters and the way in. `landing.ts` builds it, `art.ts` draws each cover once to a small canvas,
-  `src/styles/landing.css` holds the geometry. Scrolling runs no script: the scroller is the camera (CSS `perspective`)
-  and the books are scrolled content with fixed transforms. Keep it so: no scroll or resize handlers, no per-frame
-  transforms, no filters, and the lying and standing transforms list the same functions so they blend.
+- `src/landing/`: the shelf at `#/`. Each course is a gilt cloth-bound book in a pile, spine out; a tap stands it up beside
+  its blurb, `CourseDef.about`, its chapters and the way in, and standing it can be turned by a sideways drag.
+  `landing.ts` coordinates; `scene.ts` is a small WebGL2 renderer (book meshes, relief and foil from maps, one slanted
+  camera with no vanishing point); `art.ts` draws the binding (a device per course in `DEVICES`); `pile.ts` is the pure
+  arithmetic. `lit.ts` has the scene take one picture of each lying book and stacks them as plain `<img>`s, so
+  scrolling the shelf runs no script, and draws live only the open book. `flat.ts` is the CSS 3D shelf for a browser
+  without WebGL2. Keep the lit shelf's pictures plain (no 3D transforms on them: Safari drops such layers) and keep
+  script out of shelf scrolling. Check changes in real WebKit across several cold loads.
 - `src/mastery/`: the engine. `domain/` is pure and unit tested (concept graph, student model,
   scheduler, tracks, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
   learner's records in the synced progress store; `ui/` renders a book's home (`hub.ts`), Explore (`explore/`), the
