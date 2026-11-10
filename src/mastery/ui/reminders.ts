@@ -4,7 +4,8 @@ import { settingRow } from '../../core/controls';
 import { h } from '../../core/dom';
 import { Learner } from '../learner';
 import { disableReminders, enableReminders, loadPrefs, pushSupport, sendTest, syncReminders } from '../push';
-import { dueCount } from './common';
+
+const dueCount = (b: Learner): number => [...b.statuses().values()].filter((s) => s === 'due' || s === 'slipping').length;
 
 /** The book a reminder speaks for: the first with reviews due, else the one practiced last. */
 export function reminderBook(): Learner {

@@ -6,13 +6,20 @@
   --warn: var(--c-gold);
   font-family: var(--font-ui);
 }
+.ac-lede {
+  margin: 0 0 22px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
 .ac-h2 {
   display: flex;
   align-items: center;
   gap: 10px;
   margin: 30px 0 10px;
   font-size: 0.76rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -24,7 +31,6 @@
   background: var(--rule);
 }
 .ac-status {
-  margin-top: 14px;
   display: flex;
   gap: 12px;
   align-items: flex-start;
@@ -40,7 +46,7 @@
   min-width: 0;
 }
 .ac-status b {
-  font-weight: 400;
+  font-weight: 650;
   color: var(--ink);
 }
 .ac-status > span:last-child > span {
@@ -74,7 +80,7 @@
   background: var(--paper-2);
   font-family: var(--font-mono);
   font-size: clamp(1rem, 4.6vw, 1.25rem);
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0.06em;
   color: var(--ink);
 }
@@ -154,6 +160,26 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+.ac-pm {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--card);
+}
+.ac-pm-k {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.ac-pm-k .ico {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
 }
 .ac-krow {
   display: grid;
@@ -238,63 +264,4 @@
   margin: 0;
   line-height: 1.5;
   color: var(--ink-2);
-}
-.ac-share {
-  flex: 1;
-  justify-content: center;
-}
-.ac-note-top {
-  margin: 0 0 10px;
-}
-.ac-folds {
-  margin-top: 18px;
-  border-top: 1px solid var(--rule);
-}
-.ac-fold-row {
-  border-bottom: 1px solid var(--rule);
-}
-.ac-fold {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  min-height: 52px;
-  padding: 8px 4px;
-  border: 0;
-  background: none;
-  color: var(--ink);
-  text-align: left;
-  cursor: pointer;
-}
-.ac-fold-i {
-  display: grid;
-  color: var(--ink-2);
-}
-.ac-fold-i .ico {
-  width: 20px;
-  height: 20px;
-}
-.ac-fold-t {
-  flex: 1;
-}
-.ac-fold-c {
-  display: grid;
-  color: var(--ink-3);
-  transition: transform 0.15s ease;
-}
-.ac-fold-c .ico {
-  width: 15px;
-  height: 15px;
-}
-.ac-fold[aria-expanded='true'] .ac-fold-c {
-  transform: rotate(90deg);
-}
-.ac-fold-body {
-  padding: 2px 4px 16px;
-}
-.ac-fold-body[hidden] {
-  display: none;
-}
-.ac-fold-body > .ac-note:first-child {
-  margin-top: 0;
 }

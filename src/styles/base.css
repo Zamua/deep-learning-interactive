@@ -2,16 +2,15 @@
   --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
   --font-body: 'Source Serif 4 Variable', 'Iowan Old Style', Georgia, serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
-  --font-ui: var(--font-body);
+  --font-ui: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   --paper: #f6f2e9;
   --paper-2: #eee8db;
   --paper-3: #e4dccb;
-  --done: #23893f;
   --card: #fbf9f4;
   --ink: #1d1b17;
   --ink-2: #4b463d;
-  --ink-3: #6f685b;
+  --ink-3: #7f786b;
   --rule: #ddd4c2;
   --grid: #ebe4d6;
   --axis: #bfb5a1;
@@ -31,29 +30,28 @@
   --c-gold: #a47700;
   --c-slate: #5b6979;
 
-  /* What the home indicator takes from the page. */
-  --tabs-clear: env(safe-area-inset-bottom);
+  --side-w: 290px;
+  --top-h: 54px;
   --measure: 690px;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --paper: #17140f;
-    --paper-2: #201c15;
-    --paper-3: #2d281f;
-    --done: #62d48a;
-    --card: #1d1913;
-    --ink: #f1e9d8;
-    --ink-2: #cdc3b0;
-    --ink-3: #958b79;
-    --rule: #352f25;
-    --grid: #28231b;
-    --axis: #544c3f;
+    --paper: #151410;
+    --paper-2: #1d1b17;
+    --paper-3: #2a2822;
+    --card: #1a1915;
+    --ink: #ede7d9;
+    --ink-2: #c6bfaf;
+    --ink-3: #8f887a;
+    --rule: #302d26;
+    --grid: #25231e;
+    --axis: #4d4940;
     --accent: #ff8a4c;
     --accent-ink: #ffa36f;
-    --accent-soft: rgba(255, 138, 76, 0.13);
-    --hl: rgba(255, 138, 76, 0.15);
+    --accent-soft: rgba(255, 138, 76, 0.12);
+    --hl: rgba(255, 138, 76, 0.14);
     --hl-alt: rgba(69, 208, 224, 0.13);
     --shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 10px 30px -14px rgba(0, 0, 0, 0.6);
     --c-blue: #7ca8ff;
@@ -69,21 +67,20 @@
 }
 
 :root[data-theme='dark'] {
-  --paper: #17140f;
-  --paper-2: #201c15;
-  --paper-3: #2d281f;
-  --done: #62d48a;
-  --card: #1d1913;
-  --ink: #f1e9d8;
-  --ink-2: #cdc3b0;
-  --ink-3: #958b79;
-  --rule: #352f25;
-  --grid: #28231b;
-  --axis: #544c3f;
+  --paper: #151410;
+  --paper-2: #1d1b17;
+  --paper-3: #2a2822;
+  --card: #1a1915;
+  --ink: #ede7d9;
+  --ink-2: #c6bfaf;
+  --ink-3: #8f887a;
+  --rule: #302d26;
+  --grid: #25231e;
+  --axis: #4d4940;
   --accent: #ff8a4c;
   --accent-ink: #ffa36f;
-  --accent-soft: rgba(255, 138, 76, 0.13);
-  --hl: rgba(255, 138, 76, 0.15);
+  --accent-soft: rgba(255, 138, 76, 0.12);
+  --hl: rgba(255, 138, 76, 0.14);
   --hl-alt: rgba(69, 208, 224, 0.13);
   --shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 10px 30px -14px rgba(0, 0, 0, 0.6);
   --c-blue: #7ca8ff;
@@ -105,7 +102,7 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  scroll-padding-top: 16px;
+  scroll-padding-top: calc(var(--top-h) + 16px);
   background: var(--paper);
 }
 
@@ -134,6 +131,59 @@ button {
 
 ::selection {
   background: var(--hl);
+}
+
+/* ---------- top bar ---------- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  height: var(--top-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  /* Opaque: page text scrolled under a see-through bar reads as overlapping it. */
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.brand-mark {
+  align-self: center;
+  width: 20px;
+  height: 20px;
+}
+.brand-mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: 1.18rem;
+  letter-spacing: -0.01em;
+}
+
+.brand-sub {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--ink-3);
+  font-size: 1rem;
+}
+
+.topbar-spacer {
+  flex: 1;
 }
 
 .icon-btn {
@@ -165,15 +215,195 @@ button {
   flex: none;
 }
 
+/* ---------- side nav ---------- */
+
+.side {
+  position: fixed;
+  top: var(--top-h);
+  bottom: 0;
+  left: 0;
+  width: var(--side-w);
+  overflow-y: auto;
+  padding: 18px 14px 40px;
+  border-right: 1px solid var(--rule);
+  background: var(--paper);
+  font-family: var(--font-ui);
+  z-index: 25;
+  overscroll-behavior: contain;
+}
+
+.side-part {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 18px 10px 6px;
+}
+
+.side-part:first-child {
+  margin-top: 4px;
+}
+
+.side-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.side-link {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.side-link:hover {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+.side-link.on {
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.side-link.soon {
+  opacity: 0.55;
+}
+
+.side-num {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-3);
+  min-width: 1.8em;
+}
+
+.side-link.on .side-num {
+  color: var(--accent);
+}
+
+.side-title {
+  flex: 1;
+}
+
+.side-mark {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.side-mark.done {
+  color: var(--c-green);
+}
+.side-mark .ico {
+  width: 15px;
+  height: 15px;
+}
+/* The progress ring starts at 12 o'clock; icons keep their own orientation. */
+.side-mark svg:not(.ico) {
+  width: 13px;
+  height: 13px;
+  transform: rotate(-90deg);
+}
+.side-mark circle {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 2.4;
+}
+.side-mark circle.arc {
+  stroke: var(--accent);
+  stroke-linecap: round;
+}
+
+.side-course {
+  display: block;
+  margin: 0 4px 6px;
+  padding: 10px 10px 12px;
+  border-radius: 10px;
+  background: var(--paper-2);
+  color: var(--ink);
+  text-decoration: none;
+}
+.side-course.other {
+  background: none;
+  border: 1px solid var(--rule);
+}
+.side-course.other .side-course-code {
+  color: var(--ink-3);
+}
+.side-course-code {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--accent);
+}
+.side-course-title {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.side-foot {
+  margin: 28px 10px 0;
+  font-size: 12px;
+  color: var(--ink-3);
+  line-height: 1.5;
+}
+
+.menu-btn {
+  display: none;
+}
+
+.scrim {
+  display: none;
+}
+
 .main {
-  min-height: 100vh;
-  padding-bottom: var(--tabs-clear);
+  margin-left: var(--side-w);
+  min-height: calc(100vh - var(--top-h));
+}
+
+@media (max-width: 1099px) {
+  .menu-btn {
+    display: grid;
+  }
+  .side {
+    transform: translateX(-102%);
+    transition: transform 0.26s cubic-bezier(0.3, 0.7, 0.2, 1);
+    width: min(320px, 86vw);
+    box-shadow: var(--shadow);
+  }
+  .nav-open .side {
+    transform: none;
+  }
+  .nav-open .scrim {
+    display: block;
+    position: fixed;
+    inset: var(--top-h) 0 0 0;
+    background: rgba(20, 15, 5, 0.35);
+    z-index: 24;
+  }
+  .main {
+    margin-left: 0;
+  }
 }
 
 .loading {
   font-family: var(--font-ui);
   color: var(--ink-3);
-  padding: 40px 22px;
+  padding: 40px 0;
 }
 
 /* Punctuation glued into the end of inline math reads as text, not as math. */
