@@ -41,12 +41,11 @@ const BRAND_MARK = (() => {
       cells += `<rect x="${j * 7}" y="${i * 7}" width="6" height="6" rx="1.6" style="fill:var(${j > i ? '--rule' : col[j]});fill-opacity:${j > i ? 1 : (0.3 + 0.7 * w[i]![j]!).toFixed(2)}"/>`;
   return `<svg viewBox="0 0 20 20" aria-hidden="true">${cells}</svg>`;
 })();
-const brand = h('a', { class: 'brand', href: FIRST.routes.home },
+const brand = h('a', { class: 'brand', href: routes.topics, 'aria-label': 'Atlas: all topics' },
   h('span', { class: 'brand-mark', html: BRAND_MARK }),
-  h('span', { class: 'brand-name' }, 'atlas'),
-  h('span', { class: 'brand-sub' }, 'interactive'));
+  h('span', { class: 'brand-name' }, 'atlas'));
 
-/** The course opened last on this device, which an address outside any course lands on. */
+/** The course opened last on this device, whose concepts the menu lists on the account page. */
 const LAST_COURSE = 'atlas.course';
 const lastCourse = (): Course => courseById(getItem(LAST_COURSE) ?? '') ?? FIRST;
 
@@ -57,15 +56,16 @@ app.append(top, nav, scrim, main);
 let currentId = '';
 let renderToken = 0;
 
-/** A course's pages and the account page; any other address, or an unknown course, lands on the first course's home. */
+/** A course's pages, the account page and the topics page, which any other address or an unknown course lands on. */
 async function route(): Promise<void> {
   const r = parseRoute(location.hash);
   if (r?.page === 'account') return routeAccount(r.code);
-  const course = r && courseById(r.course);
-  if (r && course) return routeCourse(r, course);
-  const last = lastCourse();
-  history.replaceState(null, '', last.routes.home);
-  return routeCourse({ course: last.id, page: 'home' }, last);
+  if (r && r.page !== 'topics') {
+    const course = courseById(r.course);
+    if (course) return routeCourse(r, course);
+  }
+  if (r?.page !== 'topics') history.replaceState(null, '', routes.topics);
+  return routeTopics();
 }
 
 async function routeCourse(r: CourseRoute, course: Course): Promise<void> {
@@ -76,11 +76,10 @@ async function routeCourse(r: CourseRoute, course: Course): Promise<void> {
   currentId = key;
   main.innerHTML = '';
   setItem(LAST_COURSE, course.id);
-  brand.setAttribute('href', course.routes.home);
   const shown = r.page === 'concept' || r.page === 'watch' ? r.concept : undefined;
   buildNav(course, r.page === 'history' ? 'history' : shown ?? '');
   const c = shown ? course.graph.get(shown) : undefined;
-  document.title = c ? `${c.title} · atlas interactive` : `${course.title} · atlas interactive`;
+  document.title = c ? `${c.title} · Atlas` : `${course.title} · Atlas`;
   window.scrollTo(0, 0);
   try {
     const { renderAtlas } = await import('./mastery/ui/index');
@@ -94,13 +93,33 @@ async function routeCourse(r: CourseRoute, course: Course): Promise<void> {
   }
 }
 
+async function routeTopics(): Promise<void> {
+  if (currentId === 'topics') return;
+  const token = ++renderToken;
+  disposeAll();
+  currentId = 'topics';
+  main.innerHTML = '';
+  buildNav(null, '');
+  document.title = 'Atlas';
+  window.scrollTo(0, 0);
+  try {
+    const { renderTopics } = await import('./mastery/ui/index');
+    if (token !== renderToken) return;
+    renderTopics(main);
+  } catch (e) {
+    console.error(e);
+    if (await reloadIfStale()) return;
+    main.append(h('div', { class: 'fig-error' }, `This page failed to load: ${(e as Error).message}`));
+  }
+}
+
 async function routeAccount(code?: string): Promise<void> {
   const token = ++renderToken;
   disposeAll();
   currentId = code ? `link/${code}` : 'account';
   main.innerHTML = '';
   buildNav(lastCourse(), '');
-  document.title = 'Sync across devices · atlas interactive';
+  document.title = 'Sync across devices · Atlas';
   window.scrollTo(0, 0);
   // The code has done its job once read: keep it out of the history and of anything that shares this page.
   if (code) history.replaceState(null, '', routes.account);
@@ -137,19 +156,21 @@ function redrawOnRemoteProgress(): void {
   });
 }
 
-/** The side menu: every concept by domain, marked mastered or locked. */
-function buildNav(course: Course, active: string): void {
-  const { graph, routes: pages } = course;
+/** The side menu: the way to every topic, then the open course's concepts by domain, marked mastered or locked. */
+function buildNav(course: Course | null, active: string): void {
   nav.innerHTML = '';
-  const st = new Learner(course).statuses();
-  // Every course, the open one first; tapping another moves to its home.
-  for (const c of [course, ...COURSES.filter((x) => x !== course)]) {
-    const on = c === course;
-    const a = h('a', { class: `side-course${on ? '' : ' other'}`, href: c.routes.home, ...(on ? { 'aria-current': 'true' } : {}) },
-      h('span', { class: 'side-course-code' }, on ? 'This course' : 'Switch to'), h('span', { class: 'side-course-title' }, c.title));
+  const link = (href: string, cls: string, ...kids: (HTMLElement | string)[]) => {
+    const a = h('a', { class: cls, href }, ...kids);
     a.addEventListener('click', () => setNav(false));
-    nav.append(a);
+    return a;
+  };
+  if (!course) {
+    nav.append(h('div', { class: 'side-part' }, 'Topics'), ...COURSES.map((c) => link(c.routes.home, 'side-course other', h('span', { class: 'side-course-title' }, c.title))));
+    return;
   }
+  const { graph, routes: pages } = course;
+  const st = new Learner(course).statuses();
+  nav.append(link(pages.home, 'side-course', h('span', { class: 'side-course-code' }, 'Topic'), h('span', { class: 'side-course-title' }, course.title)));
   const hist = h('a', { class: `side-link${active === 'history' ? ' on' : ''}`, href: pages.history }, h('span', { class: 'side-num', html: icon('clock') }), h('span', { class: 'side-title' }, 'History'));
   hist.addEventListener('click', () => setNav(false));
   nav.append(h('ul', { class: 'side-list' }, h('li', {}, hist)));

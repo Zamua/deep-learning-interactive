@@ -13,7 +13,7 @@ export type CourseRoute = { course: string } & (
   | { page: 'new-track'; target?: string }
 );
 
-export type Route = CourseRoute | { page: 'account'; code?: string };
+export type Route = CourseRoute | { page: 'topics' } | { page: 'account'; code?: string };
 
 const tail = (part?: string) => (part ? `/${part}` : '');
 
@@ -41,6 +41,8 @@ export type CoursePages = ReturnType<typeof coursePages>;
 
 /** The addresses that belong to the site rather than to a course. */
 export const routes = {
+  /** The site's home page: every course. */
+  topics: '#/',
   account: '#/account',
   /** A link that joins this device to an account; the code's spaces become dashes. */
   link: (code: string) => `#/link/${code.replace(/ /g, '-')}`,
@@ -60,6 +62,7 @@ function coursePage(course: string, [a = '', b = '', c = '']: string[]): CourseR
 /** The page an address names, or null for an address outside the app. */
 export function parseRoute(hash: string): Route | null {
   const [root = '', a = '', ...rest] = hash.replace(/^#\/?/, '').split('/').filter(Boolean);
+  if (!root) return { page: 'topics' };
   if (root === 'account') return { page: 'account' };
   if (root === 'link') return { page: 'account', code: a || undefined };
   if (root === 'atlas') return coursePage(FIRST_COURSE, a ? [a, ...rest] : []);

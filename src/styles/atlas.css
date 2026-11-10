@@ -1991,3 +1991,65 @@ body.at-on .side {
 .at-paper:hover b {
   color: var(--accent);
 }
+
+/* The topics page: one card per course. */
+.tp-card {
+  display: block;
+  margin-top: 14px;
+  padding: 18px 18px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  background: var(--paper-2);
+  color: var(--ink);
+  text-decoration: none;
+}
+.tp-card > span {
+  display: block;
+}
+.tp-card .tp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.tp-t {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.tp-go {
+  color: var(--accent);
+  font-size: 20px;
+}
+.tp-b {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.45;
+}
+.tp-bar {
+  height: 6px;
+  margin-top: 16px;
+  border-radius: 3px;
+  background: var(--rule);
+  overflow: hidden;
+}
+.tp-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+}
+.tp-card .tp-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  color: var(--ink-3);
+  font-size: 14px;
+}
+.tp-due {
+  color: var(--accent);
+  font-weight: 600;
+}

@@ -11,6 +11,7 @@ import { renderHistory } from './history';
 import { renderNext } from './next';
 import { renderPlacement } from './placement';
 import { renderSession } from './session';
+export { renderTopics } from './topics';
 import { renderTrack, renderTrackMap } from './tracks';
 import type { CourseRoute } from '../../routes';
 
