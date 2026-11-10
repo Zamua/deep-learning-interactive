@@ -10,6 +10,8 @@ export interface OfflineStatus {
   /** Narration tracks cached, of `total`. */
   audio: number;
   total: number;
+  /** Of the `upcoming` tracks asked about, how many are cached. */
+  upcoming: number;
 }
 
 /** Whether this build keeps Atlas offline: production builds, in browsers with service workers. */
@@ -29,8 +31,8 @@ export function checkForNewWorker(): void {
   if (offlineSupported()) void navigator.serviceWorker.getRegistration().then((r) => r?.update()).catch(() => {});
 }
 
-/** What the active service worker holds, or null while none is active yet. */
-export async function offlineStatus(): Promise<OfflineStatus | null> {
+/** What the active service worker holds, or null while none is active yet. `upcoming`: narration to count as held. */
+export async function offlineStatus(upcoming: string[] = []): Promise<OfflineStatus | null> {
   const sw = (await navigator.serviceWorker.getRegistration().catch(() => undefined))?.active;
   if (!sw) return null;
   return new Promise((resolve) => {
@@ -40,6 +42,6 @@ export async function offlineStatus(): Promise<OfflineStatus | null> {
       window.clearTimeout(late);
       resolve(m.data as OfflineStatus);
     };
-    sw.postMessage({ type: WIRE.status }, [ch.port2]);
+    sw.postMessage({ type: WIRE.status, upcoming }, [ch.port2]);
   });
 }

@@ -12,6 +12,7 @@ import { COURSES, courseById, FIRST } from './courses/index';
 import { icon } from './core/controls';
 import { disposeAll, h } from './core/dom';
 import { Learner } from './mastery/learner';
+import { saveAhead } from './offline/ahead';
 import { checkForNewWorker, startOffline } from './offline/register';
 import { getItem, setItem } from './core/storage';
 import { applyTheme, settingsButton } from './settings';
@@ -57,7 +58,14 @@ let currentId = '';
 let renderToken = 0;
 
 /** A course's pages, the account page and the topics page, which any other address or an unknown course lands on. */
+/** Draws the page for the address, then has the narration that comes next saved, since an answer may have moved it. */
 async function route(): Promise<void> {
+  await show();
+  const page = parseRoute(location.hash)?.page;
+  if (page && !BUSY.has(page)) saveAhead();
+}
+
+async function show(): Promise<void> {
   setNav(false);
   const r = parseRoute(location.hash);
   if (r?.page === 'account') return routeAccount(r.code);

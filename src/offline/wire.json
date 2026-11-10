@@ -1,4 +1,5 @@
 {
   "status": "offline-status",
+  "ahead": "offline-ahead",
   "summary": { "db": "atlas", "store": "kv", "key": "summary" }
 }

@@ -9,6 +9,7 @@ const defs = import.meta.glob<CourseDef>('./*/course.ts', { eager: true, import:
 const metas = import.meta.glob<ConceptMeta>('./*/*/*/meta.ts', { eager: true, import: 'meta' });
 const problems = import.meta.glob<Generator[]>('./*/*/*/problems.ts', { import: 'generators' });
 const explainers = import.meta.glob<LectureDef>('./*/*/*/explainer.ts', { import: 'default' });
+const narrations = import.meta.glob<string>('./*/*/*/narration.m4a', { query: '?url', import: 'default', eager: true });
 const durations = import.meta.glob<number>('./*/*/*/timing.json', { query: '?duration', import: 'default', eager: true });
 
 const placeOf = (path: string) => {
@@ -46,6 +47,7 @@ function build(id: string, def: CourseDef): Course {
     loadGenerators: (c) => problems[file(c, 'problems.ts')]?.() ?? Promise.resolve([]),
     hasExplainer: (c) => file(c, 'explainer.ts') in explainers,
     explainerSeconds: (c) => durations[file(c, 'timing.json')] ?? 0,
+    narration: (c) => narrations[file(c, 'narration.m4a')] ?? '',
     loadExplainer: (c) => explainers[file(c, 'explainer.ts')]?.() ?? null,
   };
 }

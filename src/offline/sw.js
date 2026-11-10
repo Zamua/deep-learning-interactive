@@ -6,12 +6,17 @@
 // before it keeps answering, whole, so Atlas never opens on a build it cannot finish drawing with no connection. An
 // install that is cut short (iOS allows an installed app only short sessions) keeps what arrived and resumes at the
 // next launch. Once a build is in charge its pages come from the cache, never the network: the next build arrives
-// through the next worker. Narration is cached the first time it plays, since all of it is far larger than the app.
+// through the next worker. Narration is cached the first time it plays, since all of it is far larger than the app,
+// and the page names the explainers that come next so that theirs is saved ahead, up to AHEAD_CAP.
 // This file touches Cache Storage only: progress lives in localStorage and is never its concern.
 const OFFLINE = self.__ATLAS_OFFLINE;
 const WIRE = self.__ATLAS_WIRE;
 const APP = 'atlas-app';
 const AUDIO = 'atlas-audio';
+/** Narration saved before it was played: what the page said comes next. A track moves to AUDIO once it plays. */
+const AHEAD = 'atlas-audio-ahead';
+/** The most narration held ahead, in bytes: about twenty explainers. */
+const AHEAD_CAP = 40 * 1024 * 1024;
 /** Parallel downloads while caching the app. */
 const POOL = 4;
 
@@ -78,8 +83,8 @@ async function saveRest() {
 
 /** Drops what the current build no longer names, and caches of other names. */
 async function prune() {
-  for (const name of await caches.keys()) if (name !== APP && name !== AUDIO) await caches.delete(name);
-  for (const [name, keep] of [[APP, appFiles], [AUDIO, audioFiles]]) {
+  for (const name of await caches.keys()) if (name !== APP && name !== AUDIO && name !== AHEAD) await caches.delete(name);
+  for (const [name, keep] of [[APP, appFiles], [AUDIO, audioFiles], [AHEAD, audioFiles]]) {
     const cache = await caches.open(name);
     for (const req of await cache.keys()) if (!keep.has(req.url)) await cache.delete(req);
   }
@@ -165,8 +170,71 @@ function saveAudio(key) {
   return saving.get(key);
 }
 
+/** A saved track, played or held ahead; one held ahead joins the played ones, which are never dropped to make room. */
+async function heldAudio(key) {
+  const played = await caches.open(AUDIO);
+  const hit = await played.match(key);
+  if (hit) return hit;
+  const ahead = await caches.open(AHEAD);
+  const early = await ahead.match(key);
+  if (!early) return undefined;
+  await played.put(key, early.clone());
+  await ahead.delete(key);
+  return early;
+}
+
+/**
+ * Holds the narration of `want` (addresses, soonest first) and lets go of what was held ahead and is no longer wanted.
+ * Only once the app itself is whole; stops quietly at the cap, or when the connection does.
+ */
+async function saveAhead(want) {
+  if ((await missing()).length) return;
+  const played = await caches.open(AUDIO);
+  const ahead = await caches.open(AHEAD);
+  const wanted = [...new Set(want)].filter((u) => audioFiles.has(u));
+  for (const req of await ahead.keys()) if (!wanted.includes(req.url)) await ahead.delete(req);
+  let total = 0;
+  let full = false;
+  for (const u of wanted) {
+    if (await played.match(u)) continue;
+    const held = await ahead.match(u);
+    if (full) {
+      if (held) await ahead.delete(u);
+      continue;
+    }
+    let body;
+    if (held) body = await held.blob();
+    else {
+      const res = await fetch(u);
+      if (res.status !== 200) return;
+      body = await res.blob();
+    }
+    full = total + body.size > AHEAD_CAP;
+    if (full && held) await ahead.delete(u);
+    if (full) continue;
+    total += body.size;
+    if (!held) await ahead.put(u, new Response(body, { headers: { 'Content-Type': body.type || 'audio/mp4' } }));
+  }
+}
+
+let aheadWant = null;
+let aheadSaving = null;
+
+/** One run of `saveAhead` at a time, then once more with the latest list if another came meanwhile. */
+function keepAhead(want) {
+  aheadWant = want;
+  aheadSaving ??= (async () => {
+    while (aheadWant) {
+      const next = aheadWant;
+      aheadWant = null;
+      await saveAhead(next).catch(() => {});
+    }
+  })().finally(() => (aheadSaving = null));
+  return aheadSaving;
+}
+
 function audio(e, key) {
-  const hit = caches.open(AUDIO).then((c) => c.match(key));
+  const hit = heldAudio(key);
   e.respondWith(hit.then((r) => (r ? ranged(r, e.request.headers.get('Range')) : fetch(e.request))));
   e.waitUntil(hit.then((r) => r || saveAudio(key)));
 }
@@ -186,16 +254,18 @@ self.addEventListener('fetch', (e) => {
   if (key.startsWith(HASHED)) e.respondWith(heldFile(e.request, key));
 });
 
-/** Answers the settings menu: whether the app is cached, and how many narrations are. */
+/** Takes the page's list of narration to hold ahead, and answers the settings menu: what is saved. */
 self.addEventListener('message', (e) => {
+  if (OFFLINE && e.data && e.data.type === WIRE.ahead && Array.isArray(e.data.urls)) return e.waitUntil(keepAhead(e.data.urls));
   if (!e.data || e.data.type !== WIRE.status || !e.ports[0]) return;
   e.waitUntil((async () => {
-    if (!OFFLINE) return e.ports[0].postMessage({ version: '', ready: false, files: 0, filesTotal: 0, audio: 0, total: 0 });
+    if (!OFFLINE) return e.ports[0].postMessage({ version: '', ready: false, files: 0, filesTotal: 0, audio: 0, total: 0, upcoming: 0 });
     const app = await caches.open(APP);
     const held = new Set((await app.keys()).map((r) => r.url));
     const files = [...appFiles].filter((u) => held.has(u)).length;
-    const saved = (await (await caches.open(AUDIO)).keys()).length;
-    e.ports[0].postMessage({ version: OFFLINE.version, ready: files === appFiles.size, files, filesTotal: appFiles.size, audio: saved, total: audioFiles.size });
+    const sound = new Set([...(await (await caches.open(AUDIO)).keys()), ...(await (await caches.open(AHEAD)).keys())].map((r) => r.url));
+    const upcoming = (Array.isArray(e.data.upcoming) ? e.data.upcoming : []).filter((u) => sound.has(u)).length;
+    e.ports[0].postMessage({ version: OFFLINE.version, ready: files === appFiles.size, files, filesTotal: appFiles.size, audio: sound.size, total: audioFiles.size, upcoming });
   })());
 });
 

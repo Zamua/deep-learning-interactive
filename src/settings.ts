@@ -4,6 +4,7 @@ import { icon, settingRow } from './core/controls';
 import { h } from './core/dom';
 import { paceRow } from './mastery/ui/pace';
 import { remindersPanel, reminderBook } from './mastery/ui/reminders';
+import { upcomingNarration } from './offline/ahead';
 import { offlineStatus, offlineSupported } from './offline/register';
 import { syncEngine } from './sync/cloud';
 import { statusLine } from './sync/status';
@@ -71,17 +72,26 @@ function syncRow(): { el: HTMLElement; stop: () => void } | null {
   return { el, stop: sync.on('status', draw) };
 }
 
+/** How many of the explainers that come next have their sound saved, as the footnote says it. */
+export function soundSaved(held: number, of: number): string {
+  if (!of) return '';
+  const next = of === 1 ? 'the next explainer' : `the next ${of} explainers`;
+  if (held >= of) return ` Sound is saved for ${next}.`;
+  return held ? ` Sound is saved for ${held} of ${next}.` : ` Sound for ${next} is not saved yet.`;
+}
+
 /** A footnote on offline use, filled in once the service worker answers. */
 function offlineNote(): HTMLElement | null {
   if (!offlineSupported()) return null;
   const el = h('div', { class: 'set-foot' });
-  const draw = (ready: boolean) => {
+  const want = upcomingNarration();
+  const draw = (ready: boolean, sound = '') => {
     el.className = `set-foot${ready ? ' ok' : ''}`;
     el.innerHTML = icon(ready ? 'airplane' : 'download-simple');
-    el.append(ready ? 'Works offline' : 'Saving for offline…');
+    el.append(h('span', {}, ready ? `Works offline.${sound}` : 'Saving for offline…'));
   };
   draw(false);
-  void offlineStatus().then((st) => draw(!!st?.ready));
+  void offlineStatus(want).then((st) => draw(!!st?.ready, st ? soundSaved(st.upcoming, want.length) : ''));
   return el;
 }
 

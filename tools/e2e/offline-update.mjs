@@ -3,7 +3,8 @@
 //
 // A learner on the old build launches once after the new one is published, then loses the connection:
 //   cut      the connection goes while the new build is still arriving; whichever build then opens must open whole
-//   settled  the connection goes after the new build has arrived; it is the new build that must open whole
+//   settled  the connection goes after the new build has arrived; it is the new build that must open whole, and the
+//            next explainer must play with its narration, which was saved ahead
 // Exits 1 when any page fails to draw.
 import { createServer } from 'node:http';
 import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs';
@@ -93,6 +94,26 @@ async function everyPageOpens(ctx, label) {
   return build;
 }
 
+/** Plays the first concept's explainer with no connection; returns what went wrong, or '' when its narration is heard. */
+async function nextExplainerPlays(ctx) {
+  const page = await ctx.newPage();
+  await page.addInitScript(() => {
+    const made = (window.__audio = []);
+    window.Audio = new Proxy(window.Audio, { construct: (T, args) => (made.push(new T(...args)), made.at(-1)) });
+  });
+  try {
+    await page.goto(`${base}#/atlas/vector/watch`, { timeout: 15000 });
+    await page.click('.lec-poster-play', { timeout: 15000 });
+    await page.waitForFunction(() => window.__audio.some((a) => !a.paused && !a.error && a.currentTime > 0.5), null, { timeout: 15000 });
+    return '';
+  } catch (e) {
+    const state = await page.evaluate(() => window.__audio?.map((a) => `paused=${a.paused} t=${a.currentTime} error=${a.error?.code ?? 'none'}`).join('; ') ?? 'no page').catch(() => '');
+    return `${e.message.split('\n')[0]} (${state || 'no audio element'})`;
+  } finally {
+    await page.close();
+  }
+}
+
 /** A learner whose device holds all of the old build. */
 async function learnerOnOld() {
   Object.assign(site, { root: oldDist, delay: 0, down: false });
@@ -131,8 +152,13 @@ for (const after of [300, 1500, 4000, 7000]) {
     const st = await held(page);
     return st?.ready === true && st.version === newVersion;
   }, 120000);
+  // A new learner's next explainer is the first concept's: its narration is saved ahead, unasked.
+  await until('the next explainer\'s narration to be saved', () => page.evaluate(async () => (await (await caches.open('atlas-audio-ahead')).keys()).length > 0));
   site.down = true;
   await page.close();
+  const sound = await nextExplainerPlays(ctx);
+  console.log(`settled: the next explainer ${sound ? 'did not play with sound: ' + sound : 'played with sound'}`);
+  if (sound) failures.push(`settled  #/atlas/vector/watch  ${sound}`);
   const got = await everyPageOpens(ctx, 'settled');
   console.log(`settled: opened the ${name(got)} build`);
   if (got !== newEntry) failures.push(`settled  the ${name(got)} build opened, not the new one`);

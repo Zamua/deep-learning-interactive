@@ -143,7 +143,7 @@ class FakeRequest {
   }
 }
 
-const OFFLINE = { version: 'v1', files: ['index.html', 'assets/index-a1.js', 'assets/ui-b2.css', 'assets/concept-d4.js', 'icon-192.png'], audio: ['assets/narration-c3.m4a'] };
+const OFFLINE = { version: 'v1', files: ['index.html', 'assets/index-a1.js', 'assets/ui-b2.css', 'assets/concept-d4.js', 'icon-192.png'], audio: ['assets/narration-c3.m4a', 'assets/narration-g7.m4a', 'assets/narration-h8.m4a'] };
 const url = (f: string) => new URL(f, SCOPE).href;
 const SHELL = '<script src="./assets/index-a1.js"></script><link href="./assets/ui-b2.css">';
 
@@ -165,6 +165,8 @@ describe('offline service worker', () => {
     w.net.set(url('assets/concept-d4.js'), { body: 'concept', type: 'text/javascript' });
     w.net.set(url('icon-192.png'), { body: 'png', type: 'image/png' });
     w.net.set(url('assets/narration-c3.m4a'), { body: '0123456789', type: 'audio/mp4' });
+    w.net.set(url('assets/narration-g7.m4a'), { body: 'ggggg', type: 'audio/mp4' });
+    w.net.set(url('assets/narration-h8.m4a'), { body: 'hhhhh', type: 'audio/mp4' });
   });
 
   it('takes over only once every file of the build is saved, and leaves the narration for when it plays', async () => {
@@ -319,7 +321,84 @@ describe('offline service worker', () => {
     await installed();
     expect([...(await app()).m.keys()].sort()).toEqual(OFFLINE.files.map(url).sort());
     expect([...audio.m.keys()]).toEqual([url('assets/narration-c3.m4a')]);
-    expect((await w.caches.keys()).sort()).toEqual(['atlas-app', 'atlas-audio']);
+    expect((await w.caches.keys()).sort()).toEqual(['atlas-app', 'atlas-audio', 'atlas-audio-ahead']);
+  });
+
+  describe('narration saved ahead', () => {
+    const G = url('assets/narration-g7.m4a');
+    const H = url('assets/narration-h8.m4a');
+    const C = url('assets/narration-c3.m4a');
+    const ahead = () => w.caches.open('atlas-audio-ahead');
+    const want = (urls: string[]) => w.extend('message', { data: { type: WIRE.ahead, urls }, ports: [] });
+    const upcoming = async (urls: string[]) => {
+      const ch = new MessageChannel();
+      const got = new Promise<{ upcoming: number }>((resolve) => (ch.port1.onmessage = (m) => resolve(m.data)));
+      await w.extend('message', { data: { type: WIRE.status, upcoming: urls }, ports: [ch.port2] });
+      const v = await got;
+      ch.port1.close();
+      return v.upcoming;
+    };
+
+    it('holds the narration the page names, and plays it with no connection', async () => {
+      await installed();
+      await want([G, H]);
+      expect([...(await ahead()).m.keys()]).toEqual([G, H]);
+      expect(await upcoming([G, H, C])).toBe(2);
+      w.env.online = false;
+      const part = (await w.get('assets/narration-g7.m4a', { range: 'bytes=0-1' }))!;
+      expect([part.status, await part.text()]).toEqual([206, 'gg']);
+    });
+
+    it('waits until the app itself is saved', async () => {
+      await want([G]);
+      expect((await ahead()).m.size).toBe(0);
+    });
+
+    it('keeps a track that has played, whatever comes next', async () => {
+      await installed();
+      await want([G, H]);
+      await w.get('assets/narration-g7.m4a', { range: 'bytes=0-1' });
+      await want([H]);
+      await want([]);
+      expect([...(await w.caches.open('atlas-audio')).m.keys()]).toEqual([G]);
+      expect((await ahead()).m.size).toBe(0);
+    });
+
+    it('lets go of what is no longer coming, and fetches nothing it already holds', async () => {
+      await installed();
+      await want([G]);
+      w.fetches.length = 0;
+      await want([H, G]);
+      expect(w.fetches.map((f) => f.url)).toEqual([H]);
+      await want([H]);
+      expect([...(await ahead()).m.keys()]).toEqual([H]);
+    });
+
+    it('stops at the cap, keeping what comes soonest', async () => {
+      await installed();
+      w.net.set(G, { body: 'g'.repeat(30 * 1024 * 1024), type: 'audio/mp4' });
+      w.net.set(H, { body: 'h'.repeat(20 * 1024 * 1024), type: 'audio/mp4' });
+      await want([H, C]);
+      await want([G, H, C]);
+      expect([...(await ahead()).m.keys()]).toEqual([G]);
+    });
+
+    it('stays quiet with no connection, and ignores addresses that are not narration', async () => {
+      await installed();
+      w.env.online = false;
+      await want([G]);
+      w.env.online = true;
+      await want([url('assets/index-a1.js'), 'https://elsewhere.test/x.m4a']);
+      expect((await ahead()).m.size).toBe(0);
+    });
+
+    it('survives tidying after an update', async () => {
+      await installed();
+      await want([G]);
+      await w.get('./', { mode: 'navigate' });
+      expect((await w.caches.keys()).sort()).toEqual(['atlas-app', 'atlas-audio', 'atlas-audio-ahead']);
+      expect([...(await ahead()).m.keys()]).toEqual([G]);
+    });
   });
 
   it('leaves other requests to the browser', async () => {
@@ -337,10 +416,10 @@ describe('offline service worker', () => {
       ch.port1.close();
       return v;
     };
-    expect(await ask()).toEqual({ version: 'v1', ready: false, files: 0, filesTotal: 5, audio: 0, total: 1 });
+    expect(await ask()).toEqual({ version: 'v1', ready: false, files: 0, filesTotal: 5, audio: 0, total: 3, upcoming: 0 });
     await installed();
     await w.get('assets/narration-c3.m4a', { range: 'bytes=0-1' });
-    expect(await ask()).toEqual({ version: 'v1', ready: true, files: 5, filesTotal: 5, audio: 1, total: 1 });
+    expect(await ask()).toEqual({ version: 'v1', ready: true, files: 5, filesTotal: 5, audio: 1, total: 3, upcoming: 0 });
   });
 });
 
