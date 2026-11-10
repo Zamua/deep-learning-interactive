@@ -67,6 +67,9 @@
           return BOOKS.filter(function (b) { return id === 'first' ? b.home === '#/atlas' : b.id === id; })[0] || BOOKS.filter(function (b) { return b.home === '#/atlas'; })[0];
         }
         var KINDS = {
+          shelf: function () {
+            return '<div class="ld"><div class="ld-sc"><div class="ld-hd">Atlas<i>Courses you can hold</i></div></div></div>';
+          },
           hub: function (hash) {
             var b = bookOf(hash);
             var done = mastered(b);
@@ -95,6 +98,7 @@
         function kindOf(hash) {
           var p = hash.replace(/^#\/?/, '').replace(/\/+$/, '').split('/');
           var rest = p[0] === 'atlas' ? p.slice(1) : p[0] === 'c' ? p.slice(2) : null;
+          if (!p[0]) return 'shelf';
           if (!rest) return p[0] === 'settings' || p[0] === 'account' || p[0] === 'link' ? 'page' : 'hub';
           if (!rest[0]) return 'hub';
           if (rest[0] === 'learn' || rest[0] === 'place') return 'practice';

@@ -4,6 +4,10 @@ import type { CourseDef } from '../course';
 export const course: CourseDef = {
   title: 'Deep Learning',
   blurb: 'From vectors to transformers, one idea at a time.',
+  about: [
+    'Seventeen chapters that build a working picture of modern neural networks, starting from vectors and derivatives and ending at the systems people use today.',
+    'Every idea gets a short explainer you can listen to, a figure you can move, and problems that check you can use it. Nothing is assumed that an earlier chapter has not taught.',
+  ],
   cover: '#3d5a4c',
   idPrefix: '',
   domains: [

@@ -24,7 +24,8 @@ function bookSwitcher(current: Learner): void {
       h('span', { class: 'g' }, course.title, h('small', {}, `${learner.masteredCount()} of ${course.graph.order.length} mastered${due ? ` · ${plural(due, 'review')} due` : ''}`)),
       course.id === current.course.id ? h('span', { html: icon('check') }) : '');
   };
-  openSheet('Your books', h('div', { class: 'sh-lab' }, 'Your books'), ...COURSES.map((c) => row(new Learner(c))));
+  const shelf = h('a', { class: 'bk-row', href: site.shelf }, h('span', { html: icon('books') }), h('span', { class: 'g' }, 'All books'));
+  openSheet('Your books', h('div', { class: 'sh-lab' }, 'Your books'), ...COURSES.map((c) => row(new Learner(c))), shelf);
 }
 
 /** The reviews waiting in the other books, which run as one block with this book's. */
