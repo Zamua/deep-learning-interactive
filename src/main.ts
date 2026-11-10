@@ -15,6 +15,7 @@ import { disposeAll, h } from './core/dom';
 import { loadNote, patiently, stylesReady } from './core/waiting';
 import { getItem } from './core/storage';
 import { Learner } from './mastery/learner';
+import { renderLanding } from './landing/landing';
 import { LAST_BOOK, renderHub } from './mastery/ui/hub';
 import { checkForNewWorker, startOffline } from './offline/register';
 import { applyTheme } from './theme';
@@ -60,12 +61,13 @@ async function show(key: string, title: string, load: () => Promise<Render>): Pr
   }
 }
 
-/** A course's pages, settings, and the account's. Any other address, the old tabs included, opens the book last read. */
+/** The shelf, a course's pages, settings, and the account's. Any other address, the old tabs included, opens the book last read. */
 async function route(): Promise<void> {
   noteArrival();
   const r = parseRoute(location.hash);
   if (r?.page === 'account') return routeAccount(r.code);
   if (r?.page === 'settings') return routeSettings();
+  if (r?.page === 'shelf') return show('shelf', 'Library', async () => () => renderLanding(main));
   const course = r && 'course' in r ? courseById(r.course) : undefined;
   if (r && 'course' in r && course) return routeCourse(r, course);
   const book = courseById(getItem(LAST_BOOK) ?? '') ?? FIRST;

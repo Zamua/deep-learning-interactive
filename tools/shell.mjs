@@ -31,7 +31,7 @@ export function shell() {
     transformIndexHtml: {
       order: 'post',
       handler(html) {
-        const css = ['base', 'library', 'shell'].map((f) => readFileSync(join(root, `src/styles/${f}.css`), 'utf8')).join('\n');
+        const css = ['base', 'library', 'landing', 'shell'].map((f) => readFileSync(join(root, `src/styles/${f}.css`), 'utf8')).join('\n');
         // Loaded as print, the stylesheet keeps its place in the cascade without holding back the paint.
         const out = html.replace(/<link rel="stylesheet"([^>]*)>/g, `<link rel="stylesheet"$1 media="print" onload="this.media='all'">`);
         return out

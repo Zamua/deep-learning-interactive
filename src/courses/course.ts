@@ -17,6 +17,8 @@ export interface CourseDef {
   title: string;
   /** One line under the title on the course's cover. */
   blurb: string;
+  /** A paragraph or two for the shelf, on what the course holds and how it goes. */
+  about?: string[];
   /** The cover's color, as `#rrggbb`. Light paper text sits on it, so it must be dark. */
   cover: string;
   /**

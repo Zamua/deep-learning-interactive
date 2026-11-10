@@ -1,7 +1,7 @@
 # Atlas: notes for a coding agent
 
 A Vite + TypeScript static site (no framework): Atlas, courses built as concept graphs, each
-concept a voiced explainer plus generated problems practiced to mastery. Hash routes: `#/` opens the book last read,
+concept a voiced explainer plus generated problems practiced to mastery. Hash routes: `#/` is the shelf (an address the app does not know opens the book last read),
 `#/atlas` is the first book's home and `#/c/<course>` another's, `#/atlas/explore/<view>`, `#/settings` and `#/account` (see
 `docs/MASTERY.md`). `docs/MASTERY.md` is the design and the authoring contract, `docs/EXPLAINERS.md` the
 explainer craft, `docs/SYNC.md` progress sync.
@@ -62,6 +62,11 @@ is not needed (never leave content hidden behind a removed animation), Phosphor 
   `scene.ts`: beat-anchored easing and a drawing kit in stage units; `draw.ts`: helpers any course's
   scenes share (a course's own are in `<course>/draw.ts`); `types.ts`: script and timing
   types; `lookup.ts`: the cards for symbols and calls; `library.ts`: notes on common library calls.
+- `src/landing/`: the shelf at `#/`. Each course is a book lying flat, spine out; a tap stands it up beside its blurb,
+  `CourseDef.about`, its chapters and the way in. `landing.ts` builds it, `art.ts` draws each cover once to a small canvas,
+  `src/styles/landing.css` holds the geometry. Scrolling runs no script: the scroller is the camera (CSS `perspective`)
+  and the books are scrolled content with fixed transforms. Keep it so: no scroll or resize handlers, no per-frame
+  transforms, no filters, and the lying and standing transforms list the same functions so they blend.
 - `src/mastery/`: the engine. `domain/` is pure and unit tested (concept graph, student model,
   scheduler, tracks, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
   learner's records in the synced progress store; `ui/` renders a book's home (`hub.ts`), Explore (`explore/`), the

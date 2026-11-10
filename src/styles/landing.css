@@ -1,0 +1,302 @@
+/* ---------- the shelf: books lying flat, spine out, and one standing beside what it holds ---------- */
+
+.ld {
+  /* The page's unit, the screen's width; landing.ts has the same. */
+  --U: min(100vw, 520px);
+  --H: calc(3.2 * var(--U));
+  --W: calc(2.144 * var(--U));
+  --pitch: calc(0.6 * var(--U));
+  --y0: 38vh;
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ld-tint {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--c, var(--paper)) 26%, var(--paper));
+  opacity: 0;
+  transition: opacity 0.6s;
+  pointer-events: none;
+}
+
+.ld.detail .ld-tint {
+  opacity: 1;
+}
+
+/* The scroller is the camera: its perspective origin stays put while the books scroll under it, so no script runs
+   while they move. The eye sits above the screen, so a book shows more of its cover the lower it lies. */
+.ld-sc {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  perspective: calc(15.7 * var(--U));
+  perspective-origin: 50% calc(-1.12 * var(--U));
+}
+
+.ld-hd {
+  position: absolute;
+  left: 22px;
+  top: calc(16px + env(safe-area-inset-top));
+  font: 600 19px/1.2 var(--font-display);
+}
+
+.ld-hd i {
+  display: block;
+  font: italic 400 15px/1.3 var(--font-body);
+  color: var(--ink-2);
+}
+
+.ld-sp {
+  height: calc(var(--y0) + (var(--n) - 1) * var(--pitch) + 62vh);
+}
+
+.ld-bks {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+/* A book is a point with its faces hung around it, laid on its back with the spine toward the reader. */
+.ld-bk {
+  --on: #f1e9d8;
+  position: absolute;
+  left: 50%;
+  top: calc(var(--y0) + var(--i) * var(--pitch) + var(--T) / 2);
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: translate3d(0, 0, calc(var(--W) / -2)) scale(1) rotateZ(-90deg) rotateY(90deg) rotateX(0deg);
+  cursor: pointer;
+  transition: opacity 0.25s;
+}
+
+.ld-bk > * {
+  position: absolute;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.ld-cv {
+  width: var(--W);
+  height: var(--H);
+  left: calc(var(--W) / -2);
+  top: calc(var(--H) / -2);
+  transform: translateZ(calc(var(--T) / 2));
+}
+
+.ld-sn {
+  width: var(--T);
+  height: var(--H);
+  left: calc(var(--T) / -2);
+  top: calc(var(--H) / -2);
+  transform: translateX(calc(var(--W) / -2)) rotateY(-90deg);
+  background: var(--c);
+}
+
+.ld-sn span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--H);
+  height: var(--T);
+  transform: translate(-50%, -50%) rotate(90deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  color: var(--on);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.04) 20%, rgba(255, 255, 255, 0.07) 52%, rgba(0, 0, 0, 0.1) 84%, rgba(0, 0, 0, 0.34));
+}
+
+.ld-tl {
+  width: var(--W);
+  height: var(--T);
+  left: calc(var(--W) / -2);
+  top: calc(var(--T) / -2);
+  background: #e6dcc6;
+  box-shadow: inset 0 0 0 3px var(--c);
+  transform: translateY(calc(var(--H) / 2)) rotateX(-90deg);
+}
+
+.ld.moving .ld-bk {
+  transition: transform 0.78s cubic-bezier(0.32, 0.72, 0.12, 1), opacity 0.25s;
+}
+
+.ld-bk.off {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ld.settled .ld-bk.off {
+  visibility: hidden;
+}
+
+.ld-dt {
+  display: none;
+  position: relative;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: calc(1.7 * var(--U)) 26px calc(72px + env(safe-area-inset-bottom)) 56px;
+  font: 400 17px/1.5 var(--font-body);
+  opacity: 0;
+  transition: opacity 0.35s 0.3s;
+}
+
+.ld.detail .ld-dt {
+  display: block;
+}
+
+.ld.shown .ld-dt,
+.ld.shown .ld-back {
+  opacity: 1;
+}
+
+.ld.detail .ld-sp,
+.ld.detail .ld-hd {
+  display: none;
+}
+
+.ld-dt h1 {
+  margin: 0;
+  font: 700 21px/1.25 var(--font-display);
+}
+
+.ld-by {
+  margin-top: 2px;
+  font: italic 400 19px/1.35 var(--font-body);
+  color: var(--ink-2);
+}
+
+.ld-dt hr {
+  width: 60px;
+  margin: 24px 0 22px;
+  border: 0;
+  border-top: 1px solid var(--ink-2);
+}
+
+.ld-dt p {
+  max-width: 34em;
+  margin: 0 0 14px;
+}
+
+.ld-go {
+  display: inline-block;
+  margin: 12px 0 10px;
+  padding: 10px 18px;
+  border: 1px solid var(--ink-2);
+  font: 600 16px/1.2 var(--font-display);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.ld-go:active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.ld-note {
+  margin-bottom: 26px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.ld-dt h2 {
+  margin: 6px 0 8px;
+  font: 600 15px/1.3 var(--font-display);
+  color: var(--ink-2);
+}
+
+.ld-dt ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+}
+
+.ld-dt li {
+  display: flex;
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+}
+
+.ld-dt li b {
+  flex: none;
+  width: 1.6em;
+  font: 400 14px/1.8 var(--font-mono);
+  color: var(--ink-2);
+}
+
+.ld-back {
+  display: none;
+  position: absolute;
+  left: 4px;
+  top: calc(0.62 * var(--U));
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.35s 0.3s;
+}
+
+.ld.detail .ld-back {
+  display: grid;
+}
+
+.ld-back .ico {
+  width: 22px;
+  height: 22px;
+}
+
+.ld-doors {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.ld-doors:focus-within {
+  left: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  width: auto;
+  height: auto;
+  clip-path: none;
+  display: flex;
+  gap: 8px;
+}
+
+.ld-doors button {
+  padding: 8px 12px;
+  border: 1px solid var(--ink-2);
+  background: var(--paper);
+  color: var(--ink);
+  font: 600 15px/1.2 var(--font-display);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ld.moving .ld-bk {
+    transition: opacity 0.2s;
+  }
+
+  .ld-tint,
+  .ld-dt,
+  .ld-back {
+    transition: none;
+  }
+}
