@@ -345,20 +345,6 @@
   stroke: var(--accent);
   stroke-width: 1.6px;
 }
-.ex-pin-bg {
-  fill: var(--paper);
-}
-.ex-pin {
-  fill: var(--accent);
-}
-.ex-here rect {
-  fill: var(--accent);
-}
-.ex-here text {
-  fill: var(--paper);
-  font-size: 11.5px;
-  text-anchor: middle;
-}
 .ex-pill {
   position: absolute;
   left: 50%;
@@ -472,29 +458,6 @@ body:has(.ex[data-drawing]) .scrim {
   align-items: center;
   gap: 8px;
 }
-.cs-text {
-  margin: 4px 0 0;
-  color: var(--ink-2);
-  font-size: 15px;
-  line-height: 1.4;
-}
-.cs-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 5px;
-}
-.cs-chip {
-  padding: 3px 10px;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  background: var(--paper);
-  color: var(--ink);
-  font: inherit;
-  font-size: 13.5px;
-  line-height: 1.35;
-  cursor: pointer;
-}
 .cs-goal {
   display: flex;
   align-items: center;
@@ -522,24 +485,47 @@ body:has(.ex[data-drawing]) .scrim {
 .ex-scroll:has(.ex-whole) {
   overflow-x: hidden;
 }
-.at-node.at-here {
+/* A concept just gone to is marked for a moment, so the move shows even when it was already in view. */
+.at-node.at-pulse {
   z-index: 2;
-  outline: 2.5px solid var(--accent);
-  outline-offset: 2px;
+  animation: at-pulse 1.4s ease-out;
 }
-.at-node.at-here::after {
-  content: 'You are here';
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 6px);
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--paper);
-  font-size: 11px;
-  line-height: 1.3;
-  white-space: nowrap;
-  transform: translateX(-50%);
+@keyframes at-pulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--accent), 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  25% {
+    box-shadow: 0 0 0 3px var(--accent), 0 0 0 12px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 3px var(--accent), 0 0 0 16px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent, 0 0 0 16px transparent;
+  }
+}
+.ex-ring.pulse {
+  stroke-width: 3px;
+  animation: ex-ring-pulse 1.4s ease-out;
+}
+@keyframes ex-ring-pulse {
+  0%,
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* No movement: the ring simply shows, then goes. */
+  .at-node.at-pulse {
+    animation: none;
+    box-shadow: 0 0 0 3px var(--accent);
+  }
+  .ex-ring.pulse {
+    animation: none;
+  }
 }
 
 .at-legend {

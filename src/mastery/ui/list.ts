@@ -21,7 +21,7 @@ export function renderList(main: HTMLElement, learner: Learner): void {
     h('h1', { class: 'home-title' }, 'Every concept'),
     h('p', { class: 'at-small' }, `${count('mastered', 'due', 'slipping')} of ${graph.order.length} mastered`));
 
-  root.append(mapSearch(learner, { light: () => {}, pick: (id) => void (location.hash = learner.course.routes.concept(id)) }));
+  root.append(mapSearch(learner, { pick: (id) => void (location.hash = learner.course.routes.concept(id)) }));
 
   const row = (id: string, box: string, boxCls: string, right: HTMLElement | string, showDomain = true) => {
     const c = graph.get(id)!;

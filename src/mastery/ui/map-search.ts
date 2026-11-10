@@ -1,4 +1,5 @@
-// The map's search: a field that finds concepts as the learner types, lists the best matches and lights them on the map.
+// The search for a concept: a field that lists the best matches as the learner types. The list lies over the page, and
+// nothing under it moves or redraws until a match is chosen.
 import { icon } from '../../core/controls';
 import { h, onDispose } from '../../core/dom';
 import { searchConcepts, type Hit } from '../domain/search';
@@ -6,8 +7,6 @@ import type { Learner } from '../learner';
 import { STATUS_LABEL } from './common';
 
 export interface MapSearchHost {
-  /** The matches as they change, best first, or null when the field is empty. */
-  light(ids: string[] | null): void;
   /** The learner chose a concept. */
   pick(id: string): void;
 }
@@ -78,14 +77,18 @@ export function mapSearch(learner: Learner, host: MapSearchHost): HTMLElement {
     none.textContent = `No concept matches "${input.value.trim()}".`;
     mark(-1);
     open(true);
-    host.light(input.value.trim() ? hits.map((x) => x.id) : null);
   };
 
-  input.addEventListener('input', update);
+  // A fast typist's letters are answered together.
+  let waiting = 0;
+  input.addEventListener('input', () => {
+    clear.hidden = !input.value;
+    window.clearTimeout(waiting);
+    waiting = window.setTimeout(update, 90);
+  });
+  // Nothing is scrolled to meet the field: Safari brings a focused field into view itself, and a second scroll on top
+  // of that one drags the whole page about under the keyboard.
   input.addEventListener('focus', () => {
-    // Up to the top of the screen, so the matches have the screen above the keyboard. Safari scrolls to a focused field on its
-    // own, which cancels a scroll started in the same task, so this one waits for the next.
-    window.setTimeout(() => root.scrollIntoView({ block: 'start', behavior: 'smooth' }), 60);
     if (input.value) open(true);
   });
   input.addEventListener('keydown', (e) => {
@@ -96,6 +99,9 @@ export function mapSearch(learner: Learner, host: MapSearchHost): HTMLElement {
       if (n) mark(e.key === 'ArrowDown' ? (active + 1) % n : (active - 1 + n) % n);
     } else if (e.key === 'Enter') {
       e.preventDefault();
+      // What is listed may be a keystroke behind.
+      window.clearTimeout(waiting);
+      update();
       const hit = hits[Math.max(0, active)];
       if (hit) choose(hit.id);
     } else if (e.key === 'Escape') {
@@ -115,6 +121,7 @@ export function mapSearch(learner: Learner, host: MapSearchHost): HTMLElement {
   document.addEventListener('pointerdown', away);
   window.visualViewport?.addEventListener('resize', fit);
   onDispose(() => {
+    window.clearTimeout(waiting);
     document.removeEventListener('pointerdown', away);
     window.visualViewport?.removeEventListener('resize', fit);
   });

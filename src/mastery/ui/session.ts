@@ -3,7 +3,6 @@
 import { CodePanel } from '../../core/code';
 import { icon } from '../../core/controls';
 import type { Course } from '../../courses/course';
-import { COURSES } from '../../courses/index';
 import { goBack, replaceRoute } from '../../core/back';
 import { h, onDispose } from '../../core/dom';
 import { loadNote, patiently } from '../../core/waiting';
@@ -14,7 +13,7 @@ import { recoveryStreak, streak, type ConceptRecord } from '../domain/model';
 import type { Pick } from '../domain/scheduler';
 import type { Answer, Concept, Generator, Problem } from '../domain/types';
 import { Learner } from '../learner';
-import { atlasRoot, dots, dueCount, plural, render } from './common';
+import { atlasRoot, dots, plural, render } from './common';
 import { nextStep, stepHref } from './next-step';
 import { celebrate } from './celebrate';
 import { wireLookup } from './lookup';
@@ -248,13 +247,8 @@ function problemTag(c: Concept, pick: Pick, rec: ConceptRecord): HTMLElement {
 /** How a concept's review went this session. `due`: not reached yet; `slipped`: missed, being won back. */
 type ReviewState = 'due' | 'passed' | 'helped' | 'slipped' | 'recovered';
 
-/** A review block in progress across books: what the books before this one reported. */
-const carried: { rows: HTMLElement[]; kept: number; total: number; chained: boolean } = { rows: [], kept: 0, total: 0, chained: false };
-
 /** With `focus`, one step: that concept until it is mastered. Without, the block of reviews due. */
 export function renderSession(main: HTMLElement, learner: Learner, focus?: string, _track?: string): void {
-  if (!carried.chained) Object.assign(carried, { rows: [], kept: 0, total: 0 });
-  carried.chained = false;
   const frame = runFrame(main, learner.course, 'at-session-run');
   const rng = new Rng((Date.now() ^ (Math.random() * 2 ** 32)) >>> 0);
   const gens = new Map<string, Generator[]>();
@@ -395,16 +389,11 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
 
   const kept = () => [...reviews.values()].filter((v) => v === 'passed' || v === 'recovered').length;
 
-  /** Reviews run as one block across books, so the next book's follow; the last one ends on a single way back. */
+  /** A book's reviews are its own: they end on what was kept and a way back to the book. */
   const reviewsDone = () => {
-    const rows = [...carried.rows, ...reviewRows()];
-    const keptAll = carried.kept + kept();
-    const total = carried.total + reviews.size;
-    const next = COURSES.find((c) => c.id !== learner.course.id && dueCount(new Learner(c)) > 0);
-    if (next) {
-      Object.assign(carried, { rows, kept: keptAll, total, chained: true });
-      return replaceRoute(next.routes.learn());
-    }
+    const rows = reviewRows();
+    const keptAll = kept();
+    const total = reviews.size;
     end(true);
     frame.body.innerHTML = '';
     frame.dock.innerHTML = '';

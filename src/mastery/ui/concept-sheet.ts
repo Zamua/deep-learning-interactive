@@ -1,5 +1,5 @@
-// One concept, over the page it was tapped on: where it sits, where the learner stands, what it builds on, and the one
-// thing to do about it. It never changes the address, so closing it leaves everything as it was.
+// One concept, over the page it was tapped on: where it sits, where the learner stands, and the one thing to do about
+// it. What it builds on is the map's to show. It never changes the address, so closing it leaves everything as it was.
 import '../../styles/explore.css';
 import { icon } from '../../core/controls';
 import { h } from '../../core/dom';
@@ -10,8 +10,6 @@ import { stepHref } from './next-step';
 import { openSheet } from './sheet';
 
 export interface ConceptSheetOptions {
-  /** Makes Builds on and Unlocks chips that call this; without it they are plain text. */
-  onChip?: (id: string) => void;
   /** Lists the papers behind the concept. Explore only: the main path has no links that lead away. */
   reading?: boolean;
   /** After it closes, however it was closed. */
@@ -39,17 +37,6 @@ function standing(learner: Learner, id: string): HTMLElement | string {
     case 'locked':
       return `Master ${c.prereqs.filter((p) => !learner.record(p).mastered).map((p) => graph.get(p)!.title).join(' and ')} first.`;
   }
-}
-
-function relation(learner: Learner, label: string, ids: readonly string[], onChip?: (id: string) => void): HTMLElement[] {
-  if (!ids.length) return [];
-  const title = (id: string) => learner.graph.get(id)!.title;
-  if (!onChip) return [h('div', { class: 'sh-lab' }, label), h('p', { class: 'cs-text' }, ids.map(title).join(', '))];
-  return [h('div', { class: 'sh-lab' }, label), h('div', { class: 'cs-chips' }, ...ids.map((id) => {
-    const chip = h('button', { type: 'button', class: 'cs-chip' }, title(id));
-    chip.addEventListener('click', () => onChip(id));
-    return chip;
-  }))];
 }
 
 /** The label and link for what to do next with a concept, or nothing while it is locked. */
@@ -97,8 +84,6 @@ export function openConceptSheet(learner: Learner, id: string, opts: ConceptShee
     h('h3', {}, c.title),
     h('p', {}, c.blurb),
     h('div', { class: 'cs-meta' }, standing(learner, id)),
-    ...relation(learner, 'Builds on', c.prereqs, opts.onChip),
-    ...relation(learner, 'Unlocks', graph.dependents.get(id) ?? [], opts.onChip),
     primary(learner, id),
     goalToggle(learner, id));
   if (opts.reading) {

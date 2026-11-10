@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { courseById } from '../../../courses/index';
-import { CARD, centerOn, clampView, fitView, geoOf, hitNode, layoutChapters, lodOf, packRow, shortLines, zoomAround, type Geometry } from './layout';
+import { CARD, centerOn, clampView, fitView, geoOf, hitNode, layoutChapters, lodOf, middleScroll, packRow, shortLines, zoomAround, type Geometry } from './layout';
 
 const box = { w: 402, h: 700 };
 const books = [courseById('dl')!, courseById('nix')!].map((c) => ({ name: c.title, course: c, geo: geoOf(c) }));
@@ -134,5 +134,22 @@ describe('looking at a drawing', () => {
     expect(shortLines('Variance of a sum').length).toBeLessThanOrEqual(2);
     expect(shortLines('Two-layer forward pass')).toEqual(['Two-layer', 'forward…']);
     expect(shortLines('Dropout')).toEqual(['Dropout']);
+  });
+});
+
+describe('going to a concept on the map', () => {
+  it('rests with the concept in the middle of what shows', () => {
+    expect(middleScroll(1000, 66, 600, 5000)).toBe(733);
+  });
+
+  it('stops at the ends of the map', () => {
+    expect(middleScroll(40, 66, 600, 5000)).toBe(0);
+    expect(middleScroll(4950, 66, 600, 5000)).toBe(4400);
+    expect(middleScroll(100, 66, 600, 400)).toBe(0);
+  });
+
+  it('moves the map from wherever it was left, for a concept off screen', () => {
+    const left = 0;
+    expect(middleScroll(2400, 66, 600, 5000)).not.toBe(left);
   });
 });

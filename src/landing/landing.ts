@@ -9,6 +9,7 @@ import { h, onDispose } from '../core/dom';
 import type { Course } from '../courses/course';
 import { COURSES } from '../courses/index';
 import { Learner } from '../mastery/learner';
+import { dueCount, plural } from '../mastery/ui/bits';
 import type { Fonts } from './art';
 import { flatShelf } from './flat';
 import { litShelf, type ShelfParts } from './lit';
@@ -26,13 +27,14 @@ function about(course: Course): HTMLElement[] {
   const learner = new Learner(course);
   const done = learner.masteredCount();
   const total = course.graph.order.length;
+  const due = dueCount(learner);
   return [
     h('h1', {}, course.title),
     h('div', { class: 'ld-by' }, course.blurb),
     h('hr', {}),
     ...(course.about ?? []).map((p) => h('p', {}, p)),
     h('a', { class: 'ld-go', href: course.routes.home }, done ? 'Continue' : 'Start'),
-    h('div', { class: 'ld-note' }, done ? `${done} of ${total} concepts mastered` : `${total} concepts`),
+    h('div', { class: 'ld-note' }, `${done ? `${done} of ${total} concepts mastered` : `${total} concepts`}${due ? `, ${plural(due, 'review')} due` : ''}`),
     h('h2', {}, 'Chapters'),
     h('ol', {}, ...course.domains.map((d, n) => h('li', {}, h('b', {}, n + 1), d.title))),
   ];
