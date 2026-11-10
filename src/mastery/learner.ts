@@ -4,7 +4,7 @@ import type { Course } from '../courses/course';
 import type { ConceptGraph } from './domain/graph';
 import { applyAnswer, emptyRecord, placeMastered, recoveryStreak, status, streak, type ConceptRecord, type Status } from './domain/model';
 import { inheritSplits, isUnlocked, newChoices, pickConcept, pickNext, statuses, type NewChoices, type Pick } from './domain/scheduler';
-import { track, trackConcepts, type Track } from './domain/tracks';
+import { track, trackConcepts, upcoming, type Track } from './domain/tracks';
 import type { LogRow } from './snapshot';
 import { appendLog, loadPace, loadRecords, loadTracks, saveRecords, saveTrack } from './store';
 
@@ -108,6 +108,11 @@ export class Learner {
 
   private within(target?: string): Set<string> | undefined {
     return target && this.graph.get(target) ? new Set(trackConcepts(this.graph, target)) : undefined;
+  }
+
+  /** The concepts whose explainers come next, soonest first (`upcoming`). */
+  upcoming(perTrack: number): string[] {
+    return upcoming(this.graph, this.records, this.clock(), loadPace(), this.trackTargets, perTrack);
   }
 
   /** Targets of the tracks followed, oldest first; one whose concept left the course is skipped. */

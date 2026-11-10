@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ConceptGraph } from './graph';
 import { applyAnswer, emptyRecord, type ConceptRecord } from './model';
 import { pickNext } from './scheduler';
-import { PRACTICE_SLACK, track, trackConcepts } from './tracks';
+import { PRACTICE_SLACK, track, trackConcepts, upcoming } from './tracks';
 import type { Concept } from './types';
 
 const bar = { streak: 3, seconds: 20 };
@@ -50,5 +50,25 @@ describe('a session on a track', () => {
     expect(pickNext({ graph: G, records: { x: answers([true], T0 - 10) }, now: T0, within })!.concept).toBe('a');
     const done = { a: mastered(T0 - 20), c: mastered(T0 - 10) };
     expect(within.has(pickNext({ graph: G, records: done, now: T0, within })!.concept)).toBe(false);
+  });
+});
+
+describe('the explainers that come next', () => {
+  it('are only the one the course leads with when no track is followed', () => {
+    expect(upcoming(G, {}, T0, 'deep', [], 3)).toEqual([pickNext({ graph: G, records: {}, now: T0, pace: 'deep', learnOnly: true })!.concept]);
+  });
+
+  it('add each track\'s next few, soonest first, the tracks taking turns', () => {
+    const recs = { a: mastered() };
+    const lead = pickNext({ graph: G, records: recs, now: T0, pace: 'deep', learnOnly: true })!.concept;
+    const t = track(G, recs, T0, 't', 'deep', none).next!;
+    const got = upcoming(G, recs, T0, 'deep', ['t', 'x'], 2);
+    expect(got).toEqual([...new Set([lead, t, 'x', ['b', 'c', 'd', 't'].find((id) => id !== t)!])]);
+    expect(got).not.toContain('a');
+  });
+
+  it('are none once everything is mastered', () => {
+    const all = Object.fromEntries(G.order.map((x) => [x.id, mastered()]));
+    expect(upcoming(G, all, T0, 'deep', ['t'], 3)).toEqual([]);
   });
 });

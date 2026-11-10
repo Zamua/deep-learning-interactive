@@ -36,3 +36,19 @@ export function track(graph: ConceptGraph, records: Records, now: number, target
   }, 0);
   return { target, ids, mastered: ids.length - left.length, next, seconds };
 }
+
+/**
+ * The concepts whose explainers come next, soonest first: the one the course leads with, then each track's next
+ * `perTrack`, the tracks taking turns.
+ */
+export function upcoming(graph: ConceptGraph, records: Records, now: number, pace: Pace, targets: readonly string[], perTrack: number): string[] {
+  const lead = pickNext({ graph, records, now, pace, learnOnly: true })?.concept;
+  const rows = targets.map((target) => {
+    const t = track(graph, records, now, target, pace, () => 0);
+    const left = t.ids.filter((id) => !records[id]?.mastered && id !== t.next);
+    return [...(t.next ? [t.next] : []), ...left].slice(0, perTrack);
+  });
+  const out = lead ? [lead] : [];
+  for (let i = 0; i < perTrack; i++) for (const row of rows) if (row[i]) out.push(row[i]!);
+  return [...new Set(out)];
+}

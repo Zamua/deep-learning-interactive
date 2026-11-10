@@ -80,8 +80,11 @@ is not needed (never leave content hidden behind a removed animation), Phosphor 
   length, so pages total explainer time without loading the explainers.
 - `src/offline/`: `sw.js`, the service worker (installs only once it holds every file of its build and takes over
   then, so the build before it keeps answering whole until that moment; serves pages from the cache, never the
-  network; saves narration as it plays, answers range requests from the cache, shows reminders), and `register.ts`
-  (registers it once the first page draws; the settings menu's offline status). `main.ts` looks for a new worker at
+  network; saves narration as it plays and, ahead of time, that of the explainers the page says come next, up to
+  40 MB; answers range requests from the cache, shows reminders), `register.ts` (registers it once the first page
+  draws; the settings menu's offline status) and `ahead.ts` (which narration comes next: each course's next concept
+  and the next three on each track, from `upcoming` in `mastery/domain/tracks.ts`; sent after every page that is not
+  a session, never on Save-Data). `main.ts` looks for a new worker at
   launch and after a minute away, because iOS resumes an installed app without loading anything, and reloads onto
   the new build when its worker takes over, unless a session or an explainer is under way. Plain JS: the build only
   prefixes it, with `wire.json`, the names the page and the worker share (the status message, and
@@ -91,7 +94,7 @@ is not needed (never leave content hidden behind a removed animation), Phosphor 
   (every built file but narration, source maps and legacy font formats). The worker installs only once every listed
   file has arrived, so the host must serve them all.
 - `tools/e2e/offline-update.mjs <old dist> <new dist>`: a learner on the old build meets the new one and loses the
-  connection, part way and after; every page must still open. Run it before a release that touches `src/offline/`,
+  connection, part way and after; every page must still open, and the next explainer must play with sound. Run it before a release that touches `src/offline/`,
   how pages load, or the build's chunks.
 - `push/`: the daily reminder Worker (Web Push). `push/src/wire.ts` types what the page sends it
   and what a push carries to the service worker; `api.ts` reads request bodies at the boundary.

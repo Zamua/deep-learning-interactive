@@ -46,6 +46,8 @@ export interface Course extends CourseDef {
   hasExplainer(id: string): boolean;
   /** An explainer's narration in seconds, 0 before its first build. */
   explainerSeconds(id: string): number;
+  /** The address of a concept's narration; empty when it has none. */
+  narration(id: string): string;
   loadExplainer(id: string): Promise<LectureDef> | null;
 }
 
