@@ -197,7 +197,7 @@ function buildNav(course: Course | null, active: string): void {
  * another try, not the loader's own words.
  */
 function loadFailed(e: unknown): void {
-  const offline = !navigator.onLine || e instanceof TypeError || /preload|dynamically imported|Failed to fetch|Load failed/i.test((e as Error)?.message ?? '');
+  const offline = !navigator.onLine || /preload|dynamically imported|module script|Failed to fetch|Load failed/i.test((e as Error)?.message ?? '');
   const again = h('button', { class: 'btn', type: 'button' }, 'Try again');
   again.addEventListener('click', () => location.reload());
   main.innerHTML = '';
