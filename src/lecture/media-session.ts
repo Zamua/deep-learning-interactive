@@ -6,7 +6,7 @@ const session = (): MediaSession | null => ('mediaSession' in navigator ? naviga
 
 export function mediaScene(title: string, artist: string): void {
   const ms = session();
-  if (ms) ms.metadata = new MediaMetadata({ title, artist, album: 'atlas interactive' });
+  if (ms) ms.metadata = new MediaMetadata({ title, artist, album: 'Atlas' });
 }
 
 export function mediaPlaying(playing: boolean): void {

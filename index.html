@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#f6f2e9" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#17140f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#151410" media="(prefers-color-scheme: dark)" />
     <meta name="description" content="Courses built as maps of small concepts, each with a short voiced explainer and generated practice." />
     <title>Atlas</title>
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
@@ -13,106 +13,9 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Atlas" />
-    <!-- shell-styles -->
   </head>
   <body>
     <div id="app"></div>
-    <script>
-      // The first paint: real books and tabs, or a placeholder at the size of the page to come. It runs before any
-      // other file arrives; main.ts draws the same placeholders while a page loads.
-      (function () {
-        var BOOKS = /*atlas-books*/[];
-        var ICONS = /*atlas-icons*/{};
-        try {
-          var theme = localStorage.getItem('cs231n.theme');
-          if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
-        } catch (e) {}
-
-        function esc(s) {
-          return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-        }
-        function mastered(book) {
-          var n = 0;
-          try {
-            for (var i = 0; i < 8; i++) {
-              var slot = JSON.parse(localStorage.getItem('progress.v2.mastery.' + i) || 'null');
-              for (var id in (slot && slot.c) || {}) {
-                var mine = book.prefix ? id.indexOf(book.prefix) === 0 : id.indexOf('.') < 0;
-                if (mine && slot.c[id].r && slot.c[id].r.mastered) n++;
-              }
-            }
-          } catch (e) {}
-          return n;
-        }
-        function line(width, height, style) {
-          return '<i class="sk" style="width:' + width + ';height:' + (height || 14) + 'px;' + (style || '') + '"></i>';
-        }
-        function bar(done, total) {
-          return '<div class="lib-bar"><i style="width:' + (total ? (done / total) * 100 : 0) + '%"></i></div>';
-        }
-        function repeat(n, fn) {
-          return Array.apply(null, Array(n)).map(fn).join('');
-        }
-        function cover(b) {
-          return '<a class="lib-cover" href="' + b.home + '" style="--cover:' + b.cover + '"><h2>' + esc(b.title) + '</h2><div><p>' + b.n + ' concept' + (b.n === 1 ? '' : 's') + '</p>' + bar(mastered(b), b.n) + '</div></a>';
-        }
-        function bookOf(hash) {
-          var m = /^#\/c\/([^/]+)/.exec(hash);
-          var id = m ? m[1] : /^#\/atlas/.test(hash) ? 'first' : null;
-          if (!id) {
-            try {
-              id = localStorage.getItem('atlas.book');
-            } catch (e) {}
-          }
-          return BOOKS.filter(function (b) { return id === 'first' ? b.home === '#/atlas' : b.id === id; })[0] || BOOKS.filter(function (b) { return b.home === '#/atlas'; })[0];
-        }
-        var KINDS = {
-          shelf: function () {
-            return '<div class="ld"><div class="ld-sc"><div class="ld-hd">Atlas</div></div></div>';
-          },
-          hub: function (hash) {
-            var b = bookOf(hash);
-            var done = mastered(b);
-            return '<div class="lib"><header class="hb"><span class="hb-book"><span class="sw" style="background:' + b.cover + '"></span>' + esc(b.title) + '<span>' + ICONS.caret + '</span></span><span class="hb-sp"></span><span class="hb-explore">' + ICONS.graph + '<span>Explore</span></span><span class="lib-icon">' + ICONS.gear + '</span></header>' +
-              '<div class="prog"><span>' + done + ' of ' + b.n + '</span><div class="bar"><i style="width:' + (done / b.n) * 100 + '%"></i></div></div>' +
-              '<div class="lib-card nx">' + line('30%', 12) + line('62%', 20, 'margin-top:10px') + line('86%', 14, 'margin-top:10px') + '<span class="sk" style="height:44px;margin-top:18px;border-radius:22px"></span></div>' +
-              '<h2 class="lib-cap">The tour</h2><div class="tr">' + repeat(b.parts, function () { return '<div class="tr-ch" style="min-height:37px">' + line('56%', 15) + '</div>'; }) + '</div></div>';
-          },
-          explore: function () {
-            function tab(label, on) { return '<span class="ex-tab' + (on ? ' on' : '') + '">' + label + '</span>'; }
-            return '<div class="ex"><div class="ex-head"><span></span><span class="ex-title"><i class="sk" style="width:128px;height:16px;margin:0 auto"></i></span><span></span></div><nav class="ex-seg">' + tab('Map', true) + tab('Chapters') + tab('List') + tab('Goals') + tab('History') + '</nav><div class="ex-box"></div><div class="ex-legend"></div></div>';
-          },
-          page: function () {
-            return '<div class="lib"><div class="lib-brand">Atlas</div>' + line('52%', 30, 'margin-top:14px') + line('76%', 15, 'margin-top:10px') + '<span class="sk" style="height:52px;margin-top:22px;border-radius:26px"></span>' + repeat(6, function () { return '<span class="sk" style="height:46px;margin-top:12px"></span>'; }) + '</div>';
-          },
-          problem: function () {
-            return line('34%', 12, 'margin-top:12px') + line('92%', 24, 'margin-top:18px') + line('64%', 24, 'margin-top:10px') + repeat(4, function () { return '<span class="sk" style="height:58px;margin-top:12px;border-radius:12px"></span>'; });
-          },
-          practice: function () {
-            return '<div class="at-run"><header class="at-run-top"><span class="at-run-x"></span><div class="at-run-bar"></div>' + line('44px', 13) + '</header><div class="at-run-body">' + KINDS.problem() + '</div><div class="at-run-dock"><span class="sk" style="height:60px;border-radius:14px"></span></div></div>';
-          },
-          player: function () {
-            return '<div class="lec"><div class="lec-top"><span style="width:38px"></span><span style="flex:1">' + line('34%', 11) + line('58%', 19, 'margin-top:6px') + '</span></div><div class="lec-main"><div class="lec-stage sk" style="border-color:transparent"></div><div class="lec-cap">' + line('92%', 15, 'margin-top:5px') + line('60%', 15, 'margin-top:9px') + '</div><div class="lec-code sk" style="border-color:transparent"></div></div><div class="lec-bar">' + line('100%', 4, 'margin:8px 0 14px') + '<div style="height:46px"><span class="sk" style="width:46px;height:46px;border-radius:50%"></span></div></div></div>';
-          },
-        };
-        function kindOf(hash) {
-          var p = hash.replace(/^#\/?/, '').replace(/\/+$/, '').split('/');
-          var rest = p[0] === 'atlas' ? p.slice(1) : p[0] === 'c' ? p.slice(2) : null;
-          if (!p[0]) return 'shelf';
-          if (!rest) return p[0] === 'settings' || p[0] === 'account' || p[0] === 'link' ? 'page' : 'hub';
-          if (!rest[0]) return 'hub';
-          if (rest[0] === 'learn' || rest[0] === 'place') return 'practice';
-          if (rest[1] === 'watch') return 'player';
-          return /^(explore|graph|list|history|track|new-track)$/.test(rest[0]) ? 'explore' : 'hub';
-        }
-        function placeholder(kind) {
-          return KINDS[kind](location.hash);
-        }
-        window.atlasBoot = { placeholder: placeholder, kindOf: kindOf };
-
-        document.getElementById('app').innerHTML = '<main class="main"><div class="sk-wrap">' + placeholder(kindOf(location.hash)) + '</div></main>';
-      })();
-    </script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

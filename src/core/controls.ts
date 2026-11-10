@@ -16,11 +16,3 @@ export function icon(name: string): string {
   const svg = Object.entries(ICON_SVGS).find(([k]) => k.endsWith(`/${file}-light.svg`))?.[1] ?? Object.entries(FILL_SVGS).find(([k]) => k.endsWith(`/${file}.svg`))?.[1];
   return svg ? svg.replace('<svg ', '<svg class="ico" aria-hidden="true" ') : '';
 }
-
-/** A page's back link and what it goes back to. */
-export function backRow(href: string, label: string, ...right: (HTMLElement | string)[]): HTMLElement {
-  return h('div', { class: 'lib-top' },
-    h('a', { class: 'lib-back', href, 'data-back': '', 'aria-label': `Back to ${label}`, html: icon('arrowLeft') }),
-    h('span', { class: 'lib-top-t' }, label),
-    h('span', { class: 'lib-top-r' }, ...right));
-}

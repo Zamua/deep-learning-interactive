@@ -5,10 +5,6 @@ import { h } from '../../core/dom';
 import { md, setMacros } from '../../core/math';
 import { codeIndex, linkSymbols, symbolMacros } from '../../core/symbols';
 import { DAY, type Status } from '../domain/model';
-import type { Learner } from '../learner';
-
-export { dueCount, plural, progressBar, reviewMinutes, roman, whenDue } from './bits';
-
 
 const seen = new Map<string, ReturnType<typeof dressing>>();
 
@@ -62,13 +58,17 @@ export function dots(k: number, n: number): HTMLElement {
   return el;
 }
 
+/** "today", "tomorrow", "in 3 days", for a future time. */
+export function whenDue(due: number, now = Date.now()): string {
+  const days = Math.ceil((due - now) / DAY);
+  return days <= 0 ? 'today' : days === 1 ? 'tomorrow' : `in ${days} days`;
+}
 
+export const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
-
-
-const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
-
-/** A small count in words, as a sentence reads; larger ones stay digits. */
-export const spell = (n: number): string => WORDS[n] ?? String(n);
-
-export const sentence = (s: string): string => s[0]!.toUpperCase() + s.slice(1);
+/** A way to the page that lists every concept open to start. */
+export function pickLink(course: Course, text: string): HTMLElement {
+  const a = h('a', { class: 'at-pick-link', href: course.routes.next, html: icon('compass') });
+  a.append(h('span', {}, text));
+  return a;
+}

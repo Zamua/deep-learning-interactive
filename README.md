@@ -1,6 +1,6 @@
 # Atlas: learning by mastery
 
-A site of interactive courses, each built as a map of small concepts: one on AI, from vectors to
+A site of courses, each built as a map of small concepts: one on AI, from vectors to
 post-training, and one on Nix, from its language to flakes. Each
 concept opens with a short voiced explainer, drawn live beside the code that computes it, then
 generated problems until it is mastered. Mastering a concept unlocks the ones built on it, and

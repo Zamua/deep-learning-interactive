@@ -2,7 +2,7 @@
 // else closed until asked for: linking this device to another's code, a password manager, a file copy, how sync works.
 import '../styles/account.css';
 import { CODE_LENGTH, SyncError, codeSymbols, formatCode, parseCode, type CodeError, type SyncStatus } from 'hearthsync';
-import { backRow, icon } from '../core/controls';
+import { icon } from '../core/controls';
 import { h, onDispose } from '../core/dom';
 import { progressStore, syncEngine } from './cloud';
 import { concepts, conceptsIn } from './model';
@@ -74,9 +74,9 @@ function fold(glyph: string, title: string, panel: HTMLElement): { el: HTMLEleme
 /** The account page; `typed` is a code from a link, offered for linking at once, and `fileCopy` saves progress to a file and loads it back. */
 export function renderAccount(main: HTMLElement, typed: string | undefined, fileCopy: HTMLElement): void {
   const sync = syncEngine();
-  const root = h('div', { class: 'lib ac', 'data-page': 'account' });
+  const root = h('div', { class: 'ac', 'data-page': 'account' });
   main.append(root);
-  root.append(backRow(routes.settings, 'Settings'), h('h1', {}, 'Sync across devices'));
+  root.append(h('h1', { class: 'home-title', html: 'Sync across <em>devices</em>.' }));
 
   const status = h('div', { class: 'ac-status' });
   const codeBody = h('div', { class: 'ac-codebody' });
@@ -86,7 +86,8 @@ export function renderAccount(main: HTMLElement, typed: string | undefined, file
     linker(typed)));
   const saveCode = fold('key', 'Save in your password manager', keeperBody);
   saveCode.el.hidden = true;
-  root.append(status, h('h2', { class: 'ac-h2' }, 'Your code'), codeBody,
+  const codeHead = h('h2', { class: 'ac-h2' }, 'Your code');
+  root.append(status, codeHead, codeBody,
     h('div', { class: 'ac-folds' },
       useCode.el,
       saveCode.el,
@@ -103,6 +104,8 @@ export function renderAccount(main: HTMLElement, typed: string | undefined, file
     if (key === shown) return;
     shown = key;
     codeBody.innerHTML = '';
+    // Without a code the status line already says when one comes.
+    codeHead.hidden = codeBody.hidden = !st.code && st.problem !== 'lost';
     saveCode.el.hidden = !st.code || st.problem === 'lost';
     // A device with no code yet is here for this row, and so is one that arrived on a link.
     useCode.set(!st.code || !!typed);
@@ -116,10 +119,7 @@ export function renderAccount(main: HTMLElement, typed: string | undefined, file
       codeBody.append(h('p', { class: 'ac-note' }, 'The server no longer has your account. Everything is still on this device: a new code backs it up again, and your other devices link to it.'), h('div', { class: 'ac-actions' }, remake), msg);
       return;
     }
-    if (!st.code) {
-      codeBody.append(h('p', { class: 'ac-note' }, 'Your code comes once there is progress to back up and a connection. On a device that already has a code, you can use it below instead.'));
-      return;
-    }
+    if (!st.code) return;
     const code = st.code;
     const share = h('button', { type: 'button', class: 'btn btn-primary ac-share', html: `${icon('share-network')} Share with another device` });
     share.addEventListener('click', async () => {

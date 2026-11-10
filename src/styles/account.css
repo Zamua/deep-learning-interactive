@@ -4,6 +4,9 @@
   --ok: var(--c-green);
   --bad: var(--c-red);
   --warn: var(--c-gold);
+  width: min(720px, 100% - 32px);
+  margin: 0 auto;
+  padding: 26px 0 80px;
   font-family: var(--font-ui);
 }
 .ac-h2 {
@@ -16,6 +19,9 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink-3);
+}
+.ac-h2[hidden] {
+  display: none;
 }
 .ac-h2::after {
   content: '';

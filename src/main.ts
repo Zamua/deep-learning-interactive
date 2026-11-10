@@ -8,17 +8,13 @@ import './styles/base.css';
 import './styles/components.css';
 
 import type { Course } from './courses/course';
-import { courseById, FIRST } from './courses/index';
+import { COURSES, courseById, FIRST } from './courses/index';
 import { icon } from './core/controls';
-import { noteArrival, wireBackLinks } from './core/back';
 import { disposeAll, h } from './core/dom';
-import { loadNote, patiently, stylesReady } from './core/waiting';
-import { getItem } from './core/storage';
 import { Learner } from './mastery/learner';
-import { renderLanding } from './landing/landing';
-import { LAST_BOOK, renderHub } from './mastery/ui/hub';
 import { checkForNewWorker, startOffline } from './offline/register';
-import { applyTheme } from './theme';
+import { getItem, setItem } from './core/storage';
+import { applyTheme, settingsButton } from './settings';
 import { progressStore, startSync } from './sync/cloud';
 import { parseRoute, routes, type CourseRoute, type Route } from './routes';
 
@@ -27,96 +23,124 @@ startSync();
 
 const app = document.getElementById('app')!;
 const main = h('main', { class: 'main', id: 'main' });
-app.replaceChildren(main);
-wireBackLinks();
+const nav = h('nav', { class: 'side', 'aria-label': 'Concepts' });
+const scrim = h('div', { class: 'scrim' });
+const menuBtn = h('button', { class: 'icon-btn menu-btn', type: 'button', 'aria-label': 'Concepts', html: icon('menu') });
+
+const setNav = (open: boolean) => document.body.classList.toggle('nav-open', open);
+menuBtn.addEventListener('click', () => setNav(!document.body.classList.contains('nav-open')));
+scrim.addEventListener('click', () => setNav(false));
+
+/** The site icon's mark: a causal attention pattern in the symbol colors, drawn with theme variables. */
+const BRAND_MARK = (() => {
+  const w = [[1, 0, 0], [0.4, 0.6, 0], [0.2, 0.3, 0.5]];
+  const col = ['--c-blue', '--c-orange', '--c-green'];
+  let cells = '';
+  for (let i = 0; i < 3; i++)
+    for (let j = 0; j < 3; j++)
+      cells += `<rect x="${j * 7}" y="${i * 7}" width="6" height="6" rx="1.6" style="fill:var(${j > i ? '--rule' : col[j]});fill-opacity:${j > i ? 1 : (0.3 + 0.7 * w[i]![j]!).toFixed(2)}"/>`;
+  return `<svg viewBox="0 0 20 20" aria-hidden="true">${cells}</svg>`;
+})();
+const brand = h('a', { class: 'brand', href: routes.topics, 'aria-label': 'Atlas: all topics' },
+  h('span', { class: 'brand-mark', html: BRAND_MARK }),
+  h('span', { class: 'brand-name' }, 'atlas'));
+
+/** The course opened last on this device, whose concepts the menu lists on the account page. */
+const LAST_COURSE = 'atlas.course';
+const lastCourse = (): Course => courseById(getItem(LAST_COURSE) ?? '') ?? FIRST;
+
+const top = h('header', { class: 'topbar' }, menuBtn, brand, h('div', { class: 'topbar-spacer' }), settingsButton());
+
+app.append(top, nav, scrim, main);
 
 let currentId = '';
 let renderToken = 0;
 
-/** Draws a page, once what it needs has loaded. */
-type Render = () => void | Promise<void>;
+/** A course's pages, the account page and the topics page, which any other address or an unknown course lands on. */
+async function route(): Promise<void> {
+  setNav(false);
+  const r = parseRoute(location.hash);
+  if (r?.page === 'account') return routeAccount(r.code);
+  if (r && r.page !== 'topics') {
+    const course = courseById(r.course);
+    if (course) return routeCourse(r, course);
+  }
+  if (r?.page !== 'topics') history.replaceState(null, '', routes.topics);
+  return routeTopics();
+}
 
-/**
- * Shows the page `load` brings, unless the address already shows it. A placeholder stands in at the page's size until
- * the page has everything it waits for, and a load that stalls or fails says so and offers a retry.
- */
-async function show(key: string, title: string, load: () => Promise<Render>): Promise<void> {
+async function routeCourse(r: CourseRoute, course: Course): Promise<void> {
+  const key = location.hash.replace(/\/+$/, '');
   if (key === currentId) return;
   const token = ++renderToken;
   disposeAll();
   currentId = key;
-  const stand = h('div', { class: 'sk-wrap', html: window.atlasBoot.placeholder(window.atlasBoot.kindOf(location.hash)) });
-  main.replaceChildren(stand);
-  document.title = `${title} · Atlas`;
+  main.innerHTML = '';
+  setItem(LAST_COURSE, course.id);
+  const shown = r.page === 'concept' || r.page === 'watch' ? r.concept : undefined;
+  buildNav(course, r.page === 'history' ? 'history' : shown ?? '');
+  const c = shown ? course.graph.get(shown) : undefined;
+  document.title = c ? `${c.title} · Atlas` : `${course.title} · Atlas`;
   window.scrollTo(0, 0);
   try {
-    const render = await patiently(load());
+    const { renderAtlas } = await import('./mastery/ui/index');
     if (token !== renderToken) return;
-    await render();
-    if (token === renderToken) stand.remove();
+    await renderAtlas(main, r, () => token === renderToken);
   } catch (e) {
     console.error(e);
     if (await reloadIfStale()) return;
-    if (token === renderToken) loadNote('This page could not load. Check your connection.');
+    main.innerHTML = '';
+    main.append(h('div', { class: 'fig-error' }, `This page failed to load: ${(e as Error).message}`));
   }
 }
 
-/** The shelf, a course's pages, settings, and the account's. Any other address, the old tabs included, opens the book last read. */
-async function route(): Promise<void> {
-  noteArrival();
-  const r = parseRoute(location.hash);
-  if (r?.page === 'account') return routeAccount(r.code);
-  if (r?.page === 'settings') return routeSettings();
-  if (r?.page === 'shelf') return show('shelf', 'Library', async () => () => renderLanding(main));
-  const course = r && 'course' in r ? courseById(r.course) : undefined;
-  if (r && 'course' in r && course) return routeCourse(r, course);
-  const book = courseById(getItem(LAST_BOOK) ?? '') ?? FIRST;
-  history.replaceState(history.state, '', book.routes.home);
-  return routeCourse({ course: book.id, page: 'home' }, book);
-}
-
-function routeSettings(): Promise<void> {
-  return show('settings', 'Settings', async () => {
-    const [{ renderSite }] = await Promise.all([import('./mastery/ui/index'), stylesReady()]);
-    return () => renderSite(main, 'settings');
-  });
-}
-
-function routeCourse(r: CourseRoute, course: Course): Promise<void> {
-  const shown = r.page === 'concept' || r.page === 'watch' ? r.concept : undefined;
-  const c = shown ? course.graph.get(shown) : undefined;
-  const key = location.hash.replace(/\/+$/, '');
-  const title = c ? c.title : course.title;
-  // A concept's address opens its sheet over the book's home, so old links keep working.
-  if (r.page === 'home' || r.page === 'concept') {
-    return show(key, title, async () => () => {
-      const learner = new Learner(course);
-      renderHub(main, learner);
-      if (c) void import('./mastery/ui/concept-sheet').then((m) => m.openConceptSheet(learner, c.id));
-    });
+async function routeTopics(): Promise<void> {
+  if (currentId === 'topics') return;
+  const token = ++renderToken;
+  disposeAll();
+  currentId = 'topics';
+  main.innerHTML = '';
+  buildNav(null, '');
+  document.title = 'Atlas';
+  window.scrollTo(0, 0);
+  try {
+    const { renderTopics } = await import('./mastery/ui/index');
+    if (token !== renderToken) return;
+    renderTopics(main);
+  } catch (e) {
+    console.error(e);
+    if (await reloadIfStale()) return;
+    main.append(h('div', { class: 'fig-error' }, `This page failed to load: ${(e as Error).message}`));
   }
-  return show(key, title, async () => {
-    const [{ renderAtlas }] = await Promise.all([import('./mastery/ui/index'), stylesReady()]);
-    const token = renderToken;
-    return () => renderAtlas(main, r, () => token === renderToken);
-  });
 }
 
-function routeAccount(code?: string): Promise<void> {
-  return show(code ? `link/${code}` : 'account', 'Sync across devices', async () => {
-    // The code has done its job once read: keep it out of the history and of anything that shares this page.
-    if (code) history.replaceState(null, '', routes.account);
-    const [{ renderAccount }, { progressFile }] = await Promise.all([import('./sync/ui'), import('./mastery/ui/progress-file'), stylesReady()]);
-    return () => renderAccount(main, code, progressFile());
-  });
+async function routeAccount(code?: string): Promise<void> {
+  const token = ++renderToken;
+  disposeAll();
+  currentId = code ? `link/${code}` : 'account';
+  main.innerHTML = '';
+  buildNav(lastCourse(), '');
+  document.title = 'Sync across devices · Atlas';
+  window.scrollTo(0, 0);
+  // The code has done its job once read: keep it out of the history and of anything that shares this page.
+  if (code) history.replaceState(null, '', routes.account);
+  try {
+    const [{ renderAccount }, { progressFile }] = await Promise.all([import('./sync/ui'), import('./mastery/ui/progress-file')]);
+    if (token !== renderToken) return;
+    renderAccount(main, code, progressFile());
+  } catch (e) {
+    console.error(e);
+    if (await reloadIfStale()) return;
+    main.append(h('div', { class: 'fig-error' }, `This page failed to load: ${(e as Error).message}`));
+  }
 }
 
 /**
  * Another device's progress arrived (or another tab's, or a link brought an account's): pages that only show progress
- * draw again where they were. Sessions, explainers, the track picker, settings and the account page keep running as they are.
+ * draw again where they were. Sessions, explainers, the track picker and the account page keep running as they are.
  */
 /** Pages that are under way, which synced progress never redraws. */
-const BUSY = new Set<Route['page']>(['account', 'settings', 'learn', 'place', 'new-track', 'watch', 'explore']);
+const BUSY = new Set<Route['page']>(['account', 'learn', 'place', 'new-track', 'watch']);
 
 function redrawOnRemoteProgress(): void {
   let due = 0;
@@ -125,12 +149,48 @@ function redrawOnRemoteProgress(): void {
     window.clearTimeout(due);
     due = window.setTimeout(() => {
       const page = parseRoute(location.hash)?.page;
-      if (!page || BUSY.has(page) || document.querySelector('.sh')) return;
+      if (!page || BUSY.has(page)) return;
       const y = scrollY;
       currentId = '';
       void route().then(() => window.scrollTo(0, y));
     }, 150);
   });
+}
+
+/** The side menu: the way to every topic, then the open course's concepts by domain, marked mastered or locked. */
+function buildNav(course: Course | null, active: string): void {
+  nav.innerHTML = '';
+  const link = (href: string, cls: string, ...kids: (HTMLElement | string)[]) => {
+    const a = h('a', { class: cls, href }, ...kids);
+    a.addEventListener('click', () => setNav(false));
+    return a;
+  };
+  if (!course) {
+    nav.append(h('div', { class: 'side-part' }, 'Topics'), ...COURSES.map((c) => link(c.routes.home, 'side-course other', h('span', { class: 'side-course-title' }, c.title))));
+    return;
+  }
+  const { graph, routes: pages } = course;
+  const st = new Learner(course).statuses();
+  nav.append(link(pages.home, 'side-course', h('span', { class: 'side-course-code' }, 'Topic'), h('span', { class: 'side-course-title' }, course.title)));
+  const hist = h('a', { class: `side-link${active === 'history' ? ' on' : ''}`, href: pages.history }, h('span', { class: 'side-num', html: icon('clock') }), h('span', { class: 'side-title' }, 'History'));
+  hist.addEventListener('click', () => setNav(false));
+  nav.append(h('ul', { class: 'side-list' }, h('li', {}, hist)));
+  for (const d of course.domains) {
+    nav.append(h('div', { class: 'side-part' }, d.title));
+    const ul = h('ul', { class: 'side-list' });
+    for (const c of graph.order.filter((x) => x.domain === d.id)) {
+      const s = st.get(c.id)!;
+      const mark = s === 'mastered' || s === 'due' ? h('span', { class: 'side-mark done', html: icon('check') }) : s === 'locked' ? h('span', { class: 'side-mark at-side-lock', html: icon('lock') }) : '';
+      const a = h('a', { href: pages.concept(c.id), class: `side-link${c.id === active ? ' on' : ''}${s === 'locked' ? ' soon' : ''}` },
+        h('span', { class: 'side-num', style: `color:var(--c-${d.color})` }, '●'),
+        h('span', { class: 'side-title' }, c.title),
+        mark);
+      a.addEventListener('click', () => setNav(false));
+      ul.append(h('li', {}, a));
+    }
+    nav.append(ul);
+  }
+  nav.append(h('div', { class: 'side-foot' }, `${graph.order.length} concepts, and growing.`));
 }
 
 /**
@@ -184,6 +244,4 @@ void route().then(() => {
   (window as unknown as { __ready: boolean }).__ready = true;
   startOffline();
   followNewBuilds();
-  // The other pages' code, while nothing is waiting on it.
-  void import('./mastery/ui/index').catch(() => {});
 });

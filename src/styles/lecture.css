@@ -30,14 +30,16 @@ body.lec-on {
 .lec-back {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 10px;
   color: var(--ink-2);
   flex: none;
 }
-.lec-back:hover {
-  background: var(--paper-2);
+@media (hover: hover) and (pointer: fine) {
+  .lec-back:hover {
+    background: var(--paper-2);
+  }
 }
 .lec-back .ico {
   width: 22px;
@@ -49,20 +51,20 @@ body.lec-on {
   flex: 1;
 }
 .lec-kicker {
-  font: 400 11px/1.2 var(--font-ui);
-  letter-spacing: 0.13em;
+  font: 600 10.5px/1.2 var(--font-ui);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--accent-ink);
 }
 .lec-scene-title {
-  font: 400 17px/1.25 var(--font-display);
+  font: 560 17px/1.25 var(--font-display);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .lec-count {
   flex: none;
-  font: 500 12px var(--font-body);
+  font: 500 12px var(--font-mono);
   color: var(--ink-3);
 }
 
@@ -401,8 +403,9 @@ canvas.lec-canvas {
 .lec-btn {
   display: grid;
   place-items: center;
-  min-width: 42px;
-  height: 42px;
+  min-width: 44px;
+  height: 44px;
+  flex: none;
   padding: 0 8px;
   border: 0;
   border-radius: 10px;
@@ -410,8 +413,10 @@ canvas.lec-canvas {
   color: var(--ink-2);
   cursor: pointer;
 }
-.lec-btn:hover {
-  background: var(--paper-2);
+@media (hover: hover) and (pointer: fine) {
+  .lec-btn:hover {
+    background: var(--paper-2);
+  }
 }
 .lec-btn .ico {
   width: 23px;
@@ -422,14 +427,10 @@ canvas.lec-canvas {
   opacity: 0.6;
 }
 .lec-play {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--paper);
+  color: var(--ink);
 }
 .lec-speed {
-  font: 600 13.5px var(--font-body);
+  font: 600 13.5px var(--font-mono);
   min-width: 52px;
 }
 .lec.boost-locked .lec-speed {
@@ -443,7 +444,7 @@ canvas.lec-canvas {
 }
 .lec-time {
   margin-left: 6px;
-  font: 500 13px var(--font-body);
+  font: 500 13px var(--font-mono);
   color: var(--ink-2);
   white-space: nowrap;
 }
@@ -480,8 +481,10 @@ canvas.lec-canvas {
   font: 500 15px var(--font-ui);
   cursor: pointer;
 }
-.lec-li:hover {
-  background: var(--paper-2);
+@media (hover: hover) and (pointer: fine) {
+  .lec-li:hover {
+    background: var(--paper-2);
+  }
 }
 .lec-li.on {
   background: var(--accent-soft);
@@ -489,7 +492,7 @@ canvas.lec-canvas {
 .lec-li-n {
   width: 22px;
   color: var(--ink-3);
-  font: 600 12px var(--font-body);
+  font: 600 12px var(--font-mono);
   text-align: right;
 }
 .lec-li-t {
@@ -508,7 +511,7 @@ canvas.lec-canvas {
 }
 .lec-li-time {
   color: var(--ink-3);
-  font: 500 12px var(--font-body);
+  font: 500 12px var(--font-mono);
 }
 
 .lec-notice {
@@ -935,4 +938,22 @@ a.lk-row {
 }
 a.lk-row .lk-what {
   color: var(--accent);
+}
+
+/* A narrow phone: the controls keep their size and give up the space between them. */
+@media (max-width: 400px) {
+  .lec-bar {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .lec-row {
+    gap: 0;
+  }
+  .lec-speed {
+    min-width: 44px;
+  }
+  .lec-time {
+    margin-left: 2px;
+    font-size: 12px;
+  }
 }

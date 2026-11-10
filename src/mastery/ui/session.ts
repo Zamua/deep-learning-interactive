@@ -3,22 +3,20 @@
 import { CodePanel } from '../../core/code';
 import { icon } from '../../core/controls';
 import type { Course } from '../../courses/course';
-import { goBack, replaceRoute } from '../../core/back';
 import { h, onDispose } from '../../core/dom';
-import { loadNote, patiently } from '../../core/waiting';
 import { watched } from '../../lecture/progress';
 import { Rng } from '../../core/rand';
 import { grade, type Response, type Verdict } from '../domain/grade';
 import { recoveryStreak, streak, type ConceptRecord } from '../domain/model';
 import type { Pick } from '../domain/scheduler';
 import type { Answer, Concept, Generator, Problem } from '../domain/types';
-import { Learner } from '../learner';
-import { atlasRoot, dots, plural, render } from './common';
-import { nextStep, stepHref } from './next-step';
+import type { Learner } from '../learner';
+import { atlasRoot, dots, pickLink, plural, render } from './common';
+import { explainerId } from './concept';
 import { celebrate } from './celebrate';
 import { wireLookup } from './lookup';
 import { makePad } from './pads';
-import { syncReminders } from '../push';
+import { syncBookReminders } from './reminders';
 
 /** Problems per session: about fifteen minutes. */
 export const SESSION_LENGTH = 20;
@@ -32,7 +30,7 @@ export function runFrame(main: HTMLElement, course: Course, cls: string): { root
   const label = h('span', { class: 'at-run-n' });
   const lookup = h('button', { type: 'button', class: 'at-run-lk', 'aria-label': 'Symbols in this problem', 'aria-expanded': 'false', html: icon('book') });
   root.append(h('header', { class: 'at-run-top' },
-    h('a', { class: 'at-run-x', href: course.routes.home, 'data-back': '', 'aria-label': 'End the session', html: icon('close') }),
+    h('a', { class: 'at-run-x', href: course.routes.home, 'aria-label': 'End the session', html: icon('close') }),
     h('div', { class: 'at-run-bar' }, fill),
     label,
     lookup));
@@ -177,7 +175,7 @@ function responseText(a: Answer, r: Response): string {
 }
 
 /** After an answer: right or wrong, why, the worked solution, and what changed. Resolves on Next. */
-function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLElement }, c: Concept, p: Problem, got: Asked, before: ConceptRecord, after: ConceptRecord, learner: Learner): Promise<void> {
+function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLElement }, c: Concept, p: Problem, got: Asked, before: ConceptRecord, after: ConceptRecord, learner: Learner, track?: string): Promise<void> {
   const graph = learner.graph;
   const { verdict } = got;
   const a = p.answer;
@@ -193,8 +191,7 @@ function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLEleme
   const news: HTMLElement[] = [];
   if (after.mastered && !before.mastered) {
     const unlocked = graph.dependents.get(c.id)!.filter((d) => graph.get(d)!.prereqs.every((pid) => pid === c.id || learner.record(pid).mastered));
-    const step = nextStep(learner);
-    celebrate(frame.root, learner, c.id, unlocked, 'concept' in step ? step.concept : undefined);
+    void celebrate(frame.root, learner, c.id, unlocked, track ? learner.nextToLearn(c.id, track) : unlocked[0] ?? learner.nextToLearn(c.id), track);
     news.push(h('div', { class: 'at-news', html: `${icon('sparkle')} <b>${c.title} mastered.</b> ${unlocked.length ? `Unlocks ${unlocked.map((d) => graph.get(d)!.title).join(', ')}.` : 'It will come back for review tomorrow.'}` }));
   } else if (before.slipping && !after.slipping) {
     news.push(h('div', { class: 'at-news', html: `${icon('sparkle')} <b>${c.title} is back to mastered.</b>` }));
@@ -214,7 +211,7 @@ function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLEleme
   box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   return new Promise((resolve) => {
     const next = h('button', { type: 'button', class: 'at-check' }, 'Next');
-    if (!verdict.ok && learner.course.hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-ghost', href: learner.course.routes.watch(c.id), html: `${icon('reset')} Rewatch the explainer` }));
+    if (!verdict.ok && learner.course.hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-ghost', href: learner.course.routes.watch(c.id, track), html: `${icon('reset')} Rewatch the explainer` }));
     frame.dock.append(next);
     const go = () => {
       window.removeEventListener('keydown', onKey);
@@ -234,38 +231,36 @@ function feedback(frame: { root: HTMLElement; body: HTMLElement; dock: HTMLEleme
   });
 }
 
-/** The tag above a problem: the concept and the streak toward the bar. */
-function problemTag(c: Concept, pick: Pick, rec: ConceptRecord): HTMLElement {
+/** The tag above a problem: the concept, its domain color, and the streak toward the bar. */
+function problemTag(learner: Learner, c: Concept, pick: Pick, rec: ConceptRecord): HTMLElement {
   const n = pick.reason === 'slipping' ? recoveryStreak(c.mastery) : c.mastery.streak;
   const right =
     pick.reason === 'review' ? h('span', { html: `${icon('clock')} review` })
     : pick.reason === 'refresh' ? h('span', { html: `${icon('reset')} refresher` })
     : h('span', {}, dots(Math.min(streak(rec), n), n), ` ${Math.min(streak(rec), n)} of ${n} in a row`);
-  return h('div', { class: 'at-tag' }, h('b', {}, c.title), right);
+  return h('div', { class: 'at-tag', style: `--dom:var(--c-${learner.course.domainOf(c).color})` }, h('b', {}, c.title), right);
 }
 
 /** How a concept's review went this session. `due`: not reached yet; `slipped`: missed, being won back. */
 type ReviewState = 'due' | 'passed' | 'helped' | 'slipped' | 'recovered';
 
-/** With `focus`, one step: that concept until it is mastered. Without, the block of reviews due. */
-export function renderSession(main: HTMLElement, learner: Learner, focus?: string, _track?: string): void {
+/** `track`: the target of the track the session follows, whose concepts it learns while any is left. */
+export function renderSession(main: HTMLElement, learner: Learner, focus?: string, track?: string): void {
   const frame = runFrame(main, learner.course, 'at-session-run');
   const rng = new Rng((Date.now() ^ (Math.random() * 2 ** 32)) >>> 0);
   const gens = new Map<string, Generator[]>();
+  const introduced = new Set<string>();
+  const results: { id: string; ok: boolean }[] = [];
+  const masteredNow: string[] = [];
   /** Concepts reviewed this session, and how; it opens with every concept due (or slipped) at the time. */
   const reviews = new Map<string, ReviewState>();
   let inReviews = false;
   /** The review block's opening note was shown. */
   let announced = false;
+  let opened = false;
   let last: string | undefined;
   const showProgress = () => {
-    if (focus) {
-      const c = learner.graph.get(focus)!;
-      const rec = learner.record(focus);
-      const need = rec.slipping ? recoveryStreak(c.mastery) : c.mastery.streak;
-      const right = Math.min(streak(rec), need);
-      return frame.setProgress(rec.mastered && !rec.slipping ? need : right, need, `${right} of ${need} in a row`);
-    }
+    if (!inReviews) return frame.setProgress(results.length, SESSION_LENGTH, `${results.length} of ${SESSION_LENGTH}`);
     const n = reviews.size;
     const done = [...reviews.values()].filter((v) => v !== 'due' && v !== 'slipped').length;
     frame.setProgress(done, n, `Review ${Math.min(n, done + 1)} of ${n}`);
@@ -273,7 +268,6 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
   showProgress();
   /** An end screen has no progress to show. */
   const end = (on: boolean) => frame.root.classList.toggle('at-run-end', on);
-  const home = learner.course.routes.home;
 
   const openReviews = () => {
     inReviews = true;
@@ -286,55 +280,60 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
   // The one driver of the session: every screen is a step it awaits, so no tap can start a second run of it.
   const loop = async () => {
     for (;;) {
-      const pick = focus ? learner.pick(focus) : learner.next(last, { reviewed: new Set([...reviews].filter(([, v]) => v !== 'due').map(([id]) => id)) });
-      if (focus && !pick) return goBack(home);
+      if (results.length >= SESSION_LENGTH) {
+        await summary();
+        end(false);
+        results.length = 0;
+        masteredNow.length = 0;
+        showProgress();
+      }
+      const pick = (opened || !focus ? null : learner.pick(focus)) ?? learner.next(last, { focus, track, reviewed: new Set([...reviews].filter(([, v]) => v !== 'due').map(([id]) => id)) });
+      opened = true;
       const reviewing = !!pick && (pick.reason === 'review' || pick.reason === 'slipping');
-      if (!focus) {
-        if (reviewing && !inReviews) openReviews();
-        if (!reviewing && inReviews) return reviewsDone();
-        // Nothing is due: an old link to a plain session goes to the next step instead.
-        if (!reviewing) {
-          const step = nextStep(learner);
-          return replaceRoute('concept' in step ? stepHref(learner, step.concept) : home);
-        }
-        if (!reviews.has(pick!.concept)) reviews.set(pick!.concept, pick!.reason === 'review' ? 'due' : 'slipped');
-      }
-      const { concept } = pick!;
+      // Reviews run as one block; leaving it is a stop of its own, never a silent slide into new material.
+      if (reviewing && !inReviews) openReviews();
+      if (!reviewing && inReviews) return reviewsDone();
+      if (!pick) return caughtUp();
+      if (reviewing && !reviews.has(pick.concept)) reviews.set(pick.concept, pick.reason === 'review' ? 'due' : 'slipped');
       showProgress();
-      const c = learner.graph.get(concept)!;
-      let list = gens.get(c.id);
-      if (!list) {
-        frame.body.innerHTML = window.atlasBoot.placeholder('problem');
-        gens.set(c.id, (list = await patiently(learner.course.loadGenerators(c.id))));
+      const c = learner.graph.get(pick.concept)!;
+      // A watched explainer is the introduction; otherwise offer it first.
+      // The intro is skipped for a watched explainer, and when the session opened on this concept from its page or its explainer.
+      const fresh = pick.reason === 'new' && !introduced.has(c.id);
+      if (fresh && c.id !== focus && !watched(explainerId(c.id))) {
+        introduced.add(c.id);
+        await intro(c, pick);
       }
+      let list = gens.get(c.id);
+      if (!list) gens.set(c.id, (list = await learner.course.loadGenerators(c.id)));
       if (!list.length) {
         frame.body.innerHTML = '';
         frame.body.append(h('p', { class: 'at-lede' }, `${c.title} has no problems yet.`));
         return;
       }
       const gen = list[rng.int(list.length)]!;
-      const problem = gen.make(rng, pick!.difficulty);
+      const problem = gen.make(rng, pick.difficulty);
       const before = learner.record(c.id);
-      const tag = problemTag(c, pick!, before);
+      const tag = problemTag(learner, c, pick, before);
       const got = await ask(learner.course, frame, {
         concept: c.id,
         problem,
         rng,
         tag,
-        note: transition(pick!, last),
+        note: fresh && introduced.has(c.id) ? undefined : transition(pick, last),
         target: c.mastery.seconds,
-        worked: () => gen.make(new Rng(rng.int(2 ** 31)), pick!.difficulty),
+        worked: () => gen.make(new Rng(rng.int(2 ** 31)), pick.difficulty),
       });
       const after = learner.answer(c.id, gen.id, { ok: got.verdict.ok, seconds: got.seconds, help: got.help });
-      void syncReminders(learner);
-      if (pick!.reason === 'review') reviews.set(c.id, got.help ? 'helped' : after.slipping ? 'slipped' : 'passed');
-      else if (pick!.reason === 'slipping' && !after.slipping) reviews.set(c.id, 'recovered');
-      tag.replaceWith(problemTag(c, pick!, after));
+      void syncBookReminders();
+      if (after.mastered && !before.mastered) masteredNow.push(c.id);
+      if (pick.reason === 'review') reviews.set(c.id, got.help ? 'helped' : after.slipping ? 'slipped' : 'passed');
+      else if (pick.reason === 'slipping' && !after.slipping) reviews.set(c.id, 'recovered');
+      tag.replaceWith(problemTag(learner, c, pick, after));
+      results.push({ id: c.id, ok: got.verdict.ok });
       last = c.id;
       showProgress();
-      await feedback(frame, c, problem, got, before, after, learner);
-      // A step ends when its concept stands mastered; a mastery just won ended on its own moment.
-      if (focus && after.mastered && !after.slipping) return goBack(home);
+      await feedback(frame, c, problem, got, before, after, learner, track);
     }
   };
 
@@ -373,37 +372,99 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
     return `It builds on ${names(pre)}${prev && pre.includes(prev) && learner.record(prev).mastered ? `, which you just mastered` : ''}.`;
   };
 
-  /** Each concept reviewed in this book, and how its review went. */
-  const reviewRows = (): HTMLElement[] =>
-    [...reviews].map(([id, st]) => {
+  /** Each reviewed concept and how its review went. */
+  const reviewList = (): HTMLElement => {
+    const row = (id: string, st: ReviewState) => {
       const [ic, cls, text] =
         st === 'passed' ? ['check-circle', 'ok', 'kept']
         : st === 'recovered' ? ['reset', 'ok', 'missed, then won back']
         : st === 'helped' ? ['clock', 'wait', 'done with help: it comes back next session']
         : st === 'slipped' ? ['reset', 'bad', `slipping: ${recoveryStreak(learner.graph.get(id)!.mastery)} right in a row win it back`]
         : ['clock', 'wait', 'not reached: still due'];
-      const li = h('li', { class: cls, html: `${icon(ic)}<span><b></b> <small>${text}</small></span>` });
+      return h('li', { class: cls, html: `${icon(ic)}<span><b></b> <small>${text}</small></span>` });
+    };
+    const ul = h('ul', { class: 'at-reviews' });
+    for (const [id, st] of reviews) {
+      const li = row(id, st);
       li.querySelector('b')!.textContent = title(id);
-      return li;
-    });
+      ul.append(li);
+    }
+    return ul;
+  };
 
   const kept = () => [...reviews.values()].filter((v) => v === 'passed' || v === 'recovered').length;
 
-  /** A book's reviews are its own: they end on what was kept and a way back to the book. */
+  /** The end of the review block ends the session too: the home page offers what comes next. */
   const reviewsDone = () => {
-    const rows = reviewRows();
-    const keptAll = kept();
-    const total = reviews.size;
     end(true);
     frame.body.innerHTML = '';
     frame.dock.innerHTML = '';
     frame.body.append(h('div', { class: 'at-done' },
       h('div', { class: 'at-kicker' }, 'Reviews done'),
       h('h1', { class: 'at-title' }, 'Nice work'),
-      h('p', { class: 'at-lede' }, `${keptAll} of ${total} kept.`),
-      h('ul', { class: 'at-reviews' }, ...rows)));
-    frame.dock.append(h('a', { class: 'at-check', href: home, 'data-back': '' }, 'Done'));
+      h('p', { class: 'at-lede' }, `${kept()} of ${reviews.size} kept.`),
+      reviewList()));
+    frame.dock.append(h('a', { class: 'at-check', href: learner.course.routes.home }, 'Done'));
   };
 
-  loop().catch(() => loadNote('This problem could not load. Check your connection.'));
+  const intro = (c: Concept, pick: Pick): Promise<void> =>
+    new Promise((resolve) => {
+      frame.body.dataset.concept = c.id;
+      frame.body.innerHTML = '';
+      frame.dock.innerHTML = '';
+      const start = h('button', { type: 'button', class: learner.course.hasExplainer(c.id) ? 'at-ghost' : 'at-check' }, 'Start practicing');
+      start.addEventListener('click', () => resolve());
+      const example = h('button', { type: 'button', class: 'at-stuck' }, 'Show a worked example first');
+      example.addEventListener('click', async () => {
+        const list = gens.get(c.id) ?? (await learner.course.loadGenerators(c.id));
+        gens.set(c.id, list);
+        const g = list[0];
+        if (!g) return;
+        const w = g.make(new Rng(rng.int(2 ** 31)), pick.difficulty);
+        const box = h('div', { class: 'at-worked' }, h('div', { class: 'at-prompt at-prompt-sm', html: render(learner.course, w.prompt) }), solutionList(learner.course, w.solution));
+        example.replaceWith(box);
+        fitMath(box);
+      });
+      frame.body.append(h('div', { class: 'at-intro', style: `--dom:var(--c-${learner.course.domainOf(c).color})` },
+        h('div', { class: 'at-kicker at-kicker-dom' }, `New concept · ${learner.course.domainOf(c).title}`),
+        h('h1', { class: 'at-title at-title-c' }, c.title),
+        h('p', { class: 'at-lede' }, c.blurb),
+        h('p', { class: 'at-why' }, whyNew(c.id, last)),
+        h('p', { class: 'at-small' }, `You will practice it until ${c.mastery.streak} in a row are right, about ${c.mastery.seconds} s each. Then the next concept opens.`),
+        example,
+        learner.choices().open.length > 1 ? pickLink(learner.course, 'Not this one? Choose another') : ''));
+      if (learner.course.hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-check', href: learner.course.routes.watch(c.id, track), html: `${icon('playFill')} Watch the explainer` }));
+      frame.dock.append(start);
+    });
+
+  /** The session's results; resolves when the learner keeps going. */
+  const summary = () => new Promise<void>((resolve) => {
+    end(true);
+    const right = results.filter((r) => r.ok).length;
+    frame.body.innerHTML = '';
+    frame.dock.innerHTML = '';
+    frame.body.append(h('div', { class: 'at-done' },
+      h('div', { class: 'at-kicker' }, 'Session done'),
+      h('h1', { class: 'at-title' }, `${right} of ${results.length} right`),
+      masteredNow.length ? h('p', { class: 'at-lede', html: `Mastered: <b>${masteredNow.map((id) => learner.graph.get(id)!.title).join(', ')}</b>.` }) : h('p', { class: 'at-lede' }, 'No new mastery this time; the streaks carry over to the next session.'),
+      reviews.size ? h('p', { class: 'at-small' }, `Reviews: ${kept()} of ${reviews.size} kept.`) : ''));
+    const again = h('button', { type: 'button', class: 'at-ghost' }, 'Keep going');
+    again.addEventListener('click', () => resolve());
+    frame.dock.append(again, backLink());
+  });
+
+  const caughtUp = () => {
+    end(true);
+    frame.body.innerHTML = '';
+    frame.dock.innerHTML = '';
+    frame.body.append(h('div', { class: 'at-done' },
+      h('div', { class: 'at-kicker' }, results.length ? 'Nothing left for now' : 'All caught up'),
+      h('h1', { class: 'at-title' }, results.length ? plural(results.length, 'problem') + ' done' : 'Nothing is due'),
+      h('p', { class: 'at-lede' }, 'Every concept you can reach is mastered and none is due for review. Come back tomorrow.')));
+    frame.dock.append(backLink());
+  };
+
+  const backLink = () => (track ? h('a', { class: 'at-check', href: learner.course.routes.track(track) }, 'Back to the track') : h('a', { class: 'at-check', href: learner.course.routes.home }, 'Back to the map'));
+
+  void loop();
 }
