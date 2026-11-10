@@ -3,6 +3,8 @@
 //
 // A learner on the old build launches once after the new one is published, then loses the connection:
 //   cut      the connection goes while the new build is still arriving; whichever build then opens must open whole
+//   first    a first visit to the new build, left on its first page, then no connection: the next explainer plays
+//            with its narration
 //   settled  the connection goes after the new build has arrived; it is the new build that must open whole, and the
 //            next explainer must play with its narration, which was saved ahead
 // Exits 1 when any page fails to draw.
@@ -138,6 +140,21 @@ for (const after of [300, 1500, 4000, 7000]) {
   await page.close();
   const label = `cut at ${after} ms`;
   console.log(`${label}: opened the ${name(await everyPageOpens(ctx, label))} build`);
+  await ctx.close();
+}
+
+// A first visit, with no page change after it: the app and the next explainer's narration are saved all the same.
+{
+  Object.assign(site, { root: newDist, delay: 0, down: false });
+  const ctx = await browser.newContext({ viewport: { width: 402, height: 874 }, isMobile: true, hasTouch: true });
+  const page = await ctx.newPage();
+  await page.goto(base);
+  await until('a first visit to save the next explainer\'s narration', () => page.evaluate(async () => (await (await caches.open('atlas-audio-ahead')).keys()).length > 0));
+  site.down = true;
+  await page.close();
+  const sound = await nextExplainerPlays(ctx);
+  console.log(`first visit: the next explainer ${sound ? 'did not play with sound: ' + sound : 'played with sound'}`);
+  if (sound) failures.push(`first visit  #/atlas/vector/watch  ${sound}`);
   await ctx.close();
 }
 

@@ -291,4 +291,6 @@ void route().then(() => {
   (window as unknown as { __ready: boolean }).__ready = true;
   startOffline();
   followNewBuilds();
+  // A save that the connection cut short picks up when it returns.
+  window.addEventListener('online', saveAhead);
 });

@@ -16,9 +16,12 @@ export function upcomingNarration(): string[] {
   return [...new Set(out)];
 }
 
-/** Asks the worker to hold the upcoming narration. It waits for the app itself to be saved, and for a connection. */
+/**
+ * Asks the worker to hold the upcoming narration, once there is a worker in charge: on a first visit that is after the
+ * page has drawn. The worker waits for the app itself to be saved, and for a connection.
+ */
 export function saveAhead(): void {
   if (!offlineSupported() || !navigator.onLine) return;
   if ((navigator as { connection?: { saveData?: boolean } }).connection?.saveData) return;
-  void navigator.serviceWorker.getRegistration().then((r) => r?.active?.postMessage({ type: WIRE.ahead, urls: upcomingNarration() })).catch(() => {});
+  void navigator.serviceWorker.ready.then((r) => r.active?.postMessage({ type: WIRE.ahead, urls: upcomingNarration() })).catch(() => {});
 }
