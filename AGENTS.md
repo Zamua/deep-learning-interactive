@@ -1,8 +1,9 @@
 # Atlas: notes for a coding agent
 
 A Vite + TypeScript static site (no framework): Atlas, courses built as concept graphs, each
-concept a voiced explainer plus generated problems practiced to mastery. Hash routes: `#/` is the shelf (an address the app does not know opens the book last read),
-`#/atlas` is the first book's home and `#/c/<course>` another's, `#/atlas/explore/<view>`, `#/settings` and `#/account` (see
+concept a voiced explainer plus generated problems practiced to mastery. Hash routes: `#/` is the topics page (every
+course; an address the app does not know lands there), `#/atlas/...` the first course (`dl`), `#/c/<course>/...` any
+other, and `#/account` sync (see
 `docs/MASTERY.md`). `docs/MASTERY.md` is the design and the authoring contract, `docs/EXPLAINERS.md` the
 explainer craft, `docs/SYNC.md` progress sync.
 
@@ -37,14 +38,9 @@ is not needed (never leave content hidden behind a removed animation), Phosphor 
 
 ## Layout
 
-- `src/main.ts`: the shell (routing; redraw on synced progress). A book's home draws from the entry chunk, and every other page stands behind a placeholder at its own size until it has what it waits for.
-  `index.html` holds the placeholders and paints the first one before any other file arrives: `tools/shell.mjs` inlines
-  copies of `base.css` and `library.css` with `src/styles/shell.css`, adds the books, and loads the stylesheet so it does
-  not hold back the paint. `src/core/waiting.ts` adds the stalled and failed notes with Retry. `shell.css` holds copies of the practice
-  and explainer frames: change them with the originals in `atlas.css` and `lecture.css`.
-  `src/theme.ts`: the color theme.
-  `src/core/back.ts`: Back pops the way the learner came (`data-back`), and one step's parts replace each other
-  (`data-replace`).
+- `src/main.ts`: the shell (top bar whose wordmark leads to the topics page, side menu of topics or of the open
+  course's concepts, routing, redraw on synced progress). `src/settings.ts`: the menu behind the gear (color theme,
+  pace, reminder, sync, offline status).
   `src/routes.ts` builds every address and parses them back; link with a course's `routes.*`
   (site pages: `routes.*`), never a literal.
 - `src/core/`: shared pieces. `code.ts` (CodePanel with `{{slots}}` and `#@labels`),
@@ -62,18 +58,10 @@ is not needed (never leave content hidden behind a removed animation), Phosphor 
   `scene.ts`: beat-anchored easing and a drawing kit in stage units; `draw.ts`: helpers any course's
   scenes share (a course's own are in `<course>/draw.ts`); `types.ts`: script and timing
   types; `lookup.ts`: the cards for symbols and calls; `library.ts`: notes on common library calls.
-- `src/landing/`: the shelf at `#/`. Each course is a gilt cloth-bound book in a pile, spine out; a tap stands it up beside
-  its blurb, `CourseDef.about`, its chapters and the way in, and standing it can be turned by a sideways drag.
-  `landing.ts` coordinates; `scene.ts` is a small WebGL2 renderer (book meshes, relief and foil from maps, one slanted
-  camera with no vanishing point); `art.ts` draws the binding (a device per course in `DEVICES`); `pile.ts` is the pure
-  arithmetic. `lit.ts` has the scene take one picture of each lying book and stacks them as plain `<img>`s, so
-  scrolling the shelf runs no script, and draws live only the open book. `flat.ts` is the CSS 3D shelf for a browser
-  without WebGL2. Keep the lit shelf's pictures plain (no 3D transforms on them: Safari drops such layers) and keep
-  script out of shelf scrolling. Check changes in real WebKit across several cold loads.
 - `src/mastery/`: the engine. `domain/` is pure and unit tested (concept graph, student model,
   scheduler, tracks, placement, graders, expression parser); `learner.ts` + `store.ts` keep the
-  learner's records in the synced progress store; `ui/` renders a book's home (`hub.ts`), Explore (`explore/`), the
-  concept sheet, Settings, sessions and placement. `next-step.ts` is the only answer to "what next".
+  learner's records in the synced progress store; `ui/` renders the topics page (`topics.ts`), a course's home, map,
+  tracks, concept pages, sessions and placement.
 - `src/courses/`: the courses. `course.ts` says what a course is; `index.ts` finds every course and
   concept by glob and builds them (`COURSES`, `courseById`, `FIRST`); `symbols.ts` hands a course's
   symbols to the pages, imported only by them so they stay out of the main chunk. A course is
@@ -91,7 +79,7 @@ is not needed (never leave content hidden behind a removed animation), Phosphor 
   length, so pages total explainer time without loading the explainers.
 - `src/offline/`: `sw.js`, the service worker (installs on the shell and what it names so it takes
   over at once, saves the rest in the background across launches and narration as it plays, answers range requests from the cache, shows
-  reminders), and `register.ts` (registers it once the first page draws; the settings page's offline
+  reminders), and `register.ts` (registers it once the first page draws; the settings menu's offline
   status). `main.ts` looks for a new build at launch and after a minute away, because iOS resumes an
   installed app without loading anything. Plain JS: the build only
   prefixes it, with `wire.json`, the names the page and the worker share (the status message, and
@@ -118,9 +106,9 @@ is not needed (never leave content hidden behind a removed animation), Phosphor 
   write `\sym{W1}{W_1}`.
 - Theme colors are CSS variables read at draw time (`color('blue')`), so canvases follow dark
   mode; palette tokens must stay 6-digit hex for `withAlpha`.
-- **Look:** warm cream paper with an orange accent, Fraunces for titles and buttons, Source Serif 4 for text (both
-  bundled, variable, optical-size axis). Each chapter's colour (`CourseDef.domains[].color`) shows on its tour row and on the
-  Map. Tokens live in `src/styles/base.css`; the first-paint copy is inlined from it by `tools/shell.mjs`.
+- **Touch and motion** (`src/styles/components.css`): every control is at least 44 pt (small ones grow an `::after`
+  hit area), presses scale to 0.97, hover styles sit behind `@media (hover: hover) and (pointer: fine)`, and Reduce
+  Motion keeps fades and drops movement.
 - The router disposes everything registered with `onDispose` on navigation.
 - A scene's `draw(s)` is a pure function of time; the narration track is the clock.
   `timing.json` and `narration.m4a` are generated together from `script.ts` and must be
