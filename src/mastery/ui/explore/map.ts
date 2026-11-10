@@ -7,7 +7,7 @@ import type { Learner } from '../../learner';
 import { roman } from '../common';
 import { openConceptSheet } from '../concept-sheet';
 import { leadGoal, nextStep, tour } from '../next-step';
-import { pinSymbol, symbolOf } from './glyphs';
+import { symbolOf } from './glyphs';
 import { CARD, centerOn, edgePath, fitView, geoOf, hitNode, layoutChapters, lodOf, nearestRegion, regionAt, regionView, shortLines, type Geometry, type Lod, type Region, type View } from './layout';
 import { Stage } from './stage';
 
@@ -27,7 +27,7 @@ const left = new Map<string, View>();
 
 const DONE: ReadonlySet<Status> = new Set<Status>(['mastered', 'due', 'slipping']);
 
-const SYMBOLS = ['check', 'clock', 'lock', 'reset'].map((g) => symbolOf(icon(g), `ex-${g}`)).join('') + pinSymbol;
+const SYMBOLS = ['check', 'clock', 'lock', 'reset'].map((g) => symbolOf(icon(g), `ex-${g}`)).join('');
 
 /** The concept the learner is on: a review block comes first on the line, but the place on the map is what follows it. */
 export function placeOf(learner: Learner): string | undefined {
@@ -37,9 +37,6 @@ export function placeOf(learner: Learner): string | undefined {
   const line = tour(learner);
   return line.find((c) => learner.status(c.id) === 'learning')?.id ?? leadGoal(learner)?.next ?? line.find((c) => learner.status(c.id) === 'new')?.id;
 }
-
-/** How far below a region's top edge its zoomed-out title reaches, on screen. */
-const TITLE_ROOM = 15;
 
 export function mountChapters(box: HTMLElement, learner: Learner): GraphHandle {
   const { course, graph } = learner;
@@ -55,6 +52,9 @@ export function mountChapters(box: HTMLElement, learner: Learner): GraphHandle {
 
   let selected: string | null = null;
   let picked: ReadonlySet<string> | null = null;
+  /** The concept just located, marked for a moment. */
+  let pulse: string | undefined;
+  let pulseTimer = 0;
 
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('class', 'ex-svg');
@@ -187,25 +187,11 @@ export function mountChapters(box: HTMLElement, learner: Learner): GraphHandle {
         s += `<text class="ex-o-t" x="${x}" y="${y}">${esc(fitLine(`${roman(r.index + 1)}  ${r.title}`, r.w * v.z - 11))}</text>`;
       }
     }
-    if (here) {
-      const n = geo.nodes[here]!;
-      const x = n.x * v.z + v.tx;
-      const y = n.y * v.z + v.ty;
-      const w = CARD.w * v.z;
-      const h = CARD.h * v.z;
-      if (L < 2) {
-        // Above the concept, unless that is where its chapter's title is written.
-        const region = L === 0 ? regionAt(geo, n.x + CARD.w / 2, n.y + CARD.h / 2) : null;
-        const clash = !!region && y - 25 < region.y * v.z + v.ty + TITLE_ROOM;
-        const pinY = clash ? y + h + 14 : y - 14;
-        s += `<rect class="ex-ring" x="${x - 3}" y="${y - 3}" width="${w + 6}" height="${h + 6}" rx="5"/>`
-          + `<circle class="ex-pin-bg" cx="${x + w / 2}" cy="${pinY}" r="9.5"/>`
-          + `<use class="ex-pin" href="#ex-pin" x="${x + w / 2 - 11}" y="${pinY - 11}" width="22" height="22"/>`;
-      } else if (!selected) {
-        const lx = x + w / 2 - 41;
-        const ly = y - 30;
-        s += `<g class="ex-here"><rect x="${lx}" y="${ly}" width="82" height="21" rx="10.5"/><text x="${lx + 41}" y="${ly + 14.5}">You are here</text></g>`;
-      }
+    const marked = pulse ?? (L < 2 ? here : undefined);
+    if (marked) {
+      // Zoomed out, a ring keeps the concept under way findable; just located, it flashes at any zoom.
+      const n = geo.nodes[marked]!;
+      s += `<rect class="ex-ring${pulse ? ' pulse' : ''}" x="${n.x * v.z + v.tx - 3}" y="${n.y * v.z + v.ty - 3}" width="${CARD.w * v.z + 6}" height="${CARD.h * v.z + 6}" rx="5"/>`;
     }
     over.innerHTML = s;
   }
@@ -241,7 +227,6 @@ export function mountChapters(box: HTMLElement, learner: Learner): GraphHandle {
     paint(stage.view, true);
     openConceptSheet(learner, id, {
       reading: true,
-      onChip: select,
       onClose: () => {
         selected = null;
         stage.cover(0);
@@ -274,7 +259,16 @@ export function mountChapters(box: HTMLElement, learner: Learner): GraphHandle {
 
   return {
     locate: () => {
-      if (here) stage.flyTo(centerOn(geo, here, stage.size(), Math.max(stage.view.z, 0.9), 0.42));
+      // A book that is finished has no next concept: its first one stands in.
+      const id = here ?? tour(learner)[0]!.id;
+      stage.flyTo(centerOn(geo, id, stage.size(), Math.max(stage.view.z, 0.9), 0.42));
+      pulse = id;
+      paint(stage.view, true);
+      window.clearTimeout(pulseTimer);
+      pulseTimer = window.setTimeout(() => {
+        pulse = undefined;
+        paint(stage.view, true);
+      }, 1400);
     },
     show: select,
     light: (ids) => {

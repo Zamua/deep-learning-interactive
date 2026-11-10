@@ -32,7 +32,7 @@ export function listView(host: HTMLElement, learner: Learner): void {
   host.querySelector('.at-back')?.remove();
   host.querySelector('.home-title')?.remove();
   const inside = host.querySelector('.at-search');
-  inside?.replaceWith(mapSearch(learner, { light: () => {}, pick: (id) => openConceptSheet(learner, id, { reading: true }) }));
+  inside?.replaceWith(mapSearch(learner, { pick: (id) => openConceptSheet(learner, id, { reading: true }) }));
   rowsOpenSheets(host, learner);
 }
 

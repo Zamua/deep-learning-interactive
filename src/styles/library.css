@@ -1012,3 +1012,26 @@ html[data-theme='dark'] .scrim {
 .tr-ch.now span {
   color: var(--dom, var(--accent));
 }
+
+/* The tour's current stop is a way in, and says so. */
+.st li.now button {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.st-go {
+  margin-left: auto;
+  color: var(--accent);
+}
+
+.st-go .ico {
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+}
+
+.quiet-row .ico:last-child {
+  width: 14px;
+  height: 14px;
+}

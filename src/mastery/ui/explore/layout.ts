@@ -349,3 +349,11 @@ export function shortLines(title: string): string[] {
   out.push(line);
   return out;
 }
+
+/**
+ * Where a scroller should rest to put something in its middle: `top` and `height` are the thing's, measured from the
+ * top of what scrolls; `room` is how much of it shows; `total` is all of it.
+ */
+export function middleScroll(top: number, height: number, room: number, total: number): number {
+  return Math.max(0, Math.min(Math.max(0, total - room), top + height / 2 - room / 2));
+}

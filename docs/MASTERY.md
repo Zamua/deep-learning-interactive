@@ -5,7 +5,7 @@ short voiced explainer and then practiced with generated problems until it is ma
 unlocks the concepts that build on it, and mastered concepts come back as spaced reviews. The
 first course runs from vectors to post-training, and its graph is meant to keep growing.
 
-Routes: `#/` opens the book last read, and any unknown address lands there; `#/atlas` a book's home (another book's
+Routes: `#/` is the shelf, and any unknown address opens the book last read; `#/atlas` a book's home (another book's
 is `#/c/<course>`); `#/atlas/explore/<view>` Explore, with the views `map`, `chapters`, `list`, `goals` and `history`;
 `#/atlas/learn/<concept-id>` one step of practice and `#/atlas/learn` the reviews due; `#/atlas/<concept-id>/watch` an
 explainer; `#/atlas/<concept-id>` a concept's sheet over the home; `#/atlas/place` the placement test; `#/settings` and
@@ -161,7 +161,7 @@ The app is one straight line: open the book, one obvious next thing, do it, retu
 
 **One step is one concept.** Start opens its explainer, or practice once that has been heard; the step ends when the
 concept is mastered, on the mastery moment and its one button. `#/atlas/learn` without a concept is the block of
-reviews, counted "Review 2 of 5". It runs across every book and ends on one "Reviews done" list.
+reviews, counted "Review 2 of 5". It covers its own book only and ends on a "Reviews done" list; the shelf and the book menu say what is due in the others.
 
 **Back goes back.** Every arrow and X returns along the way the learner came, falling back to the book's home
 (`src/core/back.ts`). The parts of one step replace each other in the history, so X leaves the step whole.

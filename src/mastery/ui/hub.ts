@@ -1,6 +1,6 @@
 // A book's home, and the first thing the app opens on: the one next thing to do, and the tour of the book's chapters.
 import { icon } from '../../core/controls';
-import { h } from '../../core/dom';
+import { escapeHtml, h } from '../../core/dom';
 import { setItem } from '../../core/storage';
 import { COURSES } from '../../courses/index';
 import { routes as site } from '../../routes';
@@ -28,11 +28,6 @@ function bookSwitcher(current: Learner): void {
   openSheet('Your books', h('div', { class: 'sh-lab' }, 'Your books'), ...COURSES.map((c) => row(new Learner(c))), shelf);
 }
 
-/** The reviews waiting in the other books, which run as one block with this book's. */
-function otherBooksDue(learner: Learner): { learner: Learner; due: number }[] {
-  return COURSES.filter((c) => c.id !== learner.course.id).map((c) => new Learner(c)).map((l) => ({ learner: l, due: dueCount(l) })).filter((b) => b.due > 0);
-}
-
 /** The card with the one next thing on it. */
 function nextCard(learner: Learner, step: Step): HTMLElement {
   const { course, graph } = learner;
@@ -43,26 +38,22 @@ function nextCard(learner: Learner, step: Step): HTMLElement {
   const card = (kicker: string, t: string, sub: string, action?: HTMLElement, ...rest: (HTMLElement | string)[]) =>
     h('section', { class: 'lib-card nx' }, h('div', { class: 'lib-kick' }, kicker), h('div', { class: 'lib-card-t' }, t), sub ? h('p', { class: 'lib-card-s' }, sub) : '', action ?? '', ...rest);
 
-  const others = otherBooksDue(learner);
-  if (step.kind === 'review' || others.length) {
-    const here = step.kind === 'review' ? step.due : 0;
-    const there = others.reduce((n, b) => n + b.due, 0);
-    const where = others.length ? `${here ? `${here} here and ` : ''}${there} in ${others.map((b) => b.learner.course.title).join(' and ')}. ` : '';
-    const minutes = Math.max(1, Math.round(reviewMinutes(learner) + others.reduce((n, b) => n + reviewMinutes(b.learner), 0)));
-    const start = here ? pages.learn() : others[0]!.learner.course.routes.learn();
-    const then = step.kind === 'review' ? step.then : 'concept' in step ? step.concept : undefined;
-    return card('Reviews first', `${plural(here + there, 'concept')} due`, `${where}One problem each, about ${minutes} min.`, go('Start reviews', start), then ? h('p', { class: 'nx-then' }, `Then: ${title(then)}.`) : '');
+  // A book shows only its own reviews. The shelf and the book menu say what waits in the others.
+  if (step.kind === 'review') {
+    const then = step.then;
+    return card('Reviews first', `${plural(step.due, 'concept')} due`, `One problem each, about ${Math.max(1, Math.round(reviewMinutes(learner)))} min.`, go('Start reviews', pages.learn()),
+      then ? h('a', { class: 'quiet-row', href: stepHref(learner, then), html: `<span>Or go on: ${escapeHtml(title(then))}</span>${icon('arrowRight')}` }) : '');
   }
   switch (step.kind) {
     case 'start':
-      return card('Start here', title(step.concept), 'The first concept: a short explainer, then practice.', go('Start', stepHref(learner, step.concept)),
+      return card('Start here', title(step.concept), 'The first concept: a short explainer, then practice.', go(`Start: ${title(step.concept)}`, stepHref(learner, step.concept)),
         h('a', { class: 'quiet-row', href: pages.place, html: `${icon('exam')}<span>Know some of this already? Placement test</span>` }));
     case 'resume':
-      return card(`Continue · ${chapter(step.concept)}`, title(step.concept), `${step.streak} of ${step.need} right in a row.`, go('Resume', stepHref(learner, step.concept)));
+      return card(`Continue · ${chapter(step.concept)}`, title(step.concept), `${step.streak} of ${step.need} right in a row.`, go(`Continue: ${title(step.concept)}`, stepHref(learner, step.concept)));
     case 'win-back':
-      return card('Win it back', title(step.concept), `Slipped on a review: ${step.need} right in a row win it back. ${step.streak} so far.`, go('Resume', pages.learn(step.concept)));
+      return card('Win it back', title(step.concept), `Slipped on a review: ${step.need} right in a row win it back. ${step.streak} so far.`, go(`Continue: ${title(step.concept)}`, pages.learn(step.concept)));
     case 'next':
-      return card(step.goal ? `Goal · ${title(step.goal)}` : `Up next · ${chapter(step.concept)}`, title(step.concept), graph.get(step.concept)!.blurb, go('Start', stepHref(learner, step.concept)));
+      return card(step.goal ? `Goal · ${title(step.goal)}` : `Up next · ${chapter(step.concept)}`, title(step.concept), graph.get(step.concept)!.blurb, go(`Start: ${title(step.concept)}`, stepHref(learner, step.concept)));
     default:
       return card('All caught up', 'Nothing is due', 'nextReview' in step && step.nextReview ? `Next review ${whenDue(step.nextReview)}.` : 'Everything here is mastered.');
   }
@@ -80,7 +71,7 @@ function stops(learner: Learner, concepts: Concept[], now: string | undefined): 
     const s = st.get(c.id)!;
     const rec = learner.record(c.id);
     const cls = c.id === now ? 'now' : held(c.id) ? 'done' : s === 'locked' ? 'lock' : '';
-    const b = h('button', { type: 'button' }, c.title, c.id === now && !rec.mastered && rec.attempts ? h('small', {}, `${rec.recent.slice(-c.mastery.streak).filter((a) => a.ok).length} of ${c.mastery.streak} in a row`) : '');
+    const b = h('button', { type: 'button' }, c.title, c.id === now && !rec.mastered && rec.attempts ? h('small', {}, `${rec.recent.slice(-c.mastery.streak).filter((a) => a.ok).length} of ${c.mastery.streak} in a row`) : '', c.id === now ? h('span', { class: 'st-go', html: icon('caret-right') }) : '');
     b.addEventListener('click', () => peek(learner, c.id));
     ul.append(h('li', { class: cls }, b));
   }

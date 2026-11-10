@@ -44,10 +44,10 @@ export function renderExplore(main: HTMLElement, learner: Learner, view: Explore
   root.append(box, panel, h('div', { class: 'ex-legend' }, ...LEGEND.map(([k, t]) => h('span', {}, h('i', { class: k }), t))));
   const graph = view === 'map' ? mountWholeMap(box, learner) : mountChapters(box, learner);
   panel.append(mapSearch(learner, {
-    light: (ids) => graph.light(ids),
     pick: (id) => {
       toggleFind(false);
-      graph.show(id);
+      // The keyboard is on its way down, and the map's size with it: the move starts once that has settled.
+      window.setTimeout(() => graph.show(id), 260);
     },
   }));
   const toggleFind = (on: boolean) => {
