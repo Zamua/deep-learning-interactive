@@ -58,6 +58,7 @@ let renderToken = 0;
 
 /** A course's pages, the account page and the topics page, which any other address or an unknown course lands on. */
 async function route(): Promise<void> {
+  setNav(false);
   const r = parseRoute(location.hash);
   if (r?.page === 'account') return routeAccount(r.code);
   if (r && r.page !== 'topics') {
