@@ -5,7 +5,7 @@
   --U: min(100vw, 520px);
   --H: calc(3.2 * var(--U));
   --W: calc(2.144 * var(--U));
-  --pitch: calc(0.6 * var(--U));
+  --pitch: calc(0.52 * var(--U));
   --y0: 38vh;
   position: fixed;
   inset: 0;
