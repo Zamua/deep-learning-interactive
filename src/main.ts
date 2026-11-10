@@ -89,8 +89,7 @@ async function routeCourse(r: CourseRoute, course: Course): Promise<void> {
   } catch (e) {
     console.error(e);
     if (await reloadIfStale()) return;
-    main.innerHTML = '';
-    main.append(h('div', { class: 'fig-error' }, `This page failed to load: ${(e as Error).message}`));
+    loadFailed(e);
   }
 }
 
@@ -110,7 +109,7 @@ async function routeTopics(): Promise<void> {
   } catch (e) {
     console.error(e);
     if (await reloadIfStale()) return;
-    main.append(h('div', { class: 'fig-error' }, `This page failed to load: ${(e as Error).message}`));
+    loadFailed(e);
   }
 }
 
@@ -131,7 +130,7 @@ async function routeAccount(code?: string): Promise<void> {
   } catch (e) {
     console.error(e);
     if (await reloadIfStale()) return;
-    main.append(h('div', { class: 'fig-error' }, `This page failed to load: ${(e as Error).message}`));
+    loadFailed(e);
   }
 }
 
@@ -194,10 +193,30 @@ function buildNav(course: Course | null, active: string): void {
 }
 
 /**
- * A tab opened before a redeploy runs the old build, whose lazy chunks no longer exist. When the
- * served page names a different entry script, reloads into it (once per build) and returns true.
+ * A page could not be drawn. With no connection that means a file Atlas has not saved yet, so say that and offer
+ * another try, not the loader's own words.
+ */
+function loadFailed(e: unknown): void {
+  const offline = !navigator.onLine || e instanceof TypeError || /preload|dynamically imported|Failed to fetch|Load failed/i.test((e as Error)?.message ?? '');
+  const again = h('button', { class: 'btn', type: 'button' }, 'Try again');
+  again.addEventListener('click', () => location.reload());
+  main.innerHTML = '';
+  main.append(
+    h('div', { class: 'load-failed' },
+      h('h1', { class: 'home-title' }, offline ? 'This page is not saved yet.' : 'This page did not load.'),
+      h('p', {}, offline
+        ? 'Atlas could not reach the part of itself that draws this page. Open it once with a connection and leave it open for a minute: it saves the rest, and the gear menu says "Works offline" when it has.'
+        : `Something went wrong while drawing it: ${(e as Error)?.message ?? 'unknown error'}`),
+      again));
+}
+
+/**
+ * A tab opened before a redeploy runs the old build, whose lazy chunks no longer exist. When the served page names a
+ * different entry script, reloads into it (once per build) and returns true. Under a service worker the page never
+ * asks: the worker brings the next build in whole, and `followNewBuilds` reloads then.
  */
 async function reloadIfStale(): Promise<boolean> {
+  if (navigator.serviceWorker?.controller) return false;
   const entry = new URL(import.meta.url).pathname.split('/').pop();
   let served: string | undefined;
   try {
@@ -225,16 +244,36 @@ const AWAY = 60_000;
  * closed. Looks for a new build at launch and on coming back, and moves to it unless something is under way.
  */
 function followNewBuilds(): void {
+  const busy = () => {
+    const page = parseRoute(location.hash)?.page;
+    return !page || BUSY.has(page);
+  };
   const check = () => {
     checkForNewWorker();
-    const page = parseRoute(location.hash)?.page;
-    if (page && !BUSY.has(page)) void reloadIfStale();
+    if (!busy()) void reloadIfStale();
   };
   let hiddenAt = 0;
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') hiddenAt = Date.now();
     else if (hiddenAt && Date.now() - hiddenAt >= AWAY) check();
   });
+  // A new worker took over, with all of its build saved: move onto it, but never out of a session or an explainer.
+  const sw = navigator.serviceWorker;
+  if (sw) {
+    let had = !!sw.controller;
+    let waiting = false;
+    const move = () => {
+      if (busy()) return void (waiting = true);
+      location.reload();
+    };
+    sw.addEventListener('controllerchange', () => {
+      if (had) move();
+      had = true;
+    });
+    window.addEventListener('hashchange', () => {
+      if (waiting) move();
+    });
+  }
   check();
 }
 
