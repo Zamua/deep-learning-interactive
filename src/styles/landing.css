@@ -1,11 +1,12 @@
-/* ---------- the shelf: books lying flat, spine out, and one standing beside what it holds ---------- */
+/* ---------- the shelf: a pile of books, spine out, and one standing beside what it holds ---------- */
 
 .ld {
   /* The page's unit, the screen's width; landing.ts has the same. */
   --U: min(100vw, 520px);
   --H: calc(3.2 * var(--U));
   --W: calc(2.144 * var(--U));
-  --pitch: calc(0.52 * var(--U));
+  /* The flat shelf's step from one book to the next: a spine and a strip of cover. */
+  --pitch: calc(0.33 * var(--U));
   --y0: 38vh;
   position: fixed;
   inset: 0;
@@ -28,14 +29,82 @@
   opacity: 1;
 }
 
-/* The scroller is the camera: its perspective origin stays put while the books scroll under it, so no script runs
-   while they move. The eye sits above the screen, so a book shows more of its cover the lower it lies. */
 .ld-sc {
   position: absolute;
   inset: 0;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior-y: contain;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* The lit shelf: one plain picture per book, stacked. Nothing in it is 3D to the browser, which scrolls the pictures
+   by itself. Keep it so: Safari drops 3D layers that hold such pictures, and script-driven scrolling stutters. */
+.ld-pile {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 0;
+}
+
+.ld-pb {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  cursor: pointer;
+  transition: opacity 0.25s;
+  -webkit-user-drag: none;
+}
+
+.ld.detail .ld-pb {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ld-pb.live {
+  visibility: hidden;
+}
+
+.ld.settled .ld-pile {
+  display: none;
+}
+
+/* The scene's canvas is on the page only while a book stands in it. */
+.ld-gl {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ld.live .ld-gl {
+  display: block;
+}
+
+/* Where the standing book can be taken hold of. Up and down still scrolls the page; a sideways pull turns the book. */
+.ld-grab {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(0.14 * var(--U));
+  height: calc(1.46 * var(--U));
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.ld.lit .ld-grab {
+  display: block;
+}
+
+/* The flat shelf, for a browser without WebGL: the scroller is the camera, and the books are boxes that scroll under
+   it with fixed transforms. The eye sits above the screen, so a book shows more of its cover the lower it lies. */
+.ld.flat .ld-sc {
   perspective: calc(15.7 * var(--U));
   perspective-origin: 50% calc(-1.12 * var(--U));
 }
@@ -47,13 +116,7 @@
   font: 600 19px/1.2 var(--font-display);
 }
 
-.ld-hd i {
-  display: block;
-  font: italic 400 15px/1.3 var(--font-body);
-  color: var(--ink-2);
-}
-
-.ld-sp {
+.ld.flat .ld-sp {
   height: calc(var(--y0) + (var(--n) - 1) * var(--pitch) + 62vh);
 }
 
@@ -68,7 +131,6 @@
 
 /* A book is a point with its faces hung around it, laid on its back with the spine toward the reader. */
 .ld-bk {
-  --on: #f1e9d8;
   position: absolute;
   left: 50%;
   top: calc(var(--y0) + var(--i) * var(--pitch) + var(--T) / 2);
@@ -101,21 +163,6 @@
   top: calc(var(--H) / -2);
   transform: translateX(calc(var(--W) / -2)) rotateY(-90deg);
   background: var(--c);
-}
-
-.ld-sn span {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: var(--H);
-  height: var(--T);
-  transform: translate(-50%, -50%) rotate(90deg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  color: var(--on);
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.04) 20%, rgba(255, 255, 255, 0.07) 52%, rgba(0, 0, 0, 0.1) 84%, rgba(0, 0, 0, 0.34));
 }
 
 .ld-tl {
