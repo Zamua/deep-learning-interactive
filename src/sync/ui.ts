@@ -1,12 +1,12 @@
-// The account on screen: whether progress is backed up, the code that carries it to another device, and linking this
-// device to a code from another one. Also a file copy of Atlas progress, kept outside any account.
+// The account on screen: whether progress is backed up and the code that carries it to another device, with everything
+// else closed until asked for: linking this device to another's code, a password manager, a file copy, how sync works.
 import '../styles/account.css';
 import { CODE_LENGTH, SyncError, codeSymbols, formatCode, parseCode, type CodeError, type SyncStatus } from 'hearthsync';
 import { icon } from '../core/controls';
 import { h, onDispose } from '../core/dom';
 import { progressStore, syncEngine } from './cloud';
 import { concepts, conceptsIn } from './model';
-import { busy, next, start, type LinkEffect, type LinkEvent, type LinkStep, type Peek } from './link-steps';
+import { busy, codeFromPaste, next, start, type LinkEffect, type LinkEvent, type LinkStep, type Peek } from './link-steps';
 import { statusLine } from './status';
 import { routes } from '../routes';
 
@@ -57,19 +57,42 @@ function flash(b: HTMLButtonElement, done: string): void {
   window.setTimeout(() => (b.innerHTML = was), 1600);
 }
 
+/** A row that opens to show what is inside. A button and a panel, since iOS swallows taps on a `summary`. */
+function fold(glyph: string, title: string, panel: HTMLElement): { el: HTMLElement; set(open: boolean): void } {
+  panel.classList.add('ac-fold-body');
+  panel.hidden = true;
+  const caret = h('span', { class: 'ac-fold-c', html: icon('caret-right') });
+  const head = h('button', { type: 'button', class: 'ac-fold', 'aria-expanded': 'false' }, h('span', { class: 'ac-fold-i', html: icon(glyph) }), h('span', { class: 'ac-fold-t' }, title), caret);
+  const set = (open: boolean) => {
+    panel.hidden = !open;
+    head.setAttribute('aria-expanded', String(open));
+  };
+  head.addEventListener('click', () => set(panel.hidden));
+  return { el: h('div', { class: 'ac-fold-row' }, head, panel), set };
+}
+
 /** The account page; `typed` is a code from a link, offered for linking at once, and `fileCopy` saves progress to a file and loads it back. */
 export function renderAccount(main: HTMLElement, typed: string | undefined, fileCopy: HTMLElement): void {
   const sync = syncEngine();
-  const root = h('div', { class: 'home home-b ac', 'data-page': 'account' });
+  const root = h('div', { class: 'ac', 'data-page': 'account' });
   main.append(root);
-  root.append(
-    h('div', { class: 'home-kicker' }, 'Your progress'),
-    h('h1', { class: 'home-title', html: 'Sync across <em>devices</em>.' }),
-    h('p', { class: 'ac-lede' }, 'Progress is saved on this device first and backed up to your account in the background. Your code opens the same account on another device. There is no sign-up: the code is the account.'));
+  root.append(h('h1', { class: 'home-title', html: 'Sync across <em>devices</em>.' }));
 
   const status = h('div', { class: 'ac-status' });
   const codeBody = h('div', { class: 'ac-codebody' });
-  root.append(status, h('h2', { class: 'ac-h2' }, 'Your code'), codeBody);
+  const keeperBody = h('div', {});
+  const useCode = fold('devices', 'Use a code from another device', h('div', {},
+    h('p', { class: 'ac-note ac-note-top' }, 'Open Atlas on the device that has your progress and bring its code here, or fill it from your password manager.'),
+    linker(typed)));
+  const saveCode = fold('key', 'Save in your password manager', keeperBody);
+  saveCode.el.hidden = true;
+  const codeHead = h('h2', { class: 'ac-h2' }, 'Your code');
+  root.append(status, codeHead, codeBody,
+    h('div', { class: 'ac-folds' },
+      useCode.el,
+      saveCode.el,
+      fold('download-simple', 'A copy in a file', fileCopy).el,
+      fold('info', 'How sync works', h('p', { class: 'ac-note' }, 'Progress is saved on this device first and backed up to your account in the background. Your code opens the same account on another device. There is no sign-up: the code is the account.')).el));
 
   let shown = '';
   const draw = (st: SyncStatus) => {
@@ -81,6 +104,11 @@ export function renderAccount(main: HTMLElement, typed: string | undefined, file
     if (key === shown) return;
     shown = key;
     codeBody.innerHTML = '';
+    // Without a code the status line already says when one comes.
+    codeHead.hidden = codeBody.hidden = !st.code && st.problem !== 'lost';
+    saveCode.el.hidden = !st.code || st.problem === 'lost';
+    // A device with no code yet is here for this row, and so is one that arrived on a link.
+    useCode.set(!st.code || !!typed);
     if (st.problem === 'lost') {
       const remake = h('button', { type: 'button', class: 'btn btn-primary' }, 'Make a new code');
       const msg = h('p', { class: 'ac-note' });
@@ -91,13 +119,9 @@ export function renderAccount(main: HTMLElement, typed: string | undefined, file
       codeBody.append(h('p', { class: 'ac-note' }, 'The server no longer has your account. Everything is still on this device: a new code backs it up again, and your other devices link to it.'), h('div', { class: 'ac-actions' }, remake), msg);
       return;
     }
-    if (!st.code) {
-      codeBody.append(h('p', { class: 'ac-note' }, 'Your code comes once there is progress to back up and a connection. On a device that already has a code, you can use it below instead.'));
-      return;
-    }
+    if (!st.code) return;
     const code = st.code;
-    const share = h('button', { type: 'button', class: 'btn btn-primary', html: `${icon('share-network')} Share link` });
-    const copy = h('button', { type: 'button', class: 'btn', html: `${icon('copy')} Copy code` });
+    const share = h('button', { type: 'button', class: 'btn btn-primary ac-share', html: `${icon('share-network')} Share with another device` });
     share.addEventListener('click', async () => {
       const url = linkFor(code);
       if (navigator.share) {
@@ -115,12 +139,11 @@ export function renderAccount(main: HTMLElement, typed: string | undefined, file
         flash(share, 'Copy failed');
       }
     });
-    copy.addEventListener('click', () => void navigator.clipboard.writeText(formatCode(code)).then(() => flash(copy, 'Copied'), () => flash(copy, 'Copy failed')));
+    keeperBody.replaceChildren(keeper(code, st.tag));
     codeBody.append(
       codeBox(code),
-      h('div', { class: 'ac-actions' }, share, copy),
-      keeper(code, st.tag),
-      h('p', { class: 'ac-note' }, 'Open the link on your other device, or fill the code there from your password manager. Anyone with it can see and change your progress, so keep it to yourself.'));
+      h('div', { class: 'ac-actions' }, share),
+      h('p', { class: 'ac-note' }, 'Anyone with this code can see and change your progress.'));
   };
   if (sync) {
     draw(sync.status);
@@ -131,9 +154,6 @@ export function renderAccount(main: HTMLElement, typed: string | undefined, file
   } else {
     status.append(h('span', {}, h('b', {}, 'Sync is off'), h('span', {}, 'This copy of the site has no account server. Progress stays on this device.')));
   }
-
-  root.append(h('h2', { class: 'ac-h2' }, 'Use a code from another device'), linker(typed));
-  root.append(h('h2', { class: 'ac-h2' }, 'A copy in a file'), fileCopy);
 }
 
 /** The code, hidden until asked for so it is not read over a shoulder, and hidden again with the same button. */
@@ -190,7 +210,7 @@ function keeper(code: string, tag: string | null): HTMLElement {
     note.className = 'ac-note ok';
     note.textContent = 'If your password manager offered to save it, it is ready to fill on your other devices. If it did not: in 1Password, right-click its toolbar icon and choose Save, then Login, while these fields are filled.';
   });
-  return h('div', { class: 'ac-pm' }, h('div', { class: 'ac-pm-k', html: `${icon('key')} Your password manager` }), form, sink);
+  return h('div', {}, form, sink);
 }
 
 /** The code field, what that code holds, and the link itself. */
@@ -283,7 +303,11 @@ function linker(typed?: string): HTMLElement {
     }
   };
 
-  input.addEventListener('input', () => send({ type: 'edit', text: input.value }));
+  input.addEventListener('input', () => {
+    const code = codeFromPaste(input.value);
+    if (code !== input.value) input.value = loginCode(codeSymbols(code));
+    send({ type: 'edit', text: input.value });
+  });
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!sync) return say('bad', 'This copy of the site has no account server.');

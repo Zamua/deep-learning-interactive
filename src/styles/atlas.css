@@ -101,7 +101,8 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 14px;
+  min-height: 44px;
+  padding: 7px 16px;
   border-radius: 99px;
   color: var(--ink-2);
   text-decoration: none;
@@ -201,9 +202,11 @@
   color: var(--ink);
   text-decoration: none;
 }
-.at-search-list [aria-selected='true'] a,
-.at-search-list a:hover {
-  background: var(--paper-3);
+@media (hover: hover) and (pointer: fine) {
+  .at-search-list [aria-selected='true'] a,
+  .at-search-list a:hover {
+    background: var(--paper-3);
+  }
 }
 .at-search-dot {
   flex: none;
@@ -246,8 +249,10 @@
   text-decoration: none;
   font-family: var(--font-ui);
 }
-.at-row:hover .at-row-t {
-  color: var(--accent);
+@media (hover: hover) and (pointer: fine) {
+  .at-row:hover .at-row-t {
+    color: var(--accent);
+  }
 }
 .at-row-box {
   flex: none;
@@ -312,6 +317,7 @@
   align-items: center;
   gap: 10px;
   width: 100%;
+  min-height: 48px;
   padding: 12px 2px;
   border: 0;
   border-bottom: 1px solid var(--rule);
@@ -546,13 +552,15 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
   padding: 10px 12px;
   border: 1px solid var(--rule);
   border-radius: 12px;
   font-family: var(--font-ui);
 }
 .at-cell b {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 4.6vw, 1.2rem);
+  white-space: nowrap;
   font-weight: 600;
   color: var(--ink);
 }
@@ -665,9 +673,9 @@ body.at-on .side {
 .at-run-x {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  margin-left: -8px;
+  width: 44px;
+  height: 44px;
+  margin-left: -12px;
   border-radius: 10px;
   color: var(--ink-2);
 }
@@ -1263,9 +1271,9 @@ body.at-on .side {
   flex: none;
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
-  margin-right: -6px;
+  width: 44px;
+  height: 44px;
+  margin-right: -11px;
   border: 0;
   border-radius: 10px;
   background: none;
@@ -1473,8 +1481,10 @@ body.at-on .side {
   width: 18px;
   height: 18px;
 }
-.at-pick-link:hover span {
-  text-decoration: underline;
+@media (hover: hover) and (pointer: fine) {
+  .at-pick-link:hover span {
+    text-decoration: underline;
+  }
 }
 .at-pick-now {
   display: flex;
@@ -1518,9 +1528,11 @@ body.at-on .side {
   text-decoration: none;
   font-family: var(--font-ui);
 }
-.at-pick-card:hover {
-  border-color: var(--accent);
-  border-top-color: var(--dom);
+@media (hover: hover) and (pointer: fine) {
+  .at-pick-card:hover {
+    border-color: var(--accent);
+    border-top-color: var(--dom);
+  }
 }
 .at-pick-k {
   font-size: 0.74rem;
@@ -1669,6 +1681,7 @@ body.at-on .side {
   align-items: center;
   gap: 6px;
   margin-top: 12px;
+  min-height: 44px;
   padding: 9px 16px;
   border-radius: 99px;
   background: color-mix(in srgb, var(--dom) 14%, transparent);
@@ -1988,8 +2001,10 @@ body.at-on .side {
   margin-top: 3px;
   color: var(--ink-3);
 }
-.at-paper:hover b {
-  color: var(--accent);
+@media (hover: hover) and (pointer: fine) {
+  .at-paper:hover b {
+    color: var(--accent);
+  }
 }
 
 /* The topics page: one card per course. */
@@ -1999,7 +2014,7 @@ body.at-on .side {
   padding: 18px 18px 16px;
   border: 1px solid var(--rule);
   border-radius: 18px;
-  background: var(--paper-2);
+  background: var(--card);
   color: var(--ink);
   text-decoration: none;
 }

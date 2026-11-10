@@ -189,8 +189,8 @@ button {
 .icon-btn {
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border-radius: 10px;
   border: 1px solid transparent;
   background: none;
@@ -198,9 +198,11 @@ button {
   color: var(--ink-2);
 }
 
-.icon-btn:hover {
-  background: var(--paper-2);
-  border-color: var(--rule);
+@media (hover: hover) and (pointer: fine) {
+  .icon-btn:hover {
+    background: var(--paper-2);
+    border-color: var(--rule);
+  }
 }
 
 .icon-btn .ico {
@@ -255,7 +257,8 @@ button {
   display: flex;
   align-items: baseline;
   gap: 10px;
-  padding: 6px 10px;
+  min-height: 44px;
+  padding: 10px 10px;
   border-radius: 8px;
   color: var(--ink-2);
   text-decoration: none;
@@ -263,9 +266,11 @@ button {
   line-height: 1.35;
 }
 
-.side-link:hover {
-  background: var(--paper-2);
-  color: var(--ink);
+@media (hover: hover) and (pointer: fine) {
+  .side-link:hover {
+    background: var(--paper-2);
+    color: var(--ink);
+  }
 }
 
 .side-link.on {

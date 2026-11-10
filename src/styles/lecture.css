@@ -30,14 +30,16 @@ body.lec-on {
 .lec-back {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 10px;
   color: var(--ink-2);
   flex: none;
 }
-.lec-back:hover {
-  background: var(--paper-2);
+@media (hover: hover) and (pointer: fine) {
+  .lec-back:hover {
+    background: var(--paper-2);
+  }
 }
 .lec-back .ico {
   width: 22px;
@@ -401,8 +403,9 @@ canvas.lec-canvas {
 .lec-btn {
   display: grid;
   place-items: center;
-  min-width: 42px;
-  height: 42px;
+  min-width: 44px;
+  height: 44px;
+  flex: none;
   padding: 0 8px;
   border: 0;
   border-radius: 10px;
@@ -410,8 +413,10 @@ canvas.lec-canvas {
   color: var(--ink-2);
   cursor: pointer;
 }
-.lec-btn:hover {
-  background: var(--paper-2);
+@media (hover: hover) and (pointer: fine) {
+  .lec-btn:hover {
+    background: var(--paper-2);
+  }
 }
 .lec-btn .ico {
   width: 23px;
@@ -476,8 +481,10 @@ canvas.lec-canvas {
   font: 500 15px var(--font-ui);
   cursor: pointer;
 }
-.lec-li:hover {
-  background: var(--paper-2);
+@media (hover: hover) and (pointer: fine) {
+  .lec-li:hover {
+    background: var(--paper-2);
+  }
 }
 .lec-li.on {
   background: var(--accent-soft);
@@ -931,4 +938,22 @@ a.lk-row {
 }
 a.lk-row .lk-what {
   color: var(--accent);
+}
+
+/* A narrow phone: the controls keep their size and give up the space between them. */
+@media (max-width: 400px) {
+  .lec-bar {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .lec-row {
+    gap: 0;
+  }
+  .lec-speed {
+    min-width: 44px;
+  }
+  .lec-time {
+    margin-left: 2px;
+    font-size: 12px;
+  }
 }

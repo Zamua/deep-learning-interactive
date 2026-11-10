@@ -303,12 +303,10 @@ input[type='range']::-moz-range-thumb {
   -webkit-tap-highlight-color: transparent;
 }
 
-.btn:hover {
-  border-color: var(--accent);
-}
-
-.btn:active {
-  transform: translateY(1px);
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    border-color: var(--accent);
+  }
 }
 
 .btn-primary {
@@ -571,8 +569,10 @@ input[type='range']::-moz-range-thumb {
   text-decoration: none;
   transition: border-color 0.15s;
 }
-.tile:hover {
-  border-color: var(--accent);
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover {
+    border-color: var(--accent);
+  }
 }
 
 .ring {
@@ -806,4 +806,59 @@ a.btn {
 }
 .set-foot.ok .ico {
   color: var(--c-green);
+}
+
+/* ---------- how everything pressable answers: a ring for the keyboard, a small give under the finger ---------- */
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+:where(input, textarea):focus-visible {
+  outline-offset: 0;
+}
+
+/* Small text links keep their look and get a finger-sized target. */
+:where(.brand, .at-back, .at-track-add, .at-pick-link, .at-pill, .at-stuck, .at-trk-drop, .ac-eye) {
+  position: relative;
+}
+:where(.brand, .at-back, .at-track-add, .at-pick-link, .at-stuck, .at-trk-drop)::after {
+  content: '';
+  position: absolute;
+  inset: -10px -8px;
+}
+.at-pill::after {
+  content: '';
+  position: absolute;
+  inset: -4px 0;
+}
+
+:where(.btn, .lead-go, .lead-alt, .at-check, .at-ghost, .at-track-go, .at-pick-card, .tp-card, .at-track-head, .at-maplink, .lec-poster-play, .at-key, .icon-btn, .lec-btn, .at-tabs a, .set-seg button) {
+  transition: transform 160ms ease-out;
+}
+:where(.btn, .lead-go, .lead-alt, .at-check, .at-ghost, .at-track-go, .at-key, .icon-btn, .lec-btn, .at-tabs a, .set-seg button):active {
+  transform: scale(0.97);
+}
+:where(.at-pick-card, .tp-card, .at-maplink):active {
+  transform: scale(0.985);
+}
+/* Rows answer with a tint, since a row that shrinks looks broken. */
+:where(.at-row, .side-link, .at-fold, .ac-fold, .set-link, .at-step-p, .at-pill, .at-search-list a):active {
+  background-color: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+/* Less motion: fades stay, movement goes. */
+@media (prefers-reduced-motion: reduce) {
+  .side {
+    transition: none !important;
+  }
+  :where(.btn, .lead-go, .lead-alt, .at-check, .at-ghost, .at-track-go, .at-pick-card, .tp-card, .at-maplink, .at-key, .icon-btn, .lec-btn, .at-tabs a, .set-seg button):active {
+    transform: none;
+  }
+  .at-node.cm-pop,
+  .at-node.cm-next,
+  .at-lk-sheet,
+  .lec-skip {
+    animation-name: at-lk-fade !important;
+  }
 }
