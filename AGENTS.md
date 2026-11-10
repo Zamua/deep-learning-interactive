@@ -14,6 +14,7 @@ explainer craft, `docs/SYNC.md` progress sync.
     npm test                             Vitest (src/**/*.test.ts): mastery domain, sync model, every generator
     ATLAS_STRICT=1 npm test              also fails concepts with no explainer or no problems
     npm run check                        tsc (app and push/) + ATLAS_STRICT tests: what CI runs, and main requires
+    node tools/e2e/offline-update.mjs <old dist> <new dist>   every page offline after an update (system Chrome)
     node tools/shot.mjs <route> <name> [w h mobile full]   Playwright + system Chrome screenshot
                                          (prints page errors; env SCROLL='.fig:2', THEME=dark)
     node tools/lecture/build.mjs atlas-<concept-id> [--check]   synthesize an explainer's narration
@@ -77,17 +78,21 @@ is not needed (never leave content hidden behind a removed animation), Phosphor 
   edit: older builds on the same account would write the old shape back.
 - `tools/timing-duration.mjs`: a Vite plugin; `timing.json?duration` imports only a narration's
   length, so pages total explainer time without loading the explainers.
-- `src/offline/`: `sw.js`, the service worker (installs on the shell and what it names so it takes
-  over at once, saves the rest in the background across launches and narration as it plays, answers range requests from the cache, shows
-  reminders), and `register.ts` (registers it once the first page draws; the settings menu's offline
-  status). `main.ts` looks for a new build at launch and after a minute away, because iOS resumes an
-  installed app without loading anything. Plain JS: the build only
+- `src/offline/`: `sw.js`, the service worker (installs only once it holds every file of its build and takes over
+  then, so the build before it keeps answering whole until that moment; serves pages from the cache, never the
+  network; saves narration as it plays, answers range requests from the cache, shows reminders), and `register.ts`
+  (registers it once the first page draws; the settings menu's offline status). `main.ts` looks for a new worker at
+  launch and after a minute away, because iOS resumes an installed app without loading anything, and reloads onto
+  the new build when its worker takes over, unless a session or an explainer is under way. Plain JS: the build only
   prefixes it, with `wire.json`, the names the page and the worker share (the status message, and
-  where the next reminder's words are saved).
+  where the next reminder's words are saved). Every page of the app loads the lazy `ui` chunk, so a build that took
+  over before all of it was saved would open on an error with no connection: keep the install whole.
 - `tools/service-worker.mjs`: a Vite plugin; writes `dist/sw.js` prefixed with the files it keeps
-  (every built file but narration, source maps and legacy font formats). The app counts as saved,
-  and the old build's files go, only once every listed file has arrived, so the host must serve
-  them all.
+  (every built file but narration, source maps and legacy font formats). The worker installs only once every listed
+  file has arrived, so the host must serve them all.
+- `tools/e2e/offline-update.mjs <old dist> <new dist>`: a learner on the old build meets the new one and loses the
+  connection, part way and after; every page must still open. Run it before a release that touches `src/offline/`,
+  how pages load, or the build's chunks.
 - `push/`: the daily reminder Worker (Web Push). `push/src/wire.ts` types what the page sends it
   and what a push carries to the service worker; `api.ts` reads request bodies at the boundary.
 

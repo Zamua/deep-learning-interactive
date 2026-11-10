@@ -2,19 +2,16 @@
 // to keep ({ files, audio }), null in dev, where every request goes to the network; and `self.__ATLAS_WIRE`,
 // src/offline/wire.json, the names the page and this worker share.
 //
-// A new worker needs only the shell and the files it names, so it can install and take over during the short sessions
-// iOS allows an installed app, and on a connection too slow to beat PAGE_WAIT. The rest of the app (styles, fonts, every
-// concept) is saved in the background, picking up on the next launch where it stopped. Once saved, Atlas opens and
-// practices with no connection. Narration is cached the first time it plays, since all of it is far larger than the
-// app. This file touches Cache Storage only: progress lives in localStorage and is never its concern.
+// A new worker installs only once it holds every file of its build, and takes over then. Until that moment the build
+// before it keeps answering, whole, so Atlas never opens on a build it cannot finish drawing with no connection. An
+// install that is cut short (iOS allows an installed app only short sessions) keeps what arrived and resumes at the
+// next launch. Once a build is in charge its pages come from the cache, never the network: the next build arrives
+// through the next worker. Narration is cached the first time it plays, since all of it is far larger than the app.
+// This file touches Cache Storage only: progress lives in localStorage and is never its concern.
 const OFFLINE = self.__ATLAS_OFFLINE;
 const WIRE = self.__ATLAS_WIRE;
 const APP = 'atlas-app';
 const AUDIO = 'atlas-audio';
-/** Its one entry says this install's older pages have been moved onto a build that keeps itself current. */
-const MOVED = 'atlas-moved';
-/** A page load waits this long for the network before falling back to the cached app. */
-const PAGE_WAIT = 4000;
 /** Parallel downloads while caching the app. */
 const POOL = 4;
 
@@ -42,38 +39,46 @@ async function inPool(items, job) {
   await Promise.all(Array.from({ length: POOL }, worker));
 }
 
-/** Saves this build's shell, its unhashed files and what the shell names, the shell last so that it never names a missing file. */
-async function saveShell() {
+/** The files of this build that the cache does not hold. */
+async function missing() {
+  const held = new Set((await (await caches.open(APP)).keys()).map((r) => r.url));
+  return [...appFiles].filter((u) => !held.has(u));
+}
+
+/**
+ * Saves all of this build beside the one before it: what is not held yet, the unhashed files again (their names do not
+ * change with their contents), and the shell last, so the cached shell never names a file that is not there.
+ */
+async function saveBuild() {
   const cache = await caches.open(APP);
   const res = await get(SHELL);
-  const html = await res.clone().text();
-  if (!html.includes(ENTRY)) throw new Error('the site serves another build');
-  const named = [...html.matchAll(/(?:src|href)="(?:\.\/)?(assets\/[^"]+)"/g)].map((m) => url(m[1])).filter((u) => appFiles.has(u));
+  if (!(await res.clone().text()).includes(ENTRY)) throw new Error('the site serves another build');
   const unhashed = [...appFiles].filter((u) => u !== SHELL && !u.startsWith(HASHED));
-  const held = await Promise.all(named.map((u) => cache.match(u)));
-  await inPool([...unhashed, ...named.filter((_, i) => !held[i])], async (u) => cache.put(u, await get(u)));
+  const hashed = (await missing()).filter((u) => u.startsWith(HASHED));
+  await inPool([...hashed, ...unhashed], async (u) => cache.put(u, await get(u)));
+  // The worker before this one may have tidied the cache meanwhile.
+  await inPool((await missing()).filter((u) => u !== SHELL), async (u) => cache.put(u, await get(u)));
   await cache.put(SHELL, res);
 }
 
-/** Saves what is still missing of this build; once all of it is here, drops the previous build. */
+/** Fetches again what the browser evicted or an older worker removed; once all of it is here, drops the previous build. */
 async function saveRest() {
   const cache = await caches.open(APP);
-  const missing = [];
-  for (const u of appFiles) if (!(await cache.match(u))) missing.push(u);
   let incomplete = false;
-  await inPool(missing, async (u) => {
+  await inPool(await missing(), async (u) => {
     try {
       await cache.put(u, await get(u));
     } catch {
       incomplete = true;
     }
   });
-  if (!incomplete) await prune();
+  // A newer worker on its way in is filling the same cache.
+  if (!incomplete && !self.registration.installing && !self.registration.waiting) await prune();
 }
 
 /** Drops what the current build no longer names, and caches of other names. */
 async function prune() {
-  for (const name of await caches.keys()) if (name !== APP && name !== AUDIO && name !== MOVED) await caches.delete(name);
+  for (const name of await caches.keys()) if (name !== APP && name !== AUDIO) await caches.delete(name);
   for (const [name, keep] of [[APP, appFiles], [AUDIO, audioFiles]]) {
     const cache = await caches.open(name);
     for (const req of await cache.keys()) if (!keep.has(req.url)) await cache.delete(req);
@@ -90,51 +95,22 @@ function keepApp() {
   return appSaving;
 }
 
-/**
- * A page from before this worker cannot reload itself, and on a slow connection its launch was answered from the cache.
- * The first worker of this kind moves such pages to the build it just saved, once; later builds' pages move themselves.
- */
-async function moveOlderPages() {
-  const moved = await caches.open(MOVED);
-  if (await moved.match(url(MOVED))) return;
-  await moved.put(url(MOVED), new Response(''));
-  const held = await (await caches.open(APP)).keys();
-  if (!held.some((r) => r.url.startsWith(HASHED) && !appFiles.has(r.url))) return;
-  for (const c of await self.clients.matchAll({ type: 'window' })) await c.navigate(c.url).catch(() => {});
-}
-
 self.addEventListener('install', (e) => {
-  self.skipWaiting();
-  if (OFFLINE) e.waitUntil(saveShell());
+  if (!OFFLINE) return void self.skipWaiting();
+  e.waitUntil(saveBuild().then(() => self.skipWaiting()));
 });
 
-// Neither job below is part of activation: requests wait for activation to end, and a navigation is itself a request.
+// The previous build's files stay until a page loads under this worker: a page opened on that build still needs them.
 self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    self.clients.claim().then(() => {
-      if (!OFFLINE) return;
-      void moveOlderPages();
-      void keepApp();
-    }),
-  );
+  e.waitUntil(self.clients.claim());
 });
 
-/** The network's page when it answers in time, else the cached app. */
+/** The saved app, which is whole; the network only if the browser has evicted the shell. */
 async function page(req) {
-  const net = fetch(req);
-  net.catch(() => {});
-  const late = new Promise((resolve) => setTimeout(resolve, PAGE_WAIT));
-  try {
-    const res = await Promise.race([net, late]);
-    if (res) return res;
-  } catch {
-    /* offline */
-  }
-  const cached = await (await caches.open(APP)).match(SHELL);
-  return cached ?? net;
+  return (await (await caches.open(APP)).match(SHELL)) ?? fetch(req);
 }
 
-/** A file of the previous build, for its shell while this build is still being saved. */
+/** A file of the previous build, for a page that was opened on it. */
 async function heldFile(req, key) {
   return (await (await caches.open(APP)).match(key)) ?? fetch(req);
 }
@@ -214,12 +190,12 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('message', (e) => {
   if (!e.data || e.data.type !== WIRE.status || !e.ports[0]) return;
   e.waitUntil((async () => {
-    if (!OFFLINE) return e.ports[0].postMessage({ ready: false, files: 0, filesTotal: 0, audio: 0, total: 0 });
+    if (!OFFLINE) return e.ports[0].postMessage({ version: '', ready: false, files: 0, filesTotal: 0, audio: 0, total: 0 });
     const app = await caches.open(APP);
     const held = new Set((await app.keys()).map((r) => r.url));
     const files = [...appFiles].filter((u) => held.has(u)).length;
     const saved = (await (await caches.open(AUDIO)).keys()).length;
-    e.ports[0].postMessage({ ready: files === appFiles.size, files, filesTotal: appFiles.size, audio: saved, total: audioFiles.size });
+    e.ports[0].postMessage({ version: OFFLINE.version, ready: files === appFiles.size, files, filesTotal: appFiles.size, audio: saved, total: audioFiles.size });
   })());
 });
 

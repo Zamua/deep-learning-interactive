@@ -862,3 +862,7 @@ a.btn {
     animation-name: at-lk-fade !important;
   }
 }
+
+/* A page that could not be drawn. */
+.load-failed { width: min(560px, 100% - 32px); margin: 0 auto; padding: 48px 0 80px; }
+.load-failed p { margin: 14px 0 22px; color: var(--ink-2); line-height: 1.5; }
