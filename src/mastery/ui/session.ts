@@ -349,7 +349,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         if (announced) return undefined;
         announced = true;
         const n = [...reviews.values()].filter((v) => v === 'due').length;
-        return `${plural(n, 'concept')} ${n === 1 ? 'is' : 'are'} due for review: one problem each, foundations first. A miss brings a few more on that concept to win it back.`;
+        return `${plural(n, 'concept')} ${n === 1 ? 'is' : 'are'} due for review: one problem each. A miss brings a few more on that concept to win it back.`;
       }
       case 'slipping': {
         const more = !announced && [...reviews.values()].some((v) => v === 'due');
@@ -368,7 +368,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
   /** Where a new concept sits: what it builds on, or that it is a starting point. */
   const whyNew = (id: string, prev?: string): string => {
     const pre = learner.graph.get(id)!.prereqs;
-    if (!pre.length) return 'It is a starting point: nothing comes before it.';
+    if (!pre.length) return 'It is a starting point.';
     return `It builds on ${names(pre)}${prev && pre.includes(prev) && learner.record(prev).mastered ? `, which you just mastered` : ''}.`;
   };
 
@@ -430,7 +430,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
         h('h1', { class: 'at-title at-title-c' }, c.title),
         h('p', { class: 'at-lede' }, c.blurb),
         h('p', { class: 'at-why' }, whyNew(c.id, last)),
-        h('p', { class: 'at-small' }, `You will practice it until ${c.mastery.streak} in a row are right, about ${c.mastery.seconds} s each. Then the next concept opens.`),
+        h('p', { class: 'at-small' }, `You will practice it until ${c.mastery.streak} in a row are right, about ${c.mastery.seconds} s each.`),
         example,
         learner.choices().open.length > 1 ? pickLink(learner.course, 'Not this one? Choose another') : ''));
       if (learner.course.hasExplainer(c.id)) frame.dock.append(h('a', { class: 'at-check', href: learner.course.routes.watch(c.id, track), html: `${icon('playFill')} Watch the explainer` }));
@@ -446,7 +446,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
     frame.body.append(h('div', { class: 'at-done' },
       h('div', { class: 'at-kicker' }, 'Session done'),
       h('h1', { class: 'at-title' }, `${right} of ${results.length} right`),
-      masteredNow.length ? h('p', { class: 'at-lede', html: `Mastered: <b>${masteredNow.map((id) => learner.graph.get(id)!.title).join(', ')}</b>.` }) : h('p', { class: 'at-lede' }, 'No new mastery this time; the streaks carry over to the next session.'),
+      masteredNow.length ? h('p', { class: 'at-lede', html: `Mastered: <b>${masteredNow.map((id) => learner.graph.get(id)!.title).join(', ')}</b>.` }) : '',
       reviews.size ? h('p', { class: 'at-small' }, `Reviews: ${kept()} of ${reviews.size} kept.`) : ''));
     const again = h('button', { type: 'button', class: 'at-ghost' }, 'Keep going');
     again.addEventListener('click', () => resolve());
@@ -460,7 +460,7 @@ export function renderSession(main: HTMLElement, learner: Learner, focus?: strin
     frame.body.append(h('div', { class: 'at-done' },
       h('div', { class: 'at-kicker' }, results.length ? 'Nothing left for now' : 'All caught up'),
       h('h1', { class: 'at-title' }, results.length ? plural(results.length, 'problem') + ' done' : 'Nothing is due'),
-      h('p', { class: 'at-lede' }, 'Every concept you can reach is mastered and none is due for review. Come back tomorrow.')));
+      h('p', { class: 'at-lede' }, 'Every concept you can reach is mastered. Come back tomorrow.')));
     frame.dock.append(backLink());
   };
 

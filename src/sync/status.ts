@@ -24,6 +24,6 @@ export function statusLine(st: SyncStatus, now = Date.now()): Line {
   }
   if (st.state === 'offline') return { tone: 'off', icon: 'cloud-slash', title: 'Offline', short: 'No connection', text: st.unsaved ? 'Saved on this device. It syncs when you reconnect.' : 'Everything was synced before you went offline.' };
   if (st.state === 'error' || st.problem === 'failing') return { tone: 'bad', icon: 'cloud-warning', title: 'Not syncing', short: 'Not syncing', text: 'The server is not answering. Saved on this device; retrying.' };
-  if (st.unsaved || st.state === 'syncing') return { tone: 'wait', icon: 'cloud-arrow-up', title: 'Syncing…', short: 'Syncing…', text: 'Saved on this device, on its way to your account.' };
-  return { tone: 'ok', icon: 'cloud-check', title: 'Synced', short: 'Synced', text: st.savedAt ? `Last synced ${ago(st.savedAt, now)}.` : 'Your account is up to date.' };
+  if (st.unsaved || st.state === 'syncing') return { tone: 'wait', icon: 'cloud-arrow-up', title: 'Syncing…', short: 'Syncing…', text: '' };
+  return { tone: 'ok', icon: 'cloud-check', title: 'Synced', short: 'Synced', text: st.savedAt ? `Last synced ${ago(st.savedAt, now)}.` : '' };
 }

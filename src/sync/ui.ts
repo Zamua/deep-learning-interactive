@@ -116,7 +116,7 @@ export function renderAccount(main: HTMLElement, typed: string | undefined, file
         remake.disabled = true;
         sync?.remakeAccount().catch((e: unknown) => (msg.textContent = failText(e))).finally(() => (remake.disabled = false));
       });
-      codeBody.append(h('p', { class: 'ac-note' }, 'The server no longer has your account. Everything is still on this device: a new code backs it up again, and your other devices link to it.'), h('div', { class: 'ac-actions' }, remake), msg);
+      codeBody.append(h('p', { class: 'ac-note' }, 'Your other devices will need to link to the new code.'), h('div', { class: 'ac-actions' }, remake), msg);
       return;
     }
     if (!st.code) return;
@@ -193,7 +193,7 @@ function keeper(code: string, tag: string | null): HTMLElement {
   const name = h('input', { id: 'sync-save-name', class: 'ac-input ac-kname', type: 'text', name: 'username', autocomplete: 'username', value: loginName(tag) }) as HTMLInputElement;
   const secret = h('input', { id: 'sync-save-code', class: 'ac-input', type: 'password', name: 'password', autocomplete: 'current-password', value: pass }) as HTMLInputElement;
   const save = h('button', { type: 'submit', class: 'btn', html: `${icon('key')} Save` });
-  const note = h('p', { class: 'ac-note' }, 'Save the code as a login for this site, and your other devices can fill it in.');
+  const note = h('p', { class: 'ac-note' });
   const form = h('form', { id: 'sync-save', method: 'post', action: 'about:blank', target: frame },
     h('label', { class: 'ac-sr', for: 'sync-save-name' }, 'Name to save it under'),
     h('label', { class: 'ac-sr', for: 'sync-save-code' }, 'Your code'),
@@ -204,11 +204,11 @@ function keeper(code: string, tag: string | null): HTMLElement {
       e.preventDefault();
       secret.value = pass;
       note.className = 'ac-note bad';
-      note.textContent = 'That field holds your code, so it is put back as it was. Change the name above if you like, then Save.';
+      note.textContent = 'That field holds your code, so it was put back. Save again.';
       return;
     }
     note.className = 'ac-note ok';
-    note.textContent = 'If your password manager offered to save it, it is ready to fill on your other devices. If it did not: in 1Password, right-click its toolbar icon and choose Save, then Login, while these fields are filled.';
+    note.textContent = 'No offer to save? In 1Password, right-click its toolbar icon and choose Save, then Login, while these fields are filled.';
   });
   return h('div', {}, form, sink);
 }

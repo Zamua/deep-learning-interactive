@@ -197,7 +197,7 @@ function buildNav(course: Course | null, active: string): void {
     }
     nav.append(ul);
   }
-  nav.append(h('div', { class: 'side-foot' }, `${graph.order.length} concepts, and growing.`));
+  nav.append(h('div', { class: 'side-foot' }, `${graph.order.length} concepts`));
 }
 
 /**
@@ -213,7 +213,7 @@ function loadFailed(e: unknown): void {
     h('div', { class: 'load-failed' },
       h('h1', { class: 'home-title' }, offline ? 'This page is not saved yet.' : 'This page did not load.'),
       h('p', {}, offline
-        ? 'Atlas could not reach the part of itself that draws this page. Open it once with a connection and leave it open for a minute: it saves the rest, and the gear menu says "Works offline" when it has.'
+        ? 'Open Atlas once with a connection and leave it open for a minute. The gear menu says "Works offline" when it has saved the rest.'
         : `Something went wrong while drawing it: ${(e as Error)?.message ?? 'unknown error'}`),
       again));
 }

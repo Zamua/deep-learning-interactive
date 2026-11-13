@@ -62,7 +62,7 @@ function screenWake(): (on: boolean) => Promise<void> {
 const SILENCE: Record<Silence, (noun: string) => string> = {
   'cannot-play': (noun) => `The narration could not play here, so the ${noun} is running with captions only.`,
   failed: (noun) => `The narration failed to load, so the ${noun} is running with captions only.`,
-  offline: (noun) => `You're offline, and narration is saved only once played, so the ${noun} is running with captions only.`,
+  offline: (noun) => `You're offline, so the ${noun} is running with captions only.`,
 };
 
 const refusal = (e: unknown): 'blocked' | 'aborted' | 'failed' => {

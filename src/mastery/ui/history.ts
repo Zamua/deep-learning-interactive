@@ -70,7 +70,7 @@ export function renderHistory(main: HTMLElement, learner: Learner): void {
   root.append(
     h('a', { class: 'at-back', href: learner.course.routes.home, html: `${icon('arrowLeft')} Atlas` }),
     h('h1', { class: 'home-title' }, 'History'),
-    h('p', { class: 'at-small' }, all.length ? 'Explainers you played and concepts you practiced, on any of your devices. Tap one to go back to it.' : 'Nothing yet: explainers you play and concepts you practice show up here.'));
+    h('p', { class: 'at-small' }, all.length ? 'Explainers you played and concepts you practiced, on any of your devices.' : 'Nothing yet: explainers you play and concepts you practice show up here.'));
   const today = dayIndex(Date.now());
   const group = (e: Seen) => {
     const d = today - dayIndex(e.t);

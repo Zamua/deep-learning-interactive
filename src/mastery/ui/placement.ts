@@ -26,8 +26,7 @@ export function renderPlacement(main: HTMLElement, learner: Learner): void {
     frame.body.append(h('div', { class: 'at-intro' },
       h('div', { class: 'at-kicker' }, 'Placement test'),
       h('h1', { class: 'at-title' }, 'Find your starting point'),
-      h('p', { class: 'at-lede' }, `Up to ${MAX_QUESTIONS} questions from across the course, each picked from how you did on the last. Answer what you can; a miss just means that concept is where you start.`),
-      h('p', { class: 'at-small' }, 'Concepts it places come back for review tomorrow, so a lucky guess gets checked.')));
+      h('p', { class: 'at-lede' }, `Up to ${MAX_QUESTIONS} questions from across the course. Answer what you can; a miss marks where you start.`)));
     const go = h('button', { type: 'button', class: 'at-check' }, 'Begin');
     go.addEventListener('click', () => void loop());
     frame.dock.append(go);
