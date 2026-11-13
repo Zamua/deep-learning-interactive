@@ -48,7 +48,7 @@ export function renderHome(main: HTMLElement, learner: Learner): void {
     return;
   }
 
-  if (d.kind === 'start') root.append(lead('Start here', title(d.concept), 'The first concept: a short explainer, then practice.', goBtn('Start'), altBtn('Placement test', learner.course.routes.place, 'compass')));
+  if (d.kind === 'start') root.append(lead('Start here', title(d.concept), 'A short explainer, then practice.', goBtn('Start'), altBtn('Placement test', learner.course.routes.place, 'compass')));
   else if (d.kind === 'learning' && d.slipping) root.append(winBack(d.concept, d.need, d.streak));
   else if (d.kind === 'learning') root.append(lead('In progress', title(d.concept), `${d.streak} of ${d.need} right in a row${thenOpens}`, goBtn('Practice')));
   else if (d.kind === 'new') root.append(lead('Up next', title(d.concept), graph.get(d.concept)!.blurb, goBtn('Start'), hasExplainerLink(learner, d.concept)), pickLink(learner.course, 'Or choose what to learn next'));
@@ -130,7 +130,7 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
     return h('a', { class: 'at-row', href: learner.course.routes.concept(id) },
       h('span', { class: `at-row-box ${boxCls}`, html: box }),
       h('span', { class: 'at-row-t' }, c.title, showDomain ? h('small', { style: `--dom:var(--c-${learner.course.domainOf(c).color})` }, learner.course.domainOf(c).title) : null),
-      h('span', { class: 'at-row-r' }, right));
+      right ? h('span', { class: 'at-row-r' }, right) : null);
   };
   const section = (title: string, rows: HTMLElement[]) => (rows.length ? [h('h2', { class: 'at-h2' }, title), ...rows] : []);
   /** A long section, folded into one row per domain. */
@@ -151,7 +151,7 @@ export function renderMap(main: HTMLElement, learner: Learner, view: 'list' | 'g
     ...section('Due for review', ids('slipping', 'due').map((id) =>
       st.get(id) === 'slipping' ? row(id, icon('reset'), 'slip', `${streak(rec(id))} of ${Math.ceil(bar(id) / 2)} to recover`) : row(id, icon('clock'), 'due', 'due today'))),
     ...section('Learning', ids('learning').map((id) => row(id, icon('bolt'), 'learn', h('span', {}, dots(streak(rec(id)), bar(id)), h('br'), `${streak(rec(id))} of ${bar(id)} in a row`)))),
-    ...section('Ready to learn', ids('new').map((id) => row(id, icon('playFill'), 'new', 'explainer, then practice'))),
+    ...section('Ready to learn', ids('new').map((id) => row(id, icon('playFill'), 'new', ''))),
     ...folded('locked', `Locked · ${count('locked')}`, ids('locked'), (id) => row(id, icon('lock'), 'lock', `needs ${needs(id).join(', ')}`, false)),
     ...(count('mastered') > FOLD_OVER
       ? folded('mastered', `Mastered · ${count('mastered')}`, ids('mastered'), (id) => mastered(id, false))

@@ -22,13 +22,13 @@ export function progressFile(): HTMLElement {
     try {
       importSnapshot(await f.text(), COURSES);
       msg.className = 'ac-hint ok';
-      msg.textContent = 'Loaded. Its concepts are now this account\'s latest progress.';
+      msg.textContent = 'Loaded.';
     } catch (e) {
       msg.className = 'ac-hint bad';
       msg.textContent = (e as Error).message;
     }
   });
   return h('div', {},
-    h('p', { class: 'ac-note' }, 'A file holds your Atlas records and answer log, for keeping a copy outside your account. Loading one writes its concepts over what is here.'),
+    h('p', { class: 'ac-note' }, 'Loading a file writes its concepts over what is here.'),
     h('div', { class: 'ac-actions' }, save, load, input), msg);
 }

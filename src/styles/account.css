@@ -184,6 +184,9 @@
   padding: 0 16px;
   font-size: 0.98rem;
 }
+.ac-note:empty {
+  display: none;
+}
 .ac-note.ok {
   color: var(--ok);
 }

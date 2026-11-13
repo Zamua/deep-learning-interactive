@@ -195,7 +195,7 @@ export function renderTrackMap(main: HTMLElement, learner: Learner, mode: 'pick'
   if (mode === 'pick') head.textContent = 'Tap where you want to get to. Everything it needs lights up.';
   else {
     const t = light(target!);
-    head.textContent = `${t.mastered} of ${t.ids.length} mastered. Tap a concept to open it.`;
+    head.textContent = `${t.mastered} of ${t.ids.length} mastered.`;
   }
   const at = target ?? null;
   if (at) {
