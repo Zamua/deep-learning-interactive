@@ -7,6 +7,8 @@
 //            with its narration
 //   settled  the connection goes after the new build has arrived; it is the new build that must open whole, and the
 //            next explainer must play with its narration, which was saved ahead
+//   saved    a learner saves the Nix course's sound from the settings menu, then has no connection: its last explainer,
+//            never played and too far off to be saved ahead, plays with its narration
 // Exits 1 when any page fails to draw.
 import { createServer } from 'node:http';
 import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs';
@@ -97,14 +99,14 @@ async function everyPageOpens(ctx, label) {
 }
 
 /** Plays the first concept's explainer with no connection; returns what went wrong, or '' when its narration is heard. */
-async function nextExplainerPlays(ctx) {
+async function nextExplainerPlays(ctx, route = 'atlas/vector/watch') {
   const page = await ctx.newPage();
   await page.addInitScript(() => {
     const made = (window.__audio = []);
     window.Audio = new Proxy(window.Audio, { construct: (T, args) => (made.push(new T(...args)), made.at(-1)) });
   });
   try {
-    await page.goto(`${base}#/atlas/vector/watch`, { timeout: 15000 });
+    await page.goto(`${base}#/${route}`, { timeout: 15000 });
     await page.click('.lec-poster-play', { timeout: 15000 });
     await page.waitForFunction(() => window.__audio.some((a) => !a.paused && !a.error && a.currentTime > 0.5), null, { timeout: 15000 });
     return '';
@@ -179,6 +181,26 @@ for (const after of [300, 1500, 4000, 7000]) {
   const got = await everyPageOpens(ctx, 'settled');
   console.log(`settled: opened the ${name(got)} build`);
   if (got !== newEntry) failures.push(`settled  the ${name(got)} build opened, not the new one`);
+  await ctx.close();
+}
+
+// A course's sound saved from the settings menu.
+{
+  Object.assign(site, { root: newDist, delay: 0, down: false });
+  const ctx = await browser.newContext({ viewport: { width: 402, height: 874 }, isMobile: true, hasTouch: true });
+  const page = await ctx.newPage();
+  await page.goto(base);
+  await until('the app to be saved', async () => (await held(page))?.ready === true);
+  await page.reload();
+  await page.click('button[aria-label="Settings"]');
+  const nix = page.locator('.set-dl-row', { hasText: 'Nix' });
+  await nix.locator('button', { hasText: 'Save' }).click({ timeout: 15000 });
+  await until('the Nix sound to be saved', async () => (await nix.locator('small').textContent()).startsWith('Saved'));
+  site.down = true;
+  await page.close();
+  const sound = await nextExplainerPlays(ctx, 'c/nix/nix.dev-shells/watch');
+  console.log(`saved: the Nix explainer ${sound ? 'did not play with sound: ' + sound : 'played with sound'}`);
+  if (sound) failures.push(`saved  #/c/nix/nix.dev-shells/watch  ${sound}`);
   await ctx.close();
 }
 

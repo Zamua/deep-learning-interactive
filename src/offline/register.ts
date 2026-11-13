@@ -1,4 +1,5 @@
 // The page's side of offline use: installs the service worker (src/offline/sw.js) and asks it what it has saved.
+import { courseNarration } from './catalog';
 import WIRE from './wire.json';
 
 export interface OfflineStatus {
@@ -12,6 +13,24 @@ export interface OfflineStatus {
   total: number;
   /** Of the `upcoming` tracks asked about, how many are cached. */
   upcoming: number;
+  /** What is saved of each course's narration, by course id. */
+  courses: Record<string, CourseSound>;
+  /** Whether the narration of kept courses is being saved right now. */
+  saving: boolean;
+  /** Why saving it last stopped short. */
+  problem: '' | 'full' | 'offline';
+}
+
+/** One course's narration on this device. */
+export interface CourseSound {
+  /** Explainers with narration, and how many of them are saved. */
+  tracks: number;
+  held: number;
+  /** Their size in bytes, all of it and what is saved. */
+  bytes: number;
+  heldBytes: number;
+  /** The learner saved this course: its narration is kept, and saved again when it changes. */
+  kept: boolean;
 }
 
 /** Whether this build keeps Atlas offline: production builds, in browsers with service workers. */
@@ -42,6 +61,6 @@ export async function offlineStatus(upcoming: string[] = []): Promise<OfflineSta
       window.clearTimeout(late);
       resolve(m.data as OfflineStatus);
     };
-    sw.postMessage({ type: WIRE.status, upcoming }, [ch.port2]);
+    sw.postMessage({ type: WIRE.status, upcoming, courses: courseNarration() }, [ch.port2]);
   });
 }

@@ -11,8 +11,9 @@ Progress is kept in the browser and syncs between devices through a short accoun
 sign-up. See `docs/SYNC.md`.
 
 Atlas works offline: after the first visit a service worker keeps the app and every concept's
-code and problems (about 6 MB), each explainer's narration once it has played, and ahead of time the
-narration of the explainers that come next.
+code and problems (about 9 MB), each explainer's narration once it has played, and ahead of time the
+narration of the explainers that come next. The settings menu saves the sound of every explainer, or of one
+course, in one go, and removes it again.
 
 ## Run
 

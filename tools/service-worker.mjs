@@ -1,9 +1,10 @@
 // Emits sw.js from src/offline/sw.js, prefixed with the names it shares with the page (src/offline/wire.json) and
-// what it keeps offline: every file the build writes except the narration (cached as it plays) and font formats
+// what it keeps offline: every file the build writes except the narration (cached as it plays, or when the learner
+// saves a course's) and font formats
 // only browsers without service workers fall back to. The dev server serves it with nothing to keep, so dev
 // requests always reach Vite.
 import { createHash } from 'node:crypto';
-import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 
 const SOURCE = resolve(import.meta.dirname, '../src/offline/sw.js');
@@ -44,7 +45,9 @@ export function serviceWorker() {
       const h = createHash('sha256');
       for (const f of lists.files) h.update(f).update(readFileSync(join(outDir, f)));
       for (const f of lists.audio) h.update(f);
-      const offline = { version: h.digest('hex').slice(0, 16), ...lists };
+      // Narration sizes, so the settings menu can say what saving a course's narration costs.
+      const sizes = Object.fromEntries(lists.audio.map((f) => [f, statSync(join(outDir, f)).size]));
+      const offline = { version: h.digest('hex').slice(0, 16), ...lists, sizes };
       writeFileSync(join(outDir, 'sw.js'), worker(offline));
     },
   };

@@ -810,6 +810,114 @@ a.btn {
   color: var(--c-green);
 }
 
+/* saving each course's sound: one action for everything, a line per course under it */
+.set-menu {
+  max-height: calc(100dvh - var(--set-top) - 12px);
+  overflow-y: auto;
+}
+.set-dl {
+  margin-top: 12px;
+}
+.set-dl:empty {
+  display: none;
+}
+.set-dl-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--paper);
+  font: 600 0.95rem var(--font-ui);
+  cursor: pointer;
+}
+.set-dl-all span {
+  flex: 1;
+  text-align: left;
+}
+.set-dl-all small {
+  font-weight: 500;
+  font-size: 0.86rem;
+  opacity: 0.85;
+}
+.set-dl-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+.set-dl-head > span {
+  flex: 1;
+}
+.set-dl-head.ok .ico {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--c-green);
+}
+.set-dl-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent) calc(var(--done) * 100%), var(--paper-3) 0);
+}
+.set-dl-note {
+  margin: 8px 0 0;
+  font-size: 0.84rem;
+  line-height: 1.35;
+  color: var(--ink-3);
+}
+.set-dl-note.bad {
+  color: var(--accent-ink);
+}
+.set-dl-rows {
+  margin-top: 6px;
+}
+.set-dl-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  border-top: 1px solid var(--rule);
+}
+.set-dl-row:first-child {
+  border-top: 0;
+}
+.set-dl-name {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+.set-dl-name small {
+  font-size: 0.82rem;
+  color: var(--ink-3);
+}
+.set-dl-btn {
+  flex: none;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--accent);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--accent-ink);
+  font: 600 0.88rem var(--font-ui);
+  cursor: pointer;
+}
+.set-dl-btn.quiet {
+  border-color: var(--rule);
+  color: var(--ink-2);
+}
+.set-dl-head .set-dl-btn {
+  min-height: 30px;
+}
+
 /* ---------- how everything pressable answers: a ring for the keyboard, a small give under the finger ---------- */
 
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
