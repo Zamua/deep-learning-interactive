@@ -2,6 +2,7 @@
 // service worker does the saving (src/offline/sw.js); this side only says which tracks, soonest first.
 import { COURSES } from '../courses';
 import { Learner } from '../mastery/learner';
+import { courseNarration } from './catalog';
 import { offlineSupported } from './register';
 import WIRE from './wire.json';
 
@@ -18,10 +19,12 @@ export function upcomingNarration(): string[] {
 
 /**
  * Asks the worker to hold the upcoming narration, once there is a worker in charge: on a first visit that is after the
- * page has drawn. The worker waits for the app itself to be saved, and for a connection.
+ * page has drawn. The worker waits for the app itself to be saved, and for a connection. It also goes on saving the
+ * courses the learner saved, which a closed app or a new build left incomplete.
  */
 export function saveAhead(): void {
   if (!offlineSupported() || !navigator.onLine) return;
-  if ((navigator as { connection?: { saveData?: boolean } }).connection?.saveData) return;
-  void navigator.serviceWorker.ready.then((r) => r.active?.postMessage({ type: WIRE.ahead, urls: upcomingNarration() })).catch(() => {});
+  // Saving data: nothing ahead, but the courses the learner chose to save still are.
+  const sparing = (navigator as { connection?: { saveData?: boolean } }).connection?.saveData === true;
+  void navigator.serviceWorker.ready.then((r) => r.active?.postMessage({ type: WIRE.ahead, urls: sparing ? [] : upcomingNarration(), courses: courseNarration() })).catch(() => {});
 }

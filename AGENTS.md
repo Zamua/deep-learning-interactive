@@ -81,13 +81,19 @@ is not needed (never leave content hidden behind a removed animation), Phosphor 
 - `src/offline/`: `sw.js`, the service worker (installs only once it holds every file of its build and takes over
   then, so the build before it keeps answering whole until that moment; serves pages from the cache, never the
   network; saves narration as it plays and, ahead of time, that of the explainers the page says come next, up to
-  40 MB; answers range requests from the cache, shows reminders), `register.ts` (registers it once the first page
-  draws; the settings menu's offline status) and `ahead.ts` (which narration comes next: each course's next concept
-  and the next three on each track, from `upcoming` in `mastery/domain/tracks.ts`; sent after every page that is not
-  a session, never on Save-Data). `main.ts` looks for a new worker at
+  40 MB; saves whole courses' narration the learner chose in the settings menu, kept in `atlas-keep` and fetched
+  again for each new build, so only changed tracks download; answers range requests from the cache, shows
+  reminders), `register.ts` (registers it once the first page draws; the settings menu's offline status, per course
+  too), `ahead.ts` (which narration comes next: each course's next concept and the next three on each track, from
+  `upcoming` in `mastery/domain/tracks.ts`; sent after every page that is not a session, nothing ahead on Save-Data),
+  `catalog.ts` (each course's narration addresses, sent with every message, since the worker knows files, not
+  courses) and `save-courses.ts` (the settings menu's Save all sound: checks storage room first, asks for persistent
+  storage, and nudges the worker when a save was cut short, as Safari has no background downloads). The worker's
+  prefix carries each track's size (`sizes`), so the menu can state what saving costs. `tools/e2e/offline-update.mjs`
+  checks all of it with no connection, the saved-course case included. `main.ts` looks for a new worker at
   launch and after a minute away, because iOS resumes an installed app without loading anything, and reloads onto
   the new build when its worker takes over, unless a session or an explainer is under way. Plain JS: the build only
-  prefixes it, with `wire.json`, the names the page and the worker share (the status message, and
+  prefixes it, with `wire.json`, the names the page and the worker share (the messages, and
   where the next reminder's words are saved). Every page of the app loads the lazy `ui` chunk, so a build that took
   over before all of it was saved would open on an error with no connection: keep the install whole.
 - `tools/service-worker.mjs`: a Vite plugin; writes `dist/sw.js` prefixed with the files it keeps

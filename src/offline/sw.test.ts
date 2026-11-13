@@ -81,7 +81,7 @@ function fakeIndexedDB(data: Map<string, Map<string, Map<string, unknown>>>) {
 }
 
 /** A service worker global with an in-memory network and cache, running sw.js. */
-function boot(offline: { version: string; files: string[]; audio: string[] } | null) {
+function boot(offline: { version: string; files: string[]; audio: string[]; sizes?: Record<string, number> } | null) {
   const handlers = new Map<string, Handler>();
   const net = new Map<string, { body: string; type: string }>();
   const fetches: { url: string; range: string | null; cache?: string }[] = [];
@@ -143,7 +143,7 @@ class FakeRequest {
   }
 }
 
-const OFFLINE = { version: 'v1', files: ['index.html', 'assets/index-a1.js', 'assets/ui-b2.css', 'assets/concept-d4.js', 'icon-192.png'], audio: ['assets/narration-c3.m4a', 'assets/narration-g7.m4a', 'assets/narration-h8.m4a'] };
+const OFFLINE = { version: 'v1', files: ['index.html', 'assets/index-a1.js', 'assets/ui-b2.css', 'assets/concept-d4.js', 'icon-192.png'], audio: ['assets/narration-c3.m4a', 'assets/narration-g7.m4a', 'assets/narration-h8.m4a'], sizes: { 'assets/narration-c3.m4a': 10, 'assets/narration-g7.m4a': 5, 'assets/narration-h8.m4a': 5 } };
 const url = (f: string) => new URL(f, SCOPE).href;
 const SHELL = '<script src="./assets/index-a1.js"></script><link href="./assets/ui-b2.css">';
 
@@ -396,8 +396,104 @@ describe('offline service worker', () => {
       await installed();
       await want([G]);
       await w.get('./', { mode: 'navigate' });
-      expect((await w.caches.keys()).sort()).toEqual(['atlas-app', 'atlas-audio', 'atlas-audio-ahead']);
+      expect((await w.caches.keys()).sort()).toEqual(['atlas-app', 'atlas-audio', 'atlas-audio-ahead', 'atlas-keep']);
       expect([...(await ahead()).m.keys()]).toEqual([G]);
+    });
+  });
+
+  describe('courses saved whole', () => {
+    const G = url('assets/narration-g7.m4a');
+    const H = url('assets/narration-h8.m4a');
+    const C = url('assets/narration-c3.m4a');
+    const COURSES = { one: [G, H], two: [C] };
+    const played = () => w.caches.open('atlas-audio');
+    const send = (type: string, extra: object = {}) => w.extend('message', { data: { type, courses: COURSES, ...extra }, ports: [] });
+    const status = async () => {
+      const ch = new MessageChannel();
+      const got = new Promise<{ courses: Record<string, { tracks: number; held: number; bytes: number; heldBytes: number; kept: boolean }>; problem: string }>((resolve) => (ch.port1.onmessage = (m) => resolve(m.data)));
+      await w.extend('message', { data: { type: WIRE.status, courses: COURSES }, ports: [ch.port2] });
+      const v = await got;
+      ch.port1.close();
+      return v;
+    };
+
+    it('saves every track of a course, and plays it with no connection', async () => {
+      await installed();
+      await send(WIRE.save, { ids: ['one'] });
+      expect([...(await played()).m.keys()].sort()).toEqual([G, H]);
+      expect((await status()).courses).toEqual({
+        one: { tracks: 2, held: 2, bytes: 10, heldBytes: 10, kept: true },
+        two: { tracks: 1, held: 0, bytes: 10, heldBytes: 0, kept: false },
+      });
+      w.env.online = false;
+      const part = (await w.get('assets/narration-h8.m4a', { range: 'bytes=0-1' }))!;
+      expect([part.status, await part.text()]).toEqual([206, 'hh']);
+    });
+
+    it('waits until the app itself is saved', async () => {
+      await send(WIRE.save, { ids: ['one'] });
+      expect((await played()).m.size).toBe(0);
+      expect((await status()).courses.one!.kept).toBe(true);
+    });
+
+    it('goes on where it stopped once the connection returns, fetching only what is missing', async () => {
+      await installed();
+      await (await played()).put(G, new Response('ggggg'));
+      w.env.online = false;
+      await send(WIRE.save, { ids: ['one', 'two'] });
+      expect((await status()).problem).toBe('offline');
+      w.env.online = true;
+      w.fetches.length = 0;
+      await send(WIRE.ahead, { urls: [] });
+      expect(w.fetches.map((f) => f.url).sort()).toEqual([C, H].sort());
+      expect((await status()).problem).toBe('');
+    });
+
+    it('uses what was saved ahead instead of fetching it again', async () => {
+      await installed();
+      await send(WIRE.ahead, { urls: [G] });
+      w.fetches.length = 0;
+      await send(WIRE.save, { ids: ['one'] });
+      expect(w.fetches.map((f) => f.url)).toEqual([H]);
+      expect((await (await w.caches.open('atlas-audio-ahead')).keys()).length).toBe(0);
+    });
+
+    it('stops when storage is full, and says so', async () => {
+      await installed();
+      const cache = await played();
+      cache.put = async () => {
+        throw new DOMException('full', 'QuotaExceededError');
+      };
+      await send(WIRE.save, { ids: ['one'] });
+      const st = await status();
+      expect([st.problem, st.courses.one!.held]).toEqual(['full', 0]);
+    });
+
+    it('saves no more of a course once told to stop, and keeps what it has', async () => {
+      await installed();
+      await send(WIRE.save, { ids: ['two'] });
+      await send(WIRE.stop, { ids: ['two'] });
+      w.fetches.length = 0;
+      await send(WIRE.ahead, { urls: [] });
+      expect(w.fetches).toEqual([]);
+      expect((await status()).courses.two).toMatchObject({ held: 1, kept: false });
+    });
+
+    it('removes a course: its tracks, played or saved, and the wish to keep it', async () => {
+      await installed();
+      await send(WIRE.save, { ids: ['one', 'two'] });
+      await send(WIRE.drop, { ids: ['one'] });
+      expect([...(await played()).m.keys()]).toEqual([C]);
+      expect((await status()).courses.one).toMatchObject({ held: 0, kept: false });
+    });
+
+    it('keeps the list of saved courses through tidying after an update, and drops tracks the build no longer has', async () => {
+      await installed();
+      await send(WIRE.save, { ids: ['two'] });
+      await (await played()).put(url('assets/narration-old.m4a'), new Response('old'));
+      await w.get('./', { mode: 'navigate' });
+      expect([...(await played()).m.keys()]).toEqual([C]);
+      expect((await status()).courses.two!.kept).toBe(true);
     });
   });
 
@@ -416,10 +512,10 @@ describe('offline service worker', () => {
       ch.port1.close();
       return v;
     };
-    expect(await ask()).toEqual({ version: 'v1', ready: false, files: 0, filesTotal: 5, audio: 0, total: 3, upcoming: 0 });
+    expect(await ask()).toEqual({ version: 'v1', ready: false, files: 0, filesTotal: 5, audio: 0, total: 3, upcoming: 0, courses: {}, saving: false, problem: '' });
     await installed();
     await w.get('assets/narration-c3.m4a', { range: 'bytes=0-1' });
-    expect(await ask()).toEqual({ version: 'v1', ready: true, files: 5, filesTotal: 5, audio: 1, total: 3, upcoming: 0 });
+    expect(await ask()).toEqual({ version: 'v1', ready: true, files: 5, filesTotal: 5, audio: 1, total: 3, upcoming: 0, courses: {}, saving: false, problem: '' });
   });
 });
 

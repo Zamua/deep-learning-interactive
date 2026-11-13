@@ -13,6 +13,7 @@ import { icon } from './core/controls';
 import { disposeAll, h } from './core/dom';
 import { Learner } from './mastery/learner';
 import { saveAhead } from './offline/ahead';
+import { keepCoursesSaved } from './offline/save-courses';
 import { checkForNewWorker, startOffline } from './offline/register';
 import { getItem, setItem } from './core/storage';
 import { applyTheme, settingsButton } from './settings';
@@ -293,4 +294,5 @@ void route().then(() => {
   followNewBuilds();
   // A save that the connection cut short picks up when it returns.
   window.addEventListener('online', saveAhead);
+  keepCoursesSaved();
 });

@@ -1,5 +1,9 @@
 {
   "status": "offline-status",
   "ahead": "offline-ahead",
+  "save": "offline-save",
+  "stop": "offline-stop",
+  "drop": "offline-drop",
+  "progress": "offline-progress",
   "summary": { "db": "atlas", "store": "kv", "key": "summary" }
 }
